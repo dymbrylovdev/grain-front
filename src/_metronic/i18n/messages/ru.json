@@ -1,0 +1,12 @@
+{
+    "MENU.GRAIN": "Рынок зерна",
+    "MENU.USERS": "Пользователи",
+    "MENU.SETTINGS": "Настройки",
+    "MENU.DOCS": "Документы",
+    "SUBMENU.ORDERS": "Завки на продажу",
+    "SUBMENU.USER.LIST": "Список пользователей",
+    "SUBMENU.PROFILE": "Мой профиль",
+    "SUBMENU.CATALOG.SETTINGS": "Настройки каталога",
+    "SUBMENU.SYSTEM.SETTINGS": "Настройки системы",
+    "SUBMENU.LEGAL": "Пользовательское соглашение"
+}
