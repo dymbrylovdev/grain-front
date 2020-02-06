@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, Switch, Route, Redirect } from "react-router-dom";
+import { FormattedMessage } from "react-intl";
 import { toAbsoluteUrl } from "../../../_metronic";
 import "../../../_metronic/_assets/sass/pages/login/login-1.scss";
 import Login from "./Login";
@@ -32,27 +33,20 @@ export default function AuthPage() {
               </div>
               <div className="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver">
                 <div className="kt-grid__item kt-grid__item--middle">
-                  <h3 className="kt-login__title">Welcome to Metronic!</h3>
+                  <h3 className="kt-login__title"><FormattedMessage id="START.WELCOME"/></h3>
                   <h4 className="kt-login__subtitle">
-                    The ultimate Bootstrap & Angular 6 admin theme framework for
-                    next generation web apps.
+                  <FormattedMessage id="START.DESCRIPTION"/>
                   </h4>
                 </div>
               </div>
               <div className="kt-grid__item">
                 <div className="kt-login__info">
                   <div className="kt-login__copyright">
-                    &copy; 2018 Metronic
+                    &copy; 2020 StartMobile
                   </div>
                   <div className="kt-login__menu">
                     <Link to="/terms" className="kt-link">
-                      Privacy
-                    </Link>
-                    <Link to="/terms" className="kt-link">
-                      Legal
-                    </Link>
-                    <Link to="/terms" className="kt-link">
-                      Contact
+                     <FormattedMessage id="SUBMENU.LEGAL"/>
                     </Link>
                   </div>
                 </div>

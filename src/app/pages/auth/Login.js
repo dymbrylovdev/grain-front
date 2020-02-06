@@ -27,22 +27,13 @@ function Login(props) {
 
   return (
     <>
-      <div className="kt-login__head">
-        <span className="kt-login__signup-label">
-          Don't have an account yet?
-        </span>
-        &nbsp;&nbsp;
-        <Link to="/auth/registration" className="kt-link kt-login__signup-link">
-          Sign Up!
-        </Link>
-      </div>
 
       <div className="kt-login__body">
         <div className="kt-login__form">
           <div className="kt-login__title">
             <h3>
               {/* https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formattedmessage */}
-              <FormattedMessage id="AUTH.LOGIN.TITLE" />
+              <FormattedMessage id="AUTH.LOGIN.TITLE"/>
             </h3>
           </div>
 
@@ -79,9 +70,12 @@ function Login(props) {
               enableLoading();
               setTimeout(() => {
                 login(values.email, values.password)
-                  .then(({ data: { accessToken } }) => {
+                  .then(({ data: { accessToken }, data }) => {
+                    console.log('loginData', data);
+                    
                     disableLoading();
                     props.login(accessToken);
+                    props.fulfillUser(data);
                   })
                   .catch(() => {
                     disableLoading();
@@ -127,7 +121,9 @@ function Login(props) {
                 <div className="form-group">
                   <TextField
                     type="email"
-                    label="Email"
+                    label={intl.formatMessage({
+                      id: "AUTH.INPUT.EMAIL"
+                    })}
                     margin="normal"
                     className="kt-width-full"
                     name="email"
@@ -143,7 +139,9 @@ function Login(props) {
                   <TextField
                     type="password"
                     margin="normal"
-                    label="Password"
+                    label={intl.formatMessage({
+                      id: "AUTH.INPUT.PASSWORD"
+                    })}
                     className="kt-width-full"
                     name="password"
                     onBlur={handleBlur}
@@ -173,35 +171,14 @@ function Login(props) {
                     )}`}
                     style={loadingButtonStyle}
                   >
-                    Sign In
+                    <FormattedMessage id="AUTH.LOGIN.BUTTON" />
                   </button>
                 </div>
               </form>
             )}
           </Formik>
 
-          <div className="kt-login__divider">
-            <div className="kt-divider">
-              <span />
-              <span>OR</span>
-              <span />
-            </div>
-          </div>
-
-          <div className="kt-login__options">
-            <Link to="http://facebook.com" className="btn btn-primary kt-btn">
-              <i className="fab fa-facebook-f" />
-              Facebook
-            </Link>
-            <Link to="http://twitter.com" className="btn btn-info kt-btn">
-              <i className="fab fa-twitter" />
-              Twitter
-            </Link>
-            <Link to="google.com" className="btn btn-danger kt-btn">
-              <i className="fab fa-google" />
-              Google
-            </Link>
-          </div>
+          
         </div>
       </div>
     </>
@@ -214,3 +191,14 @@ export default injectIntl(
     auth.actions
   )(Login)
 );
+
+
+      /*<div className="kt-login__head">
+        <span className="kt-login__signup-label">
+          Don't have an account yet?
+        </span>
+        &nbsp;&nbsp;
+        <Link to="/auth/registration" className="kt-link kt-login__signup-link">
+          Sign Up!
+        </Link>
+      </div>*/
