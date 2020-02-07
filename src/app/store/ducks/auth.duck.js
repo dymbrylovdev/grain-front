@@ -12,14 +12,13 @@ export const actionTypes = {
   UserLoaded: "[Load User] Auth API"
 };
 
-const initialAuthState = {
-  user: undefined,
-  authToken: undefined
+const initialDocState = {
+  legacy: ""
 };
 
 export const reducer = persistReducer(
     { storage, key: "demo1-auth", whitelist: ["user", "authToken"] },
-    (state = initialAuthState, action) => {
+    (state = initialDocState, action) => {
       switch (action.type) {
         case actionTypes.Login: {
           const { authToken } = action.payload;

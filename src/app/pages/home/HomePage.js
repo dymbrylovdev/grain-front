@@ -1,13 +1,14 @@
 import React, { Suspense, lazy, useEffect } from "react";
-import {useDispatch} from 'react-redux';
+import { useDispatch } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Builder from "./Builder";
 import Dashboard from "./Dashboard";
 import DocsPage from "./docs/DocsPage";
 import { LayoutSplashScreen } from "../../../_metronic";
-import getMenuConfig from '../../router/MenuConfig';
-import { mockcCereals } from '../../router/mockMenuConsts';
-import * as builder from '../../../_metronic/ducks/builder'
+import getMenuConfig from "../../router/MenuConfig";
+import { mockcCereals } from "../../router/mockMenuConsts";
+import UserDocPage from "./userDocs/UserDocPage";
+import * as builder from "../../../_metronic/ducks/builder";
 
 const GoogleMaterialPage = lazy(() =>
   import("./google-material/GoogleMaterialPage")
@@ -22,9 +23,9 @@ export default function HomePage() {
   //   console.log('Home page');
   // }, []) // [] - is required if you need only one call
   // https://reactjs.org/docs/hooks-reference.html#useeffect
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
   useEffect(() => {
-    console.log('setMenuConfig'); 
+    console.log("setMenuConfig");
     dispatch(builder.actions.setMenuConfig(userMenuConfig));
   });
 
@@ -40,6 +41,7 @@ export default function HomePage() {
         <Route path="/google-material" component={GoogleMaterialPage} />
         <Route path="/react-bootstrap" component={ReactBootstrapPage} />
         <Route path="/docs" component={DocsPage} />
+        <Route path="/userDocs/legacy" component={UserDocPage} />
         <Redirect to="/error/error-v1" />
       </Switch>
     </Suspense>

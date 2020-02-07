@@ -572,7 +572,7 @@ export default function (cereals){
                   {
                     title: "Пользовательское соглашение",
                     root: true,
-                    page: "",
+                    page: "userDocs/legacy",
                     translate: "SUBMENU.LEGAL",
                   }
                 ]
