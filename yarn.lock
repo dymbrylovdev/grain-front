@@ -1594,6 +1594,14 @@
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
 
+"@types/draft-js@^0.10.38":
+  version "0.10.38"
+  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.38.tgz#19a37d97e696df5749754f8bbd7761a4d56b16b0"
+  integrity sha512-iDg8fJATjGVfQVv/dysAMMcPwORyJix2AyAm8OdwseteYh1jV+Xwlz+1HddoCWxQWqzWf/MDkNQH5sLYG47e0w==
+  dependencies:
+    "@types/react" "*"
+    immutable "~3.7.4"
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"

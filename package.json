@@ -93,6 +93,7 @@
     "typescript": "^3.7.5"
   },
   "devDependencies": {
+    "@types/draft-js": "^0.10.38",
     "copyfiles": "^2.1.1",
     "node-sass": "^4.13.0",
     "prettier": "^1.19.1",
