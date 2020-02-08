@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:lts-alpine
 
 # Create app folder
 RUN mkdir -p /app
