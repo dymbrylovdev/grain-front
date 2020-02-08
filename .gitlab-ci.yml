@@ -1,0 +1,51 @@
+image: docker:latest
+services:
+  - docker:dind
+
+stages:
+  - build
+  - release
+  - deploy
+
+variables:
+  TEST_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME:$CI_BUILD_REF_NAME
+  RELEASE_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME:latest
+
+before_script:
+  - docker info
+  - docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD
+
+build-web:
+  stage: build
+  script:
+    - docker build --pull -t $TEST_IMAGE .
+    - docker push $TEST_IMAGE
+
+release-web:
+  stage: release
+  script:
+    - docker pull $TEST_IMAGE
+    - docker tag $TEST_IMAGE $RELEASE_IMAGE
+    - docker push $RELEASE_IMAGE
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  image: gitlab/dind:latest
+  only:
+    - 'master'
+  environment: production
+  services:
+    - docker:dind
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DEPLOYMENT_SERVER_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEPLOYMENT_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
+    - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
+    - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD $CONTAINER_NAME:latest;docker stop $CONTAINER_NAME;docker rm $CONTAINER_NAME --force;docker pull $RELEASE_IMAGE;docker run --rm -p 0.0.0.0:$DEPLOYMENT_PORT:3000 --name $CONTAINER_NAME --env-file web-environment.env -d $RELEASE_IMAGE"
