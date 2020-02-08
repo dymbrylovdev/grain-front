@@ -39,8 +39,8 @@ function Login(props) {
 
           <Formik
             initialValues={{
-              email: "admin@demo.com",
-              password: "demo"
+              email: "admin",
+              password: "000000"
             }}
             validate={values => {
               const errors = {};
@@ -50,13 +50,13 @@ function Login(props) {
                 errors.email = intl.formatMessage({
                   id: "AUTH.VALIDATION.REQUIRED_FIELD"
                 });
-              } else if (
+              } /*else if (
                 !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
               ) {
                 errors.email = intl.formatMessage({
                   id: "AUTH.VALIDATION.INVALID_FIELD"
                 });
-              }
+              }*/
 
               if (!values.password) {
                 errors.password = intl.formatMessage({
@@ -77,7 +77,9 @@ function Login(props) {
                     props.login(accessToken);
                     props.fulfillUser(data);
                   })
-                  .catch(() => {
+                  .catch((error) => {
+                    console.log('loginError', error);
+                    
                     disableLoading();
                     setSubmitting(false);
                     setStatus(
@@ -112,8 +114,8 @@ function Login(props) {
                 ) : (
                   <div role="alert" className="alert alert-info">
                     <div className="alert-text">
-                      Use account <strong>admin@demo.com</strong> and password{" "}
-                      <strong>demo</strong> to continue.
+                      Use account <strong>admin</strong> and password{" "}
+                      <strong>000000</strong> to continue.
                     </div>
                   </div>
                 )}
