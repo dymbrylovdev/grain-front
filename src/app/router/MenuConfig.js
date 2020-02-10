@@ -545,7 +545,7 @@ export default function (cereals){
                   {
                     title: "Мой профайл",
                     root: true,
-                    page: "",
+                    page: "user/profile",
                     translate: "SUBMENU.PROFILE",
                   },
                   {
