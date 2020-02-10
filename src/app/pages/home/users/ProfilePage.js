@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { shallowEqual, useSelector, connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { TextField, Button } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import { Formik } from 'formik';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
+
 import * as auth from '../../../store/ducks/auth.duck';
 import { setUser } from '../../../crud/auth.crud';
 import StatusAlert from './StatusAlert';
 
 const useStyles = makeStyles(theme => ({
   container: {
-    fontFamily: 'sans-serif',
     display: 'flex',
     flexWrap: 'wrap',
     background: 'white',
