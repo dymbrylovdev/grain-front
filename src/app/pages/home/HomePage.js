@@ -25,7 +25,6 @@ export default function HomePage() {
   // https://reactjs.org/docs/hooks-reference.html#useeffect
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("setMenuConfig");
     dispatch(builder.actions.setMenuConfig(userMenuConfig));
   });
 

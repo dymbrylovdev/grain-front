@@ -39,15 +39,15 @@ function Login(props) {
 
           <Formik
             initialValues={{
-              email: "admin",
+              login: "admin",
               password: "000000"
             }}
             validate={values => {
               const errors = {};
 
-              if (!values.email) {
+              if (!values.login) {
                 // https://github.com/formatjs/react-intl/blob/master/docs/API.md#injection-api
-                errors.email = intl.formatMessage({
+                errors.login = intl.formatMessage({
                   id: "AUTH.VALIDATION.REQUIRED_FIELD"
                 });
               } /*else if (
@@ -69,13 +69,13 @@ function Login(props) {
             onSubmit={(values, { setStatus, setSubmitting }) => {
               enableLoading();
               setTimeout(() => {
-                login(values.email, values.password)
-                  .then(({ data: { accessToken }, data }) => {
-                    console.log('loginData', data);
-                    
+                login(values.login, values.password)
+                  .then(({ data }) => {
                     disableLoading();
-                    props.login(accessToken);
-                    props.fulfillUser(data);
+                    if(data.data){
+                    props.login(data.data.api_token);
+                    props.fulfillUser(data.data);
+                    }
                   })
                   .catch((error) => {
                     console.log('loginError', error);
@@ -124,16 +124,16 @@ function Login(props) {
                   <TextField
                     type="email"
                     label={intl.formatMessage({
-                      id: "AUTH.INPUT.EMAIL"
+                      id: "AUTH.INPUT.LOGIN"
                     })}
                     margin="normal"
                     className="kt-width-full"
-                    name="email"
+                    name="login"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.email}
-                    helperText={touched.email && errors.email}
-                    error={Boolean(touched.email && errors.email)}
+                    value={values.login}
+                    helperText={touched.login && errors.login}
+                    error={Boolean(touched.login && errors.login)}
                   />
                 </div>
 
@@ -155,13 +155,6 @@ function Login(props) {
                 </div>
 
                 <div className="kt-login__actions">
-                  <Link
-                    to="/auth/forgot-password"
-                    className="kt-link kt-login__link-forgot"
-                  >
-                    <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
-                  </Link>
-
                   <button
                     id="kt_login_signin_submit"
                     type="submit"

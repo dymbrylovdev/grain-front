@@ -12,6 +12,7 @@
     "START.WELCOME": "Добро пожаловать на Рынок Зерна",
     "START.DESCRIPTION": "Маркетплейс по продаже зерновых культур",
     "AUTH.INPUT.EMAIL": "Email",
+    "AUTH.INPUT.LOGIN": "Логин",
     "AUTH.INPUT.FULLNAME": "Полное имя",
     "AUTH.INPUT.PASSWORD": "Пароль",
     "AUTH.LOGIN.TITLE": "Вход",
