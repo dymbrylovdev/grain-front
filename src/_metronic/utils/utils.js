@@ -42,6 +42,7 @@ export function removeStorage(key) {
         key +
         "] from localStorage: " +
         JSON.stringify(e)
+        
     );
     return false;
   }

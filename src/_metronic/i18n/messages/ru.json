@@ -34,5 +34,17 @@
     "AUTH.VALIDATION.NOT_FOUND": "The requested {name} is not found",
     "AUTH.VALIDATION.INVALID_LOGIN": "Неверный логин или пароль",
     "AUTH.VALIDATION.REQUIRED_FIELD": "Обязательное поле",
-    "AUTH.VALIDATION.INVALID_FIELD": "Поле некорректно"
+    "AUTH.VALIDATION.INVALID_FIELD": "Поле некорректно",
+    "PROFILE.INPUT.FIO":"ФИО",
+    "PROFILE.INPUT.EMAIL":"Email",
+    "PROFILE.INPUT.PHONE":"Телефон",
+    "PROFILE.INPUT.INN":"ИНН",
+    "PROFILE.INPUT.COMPANY":"Организация",
+    "PROFILE.INPUT.PASSWORD":"Новый пароль",
+    "PROFILE.INPUT.REPEATPASSWORD":"Повторите новый пароль",
+    "PROFILE.BUTTON.SAVE": "Сохранить",
+    "PROFILE.VALIDATION.SIMILAR_PASSWORD": "Пароли должны совпадать",
+    "PROFILE.STATUS.ENTER_DATA": "",
+    "PROFILE.STATUS.SUCCESS": "Пользователь успешно сохранен",
+    "PROFILE.STATUS.ERROR": "Ошибка сохранения пользователя"
 }
