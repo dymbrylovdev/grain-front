@@ -32,17 +32,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const getInitialValues =(user) => ({
+const getInitialValues = user => ({
   fio: user.fio,
   phone: user.phone,
   email: user.email,
   inn: user.inn,
   company: user.company,
   password: '',
-  repeatPassword: ''
-}
-)
-
+  repeatPassword: '',
+});
 
 function ProfilePage({ intl, fulfillUser }) {
   const [loading, setLoading] = useState(false);
@@ -74,16 +72,15 @@ function ProfilePage({ intl, fulfillUser }) {
             setUser(values)
               .then(({ data }) => {
                 setLoading(false);
-                resetForm();
                 if (data.data) {
-                  resetForm(getInitialValues(data.data))
-                  setStatus( { error: false,
+                  setStatus({
+                    error: false,
                     message: intl.formatMessage({
                       id: 'PROFILE.STATUS.SUCCESS',
-                    })
-                  }
-                  );
+                    }),
+                  });
                   fulfillUser(data.data);
+                  //resetForm(getInitialValues(data.data));
                 }
               })
               .catch(error => {
@@ -91,12 +88,12 @@ function ProfilePage({ intl, fulfillUser }) {
 
                 setLoading(false);
                 setSubmitting(false);
-                setStatus( { error: true,
+                setStatus({
+                  error: true,
                   message: intl.formatMessage({
                     id: 'PROFILE.STATUS.ERROR',
-                  })
-                }
-                );
+                  }),
+                });
               });
           }, 1000);
         }}
@@ -113,7 +110,7 @@ function ProfilePage({ intl, fulfillUser }) {
         }) => (
           <div className={classes.form}>
             <form noValidate={true} autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
-              <StatusAlert status={status}/>
+              <StatusAlert status={status} />
               <TextField
                 type="text"
                 label={intl.formatMessage({
