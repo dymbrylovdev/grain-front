@@ -1,4 +1,4 @@
-export default function (cereals){
+export default function (cereals, logoutAction){
     return {
         header: {
             self: {},
@@ -576,6 +576,13 @@ export default function (cereals){
                     translate: "SUBMENU.LEGAL",
                   }
                 ]
+              },
+              {
+                title: "Выход",
+                root: true,
+                icon: "flaticon-logout",
+                page: "logout",
+                translate: "MENU.LOGOUT",
               },
             ]
           }
