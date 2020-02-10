@@ -11,6 +11,7 @@ import StatusAlert from './StatusAlert';
 
 const useStyles = makeStyles(theme => ({
   container: {
+    fontFamily: 'sans-serif',
     display: 'flex',
     flexWrap: 'wrap',
     background: 'white',
