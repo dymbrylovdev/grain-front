@@ -5,6 +5,7 @@ import { TextField } from '@material-ui/core';
 import { Formik } from 'formik';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
+import { Paper } from '@material-ui/core';
 
 import * as auth from '../../../store/ducks/auth.duck';
 import { setUser } from '../../../crud/auth.crud';
@@ -13,11 +14,8 @@ import StatusAlert from './StatusAlert';
 const useStyles = makeStyles(theme => ({
   container: {
     display: 'flex',
-    flexWrap: 'wrap',
-    background: 'white',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
   },
   form: {
     maxWidth: '800px',
@@ -49,7 +47,7 @@ function ProfilePage({ intl, fulfillUser }) {
   console.log('myUser', user);
   const classes = useStyles();
   return (
-    <div className={classes.container}>
+    <Paper className={classes.container}>
       <Formik
         initialValues={getInitialValues(user)}
         validate={values => {
@@ -230,7 +228,7 @@ function ProfilePage({ intl, fulfillUser }) {
           </div>
         )}
       </Formik>
-    </div>
+    </Paper>
   );
 }
 
