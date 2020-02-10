@@ -10,6 +10,7 @@ import { mockcCereals } from "../../router/mockMenuConsts";
 import UserDocPage from "./userDocs/UserDocPage";
 import ProfilePage from "./users/ProfilePage";
 import * as builder from "../../../_metronic/ducks/builder";
+import * as routerHelpers from "../../router/RouterHelpers";
 
 const GoogleMaterialPage = lazy(() =>
   import("./google-material/GoogleMaterialPage")
@@ -19,13 +20,16 @@ const ReactBootstrapPage = lazy(() =>
 );
 
 const userMenuConfig = getMenuConfig(mockcCereals);
+
 export default function HomePage() {
   // useEffect(() => {
   //   console.log('Home page');
   // }, []) // [] - is required if you need only one call
   // https://reactjs.org/docs/hooks-reference.html#useeffect
+
   const dispatch = useDispatch();
-  useEffect(() => {
+  useEffect(() => 
+  {  
     dispatch(builder.actions.setMenuConfig(userMenuConfig));
   });
 
