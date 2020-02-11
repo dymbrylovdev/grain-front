@@ -1,19 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import objectPath from 'object-path';
-import Header from './header/Header';
+
 import SubHeader from './sub-header/SubHeader';
 import HeaderMobile from './header/HeaderMobile';
 import AsideLeft from './aside/AsideLeft';
-import Footer from './footer/Footer';
 import ScrollTop from '../../app/partials/layout/ScrollTop';
-import StickyToolbar from '../../app/partials/layout/StickyToolbar';
 import HTMLClassService from './HTMLClassService';
 import LayoutConfig from './LayoutConfig';
 import MenuConfig from './MenuConfig';
 import LayoutInitializer from './LayoutInitializer';
 import QuickPanel from '../../app/partials/layout/QuickPanel';
 import KtContent from './KtContent';
+// import Footer from './footer/Footer';
+// import Header from './header/Header';
+// import StickyToolbar from '../../app/partials/layout/StickyToolbar';
+
 import './assets/Base.scss';
 
 const htmlClassService = new HTMLClassService();
@@ -75,14 +77,14 @@ function Layout({
               {/*<!-- end:: Content Body -->*/}
             </div>
             {/* <!-- end:: Content --> */}
-            <Footer />
+            {/* <Footer /> */}
           </div>
         </div>
         {/* <!-- end:: Body --> */}
       </div>
       <QuickPanel />
       <ScrollTop />
-      <StickyToolbar />
+      {/* <StickyToolbar /> */}
     </LayoutInitializer>
   ) : (
     // BLANK LAYOUT
