@@ -4,34 +4,11 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { TextField } from '@material-ui/core';
 import { Formik } from 'formik';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-
 import * as auth from '../../../store/ducks/auth.duck';
 import { setUser } from '../../../crud/auth.crud';
-import StatusAlert from './StatusAlert';
+import StatusAlert from './components/StatusAlert';
+import useStyles from './styles';
 
-const useStyles = makeStyles(theme => ({
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    background: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .3)',
-  },
-  form: {
-    maxWidth: '800px',
-    width: '100%',
-    padding: theme.spacing(3),
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: theme.spacing(3),
-  },
-}));
 
 const getInitialValues = user => ({
   fio: user.fio,

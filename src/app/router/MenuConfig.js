@@ -530,7 +530,7 @@ export default function (cereals, logoutAction){
                   {
                     title: "Список пользователей",
                     root: true,
-                    page: "",
+                    page: "userList",
                     translate: "SUBMENU.USER.LIST",
                   }
                 ]

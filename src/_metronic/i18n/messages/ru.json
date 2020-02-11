@@ -47,5 +47,11 @@
     "PROFILE.VALIDATION.SIMILAR_PASSWORD": "Пароли должны совпадать",
     "PROFILE.STATUS.ENTER_DATA": "",
     "PROFILE.STATUS.SUCCESS": "Пользователь успешно сохранен",
-    "PROFILE.STATUS.ERROR": "Ошибка сохранения пользователя"
+    "PROFILE.STATUS.ERROR": "Ошибка сохранения пользователя",
+    "USERLIST.BUTTON.ADD_USER": "Добавить пользователя",
+    "USERLIST.TABLE.ID": "Id",
+    "USERLIST.TABLE.EMAIL": "Email",
+    "USERLIST.TABLE.NAME": "Название",
+    "USERLIST.TABLE.STATUS": "Статус",
+    "USERLIST.TABLE.ACTIONS": "Действия"
 }

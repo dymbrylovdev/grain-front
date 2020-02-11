@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Builder from "./Builder";
@@ -9,8 +9,8 @@ import getMenuConfig from "../../router/MenuConfig";
 import { mockcCereals } from "../../router/mockMenuConsts";
 import UserDocPage from "./userDocs/UserDocPage";
 import ProfilePage from "./users/ProfilePage";
+import UserListPage from "./users/UserListPage";
 import * as builder from "../../../_metronic/ducks/builder";
-import * as routerHelpers from "../../router/RouterHelpers";
 
 const GoogleMaterialPage = lazy(() =>
   import("./google-material/GoogleMaterialPage")
@@ -19,8 +19,6 @@ const ReactBootstrapPage = lazy(() =>
   import("./react-bootstrap/ReactBootstrapPage")
 );
 
-const userMenuConfig = getMenuConfig(mockcCereals);
-
 export default function HomePage() {
   // useEffect(() => {
   //   console.log('Home page');
@@ -28,9 +26,10 @@ export default function HomePage() {
   // https://reactjs.org/docs/hooks-reference.html#useeffect
 
   const dispatch = useDispatch();
+  const [menuConfig, setMenuConfig] = useState(getMenuConfig(mockcCereals));
   useEffect(() => 
   {  
-    dispatch(builder.actions.setMenuConfig(userMenuConfig));
+    dispatch(builder.actions.setMenuConfig(menuConfig));
   });
 
   return (
@@ -46,8 +45,10 @@ export default function HomePage() {
         <Route path="/react-bootstrap" component={ReactBootstrapPage} />
         <Route path="/docs" component={DocsPage} />
         <Route path="/userDocs/legacy" component={UserDocPage} />
-        <Route path="/user/profile" component={ProfilePage}/>
-        <Redirect to="/error/error-v1" />
+        <Route path="/user/profile" exact component={ProfilePage}/>
+        <Route path="/userList" component={UserListPage}/>
+        <Route path="/user/create" component={ProfilePage}/>
+        <Route path="/user/edit/:id" component={ProfilePage}/>
       </Switch>
     </Suspense>
   );
