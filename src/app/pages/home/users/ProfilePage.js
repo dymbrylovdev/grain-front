@@ -1,32 +1,33 @@
-import React, { useState } from 'react';
-import { shallowEqual, useSelector, connect } from 'react-redux';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { TextField } from '@material-ui/core';
-import { Formik } from 'formik';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
+import React, { useState } from "react";
+import { shallowEqual, useSelector, connect } from "react-redux";
+import { injectIntl, FormattedMessage } from "react-intl";
+import { TextField } from "@material-ui/core";
+import { Formik } from "formik";
+import { makeStyles } from "@material-ui/core/styles";
+import { Paper } from "@material-ui/core";
+import * as Yup from "yup";
 
-import * as auth from '../../../store/ducks/auth.duck';
-import { setUser } from '../../../crud/auth.crud';
-import StatusAlert from './StatusAlert';
+import * as auth from "../../../store/ducks/auth.duck";
+import { setUser } from "../../../crud/auth.crud";
+import StatusAlert from "./StatusAlert";
+import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
 
 const useStyles = makeStyles(theme => ({
   container: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   form: {
-    maxWidth: '800px',
-    width: '100%',
+    maxWidth: "800px",
+    width: "100%",
     padding: theme.spacing(3),
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: theme.spacing(3),
   },
 }));
@@ -37,34 +38,31 @@ const getInitialValues = user => ({
   email: user.email,
   inn: user.inn,
   company: user.company,
-  password: '',
-  repeatPassword: '',
+  password: "",
+  repeatPassword: "",
 });
 
 function ProfilePage({ intl, fulfillUser }) {
   const [loading, setLoading] = useState(false);
   const user = useSelector(({ auth: { user } }) => user, shallowEqual);
-  console.log('myUser', user);
+  console.log("myUser", user);
   const classes = useStyles();
   return (
     <Paper className={classes.container}>
       <Formik
         initialValues={getInitialValues(user)}
-        validate={values => {
-          const errors = {};
-          if (values.email && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-            errors.email = intl.formatMessage({
-              id: 'AUTH.VALIDATION.INVALID_FIELD',
-            });
-          }
+        validationSchema={Yup.object().shape({
+          email: Yup.string()
+            .email(<FormattedMessage id="AUTH.VALIDATION.INVALID_FIELD" />)
+            .required("Email is required"),
 
-          if (values.password !== values.repeatPassword) {
-            errors.password = intl.formatMessage({
-              id: 'PROFILE.VALIDATION.SIMILAR_PASSWORD',
-            });
-          }
-          return errors;
-        }}
+          password: Yup.string().min(4, "Password must have at least 4 characters"),
+
+          repeatPassword: Yup.string().oneOf(
+            [Yup.ref("password"), null],
+            <FormattedMessage id="PROFILE.VALIDATION.SIMILAR_PASSWORD" />
+          ),
+        })}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
           setLoading(true);
           setTimeout(() => {
@@ -75,7 +73,7 @@ function ProfilePage({ intl, fulfillUser }) {
                   setStatus({
                     error: false,
                     message: intl.formatMessage({
-                      id: 'PROFILE.STATUS.SUCCESS',
+                      id: "PROFILE.STATUS.SUCCESS",
                     }),
                   });
                   fulfillUser(data.data);
@@ -83,14 +81,14 @@ function ProfilePage({ intl, fulfillUser }) {
                 }
               })
               .catch(error => {
-                console.log('loginError', error);
+                console.log("loginError", error);
 
                 setLoading(false);
                 setSubmitting(false);
                 setStatus({
                   error: true,
                   message: intl.formatMessage({
-                    id: 'PROFILE.STATUS.ERROR',
+                    id: "PROFILE.STATUS.ERROR",
                   }),
                 });
               });
@@ -113,7 +111,7 @@ function ProfilePage({ intl, fulfillUser }) {
               <TextField
                 type="text"
                 label={intl.formatMessage({
-                  id: 'PROFILE.INPUT.FIO',
+                  id: "PROFILE.INPUT.FIO",
                 })}
                 margin="normal"
                 className={classes.textField}
@@ -128,7 +126,7 @@ function ProfilePage({ intl, fulfillUser }) {
               <TextField
                 type="email"
                 label={intl.formatMessage({
-                  id: 'PROFILE.INPUT.EMAIL',
+                  id: "PROFILE.INPUT.EMAIL",
                 })}
                 margin="normal"
                 className={classes.textField}
@@ -143,7 +141,7 @@ function ProfilePage({ intl, fulfillUser }) {
               <TextField
                 type="tel"
                 label={intl.formatMessage({
-                  id: 'PROFILE.INPUT.PHONE',
+                  id: "PROFILE.INPUT.PHONE",
                 })}
                 margin="normal"
                 className={classes.textField}
@@ -158,7 +156,7 @@ function ProfilePage({ intl, fulfillUser }) {
               <TextField
                 type="text"
                 label={intl.formatMessage({
-                  id: 'PROFILE.INPUT.INN',
+                  id: "PROFILE.INPUT.INN",
                 })}
                 margin="normal"
                 className={classes.textField}
@@ -173,7 +171,7 @@ function ProfilePage({ intl, fulfillUser }) {
               <TextField
                 type="text"
                 label={intl.formatMessage({
-                  id: 'PROFILE.INPUT.COMPANY',
+                  id: "PROFILE.INPUT.COMPANY",
                 })}
                 margin="normal"
                 className={classes.textField}
@@ -188,7 +186,7 @@ function ProfilePage({ intl, fulfillUser }) {
               <TextField
                 type="password"
                 label={intl.formatMessage({
-                  id: 'PROFILE.INPUT.PASSWORD',
+                  id: "PROFILE.INPUT.PASSWORD",
                 })}
                 margin="normal"
                 className={classes.textField}
@@ -203,7 +201,7 @@ function ProfilePage({ intl, fulfillUser }) {
               <TextField
                 type="password"
                 label={intl.formatMessage({
-                  id: 'PROFILE.INPUT.REPEATPASSWORD',
+                  id: "PROFILE.INPUT.REPEATPASSWORD",
                 })}
                 margin="normal"
                 className={classes.textField}
@@ -212,17 +210,21 @@ function ProfilePage({ intl, fulfillUser }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                helperText={touched.password && touched.repeatPassword && errors.password}
-                error={Boolean(touched.password && touched.repeatPassword && errors.password)}
+                helperText={
+                  touched.password &&
+                  touched.repeatPassword &&
+                  (errors.password || errors.repeatPassword)
+                }
+                error={Boolean(
+                  touched.password &&
+                    touched.repeatPassword &&
+                    (errors.password || errors.repeatPassword)
+                )}
               />
               <div className={classes.buttonContainer}>
-                <button
-                  className={`btn btn-primary btn-elevate kt-login__btn-primary ${clsx({
-                    'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading,
-                  })}`}
-                >
+                <ButtonWithLoader loading={loading}>
                   <FormattedMessage id="PROFILE.BUTTON.SAVE" />
-                </button>
+                </ButtonWithLoader>
               </div>
             </form>
           </div>
