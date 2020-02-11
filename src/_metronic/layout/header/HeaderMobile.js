@@ -18,8 +18,9 @@ class HeaderMobile extends React.Component {
       asideDisplay,
       headerMenuSelfDisplay,
       headerMobileCssClasses,
-      headerMobileAttributes
+      headerMobileAttributes,
     } = this.props;
+
     return (
       <div
         id="kt_header_mobile"
@@ -42,22 +43,19 @@ class HeaderMobile extends React.Component {
             </button>
           )}
 
-          {headerMenuSelfDisplay && (
-            <button
-              className="kt-header-mobile__toggler"
-              id="kt_header_mobile_toggler"
-            >
+          {/* {headerMenuSelfDisplay && (
+            <button className="kt-header-mobile__toggler" id="kt_header_mobile_toggler">
               <span />
             </button>
-          )}
+          )} */}
 
-          <button
+          {/* <button
             ref={this.toggleButtonRef}
             className="kt-header-mobile__topbar-toggler"
             id="kt_header_mobile_topbar_toggler"
           >
             <i className="flaticon-more" />
-          </button>
+          </button> */}
         </div>
       </div>
     );
@@ -66,25 +64,21 @@ class HeaderMobile extends React.Component {
 
 const mapStateToProps = store => ({
   headerLogo: builder.selectors.getStickyLogo(store),
-  asideDisplay: objectPath.get(
-    store.builder.layoutConfig,
-    "aside.self.display"
-  ),
+  asideDisplay: objectPath.get(store.builder.layoutConfig, "aside.self.display"),
   headerMenuSelfDisplay:
-    objectPath.get(store.builder.layoutConfig, "header.menu.self.display") ===
-    true,
+    objectPath.get(store.builder.layoutConfig, "header.menu.self.display") === true,
   toggleOptions: {
     target: "body",
     targetState: "kt-header__topbar--mobile-on",
-    togglerState: "kt-header-mobile__toolbar-topbar-toggler--active"
+    togglerState: "kt-header-mobile__toolbar-topbar-toggler--active",
   },
   headerMobileCssClasses: builder.selectors.getClasses(store, {
     path: "header_mobile",
-    toString: true
+    toString: true,
   }),
   headerMobileAttributes: builder.selectors.getAttributes(store, {
-    path: "aside_menu"
-  })
+    path: "aside_menu",
+  }),
 });
 
 export default connect(mapStateToProps)(HeaderMobile);

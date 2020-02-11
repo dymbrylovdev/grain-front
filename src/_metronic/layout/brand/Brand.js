@@ -8,7 +8,6 @@ import * as builder from "../../ducks/builder";
 import { ReactComponent as AngleDoubleLeftIcon } from "../assets/layout-svg-icons/Angle-double-left.svg";
 import { ReactComponent as AngleDoubleRightIcon } from "../assets/layout-svg-icons/Angle-double-right.svg";
 
-
 class Brand extends React.Component {
   ktToggleRef = React.createRef();
 
@@ -24,9 +23,9 @@ class Brand extends React.Component {
         id="kt_aside_brand"
       >
         <div className="kt-aside__brand-logo">
-          <Link to="">
+          {/* <Link to="">
             <img alt="logo" src={this.props.headerLogo} />
-          </Link>
+          </Link> */}
         </div>
 
         {this.props.asideSelfMinimizeToggle && (
@@ -54,7 +53,7 @@ const mapStateToProps = store => {
   return {
     brandClasses: builder.selectors.getClasses(store, {
       path: "brand",
-      toString: true
+      toString: true,
     }),
     asideSelfMinimizeToggle: objectPath.get(
       store.builder.layoutConfig,
@@ -65,8 +64,8 @@ const mapStateToProps = store => {
     toggleOptions: {
       target: "body",
       targetState: "kt-aside--minimize",
-      togglerState: "kt-aside__brand-aside-toggler--active"
-    }
+      togglerState: "kt-aside__brand-aside-toggler--active",
+    },
   };
 };
 
