@@ -1,22 +1,26 @@
 import React, { useState } from "react";
-import { shallowEqual, useSelector, connect } from "react-redux";
+import { connect } from "react-redux";
 import { injectIntl} from "react-intl";
-import * as auth from "../../../store/ducks/auth.duck";
-import { setUser } from "../../../crud/auth.crud";
+import { Redirect } from 'react-router-dom';
+import * as users from "../../../store/ducks/users.duck";
+import { createUser } from "../../../crud/users.crud";
 import useStyles from './styles';
 import UserForm from './components/UserForm';
 
 
 
 
-function ProfilePage({ intl, fulfillUser }) {
+function CreateUserPage({ intl }) {
   const [loading, setLoading] = useState(false);
-  const user = useSelector(({ auth: { user } }) => user, shallowEqual);
+  const [backRedirect, setBackRedirect] = useState(false);
+  const user = {};
   const classes = useStyles();
   const submitAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
-      setLoading(true)
-        setUser(values)
+      setLoading(true);
+        const roleId = values.role.id;
+        const valuesWithRole = {...values, roles: [roleId]};
+        createUser(valuesWithRole)
           .then(({ data }) => {
             setLoading(false);
             if (data.data) {
@@ -26,8 +30,7 @@ function ProfilePage({ intl, fulfillUser }) {
                   id: "PROFILE.STATUS.SUCCESS",
                 }),
               });
-              fulfillUser(data.data);
-              //resetForm(getInitialValues(data.data));
+              setBackRedirect(true);
             }
           })
           .catch(error => {
@@ -44,9 +47,13 @@ function ProfilePage({ intl, fulfillUser }) {
           });
       }, 1000);
   }
+  if (backRedirect) {
+      return <Redirect to='/userList'/>
+  }
   return (
-    <UserForm user = {user} classes = {classes} loading= {loading} submitAction={submitAction} />
+
+    <UserForm user = {user} classes = {classes} loading= {loading} submitAction={submitAction} isCreate={true} />
   );
 }
 
-export default injectIntl(connect(null, auth.actions)(ProfilePage));
+export default injectIntl(connect(null, users.actions)(CreateUserPage));

@@ -1,42 +1,76 @@
-import React, { useEffect } from 'react';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { shallowEqual, useSelector, connect } from 'react-redux';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
-import { IconButton } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import * as users from '../../../store/ducks/users.duck';
-import { getUsers } from '../../../crud/users.crud';
-import useStyles from './styles';
+import React, { useEffect, useState } from "react";
+import { injectIntl, FormattedMessage } from "react-intl";
+import { shallowEqual, useSelector, connect } from "react-redux";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import * as users from "../../../store/ducks/users.duck";
+import { getUsers, deleteUser } from "../../../crud/users.crud";
+import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 
-function UserListPage({ setUsers, setStatuses }) {
+import useStyles from "./styles";
+
+function UserListPage({ setUsers, deleteUserSuccess, intl }) {
   const { users, page } = useSelector(
     ({ users }) => ({ users: users.users, page: users.page }),
     shallowEqual
   );
+  const [deleteUserId, setDeleteUserId] = useState(-1);
+  const [isAlertOpen, setAlertOpen] = useState(false);
+  const handleDeleteDialiog = id => {
+    setDeleteUserId(id);
+    setAlertOpen(true);
+  };
   const getUsersAction = page =>
     getUsers({ page })
       .then(({ data }) => {
+        console.log("userDat");
+
         if (data && data.data) {
-          setUsers(data.data, page);
+          setUsers(data);
         }
       })
       .catch(error => {
         alert(error);
-      });   
+      });
   useEffect(() => {
     getUsersAction(1);
   }, []);
+  const deleteUserAction = () => {
+    setAlertOpen(false);
+    deleteUser(deleteUserId)
+      .then(() => {
+        deleteUserSuccess(deleteUserId);
+      })
+      .catch(error => {
+        console.log("deleteUserError", error);
+      });
+  };
   const classes = useStyles();
 
   return (
-    <div>
+    <Paper className={classes.tableContainer}>
+      <AlertDialog
+        isOpen={isAlertOpen}
+        text={intl.formatMessage({
+          id: "USERLIST.DIALOGS.DELETE_TEXT",
+        })}
+        okText={intl.formatMessage({
+          id: "USERLIST.DIALOGS.AGREE_TEXT",
+        })}
+        cancelText={intl.formatMessage({
+          id: "USERLIST.DIALOGS.CANCEL_TEXT",
+        })}
+        handleClose={() => setAlertOpen(false)}
+        handleAgree={() => deleteUserAction()}
+      />
       <div className={classes.buttonContainer}>
-      <Link to="/user/create"> 
-        <button className={'btn btn-primary btn-elevate kt-login__btn-primary'}>
-          <FormattedMessage id="USERLIST.BUTTON.ADD_USER" />
-        </button>
+        <Link to="/user/create">
+          <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
+            <FormattedMessage id="USERLIST.BUTTON.ADD_USER" />
+          </button>
         </Link>
       </div>
       <Table className={classes.table} aria-label="simple table">
@@ -67,15 +101,17 @@ function UserListPage({ setUsers, setStatuses }) {
               <TableCell>{user.fio}</TableCell>
               <TableCell>{user.status}</TableCell>
               <TableCell>
-                {' '}
+                {" "}
                 {
                   <div className={classes.actionButtonsContainer}>
-                    <IconButton size="small">
+                    <IconButton size="small" onClick={() => handleDeleteDialiog(user.id)}>
                       <DeleteIcon />
                     </IconButton>
-                    <IconButton size="small">
-                      <EditIcon />
-                    </IconButton>
+                    <Link to={`/user/edit/${user.id}`}>
+                      <IconButton size="small">
+                        <EditIcon />
+                      </IconButton>
+                    </Link>
                   </div>
                 }
               </TableCell>
@@ -83,7 +119,7 @@ function UserListPage({ setUsers, setStatuses }) {
           ))}
         </TableBody>
       </Table>
-    </div>
+    </Paper>
   );
 }
 

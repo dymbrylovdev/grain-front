@@ -8,8 +8,7 @@ import { LayoutSplashScreen } from "../../../_metronic";
 import getMenuConfig from "../../router/MenuConfig";
 import { mockcCereals } from "../../router/mockMenuConsts";
 import UserDocPage from "./userDocs/UserDocPage";
-import ProfilePage from "./users/ProfilePage";
-import UserListPage from "./users/UserListPage";
+import {ProfilePage, UserListPage, CreateUserPage, EditUserPage} from "./users";
 import * as builder from "../../../_metronic/ducks/builder";
 
 const GoogleMaterialPage = lazy(() =>
@@ -47,8 +46,8 @@ export default function HomePage() {
         <Route path="/userDocs/legacy" component={UserDocPage} />
         <Route path="/user/profile" exact component={ProfilePage}/>
         <Route path="/userList" component={UserListPage}/>
-        <Route path="/user/create" component={ProfilePage}/>
-        <Route path="/user/edit/:id" component={ProfilePage}/>
+        <Route path="/user/create" component={CreateUserPage}/>
+        <Route path="/user/edit/:id" component={EditUserPage}/>
       </Switch>
     </Suspense>
   );

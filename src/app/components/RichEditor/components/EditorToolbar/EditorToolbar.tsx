@@ -58,26 +58,26 @@ const BLOCK_TYPES = [
     tooltip: 'Heading 3',
     text: 'H3',
   },
-  {
-    blockType: 'header-four',
-    tooltip: 'Heading 4',
-    text: 'H4',
-  },
-  {
-    blockType: 'header-five',
-    tooltip: 'Heading 5',
-    text: 'H5',
-  },
-  {
-    blockType: 'header-six',
-    tooltip: 'Heading 6',
-    text: 'H6',
-  },
-  {
-    blockType: 'blockquote',
-    tooltip: 'Blockquote',
-    icon: FormatQuoteIcon,
-  },
+  // {
+  //   blockType: 'header-four',
+  //   tooltip: 'Heading 4',
+  //   text: 'H4',
+  // },
+  // {
+  //   blockType: 'header-five',
+  //   tooltip: 'Heading 5',
+  //   text: 'H5',
+  // },
+  // {
+  //   blockType: 'header-six',
+  //   tooltip: 'Heading 6',
+  //   text: 'H6',
+  // },
+  // {
+  //   blockType: 'blockquote',
+  //   tooltip: 'Blockquote',
+  //   icon: FormatQuoteIcon,
+  // },
   {
     blockType: 'unordered-list-item',
     tooltip: 'Unordered list',
@@ -88,31 +88,31 @@ const BLOCK_TYPES = [
     tooltip: 'Ordered list',
     icon: FormatListNumberedIcon,
   },
-  {
-    blockType: 'code-block',
-    tooltip: 'Code Block',
-    icon: CodeIcon,
-  },
-  {
-    blockType: 'left',
-    tooltip: 'Align left',
-    icon: FormatAlignLeftIcon,
-  },
-  {
-    blockType: 'center',
-    tooltip: 'Align center',
-    icon: FormatAlignCenterIcon,
-  },
-  {
-    blockType: 'right',
-    tooltip: 'Align right',
-    icon: FormatAlignRightIcon,
-  },
-  {
-    blockType: 'justify',
-    tooltip: 'Justify',
-    icon: FormatAlignJustifyIcon,
-  },
+  // {
+  //   blockType: 'code-block',
+  //   tooltip: 'Code Block',
+  //   icon: CodeIcon,
+  // },
+  // {
+  //   blockType: 'left',
+  //   tooltip: 'Align left',
+  //   icon: FormatAlignLeftIcon,
+  // },
+  // {
+  //   blockType: 'center',
+  //   tooltip: 'Align center',
+  //   icon: FormatAlignCenterIcon,
+  // },
+  // {
+  //   blockType: 'right',
+  //   tooltip: 'Align right',
+  //   icon: FormatAlignRightIcon,
+  // },
+  // {
+  //   blockType: 'justify',
+  //   tooltip: 'Justify',
+  //   icon: FormatAlignJustifyIcon,
+  // },
 ];
 
 const INLINE_STYLES = [
@@ -131,11 +131,11 @@ const INLINE_STYLES = [
     tooltip: 'Underline',
     icon: FormatUnderlined,
   },
-  {
-    inlineStyle: 'CODE',
-    tooltip: 'Monospace',
-    icon: CodeIcon,
-  },
+  // {
+  //   inlineStyle: 'CODE',
+  //   tooltip: 'Monospace',
+  //   icon: CodeIcon,
+  // },
 ];
 
 const ButtonBase = (props: any) => {

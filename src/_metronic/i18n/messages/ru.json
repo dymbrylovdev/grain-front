@@ -38,12 +38,16 @@
     "AUTH.VALIDATION.INVALID_FIELD": "Поле некорректно",
     "PROFILE.INPUT.FIO":"ФИО",
     "PROFILE.INPUT.EMAIL":"Email",
+    "PROFILE.INPUT.LOGIN":"Логин",
+    "PROFILE.INPUT.ROLE":"Роль",
+    "PROFILE.INPUT.STATUS":"Статус",
     "PROFILE.INPUT.PHONE":"Телефон",
     "PROFILE.INPUT.INN":"ИНН",
     "PROFILE.INPUT.COMPANY":"Организация",
     "PROFILE.INPUT.PASSWORD":"Новый пароль",
     "PROFILE.INPUT.REPEATPASSWORD":"Повторите новый пароль",
     "PROFILE.BUTTON.SAVE": "Сохранить",
+    "PROFILE.VALIDATION.REQUIRED_FIELD": "Обязательное поле",
     "PROFILE.VALIDATION.SIMILAR_PASSWORD": "Пароли должны совпадать",
     "PROFILE.STATUS.ENTER_DATA": "",
     "PROFILE.STATUS.SUCCESS": "Пользователь успешно сохранен",
@@ -53,5 +57,9 @@
     "USERLIST.TABLE.EMAIL": "Email",
     "USERLIST.TABLE.NAME": "Название",
     "USERLIST.TABLE.STATUS": "Статус",
-    "USERLIST.TABLE.ACTIONS": "Действия"
+    "USERLIST.TABLE.ACTIONS": "Действия",
+    "USERLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить пользователя?",
+    "USERLIST.DIALOGS.AGREE_TEXT": "Да",
+    "USERLIST.DIALOGS.CANCEL_TEXT": "Отмена"
+
 }

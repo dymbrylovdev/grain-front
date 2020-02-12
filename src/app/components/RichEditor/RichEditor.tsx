@@ -31,18 +31,18 @@ const useStyles = makeStyles((theme: any) => ({
       '& h3': {
         ...theme.typography.h3,
       },
-      '& h4': {
-        ...theme.typography.h4,
-      },
-      '& h5': {
-        ...theme.typography.h5,
-      },
-      '& h6': {
-        ...theme.typography.h6,
-      },
-      '& blockquote': {
-        ...theme.typography.subtitle1,
-      },
+      // '& h4': {
+      //   ...theme.typography.h4,
+      // },
+      // '& h5': {
+      //   ...theme.typography.h5,
+      // },
+      // '& h6': {
+      //   ...theme.typography.h6,
+      // },
+      // '& blockquote': {
+      //   ...theme.typography.subtitle1,
+      // },
       '& ul': {
         ...theme.typography.body1,
         marginLeft: theme.spacing(4),
@@ -51,11 +51,15 @@ const useStyles = makeStyles((theme: any) => ({
         ...theme.typography.body1,
         marginLeft: theme.spacing(4),
       },
-      '& pre': {
-        backgroundColor: 'rgba(0, 0, 0, 0.05)',
-        fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-        fontSize: 16,
-        padding: 2,
+      // '& pre': {
+      //   backgroundColor: 'rgba(0, 0, 0, 0.05)',
+      //   fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
+      //   fontSize: 16,
+      //   padding: 2,
+      // },
+      link: {
+        color: '#3b5998',
+        textDecoration: 'underline',
       },
     },
   },

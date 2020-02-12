@@ -3,24 +3,20 @@ import React from "react";
 import { connect } from "react-redux";
 import objectPath from "object-path";
 import { withRouter } from "react-router-dom";
-import { QuickActions } from "./components/QuickActions";
+import SaveIcon from "@material-ui/icons/Save";
+import IconButton from "@material-ui/core/IconButton";
+
 import { LayoutContextConsumer } from "../LayoutContext";
-import { ReactComponent as SortNum1Icon } from "../../../_metronic/layout/assets/layout-svg-icons/SortNum1.svg";
 import * as builder from "../../ducks/builder";
+// import { QuickActions } from './components/QuickActions';
+// import { ReactComponent as SortNum1Icon } from '../../../_metronic/layout/assets/layout-svg-icons/SortNum1.svg';
 // import BreadCrumbs from "./components/BreadCrumbs";
 
 class SubHeader extends React.Component {
   render() {
-    const {
-      subheaderCssClasses,
-      subheaderContainerCssClasses,
-      subheaderMobileToggle
-    } = this.props;
+    const { subheaderCssClasses, subheaderContainerCssClasses, subheaderMobileToggle } = this.props;
     return (
-      <div
-        id="kt_subheader"
-        className={`kt-subheader ${subheaderCssClasses} kt-grid__item`}
-      >
+      <div id="kt_subheader" className={`kt-subheader ${subheaderCssClasses} kt-grid__item`}>
         <div className={`kt-container ${subheaderContainerCssClasses}`}>
           <div className="kt-subheader__main">
             {subheaderMobileToggle && (
@@ -44,22 +40,22 @@ class SubHeader extends React.Component {
             </LayoutContextConsumer>
 
             <span className="kt-subheader__separator kt-subheader__separator--v" />
-            <span className="kt-subheader__desc">#XRS-45670</span>
-            <a
-              href="#"
-              className="btn btn-label-warning btn-bold btn-sm btn-icon-h kt-margin-l-10"
-            >
+            {/* <span className="kt-subheader__desc">#XRS-45670</span> */}
+            {/* <a href="#" className="btn btn-label-warning btn-bold btn-sm btn-icon-h kt-margin-l-10">
               Add New
-            </a>
+            </a> */}
           </div>
 
           <div className="kt-subheader__toolbar">
             <div className="kt-subheader__wrapper">
-              <button type="button" className="btn kt-subheader__btn-primary">
+              {/* <button type="button" className="btn kt-subheader__btn-primary">
                 Actions &nbsp;
                 <SortNum1Icon className="kt-svg-icon kt-svg-icon--sm" />
               </button>
-              <QuickActions />
+              <QuickActions /> */}
+              {/* <IconButton>
+                <SaveIcon className="kt-svg-icon kt-svg-icon--primary kt-svg-icon--md" />
+              </IconButton> */}
             </div>
           </div>
         </div>
@@ -71,18 +67,15 @@ class SubHeader extends React.Component {
 const mapStateToProps = store => ({
   config: store.builder.layoutConfig,
   menuConfig: store.builder.menuConfig,
-  subheaderMobileToggle: objectPath.get(
-    store.builder.layoutConfig,
-    "subheader.mobile-toggle"
-  ),
+  subheaderMobileToggle: objectPath.get(store.builder.layoutConfig, "subheader.mobile-toggle"),
   subheaderCssClasses: builder.selectors.getClasses(store, {
     path: "subheader",
-    toString: true
+    toString: true,
   }),
   subheaderContainerCssClasses: builder.selectors.getClasses(store, {
     path: "subheader_container",
-    toString: true
-  })
+    toString: true,
+  }),
 });
 
 export default withRouter(connect(mapStateToProps)(SubHeader));

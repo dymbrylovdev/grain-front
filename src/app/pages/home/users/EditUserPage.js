@@ -1,22 +1,29 @@
 import React, { useState } from "react";
-import { shallowEqual, useSelector, connect } from "react-redux";
+import { connect, useSelector, shallowEqual } from "react-redux";
 import { injectIntl} from "react-intl";
-import * as auth from "../../../store/ducks/auth.duck";
-import { setUser } from "../../../crud/auth.crud";
+import * as users from "../../../store/ducks/users.duck";
+import { editUser } from "../../../crud/users.crud";
 import useStyles from './styles';
 import UserForm from './components/UserForm';
 
 
 
 
-function ProfilePage({ intl, fulfillUser }) {
+function EditUserPage({ intl, editUserSuccess, match }) {
   const [loading, setLoading] = useState(false);
-  const user = useSelector(({ auth: { user } }) => user, shallowEqual);
+  const id = match.params.id;
+  const user = useSelector(({ users: { users } }) => {   
+      const myUser = users.filter(item => item.id == id);
+      if (myUser.length > 0){
+          return myUser[0];
+      }
+      return {}}, shallowEqual);
   const classes = useStyles();
   const submitAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true)
-        setUser(values)
+        console.log('editUserValues', values);  
+        editUser(values, id)
           .then(({ data }) => {
             setLoading(false);
             if (data.data) {
@@ -26,8 +33,7 @@ function ProfilePage({ intl, fulfillUser }) {
                   id: "PROFILE.STATUS.SUCCESS",
                 }),
               });
-              fulfillUser(data.data);
-              //resetForm(getInitialValues(data.data));
+              editUserSuccess(data.data)
             }
           })
           .catch(error => {
@@ -45,8 +51,9 @@ function ProfilePage({ intl, fulfillUser }) {
       }, 1000);
   }
   return (
-    <UserForm user = {user} classes = {classes} loading= {loading} submitAction={submitAction} />
+
+    <UserForm user = {user} classes = {classes} loading= {loading} submitAction={submitAction} isEdit={true} />
   );
 }
 
-export default injectIntl(connect(null, auth.actions)(ProfilePage));
+export default injectIntl(connect(null, users.actions)(EditUserPage));

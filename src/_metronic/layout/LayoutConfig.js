@@ -10,8 +10,8 @@ export const initLayoutConfig = {
       dark: toAbsoluteUrl("/media/logos/logo-light.png"),
       light: toAbsoluteUrl("/media/logos/logo-dark.png"),
       brand: toAbsoluteUrl("/media/logos/logo-light.png"),
-      green: toAbsoluteUrl("/media/logos/logo-light.png")
-    }
+      green: toAbsoluteUrl("/media/logos/logo-light.png"),
+    },
   },
   // == Portlet Plugin
   // portlet: {
@@ -24,7 +24,7 @@ export const initLayoutConfig = {
     enabled: true,
     type: "spinner-logo",
     logo: toAbsoluteUrl("/media/logos/logo-mini-md.png"),
-    message: "Please wait..."
+    message: "Please wait...",
   },
   // == Colors for javascript
   colors: {
@@ -36,16 +36,16 @@ export const initLayoutConfig = {
       success: "#34bfa3",
       info: "#36a3f7",
       warning: "#ffb822",
-      danger: "#fd3995"
+      danger: "#fd3995",
     },
     base: {
       label: ["#c5cbe3", "#a1a8c3", "#3d4465", "#3e4466"],
-      shape: ["#f0f3ff", "#d9dffa", "#afb4d4", "#646c9a"]
-    }
+      shape: ["#f0f3ff", "#d9dffa", "#afb4d4", "#646c9a"],
+    },
   },
   // page toolbar
   toolbar: {
-    display: true
+    display: true,
   },
   header: {
     self: {
@@ -53,31 +53,31 @@ export const initLayoutConfig = {
       skin: "light",
       fixed: {
         desktop: true,
-        mobile: true
-      }
+        mobile: true,
+      },
     },
     menu: {
       self: {
-        display: true,
+        display: false,
         layout: "default",
         "root-arrow": false,
-        "icon-style": "duotone"
+        "icon-style": "duotone",
       },
       desktop: {
         arrow: true,
         toggle: "click",
         submenu: {
           skin: "light",
-          arrow: true
-        }
+          arrow: true,
+        },
       },
       mobile: {
         submenu: {
           skin: "dark",
-          accordion: true
-        }
-      }
-    }
+          accordion: true,
+        },
+      },
+    },
   },
   subheader: {
     display: true,
@@ -85,17 +85,17 @@ export const initLayoutConfig = {
     displayDaterangepicker: true,
     layout: "subheader-v1",
     fixed: true,
-    width: 'fluid', // fixed|fluid,
+    width: "fluid", // fixed|fluid,
     clear: false,
-    style: 'solid'
+    style: "solid",
   },
   content: {
-    width: "fluid"
+    width: "fluid",
   },
   brand: {
     self: {
-      skin: "dark"
-    }
+      skin: "dark",
+    },
   },
   aside: {
     self: {
@@ -104,13 +104,13 @@ export const initLayoutConfig = {
       fixed: true,
       minimize: {
         toggle: true,
-        default: false
-      }
+        default: false,
+      },
     },
     footer: {
       self: {
-        display: true
-      }
+        display: true,
+      },
     },
     menu: {
       dropdown: "false",
@@ -120,17 +120,17 @@ export const initLayoutConfig = {
         accordion: true,
         dropdown: {
           arrow: true,
-          "hover-timeout": 100
-        }
-      }
-    }
+          "hover-timeout": 100,
+        },
+      },
+    },
   },
   footer: {
     self: {
-      width: 'fluid',
-      fixed: false
-    }
-  }
+      width: "fluid",
+      fixed: false,
+    },
+  },
 };
 
 let LayoutConfig = JSON.parse(JSON.stringify(initLayoutConfig)); // deep object copy

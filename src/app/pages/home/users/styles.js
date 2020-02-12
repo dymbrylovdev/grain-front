@@ -20,12 +20,20 @@ const useStyles = makeStyles(theme => ({
     buttonContainer: {
       alignItems: 'center',
       justifyContent: 'center',
-      marginTop: theme.spacing(3),
-      marginBottom: theme.spacing(3),
+      paddingBottom: theme.spacing(2),
+      paddingTop: theme.spacing(2),
     },
 
     table: {
         width: "100%",
+    },
+    tableContainer: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2)
+    },
+    textSelect: {
+      width:'100%',
+      marginBottom: theme.spacing(2),
     },
     actionButtonsContainer: {
         flexDirection: 'column'
