@@ -53,11 +53,14 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
           login: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
 
           repeatPassword: Yup.mixed().oneOf(
-            [Yup.ref("password"), '', null],
+            [Yup.ref("password"), "", null],
             <FormattedMessage id="PROFILE.VALIDATION.SIMILAR_PASSWORD" />
           ),
         })}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
+          if (values.password === "") {
+            delete values.password;
+          }
           submitAction(values, setStatus, setSubmitting);
         }}
       >
@@ -207,6 +210,7 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
                 error={Boolean(touched.company && errors.company)}
               />
               <TextField
+                type="password"
                 label={intl.formatMessage({
                   id: "PROFILE.INPUT.PASSWORD",
                 })}
@@ -223,6 +227,7 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
               />
 
               <TextField
+                type="password"
                 label={intl.formatMessage({
                   id: "PROFILE.INPUT.REPEATPASSWORD",
                 })}
