@@ -532,6 +532,12 @@ export default function (cereals, logoutAction){
                     root: true,
                     page: "userList",
                     translate: "SUBMENU.USER.LIST",
+                  },
+                  {
+                    title: "Добавить пользователя",
+                    root: true,
+                    page: "user/create",
+                    translate: "SUBMENU.USER.CREATE_USER",
                   }
                 ]
               },

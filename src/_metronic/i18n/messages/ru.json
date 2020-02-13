@@ -6,6 +6,7 @@
     "MENU.LOGOUT": "Выход",
     "SUBMENU.ORDERS": "Завки на продажу",
     "SUBMENU.USER.LIST": "Список пользователей",
+    "SUBMENU.USER.CREATE_USER": "Добавить пользователя",
     "SUBMENU.PROFILE": "Мой профиль",
     "SUBMENU.CATALOG.SETTINGS": "Настройки каталога",
     "SUBMENU.SYSTEM.SETTINGS": "Настройки системы",
@@ -60,6 +61,7 @@
     "USERLIST.TABLE.ACTIONS": "Действия",
     "USERLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить пользователя?",
     "USERLIST.DIALOGS.AGREE_TEXT": "Да",
-    "USERLIST.DIALOGS.CANCEL_TEXT": "Отмена"
+    "USERLIST.DIALOGS.CANCEL_TEXT": "Отмена",
+    "TABLE.FROM.LABEL": "из"
 
 }

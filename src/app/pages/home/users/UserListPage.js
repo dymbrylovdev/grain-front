@@ -9,12 +9,14 @@ import { Link } from "react-router-dom";
 import * as users from "../../../store/ducks/users.duck";
 import { getUsers, deleteUser } from "../../../crud/users.crud";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
+import Footer from "../../../components/ui/Table/TableFooter";
+
 
 import useStyles from "./styles";
 
 function UserListPage({ setUsers, deleteUserSuccess, intl }) {
-  const { users, page } = useSelector(
-    ({ users }) => ({ users: users.users, page: users.page }),
+  const { users, page, total, per_page, total_page } = useSelector(
+    ({ users }) => ({ users: users.users, page: users.page, total: users.total, per_page: users.per_page }),
     shallowEqual
   );
   const [deleteUserId, setDeleteUserId] = useState(-1);
@@ -26,15 +28,17 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
   const getUsersAction = page =>
     getUsers({ page })
       .then(({ data }) => {
-        console.log("userDat");
-
-        if (data && data.data) {
+        console.log('usersData', data);
+        if (data && data) {
           setUsers(data);
         }
       })
       .catch(error => {
         alert(error);
       });
+  const handleChangePage = (event,page) => {
+      getUsersAction(page + 1);
+  };  
   useEffect(() => {
     getUsersAction(1);
   }, []);
@@ -118,6 +122,7 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
             </TableRow>
           ))}
         </TableBody>
+        <Footer page={page-1} perPage={per_page} total={total} handleChangePage={handleChangePage} fromLabel={intl.formatMessage({id: "TABLE.FROM.LABEL"})}/>
       </Table>
     </Paper>
   );
