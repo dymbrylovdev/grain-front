@@ -82,7 +82,7 @@ function UserDocPage() {
             />
 
             <div className={classes.buttonContainer}>
-              <ButtonWithLoader loading={loading}>
+              <ButtonWithLoader onPress={handleSubmit} loading={loading}>
                 <FormattedMessage
                   id={userAgreement ? "USERDOC.BUTTON.SAVE" : "USERDOC.BUTTON.CREATE"}
                 />
