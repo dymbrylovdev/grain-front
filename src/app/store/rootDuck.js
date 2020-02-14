@@ -1,4 +1,4 @@
-import { all } from "redux-saga/effects";
+import { all, fork } from "redux-saga/effects";
 import { combineReducers } from "redux";
 
 import * as auth from "./ducks/auth.duck";
@@ -15,5 +15,5 @@ export const rootReducer = combineReducers({
 });
 
 export function* rootSaga() {
-  yield all([auth.saga(),users.saga() ]);
+  yield all([auth.saga, users.saga].map(saga => fork(saga)));
 }

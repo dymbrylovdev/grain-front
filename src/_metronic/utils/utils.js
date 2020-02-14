@@ -10,15 +10,15 @@ export function addCSSClass(ele, cls) {
 export const toAbsoluteUrl = pathname => process.env.PUBLIC_URL + pathname;
 
 export function setupAxios(axios, store) {
-  axios.defaults.baseURL = 'http://grain.me-interactive.net';
+  axios.defaults.baseURL = "http://grain.me-interactive.net";
   axios.interceptors.request.use(
     config => {
       const {
-        auth: { authToken }
+        auth: { authToken },
       } = store.getState();
 
       if (authToken) {
-        config.headers.common['X-AUTH-TOKEN'] = authToken;
+        config.headers.common["X-AUTH-TOKEN"] = authToken;
       }
       return config;
     },
@@ -38,11 +38,7 @@ export function removeStorage(key) {
     localStorage.setItem(key + "_expiresIn", "");
   } catch (e) {
     console.log(
-      "removeStorage: Error removing key [" +
-        key +
-        "] from localStorage: " +
-        JSON.stringify(e)
-        
+      "removeStorage: Error removing key [" + key + "] from localStorage: " + JSON.stringify(e)
     );
     return false;
   }
@@ -75,10 +71,7 @@ export function getStorage(key) {
       return value;
     } catch (e) {
       console.log(
-        "getStorage: Error reading key [" +
-          key +
-          "] from localStorage: " +
-          JSON.stringify(e)
+        "getStorage: Error reading key [" + key + "] from localStorage: " + JSON.stringify(e)
       );
       return null;
     }
@@ -104,10 +97,7 @@ export function setStorage(key, value, expires) {
     localStorage.setItem(key + "_expiresIn", schedule);
   } catch (e) {
     console.log(
-      "setStorage: Error setting key [" +
-        key +
-        "] in localStorage: " +
-        JSON.stringify(e)
+      "setStorage: Error setting key [" + key + "] in localStorage: " + JSON.stringify(e)
     );
     return false;
   }
