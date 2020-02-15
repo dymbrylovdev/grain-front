@@ -61,11 +61,9 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
           ),
         })}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-          /*if (values.password === "") {
+          if (values.password === "") {
             delete values.password;
-          }*/
-          console.log("userValUES");
-
+          }
           submitAction(values, setStatus, setSubmitting);
         }}
       >

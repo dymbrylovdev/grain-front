@@ -521,7 +521,7 @@ export default function (cereals, logoutAction){
                   {
                     title: "Добавить заявку",
                     root: true,
-                    page: "",
+                    page: "bid/create",
                     translate: "SUBMENU.GRAIN.CREATE_AD",
                   }
                 ]

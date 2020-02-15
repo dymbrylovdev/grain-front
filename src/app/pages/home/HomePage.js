@@ -9,7 +9,7 @@ import getMenuConfig from "../../router/MenuConfig";
 import { mockCereals } from "../../router/mockMenuConsts";
 import UserDocPage from "./userDocs/UserDocPage";
 import {ProfilePage, UserListPage, CreateUserPage, EditUserPage} from "./users";
-import { AdsListPage } from './ads';
+import { BidsListPage, BidCreatePage } from './bids';
 import * as builder from "../../../_metronic/ducks/builder";
 
 const GoogleMaterialPage = lazy(() =>
@@ -37,7 +37,7 @@ export default function HomePage() {
       <Switch>
         {
           /* Redirect from root URL to /dashboard. */
-          <Redirect exact from="/" to="/dashboard" />
+          <Redirect exact from="/" to="/bidsList" />
         }
         <Route path="/builder" component={Builder} />
         <Route path="/dashboard" component={Dashboard} />
@@ -49,7 +49,8 @@ export default function HomePage() {
         <Route path="/userList" component={UserListPage}/>
         <Route path="/user/create" component={CreateUserPage}/>
         <Route path="/user/edit/:id" component={EditUserPage}/>
-        <Route path = "/adsList" component={AdsListPage}/>
+        <Route path = "/bidsList" component={BidsListPage}/>
+        <Route pathb = "/bid/create" component = {BidCreatePage}/>
       </Switch>
     </Suspense>
   );

@@ -1,5 +1,7 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { takeLatest, put } from "redux-saga/effects";
+import { getBestAds } from "../../crud/ads.crud";
 
 
 export const actionTypes = {
@@ -39,3 +41,11 @@ export const actionTypes = {
     setMyAds: data => ({ type: actionTypes.SetMyAds, payload: { data } }),
   };
 
+
+  export function* saga() {
+    yield takeLatest(actionTypes.CreateAdSuccess, function* adsRequested() {
+      const { data } = yield getBestAds();
+      yield put(actions.setBestAds(data.data));
+    });
+
+  }

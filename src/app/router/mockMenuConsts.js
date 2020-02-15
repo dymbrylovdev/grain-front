@@ -2,19 +2,19 @@ const mockCereals = [
   {
     title: "Гречиха",
     root: true,
-    page: "adsList",
+    page: "bidsList",
     translate: "Гречиха"
   },
   {
     title: "Кукуруза",
     root: true,
-    page: "adsList",
+    page: "bidsList",
     translate: "Кукуруза"
   },
   {
     title: "Люпин",
     root: true,
-    page: "adsList",
+    page: "bidsList",
     translate: "Люпин"
   }
 ];

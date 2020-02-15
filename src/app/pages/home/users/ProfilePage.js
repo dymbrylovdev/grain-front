@@ -27,12 +27,9 @@ function ProfilePage({ intl, fulfillUser }) {
                 }),
               });
               fulfillUser(data.data);
-              //resetForm(getInitialValues(data.data));
             }
           })
           .catch(error => {
-            console.log("loginError", error);
-
             setLoading(false);
             setSubmitting(false);
             setStatus({

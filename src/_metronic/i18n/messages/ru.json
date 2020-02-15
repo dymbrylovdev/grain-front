@@ -64,10 +64,11 @@
     "USERLIST.DIALOGS.AGREE_TEXT": "Да",
     "USERLIST.DIALOGS.CANCEL_TEXT": "Отмена",
     "TABLE.FROM.LABEL": "из",
-    "ADSLIST.TABLE.ID": "Id",
-    "ADSLIST.TABLE.COST": "Цена(за тонну)",
-    "ADSLIST.TABLE.VOLUME": "Объем(в тоннах)",
-    "ADSLIST.TABLE.DESCRIPTION": "Описание"
-
-
+    "BIDSLIST.TABLE.ID": "Id",
+    "BIDSLIST.TABLE.COST": "Цена(за тонну)",
+    "BIDSLIST.TABLE.VOLUME": "Объем(в тоннах)",
+    "BIDSLIST.TABLE.DESCRIPTION": "Описание",
+    "BIDSLIST.BUTTON.CREATE_BID": "Добавить заявку",
+    "BID.STATUS.CREATE_SUCCESS": "Заявка успешно добавлена",
+    "BID.STATUS.ERROR": "Ошибка добавления заявки"
 }
