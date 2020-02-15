@@ -514,9 +514,15 @@ export default function (cereals, logoutAction){
                     title: "Заявки на продажу",
                     root: true,
                     page: "",
-                    translate: "SUBMENU.ORDERS",
+                    translate: "SUBMENU.ADS",
                     bullet: "dot",
                     submenu: cereals,
+                  },
+                  {
+                    title: "Добавить заявку",
+                    root: true,
+                    page: "",
+                    translate: "SUBMENU.GRAIN.CREATE_AD",
                   }
                 ]
               },

@@ -24,12 +24,11 @@ const useStyles = makeStyles(theme => ({
       paddingTop: theme.spacing(2),
     },
 
-    table: {
-        width: "100%",
+    table: {        
     },
     tableContainer: {
       paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2)
+      paddingRight: theme.spacing(2),
     },
     textSelect: {
       width:'100%',

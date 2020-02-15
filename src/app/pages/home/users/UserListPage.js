@@ -122,7 +122,7 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
             </TableRow>
           ))}
         </TableBody>
-        <Footer page={page-1} perPage={per_page} total={total} handleChangePage={handleChangePage} fromLabel={intl.formatMessage({id: "TABLE.FROM.LABEL"})}/>
+        <Footer page={page-1} perPage={per_page || 0} total={total || 0} handleChangePage={handleChangePage} fromLabel={intl.formatMessage({id: "TABLE.FROM.LABEL"})}/>
       </Table>
     </Paper>
   );

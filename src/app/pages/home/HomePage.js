@@ -6,9 +6,10 @@ import Dashboard from "./Dashboard";
 import DocsPage from "./docs/DocsPage";
 import { LayoutSplashScreen } from "../../../_metronic";
 import getMenuConfig from "../../router/MenuConfig";
-import { mockcCereals } from "../../router/mockMenuConsts";
+import { mockCereals } from "../../router/mockMenuConsts";
 import UserDocPage from "./userDocs/UserDocPage";
 import {ProfilePage, UserListPage, CreateUserPage, EditUserPage} from "./users";
+import { AdsListPage } from './ads';
 import * as builder from "../../../_metronic/ducks/builder";
 
 const GoogleMaterialPage = lazy(() =>
@@ -25,7 +26,7 @@ export default function HomePage() {
   // https://reactjs.org/docs/hooks-reference.html#useeffect
 
   const dispatch = useDispatch();
-  const [menuConfig, setMenuConfig] = useState(getMenuConfig(mockcCereals));
+  const [menuConfig, setMenuConfig] = useState(getMenuConfig(mockCereals));
   useEffect(() => 
   {  
     dispatch(builder.actions.setMenuConfig(menuConfig));
@@ -48,6 +49,7 @@ export default function HomePage() {
         <Route path="/userList" component={UserListPage}/>
         <Route path="/user/create" component={CreateUserPage}/>
         <Route path="/user/edit/:id" component={EditUserPage}/>
+        <Route path = "/adsList" component={AdsListPage}/>
       </Switch>
     </Suspense>
   );

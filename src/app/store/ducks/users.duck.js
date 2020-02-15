@@ -22,12 +22,6 @@ export const reducer = persistReducer(
   { storage, key: "demo1-users"},
   (state = initialDocState, action) => {
     switch (action.type) {
-      /*case actionTypes.CreateUser: {
-          const { data } = action.payload; 
-          const { users } = state;
-          const addUsers = {...users, data};
-          return { ...state, users: addUsers };
-        }*/
       case actionTypes.EditUser: {
         const { data } = action.payload;
         const { users } = state;
@@ -56,7 +50,6 @@ export const reducer = persistReducer(
 );
 
 export const actions = {
-  legacy: data => ({ type: actionTypes.Legacy, payload: { data } }),
   createUser: () => ({ type: actionTypes.CreateUser }),
   editUserSuccess: data => ({ type: actionTypes.EditUser, payload: { data } }),
   setUsers: (data) => ({ type: actionTypes.SetUsers, payload: { data } }),

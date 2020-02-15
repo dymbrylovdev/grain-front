@@ -4,7 +4,8 @@
     "MENU.SETTINGS": "Настройки",
     "MENU.DOCS": "Документы",
     "MENU.LOGOUT": "Выход",
-    "SUBMENU.ORDERS": "Завки на продажу",
+    "SUBMENU.ADS": "Завки на продажу",
+    "SUBMENU.GRAIN.CREATE_AD": "Добавить заявку",
     "SUBMENU.USER.LIST": "Список пользователей",
     "SUBMENU.USER.CREATE_USER": "Добавить пользователя",
     "SUBMENU.PROFILE": "Мой профиль",
@@ -62,6 +63,11 @@
     "USERLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить пользователя?",
     "USERLIST.DIALOGS.AGREE_TEXT": "Да",
     "USERLIST.DIALOGS.CANCEL_TEXT": "Отмена",
-    "TABLE.FROM.LABEL": "из"
+    "TABLE.FROM.LABEL": "из",
+    "ADSLIST.TABLE.ID": "Id",
+    "ADSLIST.TABLE.COST": "Цена(за тонну)",
+    "ADSLIST.TABLE.VOLUME": "Объем(в тоннах)",
+    "ADSLIST.TABLE.DESCRIPTION": "Описание"
+
 
 }

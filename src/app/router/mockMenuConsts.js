@@ -1,22 +1,22 @@
-const mockcCereals = [
+const mockCereals = [
   {
     title: "Гречиха",
     root: true,
-    page: "",
+    page: "adsList",
     translate: "Гречиха"
   },
   {
     title: "Кукуруза",
     root: true,
-    page: "",
+    page: "adsList",
     translate: "Кукуруза"
   },
   {
     title: "Люпин",
     root: true,
-    page: "",
+    page: "adsList",
     translate: "Люпин"
   }
 ];
 
-export { mockcCereals };
+export { mockCereals };

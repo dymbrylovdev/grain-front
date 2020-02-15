@@ -4,6 +4,7 @@ import { combineReducers } from "redux";
 import * as auth from "./ducks/auth.duck";
 import * as users from "./ducks/users.duck";
 import * as docs from "./ducks/docs.duck";
+import * as ads from "./ducks/ads.duck";
 import { metronic } from "../../_metronic";
 
 export const rootReducer = combineReducers({
@@ -12,6 +13,7 @@ export const rootReducer = combineReducers({
   builder: metronic.builder.reducer,
   users: users.reducer,
   docs: docs.reducer,
+  ads: ads.reducer
 });
 
 export function* rootSaga() {

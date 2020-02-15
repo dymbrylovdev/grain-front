@@ -12,6 +12,7 @@ const ButtonWithLoader: React.FC<IProps> = ({ children, loading = false }) => {
         "btn btn-primary btn-elevate kt-login__btn-primary": true,
         "kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light": loading,
       })}
+      type="submit"
     >
       {children}
     </button>

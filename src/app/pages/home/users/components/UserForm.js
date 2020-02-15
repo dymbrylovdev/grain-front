@@ -6,7 +6,7 @@ import { Formik } from "formik";
 import { Paper } from "@material-ui/core";
 import * as Yup from "yup";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
-import StatusAlert from "./StatusAlert";
+import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 
 const getInitialValues = user => ({
   login: user.login || "",
@@ -50,7 +50,10 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
           password: isCreate
             ? Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
             : null,
-          login: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
+          login:
+            isCreate || isEdit
+              ? Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
+              : null,
 
           repeatPassword: Yup.mixed().oneOf(
             [Yup.ref("password"), "", null],
@@ -58,9 +61,11 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
           ),
         })}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-          if (values.password === "") {
+          /*if (values.password === "") {
             delete values.password;
-          }
+          }*/
+          console.log("userValUES");
+
           submitAction(values, setStatus, setSubmitting);
         }}
       >
@@ -242,7 +247,7 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
                 error={Boolean(errors.repeatPassword || errors.password)}
               />
               <div className={classes.buttonContainer}>
-                <ButtonWithLoader loading={loading}>
+                <ButtonWithLoader loading={loading} onPress={handleSubmit}>
                   <FormattedMessage id="PROFILE.BUTTON.SAVE" />
                 </ButtonWithLoader>
               </div>
