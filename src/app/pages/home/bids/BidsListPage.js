@@ -28,7 +28,7 @@ function BidsListPage({ setBestAds }) {
           </button>
         </Link>
       </div>
-      <Table aria-label="simple table">
+      <Table aria-label="simple table" className={classes.table}>
         <TableHead>
           <TableRow>
             <TableCell>

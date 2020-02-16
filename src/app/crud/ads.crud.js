@@ -8,8 +8,8 @@ export const getBestAds = () => {
     return axios.get(GET_ADS_URL);
 }
 
-export const createAd = () => {
-    return axios.post(AD_URL);
+export const createAd = (values) => {
+    return axios.post(AD_URL, values);
 }
 
 export const editAd = (id) => {

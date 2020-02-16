@@ -1,5 +1,5 @@
 import { persistReducer } from "redux-persist";
-import { put, takeLatest } from "redux-saga/effects";
+import { put, takeLatest, take, fork } from "redux-saga/effects";
 import storage from "redux-persist/lib/storage";
 import { getUsers, getStatuses } from "../../crud/users.crud";
 
@@ -57,15 +57,29 @@ export const actions = {
   deleteUserSuccess: id => ({ type: actionTypes.DeleteUser, payload: { id } }),
 };
 
+
+function* userStatuses(usersData) { 
+    const { data } = yield getStatuses();
+    if (data && data.data) {
+      yield put(actions.setStatuses(data.data));
+    }
+  }
+
 export function* saga() {
   yield takeLatest(actionTypes.CreateUser, function* userRequested() {
     const { data } = yield getUsers({ page: 1 });
     yield put(actions.setUsers(data));
   });
-  yield takeLatest(actionTypes.SetUsers, function* userStatuses() {
+  yield takeLatest(actionTypes.SetUsers, function* userStatuses() { 
     const { data } = yield getStatuses();
     if (data && data.data) {
       yield put(actions.setStatuses(data.data));
     }
   });
+
+  /*while (true) {
+   const  data   =  yield take(actionTypes.SetUsers);  
+    console.log('userSagaData', data);
+   yield fork( userStatuses, data);
+  }*/
 }

@@ -29,6 +29,8 @@ function BidCreatePage({ intl, createAdSuccess }) {
           }
         })
         .catch(error => {
+            console.log('errorBid', error);
+            
           setLoading(false);
           setSubmitting(false);
           setStatus({
@@ -41,7 +43,7 @@ function BidCreatePage({ intl, createAdSuccess }) {
     }, 1000);
   };
   if (backRedirect) {
-    return <Redirect to="/bid/create" />;
+    return <Redirect to="/bidsList" />;
   }
 
   return <BidForm classes={classes} loading={loading} submitAction={submitAction} />;

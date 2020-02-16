@@ -28,7 +28,6 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
   const getUsersAction = page =>
     getUsers({ page })
       .then(({ data }) => {
-        console.log('usersData', data);
         if (data && data) {
           setUsers(data);
         }

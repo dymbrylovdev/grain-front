@@ -42,9 +42,7 @@ function BidForm({ loading, submitAction, intl, classes }) {
           price: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
         })}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-            console.log('bidValues', values);
-            
-          submitAction(values, setStatus, setSubmitting);
+          submitAction({...values, crop_id:1}, setStatus, setSubmitting);
         }}
       >
         {({

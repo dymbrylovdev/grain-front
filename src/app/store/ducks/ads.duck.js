@@ -39,6 +39,7 @@ export const actionTypes = {
   export const actions = {
     setBestAds: (data) => ({ type: actionTypes.SetBestAds, payload: { data } }),
     setMyAds: data => ({ type: actionTypes.SetMyAds, payload: { data } }),
+    createAdSuccess: () => ({ type: actionTypes.CreateAdSuccess })
   };
 
 
