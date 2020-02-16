@@ -1,49 +1,58 @@
 import React, { useState } from "react";
 import { shallowEqual, useSelector, connect } from "react-redux";
-import { injectIntl} from "react-intl";
+import { injectIntl } from "react-intl";
 import * as auth from "../../../store/ducks/auth.duck";
+import * as users from "../../../store/ducks/users.duck";
 import { setUser } from "../../../crud/auth.crud";
-import useStyles from './styles';
-import UserForm from './components/UserForm';
+import useStyles from "./styles";
+import UserForm from "./components/UserForm";
 
-
-
-
-function ProfilePage({ intl, fulfillUser }) {
+function ProfilePage({ intl, fulfillUser, fetchLocationsRequest, clearFoundResult }) {
   const [loading, setLoading] = useState(false);
   const user = useSelector(({ auth: { user } }) => user, shallowEqual);
   const classes = useStyles();
   const submitAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
-      setLoading(true)
-        setUser(values)
-          .then(({ data }) => {
-            setLoading(false);
-            if (data.data) {
-              setStatus({
-                error: false,
-                message: intl.formatMessage({
-                  id: "PROFILE.STATUS.SUCCESS",
-                }),
-              });
-              fulfillUser(data.data);
-            }
-          })
-          .catch(error => {
-            setLoading(false);
-            setSubmitting(false);
+      setLoading(true);
+      setUser(values)
+        .then(({ data }) => {
+          setLoading(false);
+          if (data.data) {
             setStatus({
-              error: true,
+              error: false,
               message: intl.formatMessage({
-                id: "PROFILE.STATUS.ERROR",
+                id: "PROFILE.STATUS.SUCCESS",
               }),
             });
+            fulfillUser(data.data);
+            //resetForm(getInitialValues(data.data));
+          }
+        })
+        .catch(error => {
+          console.log("loginError", error);
+
+          setLoading(false);
+          setSubmitting(false);
+          setStatus({
+            error: true,
+            message: intl.formatMessage({
+              id: "PROFILE.STATUS.ERROR",
+            }),
           });
-      }, 1000);
-  }
+        });
+    }, 1000);
+  };
+
   return (
-    <UserForm user = {user} classes = {classes} loading= {loading} submitAction={submitAction} />
+    <UserForm
+      fetchLocations={fetchLocationsRequest}
+      clearFoundResult={clearFoundResult}
+      user={user}
+      classes={classes}
+      loading={loading}
+      submitAction={submitAction}
+    />
   );
 }
 
-export default injectIntl(connect(null, auth.actions)(ProfilePage));
+export default injectIntl(connect(null, { ...auth.actions, ...users.actions })(ProfilePage));

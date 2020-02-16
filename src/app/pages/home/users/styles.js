@@ -23,9 +23,6 @@ const useStyles = makeStyles(theme => ({
       paddingBottom: theme.spacing(2),
       paddingTop: theme.spacing(2),
     },
-
-    table: {        
-    },
     tableContainer: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),

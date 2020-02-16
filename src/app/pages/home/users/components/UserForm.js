@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { TextField, MenuItem } from "@material-ui/core";
 import { useSelector, shallowEqual } from "react-redux";
-import { Formik } from "formik";
-import { Paper } from "@material-ui/core";
+import { Formik, Form } from "formik";
+import { Paper, CircularProgress } from "@material-ui/core";
+import { Autocomplete } from "@material-ui/lab";
 import * as Yup from "yup";
+
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 
 const getInitialValues = user => ({
   login: user.login || "",
   fio: user.fio || "",
+  location: user.location || {},
   phone: user.phone || "",
   email: user.email || "",
   inn: user.inn || "",
@@ -36,8 +39,32 @@ const vendor = {
 
 const roles = [admin, buyer, vendor];
 
-function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl }) {
+function UserForm({
+  fetchLocations,
+  clearFoundResult,
+  user,
+  classes,
+  loading,
+  submitAction,
+  isEdit,
+  isCreate,
+  intl,
+}) {
   const statuses = useSelector(({ users: { statuses } }) => statuses, shallowEqual);
+  const locations = useSelector(state => state.users.locations);
+  const isLoadingLocations = useSelector(state => state.users.isLoadingLocations);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
+  const [location, setLocation] = useState("");
+
+  useEffect(() => {
+    clearFoundResult();
+  }, [clearFoundResult]);
+
+  useEffect(() => {
+    fetchLocations(location);
+  }, [fetchLocations, location]);
+
   return (
     <Paper className={classes.container}>
       <Formik
@@ -64,6 +91,19 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
           if (values.password === "") {
             delete values.password;
           }
+          if (selectedLocation) {
+            values.location = {
+              lat: parseFloat(selectedLocation.pos.lat),
+              lng: parseFloat(selectedLocation.pos.lng),
+              city: selectedLocation.name,
+              country: selectedLocation.description,
+              province: "",
+              street: "",
+              house: "",
+            };
+          } else {
+            delete values.location;
+          }
           submitAction(values, setStatus, setSubmitting);
         }}
       >
@@ -78,7 +118,13 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
           isSubmitting,
         }) => (
           <div className={classes.form}>
-            <form noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
+            <Form
+              autoComplete="off"
+              className="kt-form"
+              onSubmit={() => {
+                console.log("submit ");
+              }}
+            >
               <StatusAlert status={status} />
               {isCreate && (
                 <TextField
@@ -136,6 +182,7 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
                   />
                 </div>
               )}
+
               <TextField
                 type="text"
                 label={intl.formatMessage({
@@ -151,6 +198,7 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
                 helperText={touched.fio && errors.fio}
                 error={Boolean(touched.fio && errors.fio)}
               />
+
               <TextField
                 type="text"
                 label={intl.formatMessage({
@@ -167,6 +215,7 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
                 error={Boolean(touched.email && errors.email)}
                 autoComplete="off"
               />
+
               <TextField
                 type="tel"
                 label={intl.formatMessage({
@@ -182,6 +231,7 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
                 helperText={touched.phone && errors.phone}
                 error={Boolean(touched.phone && errors.phone)}
               />
+
               <TextField
                 type="text"
                 label={intl.formatMessage({
@@ -197,6 +247,7 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
                 helperText={touched.inn && errors.inn}
                 error={Boolean(touched.inn && errors.inn)}
               />
+
               <TextField
                 type="text"
                 label={intl.formatMessage({
@@ -212,6 +263,52 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
                 helperText={touched.company && errors.company}
                 error={Boolean(touched.company && errors.company)}
               />
+              <Autocomplete
+                id="location"
+                options={locations}
+                loading={isLoadingLocations}
+                getOptionLabel={option =>
+                  option.name && option.description ? `${option.name}, ${option.description}` : ""
+                }
+                onChange={(e, val) => {
+                  setSelectedLocation(val);
+                }}
+                noOptionsText="Введите название города"
+                defaultValue={{
+                  name: user.location ? user.location.city : "",
+                  description: user.location ? user.location.country : "",
+                }}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    type="text"
+                    label={intl.formatMessage({
+                      id: "PROFILE.INPUT.LOCATION",
+                    })}
+                    value={location}
+                    margin="normal"
+                    className={classes.textField}
+                    name="location"
+                    variant="outlined"
+                    onBlur={handleBlur}
+                    onChange={e => setLocation(e.target.value)}
+                    helperText={touched.location && errors.location}
+                    error={Boolean(touched.location && errors.location)}
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <React.Fragment>
+                          {isLoadingLocations ? (
+                            <CircularProgress color="inherit" size={20} />
+                          ) : null}
+                          {params.InputProps.endAdornment}
+                        </React.Fragment>
+                      ),
+                    }}
+                  />
+                )}
+              />
+
               <TextField
                 type="password"
                 label={intl.formatMessage({
@@ -245,11 +342,11 @@ function UserForm({ user, classes, loading, submitAction, isEdit, isCreate, intl
                 error={Boolean(errors.repeatPassword || errors.password)}
               />
               <div className={classes.buttonContainer}>
-                <ButtonWithLoader loading={loading} onPress={handleSubmit}>
+                <ButtonWithLoader onPress={handleSubmit} loading={loading}>
                   <FormattedMessage id="PROFILE.BUTTON.SAVE" />
                 </ButtonWithLoader>
               </div>
-            </form>
+            </Form>
           </div>
         )}
       </Formik>

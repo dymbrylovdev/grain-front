@@ -1,34 +1,34 @@
-import React, { useState, useRef } from 'react';
-import clsx from 'clsx';
-import { Editor, EditorState, RichUtils, Modifier, getDefaultKeyBinding } from 'draft-js';
-import { makeStyles } from '@material-ui/styles';
-import { Paper, Divider } from '@material-ui/core';
+import React, { useRef } from "react";
+import clsx from "clsx";
+import { Editor, EditorState, RichUtils, Modifier, getDefaultKeyBinding } from "draft-js";
+import { makeStyles } from "@material-ui/styles";
+import { Paper, Divider } from "@material-ui/core";
 
-import { EditorToolbar } from './components';
-import { blockRenderMap } from './utils';
+import { EditorToolbar } from "./components";
+import { blockRenderMap } from "./utils";
 
 const useStyles = makeStyles((theme: any) => ({
   root: {},
   editorContainer: {
     padding: theme.spacing(2),
     minHeight: 400,
-    '& .public-DraftEditorPlaceholder-root': {
+    "& .public-DraftEditorPlaceholder-root": {
       ...theme.typography.body2,
     },
-    '& .public-DraftEditorPlaceholder-hasFocus': {
-      display: 'none',
+    "& .public-DraftEditorPlaceholder-hasFocus": {
+      display: "none",
     },
-    '& .public-DraftEditor-content': {
-      '& p': {
+    "& .public-DraftEditor-content": {
+      "& p": {
         ...theme.typography.body1,
       },
-      '& h1': {
+      "& h1": {
         ...theme.typography.h1,
       },
-      '& h2': {
+      "& h2": {
         ...theme.typography.h2,
       },
-      '& h3': {
+      "& h3": {
         ...theme.typography.h3,
       },
       // '& h4': {
@@ -43,11 +43,11 @@ const useStyles = makeStyles((theme: any) => ({
       // '& blockquote': {
       //   ...theme.typography.subtitle1,
       // },
-      '& ul': {
+      "& ul": {
         ...theme.typography.body1,
         marginLeft: theme.spacing(4),
       },
-      '& ol': {
+      "& ol": {
         ...theme.typography.body1,
         marginLeft: theme.spacing(4),
       },
@@ -58,35 +58,35 @@ const useStyles = makeStyles((theme: any) => ({
       //   padding: 2,
       // },
       link: {
-        color: '#3b5998',
-        textDecoration: 'underline',
+        color: "#3b5998",
+        textDecoration: "underline",
       },
     },
   },
   textAlignLeft: {
-    textAlign: 'left',
+    textAlign: "left",
   },
   textAlignCenter: {
-    textAlign: 'center',
+    textAlign: "center",
   },
   textAlignRight: {
-    textAlign: 'right',
+    textAlign: "right",
   },
   textAlignJustify: {
-    textAlign: 'justify',
+    textAlign: "justify",
   },
 }));
 
 const capitalize = (string: string) => string.charAt(0).toUpperCase() + string.slice(1);
 
 const RichEditor = (props: any) => {
-  const { placeholder, className, ...rest } = props;
+  const { placeholder, className, publicEditorState, editorState, setEditorState, ...rest } = props;
 
   const classes = useStyles();
 
   const editorRef = useRef(null);
 
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  // const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
   const handleContainerClick = () => {
     if (editorRef) {
@@ -96,16 +96,16 @@ const RichEditor = (props: any) => {
   };
 
   const handleToolbarToggle = (type: any, value: any) => {
-    if (type === 'blockType') {
-      if (['left', 'center', 'right', 'justify'].includes(value)) {
+    if (type === "blockType") {
+      if (["left", "center", "right", "justify"].includes(value)) {
         const newContentState = Modifier.setBlockData(
           editorState.getCurrentContent(),
           editorState.getSelection(),
           // @ts-ignore
-          { 'text-align': value }
+          { "text-align": value }
         );
 
-        const newEditorState = EditorState.push(editorState, newContentState, 'change-block-data');
+        const newEditorState = EditorState.push(editorState, newContentState, "change-block-data");
 
         setEditorState(newEditorState);
         return;
@@ -147,7 +147,7 @@ const RichEditor = (props: any) => {
   };
 
   function blockStyleFn(contentBlock: any) {
-    const textAlign = contentBlock.getData().get('text-align');
+    const textAlign = contentBlock.getData().get("text-align");
 
     if (textAlign) {
       const className = `textAlign${capitalize(textAlign)}`;
@@ -155,7 +155,7 @@ const RichEditor = (props: any) => {
       return classes[className];
     }
 
-    return '';
+    return "";
   }
 
   return (

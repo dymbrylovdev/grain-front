@@ -34,7 +34,7 @@ deploy:
   stage: deploy
   image: gitlab/dind:latest
   only:
-    - 'master'
+    - "master"
   environment: production
   services:
     - docker:dind
