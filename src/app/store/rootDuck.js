@@ -5,6 +5,7 @@ import * as auth from "./ducks/auth.duck";
 import * as users from "./ducks/users.duck";
 import * as docs from "./ducks/docs.duck";
 import * as ads from "./ducks/ads.duck";
+import * as crops from "./ducks/crops.duck";
 import { metronic } from "../../_metronic";
 
 export const rootReducer = combineReducers({
@@ -13,9 +14,10 @@ export const rootReducer = combineReducers({
   builder: metronic.builder.reducer,
   users: users.reducer,
   docs: docs.reducer,
-  ads: ads.reducer
+  ads: ads.reducer,
+  crops: crops.reducer,
 });
 
 export function* rootSaga() {
-  yield all([auth.saga, users.saga].map(saga => fork(saga)));
+  yield all([auth.saga, users.saga, crops.saga].map(saga => fork(saga)));
 }

@@ -15,7 +15,7 @@ import Footer from "../../../components/ui/Table/TableFooter";
 import useStyles from "./styles";
 
 function UserListPage({ setUsers, deleteUserSuccess, intl }) {
-  const { users, page, total, per_page, total_page } = useSelector(
+  const { users, page, total, per_page } = useSelector(
     ({ users }) => ({ users: users.users, page: users.page, total: users.total, per_page: users.per_page }),
     shallowEqual
   );
