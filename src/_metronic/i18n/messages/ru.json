@@ -10,6 +10,8 @@
     "SUBMENU.USER.CREATE_USER": "Добавить пользователя",
     "SUBMENU.PROFILE": "Мой профиль",
     "SUBMENU.CATALOG.SETTINGS": "Настройки каталога",
+    "SUBMENU.CATALOG.CROP_LIST": "Список культур",
+    "SUBMENU.CATALOG.CREATE_CROP": "Добавить культуру",
     "SUBMENU.SYSTEM.SETTINGS": "Настройки системы",
     "SUBMENU.LEGAL": "Пользовательское соглашение",
     "START.WELCOME": "Добро пожаловать на Рынок Зерна",
@@ -73,5 +75,9 @@
     "BID.STATUS.CREATE_SUCCESS": "Заявка успешно добавлена",
     "BID.STATUS.ERROR": "Ошибка добавления заявки",
     "USERDOC.BUTTON.SAVE": "Сохранить",
-    "USERDOC.BUTTON.CREATE": "Создать"
+    "USERDOC.BUTTON.CREATE": "Создать",
+    "CROPSLIST.TABLE.ID": "Id",
+    "CROPSLIST.TABLE.NAME": "Название",
+    "CROPSLIST.TABLE.ACTIONS": "Действия",
+    "CROPSLIST.BUTTON.CREATE": "Добавить культуру"
 }

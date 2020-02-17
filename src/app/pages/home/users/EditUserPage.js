@@ -3,7 +3,8 @@ import { connect, useSelector, shallowEqual } from "react-redux";
 import { injectIntl } from "react-intl";
 import * as users from "../../../store/ducks/users.duck";
 import { editUser } from "../../../crud/users.crud";
-import useStyles from "./styles";
+import useStyles from "../styles";
+
 import UserForm from "./components/UserForm";
 
 function EditUserPage({ intl, editUserSuccess, fetchLocationsRequest, match, clearFoundResult }) {

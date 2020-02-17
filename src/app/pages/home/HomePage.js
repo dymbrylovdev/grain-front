@@ -9,9 +9,10 @@ import UserDocPage from "./userDocs/UserDocPage";
 import { useSelector, shallowEqual, connect } from "react-redux";
 import { ProfilePage, UserListPage, CreateUserPage, EditUserPage } from "./users";
 import { BidsListPage, BidCreatePage } from "./bids";
+import { CropsListPage } from "./crops";
 import * as builder from "../../../_metronic/ducks/builder";
 import * as crops from "../../store/ducks/crops.duck";
-import { getCrops } from "../../crud/crop.crud";
+import { getCrops } from "../../crud/crops.crud";
 
 const GoogleMaterialPage = lazy(() => import("./google-material/GoogleMaterialPage"));
 const ReactBootstrapPage = lazy(() => import("./react-bootstrap/ReactBootstrapPage"));
@@ -33,7 +34,6 @@ function HomePage({ setMenuConfig, setCrops }) {
     setMenuConfig(menuConfig);
     getCropsAction();
   }, []);
-
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>
@@ -52,7 +52,8 @@ function HomePage({ setMenuConfig, setCrops }) {
         <Route path="/user/create" component={CreateUserPage} />
         <Route path="/user/edit/:id" component={EditUserPage} />
         <Route path="/bidsList" component={BidsListPage} />
-        <Route pathb="/bid/create" component={BidCreatePage} />
+        <Route path="/bid/create" component={BidCreatePage} />
+        <Route path ="/cropList" component={CropsListPage}/>
       </Switch>
     </Suspense>
   );

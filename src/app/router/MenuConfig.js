@@ -82,6 +82,20 @@ const getAdminMenu = crops => ({
               root: true,
               page: "",
               translate: "SUBMENU.CATALOG.SETTINGS",
+              submenu: [
+                {
+                  title: "Список культур",
+                  root: true,
+                  page: "cropList",
+                  translate: "SUBMENU.CATALOG.CROP_LIST",
+                },
+                {
+                  title: "Добавить культуру",
+                  root: true,
+                  page: "crop/create",
+                  translate: "SUBMENU.CATALOG.CREATE_CROP",
+                },
+              ]
             },
             {
               title: "Настройки системы",

@@ -28,16 +28,16 @@ const useStyles = makeStyles(theme => ({
       paddingRight: theme.spacing(2),
       overflowX: 'auto'
     },
-    table: {
-      width: "100%"
-    },
     textSelect: {
       width:'100%',
       marginBottom: theme.spacing(2),
     },
     actionButtonsContainer: {
         flexDirection: 'column'
-    }
+    },
+    table: {
+        width: "100%"
+      },
   }));
 
   export default useStyles;
