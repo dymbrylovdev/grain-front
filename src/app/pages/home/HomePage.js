@@ -17,13 +17,13 @@ const GoogleMaterialPage = lazy(() => import("./google-material/GoogleMaterialPa
 const ReactBootstrapPage = lazy(() => import("./react-bootstrap/ReactBootstrapPage"));
 
 function HomePage({ setMenuConfig, setCrops }) {
-  const { crops } = useSelector(({ crops }) => ({ crops: crops.crops }), shallowEqual);
-  const [menuConfig] = useState(getMenuConfig(crops));
+  const { crops, user } = useSelector(({ crops, auth }) => ({ crops: crops.crops, user: auth.user }), shallowEqual);
+  const [menuConfig] = useState(getMenuConfig(crops, user.is_admin));
   const getCropsAction = () => {
     getCrops()
       .then(({ data }) => {
         if (data && data.data) {
-          setCrops(data.data);
+          setCrops(data.data, user.is_admin);
         }
       })
       .catch(error => {

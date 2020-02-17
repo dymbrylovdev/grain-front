@@ -28,13 +28,13 @@ export const reducer = persistReducer(
   );
 
   export const actions = {
-    setCrops: data => ({type: actionTypes.SetCropsList, payload: {data: data}})
+    setCrops: (data, isAdmin) => ({type: actionTypes.SetCropsList, payload: {data, isAdmin}})
   }
 
 
   export function* saga(){
     yield takeLatest(actionTypes.SetCropsList, function* setMenuConfig({payload}){
-      const menuWithCrops = getMenuConfig(payload.data);
+      const menuWithCrops = getMenuConfig(payload.data, payload.isAdmin);
       yield put(builderActions.setMenuConfig(menuWithCrops));
     })
   }
