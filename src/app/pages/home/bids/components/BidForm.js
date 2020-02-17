@@ -103,6 +103,7 @@ function BidForm({ loading, submitAction, intl, classes }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                rows="6"
                 multiline
               />
 

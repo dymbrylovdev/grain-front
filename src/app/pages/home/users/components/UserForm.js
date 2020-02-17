@@ -91,6 +91,9 @@ function UserForm({
           if (values.password === "") {
             delete values.password;
           }
+          if (values.login === ""){
+              delete values.login;
+          }
           if (selectedLocation) {
             values.location = {
               lat: parseFloat(selectedLocation.pos.lat),
