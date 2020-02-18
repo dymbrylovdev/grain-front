@@ -9,7 +9,7 @@ import UserDocPage from "./userDocs/UserDocPage";
 import { useSelector, shallowEqual, connect } from "react-redux";
 import { ProfilePage, UserListPage, CreateUserPage, EditUserPage } from "./users";
 import { BidsListPage, BidCreatePage } from "./bids";
-import { CropsListPage } from "./crops";
+import { CropsListPage, CropPage } from "./crops";
 import * as builder from "../../../_metronic/ducks/builder";
 import * as crops from "../../store/ducks/crops.duck";
 import { getCrops } from "../../crud/crops.crud";
@@ -54,6 +54,9 @@ function HomePage({ setMenuConfig, setCrops }) {
         <Route path="/bidsList" component={BidsListPage} />
         <Route path="/bid/create" component={BidCreatePage} />
         <Route path ="/cropList" component={CropsListPage}/>
+        <Route path="/crop/create" component={CropPage}/>
+        <Route path="/crop/edit/:id" component={CropPage}/>
+
       </Switch>
     </Suspense>
   );

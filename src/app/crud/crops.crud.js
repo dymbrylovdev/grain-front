@@ -13,11 +13,15 @@ export const createCrop = (params) => {
     return axios.post(CROP_URL, params);
 }
 
-export const editCrop = (id, params) => {
+export const editCrop = (params, id) => {
     return axios.put(`${CROP_URL}/${id}`, params)
 }
 
-export const editCropParam = (id, params) => {
+export const createCropParam = (params, id) => {
+    return axios.post(`${CROP_URL}/${id}/parameter`,params)
+}
+
+export const editCropParam = (params, id) => {
     return axios.put(`${CROP_PARAMETER_URL}${id}`, params)
 }
 

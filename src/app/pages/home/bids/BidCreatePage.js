@@ -3,7 +3,7 @@ import { injectIntl } from "react-intl";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import BidForm from "./components/BidForm";
-import useStyles from "./styles";
+import useStyles from "../styles";
 import { createAd } from "../../../crud/ads.crud";
 import * as ads from "../../../store/ducks/ads.duck";
 

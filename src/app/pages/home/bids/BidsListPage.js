@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableRow, Paper } from "@materi
 import { makeStyles } from "@material-ui/core/styles";
 import * as ads from "../../../store/ducks/ads.duck";
 import { getBestAds } from "../../../crud/ads.crud";
-import useStyles from './styles';
+import useStyles from '../styles';
 
 function BidsListPage({ setBestAds }) {
   const { ads } = useSelector(({ ads }) => ({ ads: ads.bestAds }), shallowEqual);

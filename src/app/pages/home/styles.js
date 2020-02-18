@@ -4,7 +4,6 @@ const useStyles = makeStyles(theme => ({
     container: {
       display: 'flex',
       flexDirection: 'column',
-      flexWrap: 'wrap',
       background: 'white',
       alignItems: 'center',
       justifyContent: 'center',
@@ -13,9 +12,7 @@ const useStyles = makeStyles(theme => ({
     form: {
       maxWidth: '800px',
       width: '100%',
-      padding: theme.spacing(3),
-      alignItems: 'center',
-      justifyContent: 'center',
+      padding: theme.spacing(3)
     },
     buttonContainer: {
       alignItems: 'center',
@@ -38,6 +35,31 @@ const useStyles = makeStyles(theme => ({
     table: {
         width: "100%"
       },
+    buttonAddContainer: {
+        flex: 1,
+        paddingBottom: theme.spacing(2),
+        paddingTop: theme.spacing(2),
+        width: "100%",
+    },
+    paramContainer: {
+        padding: theme.spacing(2),
+        marginBottom: theme.spacing(2)
+    },
+    textField: {
+        flexGrow: 1,
+    },
+    leftIcon: {
+        padding: theme.spacing(1),
+    },
+    textFieldContainer: {
+        flexDirection: 'row',
+        display: 'flex',
+    },
+    titleText: {
+        fontSize: 16,
+        paddingTop: theme.spacing(2),
+        paddingBottom: theme.spacing(2),
+    }  
   }));
 
   export default useStyles;

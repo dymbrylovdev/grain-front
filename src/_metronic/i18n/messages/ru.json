@@ -79,5 +79,21 @@
     "CROPSLIST.TABLE.ID": "Id",
     "CROPSLIST.TABLE.NAME": "Название",
     "CROPSLIST.TABLE.ACTIONS": "Действия",
-    "CROPSLIST.BUTTON.CREATE": "Добавить культуру"
+    "CROPSLIST.BUTTON.CREATE": "Добавить культуру",
+    "CROP.STATUS.CROP_CREATE": "Культура успещно сохранена",
+    "CROP.STATUS.CROP_CREATE_ERROR":"Ошибка сохранения культуры",
+    "CROP.STATUS.CROP_PARAM_CREATE": "Параметр успешно сохранен",
+    "CROP.STATUS.CROP_PARAM_CREATE_ERROR": "Ошибка сохранения параметра",
+    "CROP.FORM.NAME":"Название культуры",
+    "CROP.FORM.PARAM_NAME":"Название параметра",
+    "CROP.FORM.PARAM_NAME_NUMBER": "Значение параметра",
+    "CROP.FORM.PARAM_NUMBER":"Значение",
+    "CROP.FORM.PARAM_LIST":"Список",
+    "CROP.BUTTON.CROP_SAVE":"Сохранить культуру",
+    "CROP.BUTTON.PARAM_LIST_ADD":"Добавить списочное значение",
+    "CROP.FORM.PARAM_SAVE":"Сохранить параметр",
+    "CROP.FORM.PARAM_ADD":"Добавить параметр",
+    "CROP.STATUS.ALARM": "На данный момент удаление культуры и параметров невозможно. Возможно изменение названия культуры и названий параметров культуры."
+
+    
 }

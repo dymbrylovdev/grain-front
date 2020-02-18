@@ -34,10 +34,12 @@ const useStyles = makeStyles(theme => ({
     textSelect: {
       width:'100%',
       marginBottom: theme.spacing(2),
+      flex: 1,
     },
     actionButtonsContainer: {
         flexDirection: 'column'
     }
+
   }));
 
   export default useStyles;

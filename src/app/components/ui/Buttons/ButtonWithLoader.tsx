@@ -4,16 +4,17 @@ import { Button } from "@material-ui/core";
 
 interface IProps {
   loading?: boolean;
+  color?: any;
   onPress?: () => {};
 }
 
 const noop = () => {};
 
-const ButtonWithLoader: React.FC<IProps> = ({ children, loading = false, onPress = noop }) => {
+const ButtonWithLoader: React.FC<IProps> = ({ children, loading = false, onPress = noop, color = "primary" }) => {
   return (
     <Button
       variant="contained"
-      color="primary"
+      color={color}
       onClick={onPress}
       className={clsx({
         "btn btn-primary btn-elevate kt-login__btn-primary": true,
