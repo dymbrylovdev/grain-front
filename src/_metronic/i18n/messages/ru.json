@@ -80,7 +80,7 @@
     "CROPSLIST.TABLE.NAME": "Название",
     "CROPSLIST.TABLE.ACTIONS": "Действия",
     "CROPSLIST.BUTTON.CREATE": "Добавить культуру",
-    "CROP.STATUS.CROP_CREATE": "Культура успещно сохранена",
+    "CROP.STATUS.CROP_CREATE": "Культура успешно сохранена",
     "CROP.STATUS.CROP_CREATE_ERROR":"Ошибка сохранения культуры",
     "CROP.STATUS.CROP_PARAM_CREATE": "Параметр успешно сохранен",
     "CROP.STATUS.CROP_PARAM_CREATE_ERROR": "Ошибка сохранения параметра",
