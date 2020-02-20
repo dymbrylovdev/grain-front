@@ -16,7 +16,6 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearFoundResult }) {
     setTimeout(() => {
       setLoading(true);
       const roleId = values.role.id;
-      console.log('roleId', roleId);
       const valuesWithRole = { ...values, roles: [roleId] };
       createUser(valuesWithRole)
         .then(({ data }) => {
