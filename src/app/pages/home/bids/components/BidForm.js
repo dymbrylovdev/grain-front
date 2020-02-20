@@ -60,7 +60,6 @@ function BidForm({ loading, submitAction, intl, classes, crops }) {
             <FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />
           ),
           price: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
-          description: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
           crop: Yup.mixed().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
         })}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
@@ -73,6 +72,7 @@ function BidForm({ loading, submitAction, intl, classes, crops }) {
           });
           const cropId = values.crop.id;
           delete values.crop;
+          values.description === "" && delete values.description;
           submitAction(
             { ...values, crop_id: cropId, parameter_values: paramValues },
             setStatus,

@@ -52,7 +52,8 @@ function HomePage({ setMenuConfig, setCrops }) {
         <Route path="/user/create" component={CreateUserPage} />
         <Route path="/user/edit/:id" component={EditUserPage} />
         <Route path="/bidsList" component={BidsListPage} />
-        <Route path="/bid/create" component={BidCreatePage} />
+        <Route path="/bid/create"  exact component={BidCreatePage} />
+        <Route path="/bid/create/:id" component={BidCreatePage} />
         <Route path ="/cropList" component={CropsListPage}/>
         <Route path="/crop/create" component={CropPage}/>
         <Route path="/crop/edit/:id" component={CropPage}/>

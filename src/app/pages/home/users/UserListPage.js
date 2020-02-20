@@ -3,7 +3,16 @@ import { injectIntl, FormattedMessage } from "react-intl";
 import { shallowEqual, useSelector, connect } from "react-redux";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  Tooltip,
+} from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import * as users from "../../../store/ducks/users.duck";
@@ -11,12 +20,16 @@ import { getUsers, deleteUser } from "../../../crud/users.crud";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import Footer from "../../../components/ui/Table/TableFooter";
 
-
 import useStyles from "./styles";
 
 function UserListPage({ setUsers, deleteUserSuccess, intl }) {
   const { users, page, total, per_page } = useSelector(
-    ({ users }) => ({ users: users.users, page: users.page, total: users.total, per_page: users.per_page }),
+    ({ users }) => ({
+      users: users.users,
+      page: users.page,
+      total: users.total,
+      per_page: users.per_page,
+    }),
     shallowEqual
   );
   const [deleteUserId, setDeleteUserId] = useState(-1);
@@ -35,9 +48,9 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
       .catch(error => {
         alert(error);
       });
-  const handleChangePage = (event,page) => {
-      getUsersAction(page + 1);
-  };  
+  const handleChangePage = (event, page) => {
+    getUsersAction(page + 1);
+  };
   useEffect(() => {
     getUsersAction(1);
   }, []);
@@ -107,21 +120,51 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
                 {" "}
                 {
                   <div className={classes.actionButtonsContainer}>
-                    <IconButton size="small" onClick={() => handleDeleteDialiog(user.id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                    <Link to={`/user/edit/${user.id}`}>
-                      <IconButton size="small">
-                        <EditIcon />
+                    <Tooltip
+                      title={intl.formatMessage({
+                        id: "USERLIST.TOOLTIP.EDIT",
+                      })}
+                    >
+                      <Link to={`/user/edit/${user.id}`}>
+                        <IconButton size="small">
+                          <EditIcon />
+                        </IconButton>
+                      </Link>
+                    </Tooltip>
+                    <Tooltip
+                      title={intl.formatMessage({
+                        id: "USERLIST.TOOLTIP.DELETE",
+                      })}
+                    >
+                      <IconButton size="small" onClick={() => handleDeleteDialiog(user.id)}>
+                        <DeleteIcon />
                       </IconButton>
-                    </Link>
+                    </Tooltip>
+
+                    <Tooltip
+                      title={intl.formatMessage({
+                        id: "USERLIST.TOOLTIP.CREATE_BID",
+                      })}
+                    >
+                      <Link to={`/bid/create/${user.id}`}>
+                        <IconButton size="small">
+                          <AddIcon />
+                        </IconButton>
+                      </Link>
+                    </Tooltip>
                   </div>
                 }
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-        <Footer page={page-1} perPage={per_page || 0} total={total || 0} handleChangePage={handleChangePage} fromLabel={intl.formatMessage({id: "TABLE.FROM.LABEL"})}/>
+        <Footer
+          page={page - 1}
+          perPage={per_page || 0}
+          total={total || 0}
+          handleChangePage={handleChangePage}
+          fromLabel={intl.formatMessage({ id: "TABLE.FROM.LABEL" })}
+        />
       </Table>
     </Paper>
   );

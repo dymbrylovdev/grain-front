@@ -22,7 +22,6 @@ function EditUserPage({ intl, editUserSuccess, fetchLocationsRequest, match, cle
   const submitAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
-      console.log("editUserValues", values);
       editUser(values, id)
         .then(({ data }) => {
           setLoading(false);
@@ -37,8 +36,6 @@ function EditUserPage({ intl, editUserSuccess, fetchLocationsRequest, match, cle
           }
         })
         .catch(error => {
-          console.log("loginError", error);
-
           setLoading(false);
           setSubmitting(false);
           setStatus({
