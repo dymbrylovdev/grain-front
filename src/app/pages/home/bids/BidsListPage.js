@@ -9,7 +9,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton
+  IconButton,
 } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import EditIcon from "@material-ui/icons/Edit";
@@ -23,12 +23,17 @@ const isHaveRules = (user, id) => {
   return user.is_admin || user.id === Number.parseInt(id);
 };
 
-function BidsListPage({ setBestAds, deleteAdSuccess, intl }) {
-  const { ads, user } = useSelector(
-    ({ ads, auth }) => ({ ads: ads.bestAds, user: auth.user }),
+function BidsListPage({ setBestAds, deleteAdSuccess, intl, match }) {
+  const { cropId } = match.params;
+  const { ads, user, filter } = useSelector(
+    ({ ads, auth, crops }) => ({
+      ads: ads.bestAds,
+      user: auth.user,
+      filter: (crops.filters && crops.filters[cropId]) || { crop_id: Number.parseInt(cropId) },
+    }),
     shallowEqual
   );
-  console.log('myUser', user);
+  console.log("filter", filter);
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
   const handleDeleteDialiog = id => {
@@ -37,15 +42,15 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl }) {
   };
   const classes = useStyles();
   const getAdsAction = () => {
-    getBestAds()
+    getBestAds({ filter: filter.crop_id ? filter  : {} })
       .then(({ data }) => {
-        data && data.data && setBestAds(data.data);
+        data && data.data && data.data.equal && setBestAds(data.data.equal);
       })
       .catch(error => console.log("adsError", error));
   };
   useEffect(() => {
     getAdsAction();
-  }, []);
+  }, [cropId]);
   const deleteBidAction = () => {
     setAlertOpen(false);
     deleteAd(deleteBidId)
@@ -58,7 +63,7 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl }) {
   };
   return (
     <Paper className={classes.tableContainer}>
-        <AlertDialog
+      <AlertDialog
         isOpen={isAlertOpen}
         text={intl.formatMessage({
           id: "BIDSLIST.DIALOGS.DELETE_TEXT",
@@ -113,7 +118,11 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl }) {
                   </IconButton>
                 </Link>
                 {isHaveRules(user, ad.vendor.id) && (
-                  <IconButton size="small" onClick={() => handleDeleteDialiog(ad.id)} color="secondary">
+                  <IconButton
+                    size="small"
+                    onClick={() => handleDeleteDialiog(ad.id)}
+                    color="secondary"
+                  >
                     <DeleteIcon />
                   </IconButton>
                 )}

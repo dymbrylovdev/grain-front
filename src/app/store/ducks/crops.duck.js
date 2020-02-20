@@ -8,11 +8,15 @@ import storage from "redux-persist/lib/storage";
 export const actionTypes = {
     SetCropsList: "[SetCrop] Action",
     CreateCropSucces: "[CreateCrop] Action",
-    EditCropSuccess: "[EditCrop] Action"
+    EditCropSuccess: "[EditCrop] Action",
+    SetFilterForCrop: "[SetFilterForCrop] Action",
 }
 
 const initialCropState = {
-    crops: []
+    crops: [],
+    filters: {
+
+    }
 }
 
 
@@ -29,6 +33,10 @@ export const reducer = persistReducer(
           const newCrops = state.crops.map(item => item.id === data.id ? data : item);
           return { ...state, crops: newCrops}
         }
+        case actionTypes.SetFilterForCrop: {
+          const { filter, cropId} = action.payload;
+          return {...state, filters: { ...state.filters, [cropId]:filter}}
+        }
         default:
           return state;
       }
@@ -38,7 +46,8 @@ export const reducer = persistReducer(
   export const actions = {
     setCrops: (data, isAdmin) => ({type: actionTypes.SetCropsList, payload: {data, isAdmin}}),
     editCropSuccess: (data) => ({type: actionTypes.EditCropSuccess, payload: {data}}),
-    createCropSuccess: () => ({type: actionTypes.CreateCropSucces})
+    createCropSuccess: () => ({type: actionTypes.CreateCropSucces}),
+    setFilterForCrop: (filter, cropId) => ({type: actionTypes.SetFilterForCrop, payload: {filter, cropId}})
   }
 
 

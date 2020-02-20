@@ -4,8 +4,8 @@ const GET_ADS_URL = "/api/bids/bests";
 const AD_URL = "/api/bid"
 const MY_ADS_URL = "/api/my/bids"
 
-export const getBestAds = () => {
-    return axios.post(GET_ADS_URL);
+export const getBestAds = (params) => {
+    return axios.post(GET_ADS_URL, params);
 }
 
 export const createAd = (values) => {
