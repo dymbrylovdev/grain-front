@@ -47,8 +47,6 @@ function CropParamForm({ intl, classes, cropParam, editCropParamAction }) {
           name: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
         })}
         onSubmit={(values, { setStatus, setSubmitting, resetForm, status }) => {
-          console.log("formParamStatus");
-
           if (values.type === "enum") {
             const enumArray = [];
             Object.keys(values).map(param => {
@@ -56,7 +54,6 @@ function CropParamForm({ intl, classes, cropParam, editCropParamAction }) {
                 enumArray.push(values[param]);
               }
             });
-            console.log("enumArray", enumArray);
             editCropParamAction({ ...values, enum: enumArray }, setStatus, setSubmitting, status);
           } else {
             editCropParamAction(values, setStatus, setSubmitting, status);

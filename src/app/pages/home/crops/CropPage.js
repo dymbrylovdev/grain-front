@@ -23,7 +23,7 @@ function CropPage({ match, editCropSuccess, createCropSuccess, intl }) {
       return { crop: filterCrops[0] };
     }
     return { crop: {} };
-  });
+  }, shallowEqual);
   const getCropParamsAction = () => {
     if (cropId) {
       getCropParams(cropId).then(({ data }) => {

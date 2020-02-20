@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { injectIntl } from "react-intl";
-import { connect } from "react-redux";
+import { connect, useSelector, shallowEqual } from "react-redux";
 import { Redirect } from "react-router-dom";
 import BidForm from "./components/BidForm";
 import useStyles from "../styles";
@@ -11,11 +11,15 @@ function BidCreatePage({ intl, createAdSuccess }) {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [backRedirect, setBackRedirect] = useState(false);
+  const { crops } = useSelector(({crops}) =>({crops: crops.crops}), shallowEqual)
   const submitAction = (values, setStatus, setSubmitting) => {
+    console.log('bidCreateValues', values);
+    
     setTimeout(() => {
       setLoading(true);
       createAd(values)
         .then(({ data }) => {
+          console.log('createBidData', data);
           setLoading(false);
           if (data.data) {
             setStatus({
@@ -29,8 +33,7 @@ function BidCreatePage({ intl, createAdSuccess }) {
           }
         })
         .catch(error => {
-            console.log('errorBid', error);
-            
+          console.log('errorBid', error);  
           setLoading(false);
           setSubmitting(false);
           setStatus({
@@ -46,7 +49,7 @@ function BidCreatePage({ intl, createAdSuccess }) {
     return <Redirect to="/bidsList" />;
   }
 
-  return <BidForm classes={classes} loading={loading} submitAction={submitAction} />;
+  return <BidForm classes={classes} loading={loading} submitAction={submitAction} crops={crops}/>;
 }
 
 export default injectIntl(connect(null, ads.actions)(BidCreatePage));

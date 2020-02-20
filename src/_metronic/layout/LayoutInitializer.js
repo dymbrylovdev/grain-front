@@ -16,8 +16,6 @@ export default function LayoutInitializer({
 }) {
   const dispatch = useDispatch();
   const builderState = useSelector(({ builder }) => builder);
-  console.log('renderLayout');
-  
   useEffect(() => {
     dispatch(builder.actions.setMenuConfig(menuConfig));
   }, [dispatch, menuConfig]);

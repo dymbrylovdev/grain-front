@@ -71,6 +71,7 @@
     "BIDSLIST.TABLE.COST": "Цена (за тонну)",
     "BIDSLIST.TABLE.VOLUME": "Объем (в тоннах)",
     "BIDSLIST.TABLE.DESCRIPTION": "Описание",
+    "BIDSLIST.TABLE.CROP": "Культура",
     "BIDSLIST.BUTTON.CREATE_BID": "Добавить заявку",
     "BID.STATUS.CREATE_SUCCESS": "Заявка успешно добавлена",
     "BID.STATUS.ERROR": "Ошибка добавления заявки",

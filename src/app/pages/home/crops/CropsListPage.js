@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer, IconButton, Paper } from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TableRow, IconButton, Paper } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { getCrops } from "../../../crud/crops.crud";
