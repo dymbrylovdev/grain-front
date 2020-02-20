@@ -14,7 +14,7 @@ const getInitialValues = (bid, crop) => {
     volume: bid.volume || "",
     price: bid.price || "",
     description: bid.description || "",
-    crop: crop || {},
+    crop: crop,
   };
   if (bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.map(item => {
@@ -81,11 +81,10 @@ function BidForm({ loading, submitAction, intl, classes, crops, bid, isEditable 
           cropParams.map(param => {
             const id = param.id;
             if (values[`parameter${id}`] && values[`parameter${id}`] !== "") {
-              paramValues.push({ parameter_id: id, value: values[`parameter${id}`] });
+              paramValues.push({ parameter_id: id, value: values[`parameter${id}`].toString() });
             }
           });
           const cropId = values.crop.id;
-          delete values.crop;
           values.description === "" && delete values.description;
           submitAction(
             { ...values, crop_id: cropId, parameter_values: paramValues },
@@ -197,9 +196,6 @@ function BidForm({ loading, submitAction, intl, classes, crops, bid, isEditable 
                     onBlur={handleBlur}
                     onChange={handleChange}
                     disabled={!isEditable}
-                    InputProps={{
-                      inputComponent: NumberFormatCustom,
-                    }}
                   />
                 ) : (
                   <TextField
