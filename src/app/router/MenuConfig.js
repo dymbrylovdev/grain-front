@@ -157,7 +157,7 @@ const getBuyerMenu = crops => ({
               submenu: crops.map(crop => (  {
                 title: crop.name,
                 root: true,
-                page: "bidsList",
+                page: `bidsList/${crop.id}`,
                 translate: crop.name
               })),
             },

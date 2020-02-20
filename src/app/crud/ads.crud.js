@@ -12,10 +12,14 @@ export const createAd = (values) => {
     return axios.post(AD_URL, values);
 }
 
-export const editAd = (id) => {
-    return axios.put(`${AD_URL}/${id}`)
+export const editAd = (id, params) => {
+    return axios.put(`${AD_URL}/${id}`, params)
 }
 
 export const getMyAds = () => {
     return axios.get(MY_ADS_URL);
+}
+
+export const deleteAd = (id) => {
+    return axios.delete(`${AD_URL}/${id}`)
 }

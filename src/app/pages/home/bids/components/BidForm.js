@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { TextField, CircularProgress, MenuItem } from "@material-ui/core";
 import { Formik } from "formik";
@@ -9,12 +9,20 @@ import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import { getCropParams } from "../../../../crud/crops.crud";
 
-const getInitialValues = () => ({
-  volume: "",
-  price: "",
-  description: "",
-  crop: null,
-});
+const getInitialValues = (bid, crop) => {
+  const values = {
+    volume: bid.volume || "",
+    price: bid.price || "",
+    description: bid.description || "",
+    crop: crop || {},
+  };
+  if (bid.parameter_values && bid.parameter_values.length > 0) {
+    bid.parameter_values.map(item => {
+      values[`parameter${item.parameter_id}`] = item.value;
+    });
+  }
+  return values;
+};
 
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props;
@@ -31,9 +39,11 @@ function NumberFormatCustom(props) {
   );
 }
 
-function BidForm({ loading, submitAction, intl, classes, crops }) {
+function BidForm({ loading, submitAction, intl, classes, crops, bid, isEditable }) {
   const [cropParams, setCropParams] = useState([]);
   const [isParamLoading, setCropParamLoading] = useState(false);
+  const filterCrops = crops.filter(item => item.id === bid.crop_id);
+  const currentCrop = filterCrops && filterCrops.length > 0 ? filterCrops[0] : null;
   const getCropParamsAction = cropId => {
     setCropParamLoading(true);
     setCropParams([]);
@@ -49,12 +59,16 @@ function BidForm({ loading, submitAction, intl, classes, crops }) {
         setCropParams([]);
       });
   };
-
+  useEffect(() => {
+    if (currentCrop) {
+      getCropParamsAction(currentCrop.id);
+    }
+  }, []);
   return (
     <Paper className={classes.container}>
       <Formik
         autoComplete="off"
-        initialValues={getInitialValues()}
+        initialValues={getInitialValues(bid, currentCrop)}
         validationSchema={Yup.object().shape({
           volume: Yup.string().required(
             <FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />
@@ -109,6 +123,7 @@ function BidForm({ loading, submitAction, intl, classes, crops }) {
                 InputProps={{
                   inputComponent: NumberFormatCustom,
                 }}
+                disabled={!isEditable}
               />
               <TextField
                 type="text"
@@ -126,6 +141,7 @@ function BidForm({ loading, submitAction, intl, classes, crops }) {
                 InputProps={{
                   inputComponent: NumberFormatCustom,
                 }}
+                disabled={!isEditable}
               />
               <TextField
                 type="text"
@@ -140,6 +156,7 @@ function BidForm({ loading, submitAction, intl, classes, crops }) {
                 onChange={handleChange}
                 rows="6"
                 multiline
+                disabled={!isEditable}
               />
               <div className={classes.textFieldContainer}>
                 <TextField
@@ -158,6 +175,7 @@ function BidForm({ loading, submitAction, intl, classes, crops }) {
                   variant="outlined"
                   helperText={touched.crop && errors.crop}
                   error={Boolean(touched.crop && errors.crop)}
+                  disabled={!isEditable}
                 >
                   {crops.map(option => (
                     <MenuItem key={option.id} value={option}>
@@ -178,6 +196,10 @@ function BidForm({ loading, submitAction, intl, classes, crops }) {
                     variant="outlined"
                     onBlur={handleBlur}
                     onChange={handleChange}
+                    disabled={!isEditable}
+                    InputProps={{
+                      inputComponent: NumberFormatCustom,
+                    }}
                   />
                 ) : (
                   <TextField
@@ -190,6 +212,7 @@ function BidForm({ loading, submitAction, intl, classes, crops }) {
                     variant="outlined"
                     onBlur={handleBlur}
                     onChange={handleChange}
+                    disabled={!isEditable}
                   >
                     {cropParam.enum.map(option => (
                       <MenuItem key={option} value={option}>
@@ -199,11 +222,15 @@ function BidForm({ loading, submitAction, intl, classes, crops }) {
                   </TextField>
                 )
               )}
-              <div className={classes.buttonContainer}>
-                <ButtonWithLoader loading={loading} onPress={handleSubmit}>
-                  <FormattedMessage id="BIDSLIST.BUTTON.CREATE_BID" />
-                </ButtonWithLoader>
-              </div>
+              {isEditable && (
+                <div className={classes.buttonContainer}>
+                  <ButtonWithLoader loading={loading} onPress={handleSubmit}>
+                    {bid && bid.id
+                      ? intl.formatMessage({ id: "BIDSLIST.BUTTON.EDIT_BID" })
+                      : intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
+                  </ButtonWithLoader>
+                </div>
+              )}
             </form>
           </div>
         )}
