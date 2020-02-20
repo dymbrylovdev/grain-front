@@ -131,6 +131,20 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
                         </IconButton>
                       </Link>
                     </Tooltip>
+
+                    {(user.is_admin || user.is_vendor) && (
+                      <Tooltip
+                        title={intl.formatMessage({
+                          id: "USERLIST.TOOLTIP.CREATE_BID",
+                        })}
+                      >
+                        <Link to={`/bid/create/${user.id}`}>
+                          <IconButton size="small">
+                            <AddIcon />
+                          </IconButton>
+                        </Link>
+                      </Tooltip>
+                    )}
                     <Tooltip
                       title={intl.formatMessage({
                         id: "USERLIST.TOOLTIP.DELETE",
@@ -139,18 +153,6 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
                       <IconButton size="small" onClick={() => handleDeleteDialiog(user.id)}>
                         <DeleteIcon />
                       </IconButton>
-                    </Tooltip>
-
-                    <Tooltip
-                      title={intl.formatMessage({
-                        id: "USERLIST.TOOLTIP.CREATE_BID",
-                      })}
-                    >
-                      <Link to={`/bid/create/${user.id}`}>
-                        <IconButton size="small">
-                          <AddIcon />
-                        </IconButton>
-                      </Link>
                     </Tooltip>
                   </div>
                 }
