@@ -65,7 +65,8 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
       });
   };
   const classes = useStyles();
-
+  console.log('userList', users);
+  
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog

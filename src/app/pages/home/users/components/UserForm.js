@@ -29,12 +29,12 @@ const admin = {
 };
 const buyer = {
   value: "Продавец",
-  id: "ROLE_BUYER",
+  id: "ROLE_VENDOR",
 };
 
 const vendor = {
   value: "Покупатель",
-  id: "ROLE_VENDOR",
+  id: "ROLE_BUYER",
 };
 
 const roles = [admin, buyer, vendor];
