@@ -91,18 +91,20 @@ function UserForm({
           if (values.password === "") {
             delete values.password;
           }
-          if (values.login === ""){
-              delete values.login;
+          if (values.login === "") {
+            delete values.login;
           }
           if (selectedLocation) {
+            const { lat, lng, city, country, province, street, house, text } = selectedLocation;
             values.location = {
-              lat: parseFloat(selectedLocation.pos.lat),
-              lng: parseFloat(selectedLocation.pos.lng),
-              city: selectedLocation.name,
-              country: selectedLocation.description,
-              province: "",
-              street: "",
-              house: "",
+              lat: parseFloat(lat),
+              lng: parseFloat(lng),
+              city,
+              country,
+              province,
+              street,
+              house,
+              text,
             };
           } else {
             delete values.location;
@@ -268,18 +270,17 @@ function UserForm({
               />
               <Autocomplete
                 id="location"
+                debug
                 options={locations}
                 loading={isLoadingLocations}
-                getOptionLabel={option =>
-                  option.name && option.description ? `${option.name}, ${option.description}` : ""
-                }
+                getOptionLabel={option => option.text}
                 onChange={(e, val) => {
                   setSelectedLocation(val);
                 }}
-                noOptionsText="Введите название города"
+                filterOptions={options => options}
+                noOptionsText="Введите место"
                 defaultValue={{
-                  name: user.location ? user.location.city : "",
-                  description: user.location ? user.location.country : "",
+                  text: user.location && user.location.text ? user.location.text : "",
                 }}
                 renderInput={params => (
                   <TextField
