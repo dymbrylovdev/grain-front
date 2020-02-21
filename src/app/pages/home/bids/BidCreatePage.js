@@ -22,12 +22,12 @@ function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
   const bidId = match.params.bidId;
   const { user: vendor } = userSelector(vendorId);
   const { bid } = bidSelector(bidId);
-  const isEditable = user.is_admin || (bid &&  bid.vendor && bid.vendor.id === user.id) || !bidId;
+  const isEditable = user.is_admin || (bid && bid.vendor && bid.vendor.id === user.id) || !bidId;
   const vendor_id = vendorId || (bid && bid.vendor && bid.vendor.id) || user.id;
   const createAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
-      createAd({...values, vendor_id})
+      createAd({ ...values, vendor_id })
         .then(({ data }) => {
           setLoading(false);
           if (data.data) {
@@ -54,11 +54,11 @@ function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
     }, 1000);
   };
   const editAction = (values, setStatus, setSubmitting) => {
-    console.log('editValues', values);
-    
+    console.log("editValues", values);
+
     setTimeout(() => {
       setLoading(true);
-      editAd(bidId, {...values, vendor_id})
+      editAd(bidId, { ...values, vendor_id })
         .then(({ data }) => {
           setLoading(false);
           if (data.data) {
@@ -87,14 +87,12 @@ function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
   if (backRedirect) {
     return <Redirect to="/bidsList" />;
   }
-
+  let title = null;
+  if (vendorId) title = `${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [${vendor.login}]`;
+  if (bidId) title = intl.formatMessage({ id: "BID.TITLE.EDIT" });
   return (
     <>
-      {vendor && vendor.id && (
-        <LayoutSubheader
-          title={`${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [${vendor.login}]`}
-        />
-      )}
+      {title && <LayoutSubheader title={title} />}
       <BidForm
         classes={classes}
         loading={loading}

@@ -83,6 +83,7 @@
     "BID.STATUS.EDIT_SUCCESS": "Заявка успещно сохранена",
     "BID.STATUS.ERROR": "Ошибка добавления заявки",
     "BID.TITLE.BY_VENDOR": "Добавление заявки от имени пользователя",
+    "BID.TITLE.EDIT" : "Редактирование заявки",
     "USERDOC.BUTTON.SAVE": "Сохранить",
     "USERDOC.BUTTON.CREATE": "Создать",
     "CROPSLIST.TABLE.ID": "Id",
