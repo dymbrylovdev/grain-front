@@ -105,7 +105,7 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {ads.map(ad => (
+          {ads && ads.map && ads.map(ad => (
             <TableRow key={ad.id}>
               <TableCell>{ad.id}</TableCell>
               <TableCell>{ad.price}</TableCell>
