@@ -39,7 +39,7 @@ function HomePage({ setMenuConfig, setCrops }) {
       <Switch>
         {
           /* Redirect from root URL to /dashboard. */
-          <Redirect exact from="/" to="/bidsList" />
+          <Redirect exact from="/" to="/bidsList/1" />
         }
         <Route path="/builder" component={Builder} />
         <Route path="/dashboard" component={Dashboard} />

@@ -19,7 +19,7 @@ const getAdminMenu = crops => ({
           title: "Рынок зерна",
           root: true,
           icon: "flaticon2-architecture-and-city",
-          page: "dashboard",
+          page: "bidsList/1",
           translate: "MENU.GRAIN",  
           submenu: [
             {
@@ -145,7 +145,7 @@ const getBuyerMenu = crops => ({
           title: "Рынок зерна",
           root: true,
           icon: "flaticon2-architecture-and-city",
-          page: "dashboard",
+          page: "bidList/1",
           translate: "MENU.GRAIN",  
           submenu: [
             {

@@ -6,11 +6,12 @@ interface IProps {
   loading?: boolean;
   color?: any;
   onPress?: () => {};
+  disabled?: boolean;
 }
 
 const noop = () => {};
 
-const ButtonWithLoader: React.FC<IProps> = ({ children, loading = false, onPress = noop, color = "primary" }) => {
+const ButtonWithLoader: React.FC<IProps> = ({ children, loading = false, onPress = noop, color = "primary", disabled = false }) => {
   return (
     <Button
       variant="contained"
@@ -20,7 +21,7 @@ const ButtonWithLoader: React.FC<IProps> = ({ children, loading = false, onPress
         "btn btn-primary btn-elevate kt-login__btn-primary": true,
         "kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light": loading,
       })}
-      type="submit"
+      disabled={disabled}
     >
       {children}
     </Button>

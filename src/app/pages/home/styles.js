@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
       alignItems: 'center',
       justifyContent: 'center',
       paddingBottom: theme.spacing(2),
-      paddingTop: theme.spacing(2),
+      paddingTop: theme.spacing(2)
     },
     tableContainer: {
       paddingLeft: theme.spacing(2),
@@ -39,7 +39,6 @@ const useStyles = makeStyles(theme => ({
         flex: 1,
         paddingBottom: theme.spacing(2),
         paddingTop: theme.spacing(2),
-        width: "100%",
     },
     paramContainer: {
         padding: theme.spacing(2),

@@ -79,6 +79,9 @@
     "BIDSLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить заявку?",
     "BIDSLIST.BUTTON.CREATE_BID": "Добавить заявку",
     "BIDSLIST.BUTTON.EDIT_BID": "Сохранить заявку",
+    "BIDLIST.FILTER.STATUS.EMPTY": "Параметры фильтра заявок не заданы.",
+    "BIDLIST.FILTER.STATUS.FULL": "Заданы параметры фильтрации. Вы можете просмотреть или изменить их по кнопке 'Настроить фильтр'",
+    "BIDLIST.FILTER.BUTTON": "Настроить фильтр",
     "BID.STATUS.CREATE_SUCCESS": "Заявка успешно добавлена",
     "BID.STATUS.EDIT_SUCCESS": "Заявка успещно сохранена",
     "BID.STATUS.ERROR": "Ошибка добавления заявки",
@@ -103,7 +106,10 @@
     "CROP.BUTTON.PARAM_LIST_ADD":"Добавить списочное значение",
     "CROP.FORM.PARAM_SAVE":"Сохранить параметр",
     "CROP.FORM.PARAM_ADD":"Добавить параметр",
-    "CROP.STATUS.ALARM": "На данный момент удаление культуры и параметров невозможно. Возможно изменение названия культуры и названий параметров культуры."
-
-    
+    "CROP.STATUS.ALARM": "На данный момент удаление культуры и параметров невозможно. Возможно изменение названия культуры и названий параметров культуры.",
+    "FILTER.FORM.MAX_PRICE": "Максиммальная цена",
+    "FILTER.FORM.MAX_DESTINATION": "Максиммальное расстояние",
+    "FILTER.FORM.BUTTON.SUBMIT": "Применить фильтр",
+    "FILTER.FORM.BUTTON.RESET": "Очистить фильтр",
+    "FILTER.BUTTON.CLOSE": "Закрыть"
 }

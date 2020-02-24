@@ -11,19 +11,49 @@ import {
   Paper,
   IconButton,
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
+import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import * as ads from "../../../store/ducks/ads.duck";
+import * as crops from "../../../store/ducks/crops.duck";
+import { getCropParams } from "../.././../crud/crops.crud";
 import { getBestAds, deleteAd } from "../../../crud/ads.crud";
 import useStyles from "../styles";
+import FilterModal from "./components/filter/FilterModal";
+import { filterForRequest, isFilterEmpty } from "../../../utils";
+
+const useInnerStyles = makeStyles(theme => ({
+  topContainer: {
+    flexDirection: "row",
+    display: "flex",
+    paddingBottom: theme.spacing(2),
+    paddingTop: theme.spacing(2),
+    alignItems: "center",
+    width: "100%",
+  },
+  leftButtonBlock: {
+    flex: 1,
+  },
+  filterText: {
+    width: 300,
+    textAlign: "right",
+    paddingRight: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+  },
+}));
 
 const isHaveRules = (user, id) => {
   return user.is_admin || user.id === Number.parseInt(id);
 };
 
-function BidsListPage({ setBestAds, deleteAdSuccess, intl, match }) {
+function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCrop }) {
+  const innerClasses = useInnerStyles();
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [enumParams, setEnumParams] = useState([]);
+  const [numberParams, setNumberParams] = useState([]);
   const { cropId } = match.params;
   const { ads, user, filter } = useSelector(
     ({ ads, auth, crops }) => ({
@@ -33,7 +63,6 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match }) {
     }),
     shallowEqual
   );
-  console.log("filter", filter);
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
   const handleDeleteDialiog = id => {
@@ -41,16 +70,33 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match }) {
     setAlertOpen(true);
   };
   const classes = useStyles();
-  const getAdsAction = () => {
-    getBestAds({ filter: filter.crop_id ? filter  : {} })
+  const getAdsAction = (filter, enumParams, numberParams) => {
+    const requestFilter = filterForRequest(filter, enumParams, numberParams);
+    console.log('filterForRequest', requestFilter);
+    getBestAds({ filter: filter.crop_id ? requestFilter  : {} })
       .then(({ data }) => {
         data && data.data && data.data.equal && setBestAds(data.data.equal);
       })
       .catch(error => console.log("adsError", error));
   };
   useEffect(() => {
-    getAdsAction();
-  }, [cropId]);
+    setFilterForCrop(filter, cropId);
+    getCropParams(cropId)
+      .then(({ data }) => {
+        if (data && data.data) {
+          const enumData = data.data.filter(item => item.type === "enum")
+          const numberData = data.data.filter(item => item.type === "number")
+          setEnumParams(enumData);
+          setNumberParams(numberData);
+          getAdsAction(filter, enumData, numberData);
+        }
+      })
+      .catch(error => console.log("getCropParamsError", error));
+  }, [cropId, filter]);
+  /*useEffect(() => {
+    getAdsAction(filter, enumParams, numberParams);
+    setFilterForCrop(filter, cropId);
+  }, [cropId, filter]);*/
   const deleteBidAction = () => {
     setAlertOpen(false);
     deleteAd(deleteBidId)
@@ -61,6 +107,16 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match }) {
         console.log("deleteUserError", error);
       });
   };
+  const filterSubmit = values => {
+    setFilterModalOpen(false);
+    setFilterForCrop(values, cropId);
+  };
+  const filterTitle = isFilterEmpty(filter, enumParams, numberParams)
+    ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
+    : intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" });
+  const filterIconPath = isFilterEmpty(filter, enumParams, numberParams)
+    ? "/media/filter/filter.svg"
+    : "/media/filter/filter_full.svg";
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog
@@ -77,12 +133,27 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match }) {
         handleClose={() => setAlertOpen(false)}
         handleAgree={() => deleteBidAction()}
       />
-      <div className={classes.buttonContainer}>
-        <Link to="/bid/create">
-          <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
-            <FormattedMessage id="BIDSLIST.BUTTON.CREATE_BID" />
-          </button>
-        </Link>
+      <FilterModal
+        isOpen={filterModalOpen}
+        handleClose={() => setFilterModalOpen(false)}
+        classes={classes}
+        handleSubmit={filterSubmit}
+        filter={filter}
+        enumParams={enumParams}
+        numberParams={numberParams}
+      />
+      <div className={innerClasses.topContainer}>
+        <div className={innerClasses.leftButtonBlock}>
+          <Link to="/bid/create">
+            <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
+              <FormattedMessage id="BIDSLIST.BUTTON.CREATE_BID" />
+            </button>
+          </Link>
+        </div>
+        <div className={innerClasses.filterText}>{filterTitle}</div>
+        <IconButton onClick={() => setFilterModalOpen(true)} color="primary">
+          <CustomIcon path={filterIconPath} />
+        </IconButton>
       </div>
       <Table aria-label="simple table" className={classes.table}>
         <TableHead>
@@ -105,34 +176,36 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {ads && ads.map && ads.map(ad => (
-            <TableRow key={ad.id}>
-              <TableCell>{ad.id}</TableCell>
-              <TableCell>{ad.price}</TableCell>
-              <TableCell>{ad.volume}</TableCell>
-              <TableCell>{ad.description}</TableCell>
-              <TableCell>
-                <Link to={`/bid/edit/${ad.id}`}>
-                  <IconButton size="small">
-                    {isHaveRules(user, ad.vendor.id) ? <EditIcon /> : <VisibilityIcon />}
-                  </IconButton>
-                </Link>
-                {isHaveRules(user, ad.vendor.id) && (
-                  <IconButton
-                    size="small"
-                    onClick={() => handleDeleteDialiog(ad.id)}
-                    color="secondary"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
+          {ads &&
+            ads.map &&
+            ads.map(ad => (
+              <TableRow key={ad.id}>
+                <TableCell>{ad.id}</TableCell>
+                <TableCell>{ad.price}</TableCell>
+                <TableCell>{ad.volume}</TableCell>
+                <TableCell>{ad.description}</TableCell>
+                <TableCell>
+                  <Link to={`/bid/edit/${ad.id}`}>
+                    <IconButton size="small">
+                      {isHaveRules(user, ad.vendor.id) ? <EditIcon /> : <VisibilityIcon />}
+                    </IconButton>
+                  </Link>
+                  {isHaveRules(user, ad.vendor.id) && (
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDeleteDialiog(ad.id)}
+                      color="secondary"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Paper>
   );
 }
 
-export default injectIntl(connect(null, ads.actions)(BidsListPage));
+export default injectIntl(connect(null, { ...ads.actions, ...crops.actions })(BidsListPage));
