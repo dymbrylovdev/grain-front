@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
-import { TextField, MenuItem } from "@material-ui/core";
+import { TextField, MenuItem, Paper, CircularProgress, IconButton } from "@material-ui/core";
 import { useSelector, shallowEqual } from "react-redux";
 import { Formik, Form } from "formik";
-import { Paper, CircularProgress } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import * as Yup from "yup";
+import EditIcon from "@material-ui/icons/Edit";
 
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
@@ -54,6 +54,7 @@ function UserForm({
   const locations = useSelector(state => state.users.locations);
   const isLoadingLocations = useSelector(state => state.users.isLoadingLocations);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [editableLocation, setEditableLocation] = useState(!(user.location && user.location.text));
 
   const [location, setLocation] = useState("");
 
@@ -91,18 +92,20 @@ function UserForm({
           if (values.password === "") {
             delete values.password;
           }
-          if (values.login === ""){
-              delete values.login;
+          if (values.login === "") {
+            delete values.login;
           }
           if (selectedLocation) {
+            const { lat, lng, city, country, province, street, house, text } = selectedLocation;
             values.location = {
-              lat: parseFloat(selectedLocation.pos.lat),
-              lng: parseFloat(selectedLocation.pos.lng),
-              city: selectedLocation.name,
-              country: selectedLocation.description,
-              province: "",
-              street: "",
-              house: "",
+              lat: parseFloat(lat),
+              lng: parseFloat(lng),
+              city,
+              country,
+              province,
+              street,
+              house,
+              text,
             };
           } else {
             delete values.location;
@@ -268,18 +271,21 @@ function UserForm({
               />
               <Autocomplete
                 id="location"
+                debug
                 options={locations}
                 loading={isLoadingLocations}
-                getOptionLabel={option =>
-                  option.name && option.description ? `${option.name}, ${option.description}` : ""
-                }
+                getOptionLabel={option => option.text}
                 onChange={(e, val) => {
-                  setSelectedLocation(val);
+                  if (val) {
+                    setSelectedLocation(val);
+                    setEditableLocation(false);
+                  }
                 }}
-                noOptionsText="Введите название города"
+                filterOptions={options => options}
+                disabled={!editableLocation}
+                noOptionsText="Введите место"
                 defaultValue={{
-                  name: user.location ? user.location.city : "",
-                  description: user.location ? user.location.country : "",
+                  text: user.location && user.location.text ? user.location.text : "",
                 }}
                 renderInput={params => (
                   <TextField
@@ -301,9 +307,18 @@ function UserForm({
                       ...params.InputProps,
                       endAdornment: (
                         <React.Fragment>
-                          {isLoadingLocations ? (
-                            <CircularProgress color="inherit" size={20} />
-                          ) : null}
+                          {isLoadingLocations && <CircularProgress color="inherit" size={20} />}
+                          {!editableLocation && (
+                            <IconButton
+                              onClick={() => {
+                                setEditableLocation(!editableLocation);
+                              }}
+                              size="small"
+                            >
+                              <EditIcon fontSize="small" size={15} />
+                            </IconButton>
+                          )}
+
                           {params.InputProps.endAdornment}
                         </React.Fragment>
                       ),

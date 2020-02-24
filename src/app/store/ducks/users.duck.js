@@ -50,9 +50,10 @@ export const reducer = persistReducer(
         };
       }
       case actionTypes.FetchLocаtionSuccess: {
+        const locations = dataToEntities(action.payload.response);
         return {
           ...state,
-          locations: dataToEntities(action.payload.response),
+          locations,
           isLoadingLocations: false,
         };
       }
@@ -95,15 +96,12 @@ export const actions = {
   clearFoundResult: payload => ({ type: actionTypes.ClearFoundResult, payload }),
 };
 
-
-
-
 export function* saga() {
   yield takeLatest(actionTypes.FetchLocаtionRequest, function* fetchLocationsSaga({ payload }) {
     if (!payload) return yield put(actions.clearFoundResult());
 
     try {
-      yield delay(500);
+      yield delay(1000);
       const { data } = yield call(getLocation, payload);
 
       yield put(actions.fetchLocationsSuccess(data));
@@ -115,7 +113,7 @@ export function* saga() {
     const { data } = yield getUsers({ page: 1 });
     yield put(actions.setUsers(data));
   });
-  yield takeLatest(actionTypes.SetUsers, function* userStatuses() { 
+  yield takeLatest(actionTypes.SetUsers, function* userStatuses() {
     const { data } = yield getStatuses();
     if (data && data.data) {
       yield put(actions.setStatuses(data.data));
