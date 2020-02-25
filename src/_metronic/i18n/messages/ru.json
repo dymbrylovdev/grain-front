@@ -76,6 +76,8 @@
     "BIDSLIST.TABLE.DESCRIPTION": "Описание",
     "BIDSLIST.TABLE.ACTIONS": "Действия",
     "BIDSLIST.TABLE.CROP": "Культура",
+    "BIDSLIST.TABLE.DESTINATION": "Расстояниe",
+    "BIDSLIST.TABLE.FINAL_PRICE": "Стоимость с учетом доставки",
     "BIDSLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить заявку?",
     "BIDSLIST.BUTTON.CREATE_BID": "Добавить заявку",
     "BIDSLIST.BUTTON.EDIT_BID": "Сохранить заявку",

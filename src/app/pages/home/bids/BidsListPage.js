@@ -24,6 +24,7 @@ import { getBestAds, deleteAd } from "../../../crud/ads.crud";
 import useStyles from "../styles";
 import FilterModal from "./components/filter/FilterModal";
 import { filterForRequest, isFilterEmpty } from "../../../utils";
+import BidTable from "./components/BidTable"
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -153,55 +154,7 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
           <CustomIcon path={filterIconPath} />
         </IconButton>
       </div>
-      <Table aria-label="simple table" className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <FormattedMessage id="BIDSLIST.TABLE.ID" />
-            </TableCell>
-            <TableCell>
-              <FormattedMessage id="BIDSLIST.TABLE.COST" />
-            </TableCell>
-            <TableCell>
-              <FormattedMessage id="BIDSLIST.TABLE.VOLUME" />
-            </TableCell>
-            <TableCell>
-              <FormattedMessage id="BIDSLIST.TABLE.DESCRIPTION" />
-            </TableCell>
-            <TableCell>
-              <FormattedMessage id="BIDSLIST.TABLE.ACTIONS" />
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {ads &&
-            ads.map &&
-            ads.map(ad => (
-              <TableRow key={ad.id}>
-                <TableCell>{ad.id}</TableCell>
-                <TableCell>{ad.price}</TableCell>
-                <TableCell>{ad.volume}</TableCell>
-                <TableCell>{ad.description}</TableCell>
-                <TableCell>
-                  <Link to={`/bid/edit/${ad.id}`}>
-                    <IconButton size="small">
-                      {isHaveRules(user, ad.vendor.id) ? <EditIcon /> : <VisibilityIcon />}
-                    </IconButton>
-                  </Link>
-                  {isHaveRules(user, ad.vendor.id) && (
-                    <IconButton
-                      size="small"
-                      onClick={() => handleDeleteDialiog(ad.id)}
-                      color="secondary"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+      <BidTable classes={classes} ads={ads} isHaveRules={isHaveRules} handleDeleteDialiog={handleDeleteDialiog} user={user}/>
     </Paper>
   );
 }
