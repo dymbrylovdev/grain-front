@@ -24,7 +24,7 @@ import { getBestAds, deleteAd } from "../../../crud/ads.crud";
 import useStyles from "../styles";
 import FilterModal from "./components/filter/FilterModal";
 import { filterForRequest, isFilterEmpty } from "../../../utils";
-import BidTable from "./components/BidTable"
+import BidTable from "./components/BidTable";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -43,6 +43,10 @@ const useInnerStyles = makeStyles(theme => ({
     textAlign: "right",
     paddingRight: theme.spacing(1),
     paddingLeft: theme.spacing(1),
+  },
+  topSpaceContainer: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2)
   }
 }));
 
@@ -57,15 +61,16 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
   const [numberParams, setNumberParams] = useState([]);
   let { cropId } = match.params;
   cropId = Number.parseInt(cropId);
-  const { ads, user, filter, filters } = useSelector(
+  const { bids, user, filter} = useSelector(
     ({ ads, auth, crops }) => ({
-      ads: ads.bestAds,
+      bids: ads.bestAds,
       user: auth.user,
-      filters: crops.filters,
-      filter: (crops.filters && crops.filters[cropId]) || { crop_id: Number.parseInt(cropId) },
+      filter: (crops.filters && crops.filters[cropId]) || { crop_id: cropId },
     }),
     shallowEqual
   );
+  const equalBids = bids && bids.equal;
+  const inequalBids = bids && bids.inexact;
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
   const handleDeleteDialiog = id => {
@@ -78,7 +83,8 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
     console.log("filterForRequest", requestFilter);
     getBestAds({ filter: filter.crop_id ? requestFilter : {} })
       .then(({ data }) => {
-        data && data.data && data.data.equal && setBestAds(data.data.equal);
+        console.log('bidsData', data.data);
+        data && data.data && setBestAds(data.data);
       })
       .catch(error => console.log("adsError", error));
   };
@@ -154,7 +160,24 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
           <CustomIcon path={filterIconPath} />
         </IconButton>
       </div>
-      <BidTable classes={classes} ads={ads} isHaveRules={isHaveRules} handleDeleteDialiog={handleDeleteDialiog} user={user}/>
+      <BidTable
+        classes={classes}
+        bids={equalBids}
+        isHaveRules={isHaveRules}
+        handleDeleteDialiog={handleDeleteDialiog}
+        user={user}
+        title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
+      />
+      <div className={innerClasses.topSpaceContainer}>
+      <BidTable
+        classes={classes}
+        bids={inequalBids}
+        isHaveRules={isHaveRules}
+        handleDeleteDialiog={handleDeleteDialiog}
+        user={user}
+        title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
+      />
+      </div>
     </Paper>
   );
 }

@@ -58,7 +58,17 @@ const useStyles = makeStyles(theme => ({
         fontSize: 16,
         paddingTop: theme.spacing(2),
         paddingBottom: theme.spacing(2),
-    }  
+    },
+    tableTitle: {
+      fontSize: 14,
+      marginTop: theme.spacing(2),
+    }, 
+    emptyTitle: {
+      fontSize: 12,
+      marginTop: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
+      marginLeft: theme.spacing(4),
+    },   
   }));
 
   export default useStyles;
