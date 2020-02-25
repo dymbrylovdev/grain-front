@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { injectIntl } from "react-intl";
 import { connect, useSelector, shallowEqual } from "react-redux";
-import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import BidForm from "./components/BidForm";
 import useStyles from "../styles";
 import { createAd, editAd } from "../../../crud/ads.crud";
@@ -13,7 +13,6 @@ import * as ads from "../../../store/ducks/ads.duck";
 function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
-  const [backRedirect, setBackRedirect] = useState(false);
   const { crops, user } = useSelector(
     ({ crops, auth }) => ({ crops: crops.crops, user: auth.user }),
     shallowEqual
@@ -24,6 +23,7 @@ function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
   const { bid } = bidSelector(bidId);
   const isEditable = user.is_admin || (bid && bid.vendor && bid.vendor.id === user.id) || !bidId;
   const vendor_id = vendorId || (bid && bid.vendor && bid.vendor.id) || user.id;
+  const history = useHistory();
   const createAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
@@ -38,7 +38,8 @@ function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
               }),
             });
             createAdSuccess();
-            setBackRedirect(true);
+            history.goBack();
+            //setBackRedirect(true);
           }
         })
         .catch(error => {
@@ -58,7 +59,7 @@ function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
 
     setTimeout(() => {
       setLoading(true);
-      editAd(bidId, { ...values, vendor_id })
+      editAd(bidId, { ...values, vendor_id, price: Number.parseInt(values.price), volume: Number.parseInt(values.volume) })
         .then(({ data }) => {
           setLoading(false);
           if (data.data) {
@@ -84,9 +85,6 @@ function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
     }, 1000);
   };
   const submitAction = bid && bid.id ? editAction : createAction;
-  if (backRedirect) {
-    return <Redirect to="/bidsList" />;
-  }
   let title = null;
   if (vendorId) title = `${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [${vendor.login}]`;
   if (bidId) title = intl.formatMessage({ id: "BID.TITLE.EDIT" });

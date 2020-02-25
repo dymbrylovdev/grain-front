@@ -5,6 +5,7 @@
     "MENU.DOCS": "Документы",
     "MENU.LOGOUT": "Выход",
     "SUBMENU.ADS": "Завки на продажу",
+    "SUBMENU.MY_BIDS": "Мои заявки",
     "SUBMENU.GRAIN.CREATE_AD": "Добавить заявку",
     "SUBMENU.USER.LIST": "Список пользователей",
     "SUBMENU.USER.CREATE_USER": "Добавить пользователя",

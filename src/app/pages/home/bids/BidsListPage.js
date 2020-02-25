@@ -3,18 +3,10 @@ import { injectIntl, FormattedMessage } from "react-intl";
 import { connect, useSelector, shallowEqual } from "react-redux";
 import { Link } from "react-router-dom";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Paper,
   IconButton,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import * as ads from "../../../store/ducks/ads.duck";
@@ -107,6 +99,7 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
     deleteAd(deleteBidId)
       .then(() => {
         deleteAdSuccess(deleteBidId);
+        getAdsAction(filter, enumParams, numberParams);
       })
       .catch(error => {
         console.log("deleteUserError", error);

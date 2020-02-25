@@ -21,6 +21,7 @@ const useStyles = makeStyles(theme => ({
       paddingTop: theme.spacing(2)
     },
     tableContainer: {
+      paddingTop: theme.spacing(1),
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
       overflowX: 'auto'

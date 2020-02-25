@@ -28,18 +28,12 @@ export const reducer = persistReducer(
         const { data } = action.payload;
         return { ...state, myAds: data };
       }
-      case actionTypes.EditAdSuccess: {
-        const { data } = action.payload;
-        const { bestAds } = state;
-        const replaceAds = bestAds.map(item => (item.id === data.id ? data : item));
-        return { ...state, bestAds: replaceAds };
-      }
-      case actionTypes.DeleteAdSuccess: {
+      /*case actionTypes.DeleteAdSuccess: {
         const { id } = action.payload;
         const { bestAds } = state;
         const replaceAds = bestAds.filter(item => item.id !== id);
         return { ...state, bestAds: replaceAds };
-      }
+      }*/
       default:
         return state;
     }
@@ -57,6 +51,6 @@ export const actions = {
 export function* saga() {
   yield takeLatest(actionTypes.CreateAdSuccess, function* adsRequested() {
     const { data } = yield getBestAds();
-    yield put(actions.setBestAds(data.data));
+    yield put(actions.setBestAds(data));
   });
 }
