@@ -25,13 +25,11 @@ function MyBidsListPage({ intl, deleteAdSuccess, setMyAds }) {
         getMyAdsAction();
       })
       .catch(error => {
-        console.log("deleteUserError", error);
       });
   };
   const getMyAdsAction = ()=> {
     getMyAds()
       .then(({ data }) => {
-        console.log("myAdsData", data);
         data  && setMyAds(data);
       })
       .catch(error => {
@@ -73,6 +71,7 @@ function MyBidsListPage({ intl, deleteAdSuccess, setMyAds }) {
         handleDeleteDialiog={handleDeleteDialiog}
         user={user}
         title={intl.formatMessage({ id: "SUBMENU.MY_BIDS" })}
+        addUrl={"fromMy"}
       />
     </Paper>
   );

@@ -62,13 +62,7 @@ export const actions = {
 };
 
 export function* saga() {
-  yield takeLatest(actionTypes.logout, function* logoutSaga() {
+  /*yield takeLatest(actionTypes.logout, function* logoutSaga() {
     yield put(cropActions.logout());
-  });
-
-  /*yield takeLatest(actionTypes.UserRequested, function* userRequested() {
-    const { data: user } = yield getUserByToken();
-
-    yield put(actions.fulfillUser(user));
   });*/
 }

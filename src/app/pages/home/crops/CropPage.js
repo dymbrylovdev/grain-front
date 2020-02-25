@@ -18,7 +18,7 @@ function CropPage({ match, editCropSuccess, createCropSuccess, intl }) {
   const [cropParams, setCropParams] = useState([]);
   const classes = useStyles();
   const { crop } = useSelector(({ crops }) => {
-    const filterCrops = crops.crops.filter(item => item.id == cropIdFromUrl);
+    const filterCrops = crops.crops.filter(item => item.id === Number.parseInt(cropIdFromUrl));
     if (filterCrops && filterCrops.length > 0) {
       return { crop: filterCrops[0] };
     }
