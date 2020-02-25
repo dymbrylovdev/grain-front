@@ -2,6 +2,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { put, takeLatest } from "redux-saga/effects";
 import * as routerHelpers from "../../router/RouterHelpers";
+import { actions  as cropActions } from "./crops.duck";
 
 export const actionTypes = {
   Login: "[Login] Action",
@@ -61,13 +62,9 @@ export const actions = {
 };
 
 export function* saga() {
-  /*yield takeLatest(actionTypes.Login, function* loginSaga() {
-    yield put(actions.requestUser());
+  yield takeLatest(actionTypes.logout, function* logoutSaga() {
+    yield put(cropActions.logout());
   });
-
-  yield takeLatest(actionTypes.Register, function* registerSaga() {
-    yield put(actions.requestUser());
-  });*/
 
   /*yield takeLatest(actionTypes.UserRequested, function* userRequested() {
     const { data: user } = yield getUserByToken();

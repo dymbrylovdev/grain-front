@@ -37,6 +37,12 @@ const theme = createMuiTheme(
     /**
      * @see https://material-ui.com/customization/globals/#default-props
      */
+    overrides: {
+      MuiIconButton: {
+        colorSecondary: {
+          color: '#fd397a',
+      }},
+    },
     props: {
       // Name of the component ⚛️
       MuiButtonBase: {

@@ -10,6 +10,7 @@ export const actionTypes = {
     CreateCropSucces: "[CreateCrop] Action",
     EditCropSuccess: "[EditCrop] Action",
     SetFilterForCrop: "[SetFilterForCrop] Action",
+    Logout:  "[CropLogout] Action"
 }
 
 const initialCropState = {
@@ -37,6 +38,9 @@ export const reducer = persistReducer(
           const { filter, cropId} = action.payload;
           return {...state, filters: { ...state.filters, [cropId]:filter}}
         }
+        case actionTypes.Logout: {
+           return initialCropState;
+        }
         default:
           return state;
       }
@@ -47,7 +51,8 @@ export const reducer = persistReducer(
     setCrops: (data, isAdmin) => ({type: actionTypes.SetCropsList, payload: {data, isAdmin}}),
     editCropSuccess: (data) => ({type: actionTypes.EditCropSuccess, payload: {data}}),
     createCropSuccess: () => ({type: actionTypes.CreateCropSucces}),
-    setFilterForCrop: (filter, cropId) => ({type: actionTypes.SetFilterForCrop, payload: {filter, cropId}})
+    setFilterForCrop: (filter, cropId) => ({type: actionTypes.SetFilterForCrop, payload: {filter, cropId}}),
+    logout: ()=> ({type: actionTypes.Logout})
   }
 
 

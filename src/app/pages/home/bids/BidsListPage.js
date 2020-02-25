@@ -42,7 +42,7 @@ const useInnerStyles = makeStyles(theme => ({
     textAlign: "right",
     paddingRight: theme.spacing(1),
     paddingLeft: theme.spacing(1),
-  },
+  }
 }));
 
 const isHaveRules = (user, id) => {
@@ -54,11 +54,13 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [enumParams, setEnumParams] = useState([]);
   const [numberParams, setNumberParams] = useState([]);
-  const { cropId } = match.params;
-  const { ads, user, filter } = useSelector(
+  let { cropId } = match.params;
+  cropId = Number.parseInt(cropId);
+  const { ads, user, filter, filters } = useSelector(
     ({ ads, auth, crops }) => ({
       ads: ads.bestAds,
       user: auth.user,
+      filters: crops.filters,
       filter: (crops.filters && crops.filters[cropId]) || { crop_id: Number.parseInt(cropId) },
     }),
     shallowEqual
@@ -72,8 +74,8 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
   const classes = useStyles();
   const getAdsAction = (filter, enumParams, numberParams) => {
     const requestFilter = filterForRequest(filter, enumParams, numberParams);
-    console.log('filterForRequest', requestFilter);
-    getBestAds({ filter: filter.crop_id ? requestFilter  : {} })
+    console.log("filterForRequest", requestFilter);
+    getBestAds({ filter: filter.crop_id ? requestFilter : {} })
       .then(({ data }) => {
         data && data.data && data.data.equal && setBestAds(data.data.equal);
       })
@@ -84,8 +86,8 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
     getCropParams(cropId)
       .then(({ data }) => {
         if (data && data.data) {
-          const enumData = data.data.filter(item => item.type === "enum")
-          const numberData = data.data.filter(item => item.type === "number")
+          const enumData = data.data.filter(item => item.type === "enum");
+          const numberData = data.data.filter(item => item.type === "number");
           setEnumParams(enumData);
           setNumberParams(numberData);
           getAdsAction(filter, enumData, numberData);
@@ -93,10 +95,6 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
       })
       .catch(error => console.log("getCropParamsError", error));
   }, [cropId, filter]);
-  /*useEffect(() => {
-    getAdsAction(filter, enumParams, numberParams);
-    setFilterForCrop(filter, cropId);
-  }, [cropId, filter]);*/
   const deleteBidAction = () => {
     setAlertOpen(false);
     deleteAd(deleteBidId)
@@ -109,7 +107,7 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
   };
   const filterSubmit = values => {
     setFilterModalOpen(false);
-    setFilterForCrop(values, cropId);
+    setFilterForCrop({ ...values, crop_id: cropId }, cropId);
   };
   const filterTitle = isFilterEmpty(filter, enumParams, numberParams)
     ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
@@ -138,7 +136,7 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
         handleClose={() => setFilterModalOpen(false)}
         classes={classes}
         handleSubmit={filterSubmit}
-        filter={filter}
+        cropId={cropId}
         enumParams={enumParams}
         numberParams={numberParams}
       />
@@ -151,7 +149,7 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
           </Link>
         </div>
         <div className={innerClasses.filterText}>{filterTitle}</div>
-        <IconButton onClick={() => setFilterModalOpen(true)} color="primary">
+        <IconButton onClick={() => setFilterModalOpen(true)}>
           <CustomIcon path={filterIconPath} />
         </IconButton>
       </div>

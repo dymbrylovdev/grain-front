@@ -10,11 +10,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function FilterModal({ isOpen, handleClose, handleSubmit, filter, enumParams, numberParams, classes }) {
+function FilterModal({ isOpen, handleClose, handleSubmit, cropId, enumParams, numberParams, classes }) {
   const innerClasses = useStyles();
   return (
       <div className={innerClasses.container}>
-        <FilterForm classes={classes} handleSubmit={handleSubmit} filter={filter} enumParams={enumParams} numberParams={numberParams} isOpen={isOpen} handleClose={handleClose}/>
+        <FilterForm classes={classes} handleSubmit={handleSubmit}  cropId={cropId} enumParams={enumParams} numberParams={numberParams} isOpen={isOpen} handleClose={handleClose}/>
       </div>
 
   );
