@@ -1,5 +1,4 @@
 import React from "react";
-import { Icon } from "@material-ui/core";
 import { toAbsoluteUrl } from "../../../../_metronic/utils/utils";
 import { makeStyles } from "@material-ui/core";
 

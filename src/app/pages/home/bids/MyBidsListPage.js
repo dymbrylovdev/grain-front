@@ -6,10 +6,11 @@ import { Link } from "react-router-dom";
 import useStyles from "../styles";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import * as ads from "../../../store/ducks/ads.duck";
-import { deleteAd, getMyAds } from "../../../crud/ads.crud";
+import { deleteAd } from "../../../crud/ads.crud";
+import Preloader from "../../../components/ui/Loaders/Preloader";
 import BidTable from "./components/BidTable";
 
-function MyBidsListPage({ intl, deleteAdSuccess, setMyAds }) {
+function MyBidsListPage({ intl, deleteAdSuccess, getMyAds }) {
   const classes = useStyles();
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
@@ -28,21 +29,16 @@ function MyBidsListPage({ intl, deleteAdSuccess, setMyAds }) {
       });
   };
   const getMyAdsAction = ()=> {
-    getMyAds()
-      .then(({ data }) => {
-        data  && setMyAds(data);
-      })
-      .catch(error => {
-        console.log("getMyAdsError", error);
-      });
+    getMyAds();
   }
   useEffect(() => {
     getMyAdsAction();
   }, []);
-  const { myBids, user } = useSelector(
-    ({ ads, auth }) => ({ myBids: ads.myAds && ads.myAds.list, user: auth.user }),
+  const { myBids, user, loading } = useSelector(
+    ({ ads, auth }) => ({ myBids: ads.myAds && ads.myAds.list, user: auth.user, loading: ads.myAds && ads.myAds.loading }),
     shallowEqual
   );
+  if (loading) return (<Preloader/>)
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog

@@ -12,10 +12,11 @@ import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import * as ads from "../../../store/ducks/ads.duck";
 import * as crops from "../../../store/ducks/crops.duck";
 import { getCropParams } from "../.././../crud/crops.crud";
-import { getBestAds, deleteAd } from "../../../crud/ads.crud";
+import { deleteAd } from "../../../crud/ads.crud";
 import useStyles from "../styles";
 import FilterModal from "./components/filter/FilterModal";
 import { filterForRequest, isFilterEmpty } from "../../../utils";
+import Preloader from "../../../components/ui/Loaders/Preloader";
 import BidTable from "./components/BidTable";
 
 const useInnerStyles = makeStyles(theme => ({
@@ -46,18 +47,19 @@ const isHaveRules = (user, id) => {
   return user.is_admin || user.id === Number.parseInt(id);
 };
 
-function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCrop }) {
+function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCrop }) {
   const innerClasses = useInnerStyles();
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [enumParams, setEnumParams] = useState([]);
   const [numberParams, setNumberParams] = useState([]);
   let { cropId } = match.params;
   cropId = Number.parseInt(cropId);
-  const { bids, user, filter} = useSelector(
+  const { bids, user, filter, loading} = useSelector(
     ({ ads, auth, crops }) => ({
       bids: ads.bestAds,
       user: auth.user,
       filter: (crops.filters && crops.filters[cropId]) || { crop_id: cropId },
+      loading: ads.bestAds && ads.bestAds.loading,
     }),
     shallowEqual
   );
@@ -73,12 +75,7 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
   const getAdsAction = (filter, enumParams, numberParams) => {
     const requestFilter = filterForRequest(filter, enumParams, numberParams);
     console.log("filterForRequest", requestFilter);
-    getBestAds({ filter: filter.crop_id ? requestFilter : {} })
-      .then(({ data }) => {
-        console.log('bidsData', data.data);
-        data && data.data && setBestAds(data.data);
-      })
-      .catch(error => console.log("adsError", error));
+    getBestAds({filter: filter.crop_id ? requestFilter : {}});
   };
   useEffect(() => {
     setFilterForCrop(filter, cropId);
@@ -115,6 +112,7 @@ function BidsListPage({ setBestAds, deleteAdSuccess, intl, match, setFilterForCr
   const filterIconPath = isFilterEmpty(filter, enumParams, numberParams)
     ? "/media/filter/filter.svg"
     : "/media/filter/filter_full.svg";
+  if (loading) return <Preloader/>  
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog
