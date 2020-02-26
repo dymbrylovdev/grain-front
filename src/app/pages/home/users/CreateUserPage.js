@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { injectIntl } from "react-intl";
 import { Redirect } from "react-router-dom";
-import * as users from "../../../store/ducks/users.duck";
+import * as locations from "../../../store/ducks/locations.duck";
 import { createUser } from "../../../crud/users.crud";
 import useStyles from "./styles";
 import UserForm from "./components/UserForm";
 
-function CreateUserPage({ intl, fetchLocationsRequest, clearFoundResult }) {
+function CreateUserPage({ intl, fetchLocationsRequest, clearLocations }) {
   const [loading, setLoading] = useState(false);
   const [backRedirect, setBackRedirect] = useState(false);
   const user = {};
@@ -50,7 +50,7 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearFoundResult }) {
   return (
     <UserForm
       fetchLocations={fetchLocationsRequest}
-      clearFoundResult={clearFoundResult}
+      clearLocations={clearLocations}
       user={user}
       classes={classes}
       loading={loading}
@@ -60,4 +60,4 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearFoundResult }) {
   );
 }
 
-export default injectIntl(connect(null, users.actions)(CreateUserPage));
+export default injectIntl(connect(null, locations.actions)(CreateUserPage));

@@ -63,6 +63,9 @@ const Autocomplete: React.FC<IProps> = ({
       filterOptions={options => options}
       disabled={!editableLocation}
       defaultValue={defaultValue}
+      onInputChange={(_e: any, _val: any, reason: any) => {
+        if (reason === 'clear') setSelectedLocation(null);
+      }}
       renderInput={(params: any) => (
         <TextField
           {...params}
