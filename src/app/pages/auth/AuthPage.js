@@ -10,6 +10,9 @@ import Registration from "./Registration";
 import ForgotPassword from "./ForgotPassword";
 import useFetch from "../../hooks/useFetch";
 
+const agreementStyle= {
+  color: 'black',
+};
 export default function AuthPage() {
   const [openUserAgreement, setOpenUserAgreement] = useState(false);
   const [{ response }, requestUserAgreement] = useFetch("api/_public/document/user_agreement");
@@ -64,7 +67,7 @@ export default function AuthPage() {
                         <DialogContent>
                           <DialogContentText id="alert-dialog-description">
                             {response ? (
-                              <div dangerouslySetInnerHTML={{ __html: response.data.text }} />
+                              <div dangerouslySetInnerHTML={{ __html: response.data.text }}  style={agreementStyle}/>
                             ) : (
                               "Loading..."
                             )}
