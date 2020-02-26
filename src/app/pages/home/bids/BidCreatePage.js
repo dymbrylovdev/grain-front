@@ -26,13 +26,16 @@ function BidCreatePage({
     ({ crops, auth }) => ({ crops: crops.crops, user: auth.user }),
     shallowEqual
   );
-  const by = (match.url.indexOf("fromMy")!==-1  && "fromMy") || (match.url.indexOf("fromAdmin")!==-1  && "fromAdmin");
+  const by =
+    (match.url.indexOf("fromMy") !== -1 && "fromMy") ||
+    (match.url.indexOf("fromAdmin") !== -1 && "fromAdmin");
   const vendorId = match.params.vendorId;
   const bidId = match.params.bidId;
   const { user: vendor } = userSelector(vendorId);
   const { bid } = bidSelector(bidId, by);
   const isEditable = user.is_admin || (bid && bid.vendor && bid.vendor.id === user.id) || !bidId;
   const vendor_id = vendorId || (bid && bid.vendor && bid.vendor.id) || user.id;
+  const isNoModerate = !vendorId && !bidId && user.is_vendor && user.status === "На модерации";
   const history = useHistory();
   const createAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
@@ -107,16 +110,20 @@ function BidCreatePage({
   return (
     <>
       {title && <LayoutSubheader title={title} />}
-      <BidForm
-        classes={classes}
-        loading={loading}
-        submitAction={submitAction}
-        crops={crops}
-        bid={bid}
-        isEditable={isEditable}
-        fetchLocations={fetchLocationsRequest}
-        clearLocations={clearLocations}
-      />
+      {isNoModerate ? (
+        <div className={classes.titleText}>{intl.formatMessage({ id: "BID.STATUS.NO_MODERATE" })}</div>
+      ) : (
+        <BidForm
+          classes={classes}
+          loading={loading}
+          submitAction={submitAction}
+          crops={crops}
+          bid={bid}
+          isEditable={isEditable}
+          fetchLocations={fetchLocationsRequest}
+          clearLocations={clearLocations}
+        />
+      )}
     </>
   );
 }

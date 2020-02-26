@@ -238,8 +238,11 @@ function BidForm({
                     value={values[`parameter${cropParam.id}`]}
                     variant="outlined"
                     onBlur={handleBlur}
-                    onChange={handleChange}
                     disabled={!isEditable}
+                    onChange={handleChange(`parameter${cropParam.id}`)}
+                    InputProps={{
+                      inputComponent: NumberFormatCustom,
+                    }}
                   />
                 ) : (
                   <TextField

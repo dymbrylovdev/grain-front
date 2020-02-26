@@ -41,7 +41,7 @@ export function filterForRequest(data, enumParams, numberParams) {
     filter.max_full_price = data.max_full_price;
   }
   if (data.max_destination) {
-    filter.max_destination = data.max_destination;
+    filter.max_distance = data.max_destination;
   }
   const parameter_values = [];
   enumParams &&
