@@ -17,11 +17,11 @@ function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
     ({ crops, auth }) => ({ crops: crops.crops, user: auth.user }),
     shallowEqual
   );
-  const fromMy = match.url.indexOf("fromMy")!==-1;
+  const by = (match.url.indexOf("fromMy")!==-1  && "fromMy") || (match.url.indexOf("fromAdmin")!==-1  && "fromAdmin");
   const vendorId = match.params.vendorId;
   const bidId = match.params.bidId;
   const { user: vendor } = userSelector(vendorId);
-  const { bid } = bidSelector(bidId, fromMy);
+  const { bid } = bidSelector(bidId, by);
   const isEditable = user.is_admin || (bid && bid.vendor && bid.vendor.id === user.id) || !bidId;
   const vendor_id = vendorId || (bid && bid.vendor && bid.vendor.id) || user.id;
   const history = useHistory();

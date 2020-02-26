@@ -13,8 +13,20 @@ import { Link } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import Footer from "../../../../components/ui/Table/TableFooter";
 
-function BidTable({ intl, classes, bids, isHaveRules, handleDeleteDialiog, user, title, addUrl }) {
+function BidTable({
+  intl,
+  classes,
+  bids,
+  isHaveRules,
+  handleDeleteDialiog,
+  user,
+  title,
+  addUrl,
+  paginationData,
+}) {
+    const fromAdmin = addUrl === "fromAdmin";
   return (
     <>
       {title && <div className={classes.tableTitle}>{title}</div>}
@@ -34,6 +46,9 @@ function BidTable({ intl, classes, bids, isHaveRules, handleDeleteDialiog, user,
               <TableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.DESCRIPTION" />
               </TableCell>
+              {fromAdmin &&               <TableCell>
+                <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
+              </TableCell>}
               <TableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
               </TableCell>
@@ -52,6 +67,7 @@ function BidTable({ intl, classes, bids, isHaveRules, handleDeleteDialiog, user,
                 <TableCell>{bid.price}</TableCell>
                 <TableCell>{bid.volume}</TableCell>
                 <TableCell>{bid.description}</TableCell>
+                {fromAdmin &&  <TableCell>{`${bid.vendor.login} ${bid.vendor.company}`}</TableCell>}
                 <TableCell>{bid.distance || "-"}</TableCell>
                 <TableCell>{bid.price_with_delivery || "-"}</TableCell>
                 <TableCell>
@@ -73,6 +89,15 @@ function BidTable({ intl, classes, bids, isHaveRules, handleDeleteDialiog, user,
               </TableRow>
             ))}
           </TableBody>
+          {paginationData && (
+            <Footer
+              page={paginationData.page - 1}
+              perPage={paginationData.per_page || 0}
+              total={paginationData.total || 0}
+              handleChangePage={paginationData.handleChangePage}
+              fromLabel={intl.formatMessage({ id: "TABLE.FROM.LABEL" })}
+            />
+          )}
         </Table>
       )}
       {(!bids || bids.length === 0) && (

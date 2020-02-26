@@ -34,7 +34,7 @@ export default (url: string) => {
       })
       .catch(error => {
         if (!skipGetResponseAfterDestroy) {
-          setError(error.response.data);
+          setError(error.response && error.response.data);
           setIsLoading(false);
         }
       });

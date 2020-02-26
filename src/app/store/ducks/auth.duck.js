@@ -62,7 +62,7 @@ export const actions = {
 };
 
 export function* saga() {
-  /*yield takeLatest(actionTypes.logout, function* logoutSaga() {
+  yield takeLatest(actionTypes.Logout, function* logoutSaga() {
     yield put(cropActions.logout());
-  });*/
+  });
 }

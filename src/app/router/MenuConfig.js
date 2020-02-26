@@ -45,6 +45,19 @@ const getAdminMenu = crops => ({
             page: "myBidsList",
             translate: "SUBMENU.MY_BIDS",
           },
+          {
+            title: "Все заявки",
+            root: true,
+            page: "",
+            translate: "SUBMENU.ALL_BIDS",
+            bullet: "dot",
+            submenu: crops.map(crop => ({
+              title: crop.name,
+              root: true,
+              page: `allBidsList/${crop.id}`,
+              translate: crop.name,
+            })),
+          },
         ],
       },
       {
@@ -168,6 +181,12 @@ const getBuyerMenu = crops => ({
             root: true,
             page: "bid/create",
             translate: "SUBMENU.GRAIN.CREATE_AD",
+          },
+          {
+            title: "Мои заявки",
+            root: true,
+            page: "myBidsList",
+            translate: "SUBMENU.MY_BIDS",
           },
         ],
       },

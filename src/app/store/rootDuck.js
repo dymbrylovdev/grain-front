@@ -19,5 +19,5 @@ export const rootReducer = combineReducers({
 });
 
 export function* rootSaga() {
-  yield all([auth.saga, users.saga, crops.saga].map(saga => fork(saga)));
+  yield all([auth.saga, users.saga, crops.saga, ads.saga].map(saga => fork(saga)));
 }

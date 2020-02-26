@@ -1,13 +1,11 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
-import Builder from "./Builder";
-import DocsPage from "./docs/DocsPage";
 import { LayoutSplashScreen } from "../../../_metronic";
 import getMenuConfig from "../../router/MenuConfig";
 import UserDocPage from "./userDocs/UserDocPage";
 import { useSelector, shallowEqual, connect } from "react-redux";
 import { ProfilePage, UserListPage, CreateUserPage, EditUserPage } from "./users";
-import { BidsListPage, BidCreatePage, MyBidsListPage } from "./bids";
+import { BidsListPage, BidCreatePage, MyBidsListPage, AllBidsPage } from "./bids";
 import { CropsListPage, CropPage } from "./crops";
 import * as builder from "../../../_metronic/ducks/builder";
 import * as crops from "../../store/ducks/crops.duck";
@@ -36,10 +34,8 @@ function HomePage({ setMenuConfig, setCrops }) {
       <Switch>
         {
           /* Redirect from root URL to /dashboard. */
-          <Redirect exact from="/" to="/bidsList/1" />
+          <Redirect exact from="/" to="/myBidsList" />
         }
-        <Route path="/builder" component={Builder} />
-        <Route path="/docs" component={DocsPage} />
         <Route path="/userDocs/legacy" component={UserDocPage} />
         <Route path="/user/profile" exact component={ProfilePage} />
         <Route path="/userList" component={UserListPage} />
@@ -47,16 +43,16 @@ function HomePage({ setMenuConfig, setCrops }) {
         <Route path="/user/edit/:id" component={EditUserPage} />
         <Route path="/bidsList" exact component={BidsListPage} />
         <Route path="/myBidsList" exact component={MyBidsListPage} />
-        <Route path="/bidsList/:cropId" component={BidsListPage} />
+        <Route path="/bidsList/:cropId" exact component={BidsListPage} />
         <Route path="/bid/create"  exact component={BidCreatePage} />
         <Route path="/bid/create/:vendorId" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId" exact component={BidCreatePage} />
         <Route path="/bid/edit/:bidId/fromMy" component={BidCreatePage} />
+        <Route path="/bid/edit/:bidId/fromAdmin" component={BidCreatePage} />
+        <Route path='/allBidsList/:cropId' component={AllBidsPage}/>
         <Route path ="/cropList" component={CropsListPage}/>
         <Route path="/crop/create" component={CropPage}/>
         <Route path="/crop/edit/:id" component={CropPage}/>
-
-
       </Switch>
     </Suspense>
   );
