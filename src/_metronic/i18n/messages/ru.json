@@ -115,8 +115,8 @@
     "CROP.FORM.PARAM_SAVE":"Сохранить параметр",
     "CROP.FORM.PARAM_ADD":"Добавить параметр",
     "CROP.STATUS.ALARM": "На данный момент удаление культуры и параметров невозможно. Возможно изменение названия культуры и названий параметров культуры.",
-    "FILTER.FORM.MAX_PRICE": "Максиммальная цена",
-    "FILTER.FORM.MAX_DESTINATION": "Максиммальное расстояние",
+    "FILTER.FORM.MAX_PRICE": "Максимальная стоимость с учётом доставки",
+    "FILTER.FORM.MAX_DESTINATION": "Максимальное расстояние",
     "FILTER.FORM.BUTTON.SUBMIT": "Применить фильтр",
     "FILTER.FORM.BUTTON.RESET": "Очистить фильтр",
     "FILTER.BUTTON.CLOSE": "Закрыть"
