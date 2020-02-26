@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
-import { TextField, CircularProgress, MenuItem } from "@material-ui/core";
+import { TextField, CircularProgress, MenuItem, Box } from "@material-ui/core";
 import { Formik } from "formik";
 import { Paper } from "@material-ui/core";
 import NumberFormat from "react-number-format";
 import * as Yup from "yup";
 import { useSelector } from "react-redux";
-
+import { makeStyles } from "@material-ui/styles";
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
@@ -19,6 +19,7 @@ const getInitialValues = (bid, crop) => {
     description: bid.description || "",
     crop: crop,
     location: bid.location || {},
+    pricePerKm: bid.price_delivery_per_km,
   };
   if (bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.map(item => {
@@ -27,6 +28,35 @@ const getInitialValues = (bid, crop) => {
   }
   return values;
 };
+
+const getFinalPrice = (bid, pricePerKm) => {
+  console.log("myBid", bid);
+
+  return bid.price * bid.volume + pricePerKm * bid.distance;
+};
+
+const useInnerStyles = makeStyles(theme => ({
+  calcTitle: {
+    fontSize: 14,
+    marginBottom: theme.spacing(2),
+  },
+  calcDescriptionContainer: {
+    display: "flex",
+    marginTop: theme.spacing(2),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent:"center"
+  },
+  calcDescription: {
+    fontSize: 14,
+    paddingRight: theme.spacing(1),
+  },
+  calcFinalPrice: {
+    fontSize: 14,
+    fontWeight: "bold",
+    flex: 1,
+  },
+}));
 
 function NumberFormatCustom(props) {
   const { inputRef, onChange, ...other } = props;
@@ -54,6 +84,7 @@ function BidForm({
   fetchLocations,
   clearLocations,
 }) {
+  const innerClasses = useInnerStyles();
   const [cropParams, setCropParams] = useState([]);
   const [isParamLoading, setCropParamLoading] = useState(false);
 
@@ -167,6 +198,41 @@ function BidForm({
                 }}
                 disabled={!isEditable}
               />
+              {!isEditable && (
+                <Box
+                  className={classes.paramContainer}
+                  border={1}
+                  borderColor="#eeeeee"
+                  borderRadius={5}
+                >
+                  <div className={innerClasses.calcTitle}>
+                    {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}  `}
+                  </div>
+                  <TextField
+                    type="text"
+                    label={intl.formatMessage({
+                      id: "BID.CALCULATOR.PRICE_PER_KM",
+                    })}
+                    margin="normal"
+                    name="pricePerKm"
+                    value={values.pricePerKm}
+                    variant="outlined"
+                    onBlur={handleBlur}
+                    onChange={handleChange("pricePerKm")}
+                    InputProps={{
+                      inputComponent: NumberFormatCustom,
+                    }}
+                  />
+                  <div className={innerClasses.calcDescriptionContainer}>
+                    <div className={innerClasses.calcDescription}>
+                      {`${intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}`}
+                    </div>
+                    <div className={innerClasses.calcFinalPrice}>
+                      {getFinalPrice(bid, values.pricePerKm)}
+                    </div>
+                  </div>
+                </Box>
+              )}
               <TextField
                 type="text"
                 label={intl.formatMessage({
@@ -199,6 +265,7 @@ function BidForm({
                 fetchLocations={fetchLocations}
                 clearLocations={clearLocations}
                 setSelectedLocation={setSelectedLocation}
+                disable={!isEditable}
               />
 
               <div className={classes.textFieldContainer}>

@@ -16,6 +16,7 @@ interface IProps {
   loading: boolean;
   inputError: boolean;
   inputHelperText: any;
+  disable: boolean;
   handleBlur: () => {};
   fetchLocations: (location: string) => {};
   clearLocations: () => {};
@@ -35,6 +36,7 @@ const Autocomplete: React.FC<IProps> = ({
   fetchLocations,
   clearLocations,
   setSelectedLocation,
+  disable
 }) => {
   const [editableLocation, setEditableLocation] = useState(editable);
   const [location, setLocation] = useState("");
@@ -85,7 +87,7 @@ const Autocomplete: React.FC<IProps> = ({
             endAdornment: (
               <>
                 {loading && <CircularProgress color="inherit" size={20} />}
-                {!editableLocation && (
+                {!editableLocation && !disable &&  (
                   <IconButton
                     onClick={() => {
                       setEditableLocation(!editableLocation);
