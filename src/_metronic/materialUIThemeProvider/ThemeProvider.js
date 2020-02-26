@@ -1,6 +1,6 @@
-import React from 'react';
-import { createMuiTheme } from '@material-ui/core';
-import { ThemeProvider as MuiThemeProvider } from '@material-ui/styles';
+import React from "react";
+import { createMuiTheme } from "@material-ui/core";
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/styles";
 
 const theme = createMuiTheme(
   /**
@@ -9,28 +9,30 @@ const theme = createMuiTheme(
   {
     // direction: "rtl",
     typography: {
-      fontFamily: ['Open Sans'].join(','),
+      fontFamily: ["Open Sans"].join(","),
     },
 
     palette: {
-      contrastThreshold: 2,
+      contrastThreshold: 3,
       primary: {
         // light: will be calculated from palette.primary.main,
-        main: '#5d78ff',
+        main: "#5d78ff",
         // dark: will be calculated from palette.primary.main,
         // contrastText: will be calculated to contrast with palette.primary.main
+        contrastText: "#fff",
       },
       secondary: {
         // light: will be calculated from palette.primary.main,
-        main: '#0abb87',
+        main: "#0abb87",
         // dark: will be calculated from palette.primary.main,
-        contrastText: '#ffffff',
+        contrastText: "#fff",
       },
       error: {
         // light: will be calculated from palette.primary.main,
-        main: '#fd397a',
+        main: "#fd397a",
         // dark: will be calculated from palette.primary.main,
         // contrastText: will be calculated to contrast with palette.primary.main
+        contrastText: "#fff",
       },
     },
 
@@ -40,8 +42,9 @@ const theme = createMuiTheme(
     overrides: {
       MuiIconButton: {
         colorSecondary: {
-          color: '#fd397a',
-      }},
+          color: "#fd397a",
+        },
+      },
     },
     props: {
       // Name of the component ⚛️
