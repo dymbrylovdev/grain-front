@@ -45,7 +45,7 @@ const useInnerStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:"center"
+    justifyContent: "center",
   },
   calcDescription: {
     fontSize: 14,

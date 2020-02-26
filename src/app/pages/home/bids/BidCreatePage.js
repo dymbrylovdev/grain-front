@@ -40,7 +40,7 @@ function BidCreatePage({
   const createAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
-      createAd({ ...values, vendor_id })
+      createAd({ ...values, vendor_id: Number(vendor_id) })
         .then(({ data }) => {
           setLoading(false);
           if (data.data) {
@@ -111,7 +111,9 @@ function BidCreatePage({
     <>
       {title && <LayoutSubheader title={title} />}
       {isNoModerate ? (
-        <div className={classes.titleText}>{intl.formatMessage({ id: "BID.STATUS.NO_MODERATE" })}</div>
+        <div className={classes.titleText}>
+          {intl.formatMessage({ id: "BID.STATUS.NO_MODERATE" })}
+        </div>
       ) : (
         <BidForm
           classes={classes}
