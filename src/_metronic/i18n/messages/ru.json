@@ -91,7 +91,7 @@
     "BIDLIST.NO_BIDS": "Заявок не найдено",
     "BIDLIST.TITLE.NO_FULL": "Заявки с неполными данными",
     "BID.STATUS.CREATE_SUCCESS": "Заявка успешно добавлена",
-    "BID.STATUS.EDIT_SUCCESS": "Заявка успещно сохранена",
+    "BID.STATUS.EDIT_SUCCESS": "Заявка успешно сохранена",
     "BID.STATUS.ERROR": "Ошибка добавления заявки",
     "BID.TITLE.BY_VENDOR": "Добавление заявки от имени пользователя",
     "BID.TITLE.EDIT" : "Редактирование заявки",
