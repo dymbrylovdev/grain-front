@@ -95,6 +95,7 @@
     "BID.STATUS.ERROR": "Ошибка добавления заявки",
     "BID.TITLE.BY_VENDOR": "Добавление заявки от имени пользователя",
     "BID.TITLE.EDIT" : "Редактирование заявки",
+    "BID.STATUS.NO_MODERATE": "Создание заявки доступно только для пользователей, которые прошли модерацию",
     "USERDOC.BUTTON.SAVE": "Сохранить",
     "USERDOC.BUTTON.CREATE": "Создать",
     "CROPSLIST.TABLE.ID": "Id",

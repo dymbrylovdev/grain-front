@@ -160,7 +160,7 @@ const getBuyerMenu = crops => ({
         title: "Рынок зерна",
         root: true,
         icon: "flaticon2-architecture-and-city",
-        page: "bidList/1",
+        page: "",
         translate: "MENU.GRAIN",
         submenu: [
           {
