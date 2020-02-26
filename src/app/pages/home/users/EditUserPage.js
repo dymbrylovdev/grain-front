@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { connect, useSelector, shallowEqual } from "react-redux";
 import { injectIntl } from "react-intl";
 import * as users from "../../../store/ducks/users.duck";
+import * as locations from "../../../store/ducks/locations.duck";
 import { editUser } from "../../../crud/users.crud";
 import useStyles from "./styles";
 import UserForm from "./components/UserForm";
 
-function EditUserPage({ intl, editUserSuccess, fetchLocationsRequest, match, clearFoundResult }) {
+function EditUserPage({ intl, editUserSuccess, fetchLocationsRequest, match, clearLocations }) {
   const [loading, setLoading] = useState(false);
   const id = match.params.id;
 
@@ -50,7 +51,7 @@ function EditUserPage({ intl, editUserSuccess, fetchLocationsRequest, match, cle
   return (
     <UserForm
       fetchLocations={fetchLocationsRequest}
-      clearFoundResult={clearFoundResult}
+      clearLocations={clearLocations}
       user={user}
       classes={classes}
       loading={loading}
@@ -60,4 +61,4 @@ function EditUserPage({ intl, editUserSuccess, fetchLocationsRequest, match, cle
   );
 }
 
-export default injectIntl(connect(null, users.actions)(EditUserPage));
+export default injectIntl(connect(null, { ...users.actions, ...locations.actions })(EditUserPage));

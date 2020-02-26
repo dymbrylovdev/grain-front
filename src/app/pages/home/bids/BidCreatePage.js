@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { injectIntl } from "react-intl";
 import { connect, useSelector, shallowEqual } from "react-redux";
 import { useHistory } from "react-router-dom";
+
 import BidForm from "./components/BidForm";
 import useStyles from "../styles";
 import { createAd, editAd } from "../../../crud/ads.crud";
@@ -9,15 +10,23 @@ import userSelector from "../../../store/selectors/user";
 import bidSelector from "../../../store/selectors/bid";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import * as ads from "../../../store/ducks/ads.duck";
+import * as locations from "../../../store/ducks/locations.duck";
 
-function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
+function BidCreatePage({
+  intl,
+  createAdSuccess,
+  match,
+  editAdSuccess,
+  fetchLocationsRequest,
+  clearLocations,
+}) {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const { crops, user } = useSelector(
     ({ crops, auth }) => ({ crops: crops.crops, user: auth.user }),
     shallowEqual
   );
-  const fromMy = match.url.indexOf("fromMy")!==-1;
+  const fromMy = match.url.indexOf("fromMy") !== -1;
   const vendorId = match.params.vendorId;
   const bidId = match.params.bidId;
   const { user: vendor } = userSelector(vendorId);
@@ -60,7 +69,12 @@ function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
 
     setTimeout(() => {
       setLoading(true);
-      editAd(bidId, { ...values, vendor_id, price: Number.parseInt(values.price), volume: Number.parseInt(values.volume) })
+      editAd(bidId, {
+        ...values,
+        vendor_id,
+        price: Number.parseInt(values.price),
+        volume: Number.parseInt(values.volume),
+      })
         .then(({ data }) => {
           setLoading(false);
           if (data.data) {
@@ -89,6 +103,7 @@ function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
   let title = null;
   if (vendorId) title = `${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [${vendor.login}]`;
   if (bidId) title = intl.formatMessage({ id: "BID.TITLE.EDIT" });
+
   return (
     <>
       {title && <LayoutSubheader title={title} />}
@@ -99,9 +114,11 @@ function BidCreatePage({ intl, createAdSuccess, match, editAdSuccess }) {
         crops={crops}
         bid={bid}
         isEditable={isEditable}
+        fetchLocations={fetchLocationsRequest}
+        clearLocations={clearLocations}
       />
     </>
   );
 }
 
-export default injectIntl(connect(null, ads.actions)(BidCreatePage));
+export default injectIntl(connect(null, { ...ads.actions, ...locations.actions })(BidCreatePage));

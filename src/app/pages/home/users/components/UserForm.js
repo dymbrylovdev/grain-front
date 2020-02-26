@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
-import { TextField, MenuItem, Paper, CircularProgress, IconButton } from "@material-ui/core";
+import { TextField, MenuItem, Paper } from "@material-ui/core";
 import { useSelector, shallowEqual } from "react-redux";
 import { Formik, Form } from "formik";
-import { Autocomplete } from "@material-ui/lab";
 import * as Yup from "yup";
-import EditIcon from "@material-ui/icons/Edit";
 
+import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 
@@ -41,7 +40,7 @@ const roles = [admin, buyer, vendor];
 
 function UserForm({
   fetchLocations,
-  clearFoundResult,
+  clearLocations,
   user,
   classes,
   loading,
@@ -51,20 +50,8 @@ function UserForm({
   intl,
 }) {
   const statuses = useSelector(({ users: { statuses } }) => statuses, shallowEqual);
-  const locations = useSelector(state => state.users.locations);
-  const isLoadingLocations = useSelector(state => state.users.isLoadingLocations);
+  const { locations, isLoadingLocations } = useSelector(state => state.locations);
   const [selectedLocation, setSelectedLocation] = useState(null);
-  const [editableLocation, setEditableLocation] = useState(!(user.location && user.location.text));
-
-  const [location, setLocation] = useState("");
-
-  useEffect(() => {
-    clearFoundResult();
-  }, [clearFoundResult]);
-
-  useEffect(() => {
-    fetchLocations(location);
-  }, [fetchLocations, location]);
 
   return (
     <Paper className={classes.container}>
@@ -96,17 +83,7 @@ function UserForm({
             delete values.login;
           }
           if (selectedLocation) {
-            const { lat, lng, city, country, province, street, house, text } = selectedLocation;
-            values.location = {
-              lat: parseFloat(lat),
-              lng: parseFloat(lng),
-              city,
-              country,
-              province,
-              street,
-              house,
-              text,
-            };
+            values.location = { ...selectedLocation };
           } else {
             delete values.location;
           }
@@ -269,62 +246,22 @@ function UserForm({
                 helperText={touched.company && errors.company}
                 error={Boolean(touched.company && errors.company)}
               />
-              <Autocomplete
-                id="location"
-                debug
+              <AutocompleteLocations
                 options={locations}
                 loading={isLoadingLocations}
-                getOptionLabel={option => option.text}
-                onChange={(e, val) => {
-                  if (val) {
-                    setSelectedLocation(val);
-                    setEditableLocation(false);
-                  }
-                }}
-                filterOptions={options => options}
-                disabled={!editableLocation}
-                noOptionsText="Введите место"
                 defaultValue={{
                   text: user.location && user.location.text ? user.location.text : "",
                 }}
-                renderInput={params => (
-                  <TextField
-                    {...params}
-                    type="text"
-                    label={intl.formatMessage({
-                      id: "PROFILE.INPUT.LOCATION",
-                    })}
-                    value={location}
-                    margin="normal"
-                    className={classes.textField}
-                    name="location"
-                    variant="outlined"
-                    onBlur={handleBlur}
-                    onChange={e => setLocation(e.target.value)}
-                    helperText={touched.location && errors.location}
-                    error={Boolean(touched.location && errors.location)}
-                    InputProps={{
-                      ...params.InputProps,
-                      endAdornment: (
-                        <React.Fragment>
-                          {isLoadingLocations && <CircularProgress color="inherit" size={20} />}
-                          {!editableLocation && (
-                            <IconButton
-                              onClick={() => {
-                                setEditableLocation(!editableLocation);
-                              }}
-                              size="small"
-                            >
-                              <EditIcon fontSize="small" size={15} />
-                            </IconButton>
-                          )}
-
-                          {params.InputProps.endAdornment}
-                        </React.Fragment>
-                      ),
-                    }}
-                  />
-                )}
+                label={intl.formatMessage({
+                  id: "PROFILE.INPUT.LOCATION",
+                })}
+                editable={!(user.location && user.location.text)}
+                inputClassName={classes.textField}
+                inputError={Boolean(touched.location && errors.location)}
+                inputHelperText={touched.location && errors.location}
+                fetchLocations={fetchLocations}
+                clearLocations={clearLocations}
+                setSelectedLocation={setSelectedLocation}
               />
 
               <TextField
