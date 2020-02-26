@@ -22,8 +22,8 @@ export function dataToEntities(data) {
         street: getAdressComponentName("street", addressComponents),
         house: getAdressComponentName("house", addressComponents),
         text: metaData.text,
-        lat: position[0],
-        lng: position[1],
+        lat: parseFloat(position[0]),
+        lng: parseFloat(position[1]),
       };
 
       return address;

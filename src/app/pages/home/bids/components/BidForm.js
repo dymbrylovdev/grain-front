@@ -5,6 +5,9 @@ import { Formik } from "formik";
 import { Paper } from "@material-ui/core";
 import NumberFormat from "react-number-format";
 import * as Yup from "yup";
+import { useSelector } from "react-redux";
+
+import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import { getCropParams } from "../../../../crud/crops.crud";
@@ -15,6 +18,7 @@ const getInitialValues = (bid, crop) => {
     price: bid.price || "",
     description: bid.description || "",
     crop: crop,
+    location: bid.location || {},
   };
   if (bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.map(item => {
@@ -39,11 +43,26 @@ function NumberFormatCustom(props) {
   );
 }
 
-function BidForm({ loading, submitAction, intl, classes, crops, bid, isEditable }) {
+function BidForm({
+  loading,
+  submitAction,
+  intl,
+  classes,
+  crops,
+  bid,
+  isEditable,
+  fetchLocations,
+  clearLocations,
+}) {
   const [cropParams, setCropParams] = useState([]);
   const [isParamLoading, setCropParamLoading] = useState(false);
+
+  const { locations, isLoadingLocations } = useSelector(state => state.locations);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+
   const filterCrops = crops.filter(item => item.id === bid.crop_id);
   const currentCrop = filterCrops && filterCrops.length > 0 ? filterCrops[0] : null;
+
   const getCropParamsAction = cropId => {
     setCropParamLoading(true);
     setCropParams([]);
@@ -63,7 +82,7 @@ function BidForm({ loading, submitAction, intl, classes, crops, bid, isEditable 
     if (currentCrop) {
       getCropParamsAction(currentCrop.id);
     }
-  }, []);
+  }, []); // eslint-disable-line
   return (
     <Paper className={classes.container}>
       <Formik
@@ -86,6 +105,12 @@ function BidForm({ loading, submitAction, intl, classes, crops, bid, isEditable 
           });
           const cropId = values.crop.id;
           values.description === "" && delete values.description;
+
+          if (selectedLocation) {
+            values.location = { ...selectedLocation };
+          } else {
+            delete values.location;
+          }
           submitAction(
             { ...values, crop_id: cropId, parameter_values: paramValues },
             setStatus,
@@ -157,6 +182,25 @@ function BidForm({ loading, submitAction, intl, classes, crops, bid, isEditable 
                 multiline
                 disabled={!isEditable}
               />
+
+              <AutocompleteLocations
+                options={locations}
+                loading={isLoadingLocations}
+                defaultValue={{
+                  text: values.location && values.location.text ? values.location.text : "",
+                }}
+                editable={!(values.location && values.location.text)}
+                label={intl.formatMessage({
+                  id: "PROFILE.INPUT.LOCATION",
+                })}
+                inputClassName={classes.textField}
+                inputError={Boolean(touched.location && errors.location)}
+                inputHelperText={touched.location && errors.location}
+                fetchLocations={fetchLocations}
+                clearLocations={clearLocations}
+                setSelectedLocation={setSelectedLocation}
+              />
+
               <div className={classes.textFieldContainer}>
                 <TextField
                   select

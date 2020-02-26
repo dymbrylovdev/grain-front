@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { shallowEqual, useSelector, connect } from "react-redux";
 import { injectIntl } from "react-intl";
 import * as auth from "../../../store/ducks/auth.duck";
-import * as users from "../../../store/ducks/users.duck";
+import * as locations from "../../../store/ducks/locations.duck";
 import { setUser } from "../../../crud/auth.crud";
 import useStyles from "./styles";
 import UserForm from "./components/UserForm";
 
-function ProfilePage({ intl, fulfillUser, fetchLocationsRequest, clearFoundResult }) {
+function ProfilePage({ intl, fulfillUser, fetchLocationsRequest, clearLocations }) {
   const [loading, setLoading] = useState(false);
   const user = useSelector(({ auth: { user } }) => user, shallowEqual);
   const classes = useStyles();
@@ -46,7 +46,7 @@ function ProfilePage({ intl, fulfillUser, fetchLocationsRequest, clearFoundResul
   return (
     <UserForm
       fetchLocations={fetchLocationsRequest}
-      clearFoundResult={clearFoundResult}
+      clearLocations={clearLocations}
       user={user}
       classes={classes}
       loading={loading}
@@ -55,4 +55,4 @@ function ProfilePage({ intl, fulfillUser, fetchLocationsRequest, clearFoundResul
   );
 }
 
-export default injectIntl(connect(null, { ...auth.actions, ...users.actions })(ProfilePage));
+export default injectIntl(connect(null, { ...auth.actions, ...locations.actions })(ProfilePage));
