@@ -53,12 +53,11 @@ export default class MenuItem extends React.Component {
     if (item.submenu) {
       return this.isMenuRootItemIsActive(item);
     }
-
     if (!item.page) {
       return false;
     }
-
-    return this.props.currentUrl.indexOf(item.page) !== -1;
+    const indexOfPage = this.props.currentUrl.indexOf(item.page);
+    return indexOfPage !== -1  && (indexOfPage + item.page.length  === this.props.currentUrl.length);
   };
 
   isMenuRootItemIsActive = item => {

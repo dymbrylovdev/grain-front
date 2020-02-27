@@ -34,13 +34,13 @@ function CropsListPage({ setMenuConfig, setCrops, match }) {
     getCrops()
       .then(({ data }) => {
         if (data && data.data) {
-          setCrops(data.data, user.is_admin);
+          setCrops(data.data, user);
         }
       })
       .catch(error => {});
   };
   useEffect(() => {
-    setMenuConfig(menuConfig, user);
+    setMenuConfig(menuConfig);
     getCropsAction();
   }, []);
   return (

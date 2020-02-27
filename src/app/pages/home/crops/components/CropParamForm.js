@@ -35,9 +35,14 @@ function CropParamForm({ intl, classes, cropParam, editCropParamAction }) {
         formRef.current.setFieldValue(`parameter${i}`, formRef.current.values[`parameter${i + 1}`]);
       }
     }
+    formRef.current.setFieldValue(`parameter${enumParams.length -1}`, null)
     const newEnumArray = enumParams.slice(0,-1);
     setEnumParams(newEnumArray);
   };
+
+  const setIdValue = (value) => {
+    formRef.current.setFieldValue('id', value);
+  }
   return (
     <Box className={classes.paramContainer} border={1} borderColor="#eeeeee" borderRadius={5}>
       <Formik
@@ -46,17 +51,17 @@ function CropParamForm({ intl, classes, cropParam, editCropParamAction }) {
         validationSchema={Yup.object().shape({
           name: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
         })}
-        onSubmit={(values, { setStatus, setSubmitting, resetForm, status }) => {
+        onSubmit={(values, {setStatus, setSubmitting }) => {
           if (values.type === "enum") {
             const enumArray = [];
             Object.keys(values).map(param => {
-              if (param.indexOf("parameter") !== -1 && values[param] !== "") {
+              if (param.indexOf("parameter") !== -1 &&  values[param] && values[param] !== "" ) {
                 enumArray.push(values[param]);
               }
             });
-            editCropParamAction({ ...values, enum: enumArray }, setStatus, setSubmitting, status);
+            editCropParamAction({ ...values, enum: enumArray }, setStatus, setSubmitting, setIdValue );
           } else {
-            editCropParamAction(values, setStatus, setSubmitting, status);
+            editCropParamAction(values, setStatus, setSubmitting, setIdValue );
           }
         }}
         innerRef={formRef}

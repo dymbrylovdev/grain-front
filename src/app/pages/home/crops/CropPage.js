@@ -63,22 +63,22 @@ function CropPage({ match, editCropSuccess, createCropSuccess, intl }) {
         });
       });
   };
-  const editCropParamAction = (values, setStatus, setSubmitting, status) => {
-    const paramId = values.id || (status && status.id);
+  const editCropParamAction = (values, setStatus, setSubmitting, setIdValue) => {
+    const paramId = values.id;
     const cropAction = paramId ? editCropParam : createCropParam;
     setStatus({
-      loading: true,
+      loading: true
     });
     cropAction(values, paramId || cropId)
       .then(({ data }) => {
         if (data && data.data) {
+          setIdValue(data.data.id);
           setStatus({
             loading: false,
             error: false,
             message: intl.formatMessage({
               id: "CROP.STATUS.CROP_PARAM_CREATE",
             }),
-            id: data.data.id,
           });
         }
       })
@@ -92,6 +92,7 @@ function CropPage({ match, editCropSuccess, createCropSuccess, intl }) {
           }),
         });
       });
+
   };
   useEffect(() => {
     getCropParamsAction();
