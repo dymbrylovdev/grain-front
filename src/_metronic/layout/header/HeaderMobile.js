@@ -29,7 +29,7 @@ class HeaderMobile extends React.Component {
       >
         <div className="kt-header-mobile__logo">
           <Link to="/">
-            <img alt="logo" src={headerLogo} />
+            {/*<img alt="logo" src={headerLogo} />*/}
           </Link>
         </div>
 
