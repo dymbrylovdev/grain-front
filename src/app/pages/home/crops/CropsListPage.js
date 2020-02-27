@@ -26,7 +26,7 @@ function CropsListPage({ setMenuConfig, setCrops, match }) {
     }),
     shallowEqual
   );
-  const [menuConfig] = useState(getMenuConfig(crops, user.is_admin));
+  const [menuConfig] = useState(getMenuConfig(crops, user));
   const classes = useStyles();
 
   const getCropsAction = () => {

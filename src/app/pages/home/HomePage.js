@@ -14,12 +14,12 @@ import { getCrops } from "../../crud/crops.crud";
 
 function HomePage({ setMenuConfig, setCrops }) {
   const { crops, user } = useSelector(({ crops, auth }) => ({ crops: crops.crops, user: auth.user }), shallowEqual);
-  const [menuConfig] = useState(getMenuConfig(crops, user.is_admin));
+  const [menuConfig] = useState(getMenuConfig(crops, user));
   const getCropsAction = () => {
     getCrops()
       .then(({ data }) => {
         if (data && data.data) {
-          setCrops(data.data, user.is_admin);
+          setCrops(data.data, user);
         }
       })
       .catch(error => {

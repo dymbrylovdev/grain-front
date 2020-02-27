@@ -48,7 +48,7 @@ export const reducer = persistReducer(
   );
 
   export const actions = {
-    setCrops: (data, isAdmin) => ({type: actionTypes.SetCropsList, payload: {data, isAdmin}}),
+    setCrops: (data, user) => ({type: actionTypes.SetCropsList, payload: {data, user}}),
     editCropSuccess: (data) => ({type: actionTypes.EditCropSuccess, payload: {data}}),
     createCropSuccess: () => ({type: actionTypes.CreateCropSucces}),
     setFilterForCrop: (filter, cropId) => ({type: actionTypes.SetFilterForCrop, payload: {filter, cropId}}),
@@ -58,7 +58,7 @@ export const reducer = persistReducer(
 
   export function* saga(){
     yield takeLatest(actionTypes.SetCropsList, function* setMenuConfig({payload}){
-      const menuWithCrops = getMenuConfig(payload.data, payload.isAdmin);
+      const menuWithCrops = getMenuConfig(payload.data, payload.user);
       yield put(builderActions.setMenuConfig(menuWithCrops));
     })
     yield takeLatest(actionTypes.CreateCropSucces, function* getCropsRequest(){

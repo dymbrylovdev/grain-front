@@ -182,12 +182,15 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
       />
       <div className={innerClasses.topContainer}>
         <div className={innerClasses.leftButtonBlock}>
-          <Link to="/bid/create">
-            <ButtonWithLoader>
-              <FormattedMessage id="BIDSLIST.BUTTON.CREATE_BID" />
-            </ButtonWithLoader>
-          </Link>
+          {!user.is_buyer && 
+            <Link to="/bid/create">
+              <ButtonWithLoader>
+                <FormattedMessage id="BIDSLIST.BUTTON.CREATE_BID" />
+              </ButtonWithLoader>
+            </Link>
+          }
         </div>
+
         <div className={innerClasses.filterText}>{filterTitle}</div>
         <IconButton onClick={() => setFilterModalOpen(true)}>
           <CustomIcon path={filterIconPath} />

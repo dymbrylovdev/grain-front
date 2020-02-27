@@ -1,6 +1,9 @@
-export default function getMenuConfig(crops, isAdmin) {
-  if (isAdmin) {
+export default function getMenuConfig(crops, user) {
+  if (user.is_admin) {
     return getAdminMenu(crops);
+  }
+  if (user.is_vendor){
+    return getVendorMenu(crops);
   }
   return getBuyerMenu(crops);
 }
@@ -148,7 +151,7 @@ const getAdminMenu = crops => ({
   },
 });
 
-const getBuyerMenu = crops => ({
+const getVendorMenu = crops => ({
   header: {
     self: {},
     items: [],
@@ -215,3 +218,62 @@ const getBuyerMenu = crops => ({
     ],
   },
 });
+
+
+const getBuyerMenu = crops => ({
+  header: {
+    self: {},
+    items: [],
+  },
+  aside: {
+    self: {},
+    items: [
+      {
+        title: "Рынок зерна",
+        root: true,
+        icon: "flaticon2-architecture-and-city",
+        page: "",
+        translate: "MENU.GRAIN",
+        submenu: [
+          {
+            title: "Заявки на продажу",
+            root: true,
+            page: "",
+            translate: "SUBMENU.ADS",
+            bullet: "dot",
+            submenu: crops.map(crop => ({
+              title: crop.name,
+              root: true,
+              page: `bidsList/${crop.id}`,
+              translate: crop.name,
+            })),
+          }
+        ],
+      },
+      {
+        title: "Настройки",
+        root: true,
+        icon: "flaticon2-settings",
+        page: "builder",
+        translate: "MENU.SETTINGS",
+        submenu: [
+          {
+            title: "Мой профайл",
+            root: true,
+            page: "user/profile",
+            translate: "SUBMENU.PROFILE",
+          },
+        ],
+      },
+      {
+        title: "Выход",
+        root: true,
+        icon: "flaticon-logout",
+        page: "logout",
+        translate: "MENU.LOGOUT",
+      },
+    ],
+  },
+});
+
+
