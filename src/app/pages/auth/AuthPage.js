@@ -10,8 +10,8 @@ import Registration from "./Registration";
 import ForgotPassword from "./ForgotPassword";
 import useFetch from "../../hooks/useFetch";
 
-const agreementStyle= {
-  color: 'black',
+const agreementStyle = {
+  color: "black",
 };
 export default function AuthPage() {
   const [openUserAgreement, setOpenUserAgreement] = useState(false);
@@ -32,8 +32,7 @@ export default function AuthPage() {
                 backgroundImage: `url(${toAbsoluteUrl("/media/bg/bg-4.jpg")})`,
               }}
             >
-              <div className="kt-grid__item">
-              </div>
+              <div className="kt-grid__item"></div>
               <div className="kt-grid__item kt-grid__item--fluid kt-grid kt-grid--ver">
                 <div className="kt-grid__item kt-grid__item--middle">
                   <h3 className="kt-login__title">
@@ -46,7 +45,19 @@ export default function AuthPage() {
               </div>
               <div className="kt-grid__item">
                 <div className="kt-login__info">
-                  <div className="kt-login__copyright">&copy; 2020 StartMobile</div>
+                  <div className="kt-login__copyright">
+                    <FormattedMessage id="AUTH.CREATOR.COMPANY" />
+                    <div className="kt-login__menu">
+                      <a
+                        href={"https://start-mobile.net"}
+                        className="kt-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {"start-mobile.net"}
+                      </a>
+                    </div>
+                  </div>
                   <div className="kt-login__menu">
                     <Link className="kt-link" onClick={() => setOpenUserAgreement(true)}>
                       <FormattedMessage id="SUBMENU.LEGAL" />
@@ -64,7 +75,10 @@ export default function AuthPage() {
                         <DialogContent>
                           <DialogContentText id="alert-dialog-description">
                             {response ? (
-                              <div dangerouslySetInnerHTML={{ __html: response.data.text }}  style={agreementStyle}/>
+                              <div
+                                dangerouslySetInnerHTML={{ __html: response.data.text }}
+                                style={agreementStyle}
+                              />
                             ) : (
                               "Loading..."
                             )}

@@ -42,6 +42,7 @@
     "AUTH.VALIDATION.INVALID_LOGIN": "Неверный логин или пароль",
     "AUTH.VALIDATION.REQUIRED_FIELD": "Обязательное поле",
     "AUTH.VALIDATION.INVALID_FIELD": "Поле некорректно",
+    "AUTH.CREATOR.COMPANY": "Разработка: Start Mobile",
     "PROFILE.INPUT.FIO":"ФИО",
     "PROFILE.INPUT.LOCATION": "Точка отгрузки",
     "PROFILE.INPUT.EMAIL":"Email",
