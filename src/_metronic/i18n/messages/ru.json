@@ -73,7 +73,7 @@
     "USERLIST.TOOLTIP.CREATE_BID": "Добавить заявку",
     "TABLE.FROM.LABEL": "из",
     "BIDSLIST.TABLE.ID": "Id",
-    "BIDSLIST.TABLE.COST": "Цена (за тонну)",
+    "BIDSLIST.TABLE.COST": "Цена (руб. за тонну)",
     "BIDSLIST.TABLE.VOLUME": "Объем (в тоннах)",
     "BIDSLIST.TABLE.DESCRIPTION": "Описание",
     "BIDSLIST.TABLE.ACTIONS": "Действия",
