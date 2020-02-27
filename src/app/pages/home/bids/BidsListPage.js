@@ -196,12 +196,6 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
           <CustomIcon path={filterIconPath} />
         </IconButton>
       </div>
-      <LocationBlock
-        handleClick={() => {
-          setLocationModalOpen(true);
-        }}
-        location={user.location && user.location.text}
-      />
       <BidTable
         classes={classes}
         bids={equalBids}
@@ -220,6 +214,12 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
           title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
         />
       </div>
+      <LocationBlock
+        handleClick={() => {
+          setLocationModalOpen(true);
+        }}
+        location={user.location && user.location.text}
+      />
     </Paper>
   );
 }
