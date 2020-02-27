@@ -43,7 +43,7 @@
     "AUTH.VALIDATION.REQUIRED_FIELD": "Обязательное поле",
     "AUTH.VALIDATION.INVALID_FIELD": "Поле некорректно",
     "PROFILE.INPUT.FIO":"ФИО",
-    "PROFILE.INPUT.LOCATION": "Место",
+    "PROFILE.INPUT.LOCATION": "Точка отгрузки",
     "PROFILE.INPUT.EMAIL":"Email",
     "PROFILE.INPUT.LOGIN":"Логин",
     "PROFILE.INPUT.ROLE":"Роль",
