@@ -46,7 +46,6 @@ export default function AuthPage() {
               <div className="kt-grid__item">
                 <div className="kt-login__info">
                   <div className="kt-login__copyright">
-                    <FormattedMessage id="AUTH.CREATOR.COMPANY" />
                     <div className="kt-login__menu">
                       <a
                         href={"https://start-mobile.net"}
@@ -54,7 +53,7 @@ export default function AuthPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {"start-mobile.net"}
+                      <FormattedMessage id="AUTH.CREATOR.COMPANY" />
                       </a>
                     </div>
                   </div>
