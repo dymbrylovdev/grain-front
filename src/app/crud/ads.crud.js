@@ -28,3 +28,7 @@ export const deleteAd = (id) => {
 export const getAllAds = (id, page) => {
     return axios.get(`${CROP_URL}/${id}/bids?page=${page||1}`)
 }
+
+export const getAdById = (id) => {
+    return axios.get(`${AD_URL}/${id}`);
+}

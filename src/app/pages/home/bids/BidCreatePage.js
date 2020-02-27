@@ -1,16 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { injectIntl } from "react-intl";
 import { connect, useSelector, shallowEqual } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 import BidForm from "./components/BidForm";
 import useStyles from "../styles";
+import { setUser } from "../../../crud/auth.crud";
 import { createAd, editAd } from "../../../crud/ads.crud";
 import userSelector from "../../../store/selectors/user";
 import bidSelector from "../../../store/selectors/bid";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import * as ads from "../../../store/ducks/ads.duck";
 import * as locations from "../../../store/ducks/locations.duck";
+import * as auth from "../../../store/ducks/auth.duck";
+import Preloader from "../../../components/ui/Loaders/Preloader";
+import LocationDialog from "./components/location/LocationDialog";
 
 function BidCreatePage({
   intl,
@@ -19,13 +23,22 @@ function BidCreatePage({
   editAdSuccess,
   fetchLocationsRequest,
   clearLocations,
+  getAdById,
+  fulfillUser
 }) {
+
   const classes = useStyles();
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { crops, user } = useSelector(
-    ({ crops, auth }) => ({ crops: crops.crops, user: auth.user }),
+  const { crops, user, preloading } = useSelector(
+    ({ crops, auth, ads }) => ({
+      crops: crops.crops,
+      user: auth.user,
+      preloading: ads.currentAd && ads.currentAd.loading,
+    }),
     shallowEqual
   );
+  
   const by =
     (match.url.indexOf("fromMy") !== -1 && "fromMy") ||
     (match.url.indexOf("fromAdmin") !== -1 && "fromAdmin");
@@ -37,6 +50,7 @@ function BidCreatePage({
   const vendor_id = vendorId || (bid && bid.vendor && bid.vendor.id) || user.id;
   const isNoModerate = !vendorId && !bidId && user.is_vendor && user.status === "На модерации";
   const history = useHistory();
+
   const createAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
@@ -67,9 +81,9 @@ function BidCreatePage({
         });
     }, 1000);
   };
+
   const editAction = (values, setStatus, setSubmitting) => {
     console.log("editValues", values);
-
     setTimeout(() => {
       setLoading(true);
       editAd(bidId, {
@@ -102,13 +116,51 @@ function BidCreatePage({
         });
     }, 1000);
   };
+
+  useEffect(()=>{
+    getAdById(bidId, bid)
+  },[user]) 
+
+
+  const locationSubmit = (values, setStatus, setSubmitting) => {
+    setTimeout(() => {
+      setStatus({ loading: true });
+      setUser(values)
+        .then(({ data }) => {
+          setStatus({ loading: false });
+          if (data.data) {
+            setLocationModalOpen(false);
+            fulfillUser(data.data);
+          }
+        })
+        .catch(error => {
+          console.log("loginError", error);
+          setStatus({
+            error: true,
+            message: intl.formatMessage({
+              id: "LOCATION.STATUS.ERROR",
+            }),
+          });
+          setSubmitting(false);
+        });
+    }, 1000);
+  };
+
   const submitAction = bid && bid.id ? editAction : createAction;
   let title = null;
   if (vendorId) title = `${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [${vendor.login}]`;
   if (bidId) title = intl.formatMessage({ id: "BID.TITLE.EDIT" });
 
+  if (preloading) return <Preloader/>
   return (
     <>
+      <LocationDialog
+        isOpen={locationModalOpen}
+        handleClose={() => setLocationModalOpen(false)}
+        submitAction={locationSubmit}
+        user={user}
+        classes={classes}
+      />
       {title && <LayoutSubheader title={title} />}
       {isNoModerate ? (
         <div className={classes.titleText}>
@@ -124,10 +176,12 @@ function BidCreatePage({
           isEditable={isEditable}
           fetchLocations={fetchLocationsRequest}
           clearLocations={clearLocations}
+          openLocation = {()=> setLocationModalOpen(true)}
+          user={user}
         />
       )}
     </>
   );
 }
 
-export default injectIntl(connect(null, { ...ads.actions, ...locations.actions })(BidCreatePage));
+export default injectIntl(connect(null, { ...ads.actions, ...locations.actions, ...auth.actions })(BidCreatePage));

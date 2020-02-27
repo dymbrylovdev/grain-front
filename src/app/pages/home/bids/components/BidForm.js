@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { TextField, CircularProgress, MenuItem, Box } from "@material-ui/core";
 import { Formik } from "formik";
@@ -11,6 +11,7 @@ import AutocompleteLocations from "../../../../components/AutocompleteLocations"
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import { getCropParams } from "../../../../crud/crops.crud";
+import LocationBlock from "../components/location/LocationBlock";
 
 const getInitialValues = (bid, crop) => {
   const values = {
@@ -30,9 +31,8 @@ const getInitialValues = (bid, crop) => {
 };
 
 const getFinalPrice = (bid, pricePerKm) => {
-  console.log("myBid", bid);
-
-  return bid.price * bid.volume + pricePerKm * bid.distance;
+  const distance = !bid.distance || bid.distance < 100 ? 100 : bid.distance;
+  return Math.round(bid.price * bid.volume + pricePerKm * distance);
 };
 
 const useInnerStyles = makeStyles(theme => ({
@@ -83,7 +83,11 @@ function BidForm({
   isEditable,
   fetchLocations,
   clearLocations,
+  openLocation,
+  user,
 }) {
+  const formRef = useRef();
+
   const innerClasses = useInnerStyles();
   const [cropParams, setCropParams] = useState([]);
   const [isParamLoading, setCropParamLoading] = useState(false);
@@ -114,6 +118,9 @@ function BidForm({
       getCropParamsAction(currentCrop.id);
     }
   }, []); // eslint-disable-line
+  useEffect(() => {
+    !isEditable && formRef.current.resetForm({ values: getInitialValues(bid) });
+  }, [bid]);
   return (
     <Paper className={classes.container}>
       <Formik
@@ -148,6 +155,7 @@ function BidForm({
             setSubmitting
           );
         }}
+        innerRef={formRef}
       >
         {({
           values,
@@ -206,8 +214,12 @@ function BidForm({
                   borderRadius={5}
                 >
                   <div className={innerClasses.calcTitle}>
-                    {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}  `}
+                    {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
                   </div>
+                  <LocationBlock
+                    handleClick={openLocation}
+                    location={user.location && user.location.text}
+                  />
                   <TextField
                     type="text"
                     label={intl.formatMessage({
