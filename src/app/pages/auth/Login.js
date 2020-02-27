@@ -106,16 +106,9 @@ function Login(props) {
                 className="kt-form"
                 onSubmit={handleSubmit}
               >
-                {status ? (
+                {status  &&  (
                   <div role="alert" className="alert alert-danger">
                     <div className="alert-text">{status}</div>
-                  </div>
-                ) : (
-                  <div role="alert" className="alert alert-info">
-                    <div className="alert-text">
-                      Use account <strong>admin</strong> and password{" "}
-                      <strong>000000</strong> to continue.
-                    </div>
                   </div>
                 )}
 
