@@ -6,6 +6,7 @@ import * as locations from "../../../store/ducks/locations.duck";
 import { editUser } from "../../../crud/users.crud";
 import useStyles from "./styles";
 import UserForm from "./components/UserForm";
+import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 
 function EditUserPage({ intl, editUserSuccess, fetchLocationsRequest, match, clearLocations }) {
   const [loading, setLoading] = useState(false);
@@ -49,15 +50,18 @@ function EditUserPage({ intl, editUserSuccess, fetchLocationsRequest, match, cle
     }, 1000);
   };
   return (
-    <UserForm
-      fetchLocations={fetchLocationsRequest}
-      clearLocations={clearLocations}
-      user={user}
-      classes={classes}
-      loading={loading}
-      submitAction={submitAction}
-      isEdit={true}
-    />
+    <>
+      <LayoutSubheader title={intl.formatMessage({id: "PROFILE.TITLE.EDIT"})}/>
+      <UserForm
+        fetchLocations={fetchLocationsRequest}
+        clearLocations={clearLocations}
+        user={user}
+        classes={classes}
+        loading={loading}
+        submitAction={submitAction}
+        isEdit={true}
+      />
+    </>
   );
 }
 
