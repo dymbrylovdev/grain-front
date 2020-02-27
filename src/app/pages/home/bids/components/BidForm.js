@@ -169,7 +169,6 @@ function BidForm({
         }) => (
           <div className={classes.form}>
             <form noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
-              <StatusAlert status={status} />
               <TextField
                 type="text"
                 label={intl.formatMessage({
@@ -344,6 +343,7 @@ function BidForm({
                   </TextField>
                 )
               )}
+              <StatusAlert status={status} />
               {isEditable && (
                 <div className={classes.buttonContainer}>
                   <ButtonWithLoader loading={loading} onPress={handleSubmit}>
