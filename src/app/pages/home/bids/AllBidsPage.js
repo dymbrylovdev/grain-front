@@ -25,10 +25,7 @@ function AllBidsPage({
     setDeleteBidId(id);
     setAlertOpen(true);
   };
-  const { user } = useSelector(
-    ({ auth }) => ({ muser: auth.user }),
-    shallowEqual
-  );
+  const { user } = useSelector(({ auth }) => ({ muser: auth.user }), shallowEqual);
   const { bids, page, per_page, total, loading } = useSelector(({ ads }) => {
     if (!ads.allBids) return { bids: [], page: 1, per_page: 20, total: 0, loading: false };
     return {
@@ -57,46 +54,50 @@ function AllBidsPage({
   }, [cropId]);
 
   const handleChangePage = (event, page) => {
-    getAllAdsAction(cropId,page + 1);
+    getAllAdsAction(cropId, page + 1);
   };
   const paginationData = {
-      page, per_page,total, handleChangePage
-  }
-  if (loading) return (<Preloader/>)
+    page,
+    per_page,
+    total,
+    handleChangePage,
+  };
+  if (loading) return <Preloader />;
   return (
     <Paper className={classes.tableContainer}>
-    <AlertDialog
-      isOpen={isAlertOpen}
-      text={intl.formatMessage({
-        id: "BIDSLIST.DIALOGS.DELETE_TEXT",
-      })}
-      okText={intl.formatMessage({
-        id: "USERLIST.DIALOGS.AGREE_TEXT",
-      })}
-      cancelText={intl.formatMessage({
-        id: "USERLIST.DIALOGS.CANCEL_TEXT",
-      })}
-      handleClose={() => setAlertOpen(false)}
-      handleAgree={() => deleteBidAction()}
-    />
-    <Link to="/bid/create">
-      <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
-      {intl.formatMessage({id:"BIDSLIST.BUTTON.CREATE_BID"})}
-      </button>
-    </Link>
-    <BidTable
-      classes={classes}
-      bids={bids}
-      isHaveRules={() => true}
-      handleDeleteDialiog={handleDeleteDialiog}
-      user={user}
-      title={intl.formatMessage({ id: "SUBMENU.ALL_BIDS" })}
-      addUrl={"fromAdmin"}
-      paginationData={paginationData}
-    />
-  </Paper>
-);
-  
+      <AlertDialog
+        isOpen={isAlertOpen}
+        text={intl.formatMessage({
+          id: "BIDSLIST.DIALOGS.DELETE_TEXT",
+        })}
+        okText={intl.formatMessage({
+          id: "USERLIST.DIALOGS.AGREE_TEXT",
+        })}
+        cancelText={intl.formatMessage({
+          id: "USERLIST.DIALOGS.CANCEL_TEXT",
+        })}
+        handleClose={() => setAlertOpen(false)}
+        handleAgree={() => deleteBidAction()}
+      />
+      <Link to="/bid/create">
+        <div className={classes.topMargin}>
+          <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
+            {intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
+          </button>
+        </div>
+      </Link>
+      <BidTable
+        classes={classes}
+        bids={bids}
+        isHaveRules={() => true}
+        handleDeleteDialiog={handleDeleteDialiog}
+        user={user}
+        title={intl.formatMessage({ id: "SUBMENU.ALL_BIDS" })}
+        addUrl={"fromAdmin"}
+        paginationData={paginationData}
+      />
+    </Paper>
+  );
 }
 
-export default injectIntl(connect(null, ads.actions)(AllBidsPage))
+export default injectIntl(connect(null, ads.actions)(AllBidsPage));

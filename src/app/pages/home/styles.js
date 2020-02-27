@@ -21,7 +21,6 @@ const useStyles = makeStyles(theme => ({
       paddingTop: theme.spacing(2)
     },
     tableContainer: {
-      paddingTop: theme.spacing(1),
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
       overflowX: 'auto'
@@ -69,7 +68,10 @@ const useStyles = makeStyles(theme => ({
       marginTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
       marginLeft: theme.spacing(4),
-    },   
+    },
+    topMargin: {
+      marginTop: theme.spacing(2),
+    }
   }));
 
   export default useStyles;

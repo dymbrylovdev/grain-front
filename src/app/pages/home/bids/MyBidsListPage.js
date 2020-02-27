@@ -25,20 +25,23 @@ function MyBidsListPage({ intl, deleteAdSuccess, getMyAds }) {
         deleteAdSuccess(deleteBidId);
         getMyAdsAction();
       })
-      .catch(error => {
-      });
+      .catch(error => {});
   };
-  const getMyAdsAction = ()=> {
+  const getMyAdsAction = () => {
     getMyAds();
-  }
+  };
   useEffect(() => {
     getMyAdsAction();
   }, []);
   const { myBids, user, loading } = useSelector(
-    ({ ads, auth }) => ({ myBids: ads.myAds && ads.myAds.list, user: auth.user, loading: ads.myAds && ads.myAds.loading }),
+    ({ ads, auth }) => ({
+      myBids: ads.myAds && ads.myAds.list,
+      user: auth.user,
+      loading: ads.myAds && ads.myAds.loading,
+    }),
     shallowEqual
   );
-  if (loading) return (<Preloader/>)
+  if (loading) return <Preloader />;
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog
@@ -56,9 +59,11 @@ function MyBidsListPage({ intl, deleteAdSuccess, getMyAds }) {
         handleAgree={() => deleteBidAction()}
       />
       <Link to="/bid/create">
-        <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
-          <FormattedMessage id="BIDSLIST.BUTTON.CREATE_BID" />
-        </button>
+        <div className={classes.topMargin}>
+          <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
+            <FormattedMessage id="BIDSLIST.BUTTON.CREATE_BID" />
+          </button>
+        </div>
       </Link>
       <BidTable
         classes={classes}

@@ -2,29 +2,31 @@ import React, { useEffect, useState } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { connect, useSelector, shallowEqual } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  Paper,
-  IconButton,
-} from "@material-ui/core";
+import { Paper, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
-import CustomIcon from "../../../components/ui/Images/CustomIcon";
+import * as auth from "../../../store/ducks/auth.duck";
 import * as ads from "../../../store/ducks/ads.duck";
 import * as crops from "../../../store/ducks/crops.duck";
+import { setUser } from "../../../crud/auth.crud";
 import { getCropParams } from "../.././../crud/crops.crud";
 import { deleteAd } from "../../../crud/ads.crud";
 import useStyles from "../styles";
-import FilterModal from "./components/filter/FilterModal";
 import { filterForRequest, isFilterEmpty } from "../../../utils";
+
+import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
+import CustomIcon from "../../../components/ui/Images/CustomIcon";
+import FilterModal from "./components/filter/FilterModal";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import BidTable from "./components/BidTable";
+import LocationBlock from "./components/location/LocationBlock";
+import LocationDialog from "./components/location/LocationDialog";
+import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
     flexDirection: "row",
     display: "flex",
-    paddingBottom: theme.spacing(2),
-    paddingTop: theme.spacing(2),
+
     alignItems: "center",
     width: "100%",
   },
@@ -38,23 +40,25 @@ const useInnerStyles = makeStyles(theme => ({
     paddingLeft: theme.spacing(1),
   },
   topSpaceContainer: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2)
-  }
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 const isHaveRules = (user, id) => {
   return user.is_admin || user.id === Number.parseInt(id);
 };
 
-function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCrop }) {
+function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCrop, fulfillUser }) {
   const innerClasses = useInnerStyles();
+
   const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [enumParams, setEnumParams] = useState([]);
   const [numberParams, setNumberParams] = useState([]);
   let { cropId } = match.params;
   cropId = Number.parseInt(cropId);
-  const { bids, user, filter, loading} = useSelector(
+
+  const { bids, user, filter, loading } = useSelector(
     ({ ads, auth, crops }) => ({
       bids: ads.bestAds,
       user: auth.user,
@@ -67,16 +71,19 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
   const inequalBids = bids && bids.inexact;
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
+
   const handleDeleteDialiog = id => {
     setDeleteBidId(id);
     setAlertOpen(true);
   };
+
   const classes = useStyles();
   const getAdsAction = (filter, enumParams, numberParams) => {
     const requestFilter = filterForRequest(filter, enumParams, numberParams);
     console.log("filterForRequest", requestFilter);
-    getBestAds({filter: filter.crop_id ? requestFilter : {}});
+    getBestAds({ filter: filter.crop_id ? requestFilter : {} });
   };
+
   useEffect(() => {
     setFilterForCrop(filter, cropId);
     getCropParams(cropId)
@@ -90,7 +97,8 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
         }
       })
       .catch(error => console.log("getCropParamsError", error));
-  }, [cropId, filter]);
+  }, [cropId, filter, user]);
+
   const deleteBidAction = () => {
     setAlertOpen(false);
     deleteAd(deleteBidId)
@@ -102,17 +110,44 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
         console.log("deleteUserError", error);
       });
   };
+
   const filterSubmit = values => {
     setFilterModalOpen(false);
     setFilterForCrop({ ...values, crop_id: cropId }, cropId);
   };
+
+  const locationSubmit = (values, setStatus, setSubmitting) => {
+    setTimeout(() => {
+      setStatus({ loading: true });
+      setUser(values)
+        .then(({ data }) => {
+          setStatus({ loading: false });
+          if (data.data) {
+            setLocationModalOpen(false);
+            fulfillUser(data.data);
+          }
+        })
+        .catch(error => {
+          console.log("loginError", error);
+          setStatus({
+            error: true,
+            message: intl.formatMessage({
+              id: "LOCATION.STATUS.ERROR",
+            }),
+          });
+          setSubmitting(false);
+        });
+    }, 1000);
+  };
+
   const filterTitle = isFilterEmpty(filter, enumParams, numberParams)
     ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
     : intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" });
   const filterIconPath = isFilterEmpty(filter, enumParams, numberParams)
     ? "/media/filter/filter.svg"
     : "/media/filter/filter_full.svg";
-  if (loading) return <Preloader/>  
+
+  if (loading) return <Preloader />;
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog
@@ -138,12 +173,19 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
         enumParams={enumParams}
         numberParams={numberParams}
       />
+      <LocationDialog
+        isOpen={locationModalOpen}
+        handleClose={() => setLocationModalOpen(false)}
+        submitAction={locationSubmit}
+        user={user}
+        classes={classes}
+      />
       <div className={innerClasses.topContainer}>
         <div className={innerClasses.leftButtonBlock}>
           <Link to="/bid/create">
-            <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
+            <ButtonWithLoader>
               <FormattedMessage id="BIDSLIST.BUTTON.CREATE_BID" />
-            </button>
+            </ButtonWithLoader>
           </Link>
         </div>
         <div className={innerClasses.filterText}>{filterTitle}</div>
@@ -151,6 +193,12 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
           <CustomIcon path={filterIconPath} />
         </IconButton>
       </div>
+      <LocationBlock
+        handleClick={() => {
+          setLocationModalOpen(true);
+        }}
+        location={user.location && user.location.text}
+      />
       <BidTable
         classes={classes}
         bids={equalBids}
@@ -160,17 +208,19 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
         title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
       />
       <div className={innerClasses.topSpaceContainer}>
-      <BidTable
-        classes={classes}
-        bids={inequalBids}
-        isHaveRules={isHaveRules}
-        handleDeleteDialiog={handleDeleteDialiog}
-        user={user}
-        title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
-      />
+        <BidTable
+          classes={classes}
+          bids={inequalBids}
+          isHaveRules={isHaveRules}
+          handleDeleteDialiog={handleDeleteDialiog}
+          user={user}
+          title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
+        />
       </div>
     </Paper>
   );
 }
 
-export default injectIntl(connect(null, { ...ads.actions, ...crops.actions })(BidsListPage));
+export default injectIntl(
+  connect(null, { ...ads.actions, ...crops.actions, ...auth.actions })(BidsListPage)
+);
