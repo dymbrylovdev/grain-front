@@ -164,7 +164,6 @@ function* getAdByIdSaga({ payload: { id } }) {
   if (id) {
     try {
       const { data } = yield getAdById(id);
-      console.log("--bid", data);
       if (data && data.data) {
         yield put(actions.adByIdSuccess(data.data));
       }

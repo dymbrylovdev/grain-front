@@ -120,7 +120,7 @@ function BidForm({
   }, []); // eslint-disable-line
   useEffect(() => {
     !isEditable && formRef.current.resetForm({ values: getInitialValues(bid) });
-  }, [bid]);
+  }, [bid]); // eslint-disable-line
   return (
     <Paper className={classes.container}>
       <Formik

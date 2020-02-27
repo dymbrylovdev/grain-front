@@ -24,9 +24,8 @@ function BidCreatePage({
   fetchLocationsRequest,
   clearLocations,
   getAdById,
-  fulfillUser
+  fulfillUser,
 }) {
-
   const classes = useStyles();
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -38,7 +37,7 @@ function BidCreatePage({
     }),
     shallowEqual
   );
-  
+
   const by =
     (match.url.indexOf("fromMy") !== -1 && "fromMy") ||
     (match.url.indexOf("fromAdmin") !== -1 && "fromAdmin");
@@ -117,10 +116,9 @@ function BidCreatePage({
     }, 1000);
   };
 
-  useEffect(()=>{
-    getAdById(bidId, bid)
-  },[user]) 
-
+  useEffect(() => {
+    getAdById(bidId, bid);
+  }, [user]);
 
   const locationSubmit = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
@@ -149,9 +147,13 @@ function BidCreatePage({
   const submitAction = bid && bid.id ? editAction : createAction;
   let title = null;
   if (vendorId) title = `${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [${vendor.login}]`;
-  if (bidId) title = intl.formatMessage({ id: "BID.TITLE.EDIT" });
+  if (!isEditable) {
+    title = intl.formatMessage({ id: "BID.TITLE.VIEW" });
+  } else if (bidId) {
+    title = intl.formatMessage({ id: "BID.TITLE.EDIT" });
+  }
 
-  if (preloading) return <Preloader/>
+  if (preloading) return <Preloader />;
   return (
     <>
       <LocationDialog
@@ -176,7 +178,7 @@ function BidCreatePage({
           isEditable={isEditable}
           fetchLocations={fetchLocationsRequest}
           clearLocations={clearLocations}
-          openLocation = {()=> setLocationModalOpen(true)}
+          openLocation={() => setLocationModalOpen(true)}
           user={user}
         />
       )}
@@ -184,4 +186,6 @@ function BidCreatePage({
   );
 }
 
-export default injectIntl(connect(null, { ...ads.actions, ...locations.actions, ...auth.actions })(BidCreatePage));
+export default injectIntl(
+  connect(null, { ...ads.actions, ...locations.actions, ...auth.actions })(BidCreatePage)
+);
