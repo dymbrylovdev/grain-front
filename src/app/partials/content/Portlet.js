@@ -8,7 +8,7 @@ export const PortletHeaderIcon = forwardRef(({ className }, ref) => (
 
 export const PortletHeaderTitle = forwardRef(({ className, ...props }, ref) => (
   // eslint-disable-next-line jsx-a11y/heading-has-content
-  <h3
+  <h5
     {...props}
     ref={ref}
     className={clsx("kt-portlet__head-title", className)}

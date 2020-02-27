@@ -14,6 +14,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import Footer from "../../../../components/ui/Table/TableFooter";
+import { PortletHeaderTitle  } from "../../../../../app/partials/content/Portlet";
 
 function BidTable({
   intl,
@@ -29,7 +30,7 @@ function BidTable({
     const fromAdmin = addUrl === "fromAdmin";
   return (
     <>
-      {title && <div className={classes.tableTitle}>{title}</div>}
+      {title && <PortletHeaderTitle className={classes.tableTitle}>{title}</PortletHeaderTitle>}
       {bids && bids.map && bids.length > 0 && (
         <Table aria-label="simple table" className={classes.table}>
           <TableHead>

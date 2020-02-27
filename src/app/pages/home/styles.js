@@ -61,7 +61,6 @@ const useStyles = makeStyles(theme => ({
         paddingBottom: theme.spacing(2),
     },
     tableTitle: {
-      fontSize: 14,
       marginTop: theme.spacing(2),
     }, 
     emptyTitle: {
