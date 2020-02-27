@@ -26,12 +26,12 @@ const admin = {
   value: "Администратор",
   id: "ROLE_ADMIN",
 };
-const buyer = {
+const vendor = {
   value: "Продавец",
   id: "ROLE_VENDOR",
 };
 
-const vendor = {
+const buyer = {
   value: "Покупатель",
   id: "ROLE_BUYER",
 };
@@ -110,10 +110,10 @@ function UserForm({
               }}
             >
               <StatusAlert status={status} />
-              {isCreate && (
+              {(isEdit || isCreate) && (
                 <TextField
                   select
-                  className={classes.textSelect}
+                  margin="normal"
                   label={intl.formatMessage({
                     id: "PROFILE.INPUT.ROLE",
                   })}
@@ -121,6 +121,7 @@ function UserForm({
                   onChange={handleChange}
                   name="role"
                   variant="outlined"
+                  disabled={isEdit}
                 >
                   {roles.map(option => (
                     <MenuItem key={option.id} value={option}>
@@ -133,7 +134,7 @@ function UserForm({
                 <div>
                   <TextField
                     select
-                    className={classes.textSelect}
+                    margin="normal"
                     label={intl.formatMessage({
                       id: "PROFILE.INPUT.STATUS",
                     })}
