@@ -101,13 +101,6 @@ class HMenu extends React.Component {
           id="kt_header_menu_wrapper"
           ref={this.offCanvasCommonRef}
         >
-          {disabledAsideSelfDisplay && (
-            <div className="kt-header-logo">
-              <Link to="/">
-                <img alt="logo" src={this.getHeaderLogo()} />
-              </Link>
-            </div>
-          )}
 
           <div
             id="kt_header_menu"

@@ -1,7 +1,7 @@
 import { toAbsoluteUrl } from "../utils/utils";
 
 export const initLayoutConfig = {
-  demo: "demo1.0",
+  demo: "demo1.1",
   // == Base Layout
   self: {
     layout: "fluid",
