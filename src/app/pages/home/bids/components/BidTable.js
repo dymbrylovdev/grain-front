@@ -14,6 +14,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import Footer from "../../../../components/ui/Table/TableFooter";
+import TopTableCell from "../../../../components/ui/Table/TopTableCell";
 import { PortletHeaderTitle  } from "../../../../../app/partials/content/Portlet";
 
 function BidTable({
@@ -35,30 +36,30 @@ function BidTable({
         <Table aria-label="simple table" className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell>
+              <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.ID" />
-              </TableCell>
-              <TableCell>
+              </TopTableCell>
+              <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.COST" />
-              </TableCell>
-              <TableCell>
+              </TopTableCell>
+              <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.VOLUME" />
-              </TableCell>
-              <TableCell>
+              </TopTableCell>
+              <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.DESCRIPTION" />
-              </TableCell>
-              {fromAdmin &&               <TableCell>
+              </TopTableCell>
+              {fromAdmin &&               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
-              </TableCell>}
-              <TableCell>
+              </TopTableCell>}
+              <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
-              </TableCell>
-              <TableCell>
+              </TopTableCell>
+              <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
-              </TableCell>
-              <TableCell>
+              </TopTableCell>
+              <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.ACTIONS" />
-              </TableCell>
+              </TopTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

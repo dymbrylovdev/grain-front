@@ -19,6 +19,7 @@ import * as users from "../../../store/ducks/users.duck";
 import { getUsers, deleteUser } from "../../../crud/users.crud";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import Footer from "../../../components/ui/Table/TableFooter";
+import TopTableCell from "../../../components/ui/Table/TopTableCell";
 
 import useStyles from "./styles";
 
@@ -91,24 +92,24 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>
+            <TopTableCell>
               <FormattedMessage id="USERLIST.TABLE.ID" />
-            </TableCell>
-            <TableCell>
+            </TopTableCell>
+            <TopTableCell>
               <FormattedMessage id="USERLIST.TABLE.EMAIL" />
-            </TableCell>
-            <TableCell>
+            </TopTableCell>
+            <TopTableCell>
               <FormattedMessage id="USERLIST.TABLE.NAME" />
-            </TableCell>
-            <TableCell>
+            </TopTableCell>
+            <TopTableCell>
               <FormattedMessage id="USERLIST.TABLE.COMPANY" />
-            </TableCell>
-            <TableCell>
+            </TopTableCell>
+            <TopTableCell>
               <FormattedMessage id="USERLIST.TABLE.STATUS" />
-            </TableCell>
-            <TableCell>
+            </TopTableCell>
+            <TopTableCell>
               <FormattedMessage id="USERLIST.TABLE.ACTIONS" />
-            </TableCell>
+            </TopTableCell>
           </TableRow>
         </TableHead>
         <TableBody>

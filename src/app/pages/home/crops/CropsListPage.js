@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import { connect, useSelector, shallowEqual } from "react-redux";
 import * as crops from "../../../store/ducks/crops.duck";
 import * as builder from "../../../../_metronic/ducks/builder";
+import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import getMenuConfig from "../../../router/MenuConfig";
 import useStyles from "../styles";
 
@@ -39,7 +40,7 @@ function CropsListPage({ setMenuConfig, setCrops, match }) {
       .catch(error => {});
   };
   useEffect(() => {
-    setMenuConfig(menuConfig);
+    setMenuConfig(menuConfig, user);
     getCropsAction();
   }, []);
   return (
@@ -54,15 +55,15 @@ function CropsListPage({ setMenuConfig, setCrops, match }) {
       <Table aria-label="simple table" className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>
+            <TopTableCell>
               <FormattedMessage id="CROPSLIST.TABLE.ID" />
-            </TableCell>
-            <TableCell>
+            </TopTableCell>
+            <TopTableCell>
               <FormattedMessage id="CROPSLIST.TABLE.ID" />
-            </TableCell>
-            <TableCell>
+            </TopTableCell>
+            <TopTableCell>
               <FormattedMessage id="CROPSLIST.TABLE.ACTIONS" />
-            </TableCell>
+            </TopTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
