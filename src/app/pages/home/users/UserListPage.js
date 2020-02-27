@@ -101,6 +101,9 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
               <FormattedMessage id="USERLIST.TABLE.NAME" />
             </TableCell>
             <TableCell>
+              <FormattedMessage id="USERLIST.TABLE.COMPANY" />
+            </TableCell>
+            <TableCell>
               <FormattedMessage id="USERLIST.TABLE.STATUS" />
             </TableCell>
             <TableCell>
@@ -114,6 +117,7 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
               <TableCell>{user.id}</TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.fio}</TableCell>
+              <TableCell>{user.company}</TableCell>
               <TableCell>{user.status}</TableCell>
               <TableCell>
                 {" "}

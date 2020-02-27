@@ -63,6 +63,7 @@
     "USERLIST.TABLE.ID": "Id",
     "USERLIST.TABLE.EMAIL": "Email",
     "USERLIST.TABLE.NAME": "Название",
+    "USERLIST.TABLE.COMPANY": "Компания",
     "USERLIST.TABLE.STATUS": "Статус",
     "USERLIST.TABLE.ACTIONS": "Действия",
     "USERLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить пользователя?",
