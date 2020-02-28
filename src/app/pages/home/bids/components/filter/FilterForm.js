@@ -136,16 +136,16 @@ function FilterForm({
             </div>
             {numberParams &&
               numberParams.map((param, index) => (
-                <>
+                <div key={param.id}>
                   <NumberParam
                     param={param}
                     values={values}
                     handleChange={handleChange}
-                    key={param.id}
+                    
                     clearAction={clearAction}
                   />
                   {index !== numberParams.length - 1 && <Divider />}
-                </>
+                </div>
               ))}
           </DialogContent>
           <DialogActions className={innerClasses.buttonContainer}>

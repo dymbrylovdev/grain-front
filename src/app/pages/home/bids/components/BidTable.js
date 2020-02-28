@@ -15,7 +15,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import Footer from "../../../../components/ui/Table/TableFooter";
 import TopTableCell from "../../../../components/ui/Table/TopTableCell";
-import { PortletHeaderTitle  } from "../../../../../app/partials/content/Portlet";
+import { PortletHeaderTitle } from "../../../../../app/partials/content/Portlet";
 
 function BidTable({
   intl,
@@ -28,7 +28,7 @@ function BidTable({
   addUrl,
   paginationData,
 }) {
-    const fromAdmin = addUrl === "fromAdmin";
+  const fromAdmin = addUrl === "fromAdmin";
   return (
     <>
       {title && <PortletHeaderTitle className={classes.tableTitle}>{title}</PortletHeaderTitle>}
@@ -48,9 +48,11 @@ function BidTable({
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.DESCRIPTION" />
               </TopTableCell>
-              {fromAdmin &&               <TopTableCell>
-                <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
-              </TopTableCell>}
+              {fromAdmin && (
+                <TopTableCell>
+                  <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
+                </TopTableCell>
+              )}
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
               </TopTableCell>
@@ -69,23 +71,30 @@ function BidTable({
                 <TableCell>{bid.price}</TableCell>
                 <TableCell>{bid.volume}</TableCell>
                 <TableCell>{bid.description}</TableCell>
-                {fromAdmin &&  <TableCell>{`${bid.vendor.login} ${bid.vendor.company}`}</TableCell>}
+                {fromAdmin && <TableCell>{`${bid.vendor.login} ${bid.vendor.company}`}</TableCell>}
                 <TableCell>{bid.distance || "-"}</TableCell>
                 <TableCell>{bid.price_with_delivery || "-"}</TableCell>
                 <TableCell>
-                  <Link to={`/bid/edit/${bid.id}/${addUrl || ""}`}>
+                  <Link to={`/bid/view/${bid.id}/${addUrl || ""}`}>
                     <IconButton size="small">
-                      {isHaveRules(user, bid.vendor.id) ? <EditIcon /> : <VisibilityIcon />}
+                      <VisibilityIcon />
                     </IconButton>
                   </Link>
                   {isHaveRules(user, bid.vendor.id) && (
-                    <IconButton
-                      size="small"
-                      onClick={() => handleDeleteDialiog(bid.id)}
-                      color="secondary"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                    <>
+                      <Link to={`/bid/edit/${bid.id}/${addUrl || ""}`}>
+                        <IconButton size="small">
+                          {isHaveRules(user, bid.vendor.id) ? <EditIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                      </Link>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDeleteDialiog(bid.id)}
+                        color="secondary"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
                   )}
                 </TableCell>
               </TableRow>

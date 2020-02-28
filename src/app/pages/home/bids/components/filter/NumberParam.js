@@ -17,7 +17,7 @@ function NumberParam({ values, param, handleChange, clearAction }) {
   const classes = useStyles();
   return (
     <Row className={classes.container}>
-      <Col >
+      <Col> 
         {param.name}
         </Col>
         <Col md="auto">
@@ -30,7 +30,7 @@ function NumberParam({ values, param, handleChange, clearAction }) {
           <FormControlLabel value="≤" control={<Radio />} label="≤" />
           <FormControlLabel value="≥" control={<Radio />} label=" ≥" />
         </RadioGroup>
-      </Col>
+        </Col>
       <Col>
         <TextField
           type="text"

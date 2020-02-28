@@ -34,7 +34,7 @@ function HomePage({ setMenuConfig, setCrops }) {
       <Switch>
         {
           /* Redirect from root URL to /dashboard. */
-          <Redirect exact from="/" to="/myBidsList" />
+          <Redirect exact from="/" to={`${user.is_buyer ? "/user/profile" : "/myBidsList"}`} />
         }
         <Route path="/userDocs/legacy" component={UserDocPage} />
         <Route path="/user/profile" exact component={ProfilePage} />
@@ -47,6 +47,9 @@ function HomePage({ setMenuConfig, setCrops }) {
         <Route path="/bid/create"  exact component={BidCreatePage} />
         <Route path="/bid/create/:vendorId" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId" exact component={BidCreatePage} />
+        <Route path="/bid/view/:bidId" exact component={BidCreatePage} />
+        <Route path="/bid/view/:bidId/fromMy" component={BidCreatePage} />
+        <Route path="/bid/view/:bidId/fromAdmin" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId/fromMy" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId/fromAdmin" component={BidCreatePage} />
         <Route path='/allBidsList/:cropId' component={AllBidsPage}/>
