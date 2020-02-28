@@ -19,8 +19,8 @@ import AuthPage from "../pages/auth/AuthPage";
 
 
 export const Routes = withRouter(({ history }) => {
-  const lastLocation = useLastLocation();
-  routerHelpers.saveLastLocation(lastLocation);
+  //const lastLocation = useLastLocation();
+  //routerHelpers.saveLastLocation(lastLocation);
   const { isAuthorized, menuConfig, userLastLocation} = useSelector(
     ({ auth, urls, builder: { menuConfig }, builder  }) =>{
       return({
