@@ -343,6 +343,8 @@ function BidForm({
                   </TextField>
                 )
               )}
+              {bid.vendor && <div>
+               { `${intl.formatMessage({id: "BID.FORM.AUTHOR"})} ${bid.vendor.company || bid.vendor.login}`} </div>}
               <StatusAlert status={status} />
               {isEditable && (
                 <div className={classes.buttonContainer}>

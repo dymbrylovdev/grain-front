@@ -107,6 +107,7 @@
     "BID.CALCULATOR.PRICE_PER_KM": "Стоимость доставки 1 тонны, руб. за км",
     "BID.CALCULATOR.TITLE": "Калькулятор доставки:", 
     "BID.CALCULATOR.FINAL_PRICE": "Cтоимость с учётом доставки (руб.):    ",
+    "BID.FORM.AUTHOR": "Автор заявки: ",
     "USERDOC.BUTTON.SAVE": "Сохранить",
     "USERDOC.BUTTON.CREATE": "Создать",
     "CROPSLIST.TABLE.ID": "Id",
