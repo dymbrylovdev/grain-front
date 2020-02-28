@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { injectIntl } from "react-intl";
 import { connect, useSelector, shallowEqual } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 import BidForm from "./components/BidForm";
 import useStyles from "../styles";
@@ -27,6 +27,7 @@ function BidCreatePage({
   fulfillUser,
 }) {
   const classes = useStyles();
+  const [isRedirectTo, setRedirect] = useState(-1);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { crops, user, preloading } = useSelector(
@@ -48,7 +49,7 @@ function BidCreatePage({
   const isEditable = match.url.indexOf("view") === -1;
   const vendor_id = vendorId || (bid && bid.vendor && bid.vendor.id) || user.id;
   const isNoModerate = !vendorId && !bidId && user.is_vendor && user.status === "На модерации";
-  const history = useHistory();
+
 
   const createAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
@@ -64,8 +65,7 @@ function BidCreatePage({
               }),
             });
             createAdSuccess();
-            history.goBack();
-            //setBackRedirect(true);
+            setRedirect(values.crop && values.crop.id);
           }
         })
         .catch(error => {
@@ -118,7 +118,7 @@ function BidCreatePage({
 
   useEffect(() => {
     getAdById(bidId, bid);
-  }, [user]);
+  }, [user, bidId]);
 
   const locationSubmit = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
@@ -154,6 +154,7 @@ function BidCreatePage({
   }
 
   if (preloading) return <Preloader />;
+  if ( isRedirectTo && isRedirectTo !== -1) return <Redirect to={`/bidsList/${isRedirectTo}`}/>;
   return (
     <>
       <LocationDialog
@@ -180,6 +181,7 @@ function BidCreatePage({
           clearLocations={clearLocations}
           openLocation={() => setLocationModalOpen(true)}
           user={user}
+          bidId={bidId}
         />
       )}
     </>

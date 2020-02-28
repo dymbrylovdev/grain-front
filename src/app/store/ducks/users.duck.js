@@ -1,7 +1,7 @@
 import { persistReducer } from "redux-persist";
 import { put, takeLatest } from "redux-saga/effects";
 import storage from "redux-persist/lib/storage";
-import { getUsers, getStatuses } from "../../crud/users.crud";
+import { getUsers, getStatuses, getUserById } from "../../crud/users.crud";
 
 export const actionTypes = {
   CreateUser: "[CreateUser] Action",
@@ -9,6 +9,12 @@ export const actionTypes = {
   DeleteUser: "[DeleteUser] Action",
   SetUsers: "[GetUsers] Action",
   SetStatuses: "[GetStatuses] Action",
+
+  GetUserById:  "[GetUserById] Action",
+  UserByIdSuccess: "[GetUserById] Success",
+  UserByIdFail: "[GetUserById] Fail",
+
+
 };
 
 const initialDocState = {
@@ -16,6 +22,9 @@ const initialDocState = {
   users: [],
   statuses: [],
   roles: [],
+  currentUser: {
+
+  }
 };
 
 export const reducer = persistReducer(
@@ -43,6 +52,17 @@ export const reducer = persistReducer(
         const { data } = action.payload;
         return { ...state, statuses: data };
       }
+
+      case actionTypes.GetUserById: {
+        return { ...state, currentUser: { loading: true}}
+      }
+      case actionTypes.UserByIdFail: {
+        return { ...state, currentUser: { loading: false}}
+      }
+      case actionTypes.UserByIdSuccess: {
+        const { data } = action.payload
+        return { ...state, currentUser: data }
+      }
       default:
         return state;
     }
@@ -55,7 +75,15 @@ export const actions = {
   setUsers: data => ({ type: actionTypes.SetUsers, payload: { data } }),
   setStatuses: data => ({ type: actionTypes.SetStatuses, payload: { data } }),
   deleteUserSuccess: id => ({ type: actionTypes.DeleteUser, payload: { id } }),
+
+  getUserById: id => ({type: actionTypes.GetUserById, payload: {id}}),
+  userByIdSuccess: data => ({type: actionTypes.UserByIdSuccess, payload: {data}}),
+  UserByIdFail: () => ({type: actionTypes.UserByIdFail}),
 };
+
+function* getUserByIdSaga({payload:{id}}){
+
+}
 
 export function* saga() {
   yield takeLatest(actionTypes.CreateUser, function* userRequested() {

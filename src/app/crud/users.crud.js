@@ -25,4 +25,8 @@ export function getStatuses(){
     return axios.get(GET_STATUSES_URL);
 }
 
+export function getUserById(id){
+    return axios.get(`${USER_URL}${id}`);
+}
+
 

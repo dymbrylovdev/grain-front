@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { TextField, CircularProgress, MenuItem, Box } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import { Formik } from "formik";
 import { Paper } from "@material-ui/core";
 import NumberFormat from "react-number-format";
@@ -56,6 +57,9 @@ const useInnerStyles = makeStyles(theme => ({
     fontWeight: "bold",
     flex: 1,
   },
+  authorText: {
+    marginBottom: theme.spacing(1),
+  }
 }));
 
 function NumberFormatCustom(props) {
@@ -80,6 +84,7 @@ function BidForm({
   classes,
   crops,
   bid,
+  bidId,
   isEditable,
   fetchLocations,
   clearLocations,
@@ -119,8 +124,12 @@ function BidForm({
     }
   }, []); // eslint-disable-line
   useEffect(() => {
-    !isEditable && formRef.current.resetForm({ values: getInitialValues(bid) });
-  }, [bid]); // eslint-disable-line
+    console.log("--currentBid", bid);
+      formRef.current.resetForm({values: getInitialValues(bid, currentCrop)});
+      if (!bid || !bid.id){
+          setCropParams([]);
+      }
+  }, [bidId]);// eslint-disable-line
   return (
     <Paper className={classes.container}>
       <Formik
@@ -343,8 +352,12 @@ function BidForm({
                   </TextField>
                 )
               )}
-              {bid.vendor && <div>
-               { `${intl.formatMessage({id: "BID.FORM.AUTHOR"})} ${bid.vendor.company || bid.vendor.login}`} </div>}
+              {bid.vendor && (
+                <div>
+                    {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.company ||
+                      bid.vendor.login}`}
+                </div>
+              )}
               <StatusAlert status={status} />
               {isEditable && (
                 <div className={classes.buttonContainer}>
