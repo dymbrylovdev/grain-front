@@ -118,7 +118,7 @@ function BidCreatePage({
 
   useEffect(() => {
     getAdById(bidId, bid);
-  }, [user, bidId]);
+  }, [user, bidId]);// eslint-disable-line
 
   const locationSubmit = (values, setStatus, setSubmitting) => {
     setTimeout(() => {

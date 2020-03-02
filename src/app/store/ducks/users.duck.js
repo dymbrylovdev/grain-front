@@ -82,7 +82,16 @@ export const actions = {
 };
 
 function* getUserByIdSaga({payload:{id}}){
-
+    try{
+        const {data} = yield getUserById(id);
+        console.log('---userData', data);
+        
+        if(data && data.data){
+          yield put(actions.userByIdSuccess(data.data));
+        }
+    }catch{
+        yield put(actions.UserByIdFail());
+    }
 }
 
 export function* saga() {
@@ -96,4 +105,5 @@ export function* saga() {
       yield put(actions.setStatuses(data.data));
     }
   });
+  yield takeLatest(actionTypes.GetUserById, getUserByIdSaga);
 }

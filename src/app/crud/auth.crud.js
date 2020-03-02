@@ -7,6 +7,7 @@ export const REQUEST_PASSWORD_URL = "api/auth/forgot-password";
 
 export const ME_URL = "api/user/me";
 export const USER_URL = "/api/user/";
+export const GET_USER_URL = "/api/me";
 
 export function login(login, password) {
   const bodyFormData = new FormData();
@@ -21,6 +22,10 @@ export function setUser(user,id){
   }else{
     return axios.put(ME_URL, user);
   }
+}
+
+export function getUser(){
+  return axios.get(GET_USER_URL);
 }
 
 export function register(email, fullname, username, password) {

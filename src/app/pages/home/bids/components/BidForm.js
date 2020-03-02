@@ -130,6 +130,8 @@ function BidForm({
           setCropParams([]);
       }
   }, [bidId]);// eslint-disable-line
+
+  const toUserPath = (user.id ===  (bid.vendor && bid.vendor.id)) ? "/user/profile" : `/user/edit/${bid.vendor && bid.vendor.id}`
   return (
     <Paper className={classes.container}>
       <Formik
@@ -353,10 +355,12 @@ function BidForm({
                 )
               )}
               {bid.vendor && (
+                <Link to={toUserPath}>
                 <div className={innerClasses.authorText}>
                     {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.company ||
                       bid.vendor.login}`}
                 </div>
+                </Link>
               )}
               <StatusAlert status={status} />
               {isEditable && (

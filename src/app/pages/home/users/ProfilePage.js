@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { shallowEqual, useSelector, connect } from "react-redux";
 import { injectIntl } from "react-intl";
 import * as auth from "../../../store/ducks/auth.duck";
@@ -6,10 +6,14 @@ import * as locations from "../../../store/ducks/locations.duck";
 import { setUser } from "../../../crud/auth.crud";
 import useStyles from "./styles";
 import UserForm from "./components/UserForm";
+import Preloader from "../../../components/ui/Loaders/Preloader";
 
-function ProfilePage({ intl, fulfillUser, fetchLocationsRequest, clearLocations }) {
+function ProfilePage({ intl, fulfillUser, fetchLocationsRequest, clearLocations, getUser }) {
   const [loading, setLoading] = useState(false);
-  const user = useSelector(({ auth: { user } }) => user, shallowEqual);
+  const { user, preloading } = useSelector(
+    ({ auth: { user } }) => ({ user, preloading: user && user.loading }),
+    shallowEqual
+  );
   const classes = useStyles();
   const submitAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
@@ -18,14 +22,13 @@ function ProfilePage({ intl, fulfillUser, fetchLocationsRequest, clearLocations 
         .then(({ data }) => {
           setLoading(false);
           if (data.data) {
+            fulfillUser(data.data);
             setStatus({
               error: false,
               message: intl.formatMessage({
                 id: "PROFILE.STATUS.SUCCESS",
               }),
             });
-            fulfillUser(data.data);
-            //resetForm(getInitialValues(data.data));
           }
         })
         .catch(error => {
@@ -43,15 +46,26 @@ function ProfilePage({ intl, fulfillUser, fetchLocationsRequest, clearLocations 
     }, 1000);
   };
 
+  useEffect(()=> {
+    getUser();
+  },[])
+
   return (
-    <UserForm
-      fetchLocations={fetchLocationsRequest}
-      clearLocations={clearLocations}
-      user={user}
-      classes={classes}
-      loading={loading}
-      submitAction={submitAction}
-    />
+    <>
+      {preloading ? (
+        <Preloader />
+      ) : (
+        <UserForm
+          fetchLocations={fetchLocationsRequest}
+          clearLocations={clearLocations}
+          user={user}
+          classes={classes}
+          loading={loading}
+          submitAction={submitAction}
+          isEditable={true}
+        />
+      )}
+    </>
   );
 }
 

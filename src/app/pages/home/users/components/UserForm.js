@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { TextField, MenuItem, Paper } from "@material-ui/core";
 import { useSelector, shallowEqual } from "react-redux";
@@ -48,10 +48,16 @@ function UserForm({
   isEdit,
   isCreate,
   intl,
+  isEditable,
 }) {
+  const formRef = useRef();
   const statuses = useSelector(({ users: { statuses } }) => statuses, shallowEqual);
   const { locations, isLoadingLocations } = useSelector(state => state.locations);
   const [selectedLocation, setSelectedLocation] = useState(null);
+
+  useEffect(() => {
+    user && user.id && formRef.current.resetForm({ values: getInitialValues(user) });
+  }, [user]);
 
   return (
     <Paper className={classes.container}>
@@ -90,6 +96,7 @@ function UserForm({
           console.log("---values", values);
           submitAction(values, setStatus, setSubmitting);
         }}
+        innerRef={formRef}
       >
         {({
           values,
@@ -142,6 +149,7 @@ function UserForm({
                     onChange={handleChange}
                     name="status"
                     variant="outlined"
+                    disabled={!isEditable}
                   >
                     {statuses.map(option => (
                       <MenuItem key={option} value={option}>
@@ -163,7 +171,8 @@ function UserForm({
                     onChange={handleChange}
                     helperText={touched.login && errors.login}
                     error={Boolean(touched.login && errors.login)}
-                    autocomplete="off"
+                    autoComplete="off"
+                    disabled={!isEditable}
                   />
                 </div>
               )}
@@ -182,6 +191,7 @@ function UserForm({
                 onChange={handleChange}
                 helperText={touched.fio && errors.fio}
                 error={Boolean(touched.fio && errors.fio)}
+                disabled={!isEditable}
               />
 
               <TextField
@@ -199,6 +209,7 @@ function UserForm({
                 helperText={touched.email && errors.email}
                 error={Boolean(touched.email && errors.email)}
                 autoComplete="off"
+                disabled={!isEditable}
               />
 
               <TextField
@@ -215,6 +226,7 @@ function UserForm({
                 onChange={handleChange}
                 helperText={touched.phone && errors.phone}
                 error={Boolean(touched.phone && errors.phone)}
+                disabled={!isEditable}
               />
 
               <TextField
@@ -231,6 +243,7 @@ function UserForm({
                 onChange={handleChange}
                 helperText={touched.inn && errors.inn}
                 error={Boolean(touched.inn && errors.inn)}
+                disabled={!isEditable}
               />
 
               <TextField
@@ -247,6 +260,7 @@ function UserForm({
                 onChange={handleChange}
                 helperText={touched.company && errors.company}
                 error={Boolean(touched.company && errors.company)}
+                disabled={!isEditable}
               />
               <AutocompleteLocations
                 options={locations}
@@ -264,6 +278,7 @@ function UserForm({
                 fetchLocations={fetchLocations}
                 clearLocations={clearLocations}
                 setSelectedLocation={setSelectedLocation}
+                disable={!isEditable}
               />
 
               <TextField
@@ -280,7 +295,8 @@ function UserForm({
                 onChange={handleChange}
                 helperText={touched.password && errors.password}
                 error={Boolean(touched.password && errors.password)}
-                autocomplete="new-password"
+                autoComplete="new-password"
+                disabled={!isEditable}
               />
 
               <TextField
@@ -297,12 +313,15 @@ function UserForm({
                 onChange={handleChange}
                 helperText={errors.repeatPassword}
                 error={Boolean(errors.repeatPassword || errors.password)}
+                disabled={!isEditable}
               />
-              <div className={classes.buttonContainer}>
-                <ButtonWithLoader onPress={handleSubmit} loading={loading}>
-                  <FormattedMessage id="PROFILE.BUTTON.SAVE" />
-                </ButtonWithLoader>
-              </div>
+              {isEditable && (
+                <div className={classes.buttonContainer}>
+                  <ButtonWithLoader onPress={handleSubmit} loading={loading}>
+                    <FormattedMessage id="PROFILE.BUTTON.SAVE" />
+                  </ButtonWithLoader>
+                </div>
+              )}
             </Form>
           </div>
         )}

@@ -61,6 +61,7 @@
     "PROFILE.STATUS.SUCCESS": "Пользователь успешно сохранен",
     "PROFILE.STATUS.ERROR": "Ошибка сохранения пользователя",
     "PROFILE.TITLE.EDIT": "Редактирование пользователя",
+    "PROFILE.TITLE.VIEW": "Просмотр пользователя",
     "USERLIST.BUTTON.ADD_USER": "Добавить пользователя",
     "USERLIST.TABLE.ID": "Id",
     "USERLIST.TABLE.EMAIL": "Email",

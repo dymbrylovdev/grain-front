@@ -28,7 +28,7 @@ function HomePage({ setMenuConfig, setCrops }) {
   useEffect(() => {
     setMenuConfig(menuConfig);
     getCropsAction();
-  }, []);
+  }, []); // eslint-disable-line
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>
