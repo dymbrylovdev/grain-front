@@ -18,7 +18,7 @@ const getInitialValues = user => ({
   inn: user.inn || "",
   company: user.company || "",
   password: "",
-  repeatPassword: "",
+  repeatPassword: null,
   role: user.is_vendor ? vendor : user.is_buyer ? buyer : admin,
   status: user.status || "",
 });
@@ -75,14 +75,13 @@ function UserForm({
             isCreate || isEdit
               ? Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
               : null,
-
           repeatPassword: Yup.mixed().oneOf(
-            [Yup.ref("password"), "", null],
+            [Yup.ref("password")],
             <FormattedMessage id="PROFILE.VALIDATION.SIMILAR_PASSWORD" />
           ),
         })}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-          if (values.password === "") {
+          if (values.password === "" || !values.password) {
             delete values.password;
           }
           if (values.login === "") {
@@ -311,8 +310,8 @@ function UserForm({
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                helperText={errors.repeatPassword}
-                error={Boolean(errors.repeatPassword || errors.password)}
+                helperText={touched.repeatPassword && errors.repeatPassword}
+                error={Boolean(touched.repeatPassword && errors.repeatPassword)}
                 disabled={!isEditable}
               />
               {isEditable && (
