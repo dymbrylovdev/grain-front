@@ -18,7 +18,7 @@ const getInitialValues = user => ({
   inn: user.inn || "",
   company: user.company || "",
   password: "",
-  repeatPassword: null,
+  repeatPassword: "",
   role: user.is_vendor ? vendor : user.is_buyer ? buyer : admin,
   status: user.status || "",
 });
@@ -37,6 +37,8 @@ const buyer = {
 };
 
 const roles = [admin, buyer, vendor];
+
+
 
 function UserForm({
   fetchLocations,
@@ -59,27 +61,36 @@ function UserForm({
     user && user.id && formRef.current.resetForm({ values: getInitialValues(user) });
   }, [user]);
 
+
+  const schema = Yup.object().shape({
+    email: Yup.string()
+      .email(<FormattedMessage id="AUTH.VALIDATION.INVALID_FIELD" />)
+      .required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
+    password: isCreate
+      ? Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
+      : null,
+    login:
+      isCreate || isEdit
+        ? Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
+        : null,
+    repeatPassword: Yup.string().test('passwords-match', <FormattedMessage id="PROFILE.VALIDATION.SIMILAR_PASSWORD" />, 
+    function(value){
+      console.log('---password', this.parent.password);
+      const password = this.parent.password;
+      if ( password && password !== "" && password !== value ){
+        return false;
+      }
+      return true;
+    })
+  })
+ 
+
   return (
     <Paper className={classes.container}>
       <Formik
         autoComplete="off"
         initialValues={getInitialValues(user)}
-        validationSchema={Yup.object().shape({
-          email: Yup.string()
-            .email(<FormattedMessage id="AUTH.VALIDATION.INVALID_FIELD" />)
-            .required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
-          password: isCreate
-            ? Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
-            : null,
-          login:
-            isCreate || isEdit
-              ? Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
-              : null,
-          repeatPassword: Yup.mixed().oneOf(
-            [Yup.ref("password")],
-            <FormattedMessage id="PROFILE.VALIDATION.SIMILAR_PASSWORD" />
-          ),
-        })}
+        validationSchema={schema}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
           if (values.password === "" || !values.password) {
             delete values.password;
