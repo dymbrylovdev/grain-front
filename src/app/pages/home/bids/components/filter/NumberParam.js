@@ -20,7 +20,7 @@ function NumberParam({ values, param, handleChange, clearAction }) {
       <Col> 
         {param.name}
         </Col>
-        <Col md="auto">
+        <Col>
         <RadioGroup
           name={composeName}
           value={values[composeName] || "≤"}
@@ -31,7 +31,7 @@ function NumberParam({ values, param, handleChange, clearAction }) {
           <FormControlLabel value="≥" control={<Radio />} label=" ≥" />
         </RadioGroup>
         </Col>
-      <Col>
+      <Col md="5" lg="5" sm="5" xs="10" xl="5">
         <TextField
           type="text"
           margin="normal"
@@ -41,7 +41,7 @@ function NumberParam({ values, param, handleChange, clearAction }) {
           onChange={handleChange}
         />
       </Col>
-      <Row md="auto">
+      <Row>
         <IconButton
           onClick={() => {
             clearAction(composeName);
