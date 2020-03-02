@@ -128,7 +128,6 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
           }
         })
         .catch(error => {
-          console.log("loginError", error);
           setStatus({
             error: true,
             message: intl.formatMessage({

@@ -84,8 +84,6 @@ export const actions = {
 function* getUserByIdSaga({payload:{id}}){
     try{
         const {data} = yield getUserById(id);
-        console.log('---userData', data);
-        
         if(data && data.data){
           yield put(actions.userByIdSuccess(data.data));
         }

@@ -75,7 +75,6 @@ function UserForm({
         : null,
     repeatPassword: Yup.string().test('passwords-match', <FormattedMessage id="PROFILE.VALIDATION.SIMILAR_PASSWORD" />, 
     function(value){
-      console.log('---password', this.parent.password);
       const password = this.parent.password;
       if ( password && password !== "" && password !== value ){
         return false;

@@ -76,19 +76,19 @@ function BidTable({
                 <TableCell>{bid.price_with_delivery || "-"}</TableCell>
                 <TableCell>
                   <Link to={`/bid/view/${bid.id}/${addUrl || ""}`}>
-                    <IconButton size="small">
+                    <IconButton size="medium" color="primary">
                       <VisibilityIcon />
                     </IconButton>
                   </Link>
                   {isHaveRules(user, bid.vendor.id) && (
                     <>
                       <Link to={`/bid/edit/${bid.id}/${addUrl || ""}`}>
-                        <IconButton size="small">
+                        <IconButton size="medium" color="primary">
                           {isHaveRules(user, bid.vendor.id) ? <EditIcon /> : <VisibilityIcon />}
                         </IconButton>
                       </Link>
                       <IconButton
-                        size="small"
+                        size="medium"
                         onClick={() => handleDeleteDialiog(bid.id)}
                         color="secondary"
                       >

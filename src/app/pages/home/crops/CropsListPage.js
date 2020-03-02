@@ -73,7 +73,7 @@ function CropsListPage({ setMenuConfig, setCrops, match }) {
               <TableCell>{crop.name}</TableCell>
               <TableCell>
                 <Link to={`/crop/edit/${crop.id}`}>
-                  <IconButton size="small">
+                  <IconButton size="medium" color="primary">
                     <EditIcon />
                   </IconButton>
                 </Link>

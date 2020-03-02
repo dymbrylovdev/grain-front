@@ -130,7 +130,7 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
                       })}
                     >
                       <Link to={`/user/edit/${user.id}`}>
-                        <IconButton size="small">
+                        <IconButton size="medium" color="primary">
                           <EditIcon />
                         </IconButton>
                       </Link>
@@ -143,7 +143,7 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
                         })}
                       >
                         <Link to={`/bid/create/${user.id}`}>
-                          <IconButton size="small">
+                          <IconButton size="medium" color="primary">
                             <AddIcon />
                           </IconButton>
                         </Link>
@@ -154,7 +154,7 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
                         id: "USERLIST.TOOLTIP.DELETE",
                       })}
                     >
-                      <IconButton size="small" onClick={() => handleDeleteDialiog(user.id)}>
+                      <IconButton size="medium" color="secondary" onClick={() => handleDeleteDialiog(user.id)}>
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
