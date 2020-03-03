@@ -43,21 +43,16 @@ function BidTable({
                 <FormattedMessage id="BIDSLIST.TABLE.COST" />
               </TopTableCell>
               <TopTableCell>
+                <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
+              </TopTableCell>
+              <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.VOLUME" />
               </TopTableCell>
               <TopTableCell>
-                <FormattedMessage id="BIDSLIST.TABLE.DESCRIPTION" />
+                <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
               </TopTableCell>
-              {fromAdmin && (
-                <TopTableCell>
-                  <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
-                </TopTableCell>
-              )}
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
-              </TopTableCell>
-              <TopTableCell>
-                <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
               </TopTableCell>
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.ACTIONS" />
@@ -69,11 +64,16 @@ function BidTable({
               <TableRow key={bid.id}>
                 <TableCell>{bid.id}</TableCell>
                 <TableCell>{bid.price}</TableCell>
-                <TableCell>{bid.volume}</TableCell>
-                <TableCell>{bid.description}</TableCell>
-                {fromAdmin && <TableCell>{`${bid.vendor.login} ${bid.vendor.company}`}</TableCell>}
-                <TableCell>{bid.distance || "-"}</TableCell>
                 <TableCell>{bid.price_with_delivery || "-"}</TableCell>
+                <TableCell>{bid.volume}</TableCell>
+                <TableCell>
+                  <div>
+                    <div>{`${bid.vendor.fio || ""}`}</div>
+                    <div>{`${bid.vendor.company || ""}`}</div>
+                  </div>
+                </TableCell>
+                <TableCell>{bid.distance || "-"}</TableCell>
+
                 <TableCell>
                   <Link to={`/bid/view/${bid.id}/${addUrl || ""}`}>
                     <IconButton size="medium" color="primary">

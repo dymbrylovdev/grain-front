@@ -113,7 +113,7 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map(user => (
+          {users &&  users.map && users.map(user => (
             <TableRow key={user.id}>
               <TableCell>{user.id}</TableCell>
               <TableCell>{user.email}</TableCell>
