@@ -34,6 +34,7 @@ const innerStyle = makeStyles(theme => ({
   },
   dialog: {},
 }));
+
 function FilterForm({
   isOpen,
   handleClose,

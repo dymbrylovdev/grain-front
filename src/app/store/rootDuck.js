@@ -5,7 +5,7 @@ import * as auth from "./ducks/auth.duck";
 import * as users from "./ducks/users.duck";
 import * as locations from "./ducks/locations.duck";
 import * as docs from "./ducks/docs.duck";
-import * as ads from "./ducks/ads.duck";
+import * as ads from "./ducks/bids.duck";
 import * as crops from "./ducks/crops.duck";
 import { metronic } from "../../_metronic";
 

@@ -5,30 +5,30 @@ const AD_URL = "/api/bid"
 const MY_ADS_URL = "/api/my/bids"
 const CROP_URL = "/api/crop";
 
-export const getBestAds = (params) => {
+export const getBestBids = (params) => {
     return axios.post(GET_ADS_URL, params);
 }
 
-export const createAd = (values) => {
+export const createBid = (values) => {
     return axios.post(AD_URL, values);
 }
 
-export const editAd = (id, params) => {
+export const editBid = (id, params) => {
     return axios.put(`${AD_URL}/${id}`, params)
 }
 
-export const getMyAds = () => {
+export const getMyBids = () => {
     return axios.get(MY_ADS_URL);
 }
 
-export const deleteAd = (id) => {
+export const deleteBid = (id) => {
     return axios.delete(`${AD_URL}/${id}`)
 }
 
-export const getAllAds = (id, page) => {
+export const getAllBids = (id, page) => {
     return axios.get(`${CROP_URL}/${id}/bids?page=${page||1}`)
 }
 
-export const getAdById = (id) => {
+export const getBidById = (id) => {
     return axios.get(`${AD_URL}/${id}`);
 }

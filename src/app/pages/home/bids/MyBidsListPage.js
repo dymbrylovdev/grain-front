@@ -5,12 +5,12 @@ import { Paper } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import useStyles from "../styles";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
-import * as ads from "../../../store/ducks/ads.duck";
-import { deleteAd } from "../../../crud/ads.crud";
+import * as ads from "../../../store/ducks/bids.duck";
+import { deleteBid } from "../../../crud/bids.crud";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import BidTable from "./components/BidTable";
 
-function MyBidsListPage({ intl, deleteAdSuccess, getMyAds }) {
+function MyBidsListPage({ intl, deleteBidSuccess, getMyBids }) {
   const classes = useStyles();
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
@@ -20,18 +20,18 @@ function MyBidsListPage({ intl, deleteAdSuccess, getMyAds }) {
   };
   const deleteBidAction = () => {
     setAlertOpen(false);
-    deleteAd(deleteBidId)
+    deleteBid(deleteBidId)
       .then(() => {
-        deleteAdSuccess(deleteBidId);
-        getMyAdsAction();
+        deleteBidSuccess(deleteBidId);
+        getMyBidsAction();
       })
       .catch(error => {});
   };
-  const getMyAdsAction = () => {
-    getMyAds();
+  const getMyBidsAction = () => {
+    getMyBids();
   };
   useEffect(() => {
-    getMyAdsAction();
+    getMyBidsAction();
   }, []);
   const { myBids, user, loading } = useSelector(
     ({ ads, auth }) => ({

@@ -5,15 +5,15 @@ import { Paper } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import useStyles from "../styles";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
-import * as ads from "../../../store/ducks/ads.duck";
-import { deleteAd } from "../../../crud/ads.crud";
+import * as ads from "../../../store/ducks/bids.duck";
+import { deleteBid } from "../../../crud/bids.crud";
 import BidTable from "./components/BidTable";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 
 function AllBidsPage({
   intl,
-  deleteAdSuccess,
-  getAllAds,
+  deleteBidSuccess,
+  getAllBids,
   match: {
     params: { cropId },
   },
@@ -39,22 +39,22 @@ function AllBidsPage({
 
   const deleteBidAction = () => {
     setAlertOpen(false);
-    deleteAd(deleteBidId)
+    deleteBid(deleteBidId)
       .then(() => {
-        deleteAdSuccess(deleteBidId);
-        getAllAdsAction(cropId, page);
+        deleteBidSuccess(deleteBidId);
+        getAllBidsAction(cropId, page);
       })
       .catch(error => {});
   };
-  const getAllAdsAction = (cropId, page) => {
-    getAllAds(cropId, page);
+  const getAllBidsAction = (cropId, page) => {
+    getAllBids(cropId, page);
   };
   useEffect(() => {
-    getAllAdsAction(cropId, 1);
+    getAllBidsAction(cropId, 1);
   }, [cropId]);
 
   const handleChangePage = (event, page) => {
-    getAllAdsAction(cropId, page + 1);
+    getAllBidsAction(cropId, page + 1);
   };
   const paginationData = {
     page,

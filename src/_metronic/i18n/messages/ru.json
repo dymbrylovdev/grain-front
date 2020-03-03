@@ -133,5 +133,9 @@
     "FILTER.FORM.MAX_DESTINATION": "Максимальное расстояние",
     "FILTER.FORM.BUTTON.SUBMIT": "Применить фильтр",
     "FILTER.FORM.BUTTON.RESET": "Очистить фильтр",
-    "FILTER.BUTTON.CLOSE": "Закрыть"
+    "FILTER.BUTTON.CLOSE": "Закрыть",
+    "ERROR.LOAD.TITLE": "Ошибка загрузки данных",
+    "ERROR.BUTTON.REPEAT": "Повторить попытку",
+    "ERROR.USER.DELETE" : "Ошибка удаления пользователя",
+    "ERROR.DIALOG.TITLE": "Ошибка"
 }

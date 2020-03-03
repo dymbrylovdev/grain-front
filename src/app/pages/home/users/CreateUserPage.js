@@ -8,10 +8,12 @@ import useStyles from "./styles";
 import UserForm from "./components/UserForm";
 
 function CreateUserPage({ intl, fetchLocationsRequest, clearLocations }) {
+
   const [loading, setLoading] = useState(false);
   const [backRedirect, setBackRedirect] = useState(false);
   const user = {};
   const classes = useStyles();
+
   const submitAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
@@ -31,8 +33,6 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearLocations }) {
           }
         })
         .catch(error => {
-          console.log("loginError", error);
-
           setLoading(false);
           setSubmitting(false);
           setStatus({
@@ -44,6 +44,7 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearLocations }) {
         });
     }, 1000);
   };
+  
   if (backRedirect) {
     return <Redirect to="/userList" />;
   }

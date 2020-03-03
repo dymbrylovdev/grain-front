@@ -5,11 +5,11 @@ import { Link } from "react-router-dom";
 import { Paper, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import * as auth from "../../../store/ducks/auth.duck";
-import * as ads from "../../../store/ducks/ads.duck";
+import * as ads from "../../../store/ducks/bids.duck";
 import * as crops from "../../../store/ducks/crops.duck";
 import { setUser } from "../../../crud/auth.crud";
 import { getCropParams } from "../.././../crud/crops.crud";
-import { deleteAd } from "../../../crud/ads.crud";
+import { deleteBid} from "../../../crud/bids.crud";
 import useStyles from "../styles";
 import { filterForRequest, isFilterEmpty } from "../../../utils";
 
@@ -48,7 +48,7 @@ const isHaveRules = (user, id) => {
   return user.is_admin || user.id === Number.parseInt(id);
 };
 
-function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCrop, fulfillUser }) {
+function BidsListPage({ getBestBids, deleteBidSuccess, intl, match, setFilterForCrop, fulfillUser }) {
   const innerClasses = useInnerStyles();
 
   const [filterModalOpen, setFilterModalOpen] = useState(false);
@@ -78,10 +78,10 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
   };
 
   const classes = useStyles();
-  const getAdsAction = (filter, enumParams, numberParams) => {
+  const getBidsAction = (filter, enumParams, numberParams) => {
     const requestFilter = filterForRequest(filter, enumParams, numberParams);
     console.log("filterForRequest", requestFilter);
-    getBestAds({ filter: filter.crop_id ? requestFilter : {} });
+    getBestBids({ filter: filter.crop_id ? requestFilter : {} });
   };
 
   useEffect(() => {
@@ -93,7 +93,7 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
           const numberData = data.data.filter(item => item.type === "number");
           setEnumParams(enumData);
           setNumberParams(numberData);
-          getAdsAction(filter, enumData, numberData);
+          getBidsAction(filter, enumData, numberData);
         }
       })
       .catch(error => console.log("getCropParamsError", error));
@@ -101,10 +101,10 @@ function BidsListPage({ getBestAds, deleteAdSuccess, intl, match, setFilterForCr
 
   const deleteBidAction = () => {
     setAlertOpen(false);
-    deleteAd(deleteBidId)
+    deleteBid(deleteBidId)
       .then(() => {
-        deleteAdSuccess(deleteBidId);
-        getAdsAction(filter, enumParams, numberParams);
+        deleteBidSuccess(deleteBidId);
+        getBidsAction(filter, enumParams, numberParams);
       })
       .catch(error => {
         console.log("deleteUserError", error);

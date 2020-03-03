@@ -6,11 +6,11 @@ import { Redirect } from "react-router-dom";
 import BidForm from "./components/BidForm";
 import useStyles from "../styles";
 import { setUser } from "../../../crud/auth.crud";
-import { createAd, editAd } from "../../../crud/ads.crud";
+import { createBid, editBid } from "../../../crud/bids.crud";
 import userSelector from "../../../store/selectors/user";
 import bidSelector from "../../../store/selectors/bid";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
-import * as ads from "../../../store/ducks/ads.duck";
+import * as ads from "../../../store/ducks/bids.duck";
 import * as locations from "../../../store/ducks/locations.duck";
 import * as auth from "../../../store/ducks/auth.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
@@ -18,12 +18,12 @@ import LocationDialog from "./components/location/LocationDialog";
 
 function BidCreatePage({
   intl,
-  createAdSuccess,
+  createBidSuccess,
   match,
-  editAdSuccess,
+  editBidSuccess,
   fetchLocationsRequest,
   clearLocations,
-  getAdById,
+  getBidById,
   fulfillUser,
 }) {
   const classes = useStyles();
@@ -54,7 +54,7 @@ function BidCreatePage({
   const createAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
-      createAd({ ...values, vendor_id: Number(vendor_id) })
+      createBid({ ...values, vendor_id: Number(vendor_id) })
         .then(({ data }) => {
           setLoading(false);
           if (data.data) {
@@ -64,7 +64,7 @@ function BidCreatePage({
                 id: "BID.STATUS.CREATE_SUCCESS",
               }),
             });
-            createAdSuccess();
+            createBidSuccess();
             setRedirect(values.crop && values.crop.id);
           }
         })
@@ -85,7 +85,7 @@ function BidCreatePage({
     console.log("editValues", values);
     setTimeout(() => {
       setLoading(true);
-      editAd(bidId, {
+      editBid(bidId, {
         ...values,
         vendor_id,
         price: Number.parseInt(values.price),
@@ -100,7 +100,7 @@ function BidCreatePage({
                 id: "BID.STATUS.EDIT_SUCCESS",
               }),
             });
-            editAdSuccess(data.data);
+            editBidSuccess(data.data);
           }
         })
         .catch(error => {
@@ -117,7 +117,7 @@ function BidCreatePage({
   };
 
   useEffect(() => {
-    getAdById(bidId, bid);
+    getBidById(bidId, bid);
   }, [user, bidId]);// eslint-disable-line
 
   const locationSubmit = (values, setStatus, setSubmitting) => {
