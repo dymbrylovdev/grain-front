@@ -10,7 +10,7 @@ import { createBid, editBid } from "../../../crud/bids.crud";
 import userSelector from "../../../store/selectors/user";
 import bidSelector from "../../../store/selectors/bid";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
-import * as ads from "../../../store/ducks/bids.duck";
+import * as bids from "../../../store/ducks/bids.duck";
 import * as locations from "../../../store/ducks/locations.duck";
 import * as auth from "../../../store/ducks/auth.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
@@ -31,10 +31,10 @@ function BidCreatePage({
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { crops, user, preloading } = useSelector(
-    ({ crops, auth, ads }) => ({
+    ({ crops, auth, bids }) => ({
       crops: crops.crops,
       user: auth.user,
-      preloading: ads.currentAd && ads.currentAd.loading,
+      preloading: bids.currentBid && bids.currentBid.loading,
     }),
     shallowEqual
   );
@@ -189,5 +189,5 @@ function BidCreatePage({
 }
 
 export default injectIntl(
-  connect(null, { ...ads.actions, ...locations.actions, ...auth.actions })(BidCreatePage)
+  connect(null, { ...bids.actions, ...locations.actions, ...auth.actions })(BidCreatePage)
 );

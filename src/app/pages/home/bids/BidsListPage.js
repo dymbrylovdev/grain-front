@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Paper, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import * as auth from "../../../store/ducks/auth.duck";
-import * as ads from "../../../store/ducks/bids.duck";
+import * as bids from "../../../store/ducks/bids.duck";
 import * as crops from "../../../store/ducks/crops.duck";
 import { setUser } from "../../../crud/auth.crud";
 import { getCropParams } from "../.././../crud/crops.crud";
@@ -59,11 +59,11 @@ function BidsListPage({ getBestBids, deleteBidSuccess, intl, match, setFilterFor
   cropId = Number.parseInt(cropId);
 
   const { bids, user, filter, loading } = useSelector(
-    ({ ads, auth, crops }) => ({
-      bids: ads.bestAds,
+    ({ bids, auth, crops }) => ({
+      bids: bids.bestBids,
       user: auth.user,
       filter: (crops.filters && crops.filters[cropId]) || { crop_id: cropId },
-      loading: ads.bestAds && ads.bestAds.loading,
+      loading: bids.bestBids && bids.bestBids.loading,
     }),
     shallowEqual
   );
@@ -224,5 +224,5 @@ function BidsListPage({ getBestBids, deleteBidSuccess, intl, match, setFilterFor
 }
 
 export default injectIntl(
-  connect(null, { ...ads.actions, ...crops.actions, ...auth.actions })(BidsListPage)
+  connect(null, { ...bids.actions, ...crops.actions, ...auth.actions })(BidsListPage)
 );

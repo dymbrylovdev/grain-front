@@ -27,16 +27,16 @@ export const actionTypes = {
   BidByIdSuccess: "[GetAdById] Success",
 };
 
-const initialAdState = {
-  bestAds: [],
-  myAds: {},
+const initialBidState = {
+  bestBids: [],
+  myBids: {},
   allBids: {},
-  currentAd: {},
+  currentBid: {},
 };
 
 export const reducer = persistReducer(
   { storage, key: "demo1-ads" },
-  (state = initialAdState, action) => {
+  (state = initialBidState, action) => {
     switch (action.type) {
       case actionTypes.GetAllBids: {
         return { ...state, allBids: { ...state.allBids, loading: true } };
@@ -50,58 +50,58 @@ export const reducer = persistReducer(
       }
 
       case actionTypes.GetMyBids: {
-        return { ...state, myAds: { ...state.myAds, loading: true } };
+        return { ...state, myBids: { ...state.myBids, loading: true } };
       }
       case actionTypes.MyBidsFail: {
-        return { ...state, myAds: { ...state.myAds, loading: false } };
+        return { ...state, myBids: { ...state.myBids, loading: false } };
       }
       case actionTypes.MyBidsSuccess: {
         const { data } = action.payload;
-        return { ...state, myAds: data };
+        return { ...state, myBids: data };
       }
 
       case actionTypes.GetBestBids: {
-        return { ...state, bestAds: { ...state.bestAds, loading: true } };
+        return { ...state, bestBids: { ...state.bestBids, loading: true } };
       }
       case actionTypes.BestBidsFail: {
-        return { ...state, bestAds: { ...state.bestAds, loading: false } };
+        return { ...state, bestBids: { ...state.bestBids, loading: false } };
       }
       case actionTypes.BestBidsSuccess: {
         const { data } = action.payload;
-        return { ...state, bestAds: data };
+        return { ...state, bestBids: data };
       }
 
       case actionTypes.GetBidById: {
-        return { ...state, currentAd: { ...state.currentAd, loading: true } };
+        return { ...state, currentBid: { ...state.currentBid, loading: true } };
       }
       case actionTypes.BidByIdFail: {
-        return { ...state, currentAd: { ...state.currentAd, loading: false } };
+        return { ...state, currentBid: { ...state.currentBid, loading: false } };
       }
       case actionTypes.BidByIdSuccess: {
         const { data } = action.payload;
-        const myAdsList =
-          state.myAds &&
-          state.myAds.list &&
-          state.myAds.list.map(item => (data.id === item.id ? data : item));
-        const bestAdsExactList =
-          state.bestAds &&
-          state.bestAds.equal &&
-          state.bestAds.equal.map(item => (data.id === item.id ? data : item));
-        const bestAdsinexactList =
-          state.bestAds &&
-          state.bestAds.inexact &&
-          state.bestAds.inexact.map(item => (data.id === item.id ? data : item));
-        const allAdsList =
+        const myBidsList =
+          state.myBids &&
+          state.myBids.list &&
+          state.myBids.list.map(item => (data.id === item.id ? data : item));
+        const bestBidsExactList =
+          state.bestBids &&
+          state.bestBids.equal &&
+          state.bestBids.equal.map(item => (data.id === item.id ? data : item));
+        const bestBidsinexactList =
+          state.bestBids &&
+          state.bestBids.inexact &&
+          state.bestBids.inexact.map(item => (data.id === item.id ? data : item));
+        const allBidsList =
           state.allBids &&
           state.allBids.data &&
           state.allBids.data.map(item => (data.id === item.id ? data : item));
           
         return {
           ...state,
-          myAds: { ...state.myAds, list: myAdsList },
-          allBids: { ...state.allBids, data: allAdsList },
-          bestAds: { ...state.bestAds, equal: bestAdsExactList, inexact: bestAdsinexactList },
-          currentAd: { loading: false}
+          myBids: { ...state.myBids, list: myBidsList },
+          allBids: { ...state.allBids, data: allBidsList },
+          bestBids: { ...state.bestBids, equal: bestBidsExactList, inexact: bestBidsinexactList },
+          currentBid: { loading: false}
         };
       }
 

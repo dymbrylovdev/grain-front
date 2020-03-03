@@ -1,9 +1,9 @@
 import { useSelector, shallowEqual } from "react-redux";
 
 function BidSelector(id, by) {
-  const bid = useSelector(({ ads: { bestAds, myAds, allBids } }) => {
+  const bid = useSelector(({ bids: { bestBids, myBids, allBids } }) => {
     if( by === "fromMy"){
-      const currentBidFromMy = myAds && myAds.list.filter(item => item.id === Number.parseInt(id));
+      const currentBidFromMy = myBids && myBids.list.filter(item => item.id === Number.parseInt(id));
       if (currentBidFromMy && currentBidFromMy.length > 0) {
         return currentBidFromMy[0];
       }
@@ -14,8 +14,8 @@ function BidSelector(id, by) {
         return currentBidFromAdmin[0];
       }
     }
-    const currentBidFromEqual = bestAds && bestAds.equal.filter(item => item.id === Number.parseInt(id));
-    const currentBidFromInequal = bestAds && bestAds.inexact.filter(item => item.id === Number.parseInt(id));
+    const currentBidFromEqual = bestBids && bestBids.equal.filter(item => item.id === Number.parseInt(id));
+    const currentBidFromInequal = bestBids && bestBids.inexact.filter(item => item.id === Number.parseInt(id));
     if (currentBidFromEqual && currentBidFromEqual.length > 0) {
       return currentBidFromEqual[0];
     }

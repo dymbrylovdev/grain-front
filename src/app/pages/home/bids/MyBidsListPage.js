@@ -5,7 +5,7 @@ import { Paper } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import useStyles from "../styles";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
-import * as ads from "../../../store/ducks/bids.duck";
+import * as bids from "../../../store/ducks/bids.duck";
 import { deleteBid } from "../../../crud/bids.crud";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import BidTable from "./components/BidTable";
@@ -34,10 +34,10 @@ function MyBidsListPage({ intl, deleteBidSuccess, getMyBids }) {
     getMyBidsAction();
   }, []);
   const { myBids, user, loading } = useSelector(
-    ({ ads, auth }) => ({
-      myBids: ads.myAds && ads.myAds.list,
+    ({ bids, auth }) => ({
+      myBids: bids.myBids && bids.myBids.list,
       user: auth.user,
-      loading: ads.myAds && ads.myAds.loading,
+      loading: bids.myBids && bids.myBids.loading,
     }),
     shallowEqual
   );
@@ -78,4 +78,4 @@ function MyBidsListPage({ intl, deleteBidSuccess, getMyBids }) {
   );
 }
 
-export default injectIntl(connect(null, ads.actions)(MyBidsListPage));
+export default injectIntl(connect(null, bids.actions)(MyBidsListPage));

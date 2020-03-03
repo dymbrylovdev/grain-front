@@ -5,7 +5,7 @@ import { Paper } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import useStyles from "../styles";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
-import * as ads from "../../../store/ducks/bids.duck";
+import * as bids from "../../../store/ducks/bids.duck";
 import { deleteBid } from "../../../crud/bids.crud";
 import BidTable from "./components/BidTable";
 import Preloader from "../../../components/ui/Loaders/Preloader";
@@ -26,14 +26,14 @@ function AllBidsPage({
     setAlertOpen(true);
   };
   const { user } = useSelector(({ auth }) => ({ muser: auth.user }), shallowEqual);
-  const { bids, page, per_page, total, loading } = useSelector(({ ads }) => {
-    if (!ads.allBids) return { bids: [], page: 1, per_page: 20, total: 0, loading: false };
+  const { bids, page, per_page, total, loading } = useSelector(({ bids }) => {
+    if (!bids.allBids) return { bids: [], page: 1, per_page: 20, total: 0, loading: false };
     return {
-      bids: ads.allBids.data,
-      page: ads.allBids.page,
-      per_page: ads.allBids.per_page,
-      total: ads.allBids.total,
-      loading: ads.allBids.loading,
+      bids: bids.allBids.data,
+      page: bids.allBids.page,
+      per_page: bids.allBids.per_page,
+      total: bids.allBids.total,
+      loading: bids.allBids.loading,
     };
   }, shallowEqual);
 
@@ -100,4 +100,4 @@ function AllBidsPage({
   );
 }
 
-export default injectIntl(connect(null, ads.actions)(AllBidsPage));
+export default injectIntl(connect(null, bids.actions)(AllBidsPage));
