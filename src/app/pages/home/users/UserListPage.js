@@ -16,23 +16,25 @@ import {
 import { IconButton } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import * as users from "../../../store/ducks/users.duck";
-import { getUsers, deleteUser } from "../../../crud/users.crud";
+import { deleteUser } from "../../../crud/users.crud";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import Footer from "../../../components/ui/Table/TableFooter";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
+import Preloader from "../../../components/ui/Loaders/Preloader";
 
 import useStyles from "./styles";
 
-function UserListPage({ setUsers, deleteUserSuccess, intl }) {
-  const { users, page, total, per_page } = useSelector(
-    ({ users }) => ({
-      users: users.users,
+function UserListPage({ setUsers, deleteUserSuccess, intl, getUsers }) {
+  const { users, page, per_page, total, loading } = useSelector(({ users: {users} }) => {
+    if ( !users ) return { users: [], page: 1, per_page: 20, total: 0, loading: false };
+    return {
+      users: users.data,
       page: users.page,
-      total: users.total,
       per_page: users.per_page,
-    }),
-    shallowEqual
-  );
+      total: users.total,
+      loading: users.loading,
+    };
+  }, shallowEqual);
   const [deleteUserId, setDeleteUserId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
   const handleDeleteDialiog = id => {
@@ -40,15 +42,7 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
     setAlertOpen(true);
   };
   const getUsersAction = page =>
-    getUsers({ page })
-      .then(({ data }) => {
-        if (data && data) {
-          setUsers(data);
-        }
-      })
-      .catch(error => {
-        alert(error);
-      });
+    getUsers({ page });
   const handleChangePage = (event, page) => {
     getUsersAction(page + 1);
   };
@@ -66,6 +60,7 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
       });
   };
   const classes = useStyles();
+  if ( loading ) return  <Preloader/>
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog
@@ -113,7 +108,7 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map(user => (
+          {users && users.map && users.map(user => (
             <TableRow key={user.id}>
               <TableCell>{user.id}</TableCell>
               <TableCell>{user.email}</TableCell>

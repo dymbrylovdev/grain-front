@@ -7,12 +7,16 @@ export const actionTypes = {
   CreateUser: "[CreateUser] Action",
   EditUser: "[EditUser] Action",
   DeleteUser: "[DeleteUser] Action",
-  SetUsers: "[GetUsers] Action",
+  SetUsers: "[SetUsers] Action",
   SetStatuses: "[GetStatuses] Action",
 
   GetUserById:  "[GetUserById] Action",
   UserByIdSuccess: "[GetUserById] Success",
   UserByIdFail: "[GetUserById] Fail",
+
+  GetUsers: "[GetUsers] Action",
+  UsersSuccess: "[GetUsers] Success",
+  UsersFail: "[GetUsers] Fail"
 
 
 };
@@ -63,6 +67,19 @@ export const reducer = persistReducer(
         const { data } = action.payload
         return { ...state, currentUser: data }
       }
+
+      case actionTypes.GetUsers: {
+         return { ...state, users: {loading: true}}
+      }
+      case actionTypes.UsersSuccess: {
+        const { data } = action.payload;
+        return { ...state, users: data};
+      }
+      case actionTypes.UsersFail: {
+        const { error } = action.payload;
+        return { ...state, users: { error}}
+      }
+
       default:
         return state;
     }
@@ -79,6 +96,10 @@ export const actions = {
   getUserById: id => ({type: actionTypes.GetUserById, payload: {id}}),
   userByIdSuccess: data => ({type: actionTypes.UserByIdSuccess, payload: {data}}),
   UserByIdFail: () => ({type: actionTypes.UserByIdFail}),
+
+  getUsers: page => ({type: actionTypes.GetUsers, payload: {page}}),
+  usersSuccess: data => ({ type: actionTypes.UsersSuccess, payload: {data}}),
+  usersFail: error => ({ type: actionTypes.UsersFail, payload: {error}}),
 };
 
 function* getUserByIdSaga({payload:{id}}){
@@ -87,9 +108,21 @@ function* getUserByIdSaga({payload:{id}}){
         if(data && data.data){
           yield put(actions.userByIdSuccess(data.data));
         }
-    }catch{
+    }catch(e){
         yield put(actions.UserByIdFail());
     }
+}
+
+function* getUsersSaga({payload: {page}}){
+  try {
+    const {data} = yield getUsers(page);
+    if (data){
+      yield put(actions.usersSuccess(data));
+    }
+  }catch(e){
+     console.log("---getUsersError", e);
+      yield put(actions.usersFail(e));
+  }
 }
 
 export function* saga() {
@@ -104,4 +137,5 @@ export function* saga() {
     }
   });
   yield takeLatest(actionTypes.GetUserById, getUserByIdSaga);
+  yield takeLatest(actionTypes.GetUsers, getUsersSaga);
 }

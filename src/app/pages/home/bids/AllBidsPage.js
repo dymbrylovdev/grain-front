@@ -35,7 +35,7 @@ function AllBidsPage({
       total: ads.allBids.total,
       loading: ads.allBids.loading,
     };
-  });
+  }, shallowEqual);
 
   const deleteBidAction = () => {
     setAlertOpen(false);
