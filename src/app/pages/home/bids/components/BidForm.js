@@ -59,7 +59,7 @@ const useInnerStyles = makeStyles(theme => ({
   },
   authorText: {
     marginBottom: theme.spacing(1),
-  }
+  },
 }));
 
 function NumberFormatCustom(props) {
@@ -125,13 +125,16 @@ function BidForm({
   }, []); // eslint-disable-line
   useEffect(() => {
     console.log("--currentBid", bid);
-      formRef.current.resetForm({values: getInitialValues(bid, currentCrop)});
-      if (!bid || !bid.id){
-          setCropParams([]);
-      }
-  }, [bidId]);// eslint-disable-line
+    formRef.current.resetForm({ values: getInitialValues(bid, currentCrop) });
+    if (!bid || !bid.id) {
+      setCropParams([]);
+    }
+  }, [bidId]); // eslint-disable-line
 
-  const toUserPath = (user.id ===  (bid.vendor && bid.vendor.id)) ? "/user/profile" : `/user/edit/${bid.vendor && bid.vendor.id}`
+  const toUserPath =
+    user.id === (bid.vendor && bid.vendor.id)
+      ? "/user/profile"
+      : `/user/edit/${bid.vendor && bid.vendor.id}`;
   return (
     <Paper className={classes.container}>
       <Formik
@@ -255,21 +258,6 @@ function BidForm({
                   </div>
                 </Box>
               )}
-              <TextField
-                type="text"
-                label={intl.formatMessage({
-                  id: "BIDSLIST.TABLE.DESCRIPTION",
-                })}
-                margin="normal"
-                name="description"
-                value={values.description}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                rows="6"
-                multiline
-                disabled={!isEditable}
-              />
 
               <AutocompleteLocations
                 options={locations}
@@ -354,12 +342,27 @@ function BidForm({
                   </TextField>
                 )
               )}
+              <TextField
+                type="text"
+                label={intl.formatMessage({
+                  id: "BIDSLIST.TABLE.DESCRIPTION",
+                })}
+                margin="normal"
+                name="description"
+                value={values.description}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                rows="6"
+                multiline
+                disabled={!isEditable}
+              />
               {bid.vendor && (
                 <Link to={toUserPath}>
-                <div className={innerClasses.authorText}>
+                  <div className={innerClasses.authorText}>
                     {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.company ||
                       bid.vendor.login}`}
-                </div>
+                  </div>
                 </Link>
               )}
               <StatusAlert status={status} />
