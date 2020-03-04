@@ -7,11 +7,12 @@ import { setUser } from "../../../crud/auth.crud";
 import useStyles from "./styles";
 import UserForm from "./components/UserForm";
 import Preloader from "../../../components/ui/Loaders/Preloader";
+import { LoadError } from "../../../components/ui/Erros";
 
 function ProfilePage({ intl, fulfillUser, fetchLocationsRequest, clearLocations, getUser }) {
   const [loading, setLoading] = useState(false);
-  const { user, preloading } = useSelector(
-    ({ auth: { user } }) => ({ user, preloading: user && user.loading }),
+  const { user, preloading, errors } = useSelector(
+    ({ auth: { user, errors } }) => ({ user, preloading: user && user.loading, errors: errors || {} }),
     shallowEqual
   );
   const classes = useStyles();
@@ -49,7 +50,7 @@ function ProfilePage({ intl, fulfillUser, fetchLocationsRequest, clearLocations,
   useEffect(()=> {
     getUser();
   },[])
-
+  if (errors.get) return <LoadError handleClick={() => getUser()} />;
   return (
     <>
       {preloading ? (

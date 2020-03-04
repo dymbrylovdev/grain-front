@@ -4,13 +4,14 @@ import { injectIntl, FormattedMessage } from "react-intl";
 import { Paper } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import useStyles from "../styles";
+
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import * as bids from "../../../store/ducks/bids.duck";
-import { deleteBid } from "../../../crud/bids.crud";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import BidTable from "./components/BidTable";
+import { ErrorDialog, LoadError } from "../../../components/ui/Erros";
 
-function MyBidsListPage({ intl, deleteBidSuccess, getMyBids }) {
+function MyBidsListPage({ intl, getMyBids, deleteBid, clearErrors }) {
   const classes = useStyles();
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
@@ -20,12 +21,7 @@ function MyBidsListPage({ intl, deleteBidSuccess, getMyBids }) {
   };
   const deleteBidAction = () => {
     setAlertOpen(false);
-    deleteBid(deleteBidId)
-      .then(() => {
-        deleteBidSuccess(deleteBidId);
-        getMyBidsAction();
-      })
-      .catch(error => {});
+    deleteBid(deleteBidId, bids.bidTypes.MyBids);
   };
   const getMyBidsAction = () => {
     getMyBids();
@@ -33,15 +29,17 @@ function MyBidsListPage({ intl, deleteBidSuccess, getMyBids }) {
   useEffect(() => {
     getMyBidsAction();
   }, []);
-  const { myBids, user, loading } = useSelector(
+  const { myBids, user, loading, errors } = useSelector(
     ({ bids, auth }) => ({
       myBids: bids.myBids && bids.myBids.list,
       user: auth.user,
       loading: bids.myBids && bids.myBids.loading,
+      errors: bids.errors || {},
     }),
     shallowEqual
   );
   if (loading) return <Preloader />;
+  if (errors.my) return <LoadError handleClick={() => getMyBidsAction()} />;
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog
@@ -58,6 +56,7 @@ function MyBidsListPage({ intl, deleteBidSuccess, getMyBids }) {
         handleClose={() => setAlertOpen(false)}
         handleAgree={() => deleteBidAction()}
       />
+      <ErrorDialog isOpen={errors.delete || false} text={intl.formatMessage({id:"ERROR.BID.DELETE"})} handleClose={() => clearErrors()}/>
       <Link to="/bid/create">
         <div className={classes.topMargin}>
           <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>

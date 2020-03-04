@@ -8,12 +8,13 @@ import useStyles from "./styles";
 import UserForm from "./components/UserForm";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import Preloader from "../../../components/ui/Loaders/Preloader";
+import { LoadError } from "../../../components/ui/Erros";
 
 function EditUserPage({ intl, editUserSuccess, fetchLocationsRequest, match, clearLocations, getUserById }) {
   const [loading, setLoading] = useState(false);
   const {id: userId} = match.params;
-  const { user, preloading, myUser } = useSelector(({users: { currentUser}, auth: {user: myUser}}) => ({
-    user: currentUser, preloading: currentUser && currentUser.loading, myUser
+  const { user, preloading, myUser, errors } = useSelector(({users: { currentUser, errors}, auth: {user: myUser}}) => ({
+    user: currentUser, preloading: currentUser && currentUser.loading, myUser, errors: errors || {}
   }))
   const classes = useStyles();
 
@@ -50,6 +51,7 @@ function EditUserPage({ intl, editUserSuccess, fetchLocationsRequest, match, cle
   },[userId])
   const isEditable = myUser.is_admin;
   const title = isEditable ? intl.formatMessage({id: "PROFILE.TITLE.EDIT"}) : intl.formatMessage({id: "PROFILE.TITLE.VIEW"});
+  if (errors.current) return <LoadError handleClick={() => getUserById(userId)} />;
   return (
     <>
       <LayoutSubheader title={`${title} ${(user && user.login)  ? user.login : ""}`}/>

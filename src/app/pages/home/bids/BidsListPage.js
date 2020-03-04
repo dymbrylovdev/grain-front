@@ -5,13 +5,13 @@ import { Link } from "react-router-dom";
 import { Paper, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import * as auth from "../../../store/ducks/auth.duck";
-import * as bids from "../../../store/ducks/bids.duck";
+import * as bidsDuck from "../../../store/ducks/bids.duck";
 import * as crops from "../../../store/ducks/crops.duck";
 import { setUser } from "../../../crud/auth.crud";
 import { getCropParams } from "../.././../crud/crops.crud";
-import { deleteBid} from "../../../crud/bids.crud";
 import useStyles from "../styles";
 import { filterForRequest, isFilterEmpty } from "../../../utils";
+
 
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import CustomIcon from "../../../components/ui/Images/CustomIcon";
@@ -21,6 +21,7 @@ import BidTable from "./components/BidTable";
 import LocationBlock from "./components/location/LocationBlock";
 import LocationDialog from "./components/location/LocationDialog";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
+import { ErrorDialog, LoadError } from "../../../components/ui/Erros";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -48,9 +49,9 @@ const isHaveRules = (user, id) => {
   return user.is_admin || user.id === Number.parseInt(id);
 };
 
-function BidsListPage({ getBestBids, deleteBidSuccess, intl, match, setFilterForCrop, fulfillUser }) {
+function BidsListPage({ getBestBids, intl, match, setFilterForCrop, fulfillUser, deleteBid, clearErrors }) {
   const innerClasses = useInnerStyles();
-
+  const [cropLoading, setCropLoading] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [enumParams, setEnumParams] = useState([]);
@@ -58,12 +59,13 @@ function BidsListPage({ getBestBids, deleteBidSuccess, intl, match, setFilterFor
   let { cropId } = match.params;
   cropId = Number.parseInt(cropId);
 
-  const { bids, user, filter, loading } = useSelector(
+  const { bids, user, filter, loading, errors } = useSelector(
     ({ bids, auth, crops }) => ({
       bids: bids.bestBids,
       user: auth.user,
       filter: (crops.filters && crops.filters[cropId]) || { crop_id: cropId },
       loading: bids.bestBids && bids.bestBids.loading,
+      errors: bids.errors || {}
     }),
     shallowEqual
   );
@@ -86,8 +88,10 @@ function BidsListPage({ getBestBids, deleteBidSuccess, intl, match, setFilterFor
 
   useEffect(() => {
     setFilterForCrop(filter, cropId);
+    setCropLoading(true);
     getCropParams(cropId)
       .then(({ data }) => {
+        setCropLoading(false);
         if (data && data.data) {
           const enumData = data.data.filter(item => item.type === "enum");
           const numberData = data.data.filter(item => item.type === "number");
@@ -96,19 +100,13 @@ function BidsListPage({ getBestBids, deleteBidSuccess, intl, match, setFilterFor
           getBidsAction(filter, enumData, numberData);
         }
       })
-      .catch(error => console.log("getCropParamsError", error));
+      .catch(error =>  setCropLoading(false));
   }, [cropId, filter, user]);
 
   const deleteBidAction = () => {
     setAlertOpen(false);
-    deleteBid(deleteBidId)
-      .then(() => {
-        deleteBidSuccess(deleteBidId);
-        getBidsAction(filter, enumParams, numberParams);
-      })
-      .catch(error => {
-        console.log("deleteUserError", error);
-      });
+    const requestFilter = filterForRequest(filter, enumParams, numberParams);
+    deleteBid(deleteBidId, bidsDuck.bidTypes.BestBids, {filter: filter.crop_id ? requestFilter : {} })
   };
 
   const filterSubmit = values => {
@@ -146,7 +144,8 @@ function BidsListPage({ getBestBids, deleteBidSuccess, intl, match, setFilterFor
     ? "/media/filter/filter.svg"
     : "/media/filter/filter_full.svg";
 
-  if (loading) return <Preloader />;
+  if (loading || cropLoading) return <Preloader />;
+  if (errors.bests) return <LoadError handleClick={() => getBidsAction(filter, enumParams, numberParams)} />;
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog
@@ -163,6 +162,7 @@ function BidsListPage({ getBestBids, deleteBidSuccess, intl, match, setFilterFor
         handleClose={() => setAlertOpen(false)}
         handleAgree={() => deleteBidAction()}
       />
+      <ErrorDialog isOpen={errors.delete || false} text={intl.formatMessage({id:"ERROR.BID.DELETE"})} handleClose={() => clearErrors()}/>
       <FilterModal
         isOpen={filterModalOpen}
         handleClose={() => setFilterModalOpen(false)}
@@ -224,5 +224,5 @@ function BidsListPage({ getBestBids, deleteBidSuccess, intl, match, setFilterFor
 }
 
 export default injectIntl(
-  connect(null, { ...bids.actions, ...crops.actions, ...auth.actions })(BidsListPage)
+  connect(null, { ...bidsDuck.actions, ...crops.actions, ...auth.actions })(BidsListPage)
 );

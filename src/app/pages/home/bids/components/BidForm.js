@@ -100,7 +100,7 @@ function BidForm({
   const { locations, isLoadingLocations } = useSelector(state => state.locations);
   const [selectedLocation, setSelectedLocation] = useState(null);
 
-  const filterCrops = crops.filter(item => item.id === bid.crop_id);
+  const filterCrops = crops && crops.filter(item => item.id === bid.crop_id);
   const currentCrop = filterCrops && filterCrops.length > 0 ? filterCrops[0] : null;
 
   const getCropParamsAction = cropId => {
@@ -297,7 +297,7 @@ function BidForm({
                   error={Boolean(touched.crop && errors.crop)}
                   disabled={!isEditable}
                 >
-                  {crops.map(option => (
+                  {crops && crops.map(option => (
                     <MenuItem key={option.id} value={option}>
                       {option.name}
                     </MenuItem>

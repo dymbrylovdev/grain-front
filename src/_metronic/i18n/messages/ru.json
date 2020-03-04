@@ -137,5 +137,6 @@
     "ERROR.LOAD.TITLE": "Ошибка загрузки данных",
     "ERROR.BUTTON.REPEAT": "Повторить попытку",
     "ERROR.USER.DELETE" : "Ошибка удаления пользователя",
-    "ERROR.DIALOG.TITLE": "Ошибка"
+    "ERROR.DIALOG.TITLE": "Ошибка",
+    "ERROR.BID.DELETE": "Ошибка удаления заявки"
 }

@@ -16,14 +16,16 @@ function CropPage({ match, editCropSuccess, createCropSuccess, intl }) {
   const cropIdFromUrl = match.params && match.params.id;
   const [cropId, setCropId] = useState(cropIdFromUrl);
   const [cropParams, setCropParams] = useState([]);
+  
   const classes = useStyles();
-  const { crop } = useSelector(({ crops }) => {
-    const filterCrops = crops.crops.filter(item => item.id === Number.parseInt(cropIdFromUrl));
+  const { crop, user } = useSelector(({ crops: {crops}, auth: {user} }) => {
+    const filterCrops =  crops && crops.data && crops.data.filter(item => item.id === Number.parseInt(cropIdFromUrl));
     if (filterCrops && filterCrops.length > 0) {
       return { crop: filterCrops[0] };
     }
     return { crop: {} };
   }, shallowEqual);
+
   const getCropParamsAction = () => {
     if (cropId) {
       getCropParams(cropId).then(({ data }) => {
@@ -48,11 +50,13 @@ function CropPage({ match, editCropSuccess, createCropSuccess, intl }) {
               id: "CROP.STATUS.CROP_CREATE",
             }),
           });
-          cropId ? editCropSuccess(cropId) : createCropSuccess();
+          cropId ? editCropSuccess(user) : createCropSuccess(user);
           setCropId(data.data.id);
         }
       })
       .catch(error => {
+        console.log("---error", error);
+        
         setSubmitting(false);
         setStatus({
           loading: false,
@@ -63,6 +67,7 @@ function CropPage({ match, editCropSuccess, createCropSuccess, intl }) {
         });
       });
   };
+
   const editCropParamAction = (values, setStatus, setSubmitting, setIdValue) => {
     const paramId = values.id;
     const cropAction = paramId ? editCropParam : createCropParam;

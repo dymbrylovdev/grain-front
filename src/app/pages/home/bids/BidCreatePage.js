@@ -15,6 +15,8 @@ import * as locations from "../../../store/ducks/locations.duck";
 import * as auth from "../../../store/ducks/auth.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import LocationDialog from "./components/location/LocationDialog";
+import { LoadError } from "../../../components/ui/Erros";
+
 
 function BidCreatePage({
   intl,
@@ -30,11 +32,12 @@ function BidCreatePage({
   const [isRedirectTo, setRedirect] = useState(-1);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { crops, user, preloading } = useSelector(
-    ({ crops, auth, bids }) => ({
-      crops: crops.crops,
+  const { crops, user, preloading, errors } = useSelector(
+    ({ crops: {crops}, auth, bids: {currentBid, errors} }) => ({
+      crops: (crops && crops.data) || [],
       user: auth.user,
-      preloading: bids.currentBid && bids.currentBid.loading,
+      preloading: currentBid && currentBid.loading,
+      errors: errors || {}
     }),
     shallowEqual
   );
@@ -154,6 +157,7 @@ function BidCreatePage({
   }
 
   if (preloading) return <Preloader />;
+  if (errors.get) return <LoadError handleClick={() => getBidById(bidId, bid)} />;
   if ( isRedirectTo && isRedirectTo !== -1) return <Redirect to={`/bidsList/${isRedirectTo}`}/>;
   return (
     <>

@@ -6,18 +6,21 @@ import { getCrops } from "../../crud/crops.crud";
 import storage from "redux-persist/lib/storage";
 
 export const actionTypes = {
-    SetCropsList: "[SetCrop] Action",
     CreateCropSucces: "[CreateCrop] Action",
     EditCropSuccess: "[EditCrop] Action",
     SetFilterForCrop: "[SetFilterForCrop] Action",
-    Logout:  "[CropLogout] Action"
+    Logout:  "[CropLogout] Action",
+
+    GetCrops: "[GetCrops] Action",
+    CropsSuccess: "[GetCrops] Success",
+    CropsFail: "[GetCrops] Fail",
+
 }
 
 const initialCropState = {
-    crops: [],
-    filters: {
-
-    }
+    crops: {},
+    errors: {},
+    filters: {}
 }
 
 
@@ -25,18 +28,19 @@ export const reducer = persistReducer(
     { storage, key: "demo1-crops"},
     (state = initialCropState, action) => {
       switch (action.type) {
-        case actionTypes.SetCropsList: {
-          const { data } = action.payload;   
-          return { ...state, crops: data };
-        }
-        case actionTypes.EditCropSuccess: {
-          const { data } = action.payload;
-          const newCrops = state.crops.map(item => item.id === data.id ? data : item);
-          return { ...state, crops: newCrops}
-        }
         case actionTypes.SetFilterForCrop: {
           const { filter, cropId} = action.payload;
           return {...state, filters: { ...state.filters, [cropId]:filter}}
+        }
+        case actionTypes.GetCrops: {
+          return { ...state, crops: {loading: true}, errors: {}}
+        }
+        case actionTypes.CropsSuccess: {
+          const { data } = action.payload;
+          return { ...state, crops: data}
+        }
+        case actionTypes.CropsFail: {
+          return { ...state, crops: {...state.crops, loading: false}, errors: {crops:true}}
         }
         case actionTypes.Logout: {
            return initialCropState;
@@ -48,25 +52,36 @@ export const reducer = persistReducer(
   );
 
   export const actions = {
-    setCrops: (data, user) => ({type: actionTypes.SetCropsList, payload: {data, user}}),
-    editCropSuccess: (data) => ({type: actionTypes.EditCropSuccess, payload: {data}}),
-    createCropSuccess: () => ({type: actionTypes.CreateCropSucces}),
+    editCropSuccess: user => ({type: actionTypes.EditCropSuccess, payload: {user}}),
+    createCropSuccess: user => ({type: actionTypes.CreateCropSucces, payload: {user}}),
     setFilterForCrop: (filter, cropId) => ({type: actionTypes.SetFilterForCrop, payload: {filter, cropId}}),
-    logout: ()=> ({type: actionTypes.Logout})
+    logout: ()=> ({type: actionTypes.Logout}),
+
+    getCrops: user => ({ type: actionTypes.GetCrops, payload: {user}}),
+    cropsSuccess: data => ({ type: actionTypes.CropsSuccess, payload: {data}}),
+    cropsFail: () => ({type: actionTypes.CropsFail})
+  }
+
+  function* getCropsSaga({payload: {user}}){
+    try{
+      const { data } = yield getCrops();
+      console.log("---cropsData", data);
+      if(data){
+        const menuWithCrops = getMenuConfig(data.data, user);
+        yield put(builderActions.setMenuConfig(menuWithCrops));
+        yield put(actions.cropsSuccess(data))
+      }
+    }catch{
+      yield put(actions.cropsFail())
+    }
   }
 
 
+
   export function* saga(){
-    yield takeLatest(actionTypes.SetCropsList, function* setMenuConfig({payload}){
-      const menuWithCrops = getMenuConfig(payload.data, payload.user);
-      yield put(builderActions.setMenuConfig(menuWithCrops));
-    })
-    yield takeLatest(actionTypes.CreateCropSucces, function* getCropsRequest(){
-      const data = call(getCrops);
-      if(data && data.data){
-      yield put(actionTypes.CreateCropSucces, data.data)
-      }
-    })
+    yield takeLatest(actionTypes.GetCrops, getCropsSaga);
+    yield takeLatest(actionTypes.EditCropSuccess, getCropsSaga);
+    yield takeLatest(actionTypes.CreateCropSucces, getCropsSaga);
   }
 
 

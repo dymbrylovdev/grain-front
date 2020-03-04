@@ -4,19 +4,21 @@ import { injectIntl } from "react-intl";
 import { Paper } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import useStyles from "../styles";
+
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
-import * as bids from "../../../store/ducks/bids.duck";
-import { deleteBid } from "../../../crud/bids.crud";
+import * as bidsDuck from "../../../store/ducks/bids.duck";
 import BidTable from "./components/BidTable";
 import Preloader from "../../../components/ui/Loaders/Preloader";
+import { ErrorDialog, LoadError } from "../../../components/ui/Erros";
 
 function AllBidsPage({
   intl,
-  deleteBidSuccess,
   getAllBids,
   match: {
     params: { cropId },
   },
+  deleteBid,
+  clearErrors
 }) {
   const classes = useStyles();
   const [deleteBidId, setDeleteBidId] = useState(-1);
@@ -26,7 +28,7 @@ function AllBidsPage({
     setAlertOpen(true);
   };
   const { user } = useSelector(({ auth }) => ({ muser: auth.user }), shallowEqual);
-  const { bids, page, per_page, total, loading } = useSelector(({ bids }) => {
+  const { bids, page, per_page, total, loading, errors } = useSelector(({ bids }) => {
     if (!bids.allBids) return { bids: [], page: 1, per_page: 20, total: 0, loading: false };
     return {
       bids: bids.allBids.data,
@@ -34,17 +36,13 @@ function AllBidsPage({
       per_page: bids.allBids.per_page,
       total: bids.allBids.total,
       loading: bids.allBids.loading,
+      errors: bids.errors || {}
     };
   }, shallowEqual);
 
   const deleteBidAction = () => {
     setAlertOpen(false);
-    deleteBid(deleteBidId)
-      .then(() => {
-        deleteBidSuccess(deleteBidId);
-        getAllBidsAction(cropId, page);
-      })
-      .catch(error => {});
+    deleteBid(deleteBidId, bidsDuck.bidTypes.AllBids, { id: cropId, page})
   };
   const getAllBidsAction = (cropId, page) => {
     getAllBids(cropId, page);
@@ -63,6 +61,7 @@ function AllBidsPage({
     handleChangePage,
   };
   if (loading) return <Preloader />;
+  if (errors.all) return <LoadError handleClick={() => getAllBidsAction(cropId,page)} />;
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog
@@ -79,6 +78,7 @@ function AllBidsPage({
         handleClose={() => setAlertOpen(false)}
         handleAgree={() => deleteBidAction()}
       />
+      <ErrorDialog isOpen={errors.delete || false} text={intl.formatMessage({id:"ERROR.BID.DELETE"})} handleClose={() => clearErrors()}/>
       <Link to="/bid/create">
         <div className={classes.topMargin}>
           <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
@@ -100,4 +100,4 @@ function AllBidsPage({
   );
 }
 
-export default injectIntl(connect(null, bids.actions)(AllBidsPage));
+export default injectIntl(connect(null, bidsDuck.actions)(AllBidsPage));

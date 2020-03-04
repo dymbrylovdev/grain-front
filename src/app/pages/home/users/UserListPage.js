@@ -72,13 +72,13 @@ function UserListPage({ intl, getUsers, deleteUser, clearErrors }) {
   };
   const classes = useStyles();
 
-  if (errors.getUser) return <LoadError handleClick={() => getUsersAction(page)} />;
   if (loading) return <Preloader />;
+  if (errors.getUser) return <LoadError handleClick={() => getUsersAction(page)} />;
   return (
     <Paper className={classes.tableContainer}>
       <ErrorDialog
-        text={intl.formatMessage({ id: "Ошибка удаления пользователя" })}
-        isOpen={errors.delete}
+        text={intl.formatMessage({ id: "ERROR.USER.DELETE" })}
+        isOpen={errors.delete || false}
         handleClose={() => clearErrors()}
       />
       <AlertDialog

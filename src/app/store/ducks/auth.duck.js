@@ -20,6 +20,7 @@ export const actionTypes = {
 const initialAuthState = {
   user: undefined,
   authToken: undefined,
+  errors: {},
 };
 
 export const reducer = persistReducer(
@@ -50,7 +51,7 @@ export const reducer = persistReducer(
       }
 
       case actionTypes.GetUser: {
-        return { ...state, user: { ...state.user, loading: true } };
+        return { ...state, user: { ...state.user, loading: true }, errors: {} };
       }
 
       case actionTypes.UserSuccess: {
@@ -59,7 +60,7 @@ export const reducer = persistReducer(
       }
 
       case actionTypes.UserFail: {
-        return { ...state, user: {...state.user, loading: false}}
+        return { ...state, user: {...state.user, loading: false}, errors: { get: true}}
       }
 
       default:
