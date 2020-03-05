@@ -1,8 +1,8 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { put, takeLatest } from "redux-saga/effects";
+import { put, takeLatest, call } from "redux-saga/effects";
 import * as routerHelpers from "../../router/RouterHelpers";
-import { getUser } from "../../crud/auth.crud";
+import { getUser, setUser } from "../../crud/auth.crud";
 import { actions as cropActions } from "./crops.duck";
 
 export const actionTypes = {
@@ -11,6 +11,9 @@ export const actionTypes = {
   Register: "[Register] Action",
   UserRequested: "[Request User] Action",
   UserLoaded: "[Load User] Auth API",
+
+  EditUser: "[EditMyUser] Action",
+  EditUserSuccess: "[EditMyUserSuccess] Action",
 
   GetUser: "[GetUser] Action",
   UserSuccess: "[GetUser] Success",
@@ -44,7 +47,7 @@ export const reducer = persistReducer(
         return initialAuthState;
       }
 
-      case actionTypes.UserLoaded: {
+      case actionTypes.EditUserSuccess: {
         const { user } = action.payload;
 
         return { ...state, user };
@@ -77,11 +80,13 @@ export const actions = {
   }),
   logout: () => ({ type: actionTypes.Logout }),
   requestUser: user => ({ type: actionTypes.UserRequested, payload: { user } }),
-  fulfillUser: user => ({ type: actionTypes.UserLoaded, payload: { user } }),
 
-  getUser: () => ({type: actionTypes.GetUser}),
+  getUser: () => ({type: actionTypes.GetUser }),
   userSuccess: data => ({type: actionTypes.UserSuccess, payload: {data}}),
-  userFail : () => ({type: actionTypes.UserFail})
+  userFail : () => ({type: actionTypes.UserFail}),
+
+  editUser: (params, successCallback, failCallback) => ({type: actionTypes.EditUser, payload: {successCallback, failCallback, params}}),
+  editUserSuccess: user => ({type: actionTypes.EditUserSuccess, payload: {user}}),
 };
 
 
@@ -96,9 +101,29 @@ function* getUserSaga(){
   }
 }
 
+function* editUserSaga({payload: {params, successCallback, failCallback}}){
+  try {
+    const { data } = yield setUser(params);
+     console.log("---userSuccess", data);
+    
+    if (data && data.data) {
+      yield put(actions.editUserSuccess(data.data));
+      if(successCallback){
+      yield call(successCallback);
+      }
+    }
+  } catch(e) {
+    console.log("---userFail", e); 
+    if(failCallback){
+    yield call(failCallback);
+    }
+  }
+}
+
 export function* saga() {
   yield takeLatest(actionTypes.Logout, function* logoutSaga() {
     yield put(cropActions.logout());
   });
   yield takeLatest(actionTypes.GetUser, getUserSaga);
+  yield takeLatest(actionTypes.EditUser, editUserSaga);
 }

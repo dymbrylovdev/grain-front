@@ -71,7 +71,7 @@ function Login(props) {
                     disableLoading();
                     if(data.data){
                     props.login(data.data.api_token);
-                    props.fulfillUser(data.data);
+                    props.editUserSuccess(data.data);
                     }
                   })
                   .catch((error) => {

@@ -16,12 +16,8 @@ export function login(login, password) {
   return axios.post(LOGIN_URL, bodyFormData);
 }
 
-export function setUser(user,id){
-  if(id){
-    return axios.put(`${USER_URL}${id}/edit`, user);
-  }else{
-    return axios.put(ME_URL, user);
-  }
+export function setUser(user){
+  return axios.put(ME_URL, user);
 }
 
 export function getUser(){

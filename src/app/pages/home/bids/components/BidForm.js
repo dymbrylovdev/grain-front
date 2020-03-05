@@ -11,7 +11,6 @@ import { makeStyles } from "@material-ui/styles";
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
-import { getCropParams } from "../../../../crud/crops.crud";
 import LocationBlock from "../components/location/LocationBlock";
 
 const getInitialValues = (bid, crop) => {
@@ -88,6 +87,7 @@ function BidForm({
   isEditable,
   fetchLocations,
   clearLocations,
+  getCropParams,
   openLocation,
   user,
 }) {
@@ -106,18 +106,17 @@ function BidForm({
   const getCropParamsAction = cropId => {
     setCropParamLoading(true);
     setCropParams([]);
-    getCropParams(cropId)
-      .then(({ data }) => {
-        setCropParamLoading(false);
-        if (data && data.data) {
-          setCropParams(data.data);
-        }
-      })
-      .catch(error => {
-        setCropParamLoading(false);
-        setCropParams([]);
-      });
+    const successCallback = (data) => {
+      setCropParamLoading(false);
+      setCropParams(data || []);
+    }
+    const failCallback = () => {
+      setCropParamLoading(false);
+      setCropParams([]);
+    }
+    getCropParams(cropId, successCallback, failCallback)
   };
+
   useEffect(() => {
     if (currentCrop) {
       getCropParamsAction(currentCrop.id);
@@ -135,6 +134,7 @@ function BidForm({
     user.id === (bid.vendor && bid.vendor.id)
       ? "/user/profile"
       : `/user/edit/${bid.vendor && bid.vendor.id}`;
+
   return (
     <Paper className={classes.container}>
       <Formik
@@ -320,6 +320,7 @@ function BidForm({
                     InputProps={{
                       inputComponent: NumberFormatCustom,
                     }}
+                    key={cropParam.id}
                   />
                 ) : (
                   <TextField
@@ -333,6 +334,7 @@ function BidForm({
                     onBlur={handleBlur}
                     onChange={handleChange}
                     disabled={!isEditable}
+                    key={cropParam.id}
                   >
                     {cropParam.enum.map(option => (
                       <MenuItem key={option} value={option}>

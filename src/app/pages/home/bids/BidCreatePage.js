@@ -5,14 +5,13 @@ import { Redirect } from "react-router-dom";
 
 import BidForm from "./components/BidForm";
 import useStyles from "../styles";
-import { setUser } from "../../../crud/auth.crud";
-import { createBid, editBid } from "../../../crud/bids.crud";
 import userSelector from "../../../store/selectors/user";
 import bidSelector from "../../../store/selectors/bid";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import * as bids from "../../../store/ducks/bids.duck";
 import * as locations from "../../../store/ducks/locations.duck";
 import * as auth from "../../../store/ducks/auth.duck";
+import * as crops from "../../../store/ducks/crops.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import LocationDialog from "./components/location/LocationDialog";
 import { LoadError } from "../../../components/ui/Erros";
@@ -20,13 +19,14 @@ import { LoadError } from "../../../components/ui/Erros";
 
 function BidCreatePage({
   intl,
-  createBidSuccess,
   match,
-  editBidSuccess,
+  editBid,
+  createBid,
   fetchLocationsRequest,
   clearLocations,
   getBidById,
-  fulfillUser,
+  editUser,
+  getCropParams,
 }) {
   const classes = useStyles();
   const [isRedirectTo, setRedirect] = useState(-1);
@@ -57,30 +57,28 @@ function BidCreatePage({
   const createAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
-      createBid({ ...values, vendor_id: Number(vendor_id) })
-        .then(({ data }) => {
-          setLoading(false);
-          if (data.data) {
-            setStatus({
-              error: false,
-              message: intl.formatMessage({
-                id: "BID.STATUS.CREATE_SUCCESS",
-              }),
-            });
-            createBidSuccess();
-            setRedirect(values.crop && values.crop.id);
-          }
-        })
-        .catch(error => {
-          setLoading(false);
-          setSubmitting(false);
-          setStatus({
-            error: true,
-            message: intl.formatMessage({
-              id: "BID.STATUS.ERROR",
-            }),
-          });
+      const params = { ...values, vendor_id: Number(vendor_id) }
+      const successCallback = () => {
+        setLoading(false);
+        setStatus({
+          error: false,
+          message: intl.formatMessage({
+            id: "BID.STATUS.CREATE_SUCCESS",
+          }),
         });
+        setRedirect(values.crop && values.crop.id);
+      }
+      const failCallback = () => {
+        setLoading(false);
+        setSubmitting(false);
+        setStatus({
+          error: true,
+          message: intl.formatMessage({
+            id: "BID.STATUS.ERROR",
+          }),
+        });
+      }
+      createBid(params, successCallback, failCallback)
     }, 1000);
   };
 
@@ -88,34 +86,31 @@ function BidCreatePage({
     console.log("editValues", values);
     setTimeout(() => {
       setLoading(true);
-      editBid(bidId, {
+      const params = {
         ...values,
         vendor_id,
         price: Number.parseInt(values.price),
         volume: Number.parseInt(values.volume),
-      })
-        .then(({ data }) => {
-          setLoading(false);
-          if (data.data) {
-            setStatus({
-              error: false,
-              message: intl.formatMessage({
-                id: "BID.STATUS.EDIT_SUCCESS",
-              }),
-            });
-            editBidSuccess(data.data);
-          }
-        })
-        .catch(error => {
-          setLoading(false);
-          setSubmitting(false);
-          setStatus({
-            error: true,
-            message: intl.formatMessage({
-              id: "BID.STATUS.ERROR",
-            }),
-          });
+      };
+      const successCallback = () =>{ 
+        setLoading(false);
+        setStatus({
+        error: false,
+        message: intl.formatMessage({
+          id: "BID.STATUS.EDIT_SUCCESS",
+        }),
+      });}
+      const failCallback = () => {
+        setLoading(false);
+        setSubmitting(false);
+        setStatus({
+          error: true,
+          message: intl.formatMessage({
+            id: "BID.STATUS.ERROR",
+          }),
         });
+      }
+      editBid(bidId, params, successCallback, failCallback);
     }, 1000);
   };
 
@@ -126,28 +121,26 @@ function BidCreatePage({
   const locationSubmit = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setStatus({ loading: true });
-      setUser(values)
-        .then(({ data }) => {
-          setStatus({ loading: false });
-          if (data.data) {
-            setLocationModalOpen(false);
-            fulfillUser(data.data);
-          }
-        })
-        .catch(error => {
-          console.log("loginError", error);
-          setStatus({
-            error: true,
-            message: intl.formatMessage({
-              id: "LOCATION.STATUS.ERROR",
-            }),
-          });
-          setSubmitting(false);
+      const params = values;
+      const successCallback = () => {
+        setStatus({ loading: false });
+        setLocationModalOpen(false);
+      }
+      const failCallback = () => {
+        setStatus({
+          error: true,
+          message: intl.formatMessage({
+            id: "LOCATION.STATUS.ERROR",
+          }),
         });
+        setSubmitting(false);
+      }
+      editUser(params,successCallback, failCallback);
     }, 1000);
   };
 
   const submitAction = bid && bid.id ? editAction : createAction;
+
   let title = null;
   if (vendorId) title = `${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [${vendor.login}]`;
   if (!isEditable) {
@@ -183,6 +176,7 @@ function BidCreatePage({
           isEditable={isEditable}
           fetchLocations={fetchLocationsRequest}
           clearLocations={clearLocations}
+          getCropParams={getCropParams}
           openLocation={() => setLocationModalOpen(true)}
           user={user}
           bidId={bidId}
@@ -193,5 +187,5 @@ function BidCreatePage({
 }
 
 export default injectIntl(
-  connect(null, { ...bids.actions, ...locations.actions, ...auth.actions })(BidCreatePage)
+  connect(null, { ...bids.actions, ...locations.actions, ...auth.actions, ...crops.actions })(BidCreatePage)
 );

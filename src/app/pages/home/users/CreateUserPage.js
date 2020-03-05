@@ -3,11 +3,11 @@ import { connect } from "react-redux";
 import { injectIntl } from "react-intl";
 import { Redirect } from "react-router-dom";
 import * as locations from "../../../store/ducks/locations.duck";
-import { createUser } from "../../../crud/users.crud";
+import * as users from "../../../store/ducks/users.duck";
 import useStyles from "./styles";
 import UserForm from "./components/UserForm";
 
-function CreateUserPage({ intl, fetchLocationsRequest, clearLocations }) {
+function CreateUserPage({ intl, fetchLocationsRequest, clearLocations, createUser }) {
 
   const [loading, setLoading] = useState(false);
   const [backRedirect, setBackRedirect] = useState(false);
@@ -18,30 +18,28 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearLocations }) {
     setTimeout(() => {
       setLoading(true);
       const roleId = values.role.id;
-      const valuesWithRole = { ...values, roles: [roleId] };
-      createUser(valuesWithRole)
-        .then(({ data }) => {
-          setLoading(false);
-          if (data.data) {
-            setStatus({
-              error: false,
-              message: intl.formatMessage({
-                id: "PROFILE.STATUS.SUCCESS",
-              }),
-            });
-            setBackRedirect(true);
-          }
-        })
-        .catch(error => {
-          setLoading(false);
-          setSubmitting(false);
-          setStatus({
-            error: true,
-            message: intl.formatMessage({
-              id: "PROFILE.STATUS.ERROR",
-            }),
-          });
+      const params = { ...values, roles: [roleId] };
+      const successCallback = () => {
+        setLoading(false);
+        setStatus({
+          error: false,
+          message: intl.formatMessage({
+            id: "PROFILE.STATUS.SUCCESS",
+          }),
         });
+        setBackRedirect(true);
+      }
+      const failCallback =() => {
+        setLoading(false);
+        setSubmitting(false);
+        setStatus({
+          error: true,
+          message: intl.formatMessage({
+            id: "PROFILE.STATUS.ERROR",
+          }),
+        });
+      }
+      createUser(params,successCallback,failCallback)
     }, 1000);
   };
   
@@ -62,4 +60,4 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearLocations }) {
   );
 }
 
-export default injectIntl(connect(null, locations.actions)(CreateUserPage));
+export default injectIntl(connect(null, {...locations.actions, ...users.actions})(CreateUserPage));

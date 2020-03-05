@@ -1,10 +1,12 @@
 import { persistReducer } from "redux-persist";
-import { put, takeLatest } from "redux-saga/effects";
+import { put, takeLatest, call } from "redux-saga/effects";
 import storage from "redux-persist/lib/storage";
-import { getUsers, getStatuses, getUserById, deleteUser } from "../../crud/users.crud";
+import { getUsers, getStatuses, getUserById, deleteUser, createUser, editUser } from "../../crud/users.crud";
 
 export const actionTypes = {
+
   CreateUser: "[CreateUser] Action",
+
   EditUser: "[EditUser] Action",
 
   GetStatuses: "[GetStatuses] Action",
@@ -41,12 +43,6 @@ export const reducer = persistReducer(
   { storage, key: "demo1-users" },
   (state = initialDocState, action) => {
     switch (action.type) {
-      case actionTypes.EditUser: {
-        const { data } = action.payload;
-        const { users } = state;
-        const replaceUsers = users.map(item => (item.id === data.id ? data : item));
-        return { ...state, users: replaceUsers };
-      }
       case actionTypes.SetUsers: {
         const { data } = action.payload;
         const { page, per_page, total, total_pages, data: users } = data;
@@ -98,9 +94,9 @@ export const reducer = persistReducer(
 );
 
 export const actions = {
-  createUser: () => ({ type: actionTypes.CreateUser }),
-  editUserSuccess: data => ({ type: actionTypes.EditUser, payload: { data } }),
+  createUser: (params, successCallback, failCallback) => ({ type: actionTypes.CreateUser, payload: {params, successCallback, failCallback} }),
 
+  editUser: (id, params, successCallback, failCallback) => ({ type: actionTypes.EditUser, payload: { id, params, successCallback, failCallback } }),
 
   getStatuses: () => ({type: actionTypes.GetStatuses}),
   statusesSucces: data => ({ type: actionTypes.StatusesSuccess, payload: { data } }),
@@ -162,13 +158,34 @@ function* getStatusesSaga(){
     
 }
 }
+
+function* createUserSaga({payload: {params, successCallback, failCallback}}){
+  try {
+    const { data } = yield createUser(params);
+    if(data){
+      yield call(successCallback);
+    }
+  }catch{
+    yield call(failCallback);
+  }
+}
+
+function* editUserSaga({ payload: { id, params, successCallback, failCallback } }) {
+  try {
+    const { data } = yield editUser(id, params);
+    if (data && data.data) {
+      yield call(successCallback);
+    }
+  } catch {
+    yield call(failCallback);
+  }
+}
+
 export function* saga() {
-  yield takeLatest(actionTypes.CreateUser, function* userRequested() {
-    const { data } = yield getUsers({ page: 1 });
-    yield put(actions.setUsers(data));
-  });
   yield takeLatest(actionTypes.GetUserById, getUserByIdSaga);
   yield takeLatest(actionTypes.GetUsers, getUsersSaga);
   yield takeLatest(actionTypes.DeleteUser, deleteUserSaga);
   yield takeLatest(actionTypes.GetStatuses, getStatusesSaga);
+  yield takeLatest(actionTypes.CreateUser, createUserSaga);
+  yield takeLatest(actionTypes.EditUser, editUserSaga);
 }

@@ -1,7 +1,15 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { takeLatest, put } from "redux-saga/effects";
-import { getBestBids, getAllBids, getMyBids, getBidById, deleteBid } from "../../crud/bids.crud";
+import { takeLatest, put, call } from "redux-saga/effects";
+import {
+  getBestBids,
+  getAllBids,
+  getMyBids,
+  getBidById,
+  deleteBid,
+  editBid,
+  createBid,
+} from "../../crud/bids.crud";
 
 export const bidTypes = {
   BestBids: "BestBids",
@@ -10,8 +18,9 @@ export const bidTypes = {
 };
 
 export const actionTypes = {
-  CreateBidSuccess: "[CreateBid] Action",
-  EditBidSuccess: "[EditBid] Action",
+  CreateBid: "[CreateBid] Action",
+
+  EditBid: "[EditBid] Action",
 
   GetBestBids: "[GetBestBids] Action",
   BestBidsSuccess: "[GetBestBids] Success",
@@ -33,7 +42,7 @@ export const actionTypes = {
   DeleteBidSuccess: "[DeleteBid] Success",
   DeleteBidFail: "[DeleteBid] Fail",
 
-  ClearErrors: "[ClearErrors] Action"
+  ClearErrors: "[ClearErrors] Action",
 };
 
 const initialBidState = {
@@ -52,7 +61,7 @@ export const reducer = persistReducer(
         return { ...state, allBids: { ...state.allBids, loading: true }, errors: {} };
       }
       case actionTypes.AllBidsFail: {
-        return { ...state, allBids: { ...state.allBids, loading: false }, errors: { all: true}};
+        return { ...state, allBids: { ...state.allBids, loading: false }, errors: { all: true } };
       }
       case actionTypes.AllBidsSuccess: {
         const { data } = action.payload;
@@ -63,7 +72,7 @@ export const reducer = persistReducer(
         return { ...state, myBids: { ...state.myBids, loading: true }, errors: {} };
       }
       case actionTypes.MyBidsFail: {
-        return { ...state, myBids: { ...state.myBids, loading: false }, errors: {my: true} };
+        return { ...state, myBids: { ...state.myBids, loading: false }, errors: { my: true } };
       }
       case actionTypes.MyBidsSuccess: {
         const { data } = action.payload;
@@ -74,7 +83,11 @@ export const reducer = persistReducer(
         return { ...state, bestBids: { ...state.bestBids, loading: true }, errors: {} };
       }
       case actionTypes.BestBidsFail: {
-        return { ...state, bestBids: { ...state.bestBids, loading: false }, errors: {bests: true} };
+        return {
+          ...state,
+          bestBids: { ...state.bestBids, loading: false },
+          errors: { bests: true },
+        };
       }
       case actionTypes.BestBidsSuccess: {
         const { data } = action.payload;
@@ -85,7 +98,11 @@ export const reducer = persistReducer(
         return { ...state, currentBid: { ...state.currentBid, loading: true }, errors: {} };
       }
       case actionTypes.BidByIdFail: {
-        return { ...state, currentBid: { ...state.currentBid, loading: false }, errors: { get: true} };
+        return {
+          ...state,
+          currentBid: { ...state.currentBid, loading: false },
+          errors: { get: true },
+        };
       }
       case actionTypes.BidByIdSuccess: {
         const { data } = action.payload;
@@ -123,7 +140,7 @@ export const reducer = persistReducer(
         return { ...state, errors: { delete: true } };
       }
       case actionTypes.ClearErrors: {
-        return { ...state, errors: {}};
+        return { ...state, errors: {} };
       }
       default:
         return state;
@@ -136,8 +153,15 @@ export const actions = {
   bestBidsSuccess: data => ({ type: actionTypes.BestBidsSuccess, payload: { data } }),
   bestBidsFail: () => ({ type: actionTypes.BestBidsFail }),
 
-  createBidSuccess: () => ({ type: actionTypes.CreateBidSuccess }),
-  editBidSuccess: data => ({ type: actionTypes.EditBidSuccess, payload: { data } }),
+  createBid: (params, successCallback, failCallback) => ({
+    type: actionTypes.CreateBid,
+    payload: { params, successCallback, failCallback },
+  }),
+
+  editBid: (id, params, successCallback, failCallback) => ({
+    type: actionTypes.EditBid,
+    payload: { id, params, successCallback, failCallback },
+  }),
 
   getAllBids: (id, page) => ({ type: actionTypes.GetAllBids, payload: { id, page } }),
   allBidsSuccess: data => ({ type: actionTypes.AllBidsSuccess, payload: { data } }),
@@ -151,10 +175,10 @@ export const actions = {
   bidByIdSuccess: data => ({ type: actionTypes.BidByIdSuccess, payload: { data } }),
   bidByIdFail: () => ({ type: actionTypes.BidByIdFail }),
 
-  deleteBid: (id, type, params )  => ({ type: actionTypes.DeleteBid, payload: { id, type, params } }),
+  deleteBid: (id, type, params) => ({ type: actionTypes.DeleteBid, payload: { id, type, params } }),
   deleteBidFail: () => ({ type: actionTypes.DeleteBidFail }),
 
-  clearErrors: () => ({ type: actionTypes.ClearErrors}),
+  clearErrors: () => ({ type: actionTypes.ClearErrors }),
 };
 
 function* getAllBidsSaga({ payload: { id, page } }) {
@@ -222,10 +246,31 @@ function* deleteBidSaga({ payload: { id, type, params } }) {
         default:
           break;
       }
-
     }
   } catch (e) {
     yield put(actions.deleteBidFail());
+  }
+}
+
+function* editBidSaga({ payload: { id, params, successCallback, failCallback } }) {
+  try {
+    const { data } = yield editBid(id, params);
+    if (data && data.data) {
+      yield call(successCallback);
+    }
+  } catch {
+    yield call(failCallback);
+  }
+}
+
+function* createBidSaga({ payload: { successCallback, failCallback, params } }) {
+  try {
+    const { data } = yield createBid(params);
+    if (data && data.data) {
+      yield call(successCallback);
+    }
+  } catch {
+    yield call(failCallback);
   }
 }
 
@@ -235,4 +280,6 @@ export function* saga() {
   yield takeLatest(actionTypes.GetBestBids, getBestBidsSaga);
   yield takeLatest(actionTypes.GetBidById, getBidByIdSaga);
   yield takeLatest(actionTypes.DeleteBid, deleteBidSaga);
+  yield takeLatest(actionTypes.EditBid, editBidSaga);
+  yield takeLatest(actionTypes.CreateBid, createBidSaga);
 }
