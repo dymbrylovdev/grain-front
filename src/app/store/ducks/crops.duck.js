@@ -13,8 +13,14 @@ import {
 import storage from "redux-persist/lib/storage";
 
 export const actionTypes = {
-  CreateCropSucces: "[CreateCrop] Action",
-  EditCropSuccess: "[EditCrop] Action",
+  CreateCrop: "[CreateCrop] Action",
+  CreateCropSuccess: "[CreateCrop] Success",
+
+  EditCrop: "[EditCrop] Action",
+  EditCropSuccess: "[EditCrop] Success",
+
+  EditCropParam : "[EditCropParam] Action",
+  CreateCropParam : "[CreateCropParam] Action",
 
   GetCropParams: "[GetCropParams] Action",
 
@@ -60,9 +66,14 @@ export const reducer = persistReducer(
 );
 
 export const actions = {
+  editCrop: (id, params, user, successCallback, failCallback) => ({type: actionTypes.EditCrop, payload: {id, params, user, successCallback, failCallback}}),
   editCropSuccess: user => ({ type: actionTypes.EditCropSuccess, payload: { user } }),
 
-  createCropSuccess: user => ({ type: actionTypes.CreateCropSucces, payload: { user } }),
+  createCrop: (params, user, successCallback, failCallback) => ({type: actionTypes.CreateCrop, payload: { params, user, successCallback, failCallback}}),
+  createCropSuccess: user => ({ type: actionTypes.CreateCropSuccess, payload: { user } }),
+
+  editCropParam: (id, params, successCallback, failCallback) => ({type: actionTypes.EditCropParam, payload: {id, params, successCallback, failCallback}}),
+  createCropParam: (id, params, successCallback, failCallback) => ({type: actionTypes.CreateCropParam, payload: {id, params, successCallback, failCallback}}),
 
   setFilterForCrop: (filter, cropId) => ({
     type: actionTypes.SetFilterForCrop,
@@ -104,9 +115,52 @@ function* getCropParamsSaga({ payload: { id, successCallback, failCallback } }) 
   }
 }
 
+function* editCropSaga ( {payload: {id, params, user, successCallback, failCallback}}){
+  try {
+    const { data } = yield editCrop(id, params);
+    yield call(successCallback, (data && data.data) || []);
+    yield put(actions.editCropSuccess(user));
+  } catch {
+    yield call(failCallback);
+  }
+}
+
+function* createCropSaga ( {payload: {params, user, successCallback, failCallback}}){
+  try {
+    const { data } = yield createCrop(params);
+    yield call(successCallback, (data && data.data) || []);
+    yield put(actions.createCropSuccess(user));
+  } catch {
+    yield call(failCallback);
+  }
+}
+
+function* editCropParamSaga ( {payload: {id, params, successCallback, failCallback}}){
+  try {
+    const { data } = yield editCropParam(params, id)
+    yield call(successCallback, (data && data.data) || []);
+  } catch(e) {
+    yield call(failCallback);
+  }
+}
+
+function* createCropParamSaga ( {payload: {id, params, successCallback, failCallback}}){
+  try {
+    const { data } = yield createCropParam(params, id);
+    yield call(successCallback, (data && data.data) || []);
+  } catch {
+    yield call(failCallback);
+  }
+}
+
+
 export function* saga() {
   yield takeLatest(actionTypes.GetCrops, getCropsSaga);
   yield takeLatest(actionTypes.EditCropSuccess, getCropsSaga);
-  yield takeLatest(actionTypes.CreateCropSucces, getCropsSaga);
+  yield takeLatest(actionTypes.CreateCropSuccess, getCropsSaga);
   yield takeLatest(actionTypes.GetCropParams, getCropParamsSaga);
+  yield takeLatest(actionTypes.EditCrop, editCropSaga);
+  yield takeLatest(actionTypes.CreateCrop, createCropSaga);
+  yield takeLatest(actionTypes.EditCropParam, editCropParamSaga);
+  yield takeLatest(actionTypes.CreateCropParam, createCropParamSaga);
 }
