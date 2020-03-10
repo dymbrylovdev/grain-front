@@ -10,7 +10,7 @@ export function addCSSClass(ele, cls) {
 export const toAbsoluteUrl = pathname => process.env.PUBLIC_URL + pathname;
 
 export function setupAxios(axios, store) {
-  axios.defaults.baseURL = "http://grain.me-interactive.net";
+  axios.defaults.baseURL = "https://grain12-api.me-interactive.net";
   axios.interceptors.request.use(
     config => {
       const {
