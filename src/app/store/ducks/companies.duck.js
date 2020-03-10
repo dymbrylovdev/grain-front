@@ -1,7 +1,8 @@
 import { persistReducer } from "redux-persist";
 import { put, takeLatest, call } from "redux-saga/effects";
 import storage from "redux-persist/lib/storage";
-import { getCompanyById } from "../../crud/company.crud";
+import { getCompanyById, createCompany, editCompany } from "../../crud/company.crud";
+import { el } from "date-fns/locale";
 
 
 export const actionTypes = {
@@ -67,10 +68,29 @@ export const reducer = persistReducer(
   function* companyByIdSaga({payload: {id}}){
       try{
         const {data} = yield call(getCompanyById, id);
+        if (data){
         put(actions.companyByIdSuccess(data))
+        }else {
+          put(actions.companyByIdFail());
+        }
       }catch(e){
           put(actions.companyByIdFail());
       }
   }
 
-  //function* createCompanySaga({payload: {}})
+  function* createCompanySaga({payload: {params, successCallback, failCallback}}){
+      try {
+        const {data} = yield createCompany(params);
+        if( data){
+          call(successCallback);
+        }else {
+          call(failCallback);
+        }
+      }catch{
+        call(failCallback);
+      }
+  }
+
+  function* editCompanySaga({payload: {id, params, successCallback, failCallback}}){
+    
+  }
