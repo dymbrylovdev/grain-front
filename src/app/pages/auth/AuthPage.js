@@ -73,7 +73,7 @@ export default function AuthPage() {
                         </DialogTitle>
                         <DialogContent>
                           <DialogContentText id="alert-dialog-description">
-                            {response ? (
+                            {response && response.data ? (
                               <div
                                 dangerouslySetInnerHTML={{ __html: response.data.text }}
                                 style={agreementStyle}
