@@ -8,8 +8,8 @@ stages:
   - deploy
 
 variables:
-  TEST_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME:$CI_BUILD_REF_NAME
-  RELEASE_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME:latest
+  TEST_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME_DEV:$CI_BUILD_REF_NAME
+  RELEASE_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME_DEV:latest
 
 before_script:
   - docker info
@@ -28,13 +28,13 @@ release-web:
     - docker tag $TEST_IMAGE $RELEASE_IMAGE
     - docker push $RELEASE_IMAGE
   only:
-    - master
+    - "1.2"
 
 deploy:
   stage: deploy
   image: gitlab/dind:latest
   only:
-    - "master"
+    - "1.2"
   environment: production
   services:
     - docker:dind
@@ -48,4 +48,4 @@ deploy:
   script:
     - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
     - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
-    - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD $CONTAINER_NAME:latest;docker stop $CONTAINER_NAME;docker rm $CONTAINER_NAME --force;docker pull $RELEASE_IMAGE;docker run --rm -p 0.0.0.0:$DEPLOYMENT_PORT:3000 --name $CONTAINER_NAME --env-file web-environment.env -d $RELEASE_IMAGE"
+    - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD $CONTAINER_NAME_DEV:latest;docker stop $CONTAINER_NAME_DEV;docker rm $CONTAINER_NAME_DEV --force;docker pull $RELEASE_IMAGE;docker run --rm -p 0.0.0.0:$DEPLOYMENT_PORT_DEV:3000 --name $CONTAINER_NAME_DEV --env-file web-environment.env -d $RELEASE_IMAGE"
