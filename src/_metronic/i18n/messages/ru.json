@@ -10,6 +10,8 @@
     "SUBMENU.GRAIN.CREATE_AD": "Добавить заявку",
     "SUBMENU.USER.LIST": "Список пользователей",
     "SUBMENU.USER.CREATE_USER": "Добавить пользователя",
+    "SUBMENU.COMPANY.LIST": "Список компаний",
+    "SUBMENU.COMPANY.CREATE": "Добавить компанию",
     "SUBMENU.PROFILE": "Мой профиль",
     "SUBMENU.CATALOG.SETTINGS": "Настройки каталога",
     "SUBMENU.CATALOG.CROP_LIST": "Список культур",

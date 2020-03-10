@@ -82,6 +82,18 @@ const getAdminMenu = crops => ({
             page: "user/create",
             translate: "SUBMENU.USER.CREATE_USER",
           },
+          {
+            title: "Список компаний",
+            root: true,
+            page: "companyList",
+            translate: "SUBMENU.COMPANY.LIST",
+          },
+          {
+            title: "Добавить компанию",
+            root: true,
+            page: "company/create",
+            translate: "SUBMENU.COMPANY.CREATE",
+          },
         ],
       },
       {

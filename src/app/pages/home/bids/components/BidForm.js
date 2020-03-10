@@ -102,7 +102,7 @@ function BidForm({
 
   const filterCrops = crops && crops.filter(item => item.id === bid.crop_id);
   const currentCrop = filterCrops && filterCrops.length > 0 ? filterCrops[0] : null;
-
+  
   const getCropParamsAction = cropId => {
     setCropParamLoading(true);
     setCropParams([]);
@@ -128,7 +128,7 @@ function BidForm({
     if (!bid || !bid.id) {
       setCropParams([]);
     }
-  }, [bidId]); // eslint-disable-line
+  }, [bidId, currentCrop]); // eslint-disable-line
 
   const toUserPath =
     user.id === (bid.vendor && bid.vendor.id)
