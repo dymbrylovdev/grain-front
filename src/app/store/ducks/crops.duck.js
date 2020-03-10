@@ -95,7 +95,6 @@ export const actions = {
 function* getCropsSaga({ payload: { user } }) {
   try {
     const { data } = yield getCrops();
-    console.log("---cropsData", data);
     if (data) {
       const menuWithCrops = getMenuConfig(data.data, user);
       yield put(builderActions.setMenuConfig(menuWithCrops));

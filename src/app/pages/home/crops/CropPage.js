@@ -5,7 +5,7 @@ import useStyles from "../styles";
 import * as crops from "../../../store/ducks/crops.duck";
 import CropForm from "./components/CropForm";
 
-function CropPage({ match, editCropSuccess, createCropSuccess, getCropParams, editCrop, createCrop, editCropParam, createCropParam, intl }) {
+function CropPage({ match, getCropParams, editCrop, createCrop, editCropParam, createCropParam, intl }) {
   const cropIdFromUrl = match.params && match.params.id;
   const [cropId, setCropId] = useState(cropIdFromUrl);
   const [cropParams, setCropParams] = useState([]);

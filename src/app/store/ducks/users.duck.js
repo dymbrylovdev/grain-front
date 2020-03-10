@@ -150,7 +150,6 @@ function* deleteUserSaga({payload: {id, params}}){
 function* getStatusesSaga(){
   try {
     const {data} = yield getStatuses();
-    console.log('---getStatuses', data);
     if( data && data.data){
       yield put(actions.statusesSuccess(data.data));
     }

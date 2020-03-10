@@ -103,9 +103,7 @@ function* getUserSaga(){
 
 function* editUserSaga({payload: {params, successCallback, failCallback}}){
   try {
-    const { data } = yield setUser(params);
-     console.log("---userSuccess", data);
-    
+    const { data } = yield setUser(params);    
     if (data && data.data) {
       yield put(actions.editUserSuccess(data.data));
       if(successCallback){
@@ -113,7 +111,6 @@ function* editUserSaga({payload: {params, successCallback, failCallback}}){
       }
     }
   } catch(e) {
-    console.log("---userFail", e); 
     if(failCallback){
     yield call(failCallback);
     }

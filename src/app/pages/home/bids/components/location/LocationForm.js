@@ -34,7 +34,6 @@ function LocationForm({
           } else {
             delete values.location;
           }
-          console.log("---values", values);
           submitAction(values, setStatus, setSubmitting);
         }}
       >
