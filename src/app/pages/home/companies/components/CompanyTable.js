@@ -56,8 +56,8 @@ function CompanyTable({
                 <TableCell>
                   <div>
                     {company.telephone && <div>{company.telephone}</div>}
-                    {company.mobilePhone && <div>{company.mobilePhone}</div>}
-                    {company.email1 && <div>{company.email1}</div>}
+                    {company.mobile_phone && <div>{company.mobile_phone}</div>}
+                    {company.email && <div>{company.email}</div>}
                   </div>
                 </TableCell>
                 <TableCell>

@@ -5,7 +5,7 @@ const COMPANY_URL = "/api/company"
 
 
 export const getCompanies = page => {
-    return axios.get(`${GET_COMPANY_URL}?page=${page}&per_page=1`);
+    return axios.get(`${GET_COMPANY_URL}?page=${page}`);
 }
 
 export const createCompany = (values) => {

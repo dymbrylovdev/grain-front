@@ -100,7 +100,7 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
       {errors && errors.get ? (
         <LoadError handleClick={companyAction} />
       ) : (
-        <CompanyForm classes={classes} company={company} submitAction={submitAction}/>
+        <CompanyForm classes={classes} company={company} submitAction={submitAction} companyId={companyId}/>
       )}
     </>
   );

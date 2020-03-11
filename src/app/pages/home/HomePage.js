@@ -53,8 +53,8 @@ function HomePage({ setMenuConfig, getCrops, getStatuses }) {
         <Route path="/cropList" component={CropsListPage} />
         <Route path="/crop/create" component={CropPage} />
         <Route path="/crop/edit/:id" component={CropPage} />
-        <Route path="/company/create" component={CompanyPage}/>
-        <Route path="/company/edit/:companyId" component={CompanyPage}/>
+        <Route path="/company/create" exact component={CompanyPage}/>
+        <Route path="/company/edit/:companyId" exact component={CompanyPage}/>
         <Route path="/companyList" component={CompaniesListPage}/>
         
       </Switch>

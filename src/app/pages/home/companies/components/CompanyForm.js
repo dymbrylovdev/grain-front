@@ -24,25 +24,25 @@ const getInitialValues = company => ({
   okogu: company.okogu || "",
   okopf: company.okopf || "",
   opf: company.opf || "",
-  legalAddress: company.legalAddress || "",
+  legal_address: company.legal_address || "",
   email: company.email || "",
   email2: company.email2 || "",
-  mobilePhone: company.mobilePhone || "",
+  mobile_phone: company.mobile_phone || "",
   telephone: company.telephone || "",
 });
 
-function CompanyForm({ intl, classes, company, submitAction }) {
+function CompanyForm({ intl, classes, company, submitAction, companyId }) {
   const formRef = useRef();
 
   useEffect(() => {
-    company && company.id && formRef.current.resetForm({ values: getInitialValues(company) });
-  }, [company]);
+    formRef.current.resetForm({ values: getInitialValues(company) });
+  }, [companyId, company]);
 
   const schema = Yup.object().shape({
     email1: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
     email2: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
     short_name: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-    registration_at: Yup.date().max(new Date()),
+    //registration_at: Yup.date().max(new Date()).oneOf([null]),
   });
 
   return (
@@ -256,8 +256,8 @@ function CompanyForm({ intl, classes, company, submitAction }) {
                   id: "COMPANY.FORM.ADDRESS",
                 })}
                 margin="normal"
-                name="legalAddress"
-                value={values.legalAddress}
+                name="legal_address"
+                value={values.legal_address}
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -298,8 +298,8 @@ function CompanyForm({ intl, classes, company, submitAction }) {
                   id: "COMPANY.FORM.MOBILE_PHONE",
                 })}
                 margin="normal"
-                name="mobilePhone"
-                value={values.mobilePhone}
+                name="mobile_phone"
+                value={values.mobile_phone}
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
