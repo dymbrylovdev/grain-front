@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const GET_COMPANY_URL = ""; 
-const COMPANY_URL = ""
+const GET_COMPANY_URL = "/api/companies"; 
+const COMPANY_URL = "/api/company"
 
 
-export const getCompanies = () => {
-    return axios.post(GET_COMPANY_URL);
+export const getCompanies = page => {
+    return axios.get(`${GET_COMPANY_URL}?page=${page}&per_page=1`);
 }
 
 export const createCompany = (values) => {
