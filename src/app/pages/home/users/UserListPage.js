@@ -115,9 +115,6 @@ function UserListPage({ intl, getUsers, deleteUser, clearErrors }) {
               <FormattedMessage id="USERLIST.TABLE.NAME" />
             </TopTableCell>
             <TopTableCell>
-              <FormattedMessage id="USERLIST.TABLE.COMPANY" />
-            </TopTableCell>
-            <TopTableCell>
               <FormattedMessage id="USERLIST.TABLE.STATUS" />
             </TopTableCell>
             <TopTableCell>
@@ -133,7 +130,6 @@ function UserListPage({ intl, getUsers, deleteUser, clearErrors }) {
                 <TableCell>{user.id}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.fio}</TableCell>
-                <TableCell>{user.company}</TableCell>
                 <TableCell>{user.status}</TableCell>
                 <TableCell>
                   {" "}

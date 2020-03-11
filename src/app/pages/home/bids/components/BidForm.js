@@ -362,7 +362,7 @@ function BidForm({
               {bid.vendor && (
                 <Link to={toUserPath}>
                   <div className={innerClasses.authorText}>
-                    {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.company ||
+                    {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.fio ||
                       bid.vendor.login}`}
                   </div>
                 </Link>

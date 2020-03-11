@@ -15,8 +15,6 @@ const getInitialValues = user => ({
   location: user.location || {},
   phone: user.phone || "",
   email: user.email || "",
-  inn: user.inn || "",
-  company: user.company || "",
   password: "",
   repeatPassword: "",
   role: user.is_vendor ? vendor : user.is_buyer ? buyer : admin,
@@ -238,39 +236,6 @@ function UserForm({
                 disabled={!isEditable}
               />
 
-              <TextField
-                type="text"
-                label={intl.formatMessage({
-                  id: "PROFILE.INPUT.INN",
-                })}
-                margin="normal"
-                className={classes.textField}
-                name="inn"
-                value={values.inn}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                helperText={touched.inn && errors.inn}
-                error={Boolean(touched.inn && errors.inn)}
-                disabled={!isEditable}
-              />
-
-              <TextField
-                type="text"
-                label={intl.formatMessage({
-                  id: "PROFILE.INPUT.COMPANY",
-                })}
-                margin="normal"
-                className={classes.textField}
-                name="company"
-                value={values.company}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                helperText={touched.company && errors.company}
-                error={Boolean(touched.company && errors.company)}
-                disabled={!isEditable}
-              />
               <AutocompleteLocations
                 options={locations}
                 loading={isLoadingLocations}

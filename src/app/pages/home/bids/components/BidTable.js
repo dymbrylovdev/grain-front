@@ -69,7 +69,6 @@ function BidTable({
                 <TableCell>
                   <div>
                     <div>{`${bid.vendor.fio || ""}`}</div>
-                    <div>{`${bid.vendor.company || ""}`}</div>
                   </div>
                 </TableCell>
                 <TableCell>{bid.distance || "-"}</TableCell>
