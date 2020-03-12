@@ -3,7 +3,7 @@ import { connect, useSelector } from "react-redux";
 import { injectIntl } from "react-intl";
 import * as users from "../../../store/ducks/users.duck";
 import * as locations from "../../../store/ducks/locations.duck";
-import useStyles from "./styles";
+import useStyles from "../styles";
 import UserForm from "./components/UserForm";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import Preloader from "../../../components/ui/Loaders/Preloader";

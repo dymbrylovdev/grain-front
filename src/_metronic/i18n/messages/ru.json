@@ -172,5 +172,10 @@
     "COMPANY.TABLE.CONTACTS": "Контакты",
     "COMPANY.TABLE.ACTIONS":"Действия" ,
     "COMPANY.LIST.EMPTY": "Компаний не найдено",
-    "COMPANY.BUTTON.ADD": "Добавить компанию" 
+    "COMPANY.BUTTON.ADD": "Добавить компанию", 
+    "COMPANY.SEARCH.TITLE": "Введите данные для поиска компании",
+    "COMPANY.SEARCH.BUTTON": "Поиск компании",
+    "COMPANY.STATUS.SEARCH_ERROR": "Ошибка поиска компаний",
+    "COMPANY.STATUS.NO_FOUND" : "По заданным критериям компании не найдены",
+    "COMPANY.CHOOSE.TITLE": "Выберите компанию"
 }

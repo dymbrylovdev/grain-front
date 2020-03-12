@@ -75,3 +75,20 @@ export function isFilterEmpty(filter, enumParams, numberParams) {
     return false;
   return true;
 }
+
+export const getQueryString = (values = {}) => {
+  let queryParams = "";
+  let count = 0;
+  Object.keys(values).forEach((key, index) => {
+    if ((values[key] || values[key] === 0) && values[key] !== "") {
+      if (count === 0) {
+        queryParams += `?${key}=${encodeURIComponent(values[key])}`;
+        count++;
+      } else {
+        queryParams += `&${key}=${encodeURIComponent(values[key])}`;
+        count++;
+      }
+    }
+  });
+  return queryParams;
+};

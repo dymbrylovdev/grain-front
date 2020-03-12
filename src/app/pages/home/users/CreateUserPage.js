@@ -4,7 +4,7 @@ import { injectIntl } from "react-intl";
 import { Redirect } from "react-router-dom";
 import * as locations from "../../../store/ducks/locations.duck";
 import * as users from "../../../store/ducks/users.duck";
-import useStyles from "./styles";
+import useStyles from "../styles";
 import UserForm from "./components/UserForm";
 
 function CreateUserPage({ intl, fetchLocationsRequest, clearLocations, createUser }) {

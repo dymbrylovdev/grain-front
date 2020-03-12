@@ -21,8 +21,12 @@ function CompanyTable({
   companies,
   title,
   paginationData,
+  forSearch,
+  chooseAction,
 }) {
-
+  const handleChoose = company => {
+    chooseAction && chooseAction(company);
+  };
   return (
     <>
       {title && <PortletHeaderTitle className={classes.tableTitle}>{title}</PortletHeaderTitle>}
@@ -30,9 +34,11 @@ function CompanyTable({
         <Table aria-label="simple table" className={classes.table}>
           <TableHead>
             <TableRow>
-              <TopTableCell>
-                <FormattedMessage id="COMPANY.TABLE.ID" />
-              </TopTableCell>
+              {!forSearch && (
+                <TopTableCell>
+                  <FormattedMessage id="COMPANY.TABLE.ID" />
+                </TopTableCell>
+              )}
               <TopTableCell>
                 <FormattedMessage id="COMPANY.TABLE.SHORT_NAME" />
               </TopTableCell>
@@ -42,15 +48,17 @@ function CompanyTable({
               <TopTableCell>
                 <FormattedMessage id="COMPANY.TABLE.CONTACTS" />
               </TopTableCell>
-              <TopTableCell>
-                <FormattedMessage id="COMPANY.TABLE.ACTIONS" />
-              </TopTableCell>
+              {!forSearch && (
+                <TopTableCell>
+                  <FormattedMessage id="COMPANY.TABLE.ACTIONS" />
+                </TopTableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
             {companies.map(company => (
-              <TableRow  key={company.id}>
-                <TableCell>{company.id}</TableCell>
+              <TableRow key={company.id} hover={forSearch} onClick={ () => handleChoose(company)}>
+                {!forSearch && <TableCell>{company.id}</TableCell>}
                 <TableCell>{company.short_name}</TableCell>
                 <TableCell>{company.inn}</TableCell>
                 <TableCell>
@@ -60,13 +68,15 @@ function CompanyTable({
                     {company.email && <div>{company.email}</div>}
                   </div>
                 </TableCell>
-                <TableCell>
-                  <Link to={`/company/edit/${company.id}`}>
-                    <IconButton size="medium" color="primary">
-                      <EditIcon />
-                    </IconButton>
-                  </Link>
-                </TableCell>
+                {!forSearch && (
+                  <TableCell>
+                    <Link to={`/company/edit/${company.id}`}>
+                      <IconButton size="medium" color="primary">
+                        <EditIcon />
+                      </IconButton>
+                    </Link>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
@@ -83,7 +93,9 @@ function CompanyTable({
       )}
       {(!companies || companies.length === 0) && (
         <>
-          <div className={classes.emptyTitle}>{intl.formatMessage({ id: "COMPANY.LIST.EMPTY" })}</div>
+          <div className={classes.emptyTitle}>
+            {intl.formatMessage({ id: "COMPANY.LIST.EMPTY" })}
+          </div>
           <Divider />
         </>
       )}

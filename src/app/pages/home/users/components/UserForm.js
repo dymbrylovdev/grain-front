@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { TextField, MenuItem, Paper } from "@material-ui/core";
 import { useSelector, shallowEqual } from "react-redux";
@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
+import CompanySearchForm from "../../companies/components/CompanySearchForm";
 
 const getInitialValues = user => ({
   login: user.login || "",
@@ -59,6 +60,10 @@ function UserForm({
     user && user.id && formRef.current.resetForm({ values: getInitialValues(user) });
   }, [user]);
 
+
+  const setCompanyAction = useCallback( id => {
+        formRef.current.setFieldValue("company_id", id);
+  }, [])
 
   const schema = Yup.object().shape({
     email: Yup.string()
@@ -123,7 +128,6 @@ function UserForm({
                 console.log("submit ");
               }}
             >
-              <StatusAlert status={status} />
               {(isEdit || isCreate) && (
                 <TextField
                   select
@@ -200,7 +204,7 @@ function UserForm({
                 error={Boolean(touched.fio && errors.fio)}
                 disabled={!isEditable}
               />
-
+              <CompanySearchForm classes={classes} company={user && user.company} setCompanyAction={setCompanyAction}/>
               <TextField
                 type="text"
                 label={intl.formatMessage({
@@ -289,6 +293,7 @@ function UserForm({
                 error={Boolean(touched.repeatPassword && errors.repeatPassword)}
                 disabled={!isEditable}
               />
+              <StatusAlert status={status} />
               {isEditable && (
                 <div className={classes.buttonContainer}>
                   <ButtonWithLoader onPress={handleSubmit} loading={loading}>

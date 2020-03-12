@@ -1,7 +1,9 @@
 import axios from 'axios';
+import { getQueryString } from '../utils';
 
 const GET_COMPANY_URL = "/api/companies"; 
 const COMPANY_URL = "/api/company"
+const SEARCH_COMPANY_URL = "/api/companies/search";
 
 
 export const getCompanies = page => {
@@ -22,4 +24,9 @@ export const deleteCompany = (id) => {
 
 export const getCompanyById = (id) => {
     return axios.get(`${COMPANY_URL}/${id}`);
+}
+
+export const searchCompanies = (values) => {
+    const params = getQueryString(values);
+    return axios.get(`${SEARCH_COMPANY_URL}${params}`)
 }

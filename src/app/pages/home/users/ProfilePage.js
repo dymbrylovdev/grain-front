@@ -3,7 +3,7 @@ import { shallowEqual, useSelector, connect } from "react-redux";
 import { injectIntl } from "react-intl";
 import * as auth from "../../../store/ducks/auth.duck";
 import * as locations from "../../../store/ducks/locations.duck";
-import useStyles from "./styles";
+import useStyles from "../styles";
 import UserForm from "./components/UserForm";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LoadError } from "../../../components/ui/Erros";

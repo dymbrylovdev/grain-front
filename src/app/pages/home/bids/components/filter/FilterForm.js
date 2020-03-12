@@ -32,7 +32,6 @@ const innerStyle = makeStyles(theme => ({
     alignItems: "flex-end",
     justifyContent: "flex-end",
   },
-  dialog: {},
 }));
 
 function FilterForm({
@@ -83,7 +82,6 @@ function FilterForm({
         <Dialog
           open={isOpen}
           onClose={handleClose}
-          className={innerClasses.dialog}
           maxWidth={"sm"}
           fullWidth
         >
