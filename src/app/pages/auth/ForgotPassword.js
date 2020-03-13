@@ -1,25 +1,21 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
 import { connect } from "react-redux";
 import { TextField } from "@material-ui/core";
 import { Link, Redirect } from "react-router-dom";
 import { FormattedMessage, injectIntl } from "react-intl";
+
+import * as Yup from "yup";
 import * as auth from "../../store/ducks/auth.duck";
-import { requestPassword } from "../../crud/auth.crud";
+import StatusAlert from "../../components/ui/Messages/StatusAlert";
+import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
 
-class ForgotPassword extends Component {
-  state = { isRequested: false };
+function ForgotPassword({intl, passwordRequested}) {
+   const [isRedirect, setRedirect] = useState(false);
 
-  render() {
-    const { intl } = this.props;
-    const { isRequested } = this.state;
-
-    if (isRequested) {
-      return <Redirect to="/auth" />;
-    }
+   if ( isRedirect ) return <Redirect to="/auth/email-sent"/>
 
     return (
-      <div className="kt-grid__item kt-grid__item--fluid  kt-grid__item--order-tablet-and-mobile-1  kt-login__wrapper">
         <div className="kt-login__body">
           <div className="kt-login__form">
             <div className="kt-login__title">
@@ -30,37 +26,29 @@ class ForgotPassword extends Component {
 
             <Formik
               initialValues={{ email: "" }}
-              validate={values => {
-                const errors = {};
-
-                if (!values.email) {
-                  errors.email = intl.formatMessage({
-                    id: "AUTH.VALIDATION.REQUIRED_FIELD"
-                  });
-                } else if (
-                  !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-                ) {
-                  errors.email = intl.formatMessage({
-                    id: "AUTH.VALIDATION.INVALID_FIELD"
-                  });
-                }
-
-                return errors;
-              }}
-              onSubmit={(values, { setStatus, setSubmitting }) => {
-                requestPassword(values.email)
-                  .then(() => {
-                    this.setState({ isRequested: true });
+              validationSchema={
+                Yup.object().shape({
+                  email: Yup.string()
+                    .email(<FormattedMessage id="AUTH.VALIDATION.INVALID_FIELD" />)
+                    .required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
                   })
-                  .catch(() => {
-                    setSubmitting(false);
-                    setStatus(
-                      intl.formatMessage(
-                        { id: "AUTH.VALIDATION.NOT_FOUND" },
-                        { name: values.email }
-                      )
-                    );
-                  });
+              }
+              onSubmit={(values, { setStatus, setSubmitting }) => {
+                setStatus({loading: true});
+                const email = values.email;
+                const successCallback = () => {
+                  setRedirect(true);
+                }
+                const failCallback = e => {
+                  setStatus({
+                    loading: false,
+                    message: e || intl.formatMessage({id: "AUTH.VALIDATION.NOT_FOUND"}, {name: email}),
+                    error: true,
+                  }
+                  );
+                  setSubmitting(false);
+                }
+                passwordRequested(email, successCallback, failCallback);
               }}
             >
               {({
@@ -74,11 +62,8 @@ class ForgotPassword extends Component {
                 isSubmitting
               }) => (
                 <form onSubmit={handleSubmit} className="kt-form">
-                  {status && (
-                    <div role="alert" className="alert alert-danger">
-                      <div className="alert-text">{status}</div>
-                    </div>
-                  )}
+
+                  <StatusAlert status={status}/>  
 
                   <div className="form-group">
                     <TextField
@@ -101,26 +86,25 @@ class ForgotPassword extends Component {
                         type="button"
                         className="btn btn-secondary btn-elevate kt-login__btn-secondary"
                       >
-                        Back
+                        {intl.formatMessage({id: "AUTH.BUTTON.BACK"})}
                       </button>
                     </Link>
 
-                    <button
-                      type="submit"
-                      className="btn btn-primary btn-elevate kt-login__btn-primary"
+                    <ButtonWithLoader
                       disabled={isSubmitting}
+                      loading={status && status.loading}
+                      onPress={handleSubmit}
                     >
-                      Submit
-                    </button>
+                      {intl.formatMessage({id: "AUTH.BUTTON.RESET"})}
+                    </ButtonWithLoader>
                   </div>
                 </form>
               )}
             </Formik>
           </div>
         </div>
-      </div>
     );
   }
-}
+
 
 export default injectIntl(connect(null, auth.actions)(ForgotPassword));

@@ -1,6 +1,7 @@
 import { useSelector, shallowEqual } from "react-redux";
 
 function BidSelector(id, by) {
+  
   const bid = useSelector(({ bids: { bestBids, myBids, allBids } }) => {
     if( by === "fromMy"){
       const currentBidFromMy = myBids && myBids.list.filter(item => item.id === Number.parseInt(id));

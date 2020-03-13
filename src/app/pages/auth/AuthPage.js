@@ -8,6 +8,8 @@ import "../../../_metronic/_assets/sass/pages/login/login-1.scss";
 import Login from "./Login";
 import Registration from "./Registration";
 import ForgotPassword from "./ForgotPassword";
+import EmailSentPage from "./EmailSentPage";
+import ChangePassword from "./ChangePassword";
 import useFetch from "../../hooks/useFetch";
 
 const agreementStyle = {
@@ -95,6 +97,8 @@ export default function AuthPage() {
                 <Route path="/auth/login" component={Login} />
                 <Route path="/auth/registration" component={Registration} />
                 <Route path="/auth/forgot-password" component={ForgotPassword} />
+                <Route path="/auth/email-sent" component={EmailSentPage}/>
+                <Route path="/auth/change_password/:code" component={ChangePassword}/>
                 <Redirect from="/auth" exact={true} to="/auth/login" />
                 <Redirect to="/auth/login" />
               </Switch>

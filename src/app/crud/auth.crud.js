@@ -2,8 +2,8 @@ import axios from "axios";
 
 export const LOGIN_URL = "api/user/login";
 export const REGISTER_URL = "api/auth/register";
-export const REQUEST_PASSWORD_URL = "api/auth/forgot-password";
-
+export const REQUEST_PASSWORD_URL = "/api/_p/reset_password/send_code";
+export const CHANGE_PASSWORD_URL = "/api/_p/change_password_from_link";
 
 export const ME_URL = "api/user/me";
 export const USER_URL = "/api/user/";
@@ -29,10 +29,14 @@ export function register(email, fullname, username, password) {
 }
 
 export function requestPassword(email) {
-  return axios.post(REQUEST_PASSWORD_URL, { email });
+  return axios.get(`${REQUEST_PASSWORD_URL}?email=${email}`);
 }
 
 export function getUserByToken() {
   // Authorization head should be fulfilled in interceptor.
   return axios.get(ME_URL);
+}
+
+export function changePassword(params){
+  return axios.post(CHANGE_PASSWORD_URL, params);
 }

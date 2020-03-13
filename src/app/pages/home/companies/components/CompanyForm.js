@@ -52,7 +52,6 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
         initialValues={getInitialValues(company)}
         validationSchema={schema}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-          console.log("---values", values);
           submitAction(values, setStatus, setSubmitting);
         }}
         innerRef={formRef}

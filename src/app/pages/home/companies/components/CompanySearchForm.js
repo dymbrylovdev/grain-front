@@ -89,8 +89,6 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
         initialValues={getInitialValues(currentCompany)}
         innerRef={formRef}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-          console.log("---values", values);
-
           setTimeout(() => {
             setStatus({
               loading: true,

@@ -3,6 +3,7 @@ import { Formik } from "formik";
 import { connect } from "react-redux";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { TextField } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import clsx from "clsx";
 import * as auth from "../../store/ducks/auth.duck";
 import { login } from "../../crud/auth.crud";
@@ -145,6 +146,12 @@ function Login(props) {
                 </div>
 
                 <div className="kt-login__actions">
+                  <Link
+                    to="/auth/forgot-password"
+                    className="kt-link kt-login__link-forgot"
+                  >
+                    <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
+                  </Link>
                   <button
                     id="kt_login_signin_submit"
                     type="submit"
