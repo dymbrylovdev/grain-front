@@ -1,8 +1,8 @@
-export default function getMenuConfig(crops, user) {
+export default function getMenuConfig(crops = [], user) {
   if (user.is_admin) {
     return getAdminMenu(crops);
   }
-  if (user.is_vendor){
+  if (user.is_vendor) {
     return getVendorMenu(crops);
   }
   return getBuyerMenu(crops);
@@ -219,7 +219,6 @@ const getVendorMenu = crops => ({
   },
 });
 
-
 const getBuyerMenu = crops => ({
   header: {
     self: {},
@@ -247,7 +246,7 @@ const getBuyerMenu = crops => ({
               page: `bidsList/${crop.id}`,
               translate: crop.name,
             })),
-          }
+          },
         ],
       },
       {
@@ -275,5 +274,3 @@ const getBuyerMenu = crops => ({
     ],
   },
 });
-
-
