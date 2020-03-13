@@ -1,5 +1,22 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Run with docker
+
+### Buld image
+
+`docker build -f Dockerfile -t graindock/grain .`
+
+### Run container
+
+`docker run -e REACT_APP_API_DOMAIN=api.kupit-zerno.com -d --name grain -p 8080:3000 graindock/grain`
+
+### Env variables
+
+```
+   - REACT_APP_API_DOMAIN=api.kupit-zerno.com // domain without protocol
+   - REACT_APP_GOOGLE_API_KEY=c1170a31-17b7-4be1-8db7-e068998ee7cd
+```
+
 ## Available Scripts
 
 In the project directory, you can run:
