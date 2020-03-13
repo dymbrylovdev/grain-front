@@ -29,7 +29,7 @@ const getAdminMenu = crops => ({
             page: "",
             translate: "SUBMENU.ADS",
             bullet: "dot",
-            submenu: crops.map(crop => ({
+            submenu: crops && crops.map &&crops.map(crop => ({
               title: crop.name,
               root: true,
               page: `bidsList/${crop.id}`,
@@ -54,7 +54,7 @@ const getAdminMenu = crops => ({
             page: "",
             translate: "SUBMENU.ALL_BIDS",
             bullet: "dot",
-            submenu: crops.map(crop => ({
+            submenu: crops && crops.map && crops.map(crop => ({
               title: crop.name,
               root: true,
               page: `allBidsList/${crop.id}`,

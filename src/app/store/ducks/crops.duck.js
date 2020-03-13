@@ -61,12 +61,6 @@ export const reducer = persistReducer(
       const menuWithCrops = getMenuConfig(payload.data, payload.user);
       yield put(builderActions.setMenuConfig(menuWithCrops));
     })
-    yield takeLatest(actionTypes.CreateCropSucces, function* getCropsRequest(){
-      const data = call(getCrops);
-      if(data && data.data){
-      yield put(actionTypes.CreateCropSucces, data.data)
-      }
-    })
   }
 
 
