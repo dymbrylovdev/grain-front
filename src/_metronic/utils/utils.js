@@ -1,3 +1,5 @@
+import { API_DOMAIN } from "../../app/constants";
+
 export function removeCSSClass(ele, cls) {
   const reg = new RegExp("(\\s|^)" + cls + "(\\s|$)");
   ele.className = ele.className.replace(reg, " ");
@@ -10,7 +12,7 @@ export function addCSSClass(ele, cls) {
 export const toAbsoluteUrl = pathname => process.env.PUBLIC_URL + pathname;
 
 export function setupAxios(axios, store) {
-  axios.defaults.baseURL = "http://grain.me-interactive.net";
+  axios.defaults.baseURL = API_DOMAIN;
   axios.interceptors.request.use(
     config => {
       const {

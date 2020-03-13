@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
-import { BASE_URL } from "../constants";
+import { API_DOMAIN } from "../constants";
 
 export default (url: string) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +25,7 @@ export default (url: string) => {
       ...options,
     };
 
-    axios(`${BASE_URL}/${url}`, requestOptions)
+    axios(`${API_DOMAIN}/${url}`, requestOptions)
       .then(res => {
         if (!skipGetResponseAfterDestroy) {
           setResponse(res.data);
