@@ -21,7 +21,7 @@ function ProfilePage({ intl, fetchLocationsRequest, clearLocations, getUser, edi
   const submitAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
-      const params = values;
+      const params = values; 
       const successCallback = () => {
         setLoading(false);
         setStatus({
@@ -63,6 +63,7 @@ function ProfilePage({ intl, fetchLocationsRequest, clearLocations, getUser, edi
           loading={loading}
           submitAction={submitAction}
           isEditable={true}
+          byAdmin={user.is_admin}
         />
       )}
     </>

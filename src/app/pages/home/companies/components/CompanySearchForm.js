@@ -1,8 +1,8 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { injectIntl } from "react-intl";
 import { Formik, Form } from "formik";
-import { makeStyles } from "@material-ui/styles";
 import { TextField, Box, IconButton } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 
 import { searchCompanies } from "../../../../crud/companies.crud";
@@ -59,15 +59,11 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
       })
       .catch(() => failCallback());
   }, []);
-  const deleteCompany = useCallback(() => {
-    setCompanyAction(0);
-    formRef.current.setFieldValue("name", null);
-  }, []);
   const closeDialog = useCallback(() => {
     setDialogOpen(false);
   }, []);
   const chooseAction = useCallback(company => {
-    setCompanyAction(company.id);
+    setCompanyAction(company);
     setCurrentCompany(company);
     setDialogOpen(false);
   }, []);
@@ -135,27 +131,6 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
               <div className={innerClasses.title}>
                 {`${intl.formatMessage({ id: "COMPANY.SEARCH.TITLE" })}`}
               </div>
-              {values.name && (
-                <div className={innerClasses.companyContainer}>
-                  <TextField
-                    type="text"
-                    label={intl.formatMessage({
-                      id: "COMPANY.FORM.NAME",
-                    })}
-                    margin="normal"
-                    name="name"
-                    value={values.name}
-                    variant="outlined"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    disabled={true}
-                    className={innerClasses.companyText}
-                  />
-                  <IconButton size={"medium"} onClick={deleteCompany}>
-                    <DeleteIcon />
-                  </IconButton>
-                </div>
-              )}
               <TextField
                 type="text"
                 label={intl.formatMessage({

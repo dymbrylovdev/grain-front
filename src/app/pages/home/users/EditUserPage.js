@@ -62,6 +62,7 @@ function EditUserPage({ intl, editUser, fetchLocationsRequest, match, clearLocat
         submitAction={submitAction}
         isEdit={true}
         isEditable = {myUser.is_admin}
+        byAdmin={myUser.is_admin}
       />}
 
     </>

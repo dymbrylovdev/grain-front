@@ -60,7 +60,7 @@
     "PROFILE.INPUT.STATUS":"Статус",
     "PROFILE.INPUT.PHONE":"Телефон",
     "PROFILE.INPUT.INN":"ИНН",
-    "PROFILE.INPUT.COMPANY":"Организация",
+    "PROFILE.INPUT.COMPANY":"Компания",
     "PROFILE.INPUT.PASSWORD":"Новый пароль",
     "PROFILE.INPUT.REPEATPASSWORD":"Повторите новый пароль",
     "PROFILE.BUTTON.SAVE": "Сохранить",
@@ -184,5 +184,10 @@
     "COMPANY.SEARCH.BUTTON": "Поиск компании",
     "COMPANY.STATUS.SEARCH_ERROR": "Ошибка поиска компаний",
     "COMPANY.STATUS.NO_FOUND" : "По заданным критериям компании не найдены",
-    "COMPANY.CHOOSE.TITLE": "Выберите компанию"
+    "COMPANY.CHOOSE.TITLE": "Выберите компанию",
+    "COMPANY.CONFIRM.TITLE": "Компания подтверждена:",
+    "COMPANY.CONFIRM.BY_EMAIL": "По Email",
+    "COMPANY.CONFIRM.BY_PHONE": "По телефону",
+    "COMPANY.CONFIRM.BY_PAY": "Оплатой",
+    "COMPANY.CONFIRM.NO_CONFIRM": "Компания не подтверждена"
 }

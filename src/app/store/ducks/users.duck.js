@@ -99,7 +99,7 @@ export const actions = {
   editUser: (id, params, successCallback, failCallback) => ({ type: actionTypes.EditUser, payload: { id, params, successCallback, failCallback } }),
 
   getStatuses: () => ({type: actionTypes.GetStatuses}),
-  statusesSucces: data => ({ type: actionTypes.StatusesSuccess, payload: { data } }),
+  statusesSuccess: data => ({ type: actionTypes.StatusesSuccess, payload: { data } }),
 
   getUserById: id => ({type: actionTypes.GetUserById, payload: {id}}),
   userByIdSuccess: data => ({type: actionTypes.UserByIdSuccess, payload: {data}}),

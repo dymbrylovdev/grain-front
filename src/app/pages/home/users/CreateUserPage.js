@@ -56,6 +56,7 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearLocations, createUse
       submitAction={submitAction}
       isCreate={true}
       isEditable={true}
+      byAdmin={true}
     />
   );
 }

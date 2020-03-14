@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
-import { TextField, MenuItem, Paper } from "@material-ui/core";
+import { TextField, MenuItem, Paper, IconButton } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { useSelector, shallowEqual } from "react-redux";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
@@ -9,6 +11,18 @@ import AutocompleteLocations from "../../../../components/AutocompleteLocations"
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import CompanySearchForm from "../../companies/components/CompanySearchForm";
+import CompanyConfirmBlock from "../../companies/components/CompanyConfirmBlock";
+
+
+const innerStyles = makeStyles(theme => ({
+  companyContainer: {
+    flexDirection: "row",
+    display: "flex",
+  },
+  companyText: {
+      flex: 1,
+  },
+}));
 
 const getInitialValues = user => ({
   login: user.login || "",
@@ -20,6 +34,11 @@ const getInitialValues = user => ({
   repeatPassword: "",
   role: user.is_vendor ? vendor : user.is_buyer ? buyer : admin,
   status: user.status || "",
+  company_confirmed_by_email: user.company_confirmed_by_email,
+  company_confirmed_by_phone: user.company_confirmed_by_phone,
+  company_confirmed_by_payment: user.company_confirmed_by_payment,
+  company_name: user.company && user.company.short_name,
+  company_id: user.company && user.company.id,
 });
 const admin = {
   value: "Администратор",
@@ -37,8 +56,6 @@ const buyer = {
 
 const roles = [admin, buyer, vendor];
 
-
-
 function UserForm({
   fetchLocations,
   clearLocations,
@@ -50,20 +67,24 @@ function UserForm({
   isCreate,
   intl,
   isEditable,
+  byAdmin
 }) {
   const formRef = useRef();
+  const innerClasses = innerStyles();
   const statuses = useSelector(({ users: { statuses } }) => statuses, shallowEqual);
   const { locations, isLoadingLocations } = useSelector(state => state.locations);
   const [selectedLocation, setSelectedLocation] = useState(null);
-
   useEffect(() => {
     user && user.id && formRef.current.resetForm({ values: getInitialValues(user) });
   }, [user]);
 
-
-  const setCompanyAction = useCallback( id => {
-        formRef.current.setFieldValue("company_id", id);
-  }, [])
+  const setCompanyAction = useCallback(company=> {
+    formRef.current.setFieldValue("company_id", company && company.id);
+    formRef.current.setFieldValue("company_name", company && company.short_name);
+    formRef.current.setFieldValue("company_confirmed_by_email", false);
+    formRef.current.setFieldValue("company_confirmed_by_phone", false);
+    formRef.current.setFieldValue("company_confirmed_by_payment", false); 
+  }, []);
 
   const schema = Yup.object().shape({
     email: Yup.string()
@@ -76,16 +97,18 @@ function UserForm({
       isCreate || isEdit
         ? Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
         : null,
-    repeatPassword: Yup.string().test('passwords-match', <FormattedMessage id="PROFILE.VALIDATION.SIMILAR_PASSWORD" />, 
-    function(value){
-      const password = this.parent.password;
-      if ( password && password !== "" && password !== value ){
-        return false;
+    repeatPassword: Yup.string().test(
+      "passwords-match",
+      <FormattedMessage id="PROFILE.VALIDATION.SIMILAR_PASSWORD" />,
+      function(value) {
+        const password = this.parent.password;
+        if (password && password !== "" && password !== value) {
+          return false;
+        }
+        return true;
       }
-      return true;
-    })
-  })
- 
+    ),
+  });
 
   return (
     <Paper className={classes.container}>
@@ -204,7 +227,35 @@ function UserForm({
                 error={Boolean(touched.fio && errors.fio)}
                 disabled={!isEditable}
               />
-              <CompanySearchForm classes={classes} company={user && user.company} setCompanyAction={setCompanyAction}/>
+                 {values.company_name && (
+                   <>
+                <div className={innerClasses.companyContainer}>
+                  <TextField
+                    type="text"
+                    label={intl.formatMessage({
+                      id: "PROFILE.INPUT.COMPANY",
+                    })}
+                    margin="normal"
+                    name="company_name"
+                    value={values.company_name}
+                    variant="outlined"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    disabled={true}
+                    className={innerClasses.companyText}
+                  />
+                  <IconButton size={"medium"} onClick={() => setCompanyAction({id: 0})}>
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+                <CompanyConfirmBlock values={values} handleChange={handleChange} disabled={!byAdmin}/>
+                </>
+              )}
+              <CompanySearchForm
+                classes={classes}
+                company={user && user.company}
+                setCompanyAction={setCompanyAction}
+              />
               <TextField
                 type="text"
                 label={intl.formatMessage({
