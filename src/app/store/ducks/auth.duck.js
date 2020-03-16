@@ -2,13 +2,13 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { put, takeLatest, call } from "redux-saga/effects";
 import * as routerHelpers from "../../router/RouterHelpers";
-import { getUser, setUser, requestPassword, changePassword } from "../../crud/auth.crud";
+import { getUser, setUser, requestPassword, changePassword, register } from "../../crud/auth.crud";
 import { actions as cropActions } from "./crops.duck";
 
 export const actionTypes = {
   Login: "[Login] Action",
   Logout: "[Logout] Action",
-  Register: "[Register] Action",
+
   UserRequested: "[Request User] Action",
   UserLoaded: "[Load User] Auth API",
 
@@ -20,6 +20,8 @@ export const actionTypes = {
   PasswordChange: "[PasswordChange] Action",
   PasswordChangeSuccess: "[PasswordChange] Success",
   PasswordChangeFail: "[PasswordChange] Fail",
+
+  Register: "[Register] Action",
 
   EditUser: "[EditMyUser] Action",
   EditUserSuccess: "[EditMyUserSuccess] Action",
@@ -46,11 +48,6 @@ export const reducer = persistReducer(
         return { authToken, user: undefined };
       }
 
-      case actionTypes.Register: {
-        const { authToken } = action.payload;
-
-        return { authToken, user: undefined };
-      }
 
       case actionTypes.Logout: {
         routerHelpers.forgotLastLocation();
@@ -90,9 +87,9 @@ export const reducer = persistReducer(
 
 export const actions = {
   login: authToken => ({ type: actionTypes.Login, payload: { authToken } }),
-  register: authToken => ({
+  register: (params, successCallback, failCallback) => ({
     type: actionTypes.Register,
-    payload: { authToken },
+    payload: { params, successCallback, failCallback },
   }),
   logout: () => ({ type: actionTypes.Logout }),
   requestUser: user => ({ type: actionTypes.UserRequested, payload: { user } }),
@@ -163,10 +160,27 @@ function* passwordRequestedSaga({payload: {email, successCallback, failCallback 
       yield call(failCallback);
     }
   }catch(e){
-    const error = e && e.response && e.response.message;
+    const error = e && e.response && e.response.data && e.response.data.message;;
     yield call(failCallback, error);
   }
 }
+
+function* registerSaga({payload: {params, successCallback, failCallback }}){
+  try{
+    const { data } = yield register(params);
+    if(data){
+      yield put(actions.passwordRequestedSuccess(params.email));
+      yield call(successCallback);
+    }else{
+      yield call(failCallback);
+    }
+  }catch(e){
+    const error = e && e.response && e.response.data && e.response.data.message;;
+    yield call(failCallback, error);
+  }
+}
+
+
 
 function* changePasswordSaga({payload: { params, failCallback }}){
   try{
@@ -179,7 +193,7 @@ function* changePasswordSaga({payload: { params, failCallback }}){
       yield call(failCallback);
     }
   }catch(e){
-    const error = e && e.response && e.response.message;
+    const error = e && e.response && e.response.data && e.response.data.message;
     yield call(failCallback, error);
   }
 }
@@ -192,4 +206,5 @@ export function* saga() {
   yield takeLatest(actionTypes.EditUser, editUserSaga);
   yield takeLatest(actionTypes.PasswordRequested, passwordRequestedSaga);
   yield takeLatest(actionTypes.PasswordChange, changePasswordSaga);
+  yield takeLatest(actionTypes.Register, registerSaga);
 }

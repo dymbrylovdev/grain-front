@@ -13,7 +13,7 @@ import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
 function ForgotPassword({intl, passwordRequested}) {
    const [isRedirect, setRedirect] = useState(false);
 
-   if ( isRedirect ) return <Redirect to="/auth/email-sent"/>
+   if ( isRedirect ) return <Redirect to="/auth/email-sent/forgot"/>
 
     return (
         <div className="kt-login__body">

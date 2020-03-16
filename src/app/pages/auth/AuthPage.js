@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, Link } from "@material-ui/core";
-
+import { Link } from "@material-ui/core";
 import { toAbsoluteUrl } from "../../../_metronic";
 import "../../../_metronic/_assets/sass/pages/login/login-1.scss";
 import Login from "./Login";
@@ -11,10 +10,8 @@ import ForgotPassword from "./ForgotPassword";
 import EmailSentPage from "./EmailSentPage";
 import ChangePassword from "./ChangePassword";
 import useFetch from "../../hooks/useFetch";
+import TermDialog from "./components/TermDialog";
 
-const agreementStyle = {
-  color: "black",
-};
 export default function AuthPage() {
   const [openUserAgreement, setOpenUserAgreement] = useState(false);
   const [{ response }, requestUserAgreement] = useFetch("api/_public/document/user_agreement");
@@ -22,6 +19,10 @@ export default function AuthPage() {
   useEffect(() => {
     requestUserAgreement();
   }, [requestUserAgreement]);
+
+  const closeUserAgreement = useCallback(()=>{
+      setOpenUserAgreement(false);
+  },[])
 
   return (
     <>
@@ -64,28 +65,7 @@ export default function AuthPage() {
                       <FormattedMessage id="SUBMENU.LEGAL" />
                     </Link>
                     <div>
-                      <Dialog
-                        open={openUserAgreement}
-                        onClose={() => setOpenUserAgreement(false)}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                      >
-                        <DialogTitle id="alert-dialog-title">
-                          <FormattedMessage id="AUTH.GENERAL.LEGAL" />
-                        </DialogTitle>
-                        <DialogContent>
-                          <DialogContentText id="alert-dialog-description">
-                            {response && response.data ? (
-                              <div
-                                dangerouslySetInnerHTML={{ __html: response.data.text }}
-                                style={agreementStyle}
-                              />
-                            ) : (
-                              "Loading..."
-                            )}
-                          </DialogContentText>
-                        </DialogContent>
-                      </Dialog>
+                      <TermDialog isOpen={openUserAgreement} response={response} handleClose={closeUserAgreement}/>
                     </div>
                   </div>
                 </div>

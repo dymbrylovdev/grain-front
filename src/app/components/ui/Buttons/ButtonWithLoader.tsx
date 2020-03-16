@@ -11,7 +11,7 @@ interface IProps {
 
 const noop = () => {};
 
-const ButtonWithLoader: React.FC<IProps> = ({ children, loading = false, onPress = noop, color = "primary", disabled = false }) => {
+const ButtonWithLoader: React.FC<IProps> = ({ children, loading = false, onPress = noop, color = "primary", disabled= false }) => {
   return (
     <Button
       variant="contained"
