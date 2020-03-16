@@ -47,7 +47,6 @@ function BidCreatePage({
     (match.url.indexOf("fromAdmin") !== -1 && "fromAdmin");
   const vendorId = match.params.vendorId;
   const bidId = match.params.bidId;
-  const { user: vendor } = userSelector(vendorId);
   const { bid } =  bidSelector(bidId, by);
   const isEditable = match.url.indexOf("view") === -1;
   const vendor_id = vendorId || (bid && bid.vendor && bid.vendor.id) || user.id;
@@ -142,6 +141,7 @@ function BidCreatePage({
   const submitAction = bid && bid.id ? editAction : createAction;
 
   let title = null;
+  const { user: vendor } = userSelector(vendorId);
   if (vendorId) title = `${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [${vendor.login}]`;
   if (!isEditable) {
     title = intl.formatMessage({ id: "BID.TITLE.VIEW" });

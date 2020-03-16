@@ -12,7 +12,7 @@ function Login(props) {
   const { intl } = props;
   const [loading, setLoading] = useState(false);
   const [loadingButtonStyle, setLoadingButtonStyle] = useState({
-    paddingRight: "2.5rem"
+    paddingRight: "2.5rem",
   });
 
   const enableLoading = () => {
@@ -27,26 +27,34 @@ function Login(props) {
 
   return (
     <>
+      <div className="kt-login__head">
+        <span className="kt-login__signup-label">
+          {intl.formatMessage({ id: "AUTH.GENERAL.NO_ACCOUNT" })}
+        </span>
+        &nbsp;&nbsp;
+        <Link to="/auth/registration" className="kt-link kt-login__signup-link">
+          {intl.formatMessage({ id: "AUTH.GENERAL.SIGNUP_BUTTON" })}
+        </Link>
+      </div>
 
       <div className="kt-login__body">
         <div className="kt-login__form">
           <div className="kt-login__title">
             <h3>
               {/* https://github.com/formatjs/react-intl/blob/master/docs/Components.md#formattedmessage */}
-              <FormattedMessage id="AUTH.LOGIN.TITLE"/>
+              <FormattedMessage id="AUTH.LOGIN.TITLE" />
             </h3>
           </div>
 
           <Formik
-            initialValues={{
-            }}
+            initialValues={{}}
             validate={values => {
               const errors = {};
 
               if (!values.login) {
                 // https://github.com/formatjs/react-intl/blob/master/docs/API.md#injection-api
                 errors.login = intl.formatMessage({
-                  id: "AUTH.VALIDATION.REQUIRED_FIELD"
+                  id: "AUTH.VALIDATION.REQUIRED_FIELD",
                 });
               } /*else if (
                 !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
@@ -58,7 +66,7 @@ function Login(props) {
 
               if (!values.password) {
                 errors.password = intl.formatMessage({
-                  id: "AUTH.VALIDATION.REQUIRED_FIELD"
+                  id: "AUTH.VALIDATION.REQUIRED_FIELD",
                 });
               }
 
@@ -70,19 +78,19 @@ function Login(props) {
                 login(values.login, values.password)
                   .then(({ data }) => {
                     disableLoading();
-                    if(data.data){
-                    props.login(data.data.api_token);
-                    props.editUserSuccess(data.data);
+                    if (data.data) {
+                      props.login(data.data.api_token);
+                      props.editUserSuccess(data.data);
                     }
                   })
-                  .catch((error) => {
-                    console.log('loginError', error);
-                    
+                  .catch(error => {
+                    console.log("loginError", error);
+
                     disableLoading();
                     setSubmitting(false);
                     setStatus(
                       intl.formatMessage({
-                        id: "AUTH.VALIDATION.INVALID_LOGIN"
+                        id: "AUTH.VALIDATION.INVALID_LOGIN",
                       })
                     );
                   });
@@ -97,7 +105,7 @@ function Login(props) {
               handleChange,
               handleBlur,
               handleSubmit,
-              isSubmitting
+              isSubmitting,
             }) => (
               <form
                 noValidate={true}
@@ -105,7 +113,7 @@ function Login(props) {
                 className="kt-form"
                 onSubmit={handleSubmit}
               >
-                {status  &&  (
+                {status && (
                   <div role="alert" className="alert alert-danger">
                     <div className="alert-text">{status}</div>
                   </div>
@@ -115,7 +123,7 @@ function Login(props) {
                   <TextField
                     type="email"
                     label={intl.formatMessage({
-                      id: "AUTH.INPUT.LOGIN"
+                      id: "AUTH.INPUT.LOGIN",
                     })}
                     margin="normal"
                     className="kt-width-full"
@@ -133,7 +141,7 @@ function Login(props) {
                     type="password"
                     margin="normal"
                     label={intl.formatMessage({
-                      id: "AUTH.INPUT.PASSWORD"
+                      id: "AUTH.INPUT.PASSWORD",
                     })}
                     className="kt-width-full"
                     name="password"
@@ -146,21 +154,16 @@ function Login(props) {
                 </div>
 
                 <div className="kt-login__actions">
-                  <Link
-                    to="/auth/forgot-password"
-                    className="kt-link kt-login__link-forgot"
-                  >
+                  <Link to="/auth/forgot-password" className="kt-link kt-login__link-forgot">
                     <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
                   </Link>
                   <button
                     id="kt_login_signin_submit"
                     type="submit"
                     disabled={isSubmitting}
-                    className={`btn btn-primary btn-elevate kt-login__btn-primary ${clsx(
-                      {
-                        "kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light": loading
-                      }
-                    )}`}
+                    className={`btn btn-primary btn-elevate kt-login__btn-primary ${clsx({
+                      "kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light": loading,
+                    })}`}
                     style={loadingButtonStyle}
                   >
                     <FormattedMessage id="AUTH.LOGIN.BUTTON" />
@@ -169,28 +172,10 @@ function Login(props) {
               </form>
             )}
           </Formik>
-
-          
         </div>
       </div>
     </>
   );
 }
 
-export default injectIntl(
-  connect(
-    null,
-    auth.actions
-  )(Login)
-);
-
-
-      /*<div className="kt-login__head">
-        <span className="kt-login__signup-label">
-          Don't have an account yet?
-        </span>
-        &nbsp;&nbsp;
-        <Link to="/auth/registration" className="kt-link kt-login__signup-link">
-          Sign Up!
-        </Link>
-      </div>*/
+export default injectIntl(connect(null, auth.actions)(Login));

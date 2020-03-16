@@ -26,7 +26,7 @@
     "AUTH.INPUT.PASSWORD": "Пароль",
     "AUTH.LOGIN.TITLE": "Вход",
     "AUTH.GENERAL.NO_ACCOUNT": "Нет аккаунта?",
-    "AUTH.GENERAL.SIGNUP_BUTTON": "Зарегистрироваться",
+    "AUTH.GENERAL.SIGNUP_BUTTON": "Регистрация",
     "AUTH.GENERAL.FORGOT_BUTTON": "Забыли пароль?",
     "AUTH.GENERAL.BACK_BUTTON": "Назад",
     "AUTH.GENERAL.PRIVACY": "Политика конфиденциальности",

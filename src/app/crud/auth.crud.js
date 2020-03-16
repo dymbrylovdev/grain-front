@@ -1,10 +1,9 @@
 import axios from "axios";
 
 export const LOGIN_URL = "api/user/login";
-export const REGISTER_URL = "api/auth/register";
 export const REQUEST_PASSWORD_URL = "/api/_p/reset_password/send_code";
 export const CHANGE_PASSWORD_URL = "/api/_p/change_password_from_link";
-
+export const REGISTER_URL = "/api/_p/user/register";
 export const ME_URL = "api/user/me";
 export const USER_URL = "/api/user/";
 export const GET_USER_URL = "/api/me";
@@ -24,8 +23,8 @@ export function getUser(){
   return axios.get(GET_USER_URL);
 }
 
-export function register(email, fullname, username, password) {
-  return axios.post(REGISTER_URL, { email, fullname, username, password });
+export function register(params) {
+  return axios.post(REGISTER_URL, params);
 }
 
 export function requestPassword(email) {
