@@ -41,12 +41,12 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
         });
         setRedirect(true);
       };
-      const failCallback = () => {
+      const failCallback = error => {
         setSubmitting(false);
         setStatus({
           loading: false,
           error: true,
-          message: intl.formatMessage({
+          message: error || intl.formatMessage({
             id: "COMPANY.STATUS.ERROR",
           }),
         });
@@ -69,12 +69,12 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
           }),
         });
       };
-      const failCallback = () => {
+      const failCallback = error => {
         setSubmitting(false);
         setStatus({
           loading: false,
           error: true,
-          message: intl.formatMessage({
+          message: error || intl.formatMessage({
             id: "COMPANY.STATUS.ERROR",
           }),
         });

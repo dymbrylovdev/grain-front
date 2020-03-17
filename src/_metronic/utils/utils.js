@@ -32,7 +32,7 @@ export function setupAxios(axios, store) {
       return response;
     },
     error => {
-      console.log("---error", error);
+      console.log("---error", error && error.response);
       return Promise.reject(error);
     }
   );

@@ -110,8 +110,9 @@ export const reducer = persistReducer(
         }else {
           yield call(failCallback);
         }
-      }catch{
-        yield call(failCallback);
+      }catch(e){
+        const error = e && e.response && e.response.data && e.response.data.message;
+        yield call(failCallback, error);
       }
   }
 
@@ -123,8 +124,9 @@ export const reducer = persistReducer(
         }else {
           yield call(failCallback);
         }
-      }catch{
-        yield call(failCallback);
+      }catch(e){
+        const error = e && e.response && e.response.data && e.response.data.message;
+        yield call(failCallback, error);
       }
   }
 
@@ -133,7 +135,6 @@ export const reducer = persistReducer(
       const {data} = yield call(getCompanies, page);
       if(data){
         yield put(actions.companiesSuccess(data));
-        //yield put(actions.companiesFail())
       }else{
         yield put(actions.companiesFail())
       }

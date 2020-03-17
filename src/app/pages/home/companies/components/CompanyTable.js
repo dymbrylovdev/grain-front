@@ -14,6 +14,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import Footer from "../../../../components/ui/Table/TableFooter";
 import TopTableCell from "../../../../components/ui/Table/TopTableCell";
 import { PortletHeaderTitle } from "../../../../../app/partials/content/Portlet";
+import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 
 function CompanyTable({
   intl,
@@ -43,23 +44,25 @@ function CompanyTable({
                 <FormattedMessage id="COMPANY.TABLE.SHORT_NAME" />
               </TopTableCell>
               <TopTableCell>
+                <FormattedMessage id="COMPANY.TABLE.FULL_NAME" />
+              </TopTableCell>
+              <TopTableCell>
                 <FormattedMessage id="COMPANY.TABLE.INN" />
               </TopTableCell>
               <TopTableCell>
                 <FormattedMessage id="COMPANY.TABLE.CONTACTS" />
               </TopTableCell>
-              {!forSearch && (
-                <TopTableCell>
-                  <FormattedMessage id="COMPANY.TABLE.ACTIONS" />
-                </TopTableCell>
-              )}
+              <TopTableCell>
+                <FormattedMessage id="COMPANY.TABLE.ACTIONS" />
+              </TopTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {companies.map(company => (
-              <TableRow key={company.id} hover={forSearch} onClick={ () => handleChoose(company)}>
+              <TableRow key={company.id}>
                 {!forSearch && <TableCell>{company.id}</TableCell>}
                 <TableCell>{company.short_name}</TableCell>
+                <TableCell>{company.full_name}</TableCell>
                 <TableCell>{company.inn}</TableCell>
                 <TableCell>
                   <div>
@@ -68,15 +71,19 @@ function CompanyTable({
                     {company.email && <div>{company.email}</div>}
                   </div>
                 </TableCell>
-                {!forSearch && (
-                  <TableCell>
+                <TableCell>
+                  {forSearch ? (
+                    <ButtonWithLoader onPress={() => handleChoose(company)}>
+                      {intl.formatMessage({ id: "COMPANY.TABLE.BUTTON.CHOOSE" })}
+                    </ButtonWithLoader>
+                  ) : (
                     <Link to={`/company/edit/${company.id}`}>
                       <IconButton size="medium" color="primary">
                         <EditIcon />
                       </IconButton>
                     </Link>
-                  </TableCell>
-                )}
+                  )}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

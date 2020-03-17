@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import { injectIntl } from "react-intl";
@@ -9,11 +9,13 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/picker
 
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
+import { searchCompanies } from "../../../../crud/companies.crud";
+import CompanySearchDialog from "./CompanySearchDialog";
 
 const getInitialValues = company => ({
   short_name: company.short_name || "",
   full_name: company.full_name || "",
-  registration_at: company.registration_at || null,
+  registration_at: company.registration_at ? new Date(company.registration_at) : null,
   inn: company.inn || "",
   ogrn: company.ogrn || "",
   kpp: company.kpp || "",
@@ -33,6 +35,39 @@ const getInitialValues = company => ({
 
 function CompanyForm({ intl, classes, company, submitAction, companyId }) {
   const formRef = useRef();
+  const [companies, setCompanies] = useState([]);
+  const [currentCompany, setCurrentCompany] = useState(company);
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [searchStatus, setSearchStatus] = useState({});
+
+  const searchAction = useCallback((values, successCallback, emptyCallback, failCallback) => {
+    searchCompanies(values)
+      .then(({ data }) => {
+        if (data && data.data) {
+          const searchCompanies = data.data;
+          setCompanies(searchCompanies);
+          if (searchCompanies.length > 0) {
+            successCallback(searchCompanies);
+          } else {
+            emptyCallback();
+          }
+        } else {
+          failCallback();
+        }
+      })
+      .catch(() => failCallback());
+  }, []);
+
+  const closeDialog = useCallback(() => {
+    setDialogOpen(false);
+  }, []);
+  const chooseAction = useCallback(company => {
+    setCurrentCompany(company);
+    setDialogOpen(false);
+  }, []);
+  useEffect(() => {
+    formRef.current.resetForm({ values: getInitialValues(currentCompany) });
+  }, [currentCompany]);
 
   useEffect(() => {
     formRef.current.resetForm({ values: getInitialValues(company) });
@@ -41,12 +76,22 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
   const schema = Yup.object().shape({
     email1: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
     email2: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
-    short_name: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-    //registration_at: Yup.date().max(new Date()).oneOf([null]),
+    short_name: Yup.string().required(
+      intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
+    ),
+    inn: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
   });
 
   return (
     <Paper className={classes.container}>
+      <CompanySearchDialog
+        classes={classes}
+        companies={companies}
+        isOpen={isDialogOpen}
+        handleClose={closeDialog}
+        chooseAction={chooseAction}
+        title={intl.formatMessage({ id: "COMPANY.CHOOSE.TITLE" })}
+      />
       <Formik
         autoComplete="off"
         initialValues={getInitialValues(company)}
@@ -75,6 +120,62 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 console.log("submit ");
               }}
             >
+              <TextField
+                type="text"
+                label={intl.formatMessage({
+                  id: "COMPANY.FORM.INN",
+                })}
+                margin="normal"
+                name="inn"
+                value={values.inn}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.inn && errors.inn}
+                error={Boolean(touched.inn && errors.inn)}
+              />
+
+              <StatusAlert status={searchStatus} />
+
+              <div className={classes.buttonContainer}>
+                <ButtonWithLoader
+                  loading={searchStatus && searchStatus.loading}
+                  onPress={() => {
+                    const params = { inn: values.inn };
+                    setSearchStatus({
+                      loading: true,
+                    });
+                    const successCallback = companies => {
+                      if (companies.length === 1) {
+                        const company = companies[0];
+                        chooseAction(company);
+                      } else {
+                        setDialogOpen(true);
+                      }
+                      setSearchStatus({
+                        loading: false,
+                      });
+                    };
+                    const failCallback = () => {
+                      setSearchStatus({
+                        loading: false,
+                        error: true,
+                        message: intl.formatMessage({ id: "COMPANY.STATUS.SEARCH_ERROR" }),
+                      });
+                    };
+                    const emptyCallback = () => {
+                      setSearchStatus({
+                        loading: false,
+                        message: intl.formatMessage({ id: "COMPANY.STATUS.NO_FOUND" }),
+                      });
+                    };
+                    searchAction(params, successCallback, emptyCallback, failCallback);
+                  }}
+                  disabled={(!values.inn || values.inn === "") || (searchStatus && searchStatus.loading)}
+                >
+                  {intl.formatMessage({ id: "COMPANY.SEARCH.BUTTON.FOCUS" })}
+                </ButtonWithLoader>
+              </div>
 
               <TextField
                 type="text"
@@ -113,31 +214,21 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                     id: "COMPANY.FORM.DATE",
                   })}
                   value={values.registration_at}
-                  onChange={date=>{
-                      setFieldValue("registration_at", date)                    
+                  onChange={date => {
+                    setFieldValue("registration_at", date);
                   }}
                   KeyboardButtonProps={{
                     "aria-label": "change date",
                   }}
                   inputVariant="outlined"
                   autoOk
-                  maxDateMessage={intl.formatMessage({id: "COMPANY.FORM.VALIDATION.MAX_DATA"})}
-                  invalidDateMessage={intl.formatMessage({id: "COMPANY.FORM.VALIDATION.WRONG_DATA"})}
+                  maxDateMessage={intl.formatMessage({ id: "COMPANY.FORM.VALIDATION.MAX_DATA" })}
+                  invalidDateMessage={intl.formatMessage({
+                    id: "COMPANY.FORM.VALIDATION.WRONG_DATA",
+                  })}
                   disableFuture
                 />
               </MuiPickersUtilsProvider>
-              <TextField
-                type="text"
-                label={intl.formatMessage({
-                  id: "COMPANY.FORM.INN",
-                })}
-                margin="normal"
-                name="inn"
-                value={values.inn}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange}
-              />
               <TextField
                 type="text"
                 label={intl.formatMessage({

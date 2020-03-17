@@ -1,9 +1,8 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { injectIntl } from "react-intl";
-import { Formik, Form } from "formik";
-import { TextField, Box, IconButton } from "@material-ui/core";
+import { Formik } from "formik";
+import { TextField, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import DeleteIcon from "@material-ui/icons/Delete";
 
 import { searchCompanies } from "../../../../crud/companies.crud";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
@@ -25,7 +24,6 @@ const innerStyles = makeStyles(theme => ({
 }));
 
 const getInitialValues = company => ({
-  name: company && company.short_name,
   short_name: "",
   inn: "",
 });
@@ -98,7 +96,8 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
             const failCallback = () => {
               setStatus({
                 loading: false,
-                error: intl.formatMessage({ id: "COMPANY.STATUS.SEARCH_ERROR" }),
+                error: true,
+                message: intl.formatMessage({ id: "COMPANY.STATUS.SEARCH_ERROR" })
               });
             };
             const emptyCallback = () => {
@@ -164,7 +163,7 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
                 <ButtonWithLoader
                   onPress={handleSubmit}
                   loading={status && status.loading}
-                  disabled={isSearchEmpty(values)}
+                  disabled={isSearchEmpty(values)|| (status && status.loading)}
                 >
                   {intl.formatMessage({ id: "COMPANY.SEARCH.BUTTON" })}
                 </ButtonWithLoader>

@@ -160,7 +160,7 @@ function* passwordRequestedSaga({payload: {email, successCallback, failCallback 
       yield call(failCallback);
     }
   }catch(e){
-    const error = e && e.response && e.response.data && e.response.data.message;;
+    const error = e && e.response && e.response.data && e.response.data.message;
     yield call(failCallback, error);
   }
 }

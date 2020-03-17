@@ -77,7 +77,8 @@ function UserForm({
   useEffect(() => {
     user && user.id && formRef.current.resetForm({ values: getInitialValues(user) });
   }, [user]);
-
+  console.log("---user", user);
+  
   const setCompanyAction = useCallback(company=> {
     formRef.current.setFieldValue("company_id", company && company.id);
     formRef.current.setFieldValue("company_name", company && company.short_name);
