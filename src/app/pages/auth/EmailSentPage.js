@@ -20,7 +20,6 @@ function EmailSentPage({ intl, match: { url } }) {
           <h5>{intl.formatMessage({ id: "AUTH.EMAIL.DESCRIPTION" }, { name: email })}</h5>
         </div>
         <div className="kt-login__actions">
-          <div>{intl.formatMessage({ id: "AUTH.EMAIL.NO_SENT" })}</div>
           <Link to= "/auth/forgot-password">
             <button type="button" className="btn btn-secondary btn-elevate kt-login__btn-secondary">
               {intl.formatMessage({ id: "AUTH.BUTTON.BACK" })}
