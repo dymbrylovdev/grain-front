@@ -40,7 +40,7 @@ function PhoneBlock({ intl, company = {}, user = {}, classes }) {
       ) : (
         <div>
           {intl.formatMessage(
-            { id: "COMPANY.CONFIRM.EMAIL.NO_TEXT" },
+            { id: "COMPANY.CONFIRM.PHONE.NO_TEXT" },
             { name: company.short_name }
           )}
         </div>
