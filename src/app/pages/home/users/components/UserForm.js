@@ -254,9 +254,11 @@ function UserForm({
                       disabled={true}
                       className={innerClasses.companyText}
                     />
-                    <IconButton size={"medium"} onClick={() => setCompanyAction({ id: 0 })}>
-                      <DeleteIcon />
-                    </IconButton>
+                    {isEditable && (
+                      <IconButton size={"medium"} onClick={() => setCompanyAction({ id: 0 })}>
+                        <DeleteIcon />
+                      </IconButton>
+                    )}
                   </div>
                   <CompanyConfirmBlock
                     values={values}
@@ -279,11 +281,13 @@ function UserForm({
                   )}
                 </>
               )}
-              <CompanySearchForm
-                classes={classes}
-                company={user && user.company}
-                setCompanyAction={setCompanyAction}
-              />
+              {isEditable && (
+                <CompanySearchForm
+                  classes={classes}
+                  company={user && user.company}
+                  setCompanyAction={setCompanyAction}
+                />
+              )}
               <TextField
                 type="text"
                 label={intl.formatMessage({
