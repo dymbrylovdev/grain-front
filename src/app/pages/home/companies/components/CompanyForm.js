@@ -79,7 +79,9 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
     short_name: Yup.string().required(
       intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
     ),
-    inn: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+    inn: Yup.string()
+      .trim()
+      .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
   });
 
   return (
@@ -133,6 +135,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 onChange={handleChange}
                 helperText={touched.inn && errors.inn}
                 error={Boolean(touched.inn && errors.inn)}
+                disabled={searchStatus && searchStatus.loading}
               />
 
               <StatusAlert status={searchStatus} />
@@ -141,37 +144,40 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 <ButtonWithLoader
                   loading={searchStatus && searchStatus.loading}
                   onPress={() => {
-                    const params = { inn: values.inn };
-                    setSearchStatus({
-                      loading: true,
-                    });
-                    const successCallback = companies => {
-                      if (companies.length === 1) {
-                        const company = companies[0];
-                        chooseAction(company);
-                      } else {
-                        setDialogOpen(true);
-                      }
+                    const inn = values.inn && values.inn.trim();
+                    if (inn && inn !== "") {
+                      const params = { inn };
                       setSearchStatus({
-                        loading: false,
+                        loading: true,
                       });
-                    };
-                    const failCallback = () => {
-                      setSearchStatus({
-                        loading: false,
-                        error: true,
-                        message: intl.formatMessage({ id: "COMPANY.STATUS.SEARCH_ERROR" }),
-                      });
-                    };
-                    const emptyCallback = () => {
-                      setSearchStatus({
-                        loading: false,
-                        message: intl.formatMessage({ id: "COMPANY.STATUS.NO_FOUND" }),
-                      });
-                    };
-                    searchAction(params, successCallback, emptyCallback, failCallback);
+                      const successCallback = companies => {
+                        if (companies.length === 1) {
+                          const company = companies[0];
+                          chooseAction(company);
+                        } else {
+                          setDialogOpen(true);
+                        }
+                        setSearchStatus({
+                          loading: false,
+                        });
+                      };
+                      const failCallback = () => {
+                        setSearchStatus({
+                          loading: false,
+                          error: true,
+                          message: intl.formatMessage({ id: "COMPANY.STATUS.SEARCH_ERROR" }),
+                        });
+                      };
+                      const emptyCallback = () => {
+                        setSearchStatus({
+                          loading: false,
+                          message: intl.formatMessage({ id: "COMPANY.STATUS.NO_FOUND" }),
+                        });
+                      };
+                      searchAction(params, successCallback, emptyCallback, failCallback);
+                    }
                   }}
-                  disabled={(!values.inn || values.inn === "") || (searchStatus && searchStatus.loading)}
+                  disabled={searchStatus && searchStatus.loading}
                 >
                   {intl.formatMessage({ id: "COMPANY.SEARCH.BUTTON.FOCUS" })}
                 </ButtonWithLoader>
@@ -190,6 +196,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 onChange={handleChange}
                 helperText={touched.short_name && errors.short_name}
                 error={Boolean(touched.short_name && errors.short_name)}
+                disabled={searchStatus && searchStatus.loading}
               />
               <TextField
                 type="text"
@@ -202,6 +209,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
@@ -227,6 +235,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                     id: "COMPANY.FORM.VALIDATION.WRONG_DATA",
                   })}
                   disableFuture
+                  disabled={searchStatus && searchStatus.loading}
                 />
               </MuiPickersUtilsProvider>
               <TextField
@@ -240,6 +249,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
               <TextField
                 type="text"
@@ -252,6 +262,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
               <TextField
                 type="text"
@@ -264,6 +275,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
               <TextField
                 type="text"
@@ -276,6 +288,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
               <TextField
                 type="text"
@@ -288,6 +301,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
 
               <TextField
@@ -301,6 +315,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
               <TextField
                 type="text"
@@ -313,6 +328,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
               <TextField
                 type="text"
@@ -325,6 +341,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
 
               <TextField
@@ -338,6 +355,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
 
               <TextField
@@ -351,6 +369,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
 
               <TextField
@@ -366,6 +385,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 onChange={handleChange}
                 helperText={touched.email1 && errors.email1}
                 error={Boolean(touched.email1 && errors.email1)}
+                disabled={searchStatus && searchStatus.loading}
               />
               <TextField
                 type="text"
@@ -380,6 +400,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 onChange={handleChange}
                 helperText={touched.email2 && errors.email2}
                 error={Boolean(touched.email2 && errors.email2)}
+                disabled={searchStatus && searchStatus.loading}
               />
 
               <TextField
@@ -393,6 +414,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
 
               <TextField
@@ -406,10 +428,15 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
+                disabled={searchStatus && searchStatus.loading}
               />
               <StatusAlert status={status} />
               <div className={classes.buttonContainer}>
-                <ButtonWithLoader onPress={handleSubmit} loading={status && status.loading}>
+                <ButtonWithLoader
+                  onPress={handleSubmit}
+                  loading={status && status.loading}
+                  disabled={searchStatus && searchStatus.loading}
+                >
                   {intl.formatMessage({ id: "PROFILE.BUTTON.SAVE" })}
                 </ButtonWithLoader>
               </div>
