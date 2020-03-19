@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { TextField, MenuItem, Paper, IconButton } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useSelector, shallowEqual } from "react-redux";
@@ -13,14 +14,16 @@ import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import CompanySearchForm from "../../companies/components/CompanySearchForm";
 import CompanyConfirmBlock from "../../companies/components/CompanyConfirmBlock";
 
-
 const innerStyles = makeStyles(theme => ({
   companyContainer: {
     flexDirection: "row",
     display: "flex",
   },
   companyText: {
-      flex: 1,
+    flex: 1,
+  },
+  buttonConfirm: {
+    paddingBottom: theme.spacing(2),
   },
 }));
 
@@ -40,6 +43,14 @@ const getInitialValues = user => ({
   company_name: user.company && user.company.short_name,
   company_id: user.company && user.company.id,
 });
+
+const isNonConfirm = values => {
+  return (
+    !values.company_confirmed_by_email ||
+    !values.company_confirmed_by_phone ||
+    !values.company_confirmed_by_payment
+  );
+};
 const admin = {
   value: "Администратор",
   id: "ROLE_ADMIN",
@@ -67,7 +78,8 @@ function UserForm({
   isCreate,
   intl,
   isEditable,
-  byAdmin
+  byAdmin,
+  emptyConfirm,
 }) {
   const formRef = useRef();
   const innerClasses = innerStyles();
@@ -77,14 +89,12 @@ function UserForm({
   useEffect(() => {
     user && user.id && formRef.current.resetForm({ values: getInitialValues(user) });
   }, [user]);
-  console.log("---user", user);
-  
-  const setCompanyAction = useCallback(company=> {
+  const setCompanyAction = useCallback(company => {
     formRef.current.setFieldValue("company_id", company && company.id);
     formRef.current.setFieldValue("company_name", company && company.short_name);
     formRef.current.setFieldValue("company_confirmed_by_email", false);
     formRef.current.setFieldValue("company_confirmed_by_phone", false);
-    formRef.current.setFieldValue("company_confirmed_by_payment", false); 
+    formRef.current.setFieldValue("company_confirmed_by_payment", false);
   }, []);
 
   const schema = Yup.object().shape({
@@ -129,7 +139,6 @@ function UserForm({
           } else {
             delete values.location;
           }
-          console.log("---values", values);
           submitAction(values, setStatus, setSubmitting);
         }}
         innerRef={formRef}
@@ -228,28 +237,46 @@ function UserForm({
                 error={Boolean(touched.fio && errors.fio)}
                 disabled={!isEditable}
               />
-                 {values.company_name && (
-                   <>
-                <div className={innerClasses.companyContainer}>
-                  <TextField
-                    type="text"
-                    label={intl.formatMessage({
-                      id: "PROFILE.INPUT.COMPANY",
-                    })}
-                    margin="normal"
-                    name="company_name"
-                    value={values.company_name}
-                    variant="outlined"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    disabled={true}
-                    className={innerClasses.companyText}
+              {values.company_name && (
+                <>
+                  <div className={innerClasses.companyContainer}>
+                    <TextField
+                      type="text"
+                      label={intl.formatMessage({
+                        id: "PROFILE.INPUT.COMPANY",
+                      })}
+                      margin="normal"
+                      name="company_name"
+                      value={values.company_name}
+                      variant="outlined"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      disabled={true}
+                      className={innerClasses.companyText}
+                    />
+                    <IconButton size={"medium"} onClick={() => setCompanyAction({ id: 0 })}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </div>
+                  <CompanyConfirmBlock
+                    values={values}
+                    handleChange={handleChange}
+                    disabled={!byAdmin}
                   />
-                  <IconButton size={"medium"} onClick={() => setCompanyAction({id: 0})}>
-                    <DeleteIcon />
-                  </IconButton>
-                </div>
-                <CompanyConfirmBlock values={values} handleChange={handleChange} disabled={!byAdmin}/>
+                  {isNonConfirm(values) && isEditable && !byAdmin && !isCreate && (
+                    <div className={innerClasses.buttonConfirm}>
+                      <Link
+                        to={`/company/confirm/${values.company_id}`}
+                        onClick={() => {
+                          emptyConfirm();
+                        }}
+                      >
+                        <ButtonWithLoader>
+                          {intl.formatMessage({ id: "COMPANY.CONFIRM.BUTTON" })}
+                        </ButtonWithLoader>
+                      </Link>
+                    </div>
+                  )}
                 </>
               )}
               <CompanySearchForm

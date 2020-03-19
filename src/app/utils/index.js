@@ -92,3 +92,5 @@ export const getQueryString = (values = {}) => {
   });
   return queryParams;
 };
+
+export const getResponseMessage =  e => (e && e.response && e.response.data && e.response.data.message);

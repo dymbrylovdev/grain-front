@@ -26,16 +26,6 @@ export function setupAxios(axios, store) {
     },
     err => Promise.reject(err)
   );
-  axios.interceptors.response.use(
-    response => {
-      console.log(response.config.url, response);
-      return response;
-    },
-    error => {
-      console.log("---error", error && error.response);
-      return Promise.reject(error);
-    }
-  );
 }
 
 /*  removeStorage: removes a key from localStorage and its sibling expiracy key

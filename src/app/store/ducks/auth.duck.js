@@ -25,6 +25,7 @@ export const actionTypes = {
 
   EditUser: "[EditMyUser] Action",
   EditUserSuccess: "[EditMyUserSuccess] Action",
+  MergeUser: "[MergeUser] Action",
 
   GetUser: "[GetUser] Action",
   UserSuccess: "[GetUser] Success",
@@ -62,8 +63,12 @@ export const reducer = persistReducer(
 
       case actionTypes.EditUserSuccess: {
         const { user } = action.payload;
-
         return { ...state, user };
+      }
+
+      case actionTypes.MergeUser: {
+        const { params } = action.payload;
+        return { ...state, user: {...state.user, ...params}}
       }
 
       case actionTypes.GetUser: {
@@ -121,6 +126,7 @@ export const actions = {
     payload: { successCallback, failCallback, params },
   }),
   editUserSuccess: user => ({ type: actionTypes.EditUserSuccess, payload: { user } }),
+  mergeUser: params => ({type: actionTypes.MergeUser, payload: {params}})
 };
 
 function* getUserSaga() {

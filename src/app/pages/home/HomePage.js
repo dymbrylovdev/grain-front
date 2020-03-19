@@ -7,7 +7,7 @@ import { useSelector, shallowEqual, connect } from "react-redux";
 import { ProfilePage, UserListPage, CreateUserPage, EditUserPage } from "./users";
 import { BidsListPage, BidCreatePage, MyBidsListPage, AllBidsPage } from "./bids";
 import { CropsListPage, CropPage } from "./crops";
-import { CompanyPage, CompaniesListPage } from "./companies";
+import { CompanyPage, CompaniesListPage, CompanyConfirmPage } from "./companies";
 import * as builder from "../../../_metronic/ducks/builder";
 import * as crops from "../../store/ducks/crops.duck";
 import * as users from "../../store/ducks/users.duck";
@@ -56,6 +56,7 @@ function HomePage({ setMenuConfig, getCrops, getStatuses }) {
         <Route path="/company/create" exact component={CompanyPage}/>
         <Route path="/company/edit/:companyId" exact component={CompanyPage}/>
         <Route path="/companyList" component={CompaniesListPage}/>
+        <Route path="/company/confirm/:companyId" component={CompanyConfirmPage}/>
         
       </Switch>
     </Suspense>

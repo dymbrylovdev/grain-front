@@ -6,7 +6,7 @@ import { Row, Col } from "react-bootstrap";
 
 const innerStyles = makeStyles(theme => ({
   container: {
-    padding: theme.spacing(2),
+    paddingBottom: theme.spacing(1),
   },
   title: {
       fontSize: 14,
