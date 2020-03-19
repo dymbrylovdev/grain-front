@@ -146,7 +146,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                   onPress={() => {
                     const inn = values.inn && values.inn.trim();
                     if (inn && inn !== "") {
-                      const params = { inn };
+                      const params = { inn, add_from_kontur: 0 };
                       setSearchStatus({
                         loading: true,
                       });
@@ -435,7 +435,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 <ButtonWithLoader
                   onPress={handleSubmit}
                   loading={status && status.loading}
-                  disabled={searchStatus && searchStatus.loading}
+                  disabled={(searchStatus && searchStatus.loading) || (status && status.loading)}
                 >
                   {intl.formatMessage({ id: "PROFILE.BUTTON.SAVE" })}
                 </ButtonWithLoader>
