@@ -77,7 +77,8 @@ export default function AuthPage() {
                 <Route path="/auth/login" component={Login} />
                 <Route path="/auth/registration" component={Registration} />
                 <Route path="/auth/forgot-password" component={ForgotPassword} />
-                <Route path="/auth/email-sent" component={EmailSentPage}/>
+                <Route path="/auth/email-sent/forgot" component={EmailSentPage}/>
+                <Route path="/auth/email-sent/registration" component={EmailSentPage}/>
                 <Route path="/auth/change_password/:code" component={ChangePassword}/>
                 <Redirect from="/auth" exact={true} to="/auth/login" />
                 <Redirect to="/auth/login" />

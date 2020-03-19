@@ -9,6 +9,9 @@ function EmailSentPage({ intl, match: { url } }) {
     shallowEqual
   );
 
+  const by =
+  (url.indexOf("registration") !== -1 && "registration") ||
+  (url.indexOf("forgot") !== -1 && "forgot");
 
   return (
     <div className="kt-login__body">
@@ -20,7 +23,7 @@ function EmailSentPage({ intl, match: { url } }) {
           <h5>{intl.formatMessage({ id: "AUTH.EMAIL.DESCRIPTION" }, { name: email })}</h5>
         </div>
         <div className="kt-login__actions">
-          <Link to= "/auth/forgot-password">
+          <Link to= {`${by === "forgot" ? "/auth/forgot-password" : "/auth" }`}>
             <button type="button" className="btn btn-secondary btn-elevate kt-login__btn-secondary">
               {intl.formatMessage({ id: "AUTH.BUTTON.BACK" })}
             </button>
