@@ -5,7 +5,7 @@ import CompanyTable from "./CompanyTable";
 
 function CompanySearchDialog({ title, isOpen, handleClose, chooseAction, companies, classes }) {
   return (
-    <Dialog maxWidth={"sm"} fullWidth open={isOpen} onClose={handleClose}>
+    <Dialog maxWidth={"md"} fullWidth open={isOpen} onClose={handleClose}>
       {title && <DialogTitle>{title}</DialogTitle>}
       <DialogContent>
         <CompanyTable companies={companies} chooseAction={chooseAction} classes={classes} forSearch />
