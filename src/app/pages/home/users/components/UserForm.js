@@ -201,7 +201,9 @@ function UserForm({
                       </MenuItem>
                     ))}
                   </TextField>
-                  <TextField
+                </div>
+              )}
+               <TextField
                     type="text"
                     label={intl.formatMessage({
                       id: "PROFILE.INPUT.LOGIN",
@@ -216,10 +218,8 @@ function UserForm({
                     helperText={touched.login && errors.login}
                     error={Boolean(touched.login && errors.login)}
                     autoComplete="off"
-                    disabled={!isEditable}
+                    disabled={(!isEdit && !isCreate) || !isEditable}
                   />
-                </div>
-              )}
 
               <TextField
                 type="text"
