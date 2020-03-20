@@ -203,23 +203,23 @@ function UserForm({
                   </TextField>
                 </div>
               )}
-               <TextField
-                    type="text"
-                    label={intl.formatMessage({
-                      id: "PROFILE.INPUT.LOGIN",
-                    })}
-                    margin="normal"
-                    className={classes.textField}
-                    name="login"
-                    value={values.login}
-                    variant="outlined"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    helperText={touched.login && errors.login}
-                    error={Boolean(touched.login && errors.login)}
-                    autoComplete="off"
-                    disabled={(!isEdit && !isCreate) || !isEditable}
-                  />
+              <TextField
+                type="text"
+                label={intl.formatMessage({
+                  id: "PROFILE.INPUT.LOGIN",
+                })}
+                margin="normal"
+                className={classes.textField}
+                name="login"
+                value={values.login}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.login && errors.login}
+                error={Boolean(touched.login && errors.login)}
+                autoComplete="off"
+                disabled={(!isEdit && !isCreate) || !isEditable}
+              />
 
               <TextField
                 type="text"
@@ -270,7 +270,13 @@ function UserForm({
                       <Link
                         to={`/company/confirm/${values.company_id}`}
                         onClick={() => {
-                          emptyConfirm();
+                          if (
+                            !values.company_confirmed_by_email &&
+                            !values.company_confirmed_by_phone &&
+                            !values.company_confirmed_by_payment
+                          ) {
+                            emptyConfirm();
+                          }
                         }}
                       >
                         <ButtonWithLoader>
