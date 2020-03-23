@@ -8,8 +8,8 @@ stages:
   - deploy
 
 variables:
-  TEST_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME_DEV:$CI_BUILD_REF_NAME
-  RELEASE_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME_DEV:latest
+  TEST_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME:$CI_BUILD_REF_NAME
+  RELEASE_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME:latest
 
 before_script:
   - docker info
@@ -28,13 +28,13 @@ release-web:
     - docker tag $TEST_IMAGE $RELEASE_IMAGE
     - docker push $RELEASE_IMAGE
   only:
-    - "1.2"
+    - "master"
 
 deploy:
   stage: deploy
   image: gitlab/dind:latest
   only:
-    - "1.2"
+    - "master"
   environment: production
   services:
     - docker:dind
