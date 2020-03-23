@@ -1,68 +1,92 @@
 import { persistReducer } from "redux-persist";
-import { put, takeLatest } from "redux-saga/effects";
+import { put, takeLatest, call } from "redux-saga/effects";
 import storage from "redux-persist/lib/storage";
-import { getUsers, getStatuses, getUserById } from "../../crud/users.crud";
+import { getUsers, getStatuses, getUserById, deleteUser, createUser, editUser } from "../../crud/users.crud";
 
 export const actionTypes = {
+
   CreateUser: "[CreateUser] Action",
+
   EditUser: "[EditUser] Action",
-  DeleteUser: "[DeleteUser] Action",
-  SetUsers: "[GetUsers] Action",
-  SetStatuses: "[GetStatuses] Action",
+
+  GetStatuses: "[GetStatuses] Action",
+  StatusesSuccess: "[GetStatuses] Success",
+  StatusesFail: "[GetStatuses] Fail",
+  
 
   GetUserById:  "[GetUserById] Action",
   UserByIdSuccess: "[GetUserById] Success",
   UserByIdFail: "[GetUserById] Fail",
 
+  GetUsers: "[GetUsers] Action",
+  UsersSuccess: "[GetUsers] Success",
+  UsersFail: "[GetUsers] Fail",
+
+  DeleteUser: "[DeleteUser] Action",
+  DeleteUserSuccess: "[DeleteUser] Success",
+  DeleteUserFail: "[DeleteUser] Fail",
+
+  ClearUsersErros: "[ClearUserErrors] Action",
+
 
 };
 
 const initialDocState = {
-  page: 1,
   users: [],
   statuses: [],
   roles: [],
-  currentUser: {
-
-  }
+  currentUser: {},
+  errors: {},
 };
 
 export const reducer = persistReducer(
   { storage, key: "demo1-users" },
   (state = initialDocState, action) => {
     switch (action.type) {
-      case actionTypes.EditUser: {
-        const { data } = action.payload;
-        const { users } = state;
-        const replaceUsers = users.map(item => (item.id === data.id ? data : item));
-        return { ...state, users: replaceUsers };
-      }
-      case actionTypes.DeleteUser: {
-        const { id } = action.payload;
-        const { users } = state;
-        const replaceUsers = users.filter(item => item.id !== id);
-        return { ...state, users: replaceUsers };
-      }
       case actionTypes.SetUsers: {
         const { data } = action.payload;
         const { page, per_page, total, total_pages, data: users } = data;
         return { ...state, users, page, per_page, total, total_pages };
       }
-      case actionTypes.SetStatuses: {
+      case actionTypes.StatusesSuccess: {
         const { data } = action.payload;
         return { ...state, statuses: data };
       }
 
       case actionTypes.GetUserById: {
-        return { ...state, currentUser: { loading: true}}
+        return { ...state, currentUser: { loading: true}, errors: {}}
       }
       case actionTypes.UserByIdFail: {
-        return { ...state, currentUser: { loading: false}}
+        return { ...state, currentUser: { loading: false}, errors: {current: true}}
       }
       case actionTypes.UserByIdSuccess: {
         const { data } = action.payload
         return { ...state, currentUser: data }
       }
+
+      case actionTypes.GetUsers: {
+        const { params: {page} } = action.payload;
+        return { ...state, users: { loading: true, page}, errors: { }}
+      }
+      case actionTypes.UsersSuccess: {
+        const { data } = action.payload;
+        return { ...state, users: data};
+      }
+      case actionTypes.UsersFail: {
+        return { ...state,  errors: {  getUser: true}, users: { ...state.users, loading: false} }
+      }
+
+      case actionTypes.DeleteUser: {
+        return { ...state, errors: {}}
+      }
+      case actionTypes.DeleteUserFail: {
+        return { ...state, errors: {  delete: true}}
+      }
+
+      case actionTypes.ClearUsersErros: {
+        return { ...state, errors: {}};
+      }
+
       default:
         return state;
     }
@@ -70,15 +94,26 @@ export const reducer = persistReducer(
 );
 
 export const actions = {
-  createUser: () => ({ type: actionTypes.CreateUser }),
-  editUserSuccess: data => ({ type: actionTypes.EditUser, payload: { data } }),
-  setUsers: data => ({ type: actionTypes.SetUsers, payload: { data } }),
-  setStatuses: data => ({ type: actionTypes.SetStatuses, payload: { data } }),
-  deleteUserSuccess: id => ({ type: actionTypes.DeleteUser, payload: { id } }),
+  createUser: (params, successCallback, failCallback) => ({ type: actionTypes.CreateUser, payload: {params, successCallback, failCallback} }),
+
+  editUser: (id, params, successCallback, failCallback) => ({ type: actionTypes.EditUser, payload: { id, params, successCallback, failCallback } }),
+
+  getStatuses: () => ({type: actionTypes.GetStatuses}),
+  statusesSuccess: data => ({ type: actionTypes.StatusesSuccess, payload: { data } }),
 
   getUserById: id => ({type: actionTypes.GetUserById, payload: {id}}),
   userByIdSuccess: data => ({type: actionTypes.UserByIdSuccess, payload: {data}}),
   UserByIdFail: () => ({type: actionTypes.UserByIdFail}),
+
+  getUsers: params => ({type: actionTypes.GetUsers, payload: {params}}),
+  usersSuccess: data => ({ type: actionTypes.UsersSuccess, payload: {data}}),
+  usersFail: error => ({ type: actionTypes.UsersFail, payload: {error}}),
+
+  deleteUser: (id, params) => ({ type: actionTypes.DeleteUser, payload: { id, params } }),
+  deleteUserFail: error => ({ type: actionTypes.DeleteUserFail, payload: { error }}),
+
+  clearErrors: () => ({type: actionTypes.ClearUsersErros}),
+
 };
 
 function* getUserByIdSaga({payload:{id}}){
@@ -87,21 +122,69 @@ function* getUserByIdSaga({payload:{id}}){
         if(data && data.data){
           yield put(actions.userByIdSuccess(data.data));
         }
-    }catch{
+    }catch(e){
         yield put(actions.UserByIdFail());
     }
 }
 
-export function* saga() {
-  yield takeLatest(actionTypes.CreateUser, function* userRequested() {
-    const { data } = yield getUsers({ page: 1 });
-    yield put(actions.setUsers(data));
-  });
-  yield takeLatest(actionTypes.SetUsers, function* userStatuses() {
-    const { data } = yield getStatuses();
-    if (data && data.data) {
-      yield put(actions.setStatuses(data.data));
+function* getUsersSaga({payload: {params}}){
+  try {
+    const {data} = yield getUsers(params);
+    if (data){
+      yield put(actions.usersSuccess(data));
     }
-  });
+  }catch(e){
+      yield put(actions.usersFail());
+  }
+}
+
+function* deleteUserSaga({payload: {id, params}}){
+  try {
+    const { data } = yield deleteUser(id);
+    yield put(actions.getUsers(params))
+  } catch(e){
+    yield put(actions.deleteUserFail());
+  }
+}
+
+function* getStatusesSaga(){
+  try {
+    const {data} = yield getStatuses();
+    if( data && data.data){
+      yield put(actions.statusesSuccess(data.data));
+    }
+  }catch(e){
+    
+}
+}
+
+function* createUserSaga({payload: {params, successCallback, failCallback}}){
+  try {
+    const { data } = yield createUser(params);
+    if(data){
+      yield call(successCallback);
+    }
+  }catch{
+    yield call(failCallback);
+  }
+}
+
+function* editUserSaga({ payload: { id, params, successCallback, failCallback } }) {
+  try {
+    const { data } = yield editUser(id, params);
+    if (data && data.data) {
+      yield call(successCallback);
+    }
+  } catch {
+    yield call(failCallback);
+  }
+}
+
+export function* saga() {
   yield takeLatest(actionTypes.GetUserById, getUserByIdSaga);
+  yield takeLatest(actionTypes.GetUsers, getUsersSaga);
+  yield takeLatest(actionTypes.DeleteUser, deleteUserSaga);
+  yield takeLatest(actionTypes.GetStatuses, getStatusesSaga);
+  yield takeLatest(actionTypes.CreateUser, createUserSaga);
+  yield takeLatest(actionTypes.EditUser, editUserSaga);
 }

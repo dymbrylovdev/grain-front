@@ -4,13 +4,14 @@ import { injectIntl, FormattedMessage } from "react-intl";
 import { Paper } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import useStyles from "../styles";
+
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
-import * as ads from "../../../store/ducks/ads.duck";
-import { deleteAd } from "../../../crud/ads.crud";
+import * as bids from "../../../store/ducks/bids.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import BidTable from "./components/BidTable";
+import { ErrorDialog, LoadError } from "../../../components/ui/Erros";
 
-function MyBidsListPage({ intl, deleteAdSuccess, getMyAds }) {
+function MyBidsListPage({ intl, getMyBids, deleteBid, clearErrors }) {
   const classes = useStyles();
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
@@ -20,28 +21,25 @@ function MyBidsListPage({ intl, deleteAdSuccess, getMyAds }) {
   };
   const deleteBidAction = () => {
     setAlertOpen(false);
-    deleteAd(deleteBidId)
-      .then(() => {
-        deleteAdSuccess(deleteBidId);
-        getMyAdsAction();
-      })
-      .catch(error => {});
+    deleteBid(deleteBidId, bids.bidTypes.MyBids);
   };
-  const getMyAdsAction = () => {
-    getMyAds();
+  const getMyBidsAction = () => {
+    getMyBids();
   };
   useEffect(() => {
-    getMyAdsAction();
+    getMyBidsAction();
   }, []);
-  const { myBids, user, loading } = useSelector(
-    ({ ads, auth }) => ({
-      myBids: ads.myAds && ads.myAds.list,
+  const { myBids, user, loading, errors } = useSelector(
+    ({ bids, auth }) => ({
+      myBids: bids.myBids && bids.myBids.list,
       user: auth.user,
-      loading: ads.myAds && ads.myAds.loading,
+      loading: bids.myBids && bids.myBids.loading,
+      errors: bids.errors || {},
     }),
     shallowEqual
   );
   if (loading) return <Preloader />;
+  if (errors.my) return <LoadError handleClick={() => getMyBidsAction()} />;
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog
@@ -58,6 +56,7 @@ function MyBidsListPage({ intl, deleteAdSuccess, getMyAds }) {
         handleClose={() => setAlertOpen(false)}
         handleAgree={() => deleteBidAction()}
       />
+      <ErrorDialog isOpen={errors.delete || false} text={intl.formatMessage({id:"ERROR.BID.DELETE"})} handleClose={() => clearErrors()}/>
       <Link to="/bid/create">
         <div className={classes.topMargin}>
           <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
@@ -78,4 +77,4 @@ function MyBidsListPage({ intl, deleteAdSuccess, getMyAds }) {
   );
 }
 
-export default injectIntl(connect(null, ads.actions)(MyBidsListPage));
+export default injectIntl(connect(null, bids.actions)(MyBidsListPage));

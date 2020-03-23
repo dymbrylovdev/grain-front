@@ -11,7 +11,6 @@ import { makeStyles } from "@material-ui/styles";
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
-import { getCropParams } from "../../../../crud/crops.crud";
 import LocationBlock from "../components/location/LocationBlock";
 
 const getInitialValues = (bid, crop) => {
@@ -88,6 +87,7 @@ function BidForm({
   isEditable,
   fetchLocations,
   clearLocations,
+  getCropParams,
   openLocation,
   user,
 }) {
@@ -100,24 +100,23 @@ function BidForm({
   const { locations, isLoadingLocations } = useSelector(state => state.locations);
   const [selectedLocation, setSelectedLocation] = useState(null);
 
-  const filterCrops = crops.filter(item => item.id === bid.crop_id);
+  const filterCrops = crops && crops.filter(item => item.id === bid.crop_id);
   const currentCrop = filterCrops && filterCrops.length > 0 ? filterCrops[0] : null;
-
+  
   const getCropParamsAction = cropId => {
     setCropParamLoading(true);
     setCropParams([]);
-    getCropParams(cropId)
-      .then(({ data }) => {
-        setCropParamLoading(false);
-        if (data && data.data) {
-          setCropParams(data.data);
-        }
-      })
-      .catch(error => {
-        setCropParamLoading(false);
-        setCropParams([]);
-      });
+    const successCallback = (data) => {
+      setCropParamLoading(false);
+      setCropParams(data || []);
+    }
+    const failCallback = () => {
+      setCropParamLoading(false);
+      setCropParams([]);
+    }
+    getCropParams(cropId, successCallback, failCallback)
   };
+
   useEffect(() => {
     if (currentCrop) {
       getCropParamsAction(currentCrop.id);
@@ -129,12 +128,13 @@ function BidForm({
     if (!bid || !bid.id) {
       setCropParams([]);
     }
-  }, [bidId]); // eslint-disable-line
+  }, [bidId, currentCrop]); // eslint-disable-line
 
   const toUserPath =
     user.id === (bid.vendor && bid.vendor.id)
       ? "/user/profile"
       : `/user/edit/${bid.vendor && bid.vendor.id}`;
+
   return (
     <Paper className={classes.container}>
       <Formik
@@ -297,7 +297,7 @@ function BidForm({
                   error={Boolean(touched.crop && errors.crop)}
                   disabled={!isEditable}
                 >
-                  {crops.map(option => (
+                  {crops && crops.map(option => (
                     <MenuItem key={option.id} value={option}>
                       {option.name}
                     </MenuItem>
@@ -320,6 +320,7 @@ function BidForm({
                     InputProps={{
                       inputComponent: NumberFormatCustom,
                     }}
+                    key={cropParam.id}
                   />
                 ) : (
                   <TextField
@@ -333,6 +334,7 @@ function BidForm({
                     onBlur={handleBlur}
                     onChange={handleChange}
                     disabled={!isEditable}
+                    key={cropParam.id}
                   >
                     {cropParam.enum.map(option => (
                       <MenuItem key={option} value={option}>
@@ -360,7 +362,7 @@ function BidForm({
               {bid.vendor && (
                 <Link to={toUserPath}>
                   <div className={innerClasses.authorText}>
-                    {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.company ||
+                    {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.fio ||
                       bid.vendor.login}`}
                   </div>
                 </Link>

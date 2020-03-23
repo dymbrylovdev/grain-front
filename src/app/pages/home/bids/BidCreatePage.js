@@ -5,36 +5,39 @@ import { Redirect } from "react-router-dom";
 
 import BidForm from "./components/BidForm";
 import useStyles from "../styles";
-import { setUser } from "../../../crud/auth.crud";
-import { createAd, editAd } from "../../../crud/ads.crud";
 import userSelector from "../../../store/selectors/user";
 import bidSelector from "../../../store/selectors/bid";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
-import * as ads from "../../../store/ducks/ads.duck";
+import * as bids from "../../../store/ducks/bids.duck";
 import * as locations from "../../../store/ducks/locations.duck";
 import * as auth from "../../../store/ducks/auth.duck";
+import * as crops from "../../../store/ducks/crops.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import LocationDialog from "./components/location/LocationDialog";
+import { LoadError } from "../../../components/ui/Erros";
+
 
 function BidCreatePage({
   intl,
-  createAdSuccess,
   match,
-  editAdSuccess,
+  editBid,
+  createBid,
   fetchLocationsRequest,
   clearLocations,
-  getAdById,
-  fulfillUser,
+  getBidById,
+  editUser,
+  getCropParams,
 }) {
   const classes = useStyles();
   const [isRedirectTo, setRedirect] = useState(-1);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { crops, user, preloading } = useSelector(
-    ({ crops, auth, ads }) => ({
-      crops: crops.crops,
+  const { crops, user, preloading, errors } = useSelector(
+    ({ crops: {crops}, auth, bids: {currentBid, errors} }) => ({
+      crops: (crops && crops.data) || [],
       user: auth.user,
-      preloading: ads.currentAd && ads.currentAd.loading,
+      preloading: currentBid && currentBid.loading,
+      errors: errors || {}
     }),
     shallowEqual
   );
@@ -44,8 +47,7 @@ function BidCreatePage({
     (match.url.indexOf("fromAdmin") !== -1 && "fromAdmin");
   const vendorId = match.params.vendorId;
   const bidId = match.params.bidId;
-  const { user: vendor } = userSelector(vendorId);
-  const { bid } = bidSelector(bidId, by);
+  const { bid } =  bidSelector(bidId, by);
   const isEditable = match.url.indexOf("view") === -1;
   const vendor_id = vendorId || (bid && bid.vendor && bid.vendor.id) || user.id;
   const isNoModerate = !vendorId && !bidId && user.is_vendor && user.status === "На модерации";
@@ -54,30 +56,28 @@ function BidCreatePage({
   const createAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
-      createAd({ ...values, vendor_id: Number(vendor_id) })
-        .then(({ data }) => {
-          setLoading(false);
-          if (data.data) {
-            setStatus({
-              error: false,
-              message: intl.formatMessage({
-                id: "BID.STATUS.CREATE_SUCCESS",
-              }),
-            });
-            createAdSuccess();
-            setRedirect(values.crop && values.crop.id);
-          }
-        })
-        .catch(error => {
-          setLoading(false);
-          setSubmitting(false);
-          setStatus({
-            error: true,
-            message: intl.formatMessage({
-              id: "BID.STATUS.ERROR",
-            }),
-          });
+      const params = { ...values, vendor_id: Number(vendor_id) }
+      const successCallback = () => {
+        setLoading(false);
+        setStatus({
+          error: false,
+          message: intl.formatMessage({
+            id: "BID.STATUS.CREATE_SUCCESS",
+          }),
         });
+        setRedirect(values.crop && values.crop.id);
+      }
+      const failCallback = () => {
+        setLoading(false);
+        setSubmitting(false);
+        setStatus({
+          error: true,
+          message: intl.formatMessage({
+            id: "BID.STATUS.ERROR",
+          }),
+        });
+      }
+      createBid(params, successCallback, failCallback)
     }, 1000);
   };
 
@@ -85,67 +85,63 @@ function BidCreatePage({
     console.log("editValues", values);
     setTimeout(() => {
       setLoading(true);
-      editAd(bidId, {
+      const params = {
         ...values,
         vendor_id,
         price: Number.parseInt(values.price),
         volume: Number.parseInt(values.volume),
-      })
-        .then(({ data }) => {
-          setLoading(false);
-          if (data.data) {
-            setStatus({
-              error: false,
-              message: intl.formatMessage({
-                id: "BID.STATUS.EDIT_SUCCESS",
-              }),
-            });
-            editAdSuccess(data.data);
-          }
-        })
-        .catch(error => {
-          setLoading(false);
-          setSubmitting(false);
-          setStatus({
-            error: true,
-            message: intl.formatMessage({
-              id: "BID.STATUS.ERROR",
-            }),
-          });
+      };
+      const successCallback = () =>{ 
+        setLoading(false);
+        setStatus({
+        error: false,
+        message: intl.formatMessage({
+          id: "BID.STATUS.EDIT_SUCCESS",
+        }),
+      });}
+      const failCallback = () => {
+        setLoading(false);
+        setSubmitting(false);
+        setStatus({
+          error: true,
+          message: intl.formatMessage({
+            id: "BID.STATUS.ERROR",
+          }),
         });
+      }
+      editBid(bidId, params, successCallback, failCallback);
     }, 1000);
   };
 
   useEffect(() => {
-    getAdById(bidId, bid);
+    getBidById(bidId, bid);
   }, [user, bidId]);// eslint-disable-line
 
   const locationSubmit = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setStatus({ loading: true });
-      setUser(values)
-        .then(({ data }) => {
-          setStatus({ loading: false });
-          if (data.data) {
-            setLocationModalOpen(false);
-            fulfillUser(data.data);
-          }
-        })
-        .catch(error => {
-          console.log("loginError", error);
-          setStatus({
-            error: true,
-            message: intl.formatMessage({
-              id: "LOCATION.STATUS.ERROR",
-            }),
-          });
-          setSubmitting(false);
+      const params = values;
+      const successCallback = () => {
+        setStatus({ loading: false });
+        setLocationModalOpen(false);
+      }
+      const failCallback = () => {
+        setStatus({
+          error: true,
+          message: intl.formatMessage({
+            id: "LOCATION.STATUS.ERROR",
+          }),
         });
+        setSubmitting(false);
+      }
+      editUser(params,successCallback, failCallback);
     }, 1000);
   };
 
   const submitAction = bid && bid.id ? editAction : createAction;
+
   let title = null;
+  const { user: vendor } = userSelector(vendorId);
   if (vendorId) title = `${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [${vendor.login}]`;
   if (!isEditable) {
     title = intl.formatMessage({ id: "BID.TITLE.VIEW" });
@@ -154,6 +150,7 @@ function BidCreatePage({
   }
 
   if (preloading) return <Preloader />;
+  if (errors.get) return <LoadError handleClick={() => getBidById(bidId, bid)} />;
   if ( isRedirectTo && isRedirectTo !== -1) return <Redirect to={`/bidsList/${isRedirectTo}`}/>;
   return (
     <>
@@ -179,6 +176,7 @@ function BidCreatePage({
           isEditable={isEditable}
           fetchLocations={fetchLocationsRequest}
           clearLocations={clearLocations}
+          getCropParams={getCropParams}
           openLocation={() => setLocationModalOpen(true)}
           user={user}
           bidId={bidId}
@@ -189,5 +187,5 @@ function BidCreatePage({
 }
 
 export default injectIntl(
-  connect(null, { ...ads.actions, ...locations.actions, ...auth.actions })(BidCreatePage)
+  connect(null, { ...bids.actions, ...locations.actions, ...auth.actions, ...crops.actions })(BidCreatePage)
 );

@@ -16,58 +16,71 @@ import {
 import { IconButton } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import * as users from "../../../store/ducks/users.duck";
-import { getUsers, deleteUser } from "../../../crud/users.crud";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import Footer from "../../../components/ui/Table/TableFooter";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
+import Preloader from "../../../components/ui/Loaders/Preloader";
+import { LoadError, ErrorDialog } from "../../../components/ui/Erros";
 
 import useStyles from "./styles";
 
-function UserListPage({ setUsers, deleteUserSuccess, intl }) {
-  const { users, page, total, per_page } = useSelector(
-    ({ users }) => ({
-      users: users.users,
-      page: users.page,
-      total: users.total,
-      per_page: users.per_page,
-    }),
+function UserListPage({ intl, getUsers, deleteUser, clearErrors }) {
+  const { users, page, per_page, total, loading, errors } = useSelector(
+    ({ users: { users, errors } }) => {
+      if (!users)
+        return {
+          users: [],
+          page: 1,
+          per_page: 20,
+          total: 0,
+          loading: false,
+          errors: {},
+        };
+      return {
+        users: users.data,
+        page: users.page,
+        per_page: users.per_page,
+        total: users.total,
+        loading: users.loading,
+        errors: errors || {},
+      };
+    },
     shallowEqual
   );
+
   const [deleteUserId, setDeleteUserId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
+
   const handleDeleteDialiog = id => {
     setDeleteUserId(id);
     setAlertOpen(true);
   };
-  const getUsersAction = page =>
-    getUsers({ page })
-      .then(({ data }) => {
-        if (data && data) {
-          setUsers(data);
-        }
-      })
-      .catch(error => {
-        alert(error);
-      });
+
+  const getUsersAction = page => getUsers({ page });
+
   const handleChangePage = (event, page) => {
     getUsersAction(page + 1);
   };
+
   useEffect(() => {
     getUsersAction(1);
   }, []);
+
   const deleteUserAction = () => {
     setAlertOpen(false);
-    deleteUser(deleteUserId)
-      .then(() => {
-        deleteUserSuccess(deleteUserId);
-      })
-      .catch(error => {
-        console.log("deleteUserError", error);
-      });
+    deleteUser(deleteUserId, { page });
   };
   const classes = useStyles();
+
+  if (loading) return <Preloader />;
+  if (errors.getUser) return <LoadError handleClick={() => getUsersAction(page)} />;
   return (
     <Paper className={classes.tableContainer}>
+      <ErrorDialog
+        text={intl.formatMessage({ id: "ERROR.USER.DELETE" })}
+        isOpen={errors.delete || false}
+        handleClose={() => clearErrors()}
+      />
       <AlertDialog
         isOpen={isAlertOpen}
         text={intl.formatMessage({
@@ -102,9 +115,6 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
               <FormattedMessage id="USERLIST.TABLE.NAME" />
             </TopTableCell>
             <TopTableCell>
-              <FormattedMessage id="USERLIST.TABLE.COMPANY" />
-            </TopTableCell>
-            <TopTableCell>
               <FormattedMessage id="USERLIST.TABLE.STATUS" />
             </TopTableCell>
             <TopTableCell>
@@ -113,56 +123,61 @@ function UserListPage({ setUsers, deleteUserSuccess, intl }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {users &&  users.map && users.map(user => (
-            <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>{user.fio}</TableCell>
-              <TableCell>{user.company}</TableCell>
-              <TableCell>{user.status}</TableCell>
-              <TableCell>
-                {" "}
-                {
-                  <div className={classes.actionButtonsContainer}>
-                    <Tooltip
-                      title={intl.formatMessage({
-                        id: "USERLIST.TOOLTIP.EDIT",
-                      })}
-                    >
-                      <Link to={`/user/edit/${user.id}`}>
-                        <IconButton size="medium" color="primary">
-                          <EditIcon />
-                        </IconButton>
-                      </Link>
-                    </Tooltip>
-
-                    {(user.is_admin || user.is_vendor) && (
+          {users &&
+            users.map &&
+            users.map(user => (
+              <TableRow key={user.id}>
+                <TableCell>{user.id}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.fio}</TableCell>
+                <TableCell>{user.status}</TableCell>
+                <TableCell>
+                  {" "}
+                  {
+                    <div className={classes.actionButtonsContainer}>
                       <Tooltip
                         title={intl.formatMessage({
-                          id: "USERLIST.TOOLTIP.CREATE_BID",
+                          id: "USERLIST.TOOLTIP.EDIT",
                         })}
                       >
-                        <Link to={`/bid/create/${user.id}`}>
+                        <Link to={`/user/edit/${user.id}`}>
                           <IconButton size="medium" color="primary">
-                            <AddIcon />
+                            <EditIcon />
                           </IconButton>
                         </Link>
                       </Tooltip>
-                    )}
-                    <Tooltip
-                      title={intl.formatMessage({
-                        id: "USERLIST.TOOLTIP.DELETE",
-                      })}
-                    >
-                      <IconButton size="medium" color="secondary" onClick={() => handleDeleteDialiog(user.id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                }
-              </TableCell>
-            </TableRow>
-          ))}
+
+                      {(user.is_admin || user.is_vendor) && (
+                        <Tooltip
+                          title={intl.formatMessage({
+                            id: "USERLIST.TOOLTIP.CREATE_BID",
+                          })}
+                        >
+                          <Link to={`/bid/create/${user.id}`}>
+                            <IconButton size="medium" color="primary">
+                              <AddIcon />
+                            </IconButton>
+                          </Link>
+                        </Tooltip>
+                      )}
+                      <Tooltip
+                        title={intl.formatMessage({
+                          id: "USERLIST.TOOLTIP.DELETE",
+                        })}
+                      >
+                        <IconButton
+                          size="medium"
+                          color="secondary"
+                          onClick={() => handleDeleteDialiog(user.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </div>
+                  }
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
         <Footer
           page={page - 1}

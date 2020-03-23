@@ -9,7 +9,7 @@ export function createUser (data){
     return axios.post(USER_CREATE_URL, data);
 } 
 
-export function editUser(data, id){
+export function editUser(id, data){
     return axios.put(`${USER_URL}${id}/edit`, data);
 }
 

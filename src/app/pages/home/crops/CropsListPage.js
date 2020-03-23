@@ -10,39 +10,37 @@ import {
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { getCrops } from "../../../crud/crops.crud";
 import { Link } from "react-router-dom";
 import { connect, useSelector, shallowEqual } from "react-redux";
 import * as crops from "../../../store/ducks/crops.duck";
 import * as builder from "../../../../_metronic/ducks/builder";
-import TopTableCell from "../../../components/ui/Table/TopTableCell";
-import getMenuConfig from "../../../router/MenuConfig";
-import useStyles from "../styles";
 
-function CropsListPage({ setMenuConfig, setCrops, match }) {
-  const { crops, user } = useSelector(
-    ({ crops, auth }) => ({
-      crops: crops.crops,
+import TopTableCell from "../../../components/ui/Table/TopTableCell";
+import useStyles from "../styles";
+import Preloader from "../../../components/ui/Loaders/Preloader";
+import { LoadError } from "../../../components/ui/Erros";
+
+
+function CropsListPage({ setMenuConfig, getCrops, match }) {
+  const { crops, user, loading, errors } = useSelector(
+    ({ crops: {crops, errors}, auth }) => ({
+      crops: (crops && crops.data) || [],
       user: auth.user,
+      loading: crops && crops.loading,
+      errors: errors || {}
     }),
     shallowEqual
   );
-  const [menuConfig] = useState(getMenuConfig(crops, user));
   const classes = useStyles();
 
   const getCropsAction = () => {
-    getCrops()
-      .then(({ data }) => {
-        if (data && data.data) {
-          setCrops(data.data, user);
-        }
-      })
-      .catch(error => {});
+    getCrops(user);
   };
   useEffect(() => {
-    setMenuConfig(menuConfig);
     getCropsAction();
   }, []);
+  if (loading) return <Preloader />;
+  if (errors.crops) return <LoadError handleClick={() => getCropsAction()} />;
   return (
     <Paper className={classes.tableContainer}>
       <div className={classes.buttonContainer}>
@@ -67,7 +65,7 @@ function CropsListPage({ setMenuConfig, setCrops, match }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {crops.map(crop => (
+          {crops && crops.map(crop => (
             <TableRow key={crop.id}>
               <TableCell>{crop.id}</TableCell>
               <TableCell>{crop.name}</TableCell>

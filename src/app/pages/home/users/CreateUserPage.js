@@ -3,47 +3,46 @@ import { connect } from "react-redux";
 import { injectIntl } from "react-intl";
 import { Redirect } from "react-router-dom";
 import * as locations from "../../../store/ducks/locations.duck";
-import { createUser } from "../../../crud/users.crud";
-import useStyles from "./styles";
+import * as users from "../../../store/ducks/users.duck";
+import useStyles from "../styles";
 import UserForm from "./components/UserForm";
 
-function CreateUserPage({ intl, fetchLocationsRequest, clearLocations }) {
+function CreateUserPage({ intl, fetchLocationsRequest, clearLocations, createUser }) {
+
   const [loading, setLoading] = useState(false);
   const [backRedirect, setBackRedirect] = useState(false);
   const user = {};
   const classes = useStyles();
+
   const submitAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
       const roleId = values.role.id;
-      const valuesWithRole = { ...values, roles: [roleId] };
-      createUser(valuesWithRole)
-        .then(({ data }) => {
-          setLoading(false);
-          if (data.data) {
-            setStatus({
-              error: false,
-              message: intl.formatMessage({
-                id: "PROFILE.STATUS.SUCCESS",
-              }),
-            });
-            setBackRedirect(true);
-          }
-        })
-        .catch(error => {
-          console.log("loginError", error);
-
-          setLoading(false);
-          setSubmitting(false);
-          setStatus({
-            error: true,
-            message: intl.formatMessage({
-              id: "PROFILE.STATUS.ERROR",
-            }),
-          });
+      const params = { ...values, roles: [roleId] };
+      const successCallback = () => {
+        setLoading(false);
+        setStatus({
+          error: false,
+          message: intl.formatMessage({
+            id: "PROFILE.STATUS.SUCCESS",
+          }),
         });
+        setBackRedirect(true);
+      }
+      const failCallback =() => {
+        setLoading(false);
+        setSubmitting(false);
+        setStatus({
+          error: true,
+          message: intl.formatMessage({
+            id: "PROFILE.STATUS.ERROR",
+          }),
+        });
+      }
+      createUser(params,successCallback,failCallback)
     }, 1000);
   };
+  
   if (backRedirect) {
     return <Redirect to="/userList" />;
   }
@@ -57,8 +56,9 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearLocations }) {
       submitAction={submitAction}
       isCreate={true}
       isEditable={true}
+      byAdmin={true}
     />
   );
 }
 
-export default injectIntl(connect(null, locations.actions)(CreateUserPage));
+export default injectIntl(connect(null, {...locations.actions, ...users.actions})(CreateUserPage));
