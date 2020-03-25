@@ -106,7 +106,7 @@
   "LOCATION.STATUS.ERROR": "Ошибка сохранения локации",
 
   "BIDSLIST.TABLE.ID": "Id",
-  "BIDSLIST.TABLE.COST": "Цена (руб. за тонну)",
+  "BIDSLIST.TABLE.COST": "Цена на складе у поставщика",
   "BIDSLIST.TABLE.VOLUME": "Объем (в тоннах)",
   "BIDSLIST.TABLE.DESCRIPTION": "Комментарий",
   "BIDSLIST.TABLE.ACTIONS": "Действия",
@@ -124,6 +124,7 @@
   "BIDLIST.NO_BIDS": "Заявок не найдено",
   "BIDLIST.TITLE.NO_FULL": "Заявки с неполными данными",
 
+  "BID.BOTTOM.TEXT": "Цена в заявках указана за тонну.",
   "BID.LOCATION.TEXT": "Цена в заявках указана с учётом доставки до указанного места:",
   "BID.LOCATION.NO_TEXT": "Ваше местоположение не указано.",
   "BID.LOCATION.BUTTON": "Изменить",
