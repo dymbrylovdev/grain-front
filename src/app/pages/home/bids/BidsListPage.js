@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { connect, useSelector, shallowEqual } from "react-redux";
 import { Link } from "react-router-dom";
@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/styles";
 import * as auth from "../../../store/ducks/auth.duck";
 import * as bidsDuck from "../../../store/ducks/bids.duck";
 import * as crops from "../../../store/ducks/crops.duck";
+import * as prompter from "../../../store/ducks/prompter.duck";
 import useStyles from "../styles";
 import { filterForRequest, isFilterEmpty } from "../../../utils";
 
@@ -19,6 +20,7 @@ import LocationBlock from "./components/location/LocationBlock";
 import LocationDialog from "./components/location/LocationDialog";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
 import { ErrorDialog, LoadError } from "../../../components/ui/Erros";
+import Prompter from "../prompter/Prompter";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -55,6 +57,7 @@ function BidsListPage({
   deleteBid,
   clearErrors,
   getCropParams,
+  setActiveStep,
 }) {
   const innerClasses = useInnerStyles();
   const [cropLoading, setCropLoading] = useState(false);
@@ -65,13 +68,14 @@ function BidsListPage({
   let { cropId } = match.params;
   cropId = Number.parseInt(cropId);
 
-  const { bids, user, filter, loading, errors } = useSelector(
-    ({ bids, auth, crops }) => ({
+  const { bids, user, filter, loading, errors, activeStep } = useSelector(
+    ({ bids, auth, crops, prompter }) => ({
       bids: bids.bestBids,
       user: auth.user,
       filter: (crops.filters && crops.filters[cropId]) || { crop_id: cropId },
       loading: bids.bestBids && bids.bestBids.loading,
       errors: bids.errors || {},
+      activeStep: prompter.activeStep,
     }),
     shallowEqual
   );
@@ -86,11 +90,14 @@ function BidsListPage({
   };
 
   const classes = useStyles();
-  const getBidsAction = (filter, enumParams, numberParams) => {
-    const requestFilter = filterForRequest(filter, enumParams, numberParams);
-    console.log("filterForRequest", requestFilter);
-    getBestBids({ filter: filter.crop_id ? requestFilter : {} });
-  };
+  const getBidsAction = useCallback(
+    (filter, enumParams, numberParams) => {
+      const requestFilter = filterForRequest(filter, enumParams, numberParams);
+      console.log("filterForRequest", requestFilter);
+      getBestBids({ filter: filter.crop_id ? requestFilter : {} });
+    },
+    [getBestBids]
+  );
 
   useEffect(() => {
     setFilterForCrop(filter, cropId);
@@ -105,7 +112,11 @@ function BidsListPage({
     };
     const failCallback = () => setCropLoading(false);
     getCropParams(cropId, successCallback, failCallback);
-  }, [cropId, filter, user]);
+  }, [cropId, filter, getBidsAction, getCropParams, setFilterForCrop, user]);
+
+  useEffect(() => {
+    if (activeStep < 2) setActiveStep(2);
+  }, [activeStep, setActiveStep]);
 
   const deleteBidAction = () => {
     setAlertOpen(false);
@@ -127,7 +138,7 @@ function BidsListPage({
       const successCallback = () => {
         setStatus({ loading: false });
         setLocationModalOpen(false);
-      }
+      };
       const failCallback = () => {
         setStatus({
           error: true,
@@ -136,8 +147,8 @@ function BidsListPage({
           }),
         });
         setSubmitting(false);
-      }
-      editUser(params,successCallback, failCallback);
+      };
+      editUser(params, successCallback, failCallback);
     }, 1000);
   };
 
@@ -152,86 +163,96 @@ function BidsListPage({
   if (errors.bests)
     return <LoadError handleClick={() => getBidsAction(filter, enumParams, numberParams)} />;
   return (
-    <Paper className={classes.tableContainer}>
-      <AlertDialog
-        isOpen={isAlertOpen}
-        text={intl.formatMessage({
-          id: "BIDSLIST.DIALOGS.DELETE_TEXT",
-        })}
-        okText={intl.formatMessage({
-          id: "USERLIST.DIALOGS.AGREE_TEXT",
-        })}
-        cancelText={intl.formatMessage({
-          id: "USERLIST.DIALOGS.CANCEL_TEXT",
-        })}
-        handleClose={() => setAlertOpen(false)}
-        handleAgree={() => deleteBidAction()}
-      />
-      <ErrorDialog
-        isOpen={errors.delete || false}
-        text={intl.formatMessage({ id: "ERROR.BID.DELETE" })}
-        handleClose={() => clearErrors()}
-      />
-      <FilterModal
-        isOpen={filterModalOpen}
-        handleClose={() => setFilterModalOpen(false)}
-        classes={classes}
-        handleSubmit={filterSubmit}
-        cropId={cropId}
-        enumParams={enumParams}
-        numberParams={numberParams}
-      />
-      <LocationDialog
-        isOpen={locationModalOpen}
-        handleClose={() => setLocationModalOpen(false)}
-        submitAction={locationSubmit}
-        user={user}
-        classes={classes}
-      />
-      <div className={innerClasses.topContainer}>
-        <div className={innerClasses.leftButtonBlock}>
-          {!user.is_buyer && (
-            <Link to="/bid/create">
-              <ButtonWithLoader>
-                <FormattedMessage id="BIDSLIST.BUTTON.CREATE_BID" />
-              </ButtonWithLoader>
-            </Link>
-          )}
-        </div>
+    <>
+      <Prompter />
+      <Paper className={classes.tableContainer}>
+        <AlertDialog
+          isOpen={isAlertOpen}
+          text={intl.formatMessage({
+            id: "BIDSLIST.DIALOGS.DELETE_TEXT",
+          })}
+          okText={intl.formatMessage({
+            id: "USERLIST.DIALOGS.AGREE_TEXT",
+          })}
+          cancelText={intl.formatMessage({
+            id: "USERLIST.DIALOGS.CANCEL_TEXT",
+          })}
+          handleClose={() => setAlertOpen(false)}
+          handleAgree={() => deleteBidAction()}
+        />
+        <ErrorDialog
+          isOpen={errors.delete || false}
+          text={intl.formatMessage({ id: "ERROR.BID.DELETE" })}
+          handleClose={() => clearErrors()}
+        />
+        <FilterModal
+          isOpen={filterModalOpen}
+          handleClose={() => setFilterModalOpen(false)}
+          classes={classes}
+          handleSubmit={filterSubmit}
+          cropId={cropId}
+          enumParams={enumParams}
+          numberParams={numberParams}
+        />
+        <LocationDialog
+          isOpen={locationModalOpen}
+          handleClose={() => setLocationModalOpen(false)}
+          submitAction={locationSubmit}
+          user={user}
+          classes={classes}
+        />
+        <div className={innerClasses.topContainer}>
+          <div className={innerClasses.leftButtonBlock}>
+            {!user.is_buyer && (
+              <Link to="/bid/create">
+                <ButtonWithLoader>
+                  <FormattedMessage id="BIDSLIST.BUTTON.CREATE_BID" />
+                </ButtonWithLoader>
+              </Link>
+            )}
+          </div>
 
-        <div className={innerClasses.filterText}>{filterTitle}</div>
-        <IconButton onClick={() => setFilterModalOpen(true)}>
-          <CustomIcon path={filterIconPath} />
-        </IconButton>
-      </div>
-      <BidTable
-        classes={classes}
-        bids={equalBids}
-        isHaveRules={isHaveRules}
-        handleDeleteDialiog={handleDeleteDialiog}
-        user={user}
-        title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
-      />
-      <div className={innerClasses.topSpaceContainer}>
+          <div className={innerClasses.filterText}>{filterTitle}</div>
+          <IconButton
+            onClick={() => {
+              setFilterModalOpen(true);
+              setActiveStep(4);
+            }}
+          >
+            <CustomIcon path={filterIconPath} />
+          </IconButton>
+        </div>
         <BidTable
           classes={classes}
-          bids={inequalBids}
+          bids={equalBids}
           isHaveRules={isHaveRules}
           handleDeleteDialiog={handleDeleteDialiog}
           user={user}
-          title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
+          title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
         />
-      </div>
-      <LocationBlock
-        handleClick={() => {
-          setLocationModalOpen(true);
-        }}
-        location={user.location && user.location.text}
-      />
-    </Paper>
+        <div className={innerClasses.topSpaceContainer}>
+          <BidTable
+            classes={classes}
+            bids={inequalBids}
+            isHaveRules={isHaveRules}
+            handleDeleteDialiog={handleDeleteDialiog}
+            user={user}
+            title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
+          />
+        </div>
+        <LocationBlock
+          handleClick={() => {
+            setLocationModalOpen(true);
+          }}
+          location={user.location && user.location.text}
+        />
+      </Paper>
+    </>
   );
 }
 
 export default injectIntl(
-  connect(null, { ...bidsDuck.actions, ...crops.actions, ...auth.actions })(BidsListPage)
+  connect(null, { ...bidsDuck.actions, ...crops.actions, ...auth.actions, ...prompter.actions })(
+    BidsListPage
+  )
 );

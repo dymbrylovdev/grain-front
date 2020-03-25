@@ -23,7 +23,7 @@ const getInitialValues = (bid, crop) => {
     pricePerKm: bid.price_delivery_per_km,
   };
   if (bid.parameter_values && bid.parameter_values.length > 0) {
-    bid.parameter_values.map(item => {
+    bid.parameter_values.forEach(item => {
       values[`parameter${item.parameter_id}`] = item.value;
     });
   }
@@ -102,19 +102,19 @@ function BidForm({
 
   const filterCrops = crops && crops.filter(item => item.id === bid.crop_id);
   const currentCrop = filterCrops && filterCrops.length > 0 ? filterCrops[0] : null;
-  
+
   const getCropParamsAction = cropId => {
     setCropParamLoading(true);
     setCropParams([]);
-    const successCallback = (data) => {
+    const successCallback = data => {
       setCropParamLoading(false);
       setCropParams(data || []);
-    }
+    };
     const failCallback = () => {
       setCropParamLoading(false);
       setCropParams([]);
-    }
-    getCropParams(cropId, successCallback, failCallback)
+    };
+    getCropParams(cropId, successCallback, failCallback);
   };
 
   useEffect(() => {
@@ -149,7 +149,7 @@ function BidForm({
         })}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
           const paramValues = [];
-          cropParams.map(param => {
+          cropParams.forEach(param => {
             const id = param.id;
             if (values[`parameter${id}`] && values[`parameter${id}`] !== "") {
               paramValues.push({ parameter_id: id, value: values[`parameter${id}`].toString() });
@@ -297,11 +297,12 @@ function BidForm({
                   error={Boolean(touched.crop && errors.crop)}
                   disabled={!isEditable}
                 >
-                  {crops && crops.map(option => (
-                    <MenuItem key={option.id} value={option}>
-                      {option.name}
-                    </MenuItem>
-                  ))}
+                  {crops &&
+                    crops.map(option => (
+                      <MenuItem key={option.id} value={option}>
+                        {option.name}
+                      </MenuItem>
+                    ))}
                 </TextField>
                 {isParamLoading && <CircularProgress className={classes.leftIcon} />}
               </div>

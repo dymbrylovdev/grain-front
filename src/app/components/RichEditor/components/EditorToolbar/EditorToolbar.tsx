@@ -1,27 +1,27 @@
-import React, { Fragment } from 'react';
-import clsx from 'clsx';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import { makeStyles } from '@material-ui/styles';
-import { Tooltip, Button } from '@material-ui/core';
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import CodeIcon from '@material-ui/icons/Code';
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
-import FormatItalicIcon from '@material-ui/icons/FormatItalic';
-import FormatBoldIcon from '@material-ui/icons/FormatBold';
-import FormatUnderlined from '@material-ui/icons/FormatUnderlined';
-import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
-import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
-import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
-import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
-import FormatAlignJustifyIcon from '@material-ui/icons/FormatAlignJustify';
+import React, { Fragment } from "react";
+import clsx from "clsx";
+import PerfectScrollbar from "react-perfect-scrollbar";
+import { makeStyles } from "@material-ui/styles";
+import { Tooltip, Button } from "@material-ui/core";
+import { fade } from "@material-ui/core/styles/colorManipulator";
+//import CodeIcon from '@material-ui/icons/Code';
+import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
+import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
+import FormatItalicIcon from "@material-ui/icons/FormatItalic";
+import FormatBoldIcon from "@material-ui/icons/FormatBold";
+import FormatUnderlined from "@material-ui/icons/FormatUnderlined";
+//import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
+//import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
+//import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
+//import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
+//import FormatAlignJustifyIcon from '@material-ui/icons/FormatAlignJustify';
 
 const useStyles1 = makeStyles((theme: any) => ({
   root: {},
   inner: {
     padding: theme.spacing(1),
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
 }));
 
@@ -32,7 +32,7 @@ const useStyles2 = makeStyles((theme: any) => ({
     height: 32,
     minWidth: 32,
     color: theme.palette.icon,
-    '& + &': {
+    "& + &": {
       marginLeft: theme.spacing(1),
     },
   },
@@ -44,19 +44,19 @@ const useStyles2 = makeStyles((theme: any) => ({
 
 const BLOCK_TYPES = [
   {
-    blockType: 'header-one',
-    tooltip: 'Heading 1',
-    text: 'H1',
+    blockType: "header-one",
+    tooltip: "Heading 1",
+    text: "H1",
   },
   {
-    blockType: 'header-two',
-    tooltip: 'Heading 2',
-    text: 'H2',
+    blockType: "header-two",
+    tooltip: "Heading 2",
+    text: "H2",
   },
   {
-    blockType: 'header-three',
-    tooltip: 'Heading 3',
-    text: 'H3',
+    blockType: "header-three",
+    tooltip: "Heading 3",
+    text: "H3",
   },
   // {
   //   blockType: 'header-four',
@@ -79,13 +79,13 @@ const BLOCK_TYPES = [
   //   icon: FormatQuoteIcon,
   // },
   {
-    blockType: 'unordered-list-item',
-    tooltip: 'Unordered list',
+    blockType: "unordered-list-item",
+    tooltip: "Unordered list",
     icon: FormatListBulletedIcon,
   },
   {
-    blockType: 'ordered-list-item',
-    tooltip: 'Ordered list',
+    blockType: "ordered-list-item",
+    tooltip: "Ordered list",
     icon: FormatListNumberedIcon,
   },
   // {
@@ -117,18 +117,18 @@ const BLOCK_TYPES = [
 
 const INLINE_STYLES = [
   {
-    inlineStyle: 'BOLD',
-    tooltip: 'Bold',
+    inlineStyle: "BOLD",
+    tooltip: "Bold",
     icon: FormatBoldIcon,
   },
   {
-    inlineStyle: 'ITALIC',
-    tooltip: 'Italic',
+    inlineStyle: "ITALIC",
+    tooltip: "Italic",
     icon: FormatItalicIcon,
   },
   {
-    inlineStyle: 'UNDERLINE',
-    tooltip: 'Underline',
+    inlineStyle: "UNDERLINE",
+    tooltip: "Underline",
     icon: FormatUnderlined,
   },
   // {
@@ -163,7 +163,7 @@ const BlockTypeButtons = (props: any) => {
   const handleClick = (event: any, blockType: any) => {
     event.preventDefault();
 
-    onToggle('blockType', blockType);
+    onToggle("blockType", blockType);
   };
 
   const selection = editorState.getSelection();
@@ -181,8 +181,8 @@ const BlockTypeButtons = (props: any) => {
       {BLOCK_TYPES.map(button => {
         let active = false;
 
-        if (['left', 'center', 'right', 'justify'].includes(button.blockType)) {
-          active = blockData.get('text-align') === button.blockType;
+        if (["left", "center", "right", "justify"].includes(button.blockType)) {
+          active = blockData.get("text-align") === button.blockType;
         } else {
           active = button.blockType === blockType;
         }
@@ -207,7 +207,7 @@ const InlineStyleButtons = (props: any) => {
 
   const handleClick = (event: any, inlineStyle: any) => {
     event.preventDefault();
-    onToggle('inlineStyle', inlineStyle);
+    onToggle("inlineStyle", inlineStyle);
   };
 
   const currentStyle = editorState.getCurrentInlineStyle();

@@ -1,9 +1,14 @@
 {
+  "ALL.BUTTONS.NEXT": "Далее",
+  "ALL.BUTTONS.PREV": "Назад",
+  "ALL.BUTTONS.FINISH": "Завершить",
+
   "MENU.GRAIN": "Рынок зерна",
   "MENU.USERS": "Пользователи",
   "MENU.SETTINGS": "Настройки",
   "MENU.DOCS": "Документы",
   "MENU.LOGOUT": "Выход",
+
   "SUBMENU.ADS": "Лучшие заявки",
   "SUBMENU.MY_BIDS": "Мои заявки",
   "SUBMENU.ALL_BIDS": "Все заявки",
@@ -18,8 +23,10 @@
   "SUBMENU.CATALOG.CREATE_CROP": "Добавить культуру",
   "SUBMENU.SYSTEM.SETTINGS": "Настройки системы",
   "SUBMENU.LEGAL": "Пользовательское соглашение",
+
   "START.WELCOME": "Добро пожаловать на Рынок Зерна",
   "START.DESCRIPTION": "Маркетплейс по продаже зерновых культур",
+
   "AUTH.INPUT.EMAIL": "Email",
   "AUTH.INPUT.LOGIN": "Логин",
   "AUTH.INPUT.FULLNAME": "Полное имя",
@@ -59,6 +66,7 @@
   "AUTH.PASSWORD.TITLE": "Введите новый пароль",
   "AUTH.PASSWORD.BUTTON": "Подтвердить",
   "AUTH.TERM.LOADING": "Загрузка...",
+
   "PROFILE.INPUT.FIO": "ФИО",
   "PROFILE.INPUT.LOCATION": "Точка отгрузки",
   "PROFILE.INPUT.EMAIL": "Email",
@@ -78,6 +86,7 @@
   "PROFILE.STATUS.ERROR": "Ошибка сохранения пользователя",
   "PROFILE.TITLE.EDIT": "Редактирование пользователя",
   "PROFILE.TITLE.VIEW": "Просмотр пользователя",
+
   "USERLIST.BUTTON.ADD_USER": "Добавить пользователя",
   "USERLIST.TABLE.ID": "Id",
   "USERLIST.TABLE.EMAIL": "Email",
@@ -91,7 +100,11 @@
   "USERLIST.TOOLTIP.EDIT": "Редактировать пользователя",
   "USERLIST.TOOLTIP.DELETE": "Удалить пользователя",
   "USERLIST.TOOLTIP.CREATE_BID": "Добавить заявку",
+
   "TABLE.FROM.LABEL": "из",
+
+  "LOCATION.STATUS.ERROR": "Ошибка сохранения локации",
+
   "BIDSLIST.TABLE.ID": "Id",
   "BIDSLIST.TABLE.COST": "Цена (руб. за тонну)",
   "BIDSLIST.TABLE.VOLUME": "Объем (в тоннах)",
@@ -107,13 +120,13 @@
   "BIDLIST.FILTER.STATUS.EMPTY": "Параметры фильтра заявок не заданы.",
   "BIDLIST.FILTER.STATUS.FULL": "Заданы параметры фильтрации. Вы можете просмотреть или изменить их по кнопке 'Настроить фильтр'",
   "BIDLIST.FILTER.BUTTON": "Настроить фильтр",
-  "BID.LOCATION.TEXT": "Цена в заявках указана с учётом доставки до указанного места:",
-  "BID.LOCATION.NO_TEXT": "Ваше местоположение не указано.",
-  "BID.LOCATION.BUTTON": "Изменить",
-  "LOCATION.STATUS.ERROR": "Ошибка сохранения локации",
   "BIDLIST.TITLE.BEST": "Лучшие заявки",
   "BIDLIST.NO_BIDS": "Заявок не найдено",
   "BIDLIST.TITLE.NO_FULL": "Заявки с неполными данными",
+
+  "BID.LOCATION.TEXT": "Цена в заявках указана с учётом доставки до указанного места:",
+  "BID.LOCATION.NO_TEXT": "Ваше местоположение не указано.",
+  "BID.LOCATION.BUTTON": "Изменить",
   "BID.STATUS.CREATE_SUCCESS": "Заявка успешно добавлена",
   "BID.STATUS.EDIT_SUCCESS": "Заявка успешно сохранена",
   "BID.STATUS.ERROR": "Ошибка добавления заявки",
@@ -125,12 +138,15 @@
   "BID.CALCULATOR.TITLE": "Калькулятор доставки:",
   "BID.CALCULATOR.FINAL_PRICE": "Цена с учётом доставки (руб.):    ",
   "BID.FORM.AUTHOR": "Автор заявки: ",
+
   "USERDOC.BUTTON.SAVE": "Сохранить",
   "USERDOC.BUTTON.CREATE": "Создать",
+
   "CROPSLIST.TABLE.ID": "Id",
   "CROPSLIST.TABLE.NAME": "Название",
   "CROPSLIST.TABLE.ACTIONS": "Действия",
   "CROPSLIST.BUTTON.CREATE": "Добавить культуру",
+
   "CROP.STATUS.CROP_CREATE": "Культура успешно сохранена",
   "CROP.STATUS.CROP_CREATE_ERROR": "Ошибка сохранения культуры",
   "CROP.STATUS.CROP_PARAM_CREATE": "Параметр успешно сохранен",
@@ -145,16 +161,19 @@
   "CROP.FORM.PARAM_SAVE": "Сохранить параметр",
   "CROP.FORM.PARAM_ADD": "Добавить параметр",
   "CROP.STATUS.ALARM": "На данный момент удаление культуры и параметров невозможно. Возможно изменение названия культуры и названий параметров культуры.",
+
   "FILTER.FORM.MAX_PRICE": "Макс. цена с учётом доставки",
   "FILTER.FORM.MAX_DESTINATION": "Максимальное расстояние",
   "FILTER.FORM.BUTTON.SUBMIT": "Применить фильтр",
   "FILTER.FORM.BUTTON.RESET": "Очистить фильтр",
   "FILTER.BUTTON.CLOSE": "Закрыть",
+
   "ERROR.LOAD.TITLE": "Ошибка загрузки данных",
   "ERROR.BUTTON.REPEAT": "Повторить попытку",
   "ERROR.USER.DELETE": "Ошибка удаления пользователя",
   "ERROR.DIALOG.TITLE": "Ошибка",
   "ERROR.BID.DELETE": "Ошибка удаления заявки",
+
   "COMPANY.EDIT.TITLE": "Редактирование компании",
   "COMPANY.CREATE.TITLE": "Добавление компании",
   "COMPANY.FORM.NAME": "Краткое название",
@@ -215,5 +234,17 @@
   "COMPANY.CONFIRM.BUTTON.SENT_CODE": "Отправить код",
   "COMPANY.CONFIRM.INPUT.CODE": "Код подтверждения",
   "COMPANY.CONFIRM.SUCCESS": "Связь успешно подтверждена.",
-  "COMPANY.CONFIRM.ERROR.SENT": "Ошибка отправки кода"
+  "COMPANY.CONFIRM.ERROR.SENT": "Ошибка отправки кода",
+
+  "PROMPTER.STEPPER.STEP0": "Профиль",
+  "PROMPTER.STEPPER.STEP1": "Выбор культуры",
+  "PROMPTER.STEPPER.STEP2": "Список заявок",
+  "PROMPTER.STEPPER.STEP3": "Фильтр",
+  "PROMPTER.STEPPER.STEP4": "Добавление заявки",
+  "PROMPTER.STEPPER.STEP_CONTENT0": "Заполните как можно больше информации о себе, чтобы ваши бизнес-партнёры понимали, с кем они работают. Укажите ваше имя, точку отгрузки / погрузки зерна, а также другую информацию.",
+  "PROMPTER.STEPPER.STEP_CONTENT1": "Выберите интересующую вас зерновую культуру, например \"Пшеницу\". Для этого в боковом меню откройте \"Рынок зерна — Лучшие заявки — Пшеница\"",
+  "PROMPTER.STEPPER.STEP_CONTENT2": "Здесь выводится 10 заявок на продажу с лучшими ценами по рынку. Цена указана за тонну с учётом доставки до вашей точки отгрузки.",
+  "PROMPTER.STEPPER.STEP_CONTENT3": " Чтобы подобрать заявки с оптимальными параметрами (класс, протеин, влажность и т. д.) нажмите на значок фильтра, введите значения параметров и нажмите \"Применить\".",
+  "PROMPTER.STEPPER.STEP_CONTENT4": "Чтобы продать зерно нажмите на кнопку \"Добавить заявку\" и укажите параметры вашего зерна, точку отгрузки и цену за тонну.",
+  "PROMPTER.STEPPER.STEP_CONTENT5": "Ознакомление с платформой \"Рынок зерна\" окончено. Приятной работы."
 }
