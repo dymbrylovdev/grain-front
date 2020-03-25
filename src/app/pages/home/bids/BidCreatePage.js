@@ -12,10 +12,11 @@ import * as bids from "../../../store/ducks/bids.duck";
 import * as locations from "../../../store/ducks/locations.duck";
 import * as auth from "../../../store/ducks/auth.duck";
 import * as crops from "../../../store/ducks/crops.duck";
+import * as prompter from "../../../store/ducks/prompter.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import LocationDialog from "./components/location/LocationDialog";
 import { LoadError } from "../../../components/ui/Erros";
-
+import Prompter from "../prompter/Prompter";
 
 function BidCreatePage({
   intl,
@@ -27,17 +28,18 @@ function BidCreatePage({
   getBidById,
   editUser,
   getCropParams,
+  setActiveStep,
 }) {
   const classes = useStyles();
   const [isRedirectTo, setRedirect] = useState(-1);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { crops, user, preloading, errors } = useSelector(
-    ({ crops: {crops}, auth, bids: {currentBid, errors} }) => ({
+    ({ crops: { crops }, auth, bids: { currentBid, errors } }) => ({
       crops: (crops && crops.data) || [],
       user: auth.user,
       preloading: currentBid && currentBid.loading,
-      errors: errors || {}
+      errors: errors || {},
     }),
     shallowEqual
   );
@@ -47,16 +49,15 @@ function BidCreatePage({
     (match.url.indexOf("fromAdmin") !== -1 && "fromAdmin");
   const vendorId = match.params.vendorId;
   const bidId = match.params.bidId;
-  const { bid } =  bidSelector(bidId, by);
+  const { bid } = bidSelector(bidId, by);
   const isEditable = match.url.indexOf("view") === -1;
   const vendor_id = vendorId || (bid && bid.vendor && bid.vendor.id) || user.id;
   const isNoModerate = !vendorId && !bidId && user.is_vendor && user.status === "На модерации";
 
-
   const createAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
       setLoading(true);
-      const params = { ...values, vendor_id: Number(vendor_id) }
+      const params = { ...values, vendor_id: Number(vendor_id) };
       const successCallback = () => {
         setLoading(false);
         setStatus({
@@ -66,7 +67,7 @@ function BidCreatePage({
           }),
         });
         setRedirect(values.crop && values.crop.id);
-      }
+      };
       const failCallback = () => {
         setLoading(false);
         setSubmitting(false);
@@ -76,8 +77,8 @@ function BidCreatePage({
             id: "BID.STATUS.ERROR",
           }),
         });
-      }
-      createBid(params, successCallback, failCallback)
+      };
+      createBid(params, successCallback, failCallback);
     }, 1000);
   };
 
@@ -91,14 +92,15 @@ function BidCreatePage({
         price: Number.parseInt(values.price),
         volume: Number.parseInt(values.volume),
       };
-      const successCallback = () =>{ 
+      const successCallback = () => {
         setLoading(false);
         setStatus({
-        error: false,
-        message: intl.formatMessage({
-          id: "BID.STATUS.EDIT_SUCCESS",
-        }),
-      });}
+          error: false,
+          message: intl.formatMessage({
+            id: "BID.STATUS.EDIT_SUCCESS",
+          }),
+        });
+      };
       const failCallback = () => {
         setLoading(false);
         setSubmitting(false);
@@ -108,14 +110,18 @@ function BidCreatePage({
             id: "BID.STATUS.ERROR",
           }),
         });
-      }
+      };
       editBid(bidId, params, successCallback, failCallback);
     }, 1000);
   };
 
   useEffect(() => {
     getBidById(bidId, bid);
-  }, [user, bidId]);// eslint-disable-line
+  }, [user, bidId]); // eslint-disable-line
+
+  useEffect(() => {
+    setActiveStep(5);
+  }, [setActiveStep]);
 
   const locationSubmit = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
@@ -124,7 +130,7 @@ function BidCreatePage({
       const successCallback = () => {
         setStatus({ loading: false });
         setLocationModalOpen(false);
-      }
+      };
       const failCallback = () => {
         setStatus({
           error: true,
@@ -133,8 +139,8 @@ function BidCreatePage({
           }),
         });
         setSubmitting(false);
-      }
-      editUser(params,successCallback, failCallback);
+      };
+      editUser(params, successCallback, failCallback);
     }, 1000);
   };
 
@@ -151,9 +157,10 @@ function BidCreatePage({
 
   if (preloading) return <Preloader />;
   if (errors.get) return <LoadError handleClick={() => getBidById(bidId, bid)} />;
-  if ( isRedirectTo && isRedirectTo !== -1) return <Redirect to={`/bidsList/${isRedirectTo}`}/>;
+  if (isRedirectTo && isRedirectTo !== -1) return <Redirect to={`/bidsList/${isRedirectTo}`} />;
   return (
     <>
+      <Prompter />
       <LocationDialog
         isOpen={locationModalOpen}
         handleClose={() => setLocationModalOpen(false)}
@@ -187,5 +194,11 @@ function BidCreatePage({
 }
 
 export default injectIntl(
-  connect(null, { ...bids.actions, ...locations.actions, ...auth.actions, ...crops.actions })(BidCreatePage)
+  connect(null, {
+    ...bids.actions,
+    ...locations.actions,
+    ...auth.actions,
+    ...crops.actions,
+    ...prompter.actions,
+  })(BidCreatePage)
 );

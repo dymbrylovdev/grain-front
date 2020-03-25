@@ -3,8 +3,8 @@ import React from "react";
 import { connect } from "react-redux";
 import objectPath from "object-path";
 import { withRouter } from "react-router-dom";
-import SaveIcon from "@material-ui/icons/Save";
-import IconButton from "@material-ui/core/IconButton";
+//import SaveIcon from "@material-ui/icons/Save";
+//import IconButton from "@material-ui/core/IconButton";
 
 import { LayoutContextConsumer } from "../LayoutContext";
 import * as builder from "../../ducks/builder";
