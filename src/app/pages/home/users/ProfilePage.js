@@ -21,11 +21,13 @@ function ProfilePage({
   setActiveStep,
 }) {
   const [loading, setLoading] = useState(false);
-  const { user, preloading, errors } = useSelector(
-    ({ auth: { user, errors } }) => ({
+  const { user, preloading, errors, running, activeStep } = useSelector(
+    ({ auth: { user, errors }, prompter: { running, activeStep } }) => ({
       user,
       preloading: user && user.loading,
       errors: errors || {},
+      running,
+      activeStep,
     }),
     shallowEqual
   );
@@ -77,10 +79,10 @@ function ProfilePage({
         if (user.is_buyer) runPrompter("buyer");
         if (user.is_vendor) runPrompter("seller");
       } else {
-        setActiveStep(1);
+        if (!activeStep) setActiveStep(1);
       }
     }
-  }, [user, runPrompter, setActiveStep]);
+  }, [user, runPrompter, setActiveStep, activeStep]);
 
   if (errors.get) return <LoadError handleClick={() => getUser()} />;
   return (
@@ -100,6 +102,7 @@ function ProfilePage({
             isEditable={true}
             byAdmin={user.is_admin}
             emptyConfirm={setEmptyConfirmAction}
+            running={running}
           />
         </>
       )}

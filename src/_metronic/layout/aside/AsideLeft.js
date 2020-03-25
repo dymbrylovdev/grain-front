@@ -33,13 +33,9 @@ class AsideLeft extends React.Component {
             id="kt_aside_menu_wrapper"
             className="kt-aside-menu-wrapper kt-grid__item kt-grid__item--fluid"
           >
-            {this.props.disableScroll && (
-              <Menu htmlClassService={this.props.htmlClassService} />
-            )}
+            {this.props.disableScroll && <Menu htmlClassService={this.props.htmlClassService} />}
             {!this.props.disableScroll && (
-              <PerfectScrollbar
-                options={{ wheelSpeed: 2, wheelPropagation: false }}
-              >
+              <PerfectScrollbar options={{ wheelSpeed: 2, wheelPropagation: false }}>
                 <Menu htmlClassService={this.props.htmlClassService} />
               </PerfectScrollbar>
             )}
@@ -51,14 +47,11 @@ class AsideLeft extends React.Component {
 }
 
 const mapStateToProps = store => ({
-  disableAsideSelfDisplay:
-    builder.selectors.getConfig(store, "aside.self.display") === false,
-  disableScroll:
-    builder.selectors.getConfig(store, "aside.menu.dropdown") === "true" ||
-    false,
+  disableAsideSelfDisplay: builder.selectors.getConfig(store, "aside.self.display") === false,
+  disableScroll: builder.selectors.getConfig(store, "aside.menu.dropdown") === "true" || false,
   asideClassesFromConfig: builder.selectors.getClasses(store, {
     path: "aside",
-    toString: true
+    toString: true,
   }),
   menuCanvasOptions: {
     baseClass: "kt-aside",
@@ -66,9 +59,9 @@ const mapStateToProps = store => ({
     closeBy: "kt_aside_close_btn",
     toggleBy: {
       target: "kt_aside_mobile_toggler",
-      state: "kt-header-mobile__toolbar-toggler--active"
-    }
-  }
+      state: "kt-header-mobile__toolbar-toggler--active",
+    },
+  },
 });
 
 export default connect(mapStateToProps)(AsideLeft);

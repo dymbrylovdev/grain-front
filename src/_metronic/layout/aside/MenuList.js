@@ -9,17 +9,18 @@ export default class MenuList extends React.Component {
 
     return menuConfig.aside.items.map((child, index) => {
       return (
-          <React.Fragment key={`menuList${index}`}>
-            {child.section && <MenuSection item={child} />}
-            {child.separator && <MenuItemSeparator item={child} />}
-            {child.title && (
-                <MenuItem
-                    item={child}
-                    currentUrl={currentUrl}
-                    layoutConfig={layoutConfig}
-                />
-            )}
-          </React.Fragment>
+        <React.Fragment key={`menuList${index}`}>
+          {child.section && <MenuSection item={child} />}
+          {child.separator && <MenuItemSeparator item={child} />}
+          {child.title && (
+            <MenuItem
+              item={child}
+              currentUrl={currentUrl}
+              layoutConfig={layoutConfig}
+              index={index}
+            />
+          )}
+        </React.Fragment>
       );
     });
   }

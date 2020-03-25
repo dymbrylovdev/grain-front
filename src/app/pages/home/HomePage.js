@@ -31,7 +31,7 @@ function HomePage({ setMenuConfig, getCrops, getStatuses }) {
       <Switch>
         {
           /* Redirect from root URL to /dashboard. */
-          <Redirect exact from="/" to={`${user.is_buyer ? "/user/profile" : "/myBidsList"}`} />
+          <Redirect exact from="/" to="/user/profile" />
         }
         <Route path="/userDocs/legacy" component={UserDocPage} />
         <Route path="/user/profile" exact component={ProfilePage} />
@@ -53,11 +53,10 @@ function HomePage({ setMenuConfig, getCrops, getStatuses }) {
         <Route path="/cropList" component={CropsListPage} />
         <Route path="/crop/create" component={CropPage} />
         <Route path="/crop/edit/:id" component={CropPage} />
-        <Route path="/company/create" exact component={CompanyPage}/>
-        <Route path="/company/edit/:companyId" exact component={CompanyPage}/>
-        <Route path="/companyList" component={CompaniesListPage}/>
-        <Route path="/company/confirm/:companyId" component={CompanyConfirmPage}/>
-        
+        <Route path="/company/create" exact component={CompanyPage} />
+        <Route path="/company/edit/:companyId" exact component={CompanyPage} />
+        <Route path="/companyList" component={CompaniesListPage} />
+        <Route path="/company/confirm/:companyId" component={CompanyConfirmPage} />
       </Switch>
     </Suspense>
   );

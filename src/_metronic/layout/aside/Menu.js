@@ -48,22 +48,20 @@ class AsideLeft extends React.Component {
       submenu: {
         desktop: {
           // by default the menu mode set to accordion in desktop mode
-          default: "dropdown"
+          default: "dropdown",
         },
         tablet: "accordion", // menu set to accordion in tablet mode
-        mobile: "accordion" // menu set to accordion in mobile mode
+        mobile: "accordion", // menu set to accordion in mobile mode
       },
       // accordion setup
       accordion: {
-        expandAll: false // allow having multiple expanded accordions in the menu
-      }
+        expandAll: false, // allow having multiple expanded accordions in the menu
+      },
     };
 
     // init aside menu
     let menuDesktopMode = "accordion";
-    const dataKtmenuDropdown = this.asideMenuRef.current.getAttribute(
-      "data-ktmenu-dropdown"
-    );
+    const dataKtmenuDropdown = this.asideMenuRef.current.getAttribute("data-ktmenu-dropdown");
     if (dataKtmenuDropdown === "1") {
       menuDesktopMode = "dropdown";
     }
@@ -120,9 +118,7 @@ class AsideLeft extends React.Component {
         // if the left aside menu is expand
         /* eslint-disable-next-line  */
         const kUtilIsResponsiveRange = KTUtil.isInResponsiveRange("desktop");
-        const hasMinimizeHover = document.body.classList.contains(
-          "kt-aside--minimize-hover"
-        );
+        const hasMinimizeHover = document.body.classList.contains("kt-aside--minimize-hover");
         if (
           hasMinimizeHover &&
           // eslint-disable-next-line no-undef
@@ -143,7 +139,7 @@ class AsideLeft extends React.Component {
       layoutConfig,
       asideMenuAttr,
       asideClassesFromConfig,
-      location: { pathname }
+      location: { pathname },
     } = this.props;
 
     return (
@@ -166,11 +162,7 @@ class AsideLeft extends React.Component {
             </div>
           )}
           <ul className={clsx("kt-menu__nav", ulClasses)}>
-            <MenuList
-              currentUrl={pathname}
-              menuConfig={menuConfig}
-              layoutConfig={layoutConfig}
-            />
+            <MenuList currentUrl={pathname} menuConfig={menuConfig} layoutConfig={layoutConfig} />
           </ul>
         </div>
       </>
@@ -183,18 +175,17 @@ const mapStateToProps = store => ({
   layoutConfig: store.builder.layoutConfig,
   headerLogo: builder.selectors.getLogo(store),
   asideMenuAttr: builder.selectors.getAttributes(store, { path: "aside_menu" }),
-  disableAsideSelfDisplay:
-    builder.selectors.getConfig(store, "aside.self.display") === false,
+  disableAsideSelfDisplay: builder.selectors.getConfig(store, "aside.self.display") === false,
 
   ulClasses: builder.selectors.getClasses(store, {
     path: "aside_menu_nav",
-    toString: true
+    toString: true,
   }),
 
   asideClassesFromConfig: builder.selectors.getClasses(store, {
     path: "aside_menu",
-    toString: true
-  })
+    toString: true,
+  }),
 });
 
 export default withRouter(connect(mapStateToProps)(AsideLeft));

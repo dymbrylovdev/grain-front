@@ -25,6 +25,11 @@ const innerStyles = makeStyles(theme => ({
   buttonConfirm: {
     paddingBottom: theme.spacing(2),
   },
+  pulseRoot: {
+    "& fieldset": {
+      animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
+    },
+  },
 }));
 
 const getInitialValues = user => ({
@@ -80,6 +85,7 @@ function UserForm({
   isEditable,
   byAdmin,
   emptyConfirm,
+  running,
 }) {
   const formRef = useRef();
   const innerClasses = innerStyles();
@@ -228,6 +234,7 @@ function UserForm({
                 })}
                 margin="normal"
                 className={classes.textField}
+                classes={running && !values.fio ? { root: innerClasses.pulseRoot } : {}}
                 name="fio"
                 value={values.fio}
                 variant="outlined"
@@ -346,6 +353,7 @@ function UserForm({
                 clearLocations={clearLocations}
                 setSelectedLocation={setSelectedLocation}
                 disable={!isEditable}
+                prompterRunning={running}
               />
 
               <TextField
