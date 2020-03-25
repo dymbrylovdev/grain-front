@@ -42,6 +42,9 @@ const useInnerStyles = makeStyles(theme => ({
   topSpaceContainer: {
     marginBottom: theme.spacing(2),
   },
+  iconButton: {
+    animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
+  },
 }));
 
 const isHaveRules = (user, id) => {
@@ -115,7 +118,7 @@ function BidsListPage({
   }, [cropId, filter, getBidsAction, getCropParams, setFilterForCrop, user]);
 
   useEffect(() => {
-    if (activeStep < 2) setActiveStep(2);
+    if (activeStep === 1) setActiveStep(2);
   }, [activeStep, setActiveStep]);
 
   const deleteBidAction = () => {
@@ -214,6 +217,7 @@ function BidsListPage({
 
           <div className={innerClasses.filterText}>{filterTitle}</div>
           <IconButton
+            className={activeStep === 3 && innerClasses.iconButton}
             onClick={() => {
               setFilterModalOpen(true);
               setActiveStep(4);

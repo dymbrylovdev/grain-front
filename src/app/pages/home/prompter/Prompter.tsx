@@ -1,5 +1,6 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   makeStyles,
   createStyles,
@@ -52,6 +53,7 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
 }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   if (!running) return null;
 
@@ -107,7 +109,11 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <Button
                     variant="outlined"
                     color="primary"
-                    onClick={() => setActiveStep(activeStep - 1)}
+                    onClick={() => {
+                      setActiveStep(activeStep - 1);
+                      if (activeStep === 2) history.push("/user/profile");
+                      if (activeStep === 5) history.push("/bidsList/1");
+                    }}
                     className={classes.backButton}
                   >
                     <FormattedMessage id="ALL.BUTTONS.PREV" />
@@ -118,7 +124,11 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => setActiveStep(activeStep + 1)}
+                    onClick={() => {
+                      setActiveStep(activeStep + 1);
+                      if (activeStep === 1) history.push("/bidsList/1");
+                      if (activeStep === 4) history.push("/bid/create");
+                    }}
                   >
                     <FormattedMessage id="ALL.BUTTONS.NEXT" />
                   </Button>

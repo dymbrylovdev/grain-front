@@ -33,7 +33,6 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
           ...state,
           dullRole: action.payload,
           running: true,
-          activeStep: 0,
         };
       }
 

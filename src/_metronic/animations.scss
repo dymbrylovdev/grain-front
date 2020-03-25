@@ -1,0 +1,71 @@
+@keyframes menuItemPulse {
+  0% {
+    background-color: #1a1a27;
+  }
+  50% {
+    background-color: #5d78ff;
+  }
+  100% {
+    background-color: #1a1a27;
+  }
+}
+
+@-webkit-keyframes menuItemPulse {
+  0% {
+    background-color: #1a1a27;
+  }
+  50% {
+    background-color: #5d78ff;
+  }
+  100% {
+    background-color: #1a1a27;
+  }
+}
+
+@-moz-keyframes menuItemPulse {
+  0% {
+    background-color: #1a1a27;
+  }
+  50% {
+    background-color: #5d78ff;
+  }
+  100% {
+    background-color: #1a1a27;
+  }
+}
+
+@keyframes TextFieldBorderPulse {
+  0% {
+    background-color: none;
+  }
+  50% {
+    background-color: rgba(93, 120, 255, 0.3);
+  }
+  100% {
+    background-color: none;
+  }
+}
+
+@-webkit-keyframes TextFieldBorderPulse {
+  0% {
+    background-color: none;
+  }
+  50% {
+    background-color: #5d78ff;
+  }
+  100% {
+    background-color: none;
+  }
+}
+
+@-moz-keyframes TextFieldBorderPulse {
+  0% {
+    background-color: none;
+  }
+  50% {
+    background-color: #5d78ff;
+  }
+  100% {
+    background-color: none;
+  }
+}

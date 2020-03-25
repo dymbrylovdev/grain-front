@@ -31,9 +31,7 @@ export default class MenuItemText extends React.Component {
 
         {item.badge && (
           <span className="kt-menu__link-badge">
-            <span className={`kt-badge ${item.badge.type}`}>
-              {item.badge.value}
-            </span>
+            <span className={`kt-badge ${item.badge.type}`}>{item.badge.value}</span>
           </span>
         )}
 
