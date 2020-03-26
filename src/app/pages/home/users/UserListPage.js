@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { shallowEqual, useSelector, connect } from "react-redux";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -56,7 +56,7 @@ function UserListPage({ intl, getUsers, deleteUser, clearErrors }) {
     setAlertOpen(true);
   };
 
-  const getUsersAction = page => getUsers({ page });
+  const getUsersAction = useCallback(page => getUsers({ page }), [getUsers]);
 
   const handleChangePage = (event, page) => {
     getUsersAction(page + 1);
@@ -64,7 +64,7 @@ function UserListPage({ intl, getUsers, deleteUser, clearErrors }) {
 
   useEffect(() => {
     getUsersAction(1);
-  }, []);
+  }, [getUsersAction]);
 
   const deleteUserAction = () => {
     setAlertOpen(false);

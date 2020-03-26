@@ -45,16 +45,16 @@ export function filterForRequest(data, enumParams, numberParams) {
   }
   const parameter_values = [];
   enumParams &&
-    enumParams.map(param => {
+    enumParams.forEach(param => {
       const paramValue = { parameter_id: param.id, value: [] };
-      param.enum.map((item, index) => {
+      param.enum.forEach((item, index) => {
         const valueName = `parameter${param.id}enum${index}`;
         data[valueName] && paramValue.value.push(item);
       });
       paramValue.value.length > 0 && parameter_values.push(paramValue);
     });
   numberParams &&
-    numberParams.map(param => {
+    numberParams.forEach(param => {
       const valueName = `number${param.id}`;
       const composeName = `compose${param.id}`;
       if (data[valueName]) {
@@ -80,7 +80,7 @@ export const getQueryString = (values = {}) => {
   let queryParams = "";
   let count = 0;
   Object.keys(values).forEach((key, index) => {
-    if ((values[key] || values[key]===0) && values[key] !== "" ) {
+    if ((values[key] || values[key] === 0) && values[key] !== "") {
       if (count === 0) {
         queryParams += `?${key}=${encodeURIComponent(values[key])}`;
         count++;
@@ -93,4 +93,5 @@ export const getQueryString = (values = {}) => {
   return queryParams;
 };
 
-export const getResponseMessage =  e => (e && e.response && e.response.data && e.response.data.message);
+export const getResponseMessage = e =>
+  e && e.response && e.response.data && e.response.data.message;

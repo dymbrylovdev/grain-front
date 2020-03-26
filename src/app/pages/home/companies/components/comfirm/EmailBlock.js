@@ -23,26 +23,29 @@ function EmailBlock({ intl, company = {}, sentConfirmCode, confirmByEmail, user 
   const [sentStatus, setSentStatus] = useState({});
   const [isSuccess, setSuccess] = useState(user.company_confirmed_by_email);
 
-  const sentCodeAction = useCallback((userId, companyId) => {
-    setSentStatus({
-      loading: true,
-    });
-    const params = { userId, companyId };
-    const successCallback = () => {
+  const sentCodeAction = useCallback(
+    (userId, companyId) => {
       setSentStatus({
-        loading: false,
+        loading: true,
       });
-      setCodeSent(true);
-    };
-    const failCallback = error => {
-      setSentStatus({
-        loading: false,
-        error: true,
-        message: error || intl.formatMessage({ id: "COMPANY.CONFIRM.ERROR.SENT" }),
-      });
-    };
-    sentConfirmCode(params, successCallback, failCallback);
-  }, []);
+      const params = { userId, companyId };
+      const successCallback = () => {
+        setSentStatus({
+          loading: false,
+        });
+        setCodeSent(true);
+      };
+      const failCallback = error => {
+        setSentStatus({
+          loading: false,
+          error: true,
+          message: error || intl.formatMessage({ id: "COMPANY.CONFIRM.ERROR.SENT" }),
+        });
+      };
+      sentConfirmCode(params, successCallback, failCallback);
+    },
+    [intl, sentConfirmCode]
+  );
 
   return (
     <Formik

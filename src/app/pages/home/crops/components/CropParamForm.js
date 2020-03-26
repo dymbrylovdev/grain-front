@@ -30,19 +30,19 @@ function CropParamForm({ intl, classes, cropParam, editCropParamAction }) {
     setEnumParams([...enumParams, ...[""]]);
   };
   const deleteEnumValue = index => {
-    if (index < enumParams.length - 1 ) {
+    if (index < enumParams.length - 1) {
       for (let i = index; i < enumParams.length; i++) {
         formRef.current.setFieldValue(`parameter${i}`, formRef.current.values[`parameter${i + 1}`]);
       }
     }
-    formRef.current.setFieldValue(`parameter${enumParams.length -1}`, null)
-    const newEnumArray = enumParams.slice(0,-1);
+    formRef.current.setFieldValue(`parameter${enumParams.length - 1}`, null);
+    const newEnumArray = enumParams.slice(0, -1);
     setEnumParams(newEnumArray);
   };
 
-  const setIdValue = (value) => {
-    formRef.current.setFieldValue('id', value);
-  }
+  const setIdValue = value => {
+    formRef.current.setFieldValue("id", value);
+  };
   return (
     <Box className={classes.paramContainer} border={1} borderColor="#eeeeee" borderRadius={5}>
       <Formik
@@ -51,17 +51,22 @@ function CropParamForm({ intl, classes, cropParam, editCropParamAction }) {
         validationSchema={Yup.object().shape({
           name: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
         })}
-        onSubmit={(values, {setStatus, setSubmitting }) => {
+        onSubmit={(values, { setStatus, setSubmitting }) => {
           if (values.type === "enum") {
             const enumArray = [];
-            Object.keys(values).map(param => {
-              if (param.indexOf("parameter") !== -1 &&  values[param] && values[param] !== "" ) {
+            Object.keys(values).forEach(param => {
+              if (param.indexOf("parameter") !== -1 && values[param] && values[param] !== "") {
                 enumArray.push(values[param]);
               }
             });
-            editCropParamAction({ ...values, enum: enumArray }, setStatus, setSubmitting, setIdValue );
+            editCropParamAction(
+              { ...values, enum: enumArray },
+              setStatus,
+              setSubmitting,
+              setIdValue
+            );
           } else {
-            editCropParamAction(values, setStatus, setSubmitting, setIdValue );
+            editCropParamAction(values, setStatus, setSubmitting, setIdValue);
           }
         }}
         innerRef={formRef}
