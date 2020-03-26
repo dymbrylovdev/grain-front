@@ -85,7 +85,8 @@ function UserForm({
   isEditable,
   byAdmin,
   emptyConfirm,
-  running,
+  prompterRunning,
+  prompterStep,
 }) {
   const formRef = useRef();
   const innerClasses = innerStyles();
@@ -234,7 +235,11 @@ function UserForm({
                 })}
                 margin="normal"
                 className={classes.textField}
-                classes={running && !values.fio ? { root: innerClasses.pulseRoot } : {}}
+                classes={
+                  prompterRunning && prompterStep === 0 && !values.fio
+                    ? { root: innerClasses.pulseRoot }
+                    : {}
+                }
                 name="fio"
                 value={values.fio}
                 variant="outlined"
@@ -353,7 +358,8 @@ function UserForm({
                 clearLocations={clearLocations}
                 setSelectedLocation={setSelectedLocation}
                 disable={!isEditable}
-                prompterRunning={running}
+                prompterRunning={prompterRunning}
+                prompterStep={prompterStep}
               />
 
               <TextField

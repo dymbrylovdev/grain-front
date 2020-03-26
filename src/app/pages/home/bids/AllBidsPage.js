@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect, useSelector, shallowEqual } from "react-redux";
 import { injectIntl } from "react-intl";
 import { Paper } from "@material-ui/core";
@@ -18,7 +18,7 @@ function AllBidsPage({
     params: { cropId },
   },
   deleteBid,
-  clearErrors
+  clearErrors,
 }) {
   const classes = useStyles();
   const [deleteBidId, setDeleteBidId] = useState(-1);
@@ -36,20 +36,23 @@ function AllBidsPage({
       per_page: bids.allBids.per_page,
       total: bids.allBids.total,
       loading: bids.allBids.loading,
-      errors: bids.errors || {}
+      errors: bids.errors || {},
     };
   }, shallowEqual);
 
   const deleteBidAction = () => {
     setAlertOpen(false);
-    deleteBid(deleteBidId, bidsDuck.bidTypes.AllBids, { id: cropId, page})
+    deleteBid(deleteBidId, bidsDuck.bidTypes.AllBids, { id: cropId, page });
   };
-  const getAllBidsAction = (cropId, page) => {
-    getAllBids(cropId, page);
-  };
+  const getAllBidsAction = useCallback(
+    (cropId, page) => {
+      getAllBids(cropId, page);
+    },
+    [getAllBids]
+  );
   useEffect(() => {
     getAllBidsAction(cropId, 1);
-  }, [cropId]);
+  }, [cropId, getAllBidsAction]);
 
   const handleChangePage = (event, page) => {
     getAllBidsAction(cropId, page + 1);
@@ -61,7 +64,7 @@ function AllBidsPage({
     handleChangePage,
   };
   if (loading) return <Preloader />;
-  if (errors.all) return <LoadError handleClick={() => getAllBidsAction(cropId,page)} />;
+  if (errors.all) return <LoadError handleClick={() => getAllBidsAction(cropId, page)} />;
   return (
     <Paper className={classes.tableContainer}>
       <AlertDialog
@@ -78,7 +81,11 @@ function AllBidsPage({
         handleClose={() => setAlertOpen(false)}
         handleAgree={() => deleteBidAction()}
       />
-      <ErrorDialog isOpen={errors.delete || false} text={intl.formatMessage({id:"ERROR.BID.DELETE"})} handleClose={() => clearErrors()}/>
+      <ErrorDialog
+        isOpen={errors.delete || false}
+        text={intl.formatMessage({ id: "ERROR.BID.DELETE" })}
+        handleClose={() => clearErrors()}
+      />
       <Link to="/bid/create">
         <div className={classes.topMargin}>
           <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
@@ -96,6 +103,7 @@ function AllBidsPage({
         addUrl={"fromAdmin"}
         paginationData={paginationData}
       />
+      <div className={classes.tableFooterText}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>
     </Paper>
   );
 }

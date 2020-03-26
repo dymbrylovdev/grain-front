@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSelector, shallowEqual, connect } from "react-redux";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { Paper } from "@material-ui/core";
@@ -23,12 +23,13 @@ function MyBidsListPage({ intl, getMyBids, deleteBid, clearErrors }) {
     setAlertOpen(false);
     deleteBid(deleteBidId, bids.bidTypes.MyBids);
   };
-  const getMyBidsAction = () => {
+  const getMyBidsAction = useCallback(() => {
     getMyBids();
-  };
+  }, [getMyBids]);
+
   useEffect(() => {
     getMyBidsAction();
-  }, []);
+  }, [getMyBidsAction]);
   const { myBids, user, loading, errors } = useSelector(
     ({ bids, auth }) => ({
       myBids: bids.myBids && bids.myBids.list,
@@ -56,7 +57,11 @@ function MyBidsListPage({ intl, getMyBids, deleteBid, clearErrors }) {
         handleClose={() => setAlertOpen(false)}
         handleAgree={() => deleteBidAction()}
       />
-      <ErrorDialog isOpen={errors.delete || false} text={intl.formatMessage({id:"ERROR.BID.DELETE"})} handleClose={() => clearErrors()}/>
+      <ErrorDialog
+        isOpen={errors.delete || false}
+        text={intl.formatMessage({ id: "ERROR.BID.DELETE" })}
+        handleClose={() => clearErrors()}
+      />
       <Link to="/bid/create">
         <div className={classes.topMargin}>
           <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
@@ -73,6 +78,7 @@ function MyBidsListPage({ intl, getMyBids, deleteBid, clearErrors }) {
         title={intl.formatMessage({ id: "SUBMENU.MY_BIDS" })}
         addUrl={"fromMy"}
       />
+      <div className={classes.tableFooterText}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>
     </Paper>
   );
 }

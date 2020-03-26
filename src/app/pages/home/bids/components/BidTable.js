@@ -8,6 +8,7 @@ import {
   TableBody,
   IconButton,
   Divider,
+  Grid,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
@@ -68,9 +69,13 @@ function BidTable({
                 <TableCell>{bid.price_with_delivery || "-"}</TableCell>
                 <TableCell>{bid.volume}</TableCell>
                 <TableCell>
-                  <div>
+                  <Grid container direction="column" justify="center" alignItems="flex-start">
                     <div>{`${bid.vendor.fio || ""}`}</div>
-                  </div>
+                    {bid.vendor.company && (
+                      <div style={{ marginTop: 10 }}>{`${bid.vendor.company.short_name ||
+                        ""}`}</div>
+                    )}
+                  </Grid>
                 </TableCell>
                 <TableCell>{bid.distance || "-"}</TableCell>
 

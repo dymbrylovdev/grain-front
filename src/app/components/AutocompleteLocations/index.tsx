@@ -30,6 +30,7 @@ interface IProps {
   clearLocations: () => {};
   setSelectedLocation: (location: any) => {};
   prompterRunning?: boolean;
+  prompterStep?: number;
 }
 
 const Autocomplete: React.FC<IProps> = ({
@@ -47,6 +48,7 @@ const Autocomplete: React.FC<IProps> = ({
   setSelectedLocation,
   disable,
   prompterRunning,
+  prompterStep,
 }) => {
   const [editableLocation, setEditableLocation] = useState(editable);
   const [location, setLocation] = useState("");
@@ -85,7 +87,9 @@ const Autocomplete: React.FC<IProps> = ({
       onInputChange={(_e: any, _val: any, reason: any) => {
         if (reason === "clear") setSelectedLocation(null);
       }}
-      classes={!location ? { root: innerClasses.pulseRoot } : {}}
+      classes={
+        prompterRunning && prompterStep === 0 && !location ? { root: innerClasses.pulseRoot } : {}
+      }
       renderInput={(params: any) => (
         <TextField
           {...params}
