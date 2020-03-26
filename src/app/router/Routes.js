@@ -5,10 +5,10 @@
  * components (e.g: `src/pages/auth/AuthPage`, `src/pages/home/HomePage`).
  */
 
-import React  from "react";
+import React from "react";
 import { Redirect, Route, Switch, withRouter } from "react-router-dom";
 import { shallowEqual, useSelector } from "react-redux";
-import { useLastLocation } from "react-router-last-location";
+//import { useLastLocation } from "react-router-last-location";
 import HomePage from "../pages/home/HomePage";
 import ErrorsPage from "../pages/errors/ErrorsPage";
 import LogoutPage from "../pages/auth/Logout";
@@ -17,21 +17,20 @@ import Layout from "../../_metronic/layout/Layout";
 import * as routerHelpers from "../router/RouterHelpers";
 import AuthPage from "../pages/auth/AuthPage";
 
-
 export const Routes = withRouter(({ history }) => {
   //const lastLocation = useLastLocation();
   //routerHelpers.saveLastLocation(lastLocation);
-  const { isAuthorized, menuConfig, userLastLocation} = useSelector(
-    ({ auth, urls, builder: { menuConfig }, builder  }) =>{
-      return({
-      menuConfig,
-      isAuthorized: auth.user != null,
-      userLastLocation: routerHelpers.getLastLocation(),
-    })},
+  const { isAuthorized, menuConfig, userLastLocation } = useSelector(
+    ({ auth, urls, builder: { menuConfig }, builder }) => {
+      return {
+        menuConfig,
+        isAuthorized: auth.user != null,
+        userLastLocation: routerHelpers.getLastLocation(),
+      };
+    },
     shallowEqual
   );
 
-  
   return (
     /* Create `LayoutContext` from current `history` and `menuConfig`. */
     <LayoutContextProvider history={history} menuConfig={menuConfig}>

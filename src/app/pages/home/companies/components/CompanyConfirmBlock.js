@@ -9,9 +9,9 @@ const innerStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(1),
   },
   title: {
-      fontSize: 14,
-      paddingBottom: theme.spacing(1),
-  }
+    fontSize: 14,
+    paddingBottom: theme.spacing(1),
+  },
 }));
 
 function CompanyConfirmBlock({ intl, values, handleChange, disabled }) {
@@ -40,7 +40,7 @@ function CompanyConfirmBlock({ intl, values, handleChange, disabled }) {
           : ""
       }`;
     },
-    [values, disabled]
+    [intl]
   );
 
   return (

@@ -14,9 +14,7 @@ const useStyles = makeStyles({
 
 function CustomIcon({ path }) {
   const classes = useStyles();
-  return (
-      <img className={classes.imageIcon} src={toAbsoluteUrl(path)} />
-  );
+  return <img className={classes.imageIcon} src={toAbsoluteUrl(path)} alt="imageIcon" />;
 }
 
 export default CustomIcon;

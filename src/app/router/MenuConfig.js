@@ -29,12 +29,15 @@ const getAdminMenu = crops => ({
             page: "",
             translate: "SUBMENU.ADS",
             bullet: "dot",
-            submenu: crops && crops.map &&crops.map(crop => ({
-              title: crop.name,
-              root: true,
-              page: `bidsList/${crop.id}`,
-              translate: crop.name,
-            })),
+            submenu:
+              crops &&
+              crops.map &&
+              crops.map(crop => ({
+                title: crop.name,
+                root: true,
+                page: `bidsList/${crop.id}`,
+                //translate: crop.name,
+              })),
           },
           {
             title: "Добавить заявку",
@@ -54,12 +57,15 @@ const getAdminMenu = crops => ({
             page: "",
             translate: "SUBMENU.ALL_BIDS",
             bullet: "dot",
-            submenu: crops && crops.map && crops.map(crop => ({
-              title: crop.name,
-              root: true,
-              page: `allBidsList/${crop.id}`,
-              translate: crop.name,
-            })),
+            submenu:
+              crops &&
+              crops.map &&
+              crops.map(crop => ({
+                title: crop.name,
+                root: true,
+                page: `allBidsList/${crop.id}`,
+                //translate: crop.name,
+              })),
           },
         ],
       },
@@ -188,7 +194,7 @@ const getVendorMenu = crops => ({
               title: crop.name,
               root: true,
               page: `bidsList/${crop.id}`,
-              translate: crop.name,
+              //translate: crop.name,
             })),
           },
           {
@@ -256,7 +262,7 @@ const getBuyerMenu = crops => ({
               title: crop.name,
               root: true,
               page: `bidsList/${crop.id}`,
-              translate: crop.name,
+              //translate: crop.name,
             })),
           },
         ],

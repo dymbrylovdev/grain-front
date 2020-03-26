@@ -9,12 +9,24 @@ import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LoadError } from "../../../components/ui/Erros";
 
-function EditUserPage({ intl, editUser, fetchLocationsRequest, match, clearLocations, getUserById }) {
+function EditUserPage({
+  intl,
+  editUser,
+  fetchLocationsRequest,
+  match,
+  clearLocations,
+  getUserById,
+}) {
   const [loading, setLoading] = useState(false);
-  const {id: userId} = match.params;
-  const { user, preloading, myUser, errors } = useSelector(({users: { currentUser, errors}, auth: {user: myUser}}) => ({
-    user: currentUser, preloading: currentUser && currentUser.loading, myUser, errors: errors || {}
-  }))
+  const { id: userId } = match.params;
+  const { user, preloading, myUser, errors } = useSelector(
+    ({ users: { currentUser, errors }, auth: { user: myUser } }) => ({
+      user: currentUser,
+      preloading: currentUser && currentUser.loading,
+      myUser,
+      errors: errors || {},
+    })
+  );
   const classes = useStyles();
 
   const submitAction = (values, setStatus, setSubmitting) => {
@@ -29,7 +41,7 @@ function EditUserPage({ intl, editUser, fetchLocationsRequest, match, clearLocat
             id: "PROFILE.STATUS.SUCCESS",
           }),
         });
-      }
+      };
       const failCallback = () => {
         setLoading(false);
         setSubmitting(false);
@@ -39,32 +51,37 @@ function EditUserPage({ intl, editUser, fetchLocationsRequest, match, clearLocat
             id: "PROFILE.STATUS.ERROR",
           }),
         });
-      }
-      editUser(userId, params, successCallback, failCallback) 
+      };
+      editUser(userId, params, successCallback, failCallback);
     }, 1000);
   };
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     getUserById(userId);
-  },[userId])
+  }, [getUserById, userId]);
   const isEditable = myUser.is_admin;
-  const title = isEditable ? intl.formatMessage({id: "PROFILE.TITLE.EDIT"}) : intl.formatMessage({id: "PROFILE.TITLE.VIEW"});
+  const title = isEditable
+    ? intl.formatMessage({ id: "PROFILE.TITLE.EDIT" })
+    : intl.formatMessage({ id: "PROFILE.TITLE.VIEW" });
   if (errors.current) return <LoadError handleClick={() => getUserById(userId)} />;
   return (
     <>
-      <LayoutSubheader title={`${title} ${(user && user.login)  ? user.login : ""}`}/>
-      {preloading ? <Preloader/> :        <UserForm
-        fetchLocations={fetchLocationsRequest}
-        clearLocations={clearLocations}
-        user={user}
-        classes={classes}
-        loading={loading}
-        submitAction={submitAction}
-        isEdit={true}
-        isEditable = {myUser.is_admin}
-        byAdmin={myUser.is_admin}
-      />}
-
+      <LayoutSubheader title={`${title} ${user && user.login ? user.login : ""}`} />
+      {preloading ? (
+        <Preloader />
+      ) : (
+        <UserForm
+          fetchLocations={fetchLocationsRequest}
+          clearLocations={clearLocations}
+          user={user}
+          classes={classes}
+          loading={loading}
+          submitAction={submitAction}
+          isEdit={true}
+          isEditable={myUser.is_admin}
+          byAdmin={myUser.is_admin}
+        />
+      )}
     </>
   );
 }

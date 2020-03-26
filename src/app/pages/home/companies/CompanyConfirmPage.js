@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { injectIntl } from "react-intl";
 import { connect, shallowEqual, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -27,10 +27,10 @@ function CompanyConfirmPage({ intl, getCompanyById }) {
   );
   const companyAction = useCallback(() => {
     getCompanyById(companyId);
-  }, [companyId]);
+  }, [companyId, getCompanyById]);
   useEffect(() => {
     companyAction();
-  }, [companyId]);
+  }, [companyAction, companyId]);
   if (loading) return <Preloader />;
   return (
     <>
@@ -42,8 +42,6 @@ function CompanyConfirmPage({ intl, getCompanyById }) {
           <EmailBlock company={company} user={user} classes={classes} />
           <PhoneBlock company={company} user={user} classes={classes} />
           <PayBlock company={company} user={user} classes={classes} />
-          
-
         </Paper>
       )}
     </>

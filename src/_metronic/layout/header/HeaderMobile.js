@@ -14,9 +14,9 @@ class HeaderMobile extends React.Component {
 
   render() {
     const {
-      headerLogo,
+      //headerLogo,
       asideDisplay,
-      headerMenuSelfDisplay,
+      //headerMenuSelfDisplay,
       headerMobileCssClasses,
       headerMobileAttributes,
     } = this.props;
@@ -28,9 +28,7 @@ class HeaderMobile extends React.Component {
         {...headerMobileAttributes}
       >
         <div className="kt-header-mobile__logo">
-          <Link to="/">
-            {/*<img alt="logo" src={headerLogo} />*/}
-          </Link>
+          <Link to="/">{/*<img alt="logo" src={headerLogo} />*/}</Link>
         </div>
 
         <div className="kt-header-mobile__toolbar">

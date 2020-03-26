@@ -25,7 +25,7 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
   );
   const companyAction = useCallback(() => {
     getCompanyById(companyId);
-  }, [companyId]);
+  }, [companyId, getCompanyById]);
 
   const createAction = (values, setStatus, setSubmitting) => {
     setTimeout(() => {
@@ -46,9 +46,11 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
         setStatus({
           loading: false,
           error: true,
-          message: error || intl.formatMessage({
-            id: "COMPANY.STATUS.ERROR",
-          }),
+          message:
+            error ||
+            intl.formatMessage({
+              id: "COMPANY.STATUS.ERROR",
+            }),
         });
       };
       createCompany(params, successCallback, failCallback);
@@ -74,9 +76,11 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
         setStatus({
           loading: false,
           error: true,
-          message: error || intl.formatMessage({
-            id: "COMPANY.STATUS.ERROR",
-          }),
+          message:
+            error ||
+            intl.formatMessage({
+              id: "COMPANY.STATUS.ERROR",
+            }),
         });
       };
       editCompany(companyId, params, successCallback, failCallback);
@@ -87,12 +91,12 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
 
   useEffect(() => {
     companyAction();
-  }, [companyId]);
+  }, [companyAction, companyId]);
 
   const title = companyId
     ? intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })
     : intl.formatMessage({ id: "COMPANY.CREATE.TITLE" });
-  if (isRedirect) return <Redirect to="/companyList"/>
+  if (isRedirect) return <Redirect to="/companyList" />;
   if (loading) return <Preloader />;
   return (
     <>
@@ -100,7 +104,12 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
       {errors && errors.get ? (
         <LoadError handleClick={companyAction} />
       ) : (
-        <CompanyForm classes={classes} company={company} submitAction={submitAction} companyId={companyId}/>
+        <CompanyForm
+          classes={classes}
+          company={company}
+          submitAction={submitAction}
+          companyId={companyId}
+        />
       )}
     </>
   );

@@ -19,8 +19,8 @@ const innerStyles = makeStyles(theme => ({
     display: "flex",
   },
   companyText: {
-      flex: 1,
-  }
+    flex: 1,
+  },
 }));
 
 const getInitialValues = company => ({
@@ -60,11 +60,14 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
   const closeDialog = useCallback(() => {
     setDialogOpen(false);
   }, []);
-  const chooseAction = useCallback(company => {
-    setCompanyAction(company);
-    setCurrentCompany(company);
-    setDialogOpen(false);
-  }, []);
+  const chooseAction = useCallback(
+    company => {
+      setCompanyAction(company);
+      setCurrentCompany(company);
+      setDialogOpen(false);
+    },
+    [setCompanyAction]
+  );
   useEffect(() => {
     formRef.current.resetForm({ values: getInitialValues(currentCompany) });
   }, [currentCompany]);
@@ -90,14 +93,14 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
             const successCallback = () => {
               setDialogOpen(true);
               setStatus({
-                loading: false
+                loading: false,
               });
             };
             const failCallback = () => {
               setStatus({
                 loading: false,
                 error: true,
-                message: intl.formatMessage({ id: "COMPANY.STATUS.SEARCH_ERROR" })
+                message: intl.formatMessage({ id: "COMPANY.STATUS.SEARCH_ERROR" }),
               });
             };
             const emptyCallback = () => {
@@ -163,7 +166,7 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
                 <ButtonWithLoader
                   onPress={handleSubmit}
                   loading={status && status.loading}
-                  disabled={isSearchEmpty(values)|| (status && status.loading)}
+                  disabled={isSearchEmpty(values) || (status && status.loading)}
                 >
                   {intl.formatMessage({ id: "COMPANY.SEARCH.BUTTON" })}
                 </ButtonWithLoader>

@@ -29,8 +29,8 @@ function BidTable({
   addUrl,
   paginationData,
 }) {
-  const fromAdmin = addUrl === "fromAdmin";
-  console.log(bids);
+  //const fromAdmin = addUrl === "fromAdmin";
+
   return (
     <>
       {title && <PortletHeaderTitle className={classes.tableTitle}>{title}</PortletHeaderTitle>}

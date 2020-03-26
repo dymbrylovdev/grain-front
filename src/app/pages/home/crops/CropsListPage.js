@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useCallback } from "react";
 import {
   Table,
   TableBody,
@@ -20,26 +20,28 @@ import useStyles from "../styles";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LoadError } from "../../../components/ui/Erros";
 
-
 function CropsListPage({ setMenuConfig, getCrops, match }) {
   const { crops, user, loading, errors } = useSelector(
-    ({ crops: {crops, errors}, auth }) => ({
+    ({ crops: { crops, errors }, auth }) => ({
       crops: (crops && crops.data) || [],
       user: auth.user,
       loading: crops && crops.loading,
-      errors: errors || {}
+      errors: errors || {},
     }),
     shallowEqual
   );
   const classes = useStyles();
 
-  const getCropsAction = () => {
+  const getCropsAction = useCallback(() => {
     getCrops(user);
-  };
+  }, [getCrops, user]);
+
   useEffect(() => {
     getCropsAction();
-  }, []);
+  }, [getCropsAction]);
+
   if (loading) return <Preloader />;
+
   if (errors.crops) return <LoadError handleClick={() => getCropsAction()} />;
   return (
     <Paper className={classes.tableContainer}>
@@ -57,7 +59,7 @@ function CropsListPage({ setMenuConfig, getCrops, match }) {
               <FormattedMessage id="CROPSLIST.TABLE.ID" />
             </TopTableCell>
             <TopTableCell>
-              <FormattedMessage id="CROPSLIST.TABLE.ID" />
+              <FormattedMessage id="CROPSLIST.TABLE.NAME" />
             </TopTableCell>
             <TopTableCell>
               <FormattedMessage id="CROPSLIST.TABLE.ACTIONS" />
@@ -65,19 +67,20 @@ function CropsListPage({ setMenuConfig, getCrops, match }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {crops && crops.map(crop => (
-            <TableRow key={crop.id}>
-              <TableCell>{crop.id}</TableCell>
-              <TableCell>{crop.name}</TableCell>
-              <TableCell>
-                <Link to={`/crop/edit/${crop.id}`}>
-                  <IconButton size="medium" color="primary">
-                    <EditIcon />
-                  </IconButton>
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
+          {crops &&
+            crops.map(crop => (
+              <TableRow key={crop.id}>
+                <TableCell>{crop.id}</TableCell>
+                <TableCell>{crop.name}</TableCell>
+                <TableCell>
+                  <Link to={`/crop/edit/${crop.id}`}>
+                    <IconButton size="medium" color="primary">
+                      <EditIcon />
+                    </IconButton>
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </Paper>
