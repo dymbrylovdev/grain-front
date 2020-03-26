@@ -105,7 +105,7 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             </Typography>
             <Grid container direction="row" justify="space-between" alignItems="center">
               <div>
-                {activeStep !== 0 && (
+                {/*activeStep !== 0 && (
                   <Button
                     variant="outlined"
                     color="primary"
@@ -118,7 +118,7 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   >
                     <FormattedMessage id="ALL.BUTTONS.PREV" />
                   </Button>
-                )}
+                  )*/}
                 {((dullRole === "seller" && activeStep !== 5) ||
                   (dullRole === "buyer" && activeStep !== 4)) && (
                   <Button

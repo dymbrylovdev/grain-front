@@ -36,6 +36,11 @@ const useStyles = makeStyles(theme => ({
   table: {
     width: "100%",
   },
+  tableFooterText: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    marginTop: theme.spacing(1),
+  },
   buttonAddContainer: {
     flex: 1,
     paddingBottom: theme.spacing(2),

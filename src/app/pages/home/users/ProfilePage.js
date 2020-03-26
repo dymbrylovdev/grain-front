@@ -76,13 +76,15 @@ function ProfilePage({
   useEffect(() => {
     if (user) {
       if (!user.fio || !user.location) {
-        if (user.is_buyer) runPrompter("buyer");
-        if (user.is_vendor) runPrompter("seller");
+        if (!running) {
+          if (user.is_buyer) runPrompter("buyer");
+          if (user.is_vendor) runPrompter("seller");
+        }
       } else {
-        if (!activeStep) setActiveStep(1);
+        if (activeStep === 0) setActiveStep(1);
       }
     }
-  }, [user, runPrompter, setActiveStep, activeStep]);
+  }, [user, runPrompter, setActiveStep, activeStep, running]);
 
   if (errors.get) return <LoadError handleClick={() => getUser()} />;
   return (
@@ -102,7 +104,8 @@ function ProfilePage({
             isEditable={true}
             byAdmin={user.is_admin}
             emptyConfirm={setEmptyConfirmAction}
-            running={running}
+            prompterRunning={running}
+            prompterStep={activeStep}
           />
         </>
       )}
