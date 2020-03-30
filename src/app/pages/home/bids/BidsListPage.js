@@ -96,6 +96,7 @@ function BidsListPage({
   const getBidsAction = useCallback(
     (filter, enumParams, numberParams) => {
       const requestFilter = filterForRequest(filter, enumParams, numberParams);
+      console.log("filter: ", filter);
       console.log("filterForRequest", requestFilter);
       getBestBids({ filter: filter.crop_id ? requestFilter : {} });
     },
@@ -217,7 +218,7 @@ function BidsListPage({
 
           <div className={innerClasses.filterText}>{filterTitle}</div>
           <IconButton
-            className={activeStep === 3 && innerClasses.iconButton}
+            className={activeStep === 3 ? innerClasses.iconButton : ""}
             onClick={() => {
               setFilterModalOpen(true);
               setActiveStep(4);

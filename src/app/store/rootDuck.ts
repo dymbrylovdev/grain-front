@@ -9,12 +9,13 @@ import * as users from "./ducks/users.duck";
 import * as locations from "./ducks/locations.duck";
 import * as docs from "./ducks/docs.duck";
 import * as bids from "./ducks/bids.duck";
+import * as myFilters from "./ducks/myFilters.duck";
 import * as crops from "./ducks/crops.duck";
 import * as companies from "./ducks/companies.duck";
 
 import * as prompter from "./ducks/prompter.duck";
 
-export type TAppActions = prompter.TActions;
+export type TAppActions = prompter.TActions | myFilters.TActions;
 
 export interface IAppState {
   i18n: typeof metronic.i18n.reducer;
@@ -24,6 +25,7 @@ export interface IAppState {
   locations: typeof locations.reducer;
   docs: typeof docs.reducer;
   bids: typeof bids.reducer;
+  myFilters: myFilters.IInitialState & PersistPartial;
   crops: typeof crops.reducer;
   companies: typeof companies.reducer;
   prompter: prompter.IInitialState & PersistPartial;
@@ -40,6 +42,7 @@ export const rootReducer: (state: IAppState, action: TAppActions) => IAppState =
   locations: locations.reducer,
   docs: docs.reducer,
   bids: bids.reducer,
+  myFilters: myFilters.reducer,
   crops: crops.reducer,
   companies: companies.reducer,
   prompter: prompter.reducer,
@@ -47,8 +50,14 @@ export const rootReducer: (state: IAppState, action: TAppActions) => IAppState =
 
 export function* rootSaga() {
   yield all(
-    [auth.saga, users.saga, crops.saga, bids.saga, locations.saga, companies.saga].map(saga =>
-      fork(saga)
-    )
+    [
+      auth.saga,
+      users.saga,
+      crops.saga,
+      bids.saga,
+      myFilters.saga,
+      locations.saga,
+      companies.saga,
+    ].map(saga => fork(saga))
   );
 }

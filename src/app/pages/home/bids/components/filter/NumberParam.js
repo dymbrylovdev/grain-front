@@ -2,12 +2,13 @@ import React from "react";
 import { Radio, FormControlLabel, RadioGroup, TextField, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { Row, Col } from "react-bootstrap";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   container: {
     alignItems: "center",
-    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+    width: "100%",
   },
 }));
 
@@ -17,10 +18,8 @@ function NumberParam({ values, param, handleChange, clearAction }) {
   const classes = useStyles();
   return (
     <Row className={classes.container}>
-      <Col> 
-        {param.name}
-        </Col>
-        <Col>
+      <Col>{param.name}</Col>
+      <Col>
         <RadioGroup
           name={composeName}
           value={values[composeName] || "≤"}
@@ -30,7 +29,7 @@ function NumberParam({ values, param, handleChange, clearAction }) {
           <FormControlLabel value="≤" control={<Radio />} label="≤" />
           <FormControlLabel value="≥" control={<Radio />} label=" ≥" />
         </RadioGroup>
-        </Col>
+      </Col>
       <Col md="5" lg="5" sm="5" xs="10" xl="5">
         <TextField
           type="text"
@@ -44,8 +43,8 @@ function NumberParam({ values, param, handleChange, clearAction }) {
       <Row>
         <IconButton
           onClick={() => {
-            clearAction(composeName);
-            clearAction(numberName);
+            clearAction(composeName, "");
+            clearAction(numberName, "");
           }}
         >
           <CloseIcon />

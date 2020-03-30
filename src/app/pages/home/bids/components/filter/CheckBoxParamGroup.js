@@ -12,11 +12,9 @@ function CheckBoxParamGroup({ values, handleChange, param }) {
           return (
             <Row key={item}>
               <FormControlLabel
-                control={
-                  <Checkbox checked={values[valueName] || false} onChange={handleChange} />
-                }
+                control={<Checkbox checked={values[valueName] || false} onChange={handleChange} />}
                 label={item}
-                name = {valueName}
+                name={valueName}
               />
             </Row>
           );
