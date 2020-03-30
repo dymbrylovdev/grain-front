@@ -45,6 +45,23 @@ const theme = createMuiTheme(
           color: "#fd397a",
         },
       },
+      MuiButton: {
+        outlinedPrimary: {
+          color: "#fd397a",
+          borderColor: "#fd397a",
+          "&:hover": {
+            color: "#fd397a",
+            borderColor: "#b12856",
+          },
+        },
+      },
+      MuiBadge: {
+        colorPrimary: {
+          fontWeight: "bold",
+          backgroundColor: "#9e9e9e",
+          transition: "100ms",
+        },
+      },
     },
     props: {
       // Name of the component ⚛️

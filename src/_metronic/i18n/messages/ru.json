@@ -2,6 +2,8 @@
   "ALL.BUTTONS.NEXT": "Далее",
   "ALL.BUTTONS.PREV": "Назад",
   "ALL.BUTTONS.FINISH": "Завершить",
+  "ALL.BUTTONS.CANCEL": "Отмена",
+  "ALL.BUTTONS.DELETE": "Удалить",
 
   "MENU.GRAIN": "Рынок зерна",
   "MENU.USERS": "Пользователи",
@@ -166,9 +168,15 @@
 
   "FILTER.FORM.MAX_PRICE": "Макс. цена с учётом доставки",
   "FILTER.FORM.MAX_DESTINATION": "Максимальное расстояние",
-  "FILTER.FORM.BUTTON.SUBMIT": "Применить фильтр",
-  "FILTER.FORM.BUTTON.RESET": "Очистить фильтр",
+  "FILTER.FORM.BUTTON.SAVE": "Сохранить",
+  "FILTER.FORM.BUTTON.SUBMIT": "Применить",
+  "FILTER.FORM.BUTTON.RESET": "Очистить",
   "FILTER.BUTTON.CLOSE": "Закрыть",
+  "FILTER.FORM.NAME.INPUT_NAME": "Название фильтра",
+  "FILTER.FORM.NAME.REQUIRED": "Введите название фильтра",
+  "FILTER.FORM.TABS.CREATE_FILTER": "Создать фильтр",
+  "FILTER.FORM.TABS.MY_FILTERS": "Мои фильтры",
+  "FILTER.MY_FILTERS.EMPTY": "У вас ещё нет сохранённых фильтров для культуры",
 
   "ERROR.LOAD.TITLE": "Ошибка загрузки данных",
   "ERROR.BUTTON.REPEAT": "Повторить попытку",

@@ -1,5 +1,6 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
+import { compose } from "redux";
 import { useHistory } from "react-router-dom";
 import {
   makeStyles,
@@ -14,9 +15,8 @@ import {
   Grid,
 } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps, FormattedMessage } from "react-intl";
-import { compose } from "redux";
-import { IAppState } from "../../../store/rootDuck";
 
+import { IAppState } from "../../../store/rootDuck";
 import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
 
 const useStyles = makeStyles(theme =>
