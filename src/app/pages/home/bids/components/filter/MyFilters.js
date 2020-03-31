@@ -4,6 +4,7 @@ import {
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
+  Grid,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Row, Col } from "react-bootstrap";
@@ -25,10 +26,15 @@ const innerStyle = makeStyles(theme => ({
   empty: {
     textAlign: "center",
   },
+  apliedText: {
+    //fontWeight: "bold",
+    color: theme.palette.secondary.main,
+  },
 }));
 
 const MyFilters = ({
   intl,
+  savedFilter,
   filters,
   cropName,
   handleSubmit,
@@ -50,7 +56,7 @@ const MyFilters = ({
   };
 
   if (!filters) return <Preloader />;
-
+  console.log("savedFilter: ", savedFilter);
   return (
     <Row>
       <Col>
@@ -71,7 +77,14 @@ const MyFilters = ({
                   aria-controls={`panel${item.id}-content`}
                   id={`panel${item.id}-header`}
                 >
-                  {item.name}
+                  <Grid container direction="row" justify="space-between" alignItems="center">
+                    <Grid item>{item.name}</Grid>
+                    <Grid item className={innerClasses.apliedText}>
+                      {savedFilter && savedFilter.id && savedFilter.id === item.id
+                        ? intl.formatMessage({ id: "FILTER.MY_FILTERS.APLIED" })
+                        : ""}
+                    </Grid>
+                  </Grid>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                   <MyFiltersForm

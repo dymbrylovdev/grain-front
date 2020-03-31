@@ -12,13 +12,18 @@ import { filterForCreate } from "../../../myFilters/utils";
 
 const innerStyle = makeStyles(theme => ({
   buttonContainer: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(1),
   },
   closeContainer: {
     display: "flex",
     alignItems: "flex-end",
     justifyContent: "flex-end",
+  },
+  textFieldContainer: {
+    display: "flex",
+    flexDirection: "row",
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
 }));
 
@@ -41,6 +46,7 @@ function MyFiltersForm({
   useEffect(() => {
     formRef.current.resetForm({ values: fromApiToFilter(filter) });
   }, [filter]);
+
   const clearAction = param => {
     formRef.current.setFieldValue(param, undefined);
   };
@@ -50,11 +56,7 @@ function MyFiltersForm({
       autoComplete="off"
       initialValues={fromApiToFilter(filter)}
       onSubmit={(values, { setStatus, setSubmitting }) => {
-        handleSubmit(values, setStatus, setSubmitting);
-        console.log("enumParams: ", enumParams);
-        console.log("numberParams: ", numberParams);
-        console.log("filter: ", filter);
-        console.log("values: ", values);
+        handleSubmit({ ...values, id: filter.id }, setStatus, setSubmitting);
       }}
       innerRef={formRef}
     >
@@ -74,7 +76,7 @@ function MyFiltersForm({
           <ButtonWithLoader onPress={handleSubmit}>
             {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
           </ButtonWithLoader>
-          <div className={classes.textFieldContainer}>
+          <div className={innerClasses.textFieldContainer}>
             <TextField
               type="text"
               label={intl.formatMessage({
@@ -148,7 +150,7 @@ function MyFiltersForm({
           <Grid
             container
             direction="row"
-            justify="flex-start"
+            justify="flex-end"
             alignItems="center"
             spacing={1}
             className={innerClasses.buttonContainer}

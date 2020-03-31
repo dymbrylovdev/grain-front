@@ -61,6 +61,10 @@ const theme = createMuiTheme(
           backgroundColor: "#9e9e9e",
           transition: "100ms",
         },
+        colorSecondary: {
+          fontWeight: "bold",
+          transition: "100ms",
+        },
       },
     },
     props: {
