@@ -93,11 +93,11 @@ function BidsListPage({
   };
 
   const classes = useStyles();
+
   const getBidsAction = useCallback(
     (filter, enumParams, numberParams) => {
       const requestFilter = filterForRequest(filter, enumParams, numberParams);
-      console.log("filter: ", filter);
-      console.log("filterForRequest", requestFilter);
+      //console.log("filterForRequest", requestFilter);
       getBestBids({ filter: filter.crop_id ? requestFilter : {} });
     },
     [getBestBids]
@@ -158,7 +158,12 @@ function BidsListPage({
 
   const filterTitle = isFilterEmpty(filter, enumParams, numberParams)
     ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
-    : intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" });
+    : !filter.id
+    ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
+    : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`;
+
+  const filterName = filter.id && filter.name ? filter.name : "";
+
   const filterIconPath = isFilterEmpty(filter, enumParams, numberParams)
     ? "/media/filter/filter.svg"
     : "/media/filter/filter_full.svg";
@@ -216,7 +221,11 @@ function BidsListPage({
             )}
           </div>
 
-          <div className={innerClasses.filterText}>{filterTitle}</div>
+          <div className={innerClasses.filterText}>
+            {filterTitle}
+            <br />
+            <strong>{filterName}</strong>
+          </div>
           <IconButton
             className={activeStep === 3 ? innerClasses.iconButton : ""}
             onClick={() => {

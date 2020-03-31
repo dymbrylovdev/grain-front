@@ -72,6 +72,11 @@ const useStyles = makeStyles(theme => ({
   appBar: {
     boxShadow: "none",
     backgroundColor: "white",
+    paddingTop: theme.spacing(0.5),
+  },
+  closeButton: {
+    marginRight: theme.spacing(1),
+    marginBottom: theme.spacing(0.5),
   },
   buttonContainer: {
     margin: theme.spacing(1),
@@ -153,15 +158,16 @@ const FilterModal = ({
 
   useEffect(() => {
     if (isOpen) {
-      resetForm({ values: getInitialValues(filter) });
+      resetForm({ values: getInitialValues({ crop_id: cropId }) });
     }
-  }, [filter, getInitialValues, isOpen, resetForm]);
+  }, [cropId, filter, getInitialValues, isOpen, resetForm]);
 
   useEffect(() => {
     if (!myFilters && !loadingFilters) {
       fetchFilters();
+      //delFilter(52);
     }
-  }, [fetchFilters, loadingFilters, myFilters]);
+  }, [delFilter, fetchFilters, loadingFilters, myFilters]);
 
   return (
     <div className={innerClasses.container}>
@@ -173,48 +179,61 @@ const FilterModal = ({
         classes={{ paper: innerClasses.dialog }}
       >
         <DialogTitle className={innerClasses.dialogTitle}>
-          <AppBar position="static" color="default" className={innerClasses.appBar}>
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="center"
-              className={innerClasses.appBar}
-            >
-              <Tabs
-                value={valueTabs}
-                onChange={handleTabsChange}
-                indicatorColor="primary"
-                textColor="primary"
-                aria-label="full width tabs example"
-              >
-                <Tab
-                  label={intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
-                  {...a11yProps(0)}
-                />
+          <Grid
+            container
+            direction="row"
+            justify="space-between"
+            alignItems="center"
+            className={innerClasses.appBar}
+          >
+            <Grid item>
+              <AppBar position="static" color="default" className={innerClasses.appBar}>
+                <Tabs
+                  value={valueTabs}
+                  onChange={handleTabsChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  aria-label="full width tabs example"
+                >
+                  <Tab
+                    label={intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
+                    {...a11yProps(0)}
+                  />
 
-                <Tab
-                  icon={
-                    <Badge
-                      badgeContent={
-                        myFilters &&
-                        myFilters.filter(myFilter => myFilter.crop.id === cropId).length.toString()
-                      }
-                      color="primary"
-                      className={innerClasses.badge}
-                      variant={!myFilters || createLoading ? "dot" : "standard"}
-                    >
-                      {intl.formatMessage({ id: "FILTER.FORM.TABS.MY_FILTERS" })}
-                    </Badge>
-                  }
-                  {...a11yProps(1)}
-                />
-              </Tabs>
-              <IconButton onClick={handleClose}>
+                  <Tab
+                    icon={
+                      <Badge
+                        badgeContent={
+                          myFilters &&
+                          myFilters
+                            .filter(myFilter => myFilter.crop.id === cropId)
+                            .length.toString()
+                        }
+                        color={
+                          !myFilters ||
+                          createLoading ||
+                          (myFilters &&
+                            !myFilters.filter(myFilter => myFilter.crop.id === cropId).length)
+                            ? "primary"
+                            : "secondary"
+                        }
+                        className={innerClasses.badge}
+                        variant={!myFilters || createLoading ? "dot" : "standard"}
+                      >
+                        {intl.formatMessage({ id: "FILTER.FORM.TABS.MY_FILTERS" })}
+                      </Badge>
+                    }
+                    {...a11yProps(1)}
+                  />
+                </Tabs>
+              </AppBar>
+            </Grid>
+            <Grid item>
+              <IconButton onClick={handleClose} className={innerClasses.closeButton}>
                 <CloseIcon color="primary" />
               </IconButton>
             </Grid>
-          </AppBar>
+          </Grid>
         </DialogTitle>
         <DialogContent dividers>
           <TabPanel value={valueTabs} index={0}>
@@ -240,6 +259,7 @@ const FilterModal = ({
                   ? crops.find(crop => crop.id === cropId).name
                   : ""
               }
+              savedFilter={filter}
               delFilter={delFilter}
               delLoading={delLoading}
               editFilter={editFilter}
@@ -289,7 +309,6 @@ const FilterModal = ({
                   <Grid item>
                     <ButtonWithLoader
                       onPress={() => {
-                        console.log("sdfcsdcsc");
                         handleSubmit(values, formik.setStatus, formik.setSubmitting);
                       }}
                     >
