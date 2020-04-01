@@ -3,10 +3,6 @@ import { IFilterForCreate, IFilterParam, IMyFilterItem } from "../interfaces";
 export const filterForCreate = (
   data: {
     [x: string]: any;
-    crop_id: number;
-    name: string;
-    max_full_price: number | null | undefined;
-    max_destination: number | null | undefined;
   },
   enumParams: IFilterParam[],
   numberParams: IFilterParam[]
@@ -42,19 +38,17 @@ export const filterForCreate = (
         parameter_values.push({ parameter_id: param.id, value });
       }
     });
-  console.log("numberParams: ", numberParams);
   return { ...filter, parameter_values };
 };
 
 // fromApiToFilter из фильтра формата API делает формат понимаемый формой
 export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
-  let newFilter: { [x: string]: any } = {
-    name: data.name,
-    crop_id: data.crop.id,
-  };
-  if (data.max_full_price) newFilter["max_full_price"] = data.max_full_price;
-  if (data.max_distance) newFilter["max_destination"] = data.max_distance;
-  if (data.parameter_values.length) {
+  let newFilter: { [x: string]: any } = {};
+  if (data && data.name) newFilter["name"] = data.name;
+  if (data && data.crop && data.crop.id) newFilter["crop_id"] = data.crop.id;
+  if (data && data.max_full_price) newFilter["max_full_price"] = data.max_full_price;
+  if (data && data.max_distance) newFilter["max_destination"] = data.max_distance;
+  if (data && data.parameter_values && data.parameter_values.length) {
     data.parameter_values.forEach(item => {
       if (item.parameter.type === "enum") {
         let values = item.value as string[];

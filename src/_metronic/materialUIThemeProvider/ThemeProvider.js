@@ -46,7 +46,7 @@ const theme = createMuiTheme(
         },
       },
       MuiButton: {
-        outlinedPrimary: {
+        outlinedSecondary: {
           color: "#fd397a",
           borderColor: "#fd397a",
           "&:hover": {
@@ -64,6 +64,16 @@ const theme = createMuiTheme(
         colorSecondary: {
           fontWeight: "bold",
           transition: "100ms",
+        },
+      },
+      MuiOutlinedInput: {
+        adornedEnd: {
+          paddingRight: "none",
+        },
+      },
+      MuiFormControlLabel: {
+        root: {
+          marginBottom: 0,
         },
       },
     },

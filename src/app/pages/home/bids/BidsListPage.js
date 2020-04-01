@@ -107,6 +107,7 @@ function BidsListPage({
     setFilterForCrop(filter, cropId);
     setCropLoading(true);
     const successCallback = data => {
+      console.log(data);
       setCropLoading(false);
       const enumData = data.filter(item => item.type === "enum");
       const numberData = data.filter(item => item.type === "number");
@@ -224,7 +225,7 @@ function BidsListPage({
           <div className={innerClasses.filterText}>
             {filterTitle}
             <br />
-            <strong>{filterName}</strong>
+            {filterName}
           </div>
           <IconButton
             className={activeStep === 3 ? innerClasses.iconButton : ""}

@@ -116,6 +116,12 @@ const getAdminMenu = crops => ({
             translate: "SUBMENU.PROFILE",
           },
           {
+            title: "Мои фильтры",
+            root: true,
+            page: "user/filters",
+            translate: "SUBMENU.MY_FILTERS",
+          },
+          {
             title: "Настройки каталога",
             root: true,
             page: "",
@@ -224,6 +230,12 @@ const getVendorMenu = crops => ({
             page: "user/profile",
             translate: "SUBMENU.PROFILE",
           },
+          {
+            title: "Мои фильтры",
+            root: true,
+            page: "user/filters",
+            translate: "SUBMENU.MY_FILTERS",
+          },
         ],
       },
       {
@@ -279,6 +291,12 @@ const getBuyerMenu = crops => ({
             root: true,
             page: "user/profile",
             translate: "SUBMENU.PROFILE",
+          },
+          {
+            title: "Мои фильтры",
+            root: true,
+            page: "user/filters",
+            translate: "SUBMENU.MY_FILTERS",
           },
         ],
       },

@@ -11,6 +11,7 @@ import { CompanyPage, CompaniesListPage, CompanyConfirmPage } from "./companies"
 import * as builder from "../../../_metronic/ducks/builder";
 import * as crops from "../../store/ducks/crops.duck";
 import * as users from "../../store/ducks/users.duck";
+import { MyFiltersPage, MyFiltersEditPage } from "./myFilters";
 
 function HomePage({ setMenuConfig, getCrops, getStatuses }) {
   const { crops, user } = useSelector(
@@ -38,6 +39,9 @@ function HomePage({ setMenuConfig, getCrops, getStatuses }) {
         <Route path="/userList" component={UserListPage} />
         <Route path="/user/create" component={CreateUserPage} />
         <Route path="/user/edit/:id" component={EditUserPage} />
+        <Route path="/user/filters/view/:id" component={MyFiltersEditPage} />
+        <Route path="/user/filters/edit/:id" component={MyFiltersEditPage} />
+        <Route path="/user/filters" component={MyFiltersPage} />
         <Route path="/bidsList" exact component={BidsListPage} />
         <Route path="/myBidsList" exact component={MyBidsListPage} />
         <Route path="/bidsList/:cropId" exact component={BidsListPage} />

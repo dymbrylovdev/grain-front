@@ -6,7 +6,7 @@ interface IProps {
   loading?: boolean;
   variant?: "text" | "outlined" | "contained";
   color?: "inherit" | "primary" | "secondary" | "default";
-  onPress?: () => {};
+  onPress?: () => {} | void;
   disabled?: boolean;
 }
 

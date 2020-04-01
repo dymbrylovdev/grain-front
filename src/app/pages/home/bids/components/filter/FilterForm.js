@@ -34,10 +34,14 @@ function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
           variant="outlined"
           onBlur={formik.handleBlur}
           onChange={formik.handleChange("max_full_price")}
+          InputProps={{
+            endAdornment: (
+              <IconButton onClick={() => formik.setFieldValue("max_full_price", "")}>
+                <CloseIcon />
+              </IconButton>
+            ),
+          }}
         />
-        <IconButton onClick={() => formik.setFieldValue("max_full_price", "")}>
-          <CloseIcon />
-        </IconButton>
       </div>
       <div className={classes.textFieldContainer}>
         <TextField
@@ -51,10 +55,14 @@ function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
           variant="outlined"
           onBlur={formik.handleBlur}
           onChange={formik.handleChange("max_destination")}
+          InputProps={{
+            endAdornment: (
+              <IconButton onClick={() => formik.setFieldValue("max_destination", "")}>
+                <CloseIcon />
+              </IconButton>
+            ),
+          }}
         />
-        <IconButton onClick={() => formik.setFieldValue("max_destination", "")}>
-          <CloseIcon />
-        </IconButton>
       </div>
       {numberParams &&
         numberParams.map((param, index) => (

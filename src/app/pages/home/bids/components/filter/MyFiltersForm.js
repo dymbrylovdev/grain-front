@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Formik } from "formik";
-import { makeStyles, TextField, Divider, IconButton, Grid } from "@material-ui/core";
+import { makeStyles, TextField, Divider, IconButton, Grid, Button } from "@material-ui/core";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
@@ -9,6 +9,7 @@ import CheckBoxParamGroup from "./CheckBoxParamGroup";
 import NumberParam from "./NumberParam";
 import { fromApiToFilter } from "../../../myFilters/utils";
 import { filterForCreate } from "../../../myFilters/utils";
+import AlertDialog from "../../../../../components/ui/Dialogs/AlertDialog";
 
 const innerStyle = makeStyles(theme => ({
   buttonContainer: {
@@ -43,6 +44,8 @@ function MyFiltersForm({
   const innerClasses = innerStyle();
   const formRef = useRef();
 
+  const [isAlertOpen, setAlertOpen] = useState(false);
+
   useEffect(() => {
     formRef.current.resetForm({ values: fromApiToFilter(filter) });
   }, [filter]);
@@ -73,6 +76,23 @@ function MyFiltersForm({
         initialValues,
       }) => (
         <Col>
+          <AlertDialog
+            isOpen={isAlertOpen}
+            text={`${intl.formatMessage({
+              id: "FILTER.DIALOGS.DELETE_TEXT",
+            })}"${filter.name}"`}
+            okText={intl.formatMessage({
+              id: "FILTER.DIALOGS.AGREE_TEXT",
+            })}
+            cancelText={intl.formatMessage({
+              id: "FILTER.DIALOGS.CANCEL_TEXT",
+            })}
+            handleClose={() => setAlertOpen(false)}
+            handleAgree={() => {
+              setAlertOpen(false);
+              delFilter(filter.id);
+            }}
+          />
           <ButtonWithLoader onPress={handleSubmit}>
             {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
           </ButtonWithLoader>
@@ -88,10 +108,14 @@ function MyFiltersForm({
               variant="outlined"
               onBlur={handleBlur}
               onChange={handleChange("name")}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={() => clearAction("name")}>
+                    <CloseIcon />
+                  </IconButton>
+                ),
+              }}
             />
-            <IconButton onClick={() => clearAction("name")}>
-              <CloseIcon />
-            </IconButton>
           </div>
           <Row>
             {enumParams &&
@@ -113,10 +137,14 @@ function MyFiltersForm({
               variant="outlined"
               onBlur={handleBlur}
               onChange={handleChange("max_full_price")}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={() => clearAction("max_full_price")}>
+                    <CloseIcon />
+                  </IconButton>
+                ),
+              }}
             />
-            <IconButton onClick={() => clearAction("max_full_price")}>
-              <CloseIcon />
-            </IconButton>
           </div>
           <div className={classes.textFieldContainer}>
             <TextField
@@ -130,10 +158,14 @@ function MyFiltersForm({
               variant="outlined"
               onBlur={handleBlur}
               onChange={handleChange("max_destination")}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={() => clearAction("max_destination")}>
+                    <CloseIcon />
+                  </IconButton>
+                ),
+              }}
             />
-            <IconButton onClick={() => clearAction("max_destination")}>
-              <CloseIcon />
-            </IconButton>
           </div>
           {numberParams &&
             numberParams.map((param, index) => (
@@ -170,14 +202,9 @@ function MyFiltersForm({
               </ButtonWithLoader>
             </Grid>
             <Grid item>
-              <ButtonWithLoader
-                loading={delLoading}
-                disabled={delLoading}
-                variant="outlined"
-                onPress={() => delFilter(filter.id)}
-              >
+              <Button variant="outlined" color="secondary" onClick={() => setAlertOpen(true)}>
                 {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
-              </ButtonWithLoader>
+              </Button>
             </Grid>
           </Grid>
         </Col>
