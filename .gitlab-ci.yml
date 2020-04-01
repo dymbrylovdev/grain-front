@@ -8,9 +8,9 @@ stages:
   - deploy
 
 variables:
-  TEST_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME_DEV:1.2
-  RELEASE_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME_DEV:1.2-latest
-  CONTAINER: $CONTAINER_NAME_DEV:1.2
+  TEST_IMAGE: $CI_DOCKERHUB_LOGIN/grain-dev-1.2:master
+  RELEASE_IMAGE: $CI_DOCKERHUB_LOGIN/grain-dev-1.2:latest
+  CONTAINER: grain-dev-1.2
 
 before_script:
   - docker info
