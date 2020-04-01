@@ -59,11 +59,15 @@ function EditUserPage({
   useEffect(() => {
     getUserById(userId);
   }, [getUserById, userId]);
+
   const isEditable = myUser.is_admin;
+
   const title = isEditable
     ? intl.formatMessage({ id: "PROFILE.TITLE.EDIT" })
     : intl.formatMessage({ id: "PROFILE.TITLE.VIEW" });
+
   if (errors.current) return <LoadError handleClick={() => getUserById(userId)} />;
+
   return (
     <>
       <LayoutSubheader title={`${title} ${user && user.login ? user.login : ""}`} />

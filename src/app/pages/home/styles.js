@@ -77,6 +77,10 @@ const useStyles = makeStyles(theme => ({
   topMargin: {
     marginTop: theme.spacing(2),
   },
+  marginTopAndBottom: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 export default useStyles;

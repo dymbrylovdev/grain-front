@@ -43,7 +43,7 @@ export const reducer = persistReducer(
   (state = initialCropState, action) => {
     switch (action.type) {
       case actionTypes.SetFilterForCrop: {
-        console.log("SetFilterForCrop: ", action.payload);
+        //console.log("SetFilterForCrop: ", action.payload);
         const { filter, cropId } = action.payload;
         return { ...state, filters: { ...state.filters, [cropId]: filter } };
       }
@@ -51,6 +51,7 @@ export const reducer = persistReducer(
         return { ...state, crops: { loading: true }, errors: {} };
       }
       case actionTypes.CropsSuccess: {
+        //console.log("GetCrops: ", action.payload);
         const { data } = action.payload;
         return { ...state, crops: data };
       }

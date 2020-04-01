@@ -55,8 +55,8 @@ const MyFilters = ({
     setExpanded(isExpanded ? panel : false);
   };
 
-  if (!filters) return <Preloader />;
-  console.log("savedFilter: ", savedFilter);
+  if (!filters || delLoading) return <Preloader />;
+
   return (
     <Row>
       <Col>

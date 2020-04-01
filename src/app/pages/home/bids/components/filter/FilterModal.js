@@ -158,7 +158,7 @@ const FilterModal = ({
 
   useEffect(() => {
     if (isOpen) {
-      resetForm({ values: getInitialValues({ crop_id: cropId }) });
+      resetForm({ values: getInitialValues(filter) });
     }
   }, [cropId, filter, getInitialValues, isOpen, resetForm]);
 
