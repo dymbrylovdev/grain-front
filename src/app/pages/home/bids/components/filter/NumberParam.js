@@ -5,12 +5,9 @@ import {
   RadioGroup,
   TextField,
   IconButton,
-  Table,
-  TableBody,
   Grid,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { Row, Col } from "react-bootstrap";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -26,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function NumberParam({ values, param, handleChange, clearAction, isEditable }) {
+function NumberParam({ values, param, handleChange, clearAction, isEditable = true }) {
   const composeName = `compose${param.id}`;
   const numberName = `number${param.id}`;
   const classes = useStyles();

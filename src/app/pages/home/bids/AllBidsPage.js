@@ -9,7 +9,7 @@ import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import * as bidsDuck from "../../../store/ducks/bids.duck";
 import BidTable from "./components/BidTable";
 import Preloader from "../../../components/ui/Loaders/Preloader";
-import { ErrorDialog, LoadError } from "../../../components/ui/Erros";
+import { ErrorDialog, LoadError } from "../../../components/ui/Errors";
 
 function AllBidsPage({
   intl,

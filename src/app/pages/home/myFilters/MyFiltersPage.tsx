@@ -16,6 +16,7 @@ import { injectIntl, WrappedComponentProps, FormattedMessage } from "react-intl"
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import { useSnackbar } from "notistack";
 
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import { IAppState } from "../../../store/rootDuck";
@@ -24,24 +25,29 @@ import useStyles from "../styles";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import StatusIndicator from "../../../components/ui/Table/StatusIndicator";
+import { LoadError } from "../../../components/ui/Errors";
 
 const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
-  fetchFilters,
+  fetch,
   myFilters,
-  loadingFilters,
-  clearCreateFilter,
-  createFilter,
+  loading,
+  error,
+  clearCreate,
+  create,
   createLoading,
   createSuccess,
-  clearDelFilter,
-  delFilter,
+  createError,
+  clearDel,
+  del,
   delLoading,
   delSuccess,
-  clearEditFilter,
-  editFilter,
+  delError,
+  clearEdit,
+  edit,
   editLoading,
   editSuccess,
+  editError,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -49,34 +55,34 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [deleteFilterId, setDeleteFilterId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
 
+  const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    if (!myFilters && !loadingFilters) {
-      fetchFilters();
-      //delFilter(52);
+    if (delSuccess || delError) {
+      enqueueSnackbar(
+        delSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.DEL_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${delError}`,
+        {
+          variant: delSuccess ? "success" : "error",
+        }
+      );
+      setAlertOpen(false);
+      clearDel();
     }
-  }, [delFilter, fetchFilters, loadingFilters, myFilters]);
+  }, [clearDel, delError, delSuccess, enqueueSnackbar, intl]);
+
+  useEffect(() => {
+    if (!myFilters && !loading) {
+      fetch();
+    }
+  }, [fetch, loading, myFilters]);
+
+  if (error) return <LoadError handleClick={() => fetch()} />;
 
   if (!myFilters) return <Preloader />;
 
   return (
     <Paper className={classes.tableContainer}>
-      <AlertDialog
-        isOpen={isAlertOpen}
-        text={intl.formatMessage({
-          id: "FILTER.DIALOGS.DELETE_TEXT",
-        })}
-        okText={intl.formatMessage({
-          id: "FILTER.DIALOGS.AGREE_TEXT",
-        })}
-        cancelText={intl.formatMessage({
-          id: "FILTER.DIALOGS.CANCEL_TEXT",
-        })}
-        handleClose={() => setAlertOpen(false)}
-        handleAgree={() => {
-          setAlertOpen(false);
-          delFilter(deleteFilterId);
-        }}
-      />
       <Button
         className={classes.marginTopAndBottom}
         variant="contained"
@@ -147,6 +153,26 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           </TableBody>
         </Table>
       )}
+      <AlertDialog
+        isOpen={isAlertOpen}
+        text={intl.formatMessage({
+          id: "FILTER.DIALOGS.DELETE_TEXT",
+        })}
+        okText={intl.formatMessage({
+          id: "FILTER.DIALOGS.AGREE_TEXT",
+        })}
+        cancelText={intl.formatMessage({
+          id: "FILTER.DIALOGS.CANCEL_TEXT",
+        })}
+        handleClose={() => setAlertOpen(false)}
+        handleAgree={() => {
+          del(deleteFilterId);
+        }}
+        loadingText={intl.formatMessage({
+          id: "FILTER.DIALOGS.LOADING_TEXT",
+        })}
+        isLoading={delLoading}
+      />
     </Paper>
   );
 };
@@ -154,22 +180,26 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 const connector = connect(
   (state: IAppState) => ({
     myFilters: state.myFilters.myFilters,
-    loadingFilters: state.myFilters.loading,
+    loading: state.myFilters.loading,
+    error: state.myFilters.error,
     createLoading: state.myFilters.createLoading,
     createSuccess: state.myFilters.createSuccess,
+    createError: state.myFilters.createError,
     delLoading: state.myFilters.delLoading,
     delSuccess: state.myFilters.delSuccess,
+    delError: state.myFilters.delError,
     editLoading: state.myFilters.editLoading,
     editSuccess: state.myFilters.editSuccess,
+    editError: state.myFilters.editError,
   }),
   {
-    fetchFilters: myFiltersActions.fetchRequest,
-    clearCreateFilter: myFiltersActions.clearCreate,
-    createFilter: myFiltersActions.createRequest,
-    clearDelFilter: myFiltersActions.clearDel,
-    delFilter: myFiltersActions.delRequest,
-    clearEditFilter: myFiltersActions.clearEdit,
-    editFilter: myFiltersActions.editRequest,
+    fetch: myFiltersActions.fetchRequest,
+    clearCreate: myFiltersActions.clearCreate,
+    create: myFiltersActions.createRequest,
+    clearDel: myFiltersActions.clearDel,
+    del: myFiltersActions.delRequest,
+    clearEdit: myFiltersActions.clearEdit,
+    edit: myFiltersActions.editRequest,
   }
 );
 

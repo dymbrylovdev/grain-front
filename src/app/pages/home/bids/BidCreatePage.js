@@ -15,7 +15,7 @@ import * as crops from "../../../store/ducks/crops.duck";
 import * as prompter from "../../../store/ducks/prompter.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import LocationDialog from "./components/location/LocationDialog";
-import { LoadError } from "../../../components/ui/Erros";
+import { LoadError } from "../../../components/ui/Errors";
 import Prompter from "../prompter/Prompter";
 
 function BidCreatePage({

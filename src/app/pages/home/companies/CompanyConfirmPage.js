@@ -6,7 +6,7 @@ import { Paper } from "@material-ui/core";
 
 import * as companyDuck from "../../../store/ducks/companies.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
-import { LoadError } from "../../../components/ui/Erros";
+import { LoadError } from "../../../components/ui/Errors";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import useStyles from "../styles";
 import EmailBlock from "./components/comfirm/EmailBlock";

@@ -123,7 +123,7 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
           handleSubmit,
           isSubmitting,
         }) => (
-          <form noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
+          <div noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
             <Box
               className={classes.paramContainer}
               border={1}
@@ -172,7 +172,7 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
                 </ButtonWithLoader>
               </div>
             </Box>
-          </form>
+          </div>
         )}
       </Formik>
     </>

@@ -8,7 +8,6 @@ import useStyles from "../styles";
 import UserForm from "./components/UserForm";
 
 function CreateUserPage({ intl, fetchLocationsRequest, clearLocations, createUser }) {
-
   const [loading, setLoading] = useState(false);
   const [backRedirect, setBackRedirect] = useState(false);
   const user = {};
@@ -28,8 +27,8 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearLocations, createUse
           }),
         });
         setBackRedirect(true);
-      }
-      const failCallback =() => {
+      };
+      const failCallback = () => {
         setLoading(false);
         setSubmitting(false);
         setStatus({
@@ -38,13 +37,13 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearLocations, createUse
             id: "PROFILE.STATUS.ERROR",
           }),
         });
-      }
-      createUser(params,successCallback,failCallback)
+      };
+      createUser(params, successCallback, failCallback);
     }, 1000);
   };
-  
+
   if (backRedirect) {
-    return <Redirect to="/userList" />;
+    return <Redirect to="/user-list" />;
   }
   return (
     <UserForm
@@ -61,4 +60,6 @@ function CreateUserPage({ intl, fetchLocationsRequest, clearLocations, createUse
   );
 }
 
-export default injectIntl(connect(null, {...locations.actions, ...users.actions})(CreateUserPage));
+export default injectIntl(
+  connect(null, { ...locations.actions, ...users.actions })(CreateUserPage)
+);

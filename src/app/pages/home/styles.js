@@ -6,7 +6,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     background: "white",
     alignItems: "center",
-    justifyContent: "center",
+    //justifyContent: "center",
     boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .3)",
   },
   form: {
@@ -15,8 +15,6 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3),
   },
   buttonContainer: {
-    alignItems: "center",
-    justifyContent: "center",
     paddingBottom: theme.spacing(2),
     paddingTop: theme.spacing(2),
   },
@@ -64,6 +62,11 @@ const useStyles = makeStyles(theme => ({
     fontSize: 16,
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
+  },
+  text: {
+    fontSize: 14,
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
   },
   tableTitle: {
     marginTop: theme.spacing(2),

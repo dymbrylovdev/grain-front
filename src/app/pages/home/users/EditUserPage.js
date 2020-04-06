@@ -7,7 +7,7 @@ import useStyles from "../styles";
 import UserForm from "./components/UserForm";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import Preloader from "../../../components/ui/Loaders/Preloader";
-import { LoadError } from "../../../components/ui/Erros";
+import { LoadError } from "../../../components/ui/Errors";
 
 function EditUserPage({
   intl,

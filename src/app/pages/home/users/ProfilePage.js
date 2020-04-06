@@ -7,7 +7,7 @@ import * as prompter from "../../../store/ducks/prompter.duck";
 import useStyles from "../styles";
 import UserForm from "./components/UserForm";
 import Preloader from "../../../components/ui/Loaders/Preloader";
-import { LoadError } from "../../../components/ui/Erros";
+import { LoadError } from "../../../components/ui/Errors";
 import Prompter from "../prompter/Prompter";
 
 function ProfilePage({

@@ -16,6 +16,7 @@ interface IOptionsItem {
 }
 
 interface IProps {
+  id?: string;
   options: IOptionsItem[];
   defaultValue: IOptionsItem;
   label: string;
@@ -25,15 +26,16 @@ interface IProps {
   inputError: boolean;
   inputHelperText: any;
   disable: boolean;
-  handleBlur: () => {};
+  handleBlur?: () => {} | void;
   fetchLocations: (location: string) => {};
   clearLocations: () => {};
-  setSelectedLocation: (location: any) => {};
+  setSelectedLocation: (location: any) => {} | void;
   prompterRunning?: boolean;
   prompterStep?: number;
 }
 
 const Autocomplete: React.FC<IProps> = ({
+  id = "",
   options,
   defaultValue,
   label,
@@ -68,7 +70,7 @@ const Autocomplete: React.FC<IProps> = ({
 
   return (
     <MaterialAutocomplete
-      id="autocomplete"
+      id={`autocomplete${id}`}
       noOptionsText="Введите место"
       options={options}
       loading={loading}

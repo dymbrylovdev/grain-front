@@ -8,7 +8,7 @@ import { put, takeLatest, call } from "redux-saga/effects";
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
 import { getCropParams, getCrops } from "../../crud/crops.crud";
-import { ICropParam, ICrop } from "../../interfaces/crops";
+import { ICrop, ICropParam } from "../../interfaces/crops";
 
 const FETCH_REQUEST = "cropParams/FETCH_REQUEST";
 const FETCH_SUCCESS = "cropParams/FETCH_SUCCESS";
@@ -87,7 +87,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case CROP_PARAMS_SUCCESS: {
-        console.log(action.payload.data);
+        //console.log(action.payload.data);
         return {
           ...state,
           cropParams: action.payload.data,

@@ -4,16 +4,17 @@ import { LayoutSplashScreen } from "../../../_metronic";
 import getMenuConfig from "../../router/MenuConfig";
 import UserDocPage from "./userDocs/UserDocPage";
 import { useSelector, shallowEqual, connect } from "react-redux";
-import { ProfilePage, UserListPage, CreateUserPage, EditUserPage } from "./users";
+import { UsersPage, UserEditPage } from "./users";
 import { BidsListPage, BidCreatePage, MyBidsListPage, AllBidsPage } from "./bids";
 import { CropsListPage, CropPage } from "./crops";
 import { CompanyPage, CompaniesListPage, CompanyConfirmPage } from "./companies";
 import * as builder from "../../../_metronic/ducks/builder";
 import * as crops from "../../store/ducks/crops.duck";
 import * as users from "../../store/ducks/users.duck";
+import { actions as statusesActions } from "../../store/ducks/statuses.duck";
 import { MyFiltersPage, MyFiltersEditPage } from "./myFilters";
 
-function HomePage({ setMenuConfig, getCrops, getStatuses }) {
+function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { crops, user } = useSelector(
     ({ crops: { crops }, auth }) => ({ crops: (crops && crops.data) || [], user: auth.user }),
     shallowEqual
@@ -24,7 +25,7 @@ function HomePage({ setMenuConfig, getCrops, getStatuses }) {
   };
   useEffect(() => {
     setMenuConfig(menuConfig);
-    getStatuses();
+    fetchStatuses();
     getCropsAction();
   }, []); // eslint-disable-line
   return (
@@ -35,13 +36,14 @@ function HomePage({ setMenuConfig, getCrops, getStatuses }) {
           <Redirect exact from="/" to="/user/profile" />
         }
         <Route path="/userDocs/legacy" component={UserDocPage} />
-        <Route path="/user/profile" exact component={ProfilePage} />
-        <Route path="/userList" component={UserListPage} />
-        <Route path="/user/create" component={CreateUserPage} />
-        <Route path="/user/edit/:id" component={EditUserPage} />
+        <Route path="/user/profile" exact component={UserEditPage} />
+        <Route path="/user-list" component={UsersPage} />
+        <Route path="/user/create" component={UserEditPage} />
+        <Route path="/user/edit/:id" component={UserEditPage} />
         <Route path="/user/filters/view/:id" component={MyFiltersEditPage} />
         <Route path="/user/filters/edit/:id" component={MyFiltersEditPage} />
         <Route path="/user/filters" component={MyFiltersPage} />
+
         <Route path="/bidsList" exact component={BidsListPage} />
         <Route path="/myBidsList" exact component={MyBidsListPage} />
         <Route path="/bidsList/:cropId" exact component={BidsListPage} />
@@ -54,9 +56,11 @@ function HomePage({ setMenuConfig, getCrops, getStatuses }) {
         <Route path="/bid/edit/:bidId/fromMy" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId/fromAdmin" component={BidCreatePage} />
         <Route path="/allBidsList/:cropId" component={AllBidsPage} />
+
         <Route path="/cropList" component={CropsListPage} />
         <Route path="/crop/create" component={CropPage} />
         <Route path="/crop/edit/:id" component={CropPage} />
+
         <Route path="/company/create" exact component={CompanyPage} />
         <Route path="/company/edit/:companyId" exact component={CompanyPage} />
         <Route path="/companyList" component={CompaniesListPage} />
@@ -66,4 +70,9 @@ function HomePage({ setMenuConfig, getCrops, getStatuses }) {
   );
 }
 
-export default connect(null, { ...builder.actions, ...crops.actions, ...users.actions })(HomePage);
+export default connect(null, {
+  ...builder.actions,
+  ...crops.actions,
+  ...users.actions,
+  fetchStatuses: statusesActions.fetchRequest,
+})(HomePage);
