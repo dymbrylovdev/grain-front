@@ -79,7 +79,7 @@ const getAdminMenu = crops => ({
           {
             title: "Список пользователей",
             root: true,
-            page: "userList",
+            page: "user-list",
             translate: "SUBMENU.USER.LIST",
           },
           {

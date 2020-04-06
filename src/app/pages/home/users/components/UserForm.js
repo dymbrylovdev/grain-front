@@ -91,8 +91,10 @@ function UserForm({
   const formRef = useRef();
   const innerClasses = innerStyles();
   const statuses = useSelector(({ users: { statuses } }) => statuses, shallowEqual);
+
   const { locations, isLoadingLocations } = useSelector(state => state.locations);
   const [selectedLocation, setSelectedLocation] = useState(null);
+
   useEffect(() => {
     user && user.id && formRef.current.resetForm({ values: getInitialValues(user) });
   }, [user]);

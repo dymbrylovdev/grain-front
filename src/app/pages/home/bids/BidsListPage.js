@@ -19,7 +19,7 @@ import BidTable from "./components/BidTable";
 import LocationBlock from "./components/location/LocationBlock";
 import LocationDialog from "./components/location/LocationDialog";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
-import { ErrorDialog, LoadError } from "../../../components/ui/Erros";
+import { ErrorDialog, LoadError } from "../../../components/ui/Errors";
 import Prompter from "../prompter/Prompter";
 
 const useInnerStyles = makeStyles(theme => ({
@@ -107,7 +107,6 @@ function BidsListPage({
     setFilterForCrop(filter, cropId);
     setCropLoading(true);
     const successCallback = data => {
-      console.log(data);
       setCropLoading(false);
       const enumData = data.filter(item => item.type === "enum");
       const numberData = data.filter(item => item.type === "number");

@@ -212,13 +212,14 @@ const FilterModal = ({
                         color={
                           !myFilters ||
                           createLoading ||
+                          delLoading ||
                           (myFilters &&
                             !myFilters.filter(myFilter => myFilter.crop.id === cropId).length)
                             ? "primary"
                             : "secondary"
                         }
                         className={innerClasses.badge}
-                        variant={!myFilters || createLoading ? "dot" : "standard"}
+                        variant={!myFilters || createLoading || delLoading ? "dot" : "standard"}
                       >
                         {intl.formatMessage({ id: "FILTER.FORM.TABS.MY_FILTERS" })}
                       </Badge>

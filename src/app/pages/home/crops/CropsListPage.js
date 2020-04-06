@@ -18,7 +18,7 @@ import * as builder from "../../../../_metronic/ducks/builder";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import useStyles from "../styles";
 import Preloader from "../../../components/ui/Loaders/Preloader";
-import { LoadError } from "../../../components/ui/Erros";
+import { LoadError } from "../../../components/ui/Errors";
 
 function CropsListPage({ setMenuConfig, getCrops, match }) {
   const { crops, user, loading, errors } = useSelector(

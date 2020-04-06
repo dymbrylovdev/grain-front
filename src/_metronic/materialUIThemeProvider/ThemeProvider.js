@@ -34,6 +34,13 @@ const theme = createMuiTheme(
         // contrastText: will be calculated to contrast with palette.primary.main
         contrastText: "#fff",
       },
+      success: {
+        // light: will be calculated from palette.primary.main,
+        main: "#0abb87",
+        // dark: will be calculated from palette.primary.main,
+        // contrastText: will be calculated to contrast with palette.primary.main
+        contrastText: "#fff",
+      },
     },
 
     /**
@@ -46,7 +53,7 @@ const theme = createMuiTheme(
         },
       },
       MuiButton: {
-        outlinedSecondary: {
+        colorInherit: {
           color: "#fd397a",
           borderColor: "#fd397a",
           "&:hover": {

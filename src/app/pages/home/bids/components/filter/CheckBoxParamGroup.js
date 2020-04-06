@@ -2,7 +2,7 @@ import React from "react";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { Col, Row } from "react-bootstrap";
 
-function CheckBoxParamGroup({ values, handleChange, param, isEditable }) {
+function CheckBoxParamGroup({ values, handleChange, param, isEditable = true }) {
   return (
     <Col>
       <Row>{param.name}</Row>

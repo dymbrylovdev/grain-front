@@ -9,7 +9,7 @@ import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import * as bids from "../../../store/ducks/bids.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import BidTable from "./components/BidTable";
-import { ErrorDialog, LoadError } from "../../../components/ui/Erros";
+import { ErrorDialog, LoadError } from "../../../components/ui/Errors";
 
 function MyBidsListPage({ intl, getMyBids, deleteBid, clearErrors }) {
   const classes = useStyles();

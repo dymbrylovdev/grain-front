@@ -11,26 +11,29 @@ export const actionTypes = {
   ClearLocations: "[ClearLocations] Action",
 };
 
-const initialDocState = {
+const initialState = {
   locations: [],
   isLoadingLocations: false,
+  error: false,
 };
 
 export const reducer = persistReducer(
   { storage, key: "locations" },
-  (state = initialDocState, action) => {
+  (state = initialState, action) => {
     switch (action.type) {
       case actionTypes.FetchLocаtionRequest: {
         return {
           ...state,
           isLoadingLocations: true,
           locations: [],
+          error: false,
         };
       }
       case actionTypes.ClearLocations: {
         return {
           ...state,
           isLoadingLocations: false,
+          error: false,
         };
       }
       case actionTypes.FetchLocаtionSuccess: {
@@ -45,6 +48,7 @@ export const reducer = persistReducer(
         return {
           ...state,
           isLoadingLocations: false,
+          error: true,
         };
       }
       default:
@@ -54,10 +58,10 @@ export const reducer = persistReducer(
 );
 
 export const actions = {
+  clearLocations: payload => ({ type: actionTypes.ClearLocations, payload }),
   fetchLocationsRequest: payload => ({ type: actionTypes.FetchLocаtionRequest, payload }),
   fetchLocationsSuccess: payload => ({ type: actionTypes.FetchLocаtionSuccess, payload }),
   fetchLocationsFail: payload => ({ type: actionTypes.FetchLocаtionFail, payload }),
-  clearLocations: payload => ({ type: actionTypes.ClearLocations, payload }),
 };
 
 export function* saga() {

@@ -1,8 +1,7 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { compose } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
-import { Formik } from "formik";
 import {
   makeStyles,
   TextField,
@@ -11,15 +10,14 @@ import {
   Grid,
   Paper,
   MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
-  CircularProgress,
   Button,
 } from "@material-ui/core";
 import { Row, Col } from "react-bootstrap";
-import { injectIntl, WrappedComponentProps, FormattedMessage } from "react-intl";
+import { injectIntl, WrappedComponentProps } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
+import { useSnackbar } from "notistack";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
 import { actions as cropsActions } from "../../../store/ducks/crops2.duck";
@@ -33,6 +31,7 @@ import useStyles from "../styles";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { IMyFilterItem } from "./interfaces";
+import { OutlinedRedButton } from "../../../components/ui/Buttons/RedButtons";
 
 const useInnerStyles = makeStyles(theme => ({
   buttonContainer: {
@@ -61,28 +60,37 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   },
   match,
   intl,
+
   fetchFilters,
   myFilters,
   myFiltersLoading,
-  clearCropParams,
+
   fetchCrops,
   crops,
   cropsLoading,
+
+  clearCropParams,
   fetchCropParams,
   cropParams,
   cropParamsLoading,
-  createLoading,
-  createSuccess,
-  delLoading,
-  delSuccess,
-  editLoading,
-  editSuccess,
+
   clearCreateFilter,
   createFilter,
+  createLoading,
+  createSuccess,
+  createError,
+
   clearDelFilter,
   delFilter,
+  delLoading,
+  delSuccess,
+  delError,
+
   clearEditFilter,
   editFilter,
+  editLoading,
+  editSuccess,
+  editError,
 }) => {
   const innerClasses = useInnerStyles();
   const classes = useStyles();
@@ -90,6 +98,59 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   const isEditable = match.url.indexOf("view") === -1;
 
   const [isAlertOpen, setAlertOpen] = useState(false);
+  const [formikErrored, setFormikErrored] = useState(false);
+
+  const { enqueueSnackbar } = useSnackbar();
+  useEffect(() => {
+    if (formikErrored) {
+      enqueueSnackbar(intl.formatMessage({ id: "NOTISTACK.ERRORS.EMPTY_FIELDS" }), {
+        variant: "error",
+      });
+      setFormikErrored(false);
+    }
+  }, [enqueueSnackbar, formikErrored, intl]);
+
+  useEffect(() => {
+    if (createSuccess || createError) {
+      enqueueSnackbar(
+        createSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.CREATE_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${createError}`,
+        {
+          variant: createSuccess ? "success" : "error",
+        }
+      );
+      clearCreateFilter();
+    }
+  }, [clearCreateFilter, createError, createSuccess, enqueueSnackbar, intl]);
+
+  useEffect(() => {
+    if (delError) {
+      enqueueSnackbar(`${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${delError}`, {
+        variant: "error",
+      });
+      setAlertOpen(false);
+      clearDelFilter();
+    }
+  }, [clearDelFilter, delError, delSuccess, enqueueSnackbar, intl]);
+
+  useEffect(() => {
+    if (editSuccess || editError) {
+      enqueueSnackbar(
+        editSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.SAVE_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editError}`,
+        {
+          variant: editSuccess ? "success" : "error",
+        }
+      );
+      clearEditFilter();
+    }
+  }, [clearEditFilter, editError, editSuccess, enqueueSnackbar, intl]);
+
+  useEffect(() => {
+    if (createSuccess || editSuccess || delSuccess) history.push("/user/filters");
+  }, [createSuccess, delSuccess, editSuccess, history]);
 
   useEffect(() => {
     if (!myFilters && !myFiltersLoading) {
@@ -118,34 +179,44 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   return (
     <Paper className={classes.container}>
       <LayoutSubheader
-        title={`${+id ? (isEditable ? "Редактирование" : "Просмотр") : "Создание"} фильтра`}
+        title={`${
+          +id
+            ? isEditable
+              ? intl.formatMessage({ id: "SUBHEADER.PARTS.EDIT" })
+              : intl.formatMessage({ id: "SUBHEADER.PARTS.VIEW" })
+            : intl.formatMessage({ id: "SUBHEADER.PARTS.CREATE" })
+        } ${intl.formatMessage({ id: "SUBHEADER.PARTS.FILTER" })}`}
         breadcrumb={undefined}
         description={undefined}
       />
-      <AlertDialog
-        isOpen={isAlertOpen}
-        text={intl.formatMessage({
-          id: "FILTER.DIALOGS.DELETE_TEXT",
-        })}
-        okText={intl.formatMessage({
-          id: "FILTER.DIALOGS.AGREE_TEXT",
-        })}
-        cancelText={intl.formatMessage({
-          id: "FILTER.DIALOGS.CANCEL_TEXT",
-        })}
-        handleClose={() => setAlertOpen(false)}
-        handleAgree={() => {
-          setAlertOpen(false);
-          delFilter(+id);
-        }}
-      />
       <Formik
         initialValues={
-          +id ? fromApiToFilter(myFilters.find(item => item.id === +id) as IMyFilterItem) : {}
+          +id
+            ? fromApiToFilter(myFilters.find(item => item.id === +id) as IMyFilterItem)
+            : { name: "" }
         }
         onSubmit={(values, { setStatus, setSubmitting }) => {
-          console.log(values);
+          cropParams &&
+            (+id
+              ? editFilter({
+                  id: myFilters.find(item => item.id === +id)?.id as number,
+                  data: filterForCreate(
+                    values,
+                    cropParams.filter(item => item.type === "enum"),
+                    cropParams.filter(item => item.type === "number")
+                  ),
+                })
+              : createFilter(
+                  filterForCreate(
+                    values,
+                    cropParams.filter(item => item.type === "enum"),
+                    cropParams.filter(item => item.type === "number")
+                  )
+                ));
         }}
+        validationSchema={Yup.object().shape({
+          name: Yup.string().required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" })),
+        })}
       >
         {({
           values,
@@ -160,7 +231,6 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
           initialValues,
           setFieldValue,
         }) => {
-          console.log(values);
           return (
             <div className={classes.form}>
               <TextField
@@ -185,6 +255,8 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                       }
                     : undefined
                 }
+                helperText={touched.name && errors.name}
+                error={Boolean(touched.name && errors.name)}
                 disabled={!isEditable}
               />
 
@@ -318,38 +390,10 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                       spacing={1}
                       className={innerClasses.buttonContainer}
                     >
-                      {isEditable && (
-                        <Grid item>
-                          <ButtonWithLoader
-                            loading={editLoading}
-                            disabled={editLoading}
-                            onPress={() => {
-                              +id
-                                ? editFilter({
-                                    id: myFilters.find(item => item.id === +id)?.id as number,
-                                    data: filterForCreate(
-                                      values,
-                                      cropParams.filter(item => item.type === "enum"),
-                                      cropParams.filter(item => item.type === "number")
-                                    ),
-                                  })
-                                : createFilter(
-                                    filterForCreate(
-                                      values,
-                                      cropParams.filter(item => item.type === "enum"),
-                                      cropParams.filter(item => item.type === "number")
-                                    )
-                                  );
-                            }}
-                          >
-                            {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })}
-                          </ButtonWithLoader>
-                        </Grid>
-                      )}
                       <Grid item>
                         <Button
                           variant="outlined"
-                          color="secondary"
+                          color="primary"
                           onClick={() => history.push("/user/filters")}
                         >
                           {isEditable
@@ -357,6 +401,29 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                             : intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
                         </Button>
                       </Grid>
+                      {isEditable && (
+                        <Grid item>
+                          <ButtonWithLoader
+                            loading={editLoading || createLoading}
+                            disabled={editLoading || createLoading}
+                            onPress={() => {
+                              values.name === "" && setFormikErrored(true);
+                              handleSubmit();
+                            }}
+                          >
+                            {+id
+                              ? intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })
+                              : intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })}
+                          </ButtonWithLoader>
+                        </Grid>
+                      )}
+                      {isEditable && Boolean(+id) && (
+                        <Grid item>
+                          <OutlinedRedButton variant="outlined" onClick={() => setAlertOpen(true)}>
+                            {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
+                          </OutlinedRedButton>
+                        </Grid>
+                      )}
                     </Grid>
                   </div>
                 )}
@@ -365,6 +432,26 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
           );
         }}
       </Formik>
+      <AlertDialog
+        isOpen={isAlertOpen}
+        text={intl.formatMessage({
+          id: "FILTER.DIALOGS.DELETE_TEXT",
+        })}
+        okText={intl.formatMessage({
+          id: "FILTER.DIALOGS.AGREE_TEXT",
+        })}
+        cancelText={intl.formatMessage({
+          id: "FILTER.DIALOGS.CANCEL_TEXT",
+        })}
+        handleClose={() => setAlertOpen(false)}
+        handleAgree={() => {
+          delFilter(+id);
+        }}
+        loadingText={intl.formatMessage({
+          id: "FILTER.DIALOGS.LOADING_TEXT",
+        })}
+        isLoading={delLoading}
+      />
     </Paper>
   );
 };
@@ -379,10 +466,13 @@ const connector = connect(
     cropParamsLoading: state.crops2.cropParamsLoading,
     createLoading: state.myFilters.createLoading,
     createSuccess: state.myFilters.createSuccess,
+    createError: state.myFilters.createError,
     delLoading: state.myFilters.delLoading,
     delSuccess: state.myFilters.delSuccess,
+    delError: state.myFilters.delError,
     editLoading: state.myFilters.editLoading,
     editSuccess: state.myFilters.editSuccess,
+    editError: state.myFilters.editError,
   }),
   {
     fetchFilters: myFiltersActions.fetchRequest,
@@ -400,4 +490,4 @@ const connector = connect(
 
 type TPropsFromRedux = ConnectedProps<typeof connector>;
 
-export default connector(injectIntl(MyFiltersEditPage));
+export default compose(connector, injectIntl)(MyFiltersEditPage);

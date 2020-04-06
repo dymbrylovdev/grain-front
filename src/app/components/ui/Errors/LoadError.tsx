@@ -1,5 +1,5 @@
 import React from "react";
-import { injectIntl } from "react-intl";
+import { injectIntl, WrappedComponentProps } from "react-intl";
 import { makeStyles } from "@material-ui/core";
 import ButtonWithLoader from "../Buttons/ButtonWithLoader";
 
@@ -10,7 +10,7 @@ const useStyle = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   title: {
     marginBottom: theme.spacing(2),
@@ -19,18 +19,21 @@ const useStyle = makeStyles(theme => ({
   },
 }));
 
-function LoadError({ intl, title, handleClick }) {
+interface IProps {
+  title?: string;
+  handleClick: () => {} | void;
+}
+
+const LoadError: React.FC<IProps & WrappedComponentProps> = ({ intl, title, handleClick }) => {
   const classes = useStyle();
   return (
     <div className={classes.root}>
-      <div className={classes.title}>
-        {title || intl.formatMessage({ id: "ERROR.LOAD.TITLE", default: "Ошибка загрузки данных" })}
-      </div>
+      <div className={classes.title}>{title || intl.formatMessage({ id: "ERROR.LOAD.TITLE" })}</div>
       <ButtonWithLoader onPress={handleClick || (() => {})}>
-        {intl.formatMessage({ id: "ERROR.BUTTON.REPEAT", default: "Повторить попытку" })}
+        {intl.formatMessage({ id: "ERROR.BUTTON.REPEAT" })}
       </ButtonWithLoader>
     </div>
   );
-}
+};
 
 export default injectIntl(LoadError);

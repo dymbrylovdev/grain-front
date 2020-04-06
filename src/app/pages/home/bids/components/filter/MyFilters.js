@@ -27,7 +27,6 @@ const innerStyle = makeStyles(theme => ({
     textAlign: "center",
   },
   apliedText: {
-    //fontWeight: "bold",
     color: theme.palette.secondary.main,
   },
 }));
@@ -61,9 +60,9 @@ const MyFilters = ({
     <Row>
       <Col>
         {!filters.length ? (
-          <p className={innerClasses.empty}>{`${intl.formatMessage({
-            id: "FILTER.MY_FILTERS.EMPTY",
-          })} "${cropName}"`}</p>
+          <p className={innerClasses.empty}>
+            {intl.formatMessage({ id: "FILTER.MY_FILTERS.EMPTY" }, { name: cropName })}
+          </p>
         ) : (
           <>
             {filters.map(item => (

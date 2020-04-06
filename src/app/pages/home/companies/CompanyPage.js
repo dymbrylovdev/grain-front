@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 
 import * as companies from "../../../store/ducks/companies.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
-import { LoadError } from "../../../components/ui/Erros";
+import { LoadError } from "../../../components/ui/Errors";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import CompanyForm from "./components/CompanyForm";
 import useStyles from "../styles";

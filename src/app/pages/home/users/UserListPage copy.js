@@ -20,7 +20,7 @@ import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import Footer from "../../../components/ui/Table/TableFooter";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import Preloader from "../../../components/ui/Loaders/Preloader";
-import { LoadError, ErrorDialog } from "../../../components/ui/Erros";
+import { LoadError, ErrorDialog } from "../../../components/ui/Errors";
 
 import useStyles from "./styles";
 

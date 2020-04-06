@@ -4,6 +4,12 @@
   "ALL.BUTTONS.FINISH": "Завершить",
   "ALL.BUTTONS.CANCEL": "Отмена",
   "ALL.BUTTONS.DELETE": "Удалить",
+  "ALL.BUTTONS.SAVE": "Сохранить",
+  "ALL.BUTTONS.CREATE": "Добавить",
+
+  "ALL.DIALOGS.DEL_TEXT": "Удаление...",
+
+  "ALL.SELECTS.EMPTY": "Не выбрано",
 
   "MENU.GRAIN": "Рынок зерна",
   "MENU.USERS": "Пользователи",
@@ -27,6 +33,13 @@
   "SUBMENU.CATALOG.CREATE_CROP": "Добавить культуру",
   "SUBMENU.SYSTEM.SETTINGS": "Настройки системы",
   "SUBMENU.LEGAL": "Пользовательское соглашение",
+
+  "SUBHEADER.PARTS.EDIT": "Редактирование",
+  "SUBHEADER.PARTS.CREATE": "Добавление",
+  "SUBHEADER.PARTS.VIEW": "Просмотр",
+
+  "SUBHEADER.PARTS.FILTER": "фильтра",
+  "SUBHEADER.PARTS.USER": "пользователя",
 
   "START.WELCOME": "Добро пожаловать на Рынок Зерна",
   "START.DESCRIPTION": "Маркетплейс по продаже зерновых культур",
@@ -65,7 +78,7 @@
   "AUTH.BUTTON.BACK": "Назад",
   "AUTH.BUTTON.RESET": "Восстановить",
   "AUTH.EMAIL.TITLE": "Письмо отправлено",
-  "AUTH.EMAIL.DESCRIPTION": "На указанный вами Email {name} в течении нескольких минут придет письмо  с указаниями по установке пароля.",
+  "AUTH.EMAIL.DESCRIPTION": "На указанный вами Email {name} в течении нескольких минут придет письмо с указаниями по установке пароля.",
   "AUTH.EMAIL.NO_SENT": "Не пришло письмо?",
   "AUTH.PASSWORD.TITLE": "Введите новый пароль",
   "AUTH.PASSWORD.BUTTON": "Подтвердить",
@@ -101,11 +114,18 @@
   "USERLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить пользователя? Все его заявки будут удалены вместе с ним.",
   "USERLIST.DIALOGS.AGREE_TEXT": "Да",
   "USERLIST.DIALOGS.CANCEL_TEXT": "Отмена",
+  "USERLIST.DIALOGS.LOADING_TEXT": "Удаление пользователя",
   "USERLIST.TOOLTIP.EDIT": "Редактировать пользователя",
   "USERLIST.TOOLTIP.DELETE": "Удалить пользователя",
   "USERLIST.TOOLTIP.CREATE_BID": "Добавить заявку",
+  "USERLIST.PAGINATOR_TEXT": "Пользователей на странице:",
 
   "TABLE.FROM.LABEL": "из",
+  "TABLE.AND.LABEL": "и",
+
+  "USER.EDIT_FORM.PROFILE": "Профиль",
+  "USER.EDIT_FORM.COMPANY": "Компания",
+  "USER.EDIT_FORM.LOCATIONS": "Точки отгрузки",
 
   "LOCATION.STATUS.ERROR": "Ошибка сохранения локации",
 
@@ -181,11 +201,12 @@
   "FILTER.FORM.TABS.CREATE_FILTER": "Создать фильтр",
   "FILTER.FORM.CROPS.EMPTY": "Выберите культуру",
   "FILTER.FORM.TABS.MY_FILTERS": "Мои фильтры",
-  "FILTER.MY_FILTERS.EMPTY": "У вас ещё нет сохранённых фильтров для культуры",
+  "FILTER.MY_FILTERS.EMPTY": "У Вас нет сохранённых фильтров для культуры \"{name}\".",
   "FILTER.MY_FILTERS.APLIED": "Применен этот фильтр",
   "FILTER.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить этот фильтр?",
   "FILTER.DIALOGS.AGREE_TEXT": "Да",
   "FILTER.DIALOGS.CANCEL_TEXT": "Отмена",
+  "FILTER.DIALOGS.LOADING_TEXT": "Удаление фильтра",
 
   "FILTERS.TABLE.HEADER.CROP": "Культура",
   "FILTERS.TABLE.HEADER.NAME": "Название фильтра",
@@ -221,6 +242,8 @@
   "COMPANY.FORM.HOME_PHONE": "Городской телефон",
   "COMPANY.FORM.VALIDATION.WRONG_DATA": "Неверный формат даты",
   "COMPANY.FORM.VALIDATION.MAX_DATA": "Дата не должна превышать текущую",
+  "COMPANY.FORM.NO_USER": "Чтобы добавить компанию, сначала заполните профиль пользователя и нажмите кнопку \"Добавить\".",
+  "COMPANY.FORM.NO_COMPANY": "Для этого пользователя еще не выбрана компания.",
   "COMPANY.STATUS.CREATE": "Компания успешно сохранена",
   "COMPANY.STATUS.ERROR": "Ошибка сохранения компании",
   "COMPANY.TABLE.TITLE": "Компании",
@@ -233,6 +256,7 @@
   "COMPANY.TABLE.BUTTON.CHOOSE": "Выбрать",
   "COMPANY.LIST.EMPTY": "Компаний не найдено",
   "COMPANY.BUTTON.ADD": "Добавить компанию",
+  "COMPANY.BUTTON.SAVE": "Сохранить компанию",
   "COMPANY.SEARCH.TITLE": "Введите данные для поиска компании",
   "COMPANY.SEARCH.BUTTON": "Поиск компании",
   "COMPANY.SEARCH.BUTTON.FOCUS": "Заполнить из Контур.Фокус",
@@ -244,6 +268,7 @@
   "COMPANY.CONFIRM.BY_PHONE": "По телефону",
   "COMPANY.CONFIRM.BY_PAY": "Оплатой",
   "COMPANY.CONFIRM.NO_CONFIRM": "Связь не подтверждена",
+  "COMPANY.CONFIRM.NO_COMPANY": "Чтобы подтвердить связь, сначала сохраните компанию",
   "COMPANY.CONFIRM.BUTTON": "Подтверждение связи",
   "COMPANY.CONFIRM.MAIN.TITLE": "Подтверждение связи с компанией",
   "COMPANY.CONFIRM.EMAIL.TITLE": "1. Автоматическое подтверждение по электронной почте",
@@ -261,6 +286,13 @@
   "COMPANY.CONFIRM.SUCCESS": "Связь успешно подтверждена.",
   "COMPANY.CONFIRM.ERROR.SENT": "Ошибка отправки кода",
 
+  "LOCATIONS.FORM.NO_USER": "Чтобы добавить точки отгрузки/погрузки, сначала заполните профиль пользователя и нажмите кнопку \"Добавить\".",
+  "LOCATIONS.FORM.NO_LOCATIONS": "Для этого пользователя еще не добавлены точки отгрузки/погрузки.",
+  "LOCATIONS.FORM.ADD_LOCATIONS": "Добавить точку",
+  "LOCATIONS.DIALOGS.DELETE_TEXT": "Вы действительно хотите удалить эту точку?",
+  "LOCATIONS.INPUT.NAME": "Название точки",
+  "LOCATIONS.INPUT.NAME.YUP": "Введите название точки",
+
   "PROMPTER.STEPPER.STEP0": "Профиль",
   "PROMPTER.STEPPER.STEP1": "Выбор культуры",
   "PROMPTER.STEPPER.STEP2": "Список заявок",
@@ -269,7 +301,20 @@
   "PROMPTER.STEPPER.STEP_CONTENT0": "Заполните как можно больше информации о себе, чтобы ваши бизнес-партнёры понимали, с кем они работают. Укажите ваше имя, точку отгрузки / погрузки зерна, а также другую информацию.",
   "PROMPTER.STEPPER.STEP_CONTENT1": "Выберите интересующую вас зерновую культуру, например \"Пшеницу\". Для этого в боковом меню откройте \"Рынок зерна — Лучшие заявки — Пшеница\"",
   "PROMPTER.STEPPER.STEP_CONTENT2": "Здесь выводится 10 заявок на продажу с лучшими ценами по рынку. Цена указана за тонну с учётом доставки до вашей точки отгрузки.",
-  "PROMPTER.STEPPER.STEP_CONTENT3": " Чтобы подобрать заявки с оптимальными параметрами (класс, протеин, влажность и т. д.) нажмите на значок фильтра, введите значения параметров и нажмите \"Применить\".",
+  "PROMPTER.STEPPER.STEP_CONTENT3": " Чтобы подобрать заявки с оптимальными параметрами (класс, протеин, влажность и т. д.) нажмите на значок фильтра, введите значения параметров и нажмите \"Применить фильтр\".",
   "PROMPTER.STEPPER.STEP_CONTENT4": "Чтобы продать зерно нажмите на кнопку \"Добавить заявку\" и укажите параметры вашего зерна, точку отгрузки и цену за тонну.",
-  "PROMPTER.STEPPER.STEP_CONTENT5": "Ознакомление с платформой \"Рынок зерна\" окончено. Чтобы закрыть это окно, нажмите на кнопку \"Завершить\" Приятной работы."
+  "PROMPTER.STEPPER.STEP_CONTENT5": "Ознакомление с платформой \"Рынок зерна\" окончено. Чтобы закрыть это окно, нажмите на кнопку \"Завершить\" Приятной работы.",
+
+  "NOTISTACK.ERRORS.EMPTY_FIELDS": "Заполните обязательные поля!",
+  "NOTISTACK.ERRORS.CREATE_FILTER": "Фильтр создан",
+  "NOTISTACK.ERRORS.SAVE_FILTER": "Фильтр сохранен",
+  "NOTISTACK.ERRORS.DEL_FILTER": "Фильтр удален",
+  "NOTISTACK.ERRORS.DEL_USER": "Пользователь удален",
+  "NOTISTACK.USERS.SAVE_PROFILE": "Мой профиль сохранен",
+  "NOTISTACK.USERS.SAVE_USER": "Пользователь сохранен",
+  "NOTISTACK.USERS.SAVE_CREATE": "Пользователь добавлен",
+  "NOTISTACK.POINTS.CREATE": "Точка отгрузки/погрузки добавлена",
+  "NOTISTACK.POINTS.DEL": "Точка отгрузки/погрузки удалена",
+  "NOTISTACK.POINTS.EDIT": "Точка отгрузки/погрузки сохранена",
+  "NOTISTACK.ERRORS.ERROR": "Ошибка: "
 }

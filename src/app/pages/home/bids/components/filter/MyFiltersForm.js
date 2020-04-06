@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Formik } from "formik";
-import { makeStyles, TextField, Divider, IconButton, Grid, Button } from "@material-ui/core";
+import { makeStyles, TextField, Divider, IconButton, Grid } from "@material-ui/core";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
@@ -10,6 +10,7 @@ import NumberParam from "./NumberParam";
 import { fromApiToFilter } from "../../../myFilters/utils";
 import { filterForCreate } from "../../../myFilters/utils";
 import AlertDialog from "../../../../../components/ui/Dialogs/AlertDialog";
+import { OutlinedRedButton } from "../../../../../components/ui/Buttons/RedButtons";
 
 const innerStyle = makeStyles(theme => ({
   buttonContainer: {
@@ -76,23 +77,6 @@ function MyFiltersForm({
         initialValues,
       }) => (
         <Col>
-          <AlertDialog
-            isOpen={isAlertOpen}
-            text={`${intl.formatMessage({
-              id: "FILTER.DIALOGS.DELETE_TEXT",
-            })}"${filter.name}"`}
-            okText={intl.formatMessage({
-              id: "FILTER.DIALOGS.AGREE_TEXT",
-            })}
-            cancelText={intl.formatMessage({
-              id: "FILTER.DIALOGS.CANCEL_TEXT",
-            })}
-            handleClose={() => setAlertOpen(false)}
-            handleAgree={() => {
-              setAlertOpen(false);
-              delFilter(filter.id);
-            }}
-          />
           <ButtonWithLoader onPress={handleSubmit}>
             {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
           </ButtonWithLoader>
@@ -202,11 +186,28 @@ function MyFiltersForm({
               </ButtonWithLoader>
             </Grid>
             <Grid item>
-              <Button variant="outlined" color="secondary" onClick={() => setAlertOpen(true)}>
+              <OutlinedRedButton variant="outlined" onClick={() => setAlertOpen(true)}>
                 {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
-              </Button>
+              </OutlinedRedButton>
             </Grid>
           </Grid>
+          <AlertDialog
+            isOpen={isAlertOpen}
+            text={intl.formatMessage({
+              id: "FILTER.DIALOGS.DELETE_TEXT",
+            })}
+            okText={intl.formatMessage({
+              id: "FILTER.DIALOGS.AGREE_TEXT",
+            })}
+            cancelText={intl.formatMessage({
+              id: "FILTER.DIALOGS.CANCEL_TEXT",
+            })}
+            handleClose={() => setAlertOpen(false)}
+            handleAgree={() => {
+              setAlertOpen(false);
+              delFilter(filter.id);
+            }}
+          />
         </Col>
       )}
     </Formik>

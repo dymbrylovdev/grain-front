@@ -8,7 +8,7 @@ import * as companies from "../../../store/ducks/companies.duck";
 import useStyles from "../styles";
 import CompanyTable from "./components/CompanyTable";
 import Preloader from "../../../components/ui/Loaders/Preloader";
-import { LoadError } from "../../../components/ui/Erros";
+import { LoadError } from "../../../components/ui/Errors";
 
 function CompaniesListPage({ intl, getCompanies }) {
   const classes = useStyles();

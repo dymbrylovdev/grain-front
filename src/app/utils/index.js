@@ -15,7 +15,7 @@ export function dataToEntities(data) {
 
       const addressComponents = metaData.Address.Components;
       const address = {
-        id: position.join(", "),
+        name: position.join(", "),
         country: getAdressComponentName("country", addressComponents),
         province: getAdressComponentName("province", addressComponents),
         city: getAdressComponentName("locality", addressComponents),
