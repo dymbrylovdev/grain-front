@@ -1,11 +1,13 @@
 import React from "react";
-import { Dialog } from "@material-ui/core";
-import LocationForm from "./LocationForm";
+import { Dialog, DialogContent } from "@material-ui/core";
+import { LocationsForm } from "../../../users/components";
 
 function LocationDialog({ handleClose, isOpen, user, classes, submitAction }) {
   return (
-    <Dialog open={isOpen} onClose={handleClose} maxWidth={"sm"} fullWidth>
-      <LocationForm user={user} classes={classes} submitAction={submitAction} />
+    <Dialog open={isOpen} onClose={handleClose} maxWidth={"md"} fullWidth>
+      <DialogContent>
+        <LocationsForm editMode="profile" />
+      </DialogContent>
     </Dialog>
   );
 }

@@ -1,30 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { Link } from "react-router-dom";
-import { IntlShape } from "react-intl";
-import { TextField, Theme, IconButton, Grid, Button, Divider } from "@material-ui/core";
+import { injectIntl, WrappedComponentProps } from "react-intl";
+import {
+  TextField,
+  Theme,
+  IconButton,
+  Grid,
+  Button,
+  FormControlLabel,
+  Checkbox,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { Formik, Form, useFormik } from "formik";
+import { useFormik } from "formik";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import { useSnackbar } from "notistack";
 import * as Yup from "yup";
 
-import { IUser, IUserForEdit, IUserForCreate } from "../../../../interfaces/users";
 import useStyles from "../../styles";
-import { ActionWithPayload, Action } from "../../../../utils/action-helper";
-import { setMeValues, setCreateValues, setEditValues } from "../utils/submitValues";
-import { getInitialValues } from "../utils/companyForm";
-import CompanyConfirmBlock from "../../companies/components/CompanyConfirmBlock";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
-import CompanySearchForm from "../../companies/components/CompanySearchForm";
-import { ILocation, ILocationToRequest } from "../../../../interfaces/locations";
+import { ILocationToRequest, ILocation } from "../../../../interfaces/locations";
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
-import { actions as googleLocationsActions } from "../../../../store/ducks/googleLocations.duck";
+import { actions as googleLocationsActions } from "../../../../store/ducks/yaLocations.duck";
 import { actions as locationsActions } from "../../../../store/ducks/locations.duck";
+import { actions as authActions } from "../../../../store/ducks/auth.duck";
+import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { IAppState } from "../../../../store/rootDuck";
-import Preloader from "../../../../components/ui/Loaders/Preloader";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
+import { LocationsSkeleton } from "../skeletons";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -33,6 +36,11 @@ const innerStyles = makeStyles((theme: Theme) => ({
   },
   group: {
     marginBottom: theme.spacing(2),
+    minHeight: 200,
+    padding: theme.spacing(2),
+    border: "1px solid",
+    borderColor: "#e0e0e0",
+    borderRadius: 4,
   },
   name: {
     marginRight: theme.spacing(1),
@@ -45,25 +53,26 @@ const innerStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface IProps {
-  intl: IntlShape;
-  statuses: string[];
-  user: IUser | undefined;
   editMode: "profile" | "create" | "edit";
-  prompterRunning: boolean;
-  prompterStep: number;
+  userId?: number;
 }
 
-const LocationsForm: React.FC<IProps & TPropsFromRedux> = ({
+const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   clearGoogleLocations,
   fetchGoogleLocations,
   googleLocations,
   loadingGoogleLocations,
   errorGoogleLocations,
 
-  fetch,
-  locations,
-  loading,
-  error,
+  fetchMe,
+  me,
+  loadingMe,
+  errorMe,
+
+  fetchUser,
+  user,
+  loadingUser,
+  errorUser,
 
   clearCreate,
   create,
@@ -84,25 +93,21 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux> = ({
   delError,
 
   intl,
-  statuses,
-  user,
   editMode,
+  userId,
   prompterRunning,
   prompterStep,
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
+  let locations: ILocation[] = [];
+  if (editMode === "profile" && me) locations = me.points;
+  if (editMode === "edit" && user) locations = user.points;
 
   const [editNameId, setEditNameId] = useState(-1);
   const [creatingLocation, setCreatingLocation] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [deleteLocationId, setDeleteLocationId] = useState(-1);
-
-  const setSelectedLocation = (location: ILocationToRequest) => {
-    setCreatingLocation(false);
-    create(location);
-    console.log(location);
-  };
 
   const { values, handleChange, resetForm } = useFormik({
     initialValues: { name: "" },
@@ -124,9 +129,21 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux> = ({
           variant: createSuccess ? "success" : "error",
         }
       );
+      if (editMode === "profile") fetchMe();
+      if (editMode === "edit" && userId) fetchUser({ id: userId });
       clearCreate();
     }
-  }, [clearCreate, createError, createSuccess, enqueueSnackbar, intl]);
+  }, [
+    clearCreate,
+    createError,
+    createSuccess,
+    editMode,
+    enqueueSnackbar,
+    fetchMe,
+    fetchUser,
+    intl,
+    userId,
+  ]);
 
   useEffect(() => {
     if (editSuccess || editError) {
@@ -139,9 +156,21 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux> = ({
         }
       );
       setEditNameId(-1);
+      if (editMode === "profile") fetchMe();
+      if (editMode === "edit" && userId) fetchUser({ id: userId });
       clearEdit();
     }
-  }, [clearEdit, editError, editSuccess, enqueueSnackbar, intl]);
+  }, [
+    clearEdit,
+    editError,
+    editMode,
+    editSuccess,
+    enqueueSnackbar,
+    fetchMe,
+    fetchUser,
+    intl,
+    userId,
+  ]);
 
   useEffect(() => {
     if (delSuccess || delError) {
@@ -154,15 +183,13 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux> = ({
         }
       );
       setAlertOpen(false);
+      if (editMode === "profile") fetchMe();
+      if (editMode === "edit" && userId) fetchUser({ id: userId });
       clearDel();
     }
-  }, [clearDel, delError, delSuccess, enqueueSnackbar, intl]);
+  }, [clearDel, delError, delSuccess, editMode, enqueueSnackbar, fetchMe, fetchUser, intl, userId]);
 
-  useEffect(() => {
-    if (!locations && !loading) fetch();
-  }, [fetch, loading, locations]);
-
-  if (!locations) return <Preloader />;
+  if (loadingMe || loadingUser) return <LocationsSkeleton intl={intl} count={locations.length} />;
 
   return (
     <div>
@@ -237,7 +264,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux> = ({
                   <AutocompleteLocations
                     id={item.id.toString()}
                     options={googleLocations ? googleLocations : [{ text: "" }]}
-                    loading={loadingGoogleLocations}
+                    loading={false}
                     defaultValue={{
                       text: item.text ? item.text : "",
                     }}
@@ -250,7 +277,12 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux> = ({
                     inputHelperText={errorGoogleLocations}
                     fetchLocations={fetchGoogleLocations}
                     clearLocations={clearGoogleLocations}
-                    setSelectedLocation={setSelectedLocation}
+                    setSelectedLocation={(location: ILocationToRequest) => {
+                      if (location) {
+                        delete location.name;
+                        edit({ id: item.id, data: location });
+                      }
+                    }}
                     disable={false}
                     prompterRunning={prompterRunning}
                     prompterStep={prompterStep}
@@ -268,6 +300,12 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux> = ({
                   </IconButton>
                 </Grid>
               </Grid>
+            </Grid>
+            <Grid item>
+              <FormControlLabel
+                control={<Checkbox checked={true} onChange={handleChange} name="checkedA" />}
+                label="подписаться"
+              />
             </Grid>
           </Grid>
         ))
@@ -290,7 +328,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux> = ({
       ) : (
         <AutocompleteLocations
           options={googleLocations ? googleLocations : [{ text: "" }]}
-          loading={loadingGoogleLocations}
+          loading={false}
           defaultValue={{ text: "" }}
           label={intl.formatMessage({
             id: "PROFILE.INPUT.LOCATION",
@@ -301,7 +339,12 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux> = ({
           inputHelperText={errorGoogleLocations}
           fetchLocations={fetchGoogleLocations}
           clearLocations={clearGoogleLocations}
-          setSelectedLocation={setSelectedLocation}
+          setSelectedLocation={(location: ILocationToRequest) => {
+            if (location) {
+              setCreatingLocation(false);
+              create(location);
+            }
+          }}
           handleBlur={() => setCreatingLocation(false)}
           disable={false}
           prompterRunning={prompterRunning}
@@ -332,9 +375,13 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux> = ({
 
 const connector = connect(
   (state: IAppState) => ({
-    locations: state.locations.locations,
-    loading: state.locations.loading,
-    error: state.locations.error,
+    me: state.auth.user,
+    loadingMe: state.auth.loading,
+    errorMe: state.auth.error,
+
+    user: state.users.user,
+    loadingUser: state.users.byIdLoading,
+    errorUser: state.users.byIdError,
 
     createLoading: state.locations.createLoading,
     createSuccess: state.locations.createSuccess,
@@ -351,9 +398,14 @@ const connector = connect(
     googleLocations: state.googleLocations.googleLocations,
     loadingGoogleLocations: state.googleLocations.loading,
     errorGoogleLocations: state.googleLocations.error,
+
+    prompterRunning: state.prompter.running,
+    prompterStep: state.prompter.activeStep,
   }),
   {
-    fetch: locationsActions.fetchRequest,
+    fetchMe: authActions.fetchRequest,
+    fetchUser: usersActions.fetchByIdRequest,
+
     clearCreate: locationsActions.clearCreate,
     create: locationsActions.createRequest,
 
@@ -370,4 +422,4 @@ const connector = connect(
 
 type TPropsFromRedux = ConnectedProps<typeof connector>;
 
-export default connector(LocationsForm);
+export default connector(injectIntl(LocationsForm));

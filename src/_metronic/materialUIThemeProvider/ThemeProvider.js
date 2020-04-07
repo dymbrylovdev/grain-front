@@ -83,6 +83,11 @@ const theme = createMuiTheme(
           marginBottom: 0,
         },
       },
+      MuiSkeleton: {
+        root: {
+          backgroundColor: "rgba(158, 158, 158,.2)",
+        },
+      },
     },
     props: {
       // Name of the component ⚛️

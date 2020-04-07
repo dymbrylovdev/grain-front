@@ -18,6 +18,7 @@ export interface IUser {
   company_confirmed_by_email?: boolean;
   company_confirmed_by_phone?: boolean;
   company_confirmed_by_payment?: boolean;
+  points: ILocation[];
 }
 
 export interface IUserForRegister {

@@ -4,8 +4,7 @@ import { put, takeLatest, call } from "redux-saga/effects";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
-import { getUserById, deleteUser, createUser, editUser } from "../../crud/users.crud";
-import { IUserForCreate, IUserForEdit } from "../../interfaces/users";
+import { getUserById } from "../../crud/users.crud";
 import { ILocation, ILocationToRequest } from "../../interfaces/locations";
 import { getLocations, createLocation, delLocation, editLocation } from "../../crud/locations.crud";
 
@@ -157,7 +156,6 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     case CREATE_SUCCESS: {
       return {
         ...state,
-        locations: undefined,
         createLoading: false,
         createSuccess: true,
       };
@@ -176,7 +174,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case EDIT_SUCCESS: {
-      return { ...state, locations: undefined, editLoading: false, editSuccess: true };
+      return { ...state, editLoading: false, editSuccess: true };
     }
 
     case EDIT_FAIL: {
@@ -192,7 +190,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case DEL_SUCCESS: {
-      return { ...state, locations: undefined, delLoading: false, delSuccess: true };
+      return { ...state, delLoading: false, delSuccess: true };
     }
 
     case DEL_FAIL: {

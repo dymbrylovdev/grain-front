@@ -6,19 +6,15 @@ import { Formik } from "formik";
 import { Paper } from "@material-ui/core";
 import NumberFormat from "react-number-format";
 import * as Yup from "yup";
-import { useSelector, shallowEqual, connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
-
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import LocationBlock from "../components/location/LocationBlock";
-import { Skeleton } from "@material-ui/lab";
-import { actions as usersActions } from "../../../../store/ducks/users.duck";
 
 const getInitialValues = (bid, crop) => {
   const values = {
-    locId: bid.location.id || -1,
     volume: bid.volume || "",
     price: bid.price || "",
     description: bid.description || "",
@@ -89,9 +85,6 @@ function BidForm({
   bid,
   bidId,
   isEditable,
-  fetchUser,
-  userCreator,
-  userLoading,
   fetchLocations,
   clearLocations,
   getCropParams,
@@ -104,6 +97,7 @@ function BidForm({
   const [cropParams, setCropParams] = useState([]);
   const [isParamLoading, setCropParamLoading] = useState(false);
 
+  const { locations, isLoadingLocations } = useSelector(state => state.locations);
   const [selectedLocation, setSelectedLocation] = useState(null);
 
   const filterCrops = crops && crops.filter(item => item.id === bid.crop_id);
@@ -128,7 +122,6 @@ function BidForm({
       getCropParamsAction(currentCrop.id);
     }
   }, []); // eslint-disable-line
-
   useEffect(() => {
     console.log("--currentBid", bid);
     formRef.current.resetForm({ values: getInitialValues(bid, currentCrop) });
@@ -136,10 +129,6 @@ function BidForm({
       setCropParams([]);
     }
   }, [bidId, currentCrop]); // eslint-disable-line
-
-  useEffect(() => {
-    fetchUser({ id: bid.vendor.id });
-  }, [bid.vendor.id, fetchUser]);
 
   const toUserPath =
     user.id === (bid.vendor && bid.vendor.id)
@@ -169,14 +158,11 @@ function BidForm({
           const cropId = values.crop.id;
           values.description === "" && delete values.description;
 
-          delete values.locId;
-
           if (selectedLocation) {
             values.location = { ...selectedLocation };
           } else {
             delete values.location;
           }
-          console.log("submitValues: ", values);
           submitAction(
             { ...values, crop_id: cropId, parameter_values: paramValues },
             setStatus,
@@ -243,16 +229,10 @@ function BidForm({
                   <div className={innerClasses.calcTitle}>
                     {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
                   </div>
-                  {userLoading ? (
-                    <div>
-                      <Skeleton width="50%" height={25} animation="wave" />
-                      <Skeleton width="30%" height={25} animation="wave" />
-                      <Skeleton width="70%" height={25} animation="wave" />
-                      <Skeleton width="20%" height={25} animation="wave" />
-                    </div>
-                  ) : (
-                    <LocationBlock handleClick={openLocation} locations={user && user.points} />
-                  )}
+                  <LocationBlock
+                    handleClick={openLocation}
+                    location={user.location && user.location.text}
+                  />
                   <TextField
                     type="text"
                     label={intl.formatMessage({
@@ -279,43 +259,24 @@ function BidForm({
                 </Box>
               )}
 
-              <div className={classes.textFieldContainer}>
-                <TextField
-                  select
-                  margin="normal"
-                  className={classes.textSelect}
-                  label={intl.formatMessage({
-                    id: "PROFILE.INPUT.LOCATION",
-                  })}
-                  value={values.locId}
-                  onChange={event => {
-                    setSelectedLocation(
-                      userCreator.points.find(item => item.id === event.target.value)
-                    );
-                    console.log(values);
-                    console.log("bid: ", bid);
-                    handleChange(event);
-                  }}
-                  name="locId"
-                  variant="outlined"
-                  helperText={touched.locId && errors.locId}
-                  error={Boolean(touched.locId && errors.locId)}
-                  disabled={!isEditable}
-                >
-                  <MenuItem value={-1}>
-                    {intl.formatMessage({
-                      id: "ALL.SELECTS.EMPTY",
-                    })}
-                  </MenuItem>
-                  {userCreator &&
-                    userCreator.points.map(option => (
-                      <MenuItem key={option.id} value={option.id}>
-                        {option.name}
-                      </MenuItem>
-                    ))}
-                </TextField>
-                {userLoading && <CircularProgress className={classes.leftIcon} />}
-              </div>
+              <AutocompleteLocations
+                options={locations}
+                loading={isLoadingLocations}
+                defaultValue={{
+                  text: values.location && values.location.text ? values.location.text : "",
+                }}
+                editable={!(values.location && values.location.text)}
+                label={intl.formatMessage({
+                  id: "PROFILE.INPUT.LOCATION",
+                })}
+                inputClassName={classes.textField}
+                inputError={Boolean(touched.location && errors.location)}
+                inputHelperText={touched.location && errors.location}
+                fetchLocations={fetchLocations}
+                clearLocations={clearLocations}
+                setSelectedLocation={setSelectedLocation}
+                disable={!isEditable}
+              />
 
               <div className={classes.textFieldContainer}>
                 <TextField
@@ -425,12 +386,4 @@ function BidForm({
   );
 }
 
-export default connect(
-  state => ({
-    userCreator: state.users.user,
-    userLoading: state.users.byIdLoading,
-  }),
-  {
-    fetchUser: usersActions.fetchByIdRequest,
-  }
-)(injectIntl(BidForm));
+export default injectIntl(BidForm);
