@@ -11,6 +11,7 @@ import * as prompter from "../../../store/ducks/prompter.duck";
 import useStyles from "../styles";
 import { filterForRequest, isFilterEmpty } from "../../../utils";
 
+import { actions as locationsActions } from "../../../store/ducks/locations.duck";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import FilterModal from "./components/filter/FilterModal";
@@ -61,6 +62,7 @@ function BidsListPage({
   clearErrors,
   getCropParams,
   setActiveStep,
+  fetchLocations,
 }) {
   const innerClasses = useInnerStyles();
   const [cropLoading, setCropLoading] = useState(false);
@@ -72,13 +74,15 @@ function BidsListPage({
   cropId = Number.parseInt(cropId);
 
   const { bids, user, filter, loading, errors, activeStep } = useSelector(
-    ({ bids, auth, crops, prompter }) => ({
+    ({ bids, auth, crops, prompter, locations }) => ({
       bids: bids.bestBids,
       user: auth.user,
       filter: (crops.filters && crops.filters[cropId]) || { crop_id: cropId },
       loading: bids.bestBids && bids.bestBids.loading,
       errors: bids.errors || {},
       activeStep: prompter.activeStep,
+      locations: locations.locations,
+      locationsLoading: locations.loading,
     }),
     shallowEqual
   );
@@ -168,7 +172,6 @@ function BidsListPage({
     ? "/media/filter/filter.svg"
     : "/media/filter/filter_full.svg";
 
-  if (loading || cropLoading) return <Preloader />;
   if (errors.bests)
     return <LoadError handleClick={() => getBidsAction(filter, enumParams, numberParams)} />;
   return (
@@ -236,14 +239,18 @@ function BidsListPage({
             <CustomIcon path={filterIconPath} />
           </IconButton>
         </div>
-        <BidTable
-          classes={classes}
-          bids={equalBids}
-          isHaveRules={isHaveRules}
-          handleDeleteDialiog={handleDeleteDialiog}
-          user={user}
-          title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
-        />
+        {loading || cropLoading ? (
+          <Preloader />
+        ) : (
+          <BidTable
+            classes={classes}
+            bids={equalBids}
+            isHaveRules={isHaveRules}
+            handleDeleteDialiog={handleDeleteDialiog}
+            user={user}
+            title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
+          />
+        )}
         <div className={innerClasses.topSpaceContainer}>
           <BidTable
             classes={classes}
@@ -258,7 +265,7 @@ function BidsListPage({
           handleClick={() => {
             setLocationModalOpen(true);
           }}
-          location={user.location && user.location.text}
+          locations={user.points}
         />
       </Paper>
     </>
@@ -266,7 +273,11 @@ function BidsListPage({
 }
 
 export default injectIntl(
-  connect(null, { ...bidsDuck.actions, ...crops.actions, ...auth.actions, ...prompter.actions })(
-    BidsListPage
-  )
+  connect(null, {
+    ...bidsDuck.actions,
+    ...crops.actions,
+    ...auth.actions,
+    ...prompter.actions,
+    fetchLocations: locationsActions.fetchRequest,
+  })(BidsListPage)
 );

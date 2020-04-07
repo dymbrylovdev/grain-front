@@ -8,7 +8,7 @@ import * as auth from "./ducks/auth.duck";
 import * as users from "./ducks/users.duck";
 import * as statuses from "./ducks/statuses.duck";
 import * as locations from "./ducks/locations.duck";
-import * as googleLocations from "./ducks/googleLocations.duck";
+import * as googleLocations from "./ducks/yaLocations.duck";
 import * as docs from "./ducks/docs.duck";
 import * as bids from "./ducks/bids.duck";
 import * as myFilters from "./ducks/myFilters.duck";

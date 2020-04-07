@@ -9,7 +9,7 @@ import { useSnackbar } from "notistack";
 import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
 import { actions as locationsActions } from "../../../store/ducks/locations.duck";
-import { actions as googleLocationsActions } from "../../../store/ducks/googleLocations.duck";
+import { actions as googleLocationsActions } from "../../../store/ducks/yaLocations.duck";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LoadError } from "../../../components/ui/Errors";
@@ -217,21 +217,20 @@ const UserEditPage: React.FC<TPropsFromRedux &
   }, [clearEditMe, editError, editMeError, editMeSuccess, enqueueSnackbar, fetchMe, intl]);
 
   useEffect(() => {
-    if (editMode === "edit") {
-      fetchUser({ id: +id });
-    } else {
-      fetchMe();
+    switch (editMode) {
+      case "profile":
+        if (!me && !loadingMe) fetchMe();
+        break;
+      case "edit":
+        if (!user && !loadingUser) fetchUser({ id: +id });
+        break;
     }
-  }, [editMode, fetchMe, fetchUser, id]);
-
-  useEffect(() => {
-    fetchGoogleLocations("астр");
-  }, [fetchGoogleLocations]);
+  }, [editMode, fetchMe, fetchUser, id, loadingMe, loadingUser, me, user]);
 
   if (errorUser) return <LoadError handleClick={() => fetchUser({ id: +id })} />;
   if (errorMe) return <LoadError handleClick={() => fetchMe()} />;
 
-  if ((editMode === "edit" && !user) || loadingMe || !statuses) return <Preloader />;
+  //if ((editMode === "edit" && !user) || loadingMe || !statuses) return <Preloader />;
 
   return (
     <Paper className={classes.container}>
@@ -267,7 +266,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
         <TabPanel value={valueTabs} index={0}>
           <ProfileForm
             intl={intl}
-            statuses={statuses}
+            statuses={statuses || []}
             user={editMode === "create" ? undefined : editMode === "edit" ? user : me}
             editMode={editMode}
             prompterRunning={prompterRunning}
@@ -291,7 +290,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
           ) : (
             <CompanyForm
               intl={intl}
-              statuses={statuses}
+              statuses={statuses || []}
               user={editMode === "edit" ? user : me}
               editMode={editMode}
               prompterRunning={prompterRunning}
@@ -309,14 +308,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
           {editMode === "create" ? (
             <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
           ) : (
-            <LocationsForm
-              intl={intl}
-              statuses={statuses}
-              user={editMode === "edit" ? user : me}
-              editMode={editMode}
-              prompterRunning={prompterRunning}
-              prompterStep={prompterStep}
-            />
+            <LocationsForm editMode={editMode} userId={+id || undefined} />
           )}
         </TabPanel>
       </div>

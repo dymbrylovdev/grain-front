@@ -65,7 +65,7 @@ interface IProps {
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ProfileForm: React.FC<IProps> = ({
+const ProfileSkeleton: React.FC<IProps> = ({
   editMe,
   editUser,
   createUser,
@@ -317,4 +317,4 @@ const ProfileForm: React.FC<IProps> = ({
   );
 };
 
-export default ProfileForm;
+export default ProfileSkeleton;
