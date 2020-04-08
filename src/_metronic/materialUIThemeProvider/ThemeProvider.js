@@ -85,7 +85,7 @@ const theme = createMuiTheme(
       },
       MuiSkeleton: {
         root: {
-          backgroundColor: "rgba(158, 158, 158,.2)",
+          backgroundColor: "rgba(158, 158, 158,.15)",
         },
       },
     },

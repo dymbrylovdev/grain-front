@@ -12,7 +12,7 @@ import * as builder from "../../../_metronic/ducks/builder";
 import * as crops from "../../store/ducks/crops.duck";
 import * as users from "../../store/ducks/users.duck";
 import { actions as statusesActions } from "../../store/ducks/statuses.duck";
-import { MyFiltersPage, MyFiltersEditPage } from "./myFilters";
+import { MyFiltersPage, MyFiltersEditPage, MyFiltersMoneyPage } from "./myFilters";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { crops, user } = useSelector(
@@ -42,6 +42,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/user/edit/:id" component={UserEditPage} />
         <Route path="/user/filters/view/:id" component={MyFiltersEditPage} />
         <Route path="/user/filters/edit/:id" component={MyFiltersEditPage} />
+        <Route path="/user/filters/prices" component={MyFiltersMoneyPage} />
         <Route path="/user/filters" component={MyFiltersPage} />
 
         <Route path="/bidsList" exact component={BidsListPage} />

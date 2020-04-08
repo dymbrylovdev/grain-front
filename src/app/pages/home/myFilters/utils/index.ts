@@ -1,4 +1,4 @@
-import { IFilterForCreate, IFilterParam, IMyFilterItem } from "../interfaces";
+import { IFilterForCreate, IFilterParam, IMyFilterItem } from "../../../../interfaces/filters";
 
 export const filterForCreate = (
   data: {
@@ -12,6 +12,7 @@ export const filterForCreate = (
     crop_id: data.crop_id,
     max_full_price: data.max_full_price || 0,
     max_distance: data.max_destination || 0,
+    subscribed: data.subscribed,
   };
   const parameter_values: {
     parameter_id: number;
@@ -65,6 +66,7 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
       }
     });
   }
+  if (data) newFilter["subscribed"] = data.subscribed;
 
   return newFilter;
 };

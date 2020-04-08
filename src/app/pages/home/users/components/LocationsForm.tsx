@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import {
-  TextField,
-  Theme,
-  IconButton,
-  Grid,
-  Button,
-  FormControlLabel,
-  Checkbox,
-} from "@material-ui/core";
+import { TextField, Theme, IconButton, Grid, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -36,7 +28,7 @@ const innerStyles = makeStyles((theme: Theme) => ({
   },
   group: {
     marginBottom: theme.spacing(2),
-    minHeight: 200,
+    minHeight: 160,
     padding: theme.spacing(2),
     border: "1px solid",
     borderColor: "#e0e0e0",
@@ -295,17 +287,12 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       setDeleteLocationId(item.id);
                       setAlertOpen(true);
                     }}
+                    color="secondary"
                   >
                     <DeleteIcon />
                   </IconButton>
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid item>
-              <FormControlLabel
-                control={<Checkbox checked={true} onChange={handleChange} name="checkedA" />}
-                label="подписаться"
-              />
             </Grid>
           </Grid>
         ))

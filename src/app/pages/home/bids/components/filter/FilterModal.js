@@ -28,6 +28,7 @@ import ButtonWithLoader from "../../../../../components/ui/Buttons/ButtonWithLoa
 import { isFilterEmpty } from "../../../../../utils";
 import MyFilters from "./MyFilters";
 import { filterForCreate } from "../../../myFilters/utils";
+import { useSnackbar } from "notistack";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -108,14 +109,17 @@ const FilterModal = ({
   createFilter,
   createLoading,
   createSuccess,
+  createError,
   clearDelFilter,
   delFilter,
   delLoading,
   delSuccess,
+  delError,
   clearEditFilter,
   editFilter,
   editLoading,
   editSuccess,
+  editError,
 }) => {
   const innerClasses = useStyles();
   const [valueTabs, setValueTabs] = useState(0);
@@ -123,6 +127,49 @@ const FilterModal = ({
   const handleTabsChange = (event, newValue) => {
     setValueTabs(newValue);
   };
+
+  const { enqueueSnackbar } = useSnackbar();
+  useEffect(() => {
+    if (createSuccess || createError) {
+      enqueueSnackbar(
+        createSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.CREATE_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${createError}`,
+        {
+          variant: createSuccess ? "success" : "error",
+        }
+      );
+      clearCreateFilter();
+    }
+  }, [clearCreateFilter, createError, createSuccess, enqueueSnackbar, intl]);
+
+  useEffect(() => {
+    if (editSuccess || editError) {
+      enqueueSnackbar(
+        editSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.SAVE_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editError}`,
+        {
+          variant: editSuccess ? "success" : "error",
+        }
+      );
+      clearEditFilter();
+    }
+  }, [clearEditFilter, editError, editSuccess, enqueueSnackbar, intl]);
+
+  useEffect(() => {
+    if (delSuccess || delError) {
+      enqueueSnackbar(
+        delSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.DEL_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${delError}`,
+        {
+          variant: delSuccess ? "success" : "error",
+        }
+      );
+      clearDelFilter();
+    }
+  }, [clearDelFilter, delError, delSuccess, enqueueSnackbar, intl]);
 
   const { filter, crops } = useSelector(
     ({ crops }) => ({
@@ -287,7 +334,6 @@ const FilterModal = ({
                     className={innerClasses.textField}
                     helperText={formik.touched.name && formik.errors.name}
                     error={Boolean(formik.touched.name && formik.errors.name)}
-                    onClick={() => console.log(values)}
                   />
                   <IconButton onClick={() => formik.setFieldValue("name", "")}>
                     <CloseIcon />
@@ -344,10 +390,13 @@ export default compose(
       loadingFilters: state.myFilters.loading,
       createLoading: state.myFilters.createLoading,
       createSuccess: state.myFilters.createSuccess,
+      createError: state.myFilters.createError,
       delLoading: state.myFilters.delLoading,
       delSuccess: state.myFilters.delSuccess,
+      delError: state.myFilters.delError,
       editLoading: state.myFilters.editLoading,
       editSuccess: state.myFilters.editSuccess,
+      editError: state.myFilters.editError,
     }),
     {
       fetchFilters: myFiltersActions.fetchRequest,

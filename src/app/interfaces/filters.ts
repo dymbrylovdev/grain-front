@@ -14,13 +14,13 @@ export interface IPointPrice {
   price: number;
 }
 
+export interface IPointPriceForEdit {
+  point_id: number;
+  price: number;
+}
+
 export interface IMyFiltersParam {
-  parameter: {
-    id: number;
-    name: string;
-    type: "enum" | "number";
-    enum: string[];
-  };
+  parameter: IFilterParam;
   value: string | string[];
 }
 
@@ -35,6 +35,7 @@ export interface IMyFilterItem {
   max_distance: number;
   parameter_values: IMyFiltersParam[];
   point_prices: IPointPrice[];
+  subscribed: boolean;
 }
 
 export interface IParamValue {
@@ -43,17 +44,13 @@ export interface IParamValue {
 }
 
 export interface IFilterForCreate {
-  name: string;
-  crop_id: number;
+  name?: string;
+  crop_id?: number;
   max_full_price?: number | null;
   max_distance?: number | null;
   parameter_values?: IParamValue[];
-  point_prices?: [
-    {
-      point_id: number;
-      price: number;
-    }
-  ];
+  point_prices?: IPointPriceForEdit[];
+  subscribed?: boolean;
 }
 
 export interface IFilterParam {

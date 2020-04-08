@@ -18,6 +18,17 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(2),
     paddingTop: theme.spacing(2),
   },
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginLeft: -theme.spacing(2),
+  },
+  button: {
+    marginLeft: theme.spacing(2),
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
   tableContainer: {
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
@@ -48,15 +59,16 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
   },
+  textFieldContainer: {
+    display: "flex",
+    flexDirection: "row",
+    minHeight: 80,
+  },
   textField: {
-    flexGrow: 1,
+    flex: "1 1 auto",
   },
   leftIcon: {
     padding: theme.spacing(1),
-  },
-  textFieldContainer: {
-    flexDirection: "row",
-    display: "flex",
   },
   titleText: {
     fontSize: 16,
@@ -77,11 +89,28 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(2),
     marginLeft: theme.spacing(4),
   },
+  switcher: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    marginLeft: theme.spacing(1),
+  },
+  dividerContainer: {
+    height: 1,
+  },
+
+  //***margins***
+
   topMargin: {
     marginTop: theme.spacing(2),
   },
-  marginTopAndBottom: {
+  topAndBottomMargin: {
     marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  bottomMargin1: {
+    marginBottom: theme.spacing(1),
+  },
+  bottomMargin2: {
     marginBottom: theme.spacing(2),
   },
 }));
