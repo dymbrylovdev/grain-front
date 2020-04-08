@@ -75,7 +75,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     if (!myFilters && !loading) {
       fetch();
     }
-  }, [fetch, loading, myFilters]);
+  }, [del, fetch, loading, myFilters]);
 
   if (error) return <LoadError handleClick={() => fetch()} />;
 
@@ -83,15 +83,24 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   return (
     <Paper className={classes.tableContainer}>
-      <Button
-        className={classes.marginTopAndBottom}
-        variant="contained"
-        color="primary"
-        onClick={() => history.push("/user/filters/edit/new")}
-      >
-        {intl.formatMessage({ id: "FILTER.BUTTON.CREATE" })}
-      </Button>
-
+      <div className={classes.buttonsContainer} style={{ justifyContent: "flex-start" }}>
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          onClick={() => history.push("/user/filters/edit/new")}
+        >
+          {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
+        </Button>
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          onClick={() => history.push("/user/filters/prices")}
+        >
+          {intl.formatMessage({ id: "FILTER.FORM.TABS.EDIT_PRICES" })}
+        </Button>
+      </div>
       {!myFilters.length ? (
         <div>
           <FormattedMessage id="FILTERS.TABLE.EMPTY" />
@@ -120,7 +129,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <TableCell>{item.crop.name}</TableCell>
                   <TableCell>{item.name}</TableCell>
                   <TableCell>
-                    <StatusIndicator isActive={false} />
+                    <StatusIndicator isActive={item.subscribed} />
                   </TableCell>
                   <TableCell align="right">
                     <IconButton

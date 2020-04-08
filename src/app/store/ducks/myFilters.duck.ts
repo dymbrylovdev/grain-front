@@ -13,7 +13,7 @@ import {
   deleteMyFilter,
   editMyFilter,
 } from "../../crud/myFilters.crud";
-import { IMyFilterItem, IFilterForCreate } from "../../pages/home/myFilters/interfaces";
+import { IMyFilterItem, IFilterForCreate } from "../../interfaces/filters";
 
 const FETCH_REQUEST = "myFilters/FETCH_REQUEST";
 const FETCH_SUCCESS = "myFilters/FETCH_SUCCESS";
@@ -35,6 +35,7 @@ const DEL_SUCCESS = "myFilters/DEL_SUCCESS";
 const DEL_FAIL = "myFilters/DEL_FAIL";
 
 export interface IInitialState {
+  selectedFilterId: number;
   myFilters: IMyFilterItem[] | undefined;
   loading: boolean;
   success: boolean;
@@ -54,6 +55,7 @@ export interface IInitialState {
 }
 
 const initialState: IInitialState = {
+  selectedFilterId: 0,
   myFilters: undefined,
   loading: false,
   success: false,
@@ -88,7 +90,21 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 
       case FETCH_SUCCESS: {
         //console.log(action.payload.data);
-        return { ...state, myFilters: action.payload.data, loading: false, success: true };
+        //console.log(action.payload.data.find(item => item.id === state.selectedFilterId));
+        if (
+          action.payload.data.length &&
+          action.payload.data.find(item => item.id === state.selectedFilterId)
+        ) {
+          return { ...state, myFilters: action.payload.data, loading: false, success: true };
+        } else {
+          return {
+            ...state,
+            myFilters: action.payload.data,
+            selectedFilterId: action.payload.data[0].id,
+            loading: false,
+            success: true,
+          };
+        }
       }
 
       case FETCH_FAIL: {

@@ -11,6 +11,8 @@ import {
   Paper,
   MenuItem,
   Button,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl, WrappedComponentProps } from "react-intl";
@@ -30,7 +32,7 @@ import { IAppState } from "../../../store/rootDuck";
 import useStyles from "../styles";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
-import { IMyFilterItem } from "./interfaces";
+import { IMyFilterItem } from "../../../interfaces/filters";
 import { OutlinedRedButton } from "../../../components/ui/Buttons/RedButtons";
 
 const useInnerStyles = makeStyles(theme => ({
@@ -231,6 +233,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
           initialValues,
           setFieldValue,
         }) => {
+          //console.log(values);
           return (
             <div className={classes.form}>
               <TextField
@@ -375,12 +378,17 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                             clearAction={setFieldValue}
                             isEditable={isEditable}
                           />
-                          {index !==
-                            cropParams.filter(item => item.type === "number").length - 1 && (
-                            <Divider />
-                          )}
+                          <Divider />
                         </div>
                       ))}
+
+                    <FormControlLabel
+                      className={classes.switcher}
+                      control={<Checkbox checked={values.subscribed} onChange={handleChange} />}
+                      label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SUBSCRIPTION" })}
+                      name="subscribed"
+                      disabled={!isEditable}
+                    />
 
                     <Grid
                       container

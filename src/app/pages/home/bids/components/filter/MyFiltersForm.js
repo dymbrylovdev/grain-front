@@ -1,6 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Formik } from "formik";
-import { makeStyles, TextField, Divider, IconButton, Grid } from "@material-ui/core";
+import {
+  makeStyles,
+  TextField,
+  Divider,
+  IconButton,
+  Grid,
+  FormControlLabel,
+  Checkbox,
+} from "@material-ui/core";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
@@ -160,9 +168,16 @@ function MyFiltersForm({
                   handleChange={handleChange}
                   clearAction={clearAction}
                 />
-                {index !== numberParams.length - 1 && <Divider />}
+                <Divider />
               </div>
             ))}
+
+          <FormControlLabel
+            className={classes.switcher}
+            control={<Checkbox checked={values.subscribed} onChange={handleChange} />}
+            label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SUBSCRIPTION" })}
+            name="subscribed"
+          />
           <Grid
             container
             direction="row"

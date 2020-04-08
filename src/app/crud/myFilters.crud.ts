@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IFilterForCreate } from "../pages/home/myFilters/interfaces";
+import { IFilterForCreate } from "../interfaces/filters";
 
 const MY_FILTERS_URL = "/api/bid_filter";
 

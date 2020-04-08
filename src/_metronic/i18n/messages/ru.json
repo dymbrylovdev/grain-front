@@ -6,6 +6,7 @@
   "ALL.BUTTONS.DELETE": "Удалить",
   "ALL.BUTTONS.SAVE": "Сохранить",
   "ALL.BUTTONS.CREATE": "Добавить",
+  "ALL.BUTTONS.CLEAR": "Очистить",
 
   "ALL.DIALOGS.DEL_TEXT": "Удаление...",
 
@@ -39,6 +40,7 @@
   "SUBHEADER.PARTS.VIEW": "Просмотр",
 
   "SUBHEADER.PARTS.FILTER": "фильтра",
+  "SUBHEADER.PARTS.PRICE": "цен по точкам",
   "SUBHEADER.PARTS.USER": "пользователя",
 
   "START.WELCOME": "Добро пожаловать на Рынок Зерна",
@@ -129,6 +131,8 @@
 
   "LOCATION.STATUS.ERROR": "Ошибка сохранения локации",
 
+  "MONEY.INTRODUCTION": "Наша система позволяет сразу рассчитать прибыль от перепродажи зерна на точке отгрузки. Задайте цену перепродажи зерна по каждому фильтру для каждой точки отгрузки. Система автоматически подберёт для вас самые прибыльные сделки по всей стране.",
+
   "BIDSLIST.TABLE.ID": "Id",
   "BIDSLIST.TABLE.COST": "Цена на складе у поставщика",
   "BIDSLIST.TABLE.VOLUME": "Объем (в тоннах)",
@@ -194,11 +198,12 @@
   "FILTER.FORM.BUTTON.SUBMIT": "Применить фильтр",
   "FILTER.FORM.BUTTON.RESET": "Очистить",
   "FILTER.BUTTON.CLOSE": "Закрыть",
-  "FILTER.BUTTON.CREATE": "Создать фильтр",
+  "FILTER.BUTTON.CREATE": "Добавить фильтр",
   "FILTER.FORM.NAME.INPUT_NAME": "Название фильтра",
   "FILTER.FORM.NAME.CROP": "Культура",
   "FILTER.FORM.NAME.REQUIRED": "Введите название фильтра",
-  "FILTER.FORM.TABS.CREATE_FILTER": "Создать фильтр",
+  "FILTER.FORM.TABS.CREATE_FILTER": "Добавить фильтр",
+  "FILTER.FORM.TABS.EDIT_PRICES": "Изменить цены",
   "FILTER.FORM.CROPS.EMPTY": "Выберите культуру",
   "FILTER.FORM.TABS.MY_FILTERS": "Мои фильтры",
   "FILTER.MY_FILTERS.EMPTY": "У Вас нет сохранённых фильтров для культуры \"{name}\".",
@@ -213,6 +218,8 @@
   "FILTERS.TABLE.HEADER.SUBSCRIPTION": "Подписка",
   "FILTERS.TABLE.HEADER.ACTIONS": "Действия",
   "FILTERS.TABLE.EMPTY": "У Вас нет сохраненных фильтров.",
+  "FILTERS.PRICE": "Цена",
+  "FILTER": "Фильтр",
 
   "ERROR.LOAD.TITLE": "Ошибка загрузки данных",
   "ERROR.BUTTON.REPEAT": "Повторить попытку",

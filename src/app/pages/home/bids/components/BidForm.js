@@ -6,10 +6,10 @@ import { Formik } from "formik";
 import { Paper } from "@material-ui/core";
 import NumberFormat from "react-number-format";
 import * as Yup from "yup";
-import { useSelector, shallowEqual, connect } from "react-redux";
+import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
 
-import AutocompleteLocations from "../../../../components/AutocompleteLocations";
+//import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import LocationBlock from "../components/location/LocationBlock";

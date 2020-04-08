@@ -89,7 +89,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   return (
     <Paper className={classes.tableContainer}>
       <Button
-        className={classes.marginTopAndBottom}
+        className={classes.topAndBottomMargin}
         variant="contained"
         color="primary"
         onClick={() => history.push("/user/create")}
