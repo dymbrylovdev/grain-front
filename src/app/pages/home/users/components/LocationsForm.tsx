@@ -109,6 +109,17 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     }),
   });
 
+  useEffect(() => {
+    switch (editMode) {
+      case "profile":
+        fetchMe();
+        break;
+      case "edit":
+        if (userId) fetchUser({ id: userId });
+        break;
+    }
+  }, [editMode, fetchMe, fetchUser, userId]);
+
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
@@ -382,9 +393,9 @@ const connector = connect(
     delSuccess: state.locations.delSuccess,
     delError: state.locations.delError,
 
-    googleLocations: state.googleLocations.googleLocations,
-    loadingGoogleLocations: state.googleLocations.loading,
-    errorGoogleLocations: state.googleLocations.error,
+    googleLocations: state.yaLocations.yaLocations,
+    loadingGoogleLocations: state.yaLocations.loading,
+    errorGoogleLocations: state.yaLocations.error,
 
     prompterRunning: state.prompter.running,
     prompterStep: state.prompter.activeStep,

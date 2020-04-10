@@ -7,20 +7,20 @@ import { ILocation } from "../../interfaces/locations";
 import { getLocation } from "../../crud/location.crud";
 import { dataToEntities } from "../../utils";
 
-const CLEAR = "googleLocations/CLEAR";
-const FETCH_REQUEST = "googleLocations/FETCH_REQUEST";
-const FETCH_SUCCESS = "googleLocations/FETCH_SUCCESS";
-const FETCH_FAIL = "googleLocations/FETCH_FAIL";
+const CLEAR = "yaLocations/CLEAR";
+const FETCH_REQUEST = "yaLocations/FETCH_REQUEST";
+const FETCH_SUCCESS = "yaLocations/FETCH_SUCCESS";
+const FETCH_FAIL = "yaLocations/FETCH_FAIL";
 
 export interface IInitialState {
-  googleLocations: ILocation[] | undefined;
+  yaLocations: ILocation[] | undefined;
   loading: boolean;
   success: boolean;
   error: string | null;
 }
 
 const initialState: IInitialState = {
-  googleLocations: undefined,
+  yaLocations: undefined,
   loading: false,
   success: false,
   error: null,
@@ -31,7 +31,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     case CLEAR: {
       return {
         ...state,
-        googleLocations: undefined,
+        yaLocations: undefined,
         loading: false,
         success: false,
         error: null,
@@ -41,7 +41,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     case FETCH_REQUEST: {
       return {
         ...state,
-        googleLocations: undefined,
+        yaLocations: undefined,
         loading: true,
         success: false,
         error: null,
@@ -52,7 +52,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       //console.log(dataToEntities(action.payload.response));
       return {
         ...state,
-        googleLocations: dataToEntities(action.payload.response),
+        yaLocations: dataToEntities(action.payload.response),
         loading: false,
         success: true,
       };

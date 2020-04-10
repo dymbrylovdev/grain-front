@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { TextField, Button, Grid, IconButton, Divider } from "@material-ui/core";
+import { TextField, Grid, IconButton, Divider } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
 import { useSnackbar } from "notistack";
@@ -75,22 +75,6 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
 }) => {
   const classes = useStyles();
 
-  const { enqueueSnackbar } = useSnackbar();
-
-  useEffect(() => {
-    if (editSuccess || editError) {
-      enqueueSnackbar(
-        editSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.SAVE_FILTER" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editError}`,
-        {
-          variant: editSuccess ? "success" : "error",
-        }
-      );
-      clearEditFilter();
-    }
-  }, [clearEditFilter, editError, editSuccess, enqueueSnackbar, intl]);
-
   const {
     values,
     handleSubmit,
@@ -107,11 +91,25 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
         id: currentFilter.id,
         data: { crop_id: currentFilter.crop.id, point_prices: getFilterEditArray(values) },
       });
-
-      //handleSubmit(values, setStatus, setSubmitting);
     },
     validationSchema: Yup.object().shape(getValidationObject(me, intl)),
   });
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    if (editSuccess || editError) {
+      enqueueSnackbar(
+        editSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.SAVE_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editError}`,
+        {
+          variant: editSuccess ? "success" : "error",
+        }
+      );
+      clearEditFilter();
+    }
+  }, [clearEditFilter, editError, editSuccess, enqueueSnackbar, intl]);
 
   useEffect(() => {
     resetForm({ values: getInitialValues(me, currentFilter) });
@@ -153,14 +151,10 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
               </Grid>
             </Grid>
           </div>
-          {index !== me?.points.length - 1 && (
-            <div className={classes.dividerContainer}>
-              <Divider />
-            </div>
-          )}
+          {index !== me?.points.length - 1 && <Divider />}
         </div>
       ))}
-      <div className={classes.buttonsContainer}>
+      <div className={classes.bottomButtonsContainer}>
         <div className={classes.button}>
           <ButtonWithLoader
             variant="contained"

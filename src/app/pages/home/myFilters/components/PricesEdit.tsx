@@ -66,10 +66,8 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         {intl.formatMessage({ id: "MONEY.INTRODUCTION" })}
       </div>
       <div className={classes.textFieldContainer}>
-        {!myFilters ? (
-          <Skeleton width="100%" height={75} animation="wave" />
-        ) : !+values.filter_id ? (
-          <Skeleton width="100%" height={75} animation="wave" />
+        {!myFilters || !+values.filter_id ? (
+          <Skeleton width="100%" height={80} animation="wave" />
         ) : (
           <TextField
             select
@@ -91,37 +89,20 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           </TextField>
         )}
       </div>
-      {!myFilters ? (
+      {!myFilters || !+values.filter_id ? (
         me?.points.map((point, index) => (
           <div key={index}>
             <div className={classes.textFieldContainer}>
-              <Skeleton width="100%" height={75} animation="wave" />
+              <Skeleton width="100%" height={80} animation="wave" />
             </div>
-            {index !== me?.points.length - 1 && (
-              <div className={classes.dividerContainer}>
-                <Divider />
-              </div>
-            )}
-          </div>
-        ))
-      ) : !itemById(myFilters, +values.filter_id) ? (
-        me?.points.map((point, index) => (
-          <div key={index}>
-            <div className={classes.textFieldContainer}>
-              <Skeleton width="100%" height={75} animation="wave" />
-            </div>
-            {index !== me?.points.length - 1 && (
-              <div className={classes.dividerContainer}>
-                <Divider />
-              </div>
-            )}
+            {index !== me?.points.length - 1 && <Divider />}
           </div>
         ))
       ) : (
         <PointsPrices currentFilter={itemById(myFilters, +values.filter_id) as IMyFilterItem} />
       )}
       {!myFilters && (
-        <div className={classes.buttonsContainer}>
+        <div className={classes.bottomButtonsContainer}>
           <Button className={classes.button} variant="contained" color="primary" disabled>
             {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
           </Button>

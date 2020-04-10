@@ -18,17 +18,6 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(2),
     paddingTop: theme.spacing(2),
   },
-  buttonsContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginLeft: -theme.spacing(2),
-  },
-  button: {
-    marginLeft: theme.spacing(2),
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-  },
   tableContainer: {
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
@@ -98,7 +87,28 @@ const useStyles = makeStyles(theme => ({
     height: 1,
   },
 
-  //***margins***
+  // buttons ********************************************************************************************************************
+
+  topButtonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    marginLeft: -theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
+  },
+  bottomButtonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginLeft: -theme.spacing(2),
+    marginTop: theme.spacing(2),
+  },
+  button: {
+    marginLeft: theme.spacing(2),
+  },
+
+  // margins ********************************************************************************************************************
 
   topMargin: {
     marginTop: theme.spacing(2),

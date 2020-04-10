@@ -83,7 +83,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   return (
     <Paper className={classes.tableContainer}>
-      <div className={classes.buttonsContainer} style={{ justifyContent: "flex-start" }}>
+      <div className={classes.topButtonsContainer}>
         <Button
           className={classes.button}
           variant="contained"

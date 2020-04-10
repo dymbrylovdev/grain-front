@@ -9,7 +9,7 @@ import userSelector from "../../../store/selectors/user";
 import bidSelector from "../../../store/selectors/bid";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import * as bids from "../../../store/ducks/bids.duck";
-import * as locations from "../../../store/ducks/locations.duck";
+import * as yaLocations from "../../../store/ducks/yaLocations.duck";
 import * as auth from "../../../store/ducks/auth.duck";
 import * as crops from "../../../store/ducks/crops.duck";
 import * as prompter from "../../../store/ducks/prompter.duck";
@@ -196,9 +196,10 @@ function BidCreatePage({
 export default injectIntl(
   connect(null, {
     ...bids.actions,
-    ...locations.actions,
     ...auth.actions,
     ...crops.actions,
     ...prompter.actions,
+    fetchLocationsRequest: yaLocations.actions.fetchRequest,
+    clearLocations: yaLocations.actions.clear,
   })(BidCreatePage)
 );

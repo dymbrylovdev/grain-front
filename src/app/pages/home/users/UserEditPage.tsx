@@ -11,7 +11,6 @@ import { actions as authActions } from "../../../store/ducks/auth.duck";
 import { actions as locationsActions } from "../../../store/ducks/locations.duck";
 import { actions as googleLocationsActions } from "../../../store/ducks/yaLocations.duck";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
-import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LoadError } from "../../../components/ui/Errors";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
@@ -141,80 +140,22 @@ const UserEditPage: React.FC<TPropsFromRedux &
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    if (delError) {
-      enqueueSnackbar(`${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${delError}`, {
-        variant: "error",
-      });
+    if (delSuccess || delError) {
+      enqueueSnackbar(
+        delSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.DEL_USER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${delError}`,
+        {
+          variant: delSuccess ? "success" : "error",
+        }
+      );
       setAlertOpen(false);
       clearDelUser();
     }
     if (delSuccess) {
-      setAlertOpen(false);
-      history.push("/user-list");
+      history.push(`/user-list`);
     }
   }, [clearDelUser, delError, delSuccess, enqueueSnackbar, history, intl]);
-
-  useEffect(() => {
-    if (createSuccess || createError) {
-      enqueueSnackbar(
-        createSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_CREATE" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${createError}`,
-        {
-          variant: createSuccess ? "success" : "error",
-        }
-      );
-      clearCreateUser();
-    }
-    if (createSuccess) {
-      history.push(`/user/edit/${createdUserId}`);
-    }
-  }, [
-    clearCreateUser,
-    createError,
-    createSuccess,
-    createdUserId,
-    editError,
-    editMode,
-    enqueueSnackbar,
-    fetchUser,
-    history,
-    intl,
-  ]);
-
-  useEffect(() => {
-    if (editSuccess || editError) {
-      enqueueSnackbar(
-        editSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_USER" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editError}`,
-        {
-          variant: editSuccess ? "success" : "error",
-        }
-      );
-      clearCreateUser();
-    }
-    if (editSuccess) {
-      fetchUser({ id: +id });
-    }
-  }, [clearCreateUser, editError, editSuccess, enqueueSnackbar, fetchUser, id, intl]);
-
-  useEffect(() => {
-    if (editMeSuccess || editMeError) {
-      enqueueSnackbar(
-        editMeSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_PROFILE" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editMeError}`,
-        {
-          variant: editMeSuccess ? "success" : "error",
-        }
-      );
-      clearEditMe();
-    }
-    if (editMeSuccess) {
-      fetchMe();
-    }
-  }, [clearEditMe, editError, editMeError, editMeSuccess, enqueueSnackbar, fetchMe, intl]);
 
   useEffect(() => {
     switch (editMode) {
@@ -264,25 +205,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
         </AppBar>
         <Divider />
         <TabPanel value={valueTabs} index={0}>
-          <ProfileForm
-            intl={intl}
-            statuses={statuses || []}
-            user={editMode === "create" ? undefined : editMode === "edit" ? user : me}
-            editMode={editMode}
-            prompterRunning={prompterRunning}
-            prompterStep={prompterStep}
-            loading={
-              editMode === "create"
-                ? createLoading
-                : editMode === "edit"
-                ? editLoading
-                : editMeLoading
-            }
-            setAlertOpen={setAlertOpen}
-            editMe={editMe}
-            editUser={editUser}
-            createUser={createUser}
-          />
+          <ProfileForm userId={+id || undefined} editMode={editMode} setAlertOpen={setAlertOpen} />
         </TabPanel>
         <TabPanel value={valueTabs} index={1}>
           {editMode === "create" ? (
@@ -352,9 +275,9 @@ const connector = connect(
     loadingLocations: state.locations.loading,
     errorLocations: state.locations.error,
 
-    googleLocations: state.googleLocations.googleLocations,
-    loadingGoogleLocations: state.googleLocations.loading,
-    errorGoogleLocations: state.googleLocations.error,
+    googleLocations: state.yaLocations.yaLocations,
+    loadingGoogleLocations: state.yaLocations.loading,
+    errorGoogleLocations: state.yaLocations.error,
 
     createdUserId: state.users.createdUserId,
     createLoading: state.users.createLoading,

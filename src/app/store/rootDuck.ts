@@ -8,7 +8,7 @@ import * as auth from "./ducks/auth.duck";
 import * as users from "./ducks/users.duck";
 import * as statuses from "./ducks/statuses.duck";
 import * as locations from "./ducks/locations.duck";
-import * as googleLocations from "./ducks/yaLocations.duck";
+import * as yaLocations from "./ducks/yaLocations.duck";
 import * as docs from "./ducks/docs.duck";
 import * as bids from "./ducks/bids.duck";
 import * as myFilters from "./ducks/myFilters.duck";
@@ -23,7 +23,7 @@ export type TAppActions =
   | users.TActions
   | statuses.TActions
   | locations.TActions
-  | googleLocations.TActions
+  | yaLocations.TActions
   | prompter.TActions
   | myFilters.TActions
   | crops2.TActions;
@@ -35,7 +35,7 @@ export interface IAppState {
   users: users.IInitialState;
   statuses: statuses.IInitialState;
   locations: locations.IInitialState;
-  googleLocations: googleLocations.IInitialState;
+  yaLocations: yaLocations.IInitialState;
   docs: typeof docs.reducer;
   bids: typeof bids.reducer;
   myFilters: myFilters.IInitialState & PersistPartial;
@@ -53,7 +53,7 @@ export const rootReducer: Reducer<IAppState, TAppActions> = combineReducers<IApp
     users: users.reducer,
     statuses: statuses.reducer,
     locations: locations.reducer,
-    googleLocations: googleLocations.reducer,
+    yaLocations: yaLocations.reducer,
     docs: docs.reducer,
     bids: bids.reducer,
     myFilters: myFilters.reducer,
@@ -75,7 +75,7 @@ export function* rootSaga() {
       bids.saga,
       myFilters.saga,
       locations.saga,
-      googleLocations.saga,
+      yaLocations.saga,
       companies.saga,
     ].map(saga => fork(saga))
   );
