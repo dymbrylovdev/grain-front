@@ -1,16 +1,16 @@
 import React from "react";
 import { Dialog, DialogContent, Grid, IconButton, DialogTitle } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { LocationsForm } from "../../../users/components";
+import { PricesEdit } from "../../../myFilters/components";
 
-function LocationDialog({ handleClose, isOpen, user, classes, submitAction, intl }) {
+function PricesDialog({ handleClose, isOpen, intl }) {
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth={"md"} fullWidth>
       <DialogTitle>
         <Grid container direction="row" justify="space-between" alignItems="center">
           <Grid item>
             {intl.formatMessage({
-              id: "LOCATIONS.MODAL_NAME",
+              id: "LOCATIONS.PRICES.MODAL_NAME",
             })}
           </Grid>
           <Grid item>
@@ -21,10 +21,10 @@ function LocationDialog({ handleClose, isOpen, user, classes, submitAction, intl
         </Grid>
       </DialogTitle>
       <DialogContent>
-        <LocationsForm editMode="profile" />
+        <PricesEdit />
       </DialogContent>
     </Dialog>
   );
 }
 
-export default LocationDialog;
+export default PricesDialog;

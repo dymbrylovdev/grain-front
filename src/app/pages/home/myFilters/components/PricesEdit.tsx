@@ -14,7 +14,6 @@ import { itemById } from "../../../../utils/utils";
 
 const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
-
   me,
 
   selectedFilterId,
@@ -67,7 +66,7 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       </div>
       <div className={classes.textFieldContainer}>
         {!myFilters || !+values.filter_id ? (
-          <Skeleton width="100%" height={80} animation="wave" />
+          <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
             select
@@ -93,7 +92,7 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         me?.points.map((point, index) => (
           <div key={index}>
             <div className={classes.textFieldContainer}>
-              <Skeleton width="100%" height={80} animation="wave" />
+              <Skeleton width="100%" height={70} animation="wave" />
             </div>
             {index !== me?.points.length - 1 && <Divider />}
           </div>

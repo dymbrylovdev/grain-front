@@ -6,7 +6,7 @@ import { Formik } from "formik";
 import { Paper } from "@material-ui/core";
 import NumberFormat from "react-number-format";
 import * as Yup from "yup";
-import { useSelector, connect } from "react-redux";
+import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";

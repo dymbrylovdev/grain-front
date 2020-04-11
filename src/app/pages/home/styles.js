@@ -50,8 +50,8 @@ const useStyles = makeStyles(theme => ({
   },
   textFieldContainer: {
     display: "flex",
-    flexDirection: "row",
-    minHeight: 80,
+    minHeight: 70,
+    alignItems: "center",
   },
   textField: {
     flex: "1 1 auto",
@@ -65,6 +65,7 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(2),
   },
   text: {
+    minHeight: 40,
     fontSize: 14,
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),

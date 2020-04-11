@@ -211,20 +211,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
           {editMode === "create" ? (
             <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
           ) : (
-            <CompanyForm
-              intl={intl}
-              statuses={statuses || []}
-              user={editMode === "edit" ? user : me}
-              editMode={editMode}
-              prompterRunning={prompterRunning}
-              prompterStep={prompterStep}
-              loading={editMode === "edit" ? editLoading : editMeLoading}
-              setAlertOpen={setAlertOpen}
-              editMe={editMe}
-              editUser={editUser}
-              createUser={createUser}
-              mergeUser={mergeUser}
-            />
+            <CompanyForm userId={+id || undefined} editMode={editMode} />
           )}
         </TabPanel>
         <TabPanel value={valueTabs} index={2}>

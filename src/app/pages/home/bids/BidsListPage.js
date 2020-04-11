@@ -15,13 +15,13 @@ import { actions as locationsActions } from "../../../store/ducks/locations.duck
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import FilterModal from "./components/filter/FilterModal";
-import Preloader from "../../../components/ui/Loaders/Preloader";
 import BidTable from "./components/BidTable";
 import LocationBlock from "./components/location/LocationBlock";
 import LocationDialog from "./components/location/LocationDialog";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
 import { ErrorDialog, LoadError } from "../../../components/ui/Errors";
 import Prompter from "../prompter/Prompter";
+import PricesDialog from "./components/prices/PricesDialog";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -68,6 +68,8 @@ function BidsListPage({
   const [cropLoading, setCropLoading] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const [pricesModalOpen, setPricesModalOpen] = useState(false);
+
   const [enumParams, setEnumParams] = useState([]);
   const [numberParams, setNumberParams] = useState([]);
   let { cropId } = match.params;
@@ -212,6 +214,12 @@ function BidsListPage({
           submitAction={locationSubmit}
           user={user}
           classes={classes}
+          intl={intl}
+        />
+        <PricesDialog
+          isOpen={pricesModalOpen}
+          handleClose={() => setPricesModalOpen(false)}
+          intl={intl}
         />
         <div className={innerClasses.topContainer}>
           <div className={innerClasses.leftButtonBlock}>
@@ -239,18 +247,15 @@ function BidsListPage({
             <CustomIcon path={filterIconPath} />
           </IconButton>
         </div>
-        {loading || cropLoading ? (
-          <Preloader />
-        ) : (
-          <BidTable
-            classes={classes}
-            bids={equalBids}
-            isHaveRules={isHaveRules}
-            handleDeleteDialiog={handleDeleteDialiog}
-            user={user}
-            title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
-          />
-        )}
+        <BidTable
+          classes={classes}
+          bids={equalBids}
+          isHaveRules={isHaveRules}
+          handleDeleteDialiog={handleDeleteDialiog}
+          user={user}
+          title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
+          loading={loading || cropLoading}
+        />
         <div className={innerClasses.topSpaceContainer}>
           <BidTable
             classes={classes}
@@ -259,11 +264,15 @@ function BidsListPage({
             handleDeleteDialiog={handleDeleteDialiog}
             user={user}
             title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
+            loading={loading || cropLoading}
           />
         </div>
         <LocationBlock
-          handleClick={() => {
+          handleClickLocation={() => {
             setLocationModalOpen(true);
+          }}
+          handleClickPrices={() => {
+            setPricesModalOpen(true);
           }}
           locations={user.points}
         />

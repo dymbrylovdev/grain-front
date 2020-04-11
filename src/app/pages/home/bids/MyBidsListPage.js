@@ -77,6 +77,7 @@ function MyBidsListPage({ intl, getMyBids, deleteBid, clearErrors }) {
         user={user}
         title={intl.formatMessage({ id: "SUBMENU.MY_BIDS" })}
         addUrl={"fromMy"}
+        loading={loading}
       />
       <div className={classes.tableFooterText}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>
     </Paper>

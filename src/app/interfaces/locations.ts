@@ -21,4 +21,5 @@ export interface ILocationToRequest {
   text?: string;
   lat?: number;
   lng?: number;
+  user_id?: number;
 }

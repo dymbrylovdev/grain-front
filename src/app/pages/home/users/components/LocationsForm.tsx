@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { TextField, Theme, IconButton, Grid, Button } from "@material-ui/core";
+import { TextField, Theme, IconButton, Grid as div, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -19,24 +19,24 @@ import { actions as authActions } from "../../../../store/ducks/auth.duck";
 import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { IAppState } from "../../../../store/rootDuck";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
-import { LocationsSkeleton } from "../skeletons";
+import { Skeleton } from "@material-ui/lab";
 
 const innerStyles = makeStyles((theme: Theme) => ({
-  container: {
-    flexDirection: "row",
-    display: "flex",
-  },
   group: {
     marginBottom: theme.spacing(2),
-    minHeight: 160,
     padding: theme.spacing(2),
     border: "1px solid",
     borderColor: "#e0e0e0",
     borderRadius: 4,
   },
   name: {
+    marginLeft: theme.spacing(1),
+  },
+  button: {
+    marginLeft: theme.spacing(2),
     marginRight: theme.spacing(1),
   },
+
   pulseRoot: {
     "& fieldset": {
       animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
@@ -192,61 +192,59 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     }
   }, [clearDel, delError, delSuccess, editMode, enqueueSnackbar, fetchMe, fetchUser, intl, userId]);
 
-  if (loadingMe || loadingUser) return <LocationsSkeleton intl={intl} count={locations.length} />;
-
   return (
     <div>
       {!locations.length ? (
         <div className={classes.text}>
-          {intl.formatMessage({ id: "LOCATIONS.FORM.NO_LOCATIONS" })}
+          {loadingMe || loadingUser ? (
+            <Skeleton width="70%" height={30} animation="wave" />
+          ) : (
+            intl.formatMessage({ id: "LOCATIONS.FORM.NO_LOCATIONS" })
+          )}
         </div>
       ) : (
         locations.map(item => (
-          <Grid
-            container
-            direction="column"
-            justify="space-around"
-            alignItems="stretch"
-            key={item.id}
-            className={innerClasses.group}
-          >
-            <Grid item>
-              {editNameId === item.id ? (
-                <Grid container direction="row" justify="space-between" alignItems="center">
-                  <div className={innerClasses.name} style={{ flex: "auto" }}>
-                    <TextField
-                      type="text"
-                      label={intl.formatMessage({
-                        id: "LOCATIONS.INPUT.NAME",
-                      })}
-                      margin="normal"
-                      className={classes.textField}
-                      value={values.name}
-                      name="name"
-                      variant="outlined"
-                      onChange={handleChange}
-                      autoFocus
-                    />
-                  </div>
-                  <Grid item className={innerClasses.name}>
+          <div key={item.id} className={innerClasses.group}>
+            <div className={classes.textFieldContainer}>
+              {loadingMe || loadingUser ? (
+                <Skeleton width="70%" height={30} animation="wave" />
+              ) : editNameId === item.id ? (
+                <>
+                  <TextField
+                    type="text"
+                    label={intl.formatMessage({
+                      id: "LOCATIONS.INPUT.NAME",
+                    })}
+                    margin="normal"
+                    className={classes.textField}
+                    value={values.name}
+                    name="name"
+                    variant="outlined"
+                    onChange={handleChange}
+                    autoFocus
+                  />
+                  <div className={innerClasses.button}>
                     <ButtonWithLoader
                       disabled={editLoading}
                       loading={editLoading}
-                      onPress={() => edit({ id: item.id, data: { name: values.name } })}
+                      onPress={() =>
+                        edit({
+                          id: item.id,
+                          data: { name: values.name, user_id: userId || me?.id },
+                        })
+                      }
                     >
                       {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
                     </ButtonWithLoader>
-                  </Grid>
-                  <Grid item>
-                    <Button variant="outlined" color="primary" onClick={() => setEditNameId(-1)}>
-                      {intl.formatMessage({ id: "ALL.BUTTONS.CANCEL" })}
-                    </Button>
-                  </Grid>
-                </Grid>
+                  </div>
+                  <Button variant="outlined" color="primary" onClick={() => setEditNameId(-1)}>
+                    {intl.formatMessage({ id: "ALL.BUTTONS.CANCEL" })}
+                  </Button>
+                </>
               ) : (
-                <Grid container direction="row" justify="flex-start" alignItems="center">
-                  <Grid item>{item.name}</Grid>
-                  <Grid item>
+                <>
+                  <div className={innerClasses.name}>{item.name}</div>
+                  <div>
                     <IconButton
                       color="primary"
                       size={"medium"}
@@ -257,98 +255,105 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       <EditIcon />
                     </IconButton>
-                  </Grid>
-                </Grid>
+                  </div>
+                </>
               )}
-            </Grid>
-            <Grid item>
-              <Grid container direction="row" justify="flex-start" alignItems="center">
-                <div style={{ flex: "auto" }}>
-                  <AutocompleteLocations
-                    id={item.id.toString()}
-                    options={googleLocations ? googleLocations : [{ text: "" }]}
-                    loading={false}
-                    defaultValue={{
-                      text: item.text ? item.text : "",
-                    }}
-                    label={intl.formatMessage({
-                      id: "PROFILE.INPUT.LOCATION",
-                    })}
-                    editable={!(item && item.text)}
-                    inputClassName={classes.textField}
-                    inputError={Boolean(errorGoogleLocations)}
-                    inputHelperText={errorGoogleLocations}
-                    fetchLocations={fetchGoogleLocations}
-                    clearLocations={clearGoogleLocations}
-                    setSelectedLocation={(location: ILocationToRequest) => {
-                      if (location) {
-                        delete location.name;
-                        edit({ id: item.id, data: location });
-                      }
-                    }}
-                    disable={false}
-                    prompterRunning={prompterRunning}
-                    prompterStep={prompterStep}
-                  />
-                </div>
-                <Grid item>
-                  <IconButton
-                    size={"medium"}
-                    onClick={() => {
-                      setDeleteLocationId(item.id);
-                      setAlertOpen(true);
-                    }}
-                    color="secondary"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
+            </div>
+            <div className={classes.textFieldContainer}>
+              {loadingMe || loadingUser ? (
+                <Skeleton width="100%" height={70} animation="wave" />
+              ) : (
+                <>
+                  <div className={classes.textField}>
+                    <AutocompleteLocations
+                      id={item.id.toString()}
+                      options={googleLocations ? googleLocations : [{ text: "" }]}
+                      loading={false}
+                      defaultValue={{
+                        text: item.text ? item.text : "",
+                      }}
+                      label={intl.formatMessage({
+                        id: "PROFILE.INPUT.LOCATION",
+                      })}
+                      editable={!(item && item.text)}
+                      inputClassName={classes.textField}
+                      inputError={Boolean(errorGoogleLocations)}
+                      inputHelperText={errorGoogleLocations}
+                      fetchLocations={fetchGoogleLocations}
+                      clearLocations={clearGoogleLocations}
+                      setSelectedLocation={(location: ILocationToRequest) => {
+                        if (location) {
+                          delete location.name;
+                          location.user_id = userId || me?.id;
+                          edit({ id: item.id, data: location });
+                        }
+                      }}
+                      disable={false}
+                      prompterRunning={prompterRunning}
+                      prompterStep={prompterStep}
+                    />
+                  </div>
+                  <div>
+                    <IconButton
+                      size={"medium"}
+                      onClick={() => {
+                        setDeleteLocationId(item.id);
+                        setAlertOpen(true);
+                      }}
+                      color="secondary"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         ))
       )}
-      {!creatingLocation ? (
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="center"
-          spacing={1}
-          className={classes.buttonContainer}
-        >
-          <Grid item>
-            <Button variant="contained" color="primary" onClick={() => setCreatingLocation(true)}>
+      <div className={innerClasses.group}>
+        <div className={classes.textFieldContainer}>
+          {!creatingLocation ? (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setCreatingLocation(true)}
+              disabled={loadingMe || loadingUser}
+            >
               {intl.formatMessage({ id: "LOCATIONS.FORM.ADD_LOCATIONS" })}
             </Button>
-          </Grid>
-        </Grid>
-      ) : (
-        <AutocompleteLocations
-          options={googleLocations ? googleLocations : [{ text: "" }]}
-          loading={false}
-          defaultValue={{ text: "" }}
-          label={intl.formatMessage({
-            id: "PROFILE.INPUT.LOCATION",
-          })}
-          editable={true}
-          inputClassName={classes.textField}
-          inputError={Boolean(errorGoogleLocations)}
-          inputHelperText={errorGoogleLocations}
-          fetchLocations={fetchGoogleLocations}
-          clearLocations={clearGoogleLocations}
-          setSelectedLocation={(location: ILocationToRequest) => {
-            if (location) {
-              setCreatingLocation(false);
-              create(location);
-            }
-          }}
-          handleBlur={() => setCreatingLocation(false)}
-          disable={false}
-          prompterRunning={prompterRunning}
-          prompterStep={prompterStep}
-        />
-      )}
+          ) : (
+            <div className={classes.textField}>
+              <AutocompleteLocations
+                options={googleLocations ? googleLocations : [{ text: "" }]}
+                loading={false}
+                defaultValue={{ text: "" }}
+                label={intl.formatMessage({
+                  id: "PROFILE.INPUT.LOCATION",
+                })}
+                editable={true}
+                inputClassName={classes.textField}
+                inputError={Boolean(errorGoogleLocations)}
+                inputHelperText={errorGoogleLocations}
+                fetchLocations={fetchGoogleLocations}
+                clearLocations={clearGoogleLocations}
+                setSelectedLocation={(location: ILocationToRequest) => {
+                  if (location) {
+                    userId ? (location.user_id = userId) : (location.user_id = me?.id);
+                    setCreatingLocation(false);
+                    console.log(location);
+                    create(location);
+                  }
+                }}
+                handleBlur={() => setCreatingLocation(false)}
+                disable={false}
+                prompterRunning={prompterRunning}
+                prompterStep={prompterStep}
+              />
+            </div>
+          )}
+        </div>
+      </div>
       <AlertDialog
         isOpen={isAlertOpen}
         text={intl.formatMessage({

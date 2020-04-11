@@ -102,6 +102,7 @@ function AllBidsPage({
         title={intl.formatMessage({ id: "SUBMENU.ALL_BIDS" })}
         addUrl={"fromAdmin"}
         paginationData={paginationData}
+        loading={loading}
       />
       <div className={classes.tableFooterText}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>
     </Paper>

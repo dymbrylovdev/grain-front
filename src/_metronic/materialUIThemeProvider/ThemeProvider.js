@@ -52,14 +52,9 @@ const theme = createMuiTheme(
           color: "#fd397a",
         },
       },
-      MuiButton: {
-        colorInherit: {
-          color: "#fd397a",
-          borderColor: "#fd397a",
-          "&:hover": {
-            color: "#fd397a",
-            borderColor: "#b12856",
-          },
+      MuiTextField: {
+        root: {
+          marginTop: 8,
         },
       },
       MuiBadge: {

@@ -120,7 +120,6 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       //console.log("CLEAR_FETCH_BY_ID");
       return {
         ...state,
-        user: undefined,
         byIdLoading: false,
         byIdSuccess: false,
         byIdError: null,
@@ -131,7 +130,6 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       //console.log("FETCH_BY_ID_REQUEST");
       return {
         ...state,
-        user: undefined,
         byIdLoading: true,
         byIdSuccess: false,
         byIdError: null,
@@ -139,7 +137,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_BY_ID_SUCCESS: {
-      //console.log(action.payload);
+      //console.log("Fetch User: ", action.payload);
       return {
         ...state,
         user: action.payload.data,
@@ -149,7 +147,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_BY_ID_FAIL: {
-      return { ...state, byIdLoading: false, byIdError: action.payload };
+      return { ...state, user: undefined, byIdLoading: false, byIdError: action.payload };
     }
 
     case CLEAR_CREATE: {

@@ -95,16 +95,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const classes = useStyles();
   const history = useHistory();
 
-  const {
-    values,
-    handleSubmit,
-    handleChange,
-    handleBlur,
-    resetForm,
-    setFieldValue,
-    touched,
-    errors,
-  } = useFormik({
+  const { values, handleSubmit, handleChange, handleBlur, resetForm, touched, errors } = useFormik({
     initialValues: getInitialValues(undefined),
     onSubmit: values => {
       if (editMode === "profile") editMe({ data: setMeValues(values) });
@@ -229,7 +220,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       {editMode !== "profile" && (
         <div className={classes.textFieldContainer}>
           {meLoading || userLoading ? (
-            <Skeleton width="100%" height={80} animation="wave" />
+            <Skeleton width="100%" height={70} animation="wave" />
           ) : (
             <TextField
               select
@@ -257,7 +248,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       {editMode !== "profile" && (
         <div className={classes.textFieldContainer}>
           {meLoading || userLoading ? (
-            <Skeleton width="100%" height={80} animation="wave" />
+            <Skeleton width="100%" height={70} animation="wave" />
           ) : (
             <TextField
               select
@@ -286,7 +277,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading ? (
-          <Skeleton width="100%" height={80} animation="wave" />
+          <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
             type="text"
@@ -308,7 +299,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading ? (
-          <Skeleton width="100%" height={80} animation="wave" />
+          <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
             type="text"
@@ -335,7 +326,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading ? (
-          <Skeleton width="100%" height={80} animation="wave" />
+          <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
             type="text"
@@ -358,7 +349,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading ? (
-          <Skeleton width="100%" height={80} animation="wave" />
+          <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
             type="tel"
@@ -380,7 +371,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading ? (
-          <Skeleton width="100%" height={80} animation="wave" />
+          <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
             type="password"
@@ -403,7 +394,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading ? (
-          <Skeleton width="100%" height={80} animation="wave" />
+          <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
             type="password"

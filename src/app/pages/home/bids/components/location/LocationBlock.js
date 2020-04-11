@@ -1,7 +1,7 @@
 import React from "react";
 import { injectIntl } from "react-intl";
 import { makeStyles } from "@material-ui/styles";
-import ButtonWithLoader from "../../../../../components/ui/Buttons/ButtonWithLoader";
+import { Button } from "@material-ui/core";
 
 const innerStyles = makeStyles(theme => ({
   container: {
@@ -12,8 +12,11 @@ const innerStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+  leftButton: {
+    marginRight: theme.spacing(2),
+  },
 }));
-function LocationBlock({ intl, handleClick, locations }) {
+function LocationBlock({ intl, handleClickLocation, handleClickPrices, locations }) {
   const innerClasses = innerStyles();
   return (
     <div className={innerClasses.container}>
@@ -33,9 +36,17 @@ function LocationBlock({ intl, handleClick, locations }) {
         </div>
       </div>
       <div>
-        <ButtonWithLoader onPress={handleClick}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleClickLocation}
+          className={innerClasses.leftButton}
+        >
           {intl.formatMessage({ id: "BID.LOCATION.BUTTON" })}
-        </ButtonWithLoader>
+        </Button>
+        <Button variant="contained" color="primary" onClick={handleClickPrices}>
+          {intl.formatMessage({ id: "BID.PRICES.BUTTON" })}
+        </Button>
       </div>
     </div>
   );
