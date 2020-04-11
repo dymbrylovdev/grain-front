@@ -10,6 +10,7 @@ import * as statuses from "./ducks/statuses.duck";
 import * as locations from "./ducks/locations.duck";
 import * as yaLocations from "./ducks/yaLocations.duck";
 import * as docs from "./ducks/docs.duck";
+import * as agreement from "./ducks/agreement.duck";
 import * as bids from "./ducks/bids.duck";
 import * as myFilters from "./ducks/myFilters.duck";
 import * as crops from "./ducks/crops.duck";
@@ -19,6 +20,7 @@ import * as companies from "./ducks/companies.duck";
 import * as prompter from "./ducks/prompter.duck";
 
 export type TAppActions =
+  | agreement.TActions
   | auth.TActions
   | users.TActions
   | statuses.TActions
@@ -37,6 +39,7 @@ export interface IAppState {
   locations: locations.IInitialState;
   yaLocations: yaLocations.IInitialState;
   docs: typeof docs.reducer;
+  agreement: agreement.IInitialState;
   bids: typeof bids.reducer;
   myFilters: myFilters.IInitialState & PersistPartial;
   crops: typeof crops.reducer;
@@ -55,6 +58,7 @@ export const rootReducer: Reducer<IAppState, TAppActions> = combineReducers<IApp
     locations: locations.reducer,
     yaLocations: yaLocations.reducer,
     docs: docs.reducer,
+    agreement: agreement.reducer,
     bids: bids.reducer,
     myFilters: myFilters.reducer,
     crops: crops.reducer,
@@ -67,6 +71,7 @@ export const rootReducer: Reducer<IAppState, TAppActions> = combineReducers<IApp
 export function* rootSaga() {
   yield all(
     [
+      agreement.saga,
       auth.saga,
       users.saga,
       statuses.saga,
