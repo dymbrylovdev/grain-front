@@ -101,10 +101,12 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         <PointsPrices currentFilter={itemById(myFilters, +values.filter_id) as IMyFilterItem} />
       )}
       {!myFilters && (
-        <div className={classes.bottomButtonsContainer}>
-          <Button className={classes.button} variant="contained" color="primary" disabled>
-            {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
-          </Button>
+        <div className={classes.bottomMargin2}>
+          <div className={classes.bottomButtonsContainer}>
+            <Button className={classes.button} variant="contained" color="primary" disabled>
+              {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+            </Button>
+          </div>
         </div>
       )}
     </>

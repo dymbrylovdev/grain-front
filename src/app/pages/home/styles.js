@@ -124,6 +124,9 @@ const useStyles = makeStyles(theme => ({
   bottomMargin2: {
     marginBottom: theme.spacing(2),
   },
+  leftMargin2: {
+    marginLeft: theme.spacing(2),
+  },
 }));
 
 export default useStyles;

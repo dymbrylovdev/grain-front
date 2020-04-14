@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { TextField, Grid, IconButton, Divider } from "@material-ui/core";
+import { TextField, Grid as div, IconButton, Divider } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
 import { useSnackbar } from "notistack";
@@ -11,7 +11,7 @@ import { actions as myFiltersActions } from "../../../../store/ducks/myFilters.d
 import { IAppState } from "../../../../store/rootDuck";
 import useStyles from "../../styles";
 import { IUser } from "../../../../interfaces/users";
-import { IMyFilterItem, IPointPriceForEdit } from "../../../../interfaces/filters";
+import { IMyFilterItem, IPointPriceForEdit, IParamValue } from "../../../../interfaces/filters";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 
 const getInitialValues = (me: IUser | undefined, currentFilter: IMyFilterItem) => {
@@ -87,9 +87,17 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
   } = useFormik({
     initialValues: getInitialValues(me, currentFilter),
     onSubmit: values => {
+      let parameter_values: IParamValue[] = [];
+      currentFilter.parameter_values.forEach(item => {
+        parameter_values.push({ parameter_id: item.parameter.id, value: item.value });
+      });
       editFilter({
         id: currentFilter.id,
-        data: { crop_id: currentFilter.crop.id, point_prices: getFilterEditArray(values) },
+        data: {
+          crop_id: currentFilter.crop.id,
+          point_prices: getFilterEditArray(values),
+          parameter_values,
+        },
       });
     },
     validationSchema: Yup.object().shape(getValidationObject(me, intl)),
@@ -116,40 +124,40 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
   }, [currentFilter, me, myFilters, resetForm]);
 
   return (
-    <>
+    <div className={classes.bottomMargin2}>
       {me?.points.map((item, index) => (
         <div key={index}>
           <div className={classes.textFieldContainer}>
-            <Grid container direction="row" justify="space-between" alignItems="center">
-              <Grid item>{item.name}</Grid>
-              <Grid item>
-                <TextField
-                  type="text"
-                  autoComplete="off"
-                  label={intl.formatMessage({
-                    id: "FILTERS.PRICE",
-                  })}
-                  margin="normal"
-                  name={`price${item.id}`}
-                  value={values[`price${item.id}`]}
-                  variant="outlined"
-                  onBlur={handleBlur}
-                  onChange={e => {
-                    //console.log(values);
-                    handleChange(e);
-                  }}
-                  helperText={touched[`price${item.id}`] && errors[`price${item.id}`]}
-                  error={Boolean(touched[`price${item.id}`] && errors[`price${item.id}`])}
-                  InputProps={{
-                    endAdornment: (
-                      <IconButton onClick={() => setFieldValue(`price${item.id}`, "")}>
-                        <CloseIcon />
-                      </IconButton>
-                    ),
-                  }}
-                />
-              </Grid>
-            </Grid>
+            <div style={{ flex: "auto" }}>{item.name}</div>
+            <div>
+              <TextField
+                type="text"
+                autoComplete="off"
+                label={intl.formatMessage({
+                  id: "FILTERS.PRICE",
+                })}
+                margin="normal"
+                name={`price${item.id}`}
+                value={values[`price${item.id}`]}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={e => {
+                  //console.log(values);
+                  handleChange(e);
+                }}
+                helperText={touched[`price${item.id}`] && errors[`price${item.id}`]}
+                error={Boolean(touched[`price${item.id}`] && errors[`price${item.id}`])}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton onClick={() => setFieldValue(`price${item.id}`, "")}>
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }}
+                style={{ width: 200 }}
+                className={classes.leftMargin2}
+              />
+            </div>
           </div>
           {index !== me?.points.length - 1 && <Divider />}
         </div>
@@ -167,7 +175,7 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
           </ButtonWithLoader>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -191,9 +191,14 @@ function MyFiltersForm({
                 loading={editLoading}
                 disabled={editLoading}
                 onPress={() => {
+                  let params = values;
+                  params.point_prices = [];
+                  filter.point_prices.forEach(item => {
+                    params.point_prices.push({ point_id: item.point.id, price: item.price });
+                  });
                   editFilter({
                     id: filter.id,
-                    data: filterForCreate(values, enumParams, numberParams),
+                    data: filterForCreate(params, enumParams, numberParams),
                   });
                 }}
               >

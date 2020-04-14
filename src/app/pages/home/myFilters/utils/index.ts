@@ -13,6 +13,7 @@ export const filterForCreate = (
     max_full_price: data.max_full_price || 0,
     max_distance: data.max_destination || 0,
     subscribed: data.subscribed,
+    point_prices: data.point_prices,
   };
   const parameter_values: {
     parameter_id: number;

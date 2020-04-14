@@ -5,7 +5,7 @@ import { PricesEdit } from "../../../myFilters/components";
 
 function PricesDialog({ handleClose, isOpen, intl }) {
   return (
-    <Dialog open={isOpen} onClose={handleClose} maxWidth={"md"} fullWidth>
+    <Dialog open={isOpen} onClose={handleClose} maxWidth={"sm"} fullWidth>
       <DialogTitle>
         <Grid container direction="row" justify="space-between" alignItems="center">
           <Grid item>

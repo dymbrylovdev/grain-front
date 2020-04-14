@@ -34,6 +34,7 @@ import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { IMyFilterItem } from "../../../interfaces/filters";
 import { OutlinedRedButton } from "../../../components/ui/Buttons/RedButtons";
+import { itemById } from "../../../utils/utils";
 
 const useInnerStyles = makeStyles(theme => ({
   buttonContainer: {
@@ -198,19 +199,24 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
             : { name: "" }
         }
         onSubmit={(values, { setStatus, setSubmitting }) => {
+          let params: { [x: string]: any } = values;
+          params.point_prices = [];
+          itemById(myFilters, +id)?.point_prices.forEach(item => {
+            params.point_prices.push({ point_id: item.point.id, price: item.price });
+          });
           cropParams &&
             (+id
               ? editFilter({
-                  id: myFilters.find(item => item.id === +id)?.id as number,
+                  id: +id,
                   data: filterForCreate(
-                    values,
+                    params,
                     cropParams.filter(item => item.type === "enum"),
                     cropParams.filter(item => item.type === "number")
                   ),
                 })
               : createFilter(
                   filterForCreate(
-                    values,
+                    params,
                     cropParams.filter(item => item.type === "enum"),
                     cropParams.filter(item => item.type === "number")
                   )
