@@ -230,10 +230,8 @@ function BidForm({
                   <div className={innerClasses.calcTitle}>
                     {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
                   </div>
-                  <LocationBlock
-                    handleClick={openLocation}
-                    location={user.location && user.location.text}
-                  />
+                  <LocationBlock handleClickLocation={openLocation} locations={user.points} />
+                  <div style={{ height: 8 }}></div>
                   <TextField
                     type="text"
                     label={intl.formatMessage({

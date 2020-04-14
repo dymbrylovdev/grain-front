@@ -65,10 +65,12 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(2),
   },
   text: {
+    display: "flex",
     minHeight: 40,
     fontSize: 14,
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
+    alignItems: "center",
+    //paddingTop: theme.spacing(1),
+    //paddingBottom: theme.spacing(1),
   },
   tableTitle: {
     marginTop: theme.spacing(2),

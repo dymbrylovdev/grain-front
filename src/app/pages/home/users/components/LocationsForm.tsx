@@ -197,7 +197,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       {!locations.length ? (
         <div className={classes.text}>
           {loadingMe || loadingUser ? (
-            <Skeleton width="70%" height={30} animation="wave" />
+            <Skeleton width="70%" height={24} animation="wave" />
           ) : (
             intl.formatMessage({ id: "LOCATIONS.FORM.NO_LOCATIONS" })
           )}
@@ -341,7 +341,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   if (location) {
                     userId ? (location.user_id = userId) : (location.user_id = me?.id);
                     setCreatingLocation(false);
-                    console.log(location);
                     create(location);
                   }
                 }}

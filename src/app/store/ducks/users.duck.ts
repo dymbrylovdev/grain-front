@@ -137,7 +137,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_BY_ID_SUCCESS: {
-      //console.log("Fetch User: ", action.payload);
+      console.log("Fetch User: ", action.payload);
       return {
         ...state,
         user: action.payload.data,
@@ -181,7 +181,13 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case EDIT_SUCCESS: {
-      return { ...state, users: undefined, editLoading: false, editSuccess: true };
+      return {
+        ...state,
+        users: undefined,
+        byIdLoading: true,
+        editLoading: false,
+        editSuccess: true,
+      };
     }
 
     case EDIT_FAIL: {

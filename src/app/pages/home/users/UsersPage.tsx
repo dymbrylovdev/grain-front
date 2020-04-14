@@ -77,10 +77,8 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [clearDel, delError, delSuccess, enqueueSnackbar, intl]);
 
   useEffect(() => {
-    if (!users && !loading) {
-      fetch({ page, perPage });
-    }
-  }, [fetch, loading, page, perPage, users]);
+    fetch({ page, perPage });
+  }, [fetch, page, perPage]);
 
   if (error) return <LoadError handleClick={() => fetch({ page, perPage })} />;
 

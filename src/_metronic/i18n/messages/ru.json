@@ -132,6 +132,7 @@
   "LOCATION.STATUS.ERROR": "Ошибка сохранения локации",
 
   "MONEY.INTRODUCTION": "Наша система позволяет сразу рассчитать прибыль от перепродажи зерна на точке отгрузки. Задайте цену перепродажи зерна по каждому фильтру для каждой точки отгрузки. Система автоматически подберёт для вас самые прибыльные сделки по всей стране.",
+  "MONEY.NO_FILTERS": "У Вас еще нет ни одного фильтра.",
 
   "BIDSLIST.TABLE.ID": "Id",
   "BIDSLIST.TABLE.COST": "Цена на складе у поставщика",
@@ -276,7 +277,6 @@
   "COMPANY.CONFIRM.BY_PHONE": "По телефону",
   "COMPANY.CONFIRM.BY_PAY": "Оплатой",
   "COMPANY.CONFIRM.NO_CONFIRM": "Связь не подтверждена",
-  "COMPANY.CONFIRM.NO_COMPANY": "Чтобы подтвердить связь, сначала сохраните компанию",
   "COMPANY.CONFIRM.BUTTON": "Подтверждение связи",
   "COMPANY.CONFIRM.MAIN.TITLE": "Подтверждение связи с компанией",
   "COMPANY.CONFIRM.EMAIL.TITLE": "1. Автоматическое подтверждение по электронной почте",
@@ -293,6 +293,10 @@
   "COMPANY.CONFIRM.INPUT.CODE": "Код подтверждения",
   "COMPANY.CONFIRM.SUCCESS": "Связь успешно подтверждена.",
   "COMPANY.CONFIRM.ERROR.SENT": "Ошибка отправки кода",
+  "COMPANY.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить компанию.",
+  "COMPANY.DIALOGS.AGREE_TEXT": "Да",
+  "COMPANY.DIALOGS.CANCEL_TEXT": "Отмена",
+  "COMPANY.DIALOGS.LOADING_TEXT": "Удаление компании",
 
   "LOCATIONS.FORM.NO_USER": "Чтобы добавить точки отгрузки/погрузки, сначала заполните профиль пользователя и нажмите кнопку \"Добавить\".",
   "LOCATIONS.FORM.NO_LOCATIONS": "Для этого пользователя еще не добавлены точки отгрузки/погрузки.",
@@ -322,7 +326,7 @@
   "NOTISTACK.ERRORS.DEL_USER": "Пользователь удален",
   "NOTISTACK.USERS.SAVE_PROFILE": "Мой профиль сохранен",
   "NOTISTACK.USERS.SAVE_USER": "Пользователь сохранен",
-  "NOTISTACK.USERS.SAVE_COMPANY": "Информация о компании изменена",
+  "NOTISTACK.USERS.SAVE_COMPANY": "Данные о компании изменены",
   "NOTISTACK.USERS.SAVE_CREATE": "Пользователь добавлен",
   "NOTISTACK.POINTS.CREATE": "Точка отгрузки/погрузки добавлена",
   "NOTISTACK.POINTS.DEL": "Точка отгрузки/погрузки удалена",

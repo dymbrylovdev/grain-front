@@ -50,13 +50,11 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   });
 
   useEffect(() => {
-    if (!myFilters && !myFiltersLoading) {
-      fetchFilters();
-    }
-  }, [delFilter, fetchFilters, myFiltersLoading, myFilters]);
+    fetchFilters();
+  }, [fetchFilters]);
 
   useEffect(() => {
-    resetForm({ values: { filter_id: selectedFilterId.toString() } });
+    if (selectedFilterId) resetForm({ values: { filter_id: selectedFilterId.toString() } });
   }, [resetForm, selectedFilterId]);
 
   return (
@@ -65,8 +63,12 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         {intl.formatMessage({ id: "MONEY.INTRODUCTION" })}
       </div>
       <div className={classes.textFieldContainer}>
-        {!myFilters || !+values.filter_id ? (
+        {!myFilters ? (
           <Skeleton width="100%" height={70} animation="wave" />
+        ) : !myFilters.length ? (
+          <div className={classes.bottomMargin1}>
+            {intl.formatMessage({ id: "MONEY.NO_FILTERS" })}
+          </div>
         ) : (
           <TextField
             select
@@ -88,18 +90,19 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           </TextField>
         )}
       </div>
-      {!myFilters || !+values.filter_id ? (
-        me?.points.map((point, index) => (
-          <div key={index}>
-            <div className={classes.textFieldContainer}>
-              <Skeleton width="100%" height={70} animation="wave" />
+      {!myFilters
+        ? me?.points.map((point, index) => (
+            <div key={index}>
+              <div className={classes.textFieldContainer}>
+                <Skeleton width="100%" height={70} animation="wave" />
+              </div>
+              {index !== me?.points.length - 1 && <Divider />}
             </div>
-            {index !== me?.points.length - 1 && <Divider />}
-          </div>
-        ))
-      ) : (
-        <PointsPrices currentFilter={itemById(myFilters, +values.filter_id) as IMyFilterItem} />
-      )}
+          ))
+        : !!myFilters.length &&
+          +values.filter_id && (
+            <PointsPrices currentFilter={itemById(myFilters, +values.filter_id) as IMyFilterItem} />
+          )}
       {!myFilters && (
         <div className={classes.bottomMargin2}>
           <div className={classes.bottomButtonsContainer}>

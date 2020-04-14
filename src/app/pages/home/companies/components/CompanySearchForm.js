@@ -35,11 +35,11 @@ const isSearchEmpty = values => {
   return false;
 };
 
-function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
+function CompanySearchForm({ intl, setCompanyAction, classes, company, editAction, confirms }) {
   const formRef = useRef();
   const innerClasses = innerStyles();
   const [companies, setCompanies] = useState([]);
-  const [currentCompany, setCurrentCompany] = useState(company);
+  //const [currentCompany, setCurrentCompany] = useState(company);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const searchAction = useCallback((values, successCallback, emptyCallback, failCallback) => {
     searchCompanies(values)
@@ -62,15 +62,24 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
   }, []);
   const chooseAction = useCallback(
     company => {
-      setCompanyAction(company);
-      setCurrentCompany(company);
+      //setCompanyAction(company);
+      //setCurrentCompany(company);
+      //console.log(company);
+      editAction({
+        data: {
+          company_id: company.id,
+          company_confirmed_by_email: confirms,
+          company_confirmed_by_phone: confirms,
+          company_confirmed_by_payment: confirms,
+        },
+      });
       setDialogOpen(false);
     },
-    [setCompanyAction]
+    [confirms, editAction]
   );
   useEffect(() => {
-    formRef.current.resetForm({ values: getInitialValues(currentCompany) });
-  }, [currentCompany]);
+    formRef.current.resetForm({ values: getInitialValues(company) });
+  }, [company]);
   return (
     <>
       <CompanySearchDialog
@@ -83,7 +92,7 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company }) {
       />
       <Formik
         autoComplete="off"
-        initialValues={getInitialValues(currentCompany)}
+        initialValues={getInitialValues(company)}
         innerRef={formRef}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
           setTimeout(() => {

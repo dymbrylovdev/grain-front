@@ -167,6 +167,7 @@ function BidCreatePage({
         submitAction={locationSubmit}
         user={user}
         classes={classes}
+        intl={intl}
       />
       {title && <LayoutSubheader title={title} />}
       {isNoModerate ? (

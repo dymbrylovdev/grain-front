@@ -93,10 +93,8 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         //console.log(action.payload.data.find(item => item.id === state.selectedFilterId));
         if (
           action.payload.data.length &&
-          action.payload.data.find(item => item.id === state.selectedFilterId)
+          !action.payload.data.find(item => item.id === state.selectedFilterId)
         ) {
-          return { ...state, myFilters: action.payload.data, loading: false, success: true };
-        } else {
           return {
             ...state,
             myFilters: action.payload.data,
@@ -104,6 +102,8 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
             loading: false,
             success: true,
           };
+        } else {
+          return { ...state, myFilters: action.payload.data, loading: false, success: true };
         }
       }
 
@@ -192,9 +192,11 @@ export type TActions = ActionsUnion<typeof actions>;
 function* fetchSaga() {
   try {
     const { data }: { data: IServerResponse<IMyFilterItem[]> } = yield call(() => getMyFilters());
+    yield console.log(data);
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield console.log(e);
+    //yield put(actions.fetchFail(e.response.data.message));
   }
 }
 

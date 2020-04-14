@@ -1,9 +1,7 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { WrappedComponentProps, injectIntl } from "react-intl";
-import { TextField, Theme, IconButton } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
+import { TextField, IconButton, Button } from "@material-ui/core";
 import { useFormik } from "formik";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useSnackbar } from "notistack";
@@ -12,30 +10,14 @@ import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { actions as authActions } from "../../../../store/ducks/auth.duck";
 
 import useStyles from "../../styles";
-import { setMeValues, setEditValues } from "../utils/submitValues";
 import { getInitialValues } from "../utils/companyForm";
 import CompanyConfirmBlock from "../../companies/components/CompanyConfirmBlock";
-import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import CompanySearchForm from "../../companies/components/CompanySearchForm";
 import { IAppState } from "../../../../store/rootDuck";
-
-const innerStyles = makeStyles((theme: Theme) => ({
-  companyContainer: {
-    flexDirection: "row",
-    display: "flex",
-  },
-  companyText: {
-    flex: 1,
-  },
-  buttonConfirm: {
-    paddingBottom: theme.spacing(2),
-  },
-  pulseRoot: {
-    "& fieldset": {
-      animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
-    },
-  },
-}));
+import CompanyConfirmDialog from "./CompanyConfirmDialog";
+import { Skeleton } from "@material-ui/lab";
+import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
+import { IUser } from "../../../../interfaces/users";
 
 const isNonConfirm = (values: {
   company_confirmed_by_email: any;
@@ -102,8 +84,12 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   editMode,
   userId,
 }) => {
-  const innerClasses = innerStyles();
   const classes = useStyles();
+
+  const [isOpenCompanyConfirm, setIsOpenCompanyConfirm] = useState<boolean>(false);
+  const [companyConfirmId, setCompanyConfirmId] = useState<number>(0);
+  const [isAlertOpen, setAlertOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<IUser>();
 
   useEffect(() => {
     switch (editMode) {
@@ -155,8 +141,8 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const { values, handleSubmit, handleChange, handleBlur, resetForm, setFieldValue } = useFormik({
     initialValues: getInitialValues(undefined),
     onSubmit: values => {
-      if (editMode === "profile") editMe({ data: setMeValues(values) });
-      if (editMode === "edit" && userId) editUser({ id: userId, data: setEditValues({}) });
+      if (editMode === "profile") editMe({ data: values });
+      if (editMode === "edit" && userId) editUser({ id: userId, data: values });
     },
   });
 
@@ -164,89 +150,84 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     switch (editMode) {
       case "profile":
         resetForm({ values: getInitialValues(me) });
+        setCurrentUser(me);
         break;
       case "edit":
         resetForm({ values: getInitialValues(user) });
+        setCurrentUser(user);
         break;
       case "create":
         resetForm({ values: getInitialValues(undefined) });
         break;
     }
-  }, [editMode, me, resetForm, user]);
+  }, [editMode, me, resetForm, setCurrentUser, user]);
 
   return (
     <div>
-      {values.company_name ? (
+      {currentUser && currentUser.company ? (
         <>
-          <div className={innerClasses.companyContainer}>
-            <TextField
-              type="text"
-              label={intl.formatMessage({
-                id: "PROFILE.INPUT.COMPANY",
-              })}
-              margin="normal"
-              name="company_name"
-              value={values.company_name}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              disabled={true}
-              className={innerClasses.companyText}
-            />
-            {
-              <IconButton
-                size={"medium"}
-                onClick={() => {
-                  setFieldValue("company_id", null);
-                  setFieldValue("company_name", "");
-                  setFieldValue("company_confirmed_by_email", false);
-                  setFieldValue("company_confirmed_by_phone", false);
-                  setFieldValue("company_confirmed_by_payment", false);
-                  handleSubmit();
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
-            }
+          <div className={classes.textFieldContainer}>
+            {meLoading || userLoading || editLoading || editMeLoading ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <>
+                <TextField
+                  type="text"
+                  label={intl.formatMessage({
+                    id: "PROFILE.INPUT.COMPANY",
+                  })}
+                  margin="normal"
+                  name="company_name"
+                  value={values.company_name}
+                  variant="outlined"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  disabled={true}
+                  className={classes.textField}
+                />
+                <IconButton size={"medium"} color="secondary" onClick={() => setAlertOpen(true)}>
+                  <DeleteIcon />
+                </IconButton>
+              </>
+            )}
           </div>
           <CompanyConfirmBlock
             values={values}
-            handleChange={handleChange}
-            disabled={!user?.is_admin}
+            handleChange={
+              editMode === "profile"
+                ? editMe
+                : ({ data }: any) => editUser({ id: userId as number, data: data })
+            }
+            disabled={editMode === "profile" || !me?.is_admin}
+            loading={!currentUser || meLoading || userLoading || editLoading || editMeLoading}
           />
-          {isNonConfirm(values) && !user?.is_admin && (
-            <div className={innerClasses.buttonConfirm}>
-              {user?.company ? (
-                <Link
-                  to={`/company/confirm/${values.company_id}`}
+          {isNonConfirm(values) && !me?.is_admin && (
+            <div className={classes.textFieldContainer}>
+              {!currentUser || meLoading || userLoading || editLoading || editMeLoading ? (
+                <Skeleton width={170} height={70} animation="wave" />
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
                   onClick={() => {
-                    if (
-                      !values.company_confirmed_by_email &&
-                      !values.company_confirmed_by_phone &&
-                      !values.company_confirmed_by_payment
-                    ) {
-                      mergeUser({
-                        company_confirmed_by_email: false,
-                        company_confirmed_by_phone: false,
-                        company_confirmed_by_payment: false,
-                      });
-                    }
+                    setCompanyConfirmId(values.company_id);
+                    setIsOpenCompanyConfirm(true);
                   }}
                 >
-                  <ButtonWithLoader>
-                    {intl.formatMessage({ id: "COMPANY.CONFIRM.BUTTON" })}
-                  </ButtonWithLoader>
-                </Link>
-              ) : (
-                <p className={classes.text}>
-                  {intl.formatMessage({ id: "COMPANY.CONFIRM.NO_COMPANY" })}
-                </p>
+                  {intl.formatMessage({ id: "COMPANY.CONFIRM.BUTTON" })}
+                </Button>
               )}
             </div>
           )}
         </>
+      ) : !currentUser || meLoading || userLoading || editLoading || editMeLoading ? (
+        <div className={classes.textFieldContainer}>
+          <Skeleton width="100%" height={70} animation="wave" />
+        </div>
       ) : (
-        <p className={classes.text}>{intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}</p>
+        <div className={classes.textFieldContainer} style={{ fontSize: 14 }}>
+          {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
+        </div>
       )}
       {
         <CompanySearchForm
@@ -259,8 +240,45 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             setFieldValue("company_confirmed_by_phone", false);
             setFieldValue("company_confirmed_by_payment", false);
           }}
+          editAction={
+            editMode === "profile"
+              ? editMe
+              : ({ data }: any) => editUser({ id: userId as number, data: data })
+          }
+          confirms={editMode === "profile" && me?.is_admin}
         />
       }
+      <CompanyConfirmDialog
+        id={companyConfirmId}
+        intl={intl}
+        isOpen={isOpenCompanyConfirm}
+        handleClose={() => setIsOpenCompanyConfirm(false)}
+      />
+      <AlertDialog
+        isOpen={isAlertOpen}
+        text={intl.formatMessage({
+          id: "COMPANY.DIALOGS.DELETE_TEXT",
+        })}
+        okText={intl.formatMessage({
+          id: "COMPANY.DIALOGS.AGREE_TEXT",
+        })}
+        cancelText={intl.formatMessage({
+          id: "COMPANY.DIALOGS.CANCEL_TEXT",
+        })}
+        handleClose={() => setAlertOpen(false)}
+        handleAgree={() => {
+          setFieldValue("company_id", 0);
+          setFieldValue("company_confirmed_by_email", false);
+          setFieldValue("company_confirmed_by_phone", false);
+          setFieldValue("company_confirmed_by_payment", false);
+          handleSubmit();
+          setAlertOpen(false);
+        }}
+        loadingText={intl.formatMessage({
+          id: "COMPANY.DIALOGS.LOADING_TEXT",
+        })}
+        isLoading={editMeLoading || editLoading}
+      />
     </div>
   );
 };
