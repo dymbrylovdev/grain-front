@@ -1,7 +1,7 @@
 import { ICompany } from "./companies";
 import { ILocation } from "./locations";
 
-export type TRoles = "ROLE_ADMIN" | "ROLE_VENDOR" | "ROLE_BUYER";
+export type TRole = "ROLE_ADMIN" | "ROLE_VENDOR" | "ROLE_BUYER";
 
 export interface IUser {
   id: number;
@@ -23,13 +23,13 @@ export interface IUser {
 
 export interface IUserForRegister {
   email: string;
-  roles: TRoles[];
+  roles: TRole[];
   login: string;
 }
 
 export interface IUserForCreate {
   email?: string;
-  roles?: TRoles[];
+  roles?: TRole[];
   password?: string;
   fio?: string;
   phone?: string;
@@ -65,6 +65,6 @@ export interface ILoginSuccessData extends IUser {
 
 export interface IRegSuccessData {
   email: string;
-  roles: TRoles[];
+  roles: TRole[];
   login: string;
 }

@@ -100,6 +100,12 @@ const getAdminMenu = crops => ({
             page: "company/create",
             translate: "SUBMENU.COMPANY.CREATE",
           },
+          {
+            title: "Настройка воронки",
+            root: true,
+            page: "funnel-states",
+            translate: "SUBMENU.FUNNEL_STATES",
+          },
         ],
       },
       {

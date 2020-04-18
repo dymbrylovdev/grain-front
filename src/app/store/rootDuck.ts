@@ -16,6 +16,7 @@ import * as myFilters from "./ducks/myFilters.duck";
 import * as crops from "./ducks/crops.duck";
 import * as crops2 from "./ducks/crops2.duck";
 import * as companies from "./ducks/companies.duck";
+import * as funnelStates from "./ducks/funnelStates.duck";
 
 import * as prompter from "./ducks/prompter.duck";
 
@@ -28,7 +29,8 @@ export type TAppActions =
   | yaLocations.TActions
   | prompter.TActions
   | myFilters.TActions
-  | crops2.TActions;
+  | crops2.TActions
+  | funnelStates.TActions;
 
 export interface IAppState {
   i18n: typeof metronic.i18n.reducer;
@@ -45,6 +47,7 @@ export interface IAppState {
   crops: typeof crops.reducer;
   crops2: crops2.IInitialState & PersistPartial;
   companies: typeof companies.reducer;
+  funnelStates: funnelStates.IInitialState;
   prompter: prompter.IInitialState & PersistPartial;
 }
 
@@ -64,6 +67,7 @@ export const rootReducer: Reducer<IAppState, TAppActions> = combineReducers<IApp
     crops: crops.reducer,
     crops2: crops2.reducer,
     companies: companies.reducer,
+    funnelStates: funnelStates.reducer,
     prompter: prompter.reducer,
   }
 );
@@ -82,6 +86,7 @@ export function* rootSaga() {
       locations.saga,
       yaLocations.saga,
       companies.saga,
+      funnelStates.saga,
     ].map(saga => fork(saga))
   );
 }

@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer
-} from "react";
+import React, { createContext, useContext, useEffect, useMemo, useReducer } from "react";
 
 /**
  * Both context used to create inside react `redux`-like global state managed
@@ -22,7 +16,7 @@ const LayoutContext = {
   /**
    * Stores `dispatch` function to update layout state, intended to be internal.
    */
-  Dispatch: createContext(null)
+  Dispatch: createContext(null),
 };
 
 /**
@@ -44,7 +38,7 @@ const actionTypes = {
    * Controls splash screen visibility.
    */
   SHOW_SPLASH_SCREEN: "SHOW_SPLASH_SCREEN",
-  HIDE_SPLASH_SCREEN: "HIDE_SPLASH_SCREEN"
+  HIDE_SPLASH_SCREEN: "HIDE_SPLASH_SCREEN",
 };
 
 /**
@@ -52,46 +46,50 @@ const actionTypes = {
  *
  * Returns `undefined` if there are no matches.
  */
-function findPageConfig(currentPage, items, breadcrumbs) {
-  // Ignore non array `items`.
-  if (!items || !Array.isArray(items)) {
-    return;
-  }
+// function findPageConfig(currentPage, items, breadcrumbs) {
+//   // Ignore non array `items`.
+//   if (!items || !Array.isArray(items)) {
+//     return;
+//   }
 
-  for (const item of items) {
-    // Return `item` if it's `page` matches `currentPage`
-    if (currentPage === item.page && !item.submenu) {
-      return item;
-    }
+//   for (const item of items) {
+//     // Return `item` if it's `page` matches `currentPage`
+//     if (currentPage === item.page && !item.submenu) {
+//       return item;
+//     }
 
-    // Try to `pageConfig` in `item.submenu` if it is defined.
-    if (item.submenu) {
-      const pageConfig = findPageConfig(currentPage, item.submenu, breadcrumbs);
-      if (pageConfig) {
-        breadcrumbs.push(item);
-        return pageConfig;
-      }
-    }
-  }
-}
+//     // Try to `pageConfig` in `item.submenu` if it is defined.
+//     if (item.submenu) {
+//       const pageConfig = findPageConfig(currentPage, item.submenu, breadcrumbs);
+//       if (pageConfig) {
+//         breadcrumbs.push(item);
+//         return pageConfig;
+//       }
+//     }
+//   }
+// }
 
 /**
  * Used to lazily create initial layout state.
  */
 function init({ pathname, menuConfig }) {
-  const currentPage = pathname.slice(1 /* Remove leading slash. */);
+  // const currentPage = pathname.slice(1 /* Remove leading slash. */);
   let breadcrumbs = [];
-  const pageConfig =
-      findPageConfig(currentPage, menuConfig.aside.items, breadcrumbs) ||
-      findPageConfig(currentPage, menuConfig.header.items, breadcrumbs);
+  // const pageConfig =
+  //   findPageConfig(currentPage, menuConfig.aside.items, breadcrumbs) ||
+  //   findPageConfig(currentPage, menuConfig.header.items, breadcrumbs);
 
   breadcrumbs.reverse();
-  const state = { subheader: { title: "", breadcrumb: [], description: "" }, splashScreen: { refs: {} } };
-  if (pageConfig) {
-    breadcrumbs.push(pageConfig);
-    state.subheader.title = pageConfig.title;
-    state.subheader.breadcrumb = breadcrumbs;
-  }
+  const state = {
+    subheader: { title: "", breadcrumb: [], description: "" },
+    splashScreen: { refs: {} },
+  };
+  // ВНИМАНИЕ!!! ЗДЕСЬ УСТАНАВЛИВАЕТСЯ САБХЭДЕР ПО УМОЛЧАНИЮ, КОТОРЫЙ ПОКАЗЫВАЕТ НЕПРАВИЛЬНЫЕ КРОШКИ
+  // if (pageConfig) {
+  //   breadcrumbs.push(pageConfig);
+  //   state.subheader.title = pageConfig.title;
+  //   state.subheader.breadcrumb = breadcrumbs;
+  // }
 
   return state;
 }
@@ -113,8 +111,8 @@ function reducer(state, { type, payload }) {
       ...state,
       splashScreen: {
         ...state.splashScreen,
-        refs: { ...state.splashScreen.refs, [payload.id]: true }
-      }
+        refs: { ...state.splashScreen.refs, [payload.id]: true },
+      },
     };
   }
 
@@ -123,7 +121,7 @@ function reducer(state, { type, payload }) {
 
     return {
       ...state,
-      splashScreen: { ...state.splashScreen, refs: nextRefs }
+      splashScreen: { ...state.splashScreen, refs: nextRefs },
     };
   }
 
@@ -135,37 +133,36 @@ function reducer(state, { type, payload }) {
  */
 export function LayoutContextProvider({ history, children, menuConfig }) {
   const [state, dispatch] = useReducer(
-      reducer,
-      { menuConfig, pathname: history.location.pathname },
-      // See https://reactjs.org/docs/hooks-reference.html#lazy-initialization
-      init
+    reducer,
+    { menuConfig, pathname: history.location.pathname },
+    // See https://reactjs.org/docs/hooks-reference.html#lazy-initialization
+    init
   );
 
   // Subscribe to history changes and reinitialize on each change.
   useEffect(
-      () =>
-          history.listen(({ pathname }) => {
-            dispatch({
-              type: actionTypes.INIT,
-              payload: { pathname, menuConfig }
-            });
-          }),
+    () =>
+      history.listen(({ pathname }) => {
+        dispatch({
+          type: actionTypes.INIT,
+          payload: { pathname, menuConfig },
+        });
+      }),
 
-      /**
-       * Passing `history` and `menuConfig` to `deps` ensures that `useEffect`
-       * will cleanup current `history` listener and will dispatch `INIT`
-       * with `menuConfig` reference from current render.
-       *
-       * @see https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect
-       */
-      [history, menuConfig]
+    /**
+     * Passing `history` and `menuConfig` to `deps` ensures that `useEffect`
+     * will cleanup current `history` listener and will dispatch `INIT`
+     * with `menuConfig` reference from current render.
+     *
+     * @see https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect
+     */
+    [history, menuConfig]
   );
 
   const { refs: splashScreenRefs } = state.splashScreen;
-  const splashScreenVisible = useMemo(
-      () => Object.keys(splashScreenRefs).length > 0,
-      [splashScreenRefs]
-  );
+  const splashScreenVisible = useMemo(() => Object.keys(splashScreenRefs).length > 0, [
+    splashScreenRefs,
+  ]);
 
   useEffect(() => {
     const splashScreen = document.getElementById("splash-screen");
@@ -189,11 +186,9 @@ export function LayoutContextProvider({ history, children, menuConfig }) {
 
   // Pass state and dispatch to it's contexts.
   return (
-      <LayoutContext.State.Provider value={state}>
-        <LayoutContext.Dispatch.Provider value={dispatch}>
-          {children}
-        </LayoutContext.Dispatch.Provider>
-      </LayoutContext.State.Provider>
+    <LayoutContext.State.Provider value={state}>
+      <LayoutContext.Dispatch.Provider value={dispatch}>{children}</LayoutContext.Dispatch.Provider>
+    </LayoutContext.State.Provider>
   );
 }
 
@@ -236,13 +231,13 @@ export function useLayoutContext() {
 /**
  * Used to override layout subheader state.
  */
-export function LayoutSubheader({ title, breadcrumb, description }) {
+export function LayoutSubheader({ title, breadcrumb = [], description = "" }) {
   const dispatch = useContext(LayoutContext.Dispatch);
 
   useEffect(() => {
     dispatch({
       type: actionTypes.SET_SUBHEADER,
-      payload: { title, breadcrumb, description }
+      payload: { title, breadcrumb, description },
     });
   }, [dispatch, title, breadcrumb, description]);
 

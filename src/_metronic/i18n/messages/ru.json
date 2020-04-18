@@ -34,14 +34,17 @@
   "SUBMENU.CATALOG.CREATE_CROP": "Добавить культуру",
   "SUBMENU.SYSTEM.SETTINGS": "Настройки системы",
   "SUBMENU.LEGAL": "Пользовательское соглашение",
+  "SUBMENU.FUNNEL_STATES": "Настройка воронки",
 
   "SUBHEADER.PARTS.EDIT": "Редактирование",
   "SUBHEADER.PARTS.CREATE": "Добавление",
   "SUBHEADER.PARTS.VIEW": "Просмотр",
-
   "SUBHEADER.PARTS.FILTER": "фильтра",
   "SUBHEADER.PARTS.PRICE": "цен по точкам",
   "SUBHEADER.PARTS.USER": "пользователя",
+  "SUBHEADER.PARTS.FUNNEL_STATUS": "состояния",
+  "SUBHEADER.PARTS.FUNNEL_STATUS.BUYER": "для покупателя",
+  "SUBHEADER.PARTS.FUNNEL_STATUS.SELLER": "для продавца",
 
   "START.WELCOME": "Добро пожаловать на Рынок Зерна",
   "START.DESCRIPTION": "Маркетплейс по продаже зерновых культур",
@@ -111,7 +114,7 @@
   "USERLIST.TABLE.EMAIL": "Email",
   "USERLIST.TABLE.NAME": "Название",
   "USERLIST.TABLE.COMPANY": "Компания",
-  "USERLIST.TABLE.STATUS": "Статус",
+  "USERLIST.TABLE.ACTIVITY": "Активность",
   "USERLIST.TABLE.ACTIONS": "Действия",
   "USERLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить пользователя? Все его заявки будут удалены вместе с ним.",
   "USERLIST.DIALOGS.AGREE_TEXT": "Да",
@@ -319,6 +322,28 @@
   "PROMPTER.STEPPER.STEP_CONTENT4": "Чтобы продать зерно нажмите на кнопку \"Добавить заявку\" и укажите параметры вашего зерна, точку отгрузки и цену за тонну.",
   "PROMPTER.STEPPER.STEP_CONTENT5": "Ознакомление с платформой \"Рынок зерна\" окончено. Чтобы закрыть это окно, нажмите на кнопку \"Завершить\" Приятной работы.",
 
+  "FUNNEL_STATES.TITLE": "Настройка воронки продаж",
+  "FUNNEL_STATES.BUTTON.ADD": "Добавить состояние",
+  "FUNNEL_STATES.TABLE.NAME": "Название",
+  "FUNNEL_STATES.TABLE.ENGAGEMENT": "Вовлеченность",
+  "FUNNEL_STATES.TABLE.HINT": "Описание",
+  "FUNNEL_STATES.TABS.BUYERS": "Покупатели",
+  "FUNNEL_STATES.TABS.SELLERS": "Продавцы",
+  "FUNNEL_STATES.INPUT.NAME": "Название",
+  "FUNNEL_STATES.INPUT.COLOR": "Цвет",
+  "FUNNEL_STATES.INPUT.ENGAGEMENT": "Вовлеченность",
+  "FUNNEL_STATES.INPUT.HINT": "Описание",
+  "FUNNEL_STATES.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить это состояние?",
+  "FUNNEL_STATES.DIALOGS.AGREE_TEXT": "Да",
+  "FUNNEL_STATES.DIALOGS.CANCEL_TEXT": "Отмена",
+  "FUNNEL_STATES.DIALOGS.LOADING_TEXT": "Удаление состояния",
+
+  "YUP.REQUIRED": "Это поле должно быть обязательно заполнено.",
+  "YUP.NUMBERS": "В это поле можно вводить только цифры.",
+  "YUP.NUMBERS.MIN": "В это поле можно вводить только цифры больше {min}.",
+  "YUP.NUMBERS.MAX": "В это поле можно вводить только цифры меньше {max}.",
+  "YUP.HEX": "Цвет начинается с символа # после которого указываются 6 символов цвета.",
+
   "NOTISTACK.ERRORS.EMPTY_FIELDS": "Заполните обязательные поля!",
   "NOTISTACK.ERRORS.CREATE_FILTER": "Фильтр создан",
   "NOTISTACK.ERRORS.SAVE_FILTER": "Фильтр сохранен",
@@ -331,5 +356,8 @@
   "NOTISTACK.POINTS.CREATE": "Точка отгрузки/погрузки добавлена",
   "NOTISTACK.POINTS.DEL": "Точка отгрузки/погрузки удалена",
   "NOTISTACK.POINTS.EDIT": "Точка отгрузки/погрузки сохранена",
+  "NOTISTACK.FUNNEL_STATES.ADD": "Состояние добавлено",
+  "NOTISTACK.FUNNEL_STATES.EDIT": "Состояние сохранено",
+
   "NOTISTACK.ERRORS.ERROR": "Ошибка: "
 }

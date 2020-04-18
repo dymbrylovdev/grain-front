@@ -72,6 +72,11 @@ const useStyles = makeStyles(theme => ({
     //paddingTop: theme.spacing(1),
     //paddingBottom: theme.spacing(1),
   },
+  appBar: {
+    boxShadow: "none",
+    backgroundColor: "white",
+    paddingTop: theme.spacing(0.5),
+  },
   tableTitle: {
     marginTop: theme.spacing(2),
   },
@@ -128,6 +133,15 @@ const useStyles = makeStyles(theme => ({
   },
   leftMargin2: {
     marginLeft: theme.spacing(2),
+  },
+
+  // funnel state ***************************************************************************************************************
+
+  funnelStateName: {
+    margin: 0,
+    borderRadius: "4px",
+    width: "max-content",
+    padding: theme.spacing(1),
   },
 }));
 

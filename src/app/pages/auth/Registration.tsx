@@ -19,7 +19,7 @@ import { actions as authActions } from "../../store/ducks/auth.duck";
 import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
 import TermDialog from "./components/TermDialog";
 import { IAppState } from "../../store/rootDuck";
-import { TRoles } from "../../interfaces/users";
+import { TRole } from "../../interfaces/users";
 
 const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -75,7 +75,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             onSubmit={values => {
               register({
                 email: values.email,
-                roles: [values.role as TRoles],
+                roles: [values.role as TRole],
                 login: values.login,
               });
             }}

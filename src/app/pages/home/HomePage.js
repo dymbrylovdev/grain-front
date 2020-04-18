@@ -13,6 +13,8 @@ import * as crops from "../../store/ducks/crops.duck";
 import * as users from "../../store/ducks/users.duck";
 import { actions as statusesActions } from "../../store/ducks/statuses.duck";
 import { MyFiltersPage, MyFiltersEditPage, MyFiltersMoneyPage } from "./myFilters";
+import Dashboard from "./Dashboard";
+import { FunnelStatesPage, FunnelStateEditPage } from "./funnelStates";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { crops, user } = useSelector(
@@ -45,6 +47,11 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/user/filters/prices" component={MyFiltersMoneyPage} />
         <Route path="/user/filters" component={MyFiltersPage} />
 
+        <Route path="/funnel-states/new-buyer" component={FunnelStateEditPage} />
+        <Route path="/funnel-states/new-seller" component={FunnelStateEditPage} />
+        <Route path="/funnel-states/edit/:id" component={FunnelStateEditPage} />
+        <Route path="/funnel-states" component={FunnelStatesPage} />
+
         <Route path="/bidsList" exact component={BidsListPage} />
         <Route path="/myBidsList" exact component={MyBidsListPage} />
         <Route path="/bidsList/:cropId" exact component={BidsListPage} />
@@ -66,6 +73,8 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/company/edit/:companyId" exact component={CompanyPage} />
         <Route path="/companyList" component={CompaniesListPage} />
         <Route path="/company/confirm/:companyId" component={CompanyConfirmPage} />
+
+        <Route path="/dash" component={Dashboard} />
       </Switch>
     </Suspense>
   );

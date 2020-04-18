@@ -107,7 +107,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               <FormattedMessage id="USERLIST.TABLE.NAME" />
             </TopTableCell>
             <TopTableCell>
-              <FormattedMessage id="USERLIST.TABLE.STATUS" />
+              <FormattedMessage id="USERLIST.TABLE.ACTIVITY" />
             </TopTableCell>
             <TopTableCell></TopTableCell>
           </TableRow>
