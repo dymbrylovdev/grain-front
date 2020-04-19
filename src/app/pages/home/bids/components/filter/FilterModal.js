@@ -194,7 +194,7 @@ const FilterModal = ({
   const formik = useFormik({
     initialValues: getInitialValues(filter),
     onSubmit: (values, { setStatus, setSubmitting }) => {
-      console.log(values);
+      //console.log(values);
       //handleSubmit(values, setStatus, setSubmitting);
     },
     validationSchema: Yup.object().shape({

@@ -44,7 +44,7 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const { values, handleChange, resetForm } = useFormik({
     initialValues: { filter_id: "" },
     onSubmit: values => {
-      console.log(values);
+      //console.log(values);
       //handleSubmit(values, setStatus, setSubmitting);
     },
   });

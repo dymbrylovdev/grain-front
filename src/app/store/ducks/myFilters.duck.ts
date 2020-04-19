@@ -192,10 +192,8 @@ export type TActions = ActionsUnion<typeof actions>;
 function* fetchSaga() {
   try {
     const { data }: { data: IServerResponse<IMyFilterItem[]> } = yield call(() => getMyFilters());
-    yield console.log(data);
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield console.log(e);
     //yield put(actions.fetchFail(e.response.data.message));
   }
 }

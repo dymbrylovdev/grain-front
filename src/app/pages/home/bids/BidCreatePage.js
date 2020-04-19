@@ -83,7 +83,7 @@ function BidCreatePage({
   };
 
   const editAction = (values, setStatus, setSubmitting) => {
-    console.log("editValues", values);
+    //console.log("editValues", values);
     setTimeout(() => {
       setLoading(true);
       const params = {

@@ -58,7 +58,7 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
   };
 
   const editAction = (values, setStatus, setSubmitting) => {
-    console.log("editValues", values);
+    //console.log("editValues", values);
     setTimeout(() => {
       setStatus({ loading: true });
       const params = values;

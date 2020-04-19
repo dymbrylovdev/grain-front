@@ -130,7 +130,7 @@ function BidForm({
   }, []); // eslint-disable-line
 
   useEffect(() => {
-    console.log("--currentBid", bid);
+    //console.log("--currentBid", bid);
     formRef.current.resetForm({ values: getInitialValues(bid, currentCrop) });
     if (!bid || !bid.id) {
       setCropParams([]);
@@ -176,7 +176,7 @@ function BidForm({
           } else {
             delete values.location;
           }
-          console.log("submitValues: ", values);
+          //console.log("submitValues: ", values);
           submitAction(
             { ...values, crop_id: cropId, parameter_values: paramValues },
             setStatus,
@@ -292,8 +292,8 @@ function BidForm({
                     setSelectedLocation(
                       userCreator.points.find(item => item.id === event.target.value)
                     );
-                    console.log(values);
-                    console.log("bid: ", bid);
+                    //console.log(values);
+                    //console.log("bid: ", bid);
                     handleChange(event);
                   }}
                   name="locId"

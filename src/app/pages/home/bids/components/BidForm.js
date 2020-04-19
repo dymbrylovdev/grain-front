@@ -124,7 +124,7 @@ function BidForm({
     }
   }, []); // eslint-disable-line
   useEffect(() => {
-    console.log("--currentBid", bid);
+    //console.log("--currentBid", bid);
     formRef.current.resetForm({ values: getInitialValues(bid, currentCrop) });
     if (!bid || !bid.id) {
       setCropParams([]);
