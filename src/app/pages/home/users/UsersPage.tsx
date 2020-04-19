@@ -13,6 +13,8 @@ import {
   Tooltip,
   TableFooter,
   Button,
+  TextField,
+  MenuItem,
 } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -73,8 +75,26 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [isInfoOpen, setInfoOpen] = useState(false);
   const [infoText, setInfoText] = useState("");
+  const [funnelStateEditId, setFunnelStateEditId] = useState(0);
 
   const { enqueueSnackbar } = useSnackbar();
+  useEffect(() => {
+    if (editSuccess || editError) {
+      enqueueSnackbar(
+        editSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_USER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editError}`,
+        {
+          variant: editSuccess ? "success" : "error",
+        }
+      );
+      clearEdit();
+    }
+    if (editSuccess) {
+      fetch({ page, perPage });
+    }
+  }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage]);
+
   useEffect(() => {
     if (delSuccess || delError) {
       enqueueSnackbar(
@@ -146,7 +166,52 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <TableCell>{item.email}</TableCell>
                   <TableCell>{item.fio}</TableCell>
                   <TableCell>
-                    {item.is_admin ? (
+                    {funnelStateEditId === item.id ? (
+                      <TextField
+                        select
+                        margin="normal"
+                        label={intl.formatMessage({
+                          id: "USERLIST.TABLE.ACTIVITY",
+                        })}
+                        value={item.funnel_state?.id || 0}
+                        onChange={e => {
+                          setFunnelStateEditId(0);
+                          edit({ id: item.id, data: { funnel_state_id: +e.target.value } });
+                        }}
+                        onBlur={() => {
+                          setFunnelStateEditId(0);
+                        }}
+                        name="status"
+                        variant="outlined"
+                      >
+                        <MenuItem value={0} style={{ backgroundColor: "#f2f2f2" }}>
+                          {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
+                        </MenuItem>
+                        {item.is_buyer
+                          ? funnelStates
+                              .filter(fs => fs.role === "ROLE_BUYER")
+                              .map(option => (
+                                <MenuItem
+                                  key={option.id}
+                                  value={option.id}
+                                  style={{ backgroundColor: `${option.color || "#ededed"}` }}
+                                >
+                                  {option.name}
+                                </MenuItem>
+                              ))
+                          : funnelStates
+                              .filter(fs => fs.role === "ROLE_VENDOR")
+                              .map(option => (
+                                <MenuItem
+                                  key={option.id}
+                                  value={option.id}
+                                  style={{ backgroundColor: `${option.color || "#ededed"}` }}
+                                >
+                                  {option.name}
+                                </MenuItem>
+                              ))}
+                      </TextField>
+                    ) : item.is_admin ? (
                       <div className={classes.flexRow}>
                         <div
                           className={classes.funnelStateName}
@@ -172,6 +237,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         <div
                           className={classes.funnelStateName}
                           style={{ backgroundColor: "#f2f2f2" }}
+                          onClick={() => setFunnelStateEditId(item.id)}
                         >
                           {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
                         </div>
@@ -193,16 +259,24 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         <div
                           className={classes.funnelStateName}
                           style={{ backgroundColor: `${item.funnel_state.color || "#ededed"}` }}
+                          onClick={() => setFunnelStateEditId(item.id)}
                         >
-                          {item.funnel_state.name}
+                          {`${item.funnel_state.engagement || "0"} • ${item.funnel_state.name}`}
                         </div>
                         <IconButton
                           size="medium"
                           color="primary"
                           onClick={() => {
-                            setInfoText(
-                              intl.formatMessage({ id: "FUNNEL_STATES.DIALOGS.INFO.EMPTY_TEXT" })
-                            );
+                            if (!funnelStates.find(fs => fs.id === item.funnel_state?.id)?.hint) {
+                              setInfoText(
+                                intl.formatMessage({ id: "FUNNEL_STATES.DIALOGS.INFO.EMPTY_TEXT" })
+                              );
+                            } else {
+                              setInfoText(
+                                funnelStates.find(fs => fs.id === item.funnel_state?.id)
+                                  ?.hint as string
+                              );
+                            }
                             setInfoOpen(true);
                           }}
                         >

@@ -187,6 +187,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return {
         ...state,
         users: undefined,
+        loading: true,
         byIdLoading: true,
         editLoading: false,
         editSuccess: true,

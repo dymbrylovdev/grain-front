@@ -58,6 +58,7 @@ export interface IUserForEdit {
   company_confirmed_by_email?: boolean;
   company_confirmed_by_phone?: boolean;
   company_confirmed_by_payment?: boolean;
+  funnel_state_id?: number;
 }
 
 export interface IChangePasswordData {

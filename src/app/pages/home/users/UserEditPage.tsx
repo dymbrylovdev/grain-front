@@ -11,12 +11,12 @@ import { actions as authActions } from "../../../store/ducks/auth.duck";
 import { actions as locationsActions } from "../../../store/ducks/locations.duck";
 import { actions as googleLocationsActions } from "../../../store/ducks/yaLocations.duck";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
-import { LoadError } from "../../../components/ui/Errors";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
 import { ProfileForm, CompanyForm, LocationsForm } from "./components";
+import { ErrorPage } from "../../../components/ErrorPage";
 
 const useInnerStyles = makeStyles(theme => ({
   container: {
@@ -59,6 +59,8 @@ const UserEditPage: React.FC<TPropsFromRedux &
   match: {
     params: { id },
   },
+  funnelStatesError,
+
   match,
   intl,
   me,
@@ -168,10 +170,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
     }
   }, [editMode, fetchMe, fetchUser, id, loadingMe, loadingUser, me, user]);
 
-  if (errorUser) return <LoadError handleClick={() => fetchUser({ id: +id })} />;
-  if (errorMe) return <LoadError handleClick={() => fetchMe()} />;
-
-  //if ((editMode === "edit" && !user) || loadingMe || !statuses) return <Preloader />;
+  if (errorMe || errorUser || funnelStatesError) return <ErrorPage />;
 
   return (
     <Paper className={classes.container}>
@@ -246,6 +245,8 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
 const connector = connect(
   (state: IAppState) => ({
+    funnelStatesError: state.funnelStates.error,
+
     me: state.auth.user,
     loadingMe: state.auth.loading,
     errorMe: state.auth.error,

@@ -23,6 +23,7 @@ export const getInitialValues = (user: IUser | undefined) => ({
   repeatPassword: "",
   role: user ? (user.is_vendor ? vendor.id : user.is_buyer ? buyer.id : admin.id) : "EMPTY",
   status: user ? user.status || "EMPTY" : "EMPTY",
+  funnel_state_id: user && user.funnel_state ? user.funnel_state.id || 0 : 0,
 });
 
 export const roles = [admin, buyer, vendor];
