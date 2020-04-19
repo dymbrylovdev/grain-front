@@ -124,6 +124,8 @@
   "USERLIST.TOOLTIP.DELETE": "Удалить пользователя",
   "USERLIST.TOOLTIP.CREATE_BID": "Добавить заявку",
   "USERLIST.PAGINATOR_TEXT": "Пользователей на странице:",
+  "USERLIST.FUNNEL_STATE.ADMIN": "Администратор",
+  "USERLIST.FUNNEL_STATE.NO_NAME": "Не установлена",
 
   "TABLE.FROM.LABEL": "из",
   "TABLE.AND.LABEL": "и",
@@ -337,6 +339,10 @@
   "FUNNEL_STATES.DIALOGS.AGREE_TEXT": "Да",
   "FUNNEL_STATES.DIALOGS.CANCEL_TEXT": "Отмена",
   "FUNNEL_STATES.DIALOGS.LOADING_TEXT": "Удаление состояния",
+  "FUNNEL_STATES.DIALOGS.INFO.TITLE": "Описание активности",
+  "FUNNEL_STATES.DIALOGS.INFO.ADMIN_TEXT": "Администратор системы. Управляет внутренними процессами.",
+  "FUNNEL_STATES.DIALOGS.INFO.NO_TEXT": "Для выбранного пользователя активность не установлена. В большинстве случаев активность устанавливается автоматически. Для принудительной установки кликните по названию активности и выберете вариант в выпадающем списке, или установите её в форме редактирования пользователя.",
+  "FUNNEL_STATES.DIALOGS.INFO.EMPTY_TEXT": "Эта активность еще не описана. Для описания пройдите в меню <nobr>\"Пользователи / Настройка воронки\"</nobr>.",
 
   "YUP.REQUIRED": "Это поле должно быть обязательно заполнено.",
   "YUP.NUMBERS": "В это поле можно вводить только цифры.",

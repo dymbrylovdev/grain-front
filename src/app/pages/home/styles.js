@@ -95,6 +95,14 @@ const useStyles = makeStyles(theme => ({
     height: 1,
   },
 
+  // containers *****************************************************************************************************************
+
+  flexRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
   // buttons ********************************************************************************************************************
 
   topButtonsContainer: {
@@ -142,6 +150,7 @@ const useStyles = makeStyles(theme => ({
     borderRadius: "4px",
     width: "max-content",
     padding: theme.spacing(1),
+    marginRight: theme.spacing(1),
   },
 }));
 

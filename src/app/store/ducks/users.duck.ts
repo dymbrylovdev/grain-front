@@ -35,6 +35,7 @@ export interface IInitialState {
   page: number;
   per_page: number;
   total: number;
+  prevUsersCount: number;
   users: IUser[] | undefined;
   loading: boolean;
   success: boolean;
@@ -63,6 +64,7 @@ const initialState: IInitialState = {
   page: 1,
   per_page: 20,
   total: 0,
+  prevUsersCount: 5,
   users: undefined,
   loading: false,
   success: false,
@@ -106,6 +108,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
         page: action.payload.page,
         per_page: action.payload.per_page,
         total: action.payload.total,
+        prevUsersCount: action.payload.data.length,
         users: action.payload.data,
         loading: false,
         success: true,

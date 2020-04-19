@@ -19,6 +19,13 @@ export interface IUser {
   company_confirmed_by_phone?: boolean;
   company_confirmed_by_payment?: boolean;
   points: ILocation[];
+  funnel_state: {
+    id: number;
+    name: string;
+    color: string;
+    engagement: number;
+    role: TRole;
+  } | null;
 }
 
 export interface IUserForRegister {
