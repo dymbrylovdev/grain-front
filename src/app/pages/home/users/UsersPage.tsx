@@ -168,6 +168,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <TableCell>
                     {funnelStateEditId === item.id ? (
                       <TextField
+                        autoFocus
                         select
                         margin="normal"
                         label={intl.formatMessage({
@@ -196,7 +197,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                                   value={option.id}
                                   style={{ backgroundColor: `${option.color || "#ededed"}` }}
                                 >
-                                  {option.name}
+                                  {`${option.engagement || "0"} • ${option.name}`}
                                 </MenuItem>
                               ))
                           : funnelStates
@@ -207,7 +208,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                                   value={option.id}
                                   style={{ backgroundColor: `${option.color || "#ededed"}` }}
                                 >
-                                  {option.name}
+                                  {`${option.engagement || "0"} • ${option.name}`}
                                 </MenuItem>
                               ))}
                       </TextField>
@@ -215,7 +216,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       <div className={classes.flexRow}>
                         <div
                           className={classes.funnelStateName}
-                          style={{ backgroundColor: "#0abb87" }}
+                          style={{ border: "1px solid rgba(10, 187, 135, 0.4)" }}
                         >
                           {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.ADMIN" })}
                         </div>

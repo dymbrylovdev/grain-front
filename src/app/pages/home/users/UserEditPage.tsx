@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Paper, AppBar, makeStyles, Tabs, Tab, Divider } from "@material-ui/core";
+import { Paper, AppBar, Tabs, Tab, Divider } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 
 import { actions as usersActions } from "../../../store/ducks/users.duck";
@@ -17,41 +17,6 @@ import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
 import { ProfileForm, CompanyForm, LocationsForm } from "./components";
 import { ErrorPage } from "../../../components/ErrorPage";
-
-const useInnerStyles = makeStyles(theme => ({
-  container: {
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    transition: "10",
-  },
-  dialogTitle: {
-    padding: 0,
-  },
-  dialog: {
-    height: "100%",
-  },
-  appBar: {
-    boxShadow: "none",
-    backgroundColor: "white",
-    paddingTop: theme.spacing(0.5),
-  },
-  closeButton: {
-    marginRight: theme.spacing(1),
-    marginBottom: theme.spacing(0.5),
-  },
-  buttonContainer: {
-    margin: theme.spacing(1),
-  },
-  textField: {
-    width: 300,
-  },
-  badge: {
-    paddingRight: theme.spacing(2),
-  },
-  tabPanel: {
-    height: "100%",
-  },
-}));
 
 const UserEditPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -117,7 +82,6 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
   mergeUser,
 }) => {
-  const innerClasses = useInnerStyles();
   const classes = useStyles();
   const history = useHistory();
 
@@ -188,7 +152,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
         description={undefined}
       />
       <div className={classes.form}>
-        <AppBar position="static" color="default" className={innerClasses.appBar}>
+        <AppBar position="static" color="default" className={classes.appBar}>
           <Tabs
             value={valueTabs}
             onChange={handleTabsChange}

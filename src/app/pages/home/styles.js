@@ -75,7 +75,7 @@ const useStyles = makeStyles(theme => ({
   appBar: {
     boxShadow: "none",
     backgroundColor: "white",
-    paddingTop: theme.spacing(0.5),
+    paddingTop: theme.spacing(1),
   },
   tableTitle: {
     marginTop: theme.spacing(2),

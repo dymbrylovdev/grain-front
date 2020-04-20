@@ -24,6 +24,8 @@ import FunnelStatesTable from "./components/FunnelStatesTable";
 
 const FunnelStatesPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
+  tab,
+  setTab,
   fetch,
   funnelStates,
   loading,
@@ -50,9 +52,8 @@ const FunnelStatesPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const classes = useStyles();
   // const history = useHistory();
 
-  const [valueTabs, setValueTabs] = useState(0);
   const handleTabsChange = (event: any, newValue: number) => {
-    setValueTabs(newValue);
+    setTab(newValue);
   };
 
   const [deleteUserId, setDeleteUserId] = useState(-1);
@@ -86,11 +87,10 @@ const FunnelStatesPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       <LayoutSubheader title={intl.formatMessage({ id: "FUNNEL_STATES.TITLE" })} />
       <AppBar position="static" color="default" className={classes.appBar}>
         <Tabs
-          value={valueTabs}
+          value={tab}
           onChange={handleTabsChange}
           indicatorColor="primary"
           textColor="primary"
-          aria-label="tabs"
           centered
         >
           <Tab label={intl.formatMessage({ id: "FUNNEL_STATES.TABS.BUYERS" })} {...a11yProps(0)} />
@@ -98,7 +98,7 @@ const FunnelStatesPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         </Tabs>
       </AppBar>
       <Divider />
-      <TabPanel value={valueTabs} index={0} style={{ margin: 0 }}>
+      <TabPanel value={tab} index={0} style={{ margin: 0 }}>
         <FunnelStatesTable
           intl={intl}
           setAlertOpen={setAlertOpen}
@@ -106,7 +106,7 @@ const FunnelStatesPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           funnelStates={funnelStates && funnelStates.filter(item => item.role === "ROLE_BUYER")}
         />
       </TabPanel>
-      <TabPanel value={valueTabs} index={1} style={{ margin: 0 }}>
+      <TabPanel value={tab} index={1} style={{ margin: 0 }}>
         <FunnelStatesTable
           intl={intl}
           setAlertOpen={setAlertOpen}
@@ -138,6 +138,7 @@ const FunnelStatesPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
 const connector = connect(
   (state: IAppState) => ({
+    tab: state.funnelStates.tab,
     funnelStates: state.funnelStates.funnelStates,
     loading: state.funnelStates.loading,
     error: state.funnelStates.error,
@@ -152,6 +153,7 @@ const connector = connect(
     delError: state.funnelStates.delError,
   }),
   {
+    setTab: funnelStatesActions.setTab,
     fetch: funnelStatesActions.fetchRequest,
     clearCreate: funnelStatesActions.clearCreate,
     create: funnelStatesActions.createRequest,

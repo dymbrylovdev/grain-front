@@ -167,7 +167,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       {currentUser && currentUser.company ? (
         <>
           <div className={classes.textFieldContainer}>
-            {meLoading || userLoading || editLoading || editMeLoading ? (
+            {meLoading || userLoading ? (
               <Skeleton width="100%" height={70} animation="wave" />
             ) : (
               <>
@@ -199,11 +199,11 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 : ({ data }: any) => editUser({ id: userId as number, data: data })
             }
             disabled={editMode === "profile" || !me?.is_admin}
-            loading={!currentUser || meLoading || userLoading || editLoading || editMeLoading}
+            loading={!currentUser || meLoading || userLoading}
           />
           {isNonConfirm(values) && !me?.is_admin && (
             <div className={classes.textFieldContainer}>
-              {!currentUser || meLoading || userLoading || editLoading || editMeLoading ? (
+              {!currentUser || meLoading || userLoading ? (
                 <Skeleton width={170} height={70} animation="wave" />
               ) : (
                 <Button
@@ -220,7 +220,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             </div>
           )}
         </>
-      ) : !currentUser || meLoading || userLoading || editLoading || editMeLoading ? (
+      ) : !currentUser || meLoading || userLoading ? (
         <div className={classes.textFieldContainer}>
           <Skeleton width="100%" height={70} animation="wave" />
         </div>

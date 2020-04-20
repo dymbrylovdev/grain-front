@@ -12,6 +12,7 @@ import {
 } from "../../crud/funnelStates.crud";
 import { IFunnelState, IFunnelStateToRequest } from "../../interfaces/funnelStates";
 
+const SET_TAB = "funnelStates/SET_TAB";
 const FETCH_REQUEST = "funnelStates/FETCH_REQUEST";
 const FETCH_SUCCESS = "funnelStates/FETCH_SUCCESS";
 const FETCH_FAIL = "funnelStates/FETCH_FAIL";
@@ -32,6 +33,7 @@ const DEL_SUCCESS = "funnelStates/DEL_SUCCESS";
 const DEL_FAIL = "funnelStates/DEL_FAIL";
 
 export interface IInitialState {
+  tab: number;
   funnelStates: IFunnelState[] | undefined;
   loading: boolean;
   success: boolean;
@@ -51,6 +53,7 @@ export interface IInitialState {
 }
 
 const initialState: IInitialState = {
+  tab: 0,
   funnelStates: undefined,
   loading: false,
   success: false,
@@ -71,6 +74,10 @@ const initialState: IInitialState = {
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
   switch (action.type) {
+    case SET_TAB: {
+      return { ...state, tab: action.payload.id };
+    }
+
     case FETCH_REQUEST: {
       return {
         ...state,
@@ -160,6 +167,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 };
 
 export const actions = {
+  setTab: (id: number) => createAction(SET_TAB, { id }),
   fetchRequest: () => createAction(FETCH_REQUEST),
   fetchSuccess: (payload: IServerResponse<IFunnelState[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (error: string) => createAction(FETCH_FAIL, { error }),

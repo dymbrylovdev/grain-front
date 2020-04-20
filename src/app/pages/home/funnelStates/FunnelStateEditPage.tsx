@@ -83,7 +83,8 @@ const FunnelStateEditPage: React.FC<TPropsFromRedux &
       engagement: Yup.number()
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" }))
         .min(0, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 0 }))
-        .max(100, intl.formatMessage({ id: "YUP.NUMBERS.MAX" }, { max: 100 })),
+        .max(100, intl.formatMessage({ id: "YUP.NUMBERS.MAX" }, { max: 100 }))
+        .required(intl.formatMessage({ id: "YUP.REQUIRED" })),
     }),
   });
 

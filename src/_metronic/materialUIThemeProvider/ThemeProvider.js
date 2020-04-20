@@ -83,6 +83,11 @@ const theme = createMuiTheme(
           backgroundColor: "rgba(158, 158, 158,.15)",
         },
       },
+      MuiAppBar: {
+        colorDefault: {
+          backgroundColor: "#fff",
+        },
+      },
     },
     props: {
       // Name of the component ⚛️

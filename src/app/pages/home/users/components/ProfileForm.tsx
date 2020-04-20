@@ -318,7 +318,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                         value={option.id}
                         style={{ backgroundColor: `${option.color || "#ededed"}` }}
                       >
-                        {option.name}
+                        {`${option.engagement || "0"} • ${option.name}`}
                       </MenuItem>
                     ))
                 : funnelStates
@@ -329,7 +329,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                         value={option.id}
                         style={{ backgroundColor: `${option.color || "#ededed"}` }}
                       >
-                        {option.name}
+                        {`${option.engagement || "0"} • ${option.name}`}
                       </MenuItem>
                     ))}
             </TextField>
