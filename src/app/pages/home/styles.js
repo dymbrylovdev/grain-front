@@ -14,6 +14,13 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     padding: theme.spacing(3),
   },
+  form2: {
+    maxWidth: "800px",
+    width: "100%",
+    paddingLeft: theme.spacing(3),
+    paddingRigth: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
+  },
   buttonContainer: {
     paddingBottom: theme.spacing(2),
     paddingTop: theme.spacing(2),

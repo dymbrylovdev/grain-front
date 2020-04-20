@@ -15,6 +15,7 @@ import { actions as statusesActions } from "../../store/ducks/statuses.duck";
 import { MyFiltersPage, MyFiltersEditPage, MyFiltersMoneyPage } from "./myFilters";
 import Dashboard from "./Dashboard";
 import { FunnelStatesPage, FunnelStateEditPage } from "./funnelStates";
+import { ActivityReportPage } from "./activityReport";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { crops, user } = useSelector(
@@ -46,6 +47,8 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/user/filters/edit/:id" component={MyFiltersEditPage} />
         <Route path="/user/filters/prices" component={MyFiltersMoneyPage} />
         <Route path="/user/filters" component={MyFiltersPage} />
+
+        <Route path="/activity-report" component={ActivityReportPage} />
 
         <Route path="/funnel-states/new-buyer" component={FunnelStateEditPage} />
         <Route path="/funnel-states/new-seller" component={FunnelStateEditPage} />

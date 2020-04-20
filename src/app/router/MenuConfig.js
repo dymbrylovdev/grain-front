@@ -70,6 +70,21 @@ const getAdminMenu = crops => ({
         ],
       },
       {
+        title: "Аналитика",
+        root: true,
+        icon: "flaticon2-graphic-1",
+        page: "builder",
+        translate: "MENU.ANALITICS",
+        submenu: [
+          {
+            title: "Отчёт по активности",
+            root: true,
+            page: "activity-report",
+            translate: "SUBMENU.ACTIVITY_REPORT",
+          },
+        ],
+      },
+      {
         title: "Пользователи",
         root: true,
         icon: "flaticon2-avatar",

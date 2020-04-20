@@ -86,12 +86,12 @@ const FunnelStatesTable: React.FC<IProps> = ({
       </Button>
       {!funnelStates ? (
         <>
-          <Skeleton width="100%" height={52} />
-          <Skeleton width="100%" height={77} />
-          <Skeleton width="100%" height={77} />
-          <Skeleton width="100%" height={77} />
-          <Skeleton width="100%" height={77} />
-          <Skeleton width="100%" height={77} />
+          <Skeleton width="100%" height={52} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
         </>
       ) : (
         <Table className={classes.table} aria-label="simple table">

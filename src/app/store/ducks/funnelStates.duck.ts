@@ -9,13 +9,23 @@ import {
   addFunnelState,
   editFunnelState,
   delFunnelState,
+  getFunnelStatesReport,
 } from "../../crud/funnelStates.crud";
-import { IFunnelState, IFunnelStateToRequest } from "../../interfaces/funnelStates";
+import {
+  IFunnelState,
+  IFunnelStateToRequest,
+  IFunnelStatesReport,
+} from "../../interfaces/funnelStates";
 
 const SET_TAB = "funnelStates/SET_TAB";
 const FETCH_REQUEST = "funnelStates/FETCH_REQUEST";
 const FETCH_SUCCESS = "funnelStates/FETCH_SUCCESS";
 const FETCH_FAIL = "funnelStates/FETCH_FAIL";
+
+const SET_REPORT_TAB = "funnelStates/SET_REPORT_TAB";
+const FETCH_REPORT_REQUEST = "funnelStates/FETCH_REPORT_REQUEST";
+const FETCH_REPORT_SUCCESS = "funnelStates/FETCH_REPORT_SUCCESS";
+const FETCH_REPORT_FAIL = "funnelStates/FETCH_REPORT_FAIL";
 
 const CLEAR_CREATE = "funnelStates/CLEAR_CREATE";
 const CREATE_REQUEST = "funnelStates/CREATE_REQUEST";
@@ -39,6 +49,12 @@ export interface IInitialState {
   success: boolean;
   error: string | null;
 
+  reportTab: number;
+  reports: IFunnelStatesReport[] | undefined;
+  reportLoading: boolean;
+  reportSuccess: boolean;
+  reportError: string | null;
+
   createLoading: boolean;
   createSuccess: boolean;
   createError: string | null;
@@ -58,6 +74,12 @@ const initialState: IInitialState = {
   loading: false,
   success: false,
   error: null,
+
+  reportTab: 0,
+  reports: undefined,
+  reportLoading: false,
+  reportSuccess: false,
+  reportError: null,
 
   createLoading: false,
   createSuccess: false,
@@ -100,6 +122,34 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 
     case FETCH_FAIL: {
       return { ...state, loading: false, error: action.payload.error };
+    }
+
+    case SET_REPORT_TAB: {
+      return { ...state, reportTab: action.payload.id };
+    }
+
+    case FETCH_REPORT_REQUEST: {
+      return {
+        ...state,
+        reports: undefined,
+        reportLoading: true,
+        reportSuccess: false,
+        reportError: null,
+      };
+    }
+
+    case FETCH_REPORT_SUCCESS: {
+      console.log(action.payload);
+      return {
+        ...state,
+        reports: action.payload.data,
+        reportLoading: false,
+        reportSuccess: true,
+      };
+    }
+
+    case FETCH_REPORT_FAIL: {
+      return { ...state, reportLoading: false, reportError: action.payload.error };
     }
 
     case CLEAR_CREATE: {
@@ -172,6 +222,12 @@ export const actions = {
   fetchSuccess: (payload: IServerResponse<IFunnelState[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (error: string) => createAction(FETCH_FAIL, { error }),
 
+  setReportTab: (id: number) => createAction(SET_REPORT_TAB, { id }),
+  fetchReportRequest: () => createAction(FETCH_REPORT_REQUEST),
+  fetchReportSuccess: (payload: IServerResponse<IFunnelStatesReport[]>) =>
+    createAction(FETCH_REPORT_SUCCESS, payload),
+  fetchReportFail: (error: string) => createAction(FETCH_REPORT_FAIL, { error }),
+
   clearCreate: () => createAction(CLEAR_CREATE),
   createRequest: (data: IFunnelStateToRequest) => createAction(CREATE_REQUEST, { data }),
   createSuccess: () => createAction(CREATE_SUCCESS),
@@ -197,6 +253,17 @@ function* fetchSaga() {
     yield put(actions.fetchSuccess(data));
   } catch (e) {
     yield put(actions.fetchFail(e.response.data.message));
+  }
+}
+
+function* fetchReportSaga() {
+  try {
+    const { data }: { data: IServerResponse<IFunnelStatesReport[]> } = yield call(() =>
+      getFunnelStatesReport()
+    );
+    yield put(actions.fetchReportSuccess(data));
+  } catch (e) {
+    yield put(actions.fetchReportFail(e.response.data.message));
   }
 }
 
@@ -229,6 +296,10 @@ function* delSaga({ payload }: { payload: { id: number } }) {
 
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
+  yield takeLatest<ReturnType<typeof actions.fetchReportRequest>>(
+    FETCH_REPORT_REQUEST,
+    fetchReportSaga
+  );
   yield takeLatest<ReturnType<typeof actions.createRequest>>(CREATE_REQUEST, createSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
   yield takeLatest<ReturnType<typeof actions.delRequest>>(DEL_REQUEST, delSaga);

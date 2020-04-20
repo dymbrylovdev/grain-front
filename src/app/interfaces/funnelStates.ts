@@ -18,3 +18,13 @@ export interface IFunnelStateToRequest {
   engagement?: number;
   role?: TRole;
 }
+
+export interface IFunnelStatesReport {
+  funnel_state: IFunnelState;
+  role: string;
+  count_users_by_role: number;
+  count_users: number;
+  percent_from_users_by_role: number;
+  created_at: string;
+  count_users_by_funnel_state: number;
+}

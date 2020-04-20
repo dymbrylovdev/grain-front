@@ -18,3 +18,7 @@ export const editFunnelState = (id: number, data: IFunnelStateToRequest) => {
 export const delFunnelState = (id: number) => {
   return axios.delete(`${FUNNEL_STATE_URL}/${id}`);
 };
+
+export const getFunnelStatesReport = () => {
+  return axios.get(`${FUNNEL_STATE_URL}s/report`);
+};

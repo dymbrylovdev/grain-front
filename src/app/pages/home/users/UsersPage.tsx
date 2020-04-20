@@ -133,11 +133,11 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       </Button>
       {!users || !funnelStates ? (
         <>
-          <Skeleton width="100%" height={52} />
+          <Skeleton width="100%" height={52} animation="wave" />
           {prevUsers.map((item, index) => (
-            <Skeleton width="100%" height={77} key={index} />
+            <Skeleton width="100%" height={77} key={index} animation="wave" />
           ))}
-          <Skeleton width="100%" height={53} />
+          <Skeleton width="100%" height={53} animation="wave" />
         </>
       ) : (
         <Table className={classes.table} aria-label="simple table">
