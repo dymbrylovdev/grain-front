@@ -20,7 +20,9 @@
   "MENU.LOGOUT": "Выход",
   "MENU.DASHBOARD": "DASHBOARD",
 
-  "SUBMENU.ADS": "Лучшие заявки",
+  "SUBMENU.BIDS.BEST": "Лучшие заявки",
+  "SUBMENU.BIDS.SALE": "Заявки на продажу",
+  "SUBMENU.BIDS.PURCHASE": "Заявки на покупку",
   "SUBMENU.MY_BIDS": "Мои заявки",
   "SUBMENU.ALL_BIDS": "Все заявки",
   "SUBMENU.GRAIN.CREATE_AD": "Добавить заявку",
@@ -30,6 +32,8 @@
   "SUBMENU.COMPANY.CREATE": "Добавить компанию",
   "SUBMENU.PROFILE": "Мой профиль",
   "SUBMENU.MY_FILTERS": "Мои фильтры",
+  "SUBMENU.BUYER_FILTERS": "Фильтры на продажу",
+  "SUBMENU.SELLER_FILTERS": "Фильтры на покупку",
   "SUBMENU.CATALOG.SETTINGS": "Настройки каталога",
   "SUBMENU.CATALOG.CROP_LIST": "Список культур",
   "SUBMENU.CATALOG.CREATE_CROP": "Добавить культуру",
@@ -47,6 +51,12 @@
   "SUBHEADER.PARTS.FUNNEL_STATUS": "состояния",
   "SUBHEADER.PARTS.FUNNEL_STATUS.BUYER": "для покупателя",
   "SUBHEADER.PARTS.FUNNEL_STATUS.SELLER": "для продавца",
+  "SUBHEADER.BIDS.BEST.SALE": "Лучшие заявки на продажу",
+  "SUBHEADER.BIDS.BEST.PURCHASE": "Лучшие заявки на покупку",
+  "SUBHEADER.BIDS.MY.SALE": "Мои заявки на продажу",
+  "SUBHEADER.BIDS.MY.PURCHASE": "Мои заявки на покупку",
+  "SUBHEADER.BIDS.ALL.SALE": "Все заявки на продажу",
+  "SUBHEADER.BIDS.ALL.PURCHASE": "Все заявки на покупку",
 
   "START.WELCOME": "Добро пожаловать на Рынок Зерна",
   "START.DESCRIPTION": "Маркетплейс по продаже зерновых культур",
@@ -114,7 +124,7 @@
   "USERLIST.BUTTON.ADD_USER": "Добавить пользователя",
   "USERLIST.TABLE.ID": "Id",
   "USERLIST.TABLE.EMAIL": "Email",
-  "USERLIST.TABLE.NAME": "Название",
+  "USERLIST.TABLE.NAME": "ФИО",
   "USERLIST.TABLE.COMPANY": "Компания",
   "USERLIST.TABLE.ACTIVITY": "Активность",
   "USERLIST.TABLE.ACTIONS": "Действия",
@@ -131,6 +141,7 @@
 
   "TABLE.FROM.LABEL": "из",
   "TABLE.AND.LABEL": "и",
+  "TABLE.PAGINATOR.LABEL": "на странице:",
 
   "USER.EDIT_FORM.PROFILE": "Профиль",
   "USER.EDIT_FORM.COMPANY": "Компания",
@@ -142,7 +153,7 @@
   "MONEY.NO_FILTERS": "У Вас еще нет ни одного фильтра.",
 
   "BIDSLIST.TABLE.ID": "Id",
-  "BIDSLIST.TABLE.COST": "Цена на складе у поставщика",
+  "BIDSLIST.TABLE.COST": "Цена",
   "BIDSLIST.TABLE.VOLUME": "Объем (в тоннах)",
   "BIDSLIST.TABLE.DESCRIPTION": "Комментарий",
   "BIDSLIST.TABLE.ACTIONS": "Действия",
@@ -151,6 +162,7 @@
   "BIDSLIST.TABLE.AUTHOR": "Поставщик",
   "BIDSLIST.TABLE.FINAL_PRICE": "Цена с учетом доставки",
   "BIDSLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить заявку?",
+  "BIDSLIST.DIALOGS.LOADING_TEXT": "Удаление заявки",
   "BIDSLIST.BUTTON.CREATE_BID": "Добавить заявку",
   "BIDSLIST.BUTTON.EDIT_BID": "Сохранить заявку",
   "BIDLIST.FILTER.STATUS.EMPTY": "Параметры фильтра заявок не заданы.",
@@ -171,12 +183,15 @@
   "BID.STATUS.ERROR": "Ошибка добавления заявки",
   "BID.TITLE.BY_VENDOR": "Добавление заявки от имени пользователя",
   "BID.TITLE.EDIT": "Редактирование заявки",
+  "BID.TITLE.CREATE": "Добавление заявки",
   "BID.TITLE.VIEW": "Просмотр заявки",
   "BID.STATUS.NO_MODERATE": "Создание заявки доступно только для пользователей, которые прошли модерацию",
   "BID.CALCULATOR.PRICE_PER_KM": "Стоимость доставки 1 тонны, руб. за км",
   "BID.CALCULATOR.TITLE": "Калькулятор доставки:",
   "BID.CALCULATOR.FINAL_PRICE": "Цена с учётом доставки (руб.):    ",
   "BID.FORM.AUTHOR": "Автор заявки: ",
+  "BID.TYPE.SALE": "Заявка на продажу",
+  "BID.TYPE.PURCHASE": "Заявка на покупку",
 
   "USERDOC.BUTTON.SAVE": "Сохранить",
   "USERDOC.BUTTON.CREATE": "Создать",
@@ -228,6 +243,8 @@
   "FILTERS.TABLE.HEADER.ACTIONS": "Действия",
   "FILTERS.TABLE.EMPTY": "У Вас нет сохраненных фильтров.",
   "FILTERS.PRICE": "Цена",
+  "FILTERS.MY.SALE": "Мои фильтры на продажу",
+  "FILTERS.MY.PURCHASE": "Мои фильтры на покупку",
   "FILTER": "Фильтр",
 
   "ERROR.LOAD.TITLE": "Ошибка загрузки данных",
@@ -368,6 +385,10 @@
   "NOTISTACK.POINTS.EDIT": "Точка отгрузки/погрузки сохранена",
   "NOTISTACK.FUNNEL_STATES.ADD": "Состояние добавлено",
   "NOTISTACK.FUNNEL_STATES.EDIT": "Состояние сохранено",
+  "NOTISTACK.BIDS.DEL.OK": "Заявка удалена",
+  "NOTISTACK.POINTS.CHANGE_PRICE": "Цены по точкам изменены",
+  "NOTISTACK.BIDS.ADD": "Заявка добавлена",
+  "NOTISTACK.BIDS.EDIT": "Заявка изменена",
 
   "NOTISTACK.ERRORS.ERROR": "Ошибка: "
 }

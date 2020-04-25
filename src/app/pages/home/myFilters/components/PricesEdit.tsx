@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import { TextField, Divider, MenuItem, Button } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { useFormik } from "formik";
@@ -12,7 +13,8 @@ import { Skeleton } from "@material-ui/lab";
 import { PointsPrices } from ".";
 import { itemById } from "../../../../utils/utils";
 
-const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
+const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps> = ({
+  match,
   intl,
   me,
 
@@ -40,6 +42,9 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   editError,
 }) => {
   const classes = useStyles();
+  let salePurchaseMode: "sale" | "purchase" = "sale";
+  if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
+  if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
 
   const { values, handleChange, resetForm } = useFormik({
     initialValues: { filter_id: "" },
@@ -50,8 +55,8 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   });
 
   useEffect(() => {
-    fetchFilters();
-  }, [fetchFilters]);
+    fetchFilters(salePurchaseMode);
+  }, [fetchFilters, me, salePurchaseMode]);
 
   useEffect(() => {
     if (selectedFilterId) resetForm({ values: { filter_id: selectedFilterId.toString() } });
@@ -145,4 +150,4 @@ const connector = connect(
 
 type TPropsFromRedux = ConnectedProps<typeof connector>;
 
-export default connector(injectIntl(PricesEdit));
+export default connector(withRouter(injectIntl(PricesEdit)));

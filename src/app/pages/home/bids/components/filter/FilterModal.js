@@ -21,14 +21,16 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useSnackbar } from "notistack";
 
 import { actions as myFiltersActions } from "../../../../../store/ducks/myFilters.duck";
+import { actions as bidsActions } from "../../../../../store/ducks/bids.duck";
+
 import FilterForm from "./FilterForm";
 import ButtonWithLoader from "../../../../../components/ui/Buttons/ButtonWithLoader";
 import { isFilterEmpty } from "../../../../../utils";
 import MyFilters from "./MyFilters";
-import { filterForCreate } from "../../../myFilters/utils";
-import { useSnackbar } from "notistack";
+import { filterForCreate, filterForSubmit } from "../../../myFilters/utils";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -97,11 +99,16 @@ const FilterModal = ({
   isOpen,
   handleClose,
   handleSubmit,
+  me,
   cropId,
   enumParams,
   numberParams,
   classes,
   intl,
+  salePurchaseMode,
+  setCurrentFilter,
+  currentFilter,
+  clearBids,
   fetchFilters,
   myFilters,
   loadingFilters,
@@ -140,22 +147,20 @@ const FilterModal = ({
         }
       );
       clearCreateFilter();
+      if (createSuccess) {
+        fetchFilters(salePurchaseMode);
+      }
     }
-  }, [clearCreateFilter, createError, createSuccess, enqueueSnackbar, intl]);
-
-  useEffect(() => {
-    if (editSuccess || editError) {
-      enqueueSnackbar(
-        editSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.SAVE_FILTER" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editError}`,
-        {
-          variant: editSuccess ? "success" : "error",
-        }
-      );
-      clearEditFilter();
-    }
-  }, [clearEditFilter, editError, editSuccess, enqueueSnackbar, intl]);
+  }, [
+    clearCreateFilter,
+    createError,
+    createSuccess,
+    enqueueSnackbar,
+    fetchFilters,
+    intl,
+    me,
+    salePurchaseMode,
+  ]);
 
   useEffect(() => {
     if (delSuccess || delError) {
@@ -168,13 +173,25 @@ const FilterModal = ({
         }
       );
       clearDelFilter();
+      if (delSuccess) {
+        fetchFilters(salePurchaseMode);
+      }
     }
-  }, [clearDelFilter, delError, delSuccess, enqueueSnackbar, intl]);
+  }, [
+    clearDelFilter,
+    createSuccess,
+    delError,
+    delSuccess,
+    enqueueSnackbar,
+    fetchFilters,
+    intl,
+    me,
+    salePurchaseMode,
+  ]);
 
-  const { filter, crops } = useSelector(
+  const { crops } = useSelector(
     ({ crops }) => ({
       crops: (crops.crops && crops.crops.data) || [],
-      filter: (crops.filters && crops.filters[cropId]) || { crop_id: cropId },
     }),
     shallowEqual
   );
@@ -191,8 +208,17 @@ const FilterModal = ({
     [cropId, crops]
   );
 
+  const newCropName = () => {
+    const crop = crops.find(crop => crop.id === cropId);
+    const now = new Date();
+    const name = `${crop.name} ${now.toLocaleDateString()} - ${now
+      .toLocaleTimeString()
+      .slice(0, -3)}`;
+    return name;
+  };
+
   const formik = useFormik({
-    initialValues: getInitialValues(filter),
+    initialValues: getInitialValues(currentFilter),
     onSubmit: (values, { setStatus, setSubmitting }) => {
       //console.log(values);
       //handleSubmit(values, setStatus, setSubmitting);
@@ -205,187 +231,202 @@ const FilterModal = ({
 
   useEffect(() => {
     if (isOpen) {
-      resetForm({ values: getInitialValues(filter) });
+      resetForm({ values: getInitialValues(currentFilter) });
     }
-  }, [cropId, filter, getInitialValues, isOpen, resetForm]);
-
-  useEffect(() => {
-    if (!myFilters && !loadingFilters) {
-      fetchFilters();
-      //delFilter(52);
-    }
-  }, [delFilter, fetchFilters, loadingFilters, myFilters]);
+  }, [cropId, currentFilter, getInitialValues, isOpen, resetForm]);
 
   return (
-    <div className={innerClasses.container}>
-      <Dialog
-        open={isOpen}
-        onClose={handleClose}
-        maxWidth="md"
-        fullWidth
-        classes={{ paper: innerClasses.dialog }}
-      >
-        <DialogTitle className={innerClasses.dialogTitle}>
-          <Grid
-            container
-            direction="row"
-            justify="space-between"
-            alignItems="center"
-            className={innerClasses.appBar}
-          >
-            <Grid item>
-              <AppBar position="static" color="default" className={innerClasses.appBar}>
-                <Tabs
-                  value={valueTabs}
-                  onChange={handleTabsChange}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  aria-label="full width tabs example"
-                >
-                  <Tab
-                    label={intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
-                    {...a11yProps(0)}
-                  />
+    <Dialog
+      open={isOpen}
+      onClose={handleClose}
+      maxWidth="md"
+      fullWidth
+      classes={{ paper: innerClasses.dialog }}
+    >
+      <DialogTitle className={innerClasses.dialogTitle}>
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="center"
+          className={innerClasses.appBar}
+        >
+          <Grid item>
+            <AppBar position="static" color="default" className={innerClasses.appBar}>
+              <Tabs
+                value={valueTabs}
+                onChange={handleTabsChange}
+                indicatorColor="primary"
+                textColor="primary"
+                aria-label="full width tabs example"
+              >
+                <Tab
+                  label={intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
+                  {...a11yProps(0)}
+                />
 
-                  <Tab
-                    icon={
-                      <Badge
-                        badgeContent={
-                          myFilters &&
-                          myFilters
-                            .filter(myFilter => myFilter.crop.id === cropId)
-                            .length.toString()
-                        }
-                        color={
-                          !myFilters ||
-                          createLoading ||
-                          delLoading ||
-                          (myFilters &&
-                            !myFilters.filter(myFilter => myFilter.crop.id === cropId).length)
-                            ? "primary"
-                            : "secondary"
-                        }
-                        className={innerClasses.badge}
-                        variant={!myFilters || createLoading || delLoading ? "dot" : "standard"}
-                      >
-                        {intl.formatMessage({ id: "FILTER.FORM.TABS.MY_FILTERS" })}
-                      </Badge>
-                    }
-                    {...a11yProps(1)}
-                  />
-                </Tabs>
-              </AppBar>
+                <Tab
+                  icon={
+                    <Badge
+                      badgeContent={
+                        myFilters &&
+                        myFilters
+                          .filter(
+                            myFilter =>
+                              myFilter.crop.id === cropId && myFilter.bid_type === salePurchaseMode
+                          )
+                          .length.toString()
+                      }
+                      color={
+                        !myFilters ||
+                        createLoading ||
+                        delLoading ||
+                        (myFilters &&
+                          !myFilters.filter(
+                            myFilter =>
+                              myFilter.crop.id === cropId && myFilter.bid_type === salePurchaseMode
+                          ).length)
+                          ? "primary"
+                          : "secondary"
+                      }
+                      className={innerClasses.badge}
+                      variant={!myFilters || createLoading || delLoading ? "dot" : "standard"}
+                    >
+                      {intl.formatMessage({ id: "FILTER.FORM.TABS.MY_FILTERS" })}
+                    </Badge>
+                  }
+                  {...a11yProps(1)}
+                />
+              </Tabs>
+            </AppBar>
+          </Grid>
+          <Grid item>
+            <IconButton onClick={handleClose} className={innerClasses.closeButton}>
+              <CloseIcon color="primary" />
+            </IconButton>
+          </Grid>
+        </Grid>
+      </DialogTitle>
+      <DialogContent dividers>
+        <TabPanel value={valueTabs} index={0}>
+          <FilterForm
+            classes={classes}
+            handleSubmit={handleSubmit}
+            cropId={cropId}
+            enumParams={enumParams}
+            numberParams={numberParams}
+            formik={formik}
+          />
+        </TabPanel>
+        <TabPanel value={valueTabs} index={1} classes={{ root: innerClasses.tabPanel }}>
+          <MyFilters
+            classes={classes}
+            handleSubmit={handleSubmit}
+            cropId={cropId}
+            enumParams={enumParams}
+            numberParams={numberParams}
+            filters={
+              myFilters &&
+              myFilters.filter(
+                myFilter => myFilter.crop.id === cropId && myFilter.bid_type === salePurchaseMode
+              )
+            }
+            cropName={
+              crops && crops.find(crop => crop.id === cropId)
+                ? crops.find(crop => crop.id === cropId).name
+                : ""
+            }
+            savedFilter={currentFilter}
+            delFilter={delFilter}
+            delLoading={delLoading}
+            editFilter={editFilter}
+            editLoading={editLoading}
+          />
+        </TabPanel>
+      </DialogContent>
+      {valueTabs === 0 && (
+        <DialogActions className={innerClasses.buttonContainer}>
+          <Grid container direction="row" justify="space-between" alignItems="center" spacing={1}>
+            <Grid item>
+              <Grid container direction="row" justify="center" alignItems="center">
+                <TextField
+                  autoComplete="off"
+                  type="text"
+                  label={intl.formatMessage({
+                    id: "FILTER.FORM.NAME.INPUT_NAME",
+                  })}
+                  name="name"
+                  value={values.name || ""}
+                  variant="outlined"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  className={innerClasses.textField}
+                  helperText={formik.touched.name && formik.errors.name}
+                  error={Boolean(formik.touched.name && formik.errors.name)}
+                />
+                <IconButton onClick={() => formik.setFieldValue("name", "")}>
+                  <CloseIcon />
+                </IconButton>
+              </Grid>
             </Grid>
             <Grid item>
-              <IconButton onClick={handleClose} className={innerClasses.closeButton}>
-                <CloseIcon color="primary" />
-              </IconButton>
+              <Grid container direction="row" justify="center" alignItems="center" spacing={1}>
+                <Grid item>
+                  <ButtonWithLoader
+                    loading={createLoading}
+                    disabled={createLoading}
+                    onPress={() => {
+                      let params = { ...values };
+                      delete params.point_prices;
+                      params.cropId = cropId;
+                      params.bid_type = salePurchaseMode;
+                      //console.log(filterForCreate(params, enumParams, numberParams));
+                      createFilter(filterForCreate(params, enumParams, numberParams));
+                    }}
+                  >
+                    {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })}
+                  </ButtonWithLoader>
+                </Grid>
+                <Grid item>
+                  <ButtonWithLoader
+                    onPress={() => {
+                      values.cropId = cropId;
+                      // console.log(values);
+                      setCurrentFilter(
+                        cropId,
+                        filterForSubmit(currentFilter, values, newCropName())
+                      );
+                      clearBids();
+                    }}
+                  >
+                    {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
+                  </ButtonWithLoader>
+                </Grid>
+                <Grid item>
+                  <ButtonWithLoader
+                    onPress={() => {
+                      setCurrentFilter(cropId, undefined);
+                      formik.resetForm({ values: getInitialValues(currentFilter) });
+                      clearBids();
+                    }}
+                    disabled={isFilterEmpty(formik.values, enumParams, numberParams)}
+                  >
+                    {intl.formatMessage({ id: "FILTER.FORM.BUTTON.RESET" })}
+                  </ButtonWithLoader>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
-        </DialogTitle>
-        <DialogContent dividers>
-          <TabPanel value={valueTabs} index={0}>
-            <FilterForm
-              classes={classes}
-              handleSubmit={handleSubmit}
-              cropId={cropId}
-              enumParams={enumParams}
-              numberParams={numberParams}
-              formik={formik}
-            />
-          </TabPanel>
-          <TabPanel value={valueTabs} index={1} classes={{ root: innerClasses.tabPanel }}>
-            <MyFilters
-              classes={classes}
-              handleSubmit={handleSubmit}
-              cropId={cropId}
-              enumParams={enumParams}
-              numberParams={numberParams}
-              filters={myFilters && myFilters.filter(myFilter => myFilter.crop.id === cropId)}
-              cropName={
-                crops && crops.find(crop => crop.id === cropId)
-                  ? crops.find(crop => crop.id === cropId).name
-                  : ""
-              }
-              savedFilter={filter}
-              delFilter={delFilter}
-              delLoading={delLoading}
-              editFilter={editFilter}
-              editLoading={editLoading}
-            />
-          </TabPanel>
-        </DialogContent>
-        {valueTabs === 0 && (
-          <DialogActions className={innerClasses.buttonContainer}>
-            <Grid container direction="row" justify="space-between" alignItems="center" spacing={1}>
-              <Grid item>
-                <Grid container direction="row" justify="center" alignItems="center">
-                  <TextField
-                    autoComplete="off"
-                    type="text"
-                    label={intl.formatMessage({
-                      id: "FILTER.FORM.NAME.INPUT_NAME",
-                    })}
-                    name="name"
-                    value={values.name || ""}
-                    variant="outlined"
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                    className={innerClasses.textField}
-                    helperText={formik.touched.name && formik.errors.name}
-                    error={Boolean(formik.touched.name && formik.errors.name)}
-                  />
-                  <IconButton onClick={() => formik.setFieldValue("name", "")}>
-                    <CloseIcon />
-                  </IconButton>
-                </Grid>
-              </Grid>
-              <Grid item>
-                <Grid container direction="row" justify="center" alignItems="center" spacing={1}>
-                  <Grid item>
-                    <ButtonWithLoader
-                      loading={createLoading}
-                      disabled={createLoading}
-                      onPress={() =>
-                        createFilter(filterForCreate(values, enumParams, numberParams))
-                      }
-                    >
-                      {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })}
-                    </ButtonWithLoader>
-                  </Grid>
-                  <Grid item>
-                    <ButtonWithLoader
-                      onPress={() => {
-                        handleSubmit(values, formik.setStatus, formik.setSubmitting);
-                      }}
-                    >
-                      {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
-                    </ButtonWithLoader>
-                  </Grid>
-                  <Grid item>
-                    <ButtonWithLoader
-                      onPress={() => {
-                        formik.resetForm({ values: getInitialValues(filter) });
-                        handleSubmit();
-                      }}
-                      disabled={isFilterEmpty(formik.values, enumParams, numberParams)}
-                    >
-                      {intl.formatMessage({ id: "FILTER.FORM.BUTTON.RESET" })}
-                    </ButtonWithLoader>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </DialogActions>
-        )}
-      </Dialog>
-    </div>
+        </DialogActions>
+      )}
+    </Dialog>
   );
 };
 
 export default compose(
   connect(
     state => ({
+      me: state.auth.user,
       myFilters: state.myFilters.myFilters,
       loadingFilters: state.myFilters.loading,
       createLoading: state.myFilters.createLoading,
@@ -400,6 +441,7 @@ export default compose(
     }),
     {
       fetchFilters: myFiltersActions.fetchRequest,
+      clearBids: bidsActions.clearBestRequest,
       clearCreateFilter: myFiltersActions.clearCreate,
       createFilter: myFiltersActions.createRequest,
       clearDelFilter: myFiltersActions.clearDel,

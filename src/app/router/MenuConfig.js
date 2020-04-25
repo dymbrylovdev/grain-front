@@ -20,52 +20,96 @@ const getAdminMenu = crops => ({
         title: "Рынок зерна",
         root: true,
         icon: "flaticon2-architecture-and-city",
-        page: "bidsList/1",
+        page: "",
         translate: "MENU.GRAIN",
         submenu: [
           {
             title: "Заявки на продажу",
             root: true,
             page: "",
-            translate: "SUBMENU.ADS",
-            bullet: "dot",
-            submenu:
-              crops &&
-              crops.map &&
-              crops.map(crop => ({
-                title: crop.name,
+            translate: "SUBMENU.BIDS.SALE",
+            submenu: [
+              {
+                title: "Лучшие заявки",
                 root: true,
-                page: `bidsList/${crop.id}`,
-                //translate: crop.name,
-              })),
+                page: "",
+                translate: "SUBMENU.BIDS.BEST",
+                bullet: "dot",
+                submenu:
+                  crops &&
+                  crops.map &&
+                  crops.map(crop => ({
+                    title: crop.name,
+                    root: true,
+                    page: `sale/best-bids/${crop.id}`,
+                  })),
+              },
+              {
+                title: "Мои заявки",
+                root: true,
+                page: "sale/my-bids",
+                translate: "SUBMENU.MY_BIDS",
+              },
+              {
+                title: "Все заявки",
+                root: true,
+                page: "",
+                translate: "SUBMENU.ALL_BIDS",
+                bullet: "dot",
+                submenu:
+                  crops &&
+                  crops.map &&
+                  crops.map(crop => ({
+                    title: crop.name,
+                    root: true,
+                    page: `sale/all-bids/${crop.id}`,
+                  })),
+              },
+            ],
           },
           {
-            title: "Добавить заявку",
-            root: true,
-            page: "bid/create",
-            translate: "SUBMENU.GRAIN.CREATE_AD",
-          },
-          {
-            title: "Мои заявки",
-            root: true,
-            page: "myBidsList",
-            translate: "SUBMENU.MY_BIDS",
-          },
-          {
-            title: "Все заявки",
+            title: "Заявки на покупку",
             root: true,
             page: "",
-            translate: "SUBMENU.ALL_BIDS",
-            bullet: "dot",
-            submenu:
-              crops &&
-              crops.map &&
-              crops.map(crop => ({
-                title: crop.name,
+            translate: "SUBMENU.BIDS.PURCHASE",
+            submenu: [
+              {
+                title: "Лучшие заявки",
                 root: true,
-                page: `allBidsList/${crop.id}`,
-                //translate: crop.name,
-              })),
+                page: "",
+                translate: "SUBMENU.BIDS.BEST",
+                bullet: "dot",
+                submenu:
+                  crops &&
+                  crops.map &&
+                  crops.map(crop => ({
+                    title: crop.name,
+                    root: true,
+                    page: `purchase/best-bids/${crop.id}`,
+                  })),
+              },
+              {
+                title: "Мои заявки",
+                root: true,
+                page: "purchase/my-bids",
+                translate: "SUBMENU.MY_BIDS",
+              },
+              {
+                title: "Все заявки",
+                root: true,
+                page: "",
+                translate: "SUBMENU.ALL_BIDS",
+                bullet: "dot",
+                submenu:
+                  crops &&
+                  crops.map &&
+                  crops.map(crop => ({
+                    title: crop.name,
+                    root: true,
+                    page: `purchase/all-bids/${crop.id}`,
+                  })),
+              },
+            ],
           },
         ],
       },
@@ -139,8 +183,22 @@ const getAdminMenu = crops => ({
           {
             title: "Мои фильтры",
             root: true,
-            page: "user/filters",
+            page: "",
             translate: "SUBMENU.MY_FILTERS",
+            submenu: [
+              {
+                title: "Фильтры на продажу",
+                root: true,
+                page: "sale/filters",
+                translate: "SUBMENU.BUYER_FILTERS",
+              },
+              {
+                title: "Фильтры на покупку",
+                root: true,
+                page: "purchase/filters",
+                translate: "SUBMENU.SELLER_FILTERS",
+              },
+            ],
           },
           {
             title: "Настройки каталога",
@@ -212,15 +270,15 @@ const getVendorMenu = crops => ({
         translate: "MENU.GRAIN",
         submenu: [
           {
-            title: "Заявки на продажу",
+            title: "Лучшие заявки",
             root: true,
             page: "",
-            translate: "SUBMENU.ADS",
+            translate: "SUBMENU.BIDS.BEST",
             bullet: "dot",
             submenu: crops.map(crop => ({
               title: crop.name,
               root: true,
-              page: `bidsList/${crop.id}`,
+              page: `purchase/best-bids/${crop.id}`,
               //translate: crop.name,
             })),
           },
@@ -233,7 +291,7 @@ const getVendorMenu = crops => ({
           {
             title: "Мои заявки",
             root: true,
-            page: "myBidsList",
+            page: "sale/my-bids",
             translate: "SUBMENU.MY_BIDS",
           },
         ],
@@ -254,7 +312,7 @@ const getVendorMenu = crops => ({
           {
             title: "Мои фильтры",
             root: true,
-            page: "user/filters",
+            page: "purchase/filters",
             translate: "SUBMENU.MY_FILTERS",
           },
         ],
@@ -286,17 +344,29 @@ const getBuyerMenu = crops => ({
         translate: "MENU.GRAIN",
         submenu: [
           {
-            title: "Заявки на продажу",
+            title: "Лучшие заявки",
             root: true,
             page: "",
-            translate: "SUBMENU.ADS",
+            translate: "SUBMENU.BIDS.BEST",
             bullet: "dot",
             submenu: crops.map(crop => ({
               title: crop.name,
               root: true,
-              page: `bidsList/${crop.id}`,
+              page: `sale/best-bids/${crop.id}`,
               //translate: crop.name,
             })),
+          },
+          {
+            title: "Добавить заявку",
+            root: true,
+            page: "bid/create",
+            translate: "SUBMENU.GRAIN.CREATE_AD",
+          },
+          {
+            title: "Мои заявки",
+            root: true,
+            page: "purchase/my-bids",
+            translate: "SUBMENU.MY_BIDS",
           },
         ],
       },
@@ -316,7 +386,7 @@ const getBuyerMenu = crops => ({
           {
             title: "Мои фильтры",
             root: true,
-            page: "user/filters",
+            page: "sale/filters",
             translate: "SUBMENU.MY_FILTERS",
           },
         ],

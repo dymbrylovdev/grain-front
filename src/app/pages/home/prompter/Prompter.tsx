@@ -1,6 +1,5 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { compose } from "redux";
 import { useHistory } from "react-router-dom";
 import {
   makeStyles,
@@ -159,4 +158,4 @@ const connector = connect(
 
 type TPropsFromRedux = ConnectedProps<typeof connector>;
 
-export default compose(connector, injectIntl)(Prompter);
+export default connector(injectIntl(Prompter));

@@ -5,7 +5,6 @@ import getMenuConfig from "../../router/MenuConfig";
 import UserDocPage from "./userDocs/UserDocPage";
 import { useSelector, shallowEqual, connect } from "react-redux";
 import { UsersPage, UserEditPage } from "./users";
-import { BidsListPage, BidCreatePage, MyBidsListPage, AllBidsPage } from "./bids";
 import { CropsListPage, CropPage } from "./crops";
 import { CompanyPage, CompaniesListPage, CompanyConfirmPage } from "./companies";
 import * as builder from "../../../_metronic/ducks/builder";
@@ -16,6 +15,8 @@ import { MyFiltersPage, MyFiltersEditPage, MyFiltersMoneyPage } from "./myFilter
 import Dashboard from "./Dashboard";
 import { FunnelStatesPage, FunnelStateEditPage } from "./funnelStates";
 import { ActivityReportPage } from "./activityReport";
+import { BidsPage } from "./bids";
+import BidCreatePage from "./bids/BidCreatePage";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { crops, user } = useSelector(
@@ -43,10 +44,16 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/user-list" component={UsersPage} />
         <Route path="/user/create" component={UserEditPage} />
         <Route path="/user/edit/:id" component={UserEditPage} />
-        <Route path="/user/filters/view/:id" component={MyFiltersEditPage} />
-        <Route path="/user/filters/edit/:id" component={MyFiltersEditPage} />
-        <Route path="/user/filters/prices" component={MyFiltersMoneyPage} />
-        <Route path="/user/filters" component={MyFiltersPage} />
+
+        <Route path="/sale/filters/view/:id" component={MyFiltersEditPage} />
+        <Route path="/sale/filters/edit/:id" component={MyFiltersEditPage} />
+        <Route path="/sale/filters/prices" component={MyFiltersMoneyPage} />
+        <Route path="/sale/filters" component={MyFiltersPage} />
+
+        <Route path="/purchase/filters/view/:id" component={MyFiltersEditPage} />
+        <Route path="/purchase/filters/edit/:id" component={MyFiltersEditPage} />
+        <Route path="/purchase/filters/prices" component={MyFiltersMoneyPage} />
+        <Route path="/purchase/filters" component={MyFiltersPage} />
 
         <Route path="/activity-report" component={ActivityReportPage} />
 
@@ -55,9 +62,9 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/funnel-states/edit/:id" component={FunnelStateEditPage} />
         <Route path="/funnel-states" component={FunnelStatesPage} />
 
-        <Route path="/bidsList" exact component={BidsListPage} />
+        {/* <Route path="/bidsList" exact component={BidsListPage} />
         <Route path="/myBidsList" exact component={MyBidsListPage} />
-        <Route path="/bidsList/:cropId" exact component={BidsListPage} />
+        <Route path="/bidsList/:cropId" exact component={BidsListPage} /> 
         <Route path="/bid/create" exact component={BidCreatePage} />
         <Route path="/bid/create/:vendorId" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId" exact component={BidCreatePage} />
@@ -66,7 +73,23 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/bid/view/:bidId/fromAdmin" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId/fromMy" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId/fromAdmin" component={BidCreatePage} />
-        <Route path="/allBidsList/:cropId" component={AllBidsPage} />
+        <Route path="/allBidsList/:cropId" component={AllBidsPage} /> */}
+
+        <Route path="/bid/create" exact component={BidCreatePage} />
+        <Route path="/bid/create/:vendorId" component={BidCreatePage} />
+        <Route path="/bid/edit/:bidId" exact component={BidCreatePage} />
+        <Route path="/bid/view/:bidId" exact component={BidCreatePage} />
+        <Route path="/bid/view/:bidId/fromMy" component={BidCreatePage} />
+        <Route path="/bid/view/:bidId/fromAdmin" component={BidCreatePage} />
+        <Route path="/bid/edit/:bidId/fromMy" component={BidCreatePage} />
+        <Route path="/bid/edit/:bidId/fromAdmin" component={BidCreatePage} />
+
+        <Route path="/sale/best-bids/:cropId" component={BidsPage} />
+        <Route path="/purchase/best-bids/:cropId" component={BidsPage} />
+        <Route path="/sale/my-bids" component={BidsPage} />
+        <Route path="/purchase/my-bids" component={BidsPage} />
+        <Route path="/sale/all-bids/:cropId" component={BidsPage} />
+        <Route path="/purchase/all-bids/:cropId" component={BidsPage} />
 
         <Route path="/cropList" component={CropsListPage} />
         <Route path="/crop/create" component={CropPage} />

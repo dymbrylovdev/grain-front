@@ -4,7 +4,6 @@ import TablePaginationActions from "./TablePaginationActions";
 import { WrappedComponentProps, injectIntl } from "react-intl";
 
 interface IProps {
-  id?: number;
   label?: string;
   page: number;
   realPerPage: number;
@@ -13,9 +12,8 @@ interface IProps {
   fetchRows: any;
 }
 
-const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
+const TablePaginator2: React.FC<IProps & WrappedComponentProps> = ({
   intl,
-  id,
   label = intl.formatMessage({ id: "TABLE.PAGINATOR.LABEL" }),
   page,
   realPerPage,
@@ -24,15 +22,13 @@ const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
   fetchRows,
 }) => {
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    id ? fetchRows({ page: newPage + 1, perPage, id }) : fetchRows({ page: newPage + 1, perPage });
+    fetchRows(newPage + 1, perPage);
   };
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    id
-      ? fetchRows({ page: 1, perPage: parseInt(event.target.value, 10), id })
-      : fetchRows({ page: 1, perPage: parseInt(event.target.value, 10) });
+    fetchRows(1, +event.target.value);
   };
 
   return (
@@ -64,4 +60,4 @@ const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
   );
 };
 
-export default injectIntl(TablePaginator);
+export default injectIntl(TablePaginator2);

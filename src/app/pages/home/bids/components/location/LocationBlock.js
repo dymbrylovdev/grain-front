@@ -21,7 +21,6 @@ function LocationBlock({ intl, handleClickLocation, handleClickPrices, locations
   return (
     <div className={innerClasses.container}>
       <div>
-        <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>
         <div className={innerClasses.text}>
           {locations.length ? (
             <div>

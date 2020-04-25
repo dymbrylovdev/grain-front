@@ -13,7 +13,7 @@ import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import LocationBlock from "./location/LocationBlock";
 
-const getInitialValues = (bid, crop) => {
+const getInitialValues = (bid, crop, userRole) => {
   const values = {
     volume: bid.volume || "",
     price: bid.price || "",
@@ -21,6 +21,7 @@ const getInitialValues = (bid, crop) => {
     crop: crop,
     location: bid.location || {},
     pricePerKm: bid.price_delivery_per_km,
+    bid_type: userRole === "buyer" ? "purchase" : "sale",
   };
   if (bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.forEach(item => {
@@ -90,6 +91,7 @@ function BidForm({
   getCropParams,
   openLocation,
   user,
+  userRole,
   locations,
   isLoadingLocations,
 }) {
@@ -125,7 +127,7 @@ function BidForm({
   }, []); // eslint-disable-line
   useEffect(() => {
     //console.log("--currentBid", bid);
-    formRef.current.resetForm({ values: getInitialValues(bid, currentCrop) });
+    formRef.current.resetForm({ values: getInitialValues(bid, currentCrop, userRole) });
     if (!bid || !bid.id) {
       setCropParams([]);
     }
@@ -140,7 +142,7 @@ function BidForm({
     <Paper className={classes.container}>
       <Formik
         autoComplete="off"
-        initialValues={getInitialValues(bid, currentCrop)}
+        initialValues={getInitialValues(bid, currentCrop, userRole)}
         validationSchema={Yup.object().shape({
           volume: Yup.string().required(
             <FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />
@@ -164,11 +166,8 @@ function BidForm({
           } else {
             delete values.location;
           }
-          submitAction(
-            { ...values, crop_id: cropId, parameter_values: paramValues },
-            setStatus,
-            setSubmitting
-          );
+          values.pricePerKm = 4;
+          submitAction({ ...values, crop_id: cropId, parameter_values: paramValues });
         }}
         innerRef={formRef}
       >
@@ -181,205 +180,225 @@ function BidForm({
           handleBlur,
           handleSubmit,
           isSubmitting,
-        }) => (
-          <div className={classes.form}>
-            <form noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
-              <TextField
-                type="text"
-                label={intl.formatMessage({
-                  id: "BIDSLIST.TABLE.COST",
-                })}
-                margin="normal"
-                name="price"
-                value={values.price}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange("price")}
-                helperText={touched.price && errors.price}
-                error={Boolean(touched.price && errors.price)}
-                InputProps={{
-                  inputComponent: NumberFormatCustom,
-                }}
-                disabled={!isEditable}
-              />
-              <TextField
-                type="text"
-                label={intl.formatMessage({
-                  id: "BIDSLIST.TABLE.VOLUME",
-                })}
-                margin="normal"
-                name="volume"
-                value={values.volume}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange("volume")}
-                helperText={touched.volume && errors.volume}
-                error={Boolean(touched.volume && errors.volume)}
-                InputProps={{
-                  inputComponent: NumberFormatCustom,
-                }}
-                disabled={!isEditable}
-              />
-              {!isEditable && (
-                <Box
-                  className={classes.paramContainer}
-                  border={1}
-                  borderColor="#eeeeee"
-                  borderRadius={5}
-                >
-                  <div className={innerClasses.calcTitle}>
-                    {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
-                  </div>
-                  <LocationBlock handleClickLocation={openLocation} locations={user.points} />
-                  <div style={{ height: 8 }}></div>
-                  <TextField
-                    type="text"
-                    label={intl.formatMessage({
-                      id: "BID.CALCULATOR.PRICE_PER_KM",
-                    })}
-                    margin="normal"
-                    name="pricePerKm"
-                    value={values.pricePerKm}
-                    variant="outlined"
-                    onBlur={handleBlur}
-                    onChange={handleChange("pricePerKm")}
-                    InputProps={{
-                      inputComponent: NumberFormatCustom,
-                    }}
-                  />
-                  <div className={innerClasses.calcDescriptionContainer}>
-                    <div className={innerClasses.calcDescription}>
-                      {`${intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}`}
-                    </div>
-                    <div className={innerClasses.calcFinalPrice}>
-                      {getFinalPrice(bid, values.pricePerKm)}
-                    </div>
-                  </div>
-                </Box>
-              )}
-
-              <AutocompleteLocations
-                options={locations}
-                loading={isLoadingLocations}
-                defaultValue={{
-                  text: values.location && values.location.text ? values.location.text : "",
-                }}
-                editable={!(values.location && values.location.text)}
-                label={intl.formatMessage({
-                  id: "PROFILE.INPUT.LOCATION",
-                })}
-                inputClassName={classes.textField}
-                inputError={Boolean(touched.location && errors.location)}
-                inputHelperText={touched.location && errors.location}
-                fetchLocations={fetchLocations}
-                clearLocations={clearLocations}
-                setSelectedLocation={setSelectedLocation}
-                disable={!isEditable}
-              />
-
-              <div className={classes.textFieldContainer}>
+        }) => {
+          //console.log(values);
+          return (
+            <div className={classes.form}>
+              <form noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
                 <TextField
                   select
-                  margin="normal"
-                  className={classes.textSelect}
+                  type="text"
                   label={intl.formatMessage({
-                    id: "BIDSLIST.TABLE.CROP",
+                    id: "BIDSLIST.TABLE.COST",
                   })}
-                  value={values.crop}
-                  onChange={event => {
-                    getCropParamsAction(event.target.value.id);
-                    handleChange(event);
-                  }}
-                  name="crop"
+                  margin="normal"
+                  name="bid_type"
+                  value={values.bid_type}
                   variant="outlined"
-                  helperText={touched.crop && errors.crop}
-                  error={Boolean(touched.crop && errors.crop)}
-                  disabled={!isEditable}
+                  onBlur={handleBlur}
+                  onChange={handleChange("bid_type")}
+                  disabled={!isEditable || userRole !== "admin"}
                 >
-                  {crops &&
-                    crops.map(option => (
-                      <MenuItem key={option.id} value={option}>
-                        {option.name}
-                      </MenuItem>
-                    ))}
+                  <MenuItem value={"sale"}>{intl.formatMessage({ id: "BID.TYPE.SALE" })}</MenuItem>
+                  <MenuItem value={"purchase"}>
+                    {intl.formatMessage({ id: "BID.TYPE.PURCHASE" })}
+                  </MenuItem>
                 </TextField>
-                {isParamLoading && <CircularProgress className={classes.leftIcon} />}
-              </div>
-              {cropParams.map(cropParam =>
-                cropParam.type === "number" ? (
-                  <TextField
-                    type="text"
-                    label={cropParam.name}
-                    margin="normal"
-                    name={`parameter${cropParam.id}`}
-                    value={values[`parameter${cropParam.id}`]}
-                    variant="outlined"
-                    onBlur={handleBlur}
-                    disabled={!isEditable}
-                    onChange={handleChange(`parameter${cropParam.id}`)}
-                    InputProps={{
-                      inputComponent: NumberFormatCustom,
-                    }}
-                    key={cropParam.id}
-                  />
-                ) : (
+                <TextField
+                  type="text"
+                  label={intl.formatMessage({
+                    id: "BIDSLIST.TABLE.COST",
+                  })}
+                  margin="normal"
+                  name="price"
+                  value={values.price}
+                  variant="outlined"
+                  onBlur={handleBlur}
+                  onChange={handleChange("price")}
+                  helperText={touched.price && errors.price}
+                  error={Boolean(touched.price && errors.price)}
+                  InputProps={{
+                    inputComponent: NumberFormatCustom,
+                  }}
+                  disabled={!isEditable}
+                />
+                <TextField
+                  type="text"
+                  label={intl.formatMessage({
+                    id: "BIDSLIST.TABLE.VOLUME",
+                  })}
+                  margin="normal"
+                  name="volume"
+                  value={values.volume}
+                  variant="outlined"
+                  onBlur={handleBlur}
+                  onChange={handleChange("volume")}
+                  helperText={touched.volume && errors.volume}
+                  error={Boolean(touched.volume && errors.volume)}
+                  InputProps={{
+                    inputComponent: NumberFormatCustom,
+                  }}
+                  disabled={!isEditable}
+                />
+                {!isEditable && (
+                  <Box
+                    className={classes.paramContainer}
+                    border={1}
+                    borderColor="#eeeeee"
+                    borderRadius={5}
+                  >
+                    <div className={innerClasses.calcTitle}>
+                      {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
+                    </div>
+                    <LocationBlock handleClickLocation={openLocation} locations={user.points} />
+                    <div style={{ height: 8 }}></div>
+                    <TextField
+                      type="text"
+                      label={intl.formatMessage({
+                        id: "BID.CALCULATOR.PRICE_PER_KM",
+                      })}
+                      margin="normal"
+                      name="pricePerKm"
+                      value={values.pricePerKm}
+                      variant="outlined"
+                      onBlur={handleBlur}
+                      onChange={handleChange("pricePerKm")}
+                      InputProps={{
+                        inputComponent: NumberFormatCustom,
+                      }}
+                    />
+                    <div className={innerClasses.calcDescriptionContainer}>
+                      <div className={innerClasses.calcDescription}>
+                        {`${intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}`}
+                      </div>
+                      <div className={innerClasses.calcFinalPrice}>
+                        {getFinalPrice(bid, values.pricePerKm)}
+                      </div>
+                    </div>
+                  </Box>
+                )}
+                <AutocompleteLocations
+                  options={locations}
+                  loading={isLoadingLocations}
+                  defaultValue={{
+                    text: values.location && values.location.text ? values.location.text : "",
+                  }}
+                  editable={!(values.location && values.location.text)}
+                  label={intl.formatMessage({
+                    id: "PROFILE.INPUT.LOCATION",
+                  })}
+                  inputClassName={classes.textField}
+                  inputError={Boolean(touched.location && errors.location)}
+                  inputHelperText={touched.location && errors.location}
+                  fetchLocations={fetchLocations}
+                  clearLocations={clearLocations}
+                  setSelectedLocation={setSelectedLocation}
+                  disable={!isEditable}
+                />
+                <div className={classes.textFieldContainer}>
                   <TextField
                     select
-                    type="text"
-                    label={cropParam.name}
                     margin="normal"
-                    name={`parameter${cropParam.id}`}
-                    value={values[`parameter${cropParam.id}`]}
+                    className={classes.textSelect}
+                    label={intl.formatMessage({
+                      id: "BIDSLIST.TABLE.CROP",
+                    })}
+                    value={values.crop}
+                    onChange={event => {
+                      getCropParamsAction(event.target.value.id);
+                      handleChange(event);
+                    }}
+                    name="crop"
                     variant="outlined"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
+                    helperText={touched.crop && errors.crop}
+                    error={Boolean(touched.crop && errors.crop)}
                     disabled={!isEditable}
-                    key={cropParam.id}
                   >
-                    {cropParam.enum.map(option => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    ))}
+                    {crops &&
+                      crops.map(option => (
+                        <MenuItem key={option.id} value={option}>
+                          {option.name}
+                        </MenuItem>
+                      ))}
                   </TextField>
-                )
-              )}
-              <TextField
-                type="text"
-                label={intl.formatMessage({
-                  id: "BIDSLIST.TABLE.DESCRIPTION",
-                })}
-                margin="normal"
-                name="description"
-                value={values.description}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                rows="6"
-                multiline
-                disabled={!isEditable}
-              />
-              {bid.vendor && (
-                <Link to={toUserPath}>
-                  <div className={innerClasses.authorText}>
-                    {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.fio ||
-                      bid.vendor.login}`}
-                  </div>
-                </Link>
-              )}
-              <StatusAlert status={status} />
-              {isEditable && (
-                <div className={classes.buttonContainer}>
-                  <ButtonWithLoader loading={loading} onPress={handleSubmit}>
-                    {bid && bid.id
-                      ? intl.formatMessage({ id: "BIDSLIST.BUTTON.EDIT_BID" })
-                      : intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
-                  </ButtonWithLoader>
+                  {isParamLoading && <CircularProgress className={classes.leftIcon} />}
                 </div>
-              )}
-            </form>
-          </div>
-        )}
+                {cropParams.map(cropParam =>
+                  cropParam.type === "number" ? (
+                    <TextField
+                      type="text"
+                      label={cropParam.name}
+                      margin="normal"
+                      name={`parameter${cropParam.id}`}
+                      value={values[`parameter${cropParam.id}`]}
+                      variant="outlined"
+                      onBlur={handleBlur}
+                      disabled={!isEditable}
+                      onChange={handleChange(`parameter${cropParam.id}`)}
+                      InputProps={{
+                        inputComponent: NumberFormatCustom,
+                      }}
+                      key={cropParam.id}
+                    />
+                  ) : (
+                    <TextField
+                      select
+                      type="text"
+                      label={cropParam.name}
+                      margin="normal"
+                      name={`parameter${cropParam.id}`}
+                      value={values[`parameter${cropParam.id}`]}
+                      variant="outlined"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      disabled={!isEditable}
+                      key={cropParam.id}
+                    >
+                      {cropParam.enum.map(option => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )
+                )}
+                <TextField
+                  type="text"
+                  label={intl.formatMessage({
+                    id: "BIDSLIST.TABLE.DESCRIPTION",
+                  })}
+                  margin="normal"
+                  name="description"
+                  value={values.description}
+                  variant="outlined"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  rows="6"
+                  multiline
+                  disabled={!isEditable}
+                />
+                {bid.vendor && (
+                  <Link to={toUserPath}>
+                    <div className={innerClasses.authorText}>
+                      {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.fio ||
+                        bid.vendor.login}`}
+                    </div>
+                  </Link>
+                )}
+                <StatusAlert status={status} />
+                {isEditable && (
+                  <div className={classes.buttonContainer}>
+                    <ButtonWithLoader loading={loading} disabled={loading} onPress={handleSubmit}>
+                      {bid && bid.id
+                        ? intl.formatMessage({ id: "BIDSLIST.BUTTON.EDIT_BID" })
+                        : intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
+                    </ButtonWithLoader>
+                  </div>
+                )}
+              </form>
+            </div>
+          );
+        }}
       </Formik>
     </Paper>
   );

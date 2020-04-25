@@ -1,3 +1,5 @@
+import { TBidType } from "./bids";
+
 export interface IPointPrice {
   point: {
     id: number;
@@ -25,7 +27,7 @@ export interface IMyFiltersParam {
 }
 
 export interface IMyFilterItem {
-  id: number;
+  id?: number;
   name: string;
   crop: {
     id: number;
@@ -45,12 +47,13 @@ export interface IParamValue {
 
 export interface IFilterForCreate {
   name?: string;
-  crop_id?: number;
-  max_full_price?: number | null;
-  max_distance?: number | null;
+  cropId?: number;
+  max_full_price?: number;
+  max_distance?: number;
   parameter_values?: IParamValue[];
   point_prices?: IPointPriceForEdit[];
   subscribed?: boolean;
+  bid_type?: TBidType;
 }
 
 export interface IFilterParam {
@@ -58,4 +61,14 @@ export interface IFilterParam {
   name: string;
   type: "enum" | "number";
   enum: string[];
+}
+
+export interface IFilterForBids {
+  filter: {
+    cropId?: number;
+    max_full_price?: number;
+    max_distance?: number;
+    parameter_values?: IParamValue[];
+    point_prices?: IPointPriceForEdit[];
+  };
 }

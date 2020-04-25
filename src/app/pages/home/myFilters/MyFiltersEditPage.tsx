@@ -64,6 +64,8 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   match,
   intl,
 
+  me,
+
   fetchFilters,
   myFilters,
   myFiltersLoading,
@@ -99,6 +101,10 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   const classes = useStyles();
   const history = useHistory();
   const isEditable = match.url.indexOf("view") === -1;
+  const isNew = match.url.indexOf("new") !== -1;
+  let salePurchaseMode: "sale" | "purchase" = "sale";
+  if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
+  if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
 
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [formikErrored, setFormikErrored] = useState(false);
@@ -152,14 +158,12 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   }, [clearEditFilter, editError, editSuccess, enqueueSnackbar, intl]);
 
   useEffect(() => {
-    if (createSuccess || editSuccess || delSuccess) history.push("/user/filters");
-  }, [createSuccess, delSuccess, editSuccess, history]);
+    if (createSuccess || editSuccess || delSuccess) history.push(`/${salePurchaseMode}/filters`);
+  }, [createSuccess, delSuccess, editSuccess, history, salePurchaseMode]);
 
   useEffect(() => {
-    if (!myFilters && !myFiltersLoading) {
-      fetchFilters();
-    }
-  }, [delFilter, fetchFilters, myFiltersLoading, myFilters]);
+    fetchFilters(salePurchaseMode);
+  }, [fetchFilters, me, salePurchaseMode]);
 
   useEffect(() => {
     if (!crops && !cropsLoading) {
@@ -170,7 +174,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   useEffect(() => {
     if (myFilters && +id) {
       const myFilter = myFilters.find(item => item.id === +id);
-      if (myFilter) fetchCropParams({ cropId: myFilter.crop.id });
+      if (myFilter) fetchCropParams(myFilter.crop.id);
     }
     return () => {
       clearCropParams();
@@ -204,6 +208,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
           itemById(myFilters, +id)?.point_prices.forEach(item => {
             params.point_prices.push({ point_id: item.point.id, price: item.price });
           });
+          params.bid_type = salePurchaseMode;
           cropParams &&
             (+id
               ? editFilter({
@@ -275,15 +280,13 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                   id: "FILTER.FORM.NAME.CROP",
                 })}
                 margin="normal"
-                name="crop_id"
-                value={values.crop_id || 0}
+                name="cropId"
+                value={values.cropId || 0}
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={e => {
-                  setFieldValue("crop_id", +e.target.value);
-                  +e.target.value
-                    ? fetchCropParams({ cropId: +e.target.value })
-                    : clearCropParams();
+                  setFieldValue("cropId", +e.target.value);
+                  +e.target.value ? fetchCropParams(+e.target.value) : clearCropParams();
                 }}
                 disabled={id !== "new" || cropParamsLoading}
               >
@@ -295,7 +298,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                 ))}
               </TextField>
 
-              <div className={classes.tableTitle}>
+              <div>
                 {!cropParams ? (
                   cropParamsLoading ? (
                     <Preloader size={24} />
@@ -388,13 +391,15 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                         </div>
                       ))}
 
-                    <FormControlLabel
-                      className={classes.switcher}
-                      control={<Checkbox checked={values.subscribed} onChange={handleChange} />}
-                      label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SUBSCRIPTION" })}
-                      name="subscribed"
-                      disabled={!isEditable}
-                    />
+                    {!isNew && (
+                      <FormControlLabel
+                        className={classes.switcher}
+                        control={<Checkbox checked={values.subscribed} onChange={handleChange} />}
+                        label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SUBSCRIPTION" })}
+                        name="subscribed"
+                        disabled={!isEditable}
+                      />
+                    )}
 
                     <Grid
                       container
@@ -408,7 +413,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                         <Button
                           variant="outlined"
                           color="primary"
-                          onClick={() => history.push("/user/filters")}
+                          onClick={() => history.push(`/${salePurchaseMode}/filters`)}
                         >
                           {isEditable
                             ? intl.formatMessage({ id: "ALL.BUTTONS.CANCEL" })
@@ -472,6 +477,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
 
 const connector = connect(
   (state: IAppState) => ({
+    me: state.auth.user,
     myFilters: state.myFilters.myFilters,
     myFiltersLoading: state.myFilters.loading,
     crops: state.crops2.crops,

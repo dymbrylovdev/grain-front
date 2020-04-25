@@ -1,10 +1,11 @@
 import axios from "axios";
 import { IFilterForCreate } from "../interfaces/filters";
+import { TBidType } from "../interfaces/bids";
 
 const MY_FILTERS_URL = "/api/bid_filter";
 
-export const getMyFilters = () => {
-  return axios.get(`${MY_FILTERS_URL}s`);
+export const getMyFilters = (type: TBidType) => {
+  return axios.get(`${MY_FILTERS_URL}s?type=${type}`);
 };
 
 export const createMyFilter = (data: IFilterForCreate) => {

@@ -1,7 +1,7 @@
 import { persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
 import { Reducer } from "redux";
 import { PersistPartial } from "redux-persist/es/persistReducer";
+import storage from "redux-persist/lib/storage";
 import { TAppActions } from "../rootDuck";
 import { put, takeLatest, call } from "redux-saga/effects";
 
@@ -14,10 +14,15 @@ import {
   editMyFilter,
 } from "../../crud/myFilters.crud";
 import { IMyFilterItem, IFilterForCreate } from "../../interfaces/filters";
+import { TBidType } from "../../interfaces/bids";
+import { fromApiToFilter } from "../../pages/home/myFilters/utils";
 
 const FETCH_REQUEST = "myFilters/FETCH_REQUEST";
 const FETCH_SUCCESS = "myFilters/FETCH_SUCCESS";
 const FETCH_FAIL = "myFilters/FETCH_FAIL";
+
+const SET_CURRENT_SALE_FILTER = "myFilters/SET_CURRENT_SALE_FILTER";
+const SET_CURRENT_PURCHASE_FILTER = "myFilters/SET_CURRENT_PURCHASE_FILTER";
 
 const CLEAR_CREATE = "myFilters/CLEAR_CREATE";
 const CREATE_REQUEST = "myFilters/CREATE_REQUEST";
@@ -35,11 +40,14 @@ const DEL_SUCCESS = "myFilters/DEL_SUCCESS";
 const DEL_FAIL = "myFilters/DEL_FAIL";
 
 export interface IInitialState {
-  selectedFilterId: number;
+  selectedFilterId: number | undefined;
   myFilters: IMyFilterItem[] | undefined;
   loading: boolean;
   success: boolean;
   error: string | null;
+
+  currentSaleFilters: { [x: string]: { [x: string]: any } };
+  currentPurchaseFilters: { [x: string]: { [x: string]: any } };
 
   createLoading: boolean;
   createSuccess: boolean;
@@ -61,6 +69,9 @@ const initialState: IInitialState = {
   success: false,
   error: null,
 
+  currentSaleFilters: {},
+  currentPurchaseFilters: {},
+
   createLoading: false,
   createSuccess: false,
   createError: null,
@@ -73,11 +84,32 @@ const initialState: IInitialState = {
   delSuccess: false,
   delError: null,
 };
-
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
-  { storage, key: "myFilters", whitelist: ["user", "authToken"] },
+  { storage, key: "filters", whitelist: ["currentSaleFilters", "currentPurchaseFilters"] },
   (state = initialState, action) => {
     switch (action.type) {
+      case SET_CURRENT_SALE_FILTER: {
+        // console.log("SET_CURRENT_SALE_FILTER:", action.payload.filter);
+        return {
+          ...state,
+          currentSaleFilters: {
+            ...state.currentSaleFilters,
+            [action.payload.cropId]: action.payload.filter,
+          },
+        };
+      }
+
+      case SET_CURRENT_PURCHASE_FILTER: {
+        // console.log("SET_CURRENT_PURCHASE_FILTER");
+        return {
+          ...state,
+          currentPurchaseFilters: {
+            ...state.currentPurchaseFilters,
+            [action.payload.cropId]: action.payload.filter,
+          },
+        };
+      }
+
       case FETCH_REQUEST: {
         return {
           ...state,
@@ -89,7 +121,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case FETCH_SUCCESS: {
-        //console.log(action.payload.data);
+        // console.log(action.payload.data);
         //console.log(action.payload.data.find(item => item.id === state.selectedFilterId));
         if (
           action.payload.data.length &&
@@ -128,18 +160,57 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case CLEAR_EDIT: {
+        // console.log("CLEAR_EDIT");
         return { ...state, editLoading: false, editSuccess: false, editError: null };
       }
 
       case EDIT_REQUEST: {
+        // console.log("EDIT_REQUEST");
         return { ...state, editLoading: true, editSuccess: false, editError: null };
       }
 
       case EDIT_SUCCESS: {
+        // console.log("EDIT_SUCCESS: ", action.payload.data);
+        for (let key in state.currentSaleFilters) {
+          if (
+            !!state.currentSaleFilters[key] &&
+            !!state.currentSaleFilters[key].id &&
+            state.currentSaleFilters[key].id === action.payload.data.data.id
+          ) {
+            return {
+              ...state,
+              currentSaleFilters: {
+                ...state.currentSaleFilters,
+                [action.payload.data.data.crop.id]: fromApiToFilter(action.payload.data.data),
+              },
+              myFilters: undefined,
+              editLoading: false,
+              editSuccess: true,
+            };
+          }
+          if (
+            !!state.currentPurchaseFilters[key] &&
+            !!state.currentPurchaseFilters[key].id &&
+            state.currentPurchaseFilters[key].id === action.payload.data.data.id
+          ) {
+            return {
+              ...state,
+              currentPurchaseFilters: {
+                ...state.currentPurchaseFilters,
+                [action.payload.data.data.crop.id]: fromApiToFilter(action.payload.data.data),
+              },
+              myFilters: undefined,
+              editLoading: false,
+              editSuccess: true,
+            };
+          }
+        }
+
         return { ...state, myFilters: undefined, editLoading: false, editSuccess: true };
       }
 
       case EDIT_FAIL: {
+        // console.log("EDIT_FAIL");
         return { ...state, editLoading: false, editError: action.payload };
       }
 
@@ -166,9 +237,14 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 );
 
 export const actions = {
-  fetchRequest: () => createAction(FETCH_REQUEST),
+  fetchRequest: (type: TBidType) => createAction(FETCH_REQUEST, { type }),
   fetchSuccess: (payload: IServerResponse<IMyFilterItem[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
+
+  setCurrentSaleFilter: (cropId: number, filter: { [x: string]: any } | undefined) =>
+    createAction(SET_CURRENT_SALE_FILTER, { cropId, filter }),
+  setCurrentPurchaseFilter: (cropId: number, filter: { [x: string]: any } | undefined) =>
+    createAction(SET_CURRENT_PURCHASE_FILTER, { cropId, filter }),
 
   clearCreate: () => createAction(CLEAR_CREATE),
   createRequest: (payload: IFilterForCreate) => createAction(CREATE_REQUEST, payload),
@@ -178,7 +254,7 @@ export const actions = {
   clearEdit: () => createAction(CLEAR_EDIT),
   editRequest: (payload: { id: number; data: IFilterForCreate }) =>
     createAction(EDIT_REQUEST, payload),
-  editSuccess: () => createAction(EDIT_SUCCESS),
+  editSuccess: (data: IServerResponse<IMyFilterItem>) => createAction(EDIT_SUCCESS, { data }),
   editFail: (payload: string) => createAction(EDIT_FAIL, payload),
 
   clearDel: () => createAction(CLEAR_DEL),
@@ -189,12 +265,14 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga() {
+function* fetchSaga({ payload }: { payload: { type: TBidType } }) {
   try {
-    const { data }: { data: IServerResponse<IMyFilterItem[]> } = yield call(() => getMyFilters());
+    const { data }: { data: IServerResponse<IMyFilterItem[]> } = yield call(() =>
+      getMyFilters(payload.type)
+    );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    //yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e.response.data.message));
   }
 }
 
@@ -209,8 +287,10 @@ function* createSaga({ payload }: { payload: IFilterForCreate }) {
 
 function* editSaga({ payload }: { payload: { id: number; data: IFilterForCreate } }) {
   try {
-    yield call(() => editMyFilter(payload.id, payload.data));
-    yield put(actions.editSuccess());
+    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() =>
+      editMyFilter(payload.id, payload.data)
+    );
+    yield put(actions.editSuccess(data));
   } catch (e) {
     yield put(actions.editFail(e.response.data.message));
   }

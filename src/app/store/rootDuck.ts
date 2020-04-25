@@ -29,6 +29,7 @@ export type TAppActions =
   | yaLocations.TActions
   | prompter.TActions
   | myFilters.TActions
+  | bids.TActions
   | crops2.TActions
   | funnelStates.TActions;
 
@@ -42,7 +43,7 @@ export interface IAppState {
   yaLocations: yaLocations.IInitialState;
   docs: typeof docs.reducer;
   agreement: agreement.IInitialState;
-  bids: typeof bids.reducer;
+  bids: bids.IInitialState;
   myFilters: myFilters.IInitialState & PersistPartial;
   crops: typeof crops.reducer;
   crops2: crops2.IInitialState & PersistPartial;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { compose } from "redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, RouteComponentProps } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import {
   IconButton,
@@ -18,17 +18,21 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import { useSnackbar } from "notistack";
 
-import Preloader from "../../../components/ui/Loaders/Preloader";
-import { IAppState } from "../../../store/rootDuck";
 import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
+
+import { IAppState } from "../../../store/rootDuck";
 import useStyles from "../styles";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import StatusIndicator from "../../../components/ui/Table/StatusIndicator";
-import { LoadError } from "../../../components/ui/Errors";
+import { ErrorPage } from "../../../components/ErrorPage";
+import { Skeleton } from "@material-ui/lab";
+import { LayoutSubheader } from "../../../../_metronic";
 
-const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
+const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps> = ({
+  match,
   intl,
+  me,
   fetch,
   myFilters,
   loading,
@@ -52,6 +56,10 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const classes = useStyles();
   const history = useHistory();
 
+  let salePurchaseMode: "sale" | "purchase" = "sale";
+  if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
+  if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
+
   const [deleteFilterId, setDeleteFilterId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
 
@@ -68,27 +76,34 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       );
       setAlertOpen(false);
       clearDel();
+      if (delSuccess) {
+        fetch(salePurchaseMode);
+      }
     }
-  }, [clearDel, delError, delSuccess, enqueueSnackbar, intl]);
+  }, [clearDel, delError, delSuccess, enqueueSnackbar, fetch, intl, me, salePurchaseMode]);
 
   useEffect(() => {
-    if (!myFilters && !loading) {
-      fetch();
-    }
-  }, [del, fetch, loading, myFilters]);
+    fetch(salePurchaseMode);
+  }, [fetch, me, salePurchaseMode]);
 
-  if (error) return <LoadError handleClick={() => fetch()} />;
-
-  if (!myFilters) return <Preloader />;
+  if (error) return <ErrorPage />;
 
   return (
     <Paper className={classes.tableContainer}>
+      <LayoutSubheader
+        title={
+          salePurchaseMode === "sale"
+            ? intl.formatMessage({ id: "FILTERS.MY.SALE" })
+            : intl.formatMessage({ id: "FILTERS.MY.PURCHASE" })
+        }
+      />
       <div className={classes.topButtonsContainer}>
         <Button
           className={classes.button}
           variant="contained"
           color="primary"
-          onClick={() => history.push("/user/filters/edit/new")}
+          onClick={() => history.push(`/${salePurchaseMode}/filters/edit/new`)}
+          disabled={!myFilters}
         >
           {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
         </Button>
@@ -96,12 +111,22 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           className={classes.button}
           variant="contained"
           color="primary"
-          onClick={() => history.push("/user/filters/prices")}
+          onClick={() => history.push(`/${salePurchaseMode}/filters/prices`)}
+          disabled={!myFilters}
         >
           {intl.formatMessage({ id: "FILTER.FORM.TABS.EDIT_PRICES" })}
         </Button>
       </div>
-      {!myFilters.length ? (
+      {!myFilters ? (
+        <>
+          <Skeleton width="100%" height={52} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+        </>
+      ) : !myFilters.length ? (
         <div>
           <FormattedMessage id="FILTERS.TABLE.EMPTY" />
         </div>
@@ -135,21 +160,21 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     <IconButton
                       size="medium"
                       color="primary"
-                      onClick={() => history.push(`/user/filters/view/${item.id}`)}
+                      onClick={() => history.push(`/${salePurchaseMode}/filters/view/${item.id}`)}
                     >
                       <VisibilityIcon />
                     </IconButton>
                     <IconButton
                       size="medium"
                       color="primary"
-                      onClick={() => history.push(`/user/filters/edit/${item.id}`)}
+                      onClick={() => history.push(`/${salePurchaseMode}/filters/edit/${item.id}`)}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
                       size="medium"
                       onClick={() => {
-                        setDeleteFilterId(item.id);
+                        setDeleteFilterId(item.id || 0);
                         setAlertOpen(true);
                       }}
                       color="secondary"
@@ -188,6 +213,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
 const connector = connect(
   (state: IAppState) => ({
+    me: state.auth.user,
     myFilters: state.myFilters.myFilters,
     loading: state.myFilters.loading,
     error: state.myFilters.error,

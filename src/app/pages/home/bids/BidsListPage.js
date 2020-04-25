@@ -4,6 +4,8 @@ import { connect, useSelector, shallowEqual } from "react-redux";
 import { Link } from "react-router-dom";
 import { Paper, IconButton } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { useSnackbar } from "notistack";
+
 import * as auth from "../../../store/ducks/auth.duck";
 import * as bidsDuck from "../../../store/ducks/bids.duck";
 import * as crops from "../../../store/ducks/crops.duck";
@@ -12,6 +14,7 @@ import useStyles from "../styles";
 import { filterForRequest, isFilterEmpty } from "../../../utils";
 
 import { actions as locationsActions } from "../../../store/ducks/locations.duck";
+import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import FilterModal from "./components/filter/FilterModal";
@@ -22,6 +25,7 @@ import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
 import { ErrorDialog, LoadError } from "../../../components/ui/Errors";
 import Prompter from "../prompter/Prompter";
 import PricesDialog from "./components/prices/PricesDialog";
+import { fromApiToFilter } from "../myFilters/utils";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -63,6 +67,8 @@ function BidsListPage({
   getCropParams,
   setActiveStep,
   fetchLocations,
+  fetchMyFilters,
+  clearEditFilter,
 }) {
   const innerClasses = useInnerStyles();
   const [cropLoading, setCropLoading] = useState(false);
@@ -75,8 +81,18 @@ function BidsListPage({
   let { cropId } = match.params;
   cropId = Number.parseInt(cropId);
 
-  const { bids, user, filter, loading, errors, activeStep } = useSelector(
-    ({ bids, auth, crops, prompter, locations }) => ({
+  const {
+    bids,
+    user,
+    filter,
+    loading,
+    errors,
+    activeStep,
+    myFilters,
+    editFilterSuccess,
+    editFilterError,
+  } = useSelector(
+    ({ bids, auth, crops, prompter, locations, myFilters }) => ({
       bids: bids.bestBids,
       user: auth.user,
       filter: (crops.filters && crops.filters[cropId]) || { crop_id: cropId },
@@ -85,9 +101,28 @@ function BidsListPage({
       activeStep: prompter.activeStep,
       locations: locations.locations,
       locationsLoading: locations.loading,
+      editFilterSuccess: myFilters.editSuccess,
+      editFilterError: myFilters.editError,
+      myFilters: myFilters.myFilters,
     }),
     shallowEqual
   );
+
+  const { enqueueSnackbar } = useSnackbar();
+  useEffect(() => {
+    if (editFilterSuccess || editFilterError) {
+      enqueueSnackbar(
+        editFilterSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.SAVE_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editFilterError}`,
+        {
+          variant: editFilterSuccess ? "success" : "error",
+        }
+      );
+      clearEditFilter();
+    }
+  }, [clearEditFilter, editFilterError, editFilterSuccess, enqueueSnackbar, fetchMyFilters, intl]);
+
   const equalBids = bids && bids.equal;
   const inequalBids = bids && bids.inexact;
   const [deleteBidId, setDeleteBidId] = useState(-1);
@@ -103,6 +138,7 @@ function BidsListPage({
   const getBidsAction = useCallback(
     (filter, enumParams, numberParams) => {
       const requestFilter = filterForRequest(filter, enumParams, numberParams);
+      console.log("filter: ", filter);
       //console.log("filterForRequest", requestFilter);
       getBestBids({ filter: filter.crop_id ? requestFilter : {} });
     },
@@ -122,7 +158,7 @@ function BidsListPage({
     };
     const failCallback = () => setCropLoading(false);
     getCropParams(cropId, successCallback, failCallback);
-  }, [cropId, filter, getBidsAction, getCropParams, setFilterForCrop, user]);
+  }, [cropId, filter, getBidsAction, getCropParams, setFilterForCrop, user, myFilters]);
 
   useEffect(() => {
     if (activeStep === 1) setActiveStep(2);
@@ -288,5 +324,7 @@ export default injectIntl(
     ...auth.actions,
     ...prompter.actions,
     fetchLocations: locationsActions.fetchRequest,
+    clearEditFilter: myFiltersActions.clearEdit,
+    fetchMyFilters: myFiltersActions.fetchRequest,
   })(BidsListPage)
 );

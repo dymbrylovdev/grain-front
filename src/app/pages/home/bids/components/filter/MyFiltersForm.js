@@ -67,8 +67,9 @@ function MyFiltersForm({
     <Formik
       autoComplete="off"
       initialValues={fromApiToFilter(filter)}
-      onSubmit={(values, { setStatus, setSubmitting }) => {
-        handleSubmit({ ...values, id: filter.id }, setStatus, setSubmitting);
+      onSubmit={values => {
+        console.log("values: ", values);
+        handleSubmit({ ...values, id: filter.id });
       }}
       innerRef={formRef}
     >

@@ -58,7 +58,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case FETCH_SUCCESS: {
-        //console.log(action.payload.data);
+        //console.log("FETCH CROPS: ", action.payload.data);
         return { ...state, crops: action.payload.data, loading: false, success: true };
       }
 
@@ -112,7 +112,7 @@ export const actions = {
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
   clearCropParams: () => createAction(CLEAR_CROP_PARAMS),
-  cropParamsRequest: (payload: { cropId: number }) => createAction(CROP_PARAMS_REQUEST, payload),
+  cropParamsRequest: (cropId: number) => createAction(CROP_PARAMS_REQUEST, { cropId }),
   cropParamsSuccess: (payload: IServerResponse<ICropParam[]>) =>
     createAction(CROP_PARAMS_SUCCESS, payload),
   cropParamsFail: (payload: string) => createAction(CROP_PARAMS_FAIL, payload),
@@ -128,6 +128,7 @@ function* fetchSaga() {
     yield put(actions.fetchFail(e.response.data.message));
   }
 }
+
 function* fetchCropParamsSaga({ payload: { cropId } }: { payload: { cropId: number } }) {
   try {
     const { data }: { data: IServerResponse<ICropParam[]> } = yield call(() =>

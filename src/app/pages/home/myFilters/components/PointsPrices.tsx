@@ -3,7 +3,6 @@ import { connect, ConnectedProps } from "react-redux";
 import { TextField, Grid as div, IconButton, Divider } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
-import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -92,9 +91,9 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
         parameter_values.push({ parameter_id: item.parameter.id, value: item.value });
       });
       editFilter({
-        id: currentFilter.id,
+        id: currentFilter.id || 0,
         data: {
-          crop_id: currentFilter.crop.id,
+          cropId: currentFilter.crop.id,
           point_prices: getFilterEditArray(values),
           parameter_values,
         },
@@ -102,22 +101,6 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
     },
     validationSchema: Yup.object().shape(getValidationObject(me, intl)),
   });
-
-  const { enqueueSnackbar } = useSnackbar();
-
-  useEffect(() => {
-    if (editSuccess || editError) {
-      enqueueSnackbar(
-        editSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.SAVE_FILTER" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editError}`,
-        {
-          variant: editSuccess ? "success" : "error",
-        }
-      );
-      clearEditFilter();
-    }
-  }, [clearEditFilter, editError, editSuccess, enqueueSnackbar, intl]);
 
   useEffect(() => {
     resetForm({ values: getInitialValues(me, currentFilter) });

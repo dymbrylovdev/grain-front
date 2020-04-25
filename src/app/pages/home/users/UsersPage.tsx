@@ -34,6 +34,7 @@ import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
 import { Skeleton } from "@material-ui/lab";
 import { ErrorPage } from "../../../components/ErrorPage";
 import InfoDialog from "../../../components/ui/Dialogs/InfoDialog";
+import { LayoutSubheader } from "../../../../_metronic";
 
 const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -122,6 +123,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   return (
     <Paper className={classes.tableContainer}>
+      <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.USER.LIST" })} />
       <Button
         className={classes.topAndBottomMargin}
         variant="contained"
@@ -301,21 +303,20 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       </IconButton>
                     </Tooltip>
 
-                    {(item.is_admin || item.is_vendor) && (
-                      <Tooltip
-                        title={intl.formatMessage({
-                          id: "USERLIST.TOOLTIP.CREATE_BID",
-                        })}
+                    <Tooltip
+                      title={intl.formatMessage({
+                        id: "USERLIST.TOOLTIP.CREATE_BID",
+                      })}
+                    >
+                      <IconButton
+                        size="medium"
+                        color="primary"
+                        onClick={() => history.push(`/bid/create/${item.id}`)}
                       >
-                        <IconButton
-                          size="medium"
-                          color="primary"
-                          onClick={() => history.push(`/bid/create/${item.id}`)}
-                        >
-                          <AddIcon />
-                        </IconButton>
-                      </Tooltip>
-                    )}
+                        <AddIcon />
+                      </IconButton>
+                    </Tooltip>
+
                     <Tooltip
                       title={intl.formatMessage({
                         id: "USERLIST.TOOLTIP.DELETE",

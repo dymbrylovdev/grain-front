@@ -3,7 +3,7 @@ import { Dialog, DialogContent, Grid, IconButton, DialogTitle } from "@material-
 import CloseIcon from "@material-ui/icons/Close";
 import { LocationsForm } from "../../../users/components";
 
-function LocationDialog({ handleClose, isOpen, user, classes, submitAction, intl }) {
+function LocationDialog({ handleClose, isOpen, user, classes, intl }) {
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth={"md"} fullWidth>
       <DialogTitle>
