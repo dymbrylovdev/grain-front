@@ -75,6 +75,9 @@ const BidTable: React.FC<IProps> = ({
                 <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
               </TopTableCell>
               <TopTableCell>
+                <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
+              </TopTableCell>
+              <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.VOLUME" />
               </TopTableCell>
               <TopTableCell>
@@ -92,6 +95,13 @@ const BidTable: React.FC<IProps> = ({
                 <TableCell>{bid.id}</TableCell>
                 <TableCell>{bid.price}</TableCell>
                 <TableCell>{bid.price_with_delivery || "-"}</TableCell>
+                <TableCell>
+                  <Grid container direction="column" justify="center" alignItems="flex-start">
+                    {bid.point_prices.map((item, i) => (
+                      <div key={i}>{`${item.profit || "н/з"} • ${item.point.name}`}</div>
+                    ))}
+                  </Grid>
+                </TableCell>
                 <TableCell>{bid.volume}</TableCell>
                 <TableCell>
                   <Grid container direction="column" justify="center" alignItems="flex-start">

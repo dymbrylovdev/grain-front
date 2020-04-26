@@ -161,6 +161,7 @@
   "BIDSLIST.TABLE.DESTINATION": "Расстояниe",
   "BIDSLIST.TABLE.AUTHOR": "Поставщик",
   "BIDSLIST.TABLE.FINAL_PRICE": "Цена с учетом доставки",
+  "BIDSLIST.TABLE.PROFIT": "Прибыль",
   "BIDSLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить заявку?",
   "BIDSLIST.DIALOGS.LOADING_TEXT": "Удаление заявки",
   "BIDSLIST.BUTTON.CREATE_BID": "Добавить заявку",

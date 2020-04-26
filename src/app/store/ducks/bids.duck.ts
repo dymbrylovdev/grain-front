@@ -163,7 +163,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_MY_SUCCESS: {
-      //console.log("FETCH_MY: ", action.payload);
+      console.log("FETCH_MY: ", action.payload);
       return {
         ...state,
         myBids: action.payload.data,
@@ -197,7 +197,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_BEST_SUCCESS: {
-      //console.log("FETCH_BEST: ", action.payload);
+      console.log("FETCH_BEST: ", action.payload);
       return {
         ...state,
         bestBids: action.payload.data,
