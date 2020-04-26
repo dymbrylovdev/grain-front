@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
-import { TextField, CircularProgress, MenuItem, Box } from "@material-ui/core";
+import { TextField, CircularProgress, MenuItem, Box, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { Formik } from "formik";
 import { Paper } from "@material-ui/core";
@@ -11,7 +11,6 @@ import { makeStyles } from "@material-ui/styles";
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
-import LocationBlock from "./location/LocationBlock";
 
 const getInitialValues = (bid, crop, userRole) => {
   const values = {
@@ -20,7 +19,7 @@ const getInitialValues = (bid, crop, userRole) => {
     description: bid.description || "",
     crop: crop,
     location: bid.location || {},
-    pricePerKm: bid.price_delivery_per_km,
+    pricePerKm: bid.price_delivery_per_km || 4,
     bid_type: userRole === "buyer" ? "purchase" : "sale",
   };
   if (bid.parameter_values && bid.parameter_values.length > 0) {
@@ -31,8 +30,11 @@ const getInitialValues = (bid, crop, userRole) => {
   return values;
 };
 
-const getFinalPrice = (bid, pricePerKm) => {
-  const distance = !bid.distance || bid.distance < 100 ? 100 : bid.distance;
+const getFinalPrice = (bid, i, pricePerKm) => {
+  const distance =
+    !bid.point_prices[i].distance || bid.point_prices[i].distance < 100
+      ? 100
+      : bid.point_prices[i].distance;
   return Math.round(bid.price * bid.volume + pricePerKm * distance);
 };
 
@@ -166,7 +168,6 @@ function BidForm({
           } else {
             delete values.location;
           }
-          values.pricePerKm = 4;
           submitAction({ ...values, crop_id: cropId, parameter_values: paramValues });
         }}
         innerRef={formRef}
@@ -250,8 +251,6 @@ function BidForm({
                     <div className={innerClasses.calcTitle}>
                       {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
                     </div>
-                    <LocationBlock handleClickLocation={openLocation} locations={user.points} />
-                    <div style={{ height: 8 }}></div>
                     <TextField
                       type="text"
                       label={intl.formatMessage({
@@ -267,14 +266,20 @@ function BidForm({
                         inputComponent: NumberFormatCustom,
                       }}
                     />
-                    <div className={innerClasses.calcDescriptionContainer}>
-                      <div className={innerClasses.calcDescription}>
-                        {`${intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}`}
-                      </div>
-                      <div className={innerClasses.calcFinalPrice}>
-                        {getFinalPrice(bid, values.pricePerKm)}
-                      </div>
+                    <div className={innerClasses.calcDescription}>
+                      {`${intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}`}
                     </div>
+                    <div style={{ height: 8 }}></div>
+                    <Grid container direction="column" justify="center" alignItems="flex-start">
+                      {bid &&
+                        bid.point_prices &&
+                        bid.point_prices.map((item, i) => (
+                          <div key={i}>
+                            <strong>{getFinalPrice(bid, i, values.pricePerKm)}</strong>
+                            {` • ${item.point.name}`}
+                          </div>
+                        ))}
+                    </Grid>
                   </Box>
                 )}
                 <AutocompleteLocations

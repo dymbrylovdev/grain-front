@@ -74,7 +74,7 @@ function BidCreatePage({
   const vendorId = match.params.vendorId;
   const bidId = match.params.bidId;
   const { bid } = bidSelector(bidId, by);
-  //console.log("bid: ", bid);
+  // console.log("bid: ", bid);
   const isEditable = match.url.indexOf("view") === -1;
   const vendor_id = vendorId || (bid && bid.vendor && bid.vendor.id) || user.id;
   const isNoModerate = !vendorId && !bidId && user.is_vendor && user.status === "На модерации";
