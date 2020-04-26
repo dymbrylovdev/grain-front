@@ -116,7 +116,7 @@ const FunnelStatesTable: React.FC<IProps> = ({
                     {item.name}
                   </p>
                 </TableCell>
-                <TableCell>{item.engagement || ""}</TableCell>
+                <TableCell>{item.engagement}</TableCell>
                 <TableCell>
                   <div className={innerClasses.container}>
                     <div className={innerClasses.wrapper}>

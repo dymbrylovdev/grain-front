@@ -4,7 +4,7 @@ import { TRole } from "../../../../interfaces/users";
 export const initFunnelState = (funnelState: IFunnelState | undefined) => ({
   name: funnelState ? funnelState.name || "" : "",
   color: funnelState ? funnelState.color || "" : "",
-  engagement: funnelState ? funnelState.engagement || "" : "",
+  engagement: funnelState && funnelState.engagement !== null ? funnelState.engagement : "",
   hint: funnelState ? funnelState.hint || "" : "",
 });
 
