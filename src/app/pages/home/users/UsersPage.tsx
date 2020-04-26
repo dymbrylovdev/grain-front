@@ -240,7 +240,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         <div
                           className={classes.funnelStateName}
                           style={{ backgroundColor: "#f2f2f2" }}
-                          onClick={() => setFunnelStateEditId(item.id)}
+                          onClick={() => {
+                            if (!item.is_funnel_state_automate) setFunnelStateEditId(item.id);
+                          }}
                         >
                           {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
                         </div>
@@ -262,7 +264,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         <div
                           className={classes.funnelStateName}
                           style={{ backgroundColor: `${item.funnel_state.color || "#ededed"}` }}
-                          onClick={() => setFunnelStateEditId(item.id)}
+                          onClick={() => {
+                            if (!item.is_funnel_state_automate) setFunnelStateEditId(item.id);
+                          }}
                         >
                           {`${item.funnel_state.engagement || "0"} • ${item.funnel_state.name}`}
                         </div>
@@ -345,7 +349,6 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 perPage={perPage}
                 total={total}
                 fetchRows={fetch}
-                label={intl.formatMessage({ id: "USERLIST.PAGINATOR_TEXT" })}
               />
             </TableRow>
           </TableFooter>

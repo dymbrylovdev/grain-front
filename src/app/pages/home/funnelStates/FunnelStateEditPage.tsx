@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Paper, TextField, Button } from "@material-ui/core";
+import { Paper, TextField, Button, FormControlLabel, Checkbox } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -213,6 +213,7 @@ const FunnelStateEditPage: React.FC<TPropsFromRedux &
             />
           )}
         </div>
+
         <div className={classes.textFieldContainer}>
           {!funnelStates ? (
             <Skeleton width="100%" height={70} animation="wave" />
@@ -234,6 +235,36 @@ const FunnelStateEditPage: React.FC<TPropsFromRedux &
             />
           )}
         </div>
+
+        <div className={classes.textFieldContainer}>
+          {!funnelStates ? (
+            <Skeleton width="100%" height={70} animation="wave" />
+          ) : (
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "FUNNEL_STATES.INPUT.CODE",
+              })}
+              margin="normal"
+              className={classes.textField}
+              name="code"
+              value={values.code}
+              variant="outlined"
+              disabled
+            />
+          )}
+        </div>
+
+        {!funnelStates ? (
+          <Skeleton width={120} height={37.5} animation="wave" />
+        ) : (
+          <FormControlLabel
+            control={<Checkbox checked={values.auto} />}
+            label={intl.formatMessage({ id: "FUNNEL_STATES.TABLE.AUTO" })}
+            name="auto"
+            disabled
+          />
+        )}
 
         {!funnelStates ? (
           <>

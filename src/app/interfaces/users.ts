@@ -26,6 +26,7 @@ export interface IUser {
     engagement: number;
     role: TRole;
   } | null;
+  is_funnel_state_automate: boolean;
 }
 
 export interface IUserForRegister {
@@ -59,6 +60,7 @@ export interface IUserForEdit {
   company_confirmed_by_phone?: boolean;
   company_confirmed_by_payment?: boolean;
   funnel_state_id?: number;
+  is_funnel_state_automate?: boolean;
 }
 
 export interface IChangePasswordData {

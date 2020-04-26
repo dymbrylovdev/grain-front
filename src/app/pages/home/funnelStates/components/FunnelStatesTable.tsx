@@ -18,6 +18,7 @@ import TopTableCell from "../../../../components/ui/Table/TopTableCell";
 import useStyles from "../../styles";
 import { IFunnelState } from "../../../../interfaces/funnelStates";
 import { Skeleton } from "@material-ui/lab";
+import StatusIndicator from "../../../../components/ui/Table/StatusIndicator";
 
 const useInnerStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -101,6 +102,7 @@ const FunnelStatesTable: React.FC<IProps> = ({
               <TopTableCell>
                 {intl.formatMessage({ id: "FUNNEL_STATES.TABLE.ENGAGEMENT" })}
               </TopTableCell>
+              <TopTableCell>{intl.formatMessage({ id: "FUNNEL_STATES.TABLE.AUTO" })}</TopTableCell>
               <TopTableCell>{intl.formatMessage({ id: "FUNNEL_STATES.TABLE.HINT" })}</TopTableCell>
               <TopTableCell></TopTableCell>
             </TableRow>
@@ -117,6 +119,9 @@ const FunnelStatesTable: React.FC<IProps> = ({
                   </p>
                 </TableCell>
                 <TableCell>{item.engagement}</TableCell>
+                <TableCell>
+                  <StatusIndicator isActive={item.auto} />
+                </TableCell>
                 <TableCell>
                   <div className={innerClasses.container}>
                     <div className={innerClasses.wrapper}>

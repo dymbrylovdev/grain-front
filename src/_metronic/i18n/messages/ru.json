@@ -138,6 +138,7 @@
   "USERLIST.PAGINATOR_TEXT": "Пользователей на странице:",
   "USERLIST.FUNNEL_STATE.ADMIN": "Администратор",
   "USERLIST.FUNNEL_STATE.NO_NAME": "Не установлена",
+  "USERLIST.FUNNEL_STATE.AUTO": "Автоматически обновлять статус активности",
 
   "TABLE.FROM.LABEL": "из",
   "TABLE.AND.LABEL": "и",
@@ -347,6 +348,7 @@
   "FUNNEL_STATES.TITLE": "Настройка воронки продаж",
   "FUNNEL_STATES.BUTTON.ADD": "Добавить состояние",
   "FUNNEL_STATES.TABLE.NAME": "Название",
+  "FUNNEL_STATES.TABLE.AUTO": "Автоворонка",
   "FUNNEL_STATES.TABLE.ENGAGEMENT": "Вовлеченность",
   "FUNNEL_STATES.TABLE.HINT": "Описание",
   "FUNNEL_STATES.TABS.BUYERS": "Покупатели",
@@ -354,6 +356,7 @@
   "FUNNEL_STATES.INPUT.NAME": "Название",
   "FUNNEL_STATES.INPUT.COLOR": "Цвет в формате #a1b2c3",
   "FUNNEL_STATES.INPUT.ENGAGEMENT": "Вовлеченность, %",
+  "FUNNEL_STATES.INPUT.CODE": "Код",
   "FUNNEL_STATES.INPUT.HINT": "Описание",
   "FUNNEL_STATES.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить это состояние?",
   "FUNNEL_STATES.DIALOGS.AGREE_TEXT": "Да",

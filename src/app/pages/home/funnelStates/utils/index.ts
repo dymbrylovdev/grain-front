@@ -1,12 +1,16 @@
 import { IFunnelState, IFunnelStateToRequest } from "../../../../interfaces/funnelStates";
 import { TRole } from "../../../../interfaces/users";
 
-export const initFunnelState = (funnelState: IFunnelState | undefined) => ({
-  name: funnelState ? funnelState.name || "" : "",
-  color: funnelState ? funnelState.color || "" : "",
-  engagement: funnelState && funnelState.engagement !== null ? funnelState.engagement : "",
-  hint: funnelState ? funnelState.hint || "" : "",
-});
+export const initFunnelState = (funnelState: IFunnelState | undefined) => {
+  return {
+    name: funnelState ? funnelState.name || "" : "",
+    color: funnelState ? funnelState.color || "" : "",
+    engagement: funnelState && funnelState.engagement !== null ? funnelState.engagement : "",
+    hint: funnelState ? funnelState.hint || "" : "",
+    code: funnelState ? funnelState.code || "" : "",
+    auto: funnelState ? funnelState.auto || false : false,
+  };
+};
 
 export const getFunnelStateToRequest = (
   values: { [x: string]: any },

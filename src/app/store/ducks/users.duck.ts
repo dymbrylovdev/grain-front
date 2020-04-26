@@ -102,7 +102,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_SUCCESS: {
-      //console.log(action.payload);
+      // console.log("Fetch users: ", action.payload);
       return {
         ...state,
         page: action.payload.page,

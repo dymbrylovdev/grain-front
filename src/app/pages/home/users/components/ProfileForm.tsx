@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { WrappedComponentProps, injectIntl } from "react-intl";
-import { TextField, MenuItem, Theme, Button } from "@material-ui/core";
+import { TextField, MenuItem, Theme, Button, FormControlLabel, Checkbox } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
@@ -110,6 +110,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       if (editMode === "edit" && user) {
         let params: IUserForEdit = setEditValues(values);
         params.funnel_state_id = values.funnel_state_id;
+        params.is_funnel_state_automate = values.is_funnel_state_automate;
         editUser({ id: user.id, data: params });
       }
     },
@@ -289,54 +290,68 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           )}
         </div>
       )}
-
-      {editMode === "edit" && (
-        <div className={classes.textFieldContainer}>
-          {meLoading || userLoading || !funnelStates ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <TextField
-              select
-              margin="normal"
-              label={intl.formatMessage({
-                id: "USERLIST.TABLE.ACTIVITY",
-              })}
-              value={values.funnel_state_id}
-              onChange={handleChange}
-              name="funnel_state_id"
-              variant="outlined"
-            >
-              <MenuItem value={0} style={{ backgroundColor: "#f2f2f2" }}>
-                {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
-              </MenuItem>
-              {user && user.is_buyer
-                ? funnelStates
-                    .filter(fs => fs.role === "ROLE_BUYER")
-                    .map(option => (
-                      <MenuItem
-                        key={option.id}
-                        value={option.id}
-                        style={{ backgroundColor: `${option.color || "#ededed"}` }}
-                      >
-                        {`${option.engagement || "0"} • ${option.name}`}
-                      </MenuItem>
-                    ))
-                : funnelStates
-                    .filter(fs => fs.role === "ROLE_VENDOR")
-                    .map(option => (
-                      <MenuItem
-                        key={option.id}
-                        value={option.id}
-                        style={{ backgroundColor: `${option.color || "#ededed"}` }}
-                      >
-                        {`${option.engagement || "0"} • ${option.name}`}
-                      </MenuItem>
-                    ))}
-            </TextField>
-          )}
-        </div>
+      {user && !user.is_admin && editMode === "edit" && (
+        <>
+          <div className={classes.textFieldContainer}>
+            {meLoading || userLoading || !funnelStates ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <TextField
+                select
+                margin="normal"
+                label={intl.formatMessage({
+                  id: "USERLIST.TABLE.ACTIVITY",
+                })}
+                value={values.funnel_state_id}
+                onChange={handleChange}
+                name="funnel_state_id"
+                variant="outlined"
+                disabled={values.is_funnel_state_automate}
+              >
+                <MenuItem value={0} style={{ backgroundColor: "#f2f2f2" }}>
+                  {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
+                </MenuItem>
+                {user && user.is_buyer
+                  ? funnelStates
+                      .filter(fs => fs.role === "ROLE_BUYER")
+                      .map(option => (
+                        <MenuItem
+                          key={option.id}
+                          value={option.id}
+                          style={{ backgroundColor: `${option.color || "#ededed"}` }}
+                        >
+                          {`${option.engagement || "0"} • ${option.name}`}
+                        </MenuItem>
+                      ))
+                  : funnelStates
+                      .filter(fs => fs.role === "ROLE_VENDOR")
+                      .map(option => (
+                        <MenuItem
+                          key={option.id}
+                          value={option.id}
+                          style={{ backgroundColor: `${option.color || "#ededed"}` }}
+                        >
+                          {`${option.engagement || "0"} • ${option.name}`}
+                        </MenuItem>
+                      ))}
+              </TextField>
+            )}
+          </div>
+          <div>
+            {meLoading || userLoading || !funnelStates ? (
+              <Skeleton width={322} height={37.5} animation="wave" />
+            ) : (
+              <FormControlLabel
+                control={
+                  <Checkbox checked={values.is_funnel_state_automate} onChange={handleChange} />
+                }
+                label={intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.AUTO" })}
+                name="is_funnel_state_automate"
+              />
+            )}
+          </div>
+        </>
       )}
-
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading || !funnelStates ? (
           <Skeleton width="100%" height={70} animation="wave" />
