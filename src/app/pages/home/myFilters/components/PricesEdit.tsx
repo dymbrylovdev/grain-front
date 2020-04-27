@@ -13,15 +13,28 @@ import { Skeleton } from "@material-ui/lab";
 import { PointsPrices } from ".";
 import { itemById } from "../../../../utils/utils";
 
-const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps> = ({
+interface IProps {
+  cropId?: number;
+}
+
+const PricesEdit: React.FC<IProps &
+  TPropsFromRedux &
+  WrappedComponentProps &
+  RouteComponentProps> = ({
   match,
   intl,
   me,
+
+  cropId,
 
   selectedFilterId,
   fetchFilters,
   myFilters,
   myFiltersLoading,
+  setSelectedFilterId,
+
+  currentSaleFilters,
+  currentPurchaseFilters,
 
   clearCreateFilter,
   createFilter,
@@ -62,6 +75,48 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCompon
     if (selectedFilterId) resetForm({ values: { filter_id: selectedFilterId.toString() } });
   }, [resetForm, selectedFilterId]);
 
+  useEffect(() => {
+    if (!!myFilters) {
+      if (!!cropId) {
+        if (salePurchaseMode === "sale") {
+          if (currentSaleFilters[cropId]) {
+            if (currentSaleFilters[cropId].id) {
+              setSelectedFilterId(currentSaleFilters[cropId].id);
+            } else {
+              if (!!myFilters.find(item => item.crop.id === cropId))
+                setSelectedFilterId(myFilters.find(item => item.crop.id === cropId)?.id || 0);
+            }
+          } else {
+            if (!!myFilters.find(item => item.crop.id === cropId))
+              setSelectedFilterId(myFilters.find(item => item.crop.id === cropId)?.id || 0);
+          }
+        }
+        if (salePurchaseMode === "purchase") {
+          if (currentPurchaseFilters[cropId]) {
+            if (currentPurchaseFilters[cropId].id) {
+              setSelectedFilterId(currentPurchaseFilters[cropId].id);
+            } else {
+              if (!!myFilters.find(item => item.crop.id === cropId))
+                setSelectedFilterId(myFilters.find(item => item.crop.id === cropId)?.id || 0);
+            }
+          } else {
+            if (!!myFilters.find(item => item.crop.id === cropId))
+              setSelectedFilterId(myFilters.find(item => item.crop.id === cropId)?.id || 0);
+          }
+        }
+      } else {
+        if (!!myFilters[0] && myFilters[0].id) setSelectedFilterId(myFilters[0].id);
+      }
+    }
+  }, [
+    cropId,
+    currentPurchaseFilters,
+    currentSaleFilters,
+    myFilters,
+    salePurchaseMode,
+    setSelectedFilterId,
+  ]);
+
   return (
     <>
       <div className={classes.bottomMargin1}>
@@ -70,7 +125,7 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCompon
       <div className={classes.textFieldContainer}>
         {!myFilters ? (
           <Skeleton width="100%" height={70} animation="wave" />
-        ) : !myFilters.length ? (
+        ) : !myFilters.length || !selectedFilterId ? (
           <div className={classes.bottomMargin1}>
             {intl.formatMessage({ id: "MONEY.NO_FILTERS" })}
           </div>
@@ -87,11 +142,13 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCompon
             onChange={handleChange}
             className={classes.textField}
           >
-            {myFilters.map(item => (
-              <MenuItem key={item.id} value={item.id}>
-                {item.name}
-              </MenuItem>
-            ))}
+            {myFilters
+              .filter(item => (cropId ? item.crop.id === cropId : item))
+              .map(item => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.name}
+                </MenuItem>
+              ))}
           </TextField>
         )}
       </div>
@@ -105,10 +162,11 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCompon
             </div>
           ))
         : !!myFilters.length &&
-          +values.filter_id && (
+          !!selectedFilterId &&
+          !!+values.filter_id && (
             <PointsPrices currentFilter={itemById(myFilters, +values.filter_id) as IMyFilterItem} />
           )}
-      {!myFilters && (
+      {(!myFilters || !selectedFilterId) && (
         <div className={classes.bottomMargin2}>
           <div className={classes.bottomButtonsContainer}>
             <Button className={classes.button} variant="contained" color="primary" disabled>
@@ -124,6 +182,9 @@ const PricesEdit: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCompon
 const connector = connect(
   (state: IAppState) => ({
     selectedFilterId: state.myFilters.selectedFilterId,
+    currentSaleFilters: state.myFilters.currentSaleFilters,
+    currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
+
     me: state.auth.user,
     myFilters: state.myFilters.myFilters,
     myFiltersLoading: state.myFilters.loading,
@@ -139,6 +200,7 @@ const connector = connect(
   }),
   {
     fetchFilters: myFiltersActions.fetchRequest,
+    setSelectedFilterId: myFiltersActions.setSelectedFilterId,
     clearCreateFilter: myFiltersActions.clearCreate,
     createFilter: myFiltersActions.createRequest,
     clearDelFilter: myFiltersActions.clearDel,

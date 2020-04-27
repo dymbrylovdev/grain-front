@@ -35,7 +35,7 @@ const getFinalPrice = (bid, i, pricePerKm) => {
     !bid.point_prices[i].distance || bid.point_prices[i].distance < 100
       ? 100
       : bid.point_prices[i].distance;
-  return Math.round(bid.price * bid.volume + pricePerKm * distance);
+  return Math.round(bid.price + pricePerKm * distance);
 };
 
 const useInnerStyles = makeStyles(theme => ({
@@ -190,7 +190,7 @@ function BidForm({
                   select
                   type="text"
                   label={intl.formatMessage({
-                    id: "BIDSLIST.TABLE.COST",
+                    id: "BIDSLIST.TABLE.BID_TYPE",
                   })}
                   margin="normal"
                   name="bid_type"

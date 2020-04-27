@@ -20,6 +20,7 @@ import { IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import AddIcon from "@material-ui/icons/Add";
+import SpellcheckIcon from "@material-ui/icons/Spellcheck";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import { useSnackbar } from "notistack";
 
@@ -258,6 +259,10 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         >
                           <HelpOutlineIcon />
                         </IconButton>
+                        <SpellcheckIcon
+                          color={item.is_funnel_state_automate ? "secondary" : "disabled"}
+                          className={classes.leftMargin1}
+                        />
                       </div>
                     ) : (
                       <div className={classes.flexRow}>
@@ -289,6 +294,10 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         >
                           <HelpOutlineIcon />
                         </IconButton>
+                        <SpellcheckIcon
+                          color={item.is_funnel_state_automate ? "secondary" : "disabled"}
+                          className={classes.leftMargin1}
+                        />
                       </div>
                     )}
                   </TableCell>

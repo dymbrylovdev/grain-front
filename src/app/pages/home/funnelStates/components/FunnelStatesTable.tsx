@@ -13,12 +13,12 @@ import {
 import { IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import SpellcheckIcon from "@material-ui/icons/Spellcheck";
 
 import TopTableCell from "../../../../components/ui/Table/TopTableCell";
 import useStyles from "../../styles";
 import { IFunnelState } from "../../../../interfaces/funnelStates";
 import { Skeleton } from "@material-ui/lab";
-import StatusIndicator from "../../../../components/ui/Table/StatusIndicator";
 
 const useInnerStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -120,7 +120,10 @@ const FunnelStatesTable: React.FC<IProps> = ({
                 </TableCell>
                 <TableCell>{item.engagement}</TableCell>
                 <TableCell>
-                  <StatusIndicator isActive={item.auto} />
+                  <SpellcheckIcon
+                    color={item.auto ? "secondary" : "disabled"}
+                    className={classes.leftMargin1}
+                  />
                 </TableCell>
                 <TableCell>
                   <div className={innerClasses.container}>

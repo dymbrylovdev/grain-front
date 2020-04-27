@@ -3,7 +3,7 @@ import { Dialog, DialogContent, Grid, IconButton, DialogTitle } from "@material-
 import CloseIcon from "@material-ui/icons/Close";
 import { PricesEdit } from "../../../myFilters/components";
 
-function PricesDialog({ handleClose, isOpen, intl }) {
+function PricesDialog({ handleClose, isOpen, intl, cropId }) {
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth={"sm"} fullWidth>
       <DialogTitle>
@@ -21,7 +21,7 @@ function PricesDialog({ handleClose, isOpen, intl }) {
         </Grid>
       </DialogTitle>
       <DialogContent>
-        <PricesEdit />
+        <PricesEdit cropId={cropId} />
       </DialogContent>
     </Dialog>
   );

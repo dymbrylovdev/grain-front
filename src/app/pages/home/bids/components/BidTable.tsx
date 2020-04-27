@@ -51,6 +51,7 @@ const BidTable: React.FC<IProps> = ({
   addUrl,
 }) => {
   const history = useHistory();
+
   return (
     <>
       <div className={classes.tableTitle}>{title || ""}</div>
@@ -97,9 +98,21 @@ const BidTable: React.FC<IProps> = ({
                 <TableCell>{bid.price_with_delivery || "-"}</TableCell>
                 <TableCell>
                   <Grid container direction="column" justify="center" alignItems="flex-start">
-                    {bid.point_prices.map((item, i) => (
-                      <div key={i}>{`${item.profit || "н/з"} • ${item.point.name}`}</div>
-                    ))}
+                    {bid.point_prices.map(
+                      (item, i) =>
+                        !!item.profit &&
+                        (item.profit === bid.profit ? (
+                          <div key={i}>
+                            <strong>{Math.round(item.profit)}</strong>
+                            {` • ${item.point.name}`}
+                          </div>
+                        ) : (
+                          <div key={i}>
+                            {Math.round(item.profit)}
+                            {` • ${item.point.name}`}
+                          </div>
+                        ))
+                    )}
                   </Grid>
                 </TableCell>
                 <TableCell>{bid.volume}</TableCell>

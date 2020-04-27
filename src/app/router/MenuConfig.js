@@ -159,12 +159,6 @@ const getAdminMenu = crops => ({
             page: "company/create",
             translate: "SUBMENU.COMPANY.CREATE",
           },
-          {
-            title: "Настройка воронки",
-            root: true,
-            page: "funnel-states",
-            translate: "SUBMENU.FUNNEL_STATES",
-          },
         ],
       },
       {
@@ -221,11 +215,17 @@ const getAdminMenu = crops => ({
             ],
           },
           {
-            title: "Настройки системы",
+            title: "Настройка воронки",
             root: true,
-            page: "",
-            translate: "SUBMENU.SYSTEM.SETTINGS",
+            page: "funnel-states",
+            translate: "SUBMENU.FUNNEL_STATES",
           },
+          // {
+          //   title: "Настройки системы",
+          //   root: true,
+          //   page: "",
+          //   translate: "SUBMENU.SYSTEM.SETTINGS",
+          // },
         ],
       },
       {

@@ -149,6 +149,9 @@ const useStyles = makeStyles(theme => ({
   bottomMargin2: {
     marginBottom: theme.spacing(2),
   },
+  leftMargin1: {
+    marginLeft: theme.spacing(1),
+  },
   leftMargin2: {
     marginLeft: theme.spacing(2),
   },

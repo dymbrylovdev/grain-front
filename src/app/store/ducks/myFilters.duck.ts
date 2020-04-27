@@ -21,8 +21,12 @@ const FETCH_REQUEST = "myFilters/FETCH_REQUEST";
 const FETCH_SUCCESS = "myFilters/FETCH_SUCCESS";
 const FETCH_FAIL = "myFilters/FETCH_FAIL";
 
+const SET_SELECTED_FILTER_ID = "myFilters/SET_SELECTED_FILTER_ID";
+
 const SET_CURRENT_SALE_FILTER = "myFilters/SET_CURRENT_SALE_FILTER";
+const CLEAR_CURRENT_SALE_FILTER = "myFilters/CLEAR_CURRENT_SALE_FILTER";
 const SET_CURRENT_PURCHASE_FILTER = "myFilters/SET_CURRENT_PURCHASE_FILTER";
+const CLEAR_CURRENT_PURCHASE_FILTER = "myFilters/CLEAR_CURRENT_PURCHASE_FILTER";
 
 const CLEAR_CREATE = "myFilters/CLEAR_CREATE";
 const CREATE_REQUEST = "myFilters/CREATE_REQUEST";
@@ -88,6 +92,13 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
   { storage, key: "filters", whitelist: ["currentSaleFilters", "currentPurchaseFilters"] },
   (state = initialState, action) => {
     switch (action.type) {
+      case SET_SELECTED_FILTER_ID: {
+        return {
+          ...state,
+          selectedFilterId: action.payload.id,
+        };
+      }
+
       case SET_CURRENT_SALE_FILTER: {
         // console.log("SET_CURRENT_SALE_FILTER:", action.payload.filter);
         return {
@@ -96,6 +107,12 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
             ...state.currentSaleFilters,
             [action.payload.cropId]: action.payload.filter,
           },
+        };
+      }
+      case CLEAR_CURRENT_SALE_FILTER: {
+        return {
+          ...state,
+          currentSaleFilters: {},
         };
       }
 
@@ -110,6 +127,13 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         };
       }
 
+      case CLEAR_CURRENT_PURCHASE_FILTER: {
+        return {
+          ...state,
+          currentPurchaseFilters: {},
+        };
+      }
+
       case FETCH_REQUEST: {
         return {
           ...state,
@@ -121,22 +145,14 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case FETCH_SUCCESS: {
-        // console.log(action.payload.data);
-        //console.log(action.payload.data.find(item => item.id === state.selectedFilterId));
-        if (
-          action.payload.data.length &&
-          !action.payload.data.find(item => item.id === state.selectedFilterId)
-        ) {
-          return {
-            ...state,
-            myFilters: action.payload.data,
-            selectedFilterId: action.payload.data[0].id,
-            loading: false,
-            success: true,
-          };
-        } else {
-          return { ...state, myFilters: action.payload.data, loading: false, success: true };
-        }
+        console.log("Filters fetch: ", action.payload.data);
+        return {
+          ...state,
+          myFilters: action.payload.data,
+          selectedFilterId: 0,
+          loading: false,
+          success: true,
+        };
       }
 
       case FETCH_FAIL: {
@@ -241,10 +257,15 @@ export const actions = {
   fetchSuccess: (payload: IServerResponse<IMyFilterItem[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
+  setSelectedFilterId: (id: number) => createAction(SET_SELECTED_FILTER_ID, { id }),
+
   setCurrentSaleFilter: (cropId: number, filter: { [x: string]: any } | undefined) =>
     createAction(SET_CURRENT_SALE_FILTER, { cropId, filter }),
   setCurrentPurchaseFilter: (cropId: number, filter: { [x: string]: any } | undefined) =>
     createAction(SET_CURRENT_PURCHASE_FILTER, { cropId, filter }),
+
+  clearCurrentSaleFilter: () => createAction(CLEAR_CURRENT_SALE_FILTER),
+  clearCurrentPurchaseFilter: () => createAction(CLEAR_CURRENT_PURCHASE_FILTER),
 
   clearCreate: () => createAction(CLEAR_CREATE),
   createRequest: (payload: IFilterForCreate) => createAction(CREATE_REQUEST, payload),

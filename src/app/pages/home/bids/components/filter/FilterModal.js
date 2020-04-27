@@ -17,6 +17,7 @@ import {
   IconButton,
   TextField,
   Badge,
+  Button,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useFormik } from "formik";
@@ -28,7 +29,6 @@ import { actions as bidsActions } from "../../../../../store/ducks/bids.duck";
 
 import FilterForm from "./FilterForm";
 import ButtonWithLoader from "../../../../../components/ui/Buttons/ButtonWithLoader";
-import { isFilterEmpty } from "../../../../../utils";
 import MyFilters from "./MyFilters";
 import { filterForCreate, filterForSubmit } from "../../../myFilters/utils";
 
@@ -388,8 +388,10 @@ const FilterModal = ({
                   </ButtonWithLoader>
                 </Grid>
                 <Grid item>
-                  <ButtonWithLoader
-                    onPress={() => {
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
                       values.cropId = cropId;
                       // console.log(values);
                       setCurrentFilter(
@@ -397,22 +399,26 @@ const FilterModal = ({
                         filterForSubmit(currentFilter, values, newCropName())
                       );
                       clearBids();
+                      handleClose();
                     }}
                   >
                     {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
-                  </ButtonWithLoader>
+                  </Button>
                 </Grid>
                 <Grid item>
-                  <ButtonWithLoader
-                    onPress={() => {
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => {
                       setCurrentFilter(cropId, undefined);
                       formik.resetForm({ values: getInitialValues(currentFilter) });
                       clearBids();
+                      handleClose();
                     }}
-                    disabled={isFilterEmpty(formik.values, enumParams, numberParams)}
+                    disabled={!currentFilter}
                   >
                     {intl.formatMessage({ id: "FILTER.FORM.BUTTON.RESET" })}
-                  </ButtonWithLoader>
+                  </Button>
                 </Grid>
               </Grid>
             </Grid>

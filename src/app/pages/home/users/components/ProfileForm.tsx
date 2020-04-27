@@ -228,8 +228,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   }, [editMode, me, resetForm, user]);
 
   useEffect(() => {
-    fetchFunnelStates();
-  }, [fetchFunnelStates]);
+    if (editMode !== "profile") fetchFunnelStates();
+  }, [editMode, fetchFunnelStates]);
 
   return (
     <>
@@ -353,7 +353,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </>
       )}
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || !funnelStates ? (
+        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -375,7 +375,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       </div>
 
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || !funnelStates ? (
+        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -402,7 +402,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       </div>
 
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || !funnelStates ? (
+        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -425,7 +425,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       </div>
 
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || !funnelStates ? (
+        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -447,7 +447,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       </div>
 
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || !funnelStates ? (
+        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -470,7 +470,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       </div>
 
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || !funnelStates ? (
+        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -513,7 +513,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               editLoading ||
               meLoading ||
               userLoading ||
-              !funnelStates
+              (editMode !== "profile" && !funnelStates)
             }
             onPress={handleSubmit}
           >

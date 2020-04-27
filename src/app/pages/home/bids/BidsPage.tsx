@@ -557,6 +557,7 @@ const BidsPage: React.FC<TPropsFromRedux &
           isOpen={pricesModalOpen}
           handleClose={() => setPricesModalOpen(false)}
           intl={intl}
+          cropId={+cropId}
         />
         <AlertDialog
           isOpen={isAlertOpen}
