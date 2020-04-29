@@ -143,9 +143,9 @@ function BidCreatePage({
     editBid(bid.id, params);
   };
 
-  useEffect(() => {
-    if (!!user) getBidById(+bidId);
-  }, [user, bidId, getBidById]);
+  // useEffect(() => {
+  //   if (!!user) getBidById(+bidId);
+  // }, [user, bidId, getBidById]);
 
   useEffect(() => {
     if (+vendor_id) fetchUser({ id: +vendor_id });

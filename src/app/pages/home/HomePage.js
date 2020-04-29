@@ -15,8 +15,8 @@ import { MyFiltersPage, MyFiltersEditPage, MyFiltersMoneyPage } from "./myFilter
 import Dashboard from "./Dashboard";
 import { FunnelStatesPage, FunnelStateEditPage } from "./funnelStates";
 import { ActivityReportPage } from "./activityReport";
-import { BidsPage } from "./bids";
-import BidCreatePage from "./bids/BidCreatePage";
+import { BidsPage, BidCreatePage } from "./bids";
+import { DealsPage } from "./deals";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { crops, user } = useSelector(
@@ -62,19 +62,6 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/funnel-states/edit/:id" component={FunnelStateEditPage} />
         <Route path="/funnel-states" component={FunnelStatesPage} />
 
-        {/* <Route path="/bidsList" exact component={BidsListPage} />
-        <Route path="/myBidsList" exact component={MyBidsListPage} />
-        <Route path="/bidsList/:cropId" exact component={BidsListPage} /> 
-        <Route path="/bid/create" exact component={BidCreatePage} />
-        <Route path="/bid/create/:vendorId" component={BidCreatePage} />
-        <Route path="/bid/edit/:bidId" exact component={BidCreatePage} />
-        <Route path="/bid/view/:bidId" exact component={BidCreatePage} />
-        <Route path="/bid/view/:bidId/fromMy" component={BidCreatePage} />
-        <Route path="/bid/view/:bidId/fromAdmin" component={BidCreatePage} />
-        <Route path="/bid/edit/:bidId/fromMy" component={BidCreatePage} />
-        <Route path="/bid/edit/:bidId/fromAdmin" component={BidCreatePage} />
-        <Route path="/allBidsList/:cropId" component={AllBidsPage} /> */}
-
         <Route path="/bid/create" exact component={BidCreatePage} />
         <Route path="/bid/create/:vendorId" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId" exact component={BidCreatePage} />
@@ -100,7 +87,31 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/companyList" component={CompaniesListPage} />
         <Route path="/company/confirm/:companyId" component={CompanyConfirmPage} />
 
+        <Route path="/deals" component={DealsPage} />
+
         <Route path="/dash" component={Dashboard} />
+
+        {
+          // Редиректы для старых ссылок
+        }
+
+        {/*<Route path="/myBidsList" exact component={MyBidsListPage} />
+        <Route path="/bidsList/:cropId" exact component={BidsListPage} /> 
+        <Route path="/allBidsList/:cropId" component={AllBidsPage} /> */}
+
+        {user.is_buyer ? (
+          <Redirect from="/bidsList/:cropId" to="/sale/best-bids/:cropId" />
+        ) : (
+          <Redirect from="/bidsList/:cropId" to="/purchase/best-bids/:cropId" />
+        )}
+
+        {user.is_buyer ? (
+          <Redirect from="/myBidsList" to="/purchase/my-bids" />
+        ) : (
+          <Redirect from="/myBidsList" to="/sale/my-bids" />
+        )}
+
+        <Redirect from="/allBidsList/:cropId" to="/sale/all-bids/:cropId" />
       </Switch>
     </Suspense>
   );

@@ -145,7 +145,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case FETCH_SUCCESS: {
-        console.log("Filters fetch: ", action.payload.data);
+        //console.log("Filters fetch: ", action.payload.data);
         return {
           ...state,
           myFilters: action.payload.data,
