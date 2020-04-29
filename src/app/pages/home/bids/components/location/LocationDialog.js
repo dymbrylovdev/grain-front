@@ -6,9 +6,9 @@ import { LocationsForm } from "../../../users/components";
 function LocationDialog({ handleClose, isOpen, user, classes, intl }) {
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth={"md"} fullWidth>
-      <DialogTitle>
+      <DialogTitle style={{ padding: 8 }}>
         <Grid container direction="row" justify="space-between" alignItems="center">
-          <Grid item>
+          <Grid item style={{ marginLeft: 16 }}>
             {intl.formatMessage({
               id: "LOCATIONS.MODAL_NAME",
             })}

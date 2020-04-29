@@ -6,9 +6,9 @@ import { PricesEdit } from "../../../myFilters/components";
 function PricesDialog({ handleClose, isOpen, intl, cropId }) {
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth={"sm"} fullWidth>
-      <DialogTitle>
+      <DialogTitle style={{ padding: 8 }}>
         <Grid container direction="row" justify="space-between" alignItems="center">
-          <Grid item>
+          <Grid item style={{ marginLeft: 16 }}>
             {intl.formatMessage({
               id: "LOCATIONS.PRICES.MODAL_NAME",
             })}

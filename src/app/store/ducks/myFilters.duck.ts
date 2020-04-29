@@ -53,6 +53,7 @@ export interface IInitialState {
   currentSaleFilters: { [x: string]: { [x: string]: any } };
   currentPurchaseFilters: { [x: string]: { [x: string]: any } };
 
+  createdFilterId: number | undefined;
   createLoading: boolean;
   createSuccess: boolean;
   createError: string | null;
@@ -76,6 +77,7 @@ const initialState: IInitialState = {
   currentSaleFilters: {},
   currentPurchaseFilters: {},
 
+  createdFilterId: undefined,
   createLoading: false,
   createSuccess: false,
   createError: null,
@@ -168,7 +170,13 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case CREATE_SUCCESS: {
-        return { ...state, myFilters: undefined, createLoading: false, createSuccess: true };
+        return {
+          ...state,
+          createdFilterId: action.payload.id,
+          myFilters: undefined,
+          createLoading: false,
+          createSuccess: true,
+        };
       }
 
       case CREATE_FAIL: {
@@ -269,7 +277,7 @@ export const actions = {
 
   clearCreate: () => createAction(CLEAR_CREATE),
   createRequest: (payload: IFilterForCreate) => createAction(CREATE_REQUEST, payload),
-  createSuccess: () => createAction(CREATE_SUCCESS),
+  createSuccess: (payload: IMyFilterItem) => createAction(CREATE_SUCCESS, payload),
   createFail: (payload: string) => createAction(CREATE_FAIL, payload),
 
   clearEdit: () => createAction(CLEAR_EDIT),
@@ -299,8 +307,10 @@ function* fetchSaga({ payload }: { payload: { type: TBidType } }) {
 
 function* createSaga({ payload }: { payload: IFilterForCreate }) {
   try {
-    yield call(() => createMyFilter(payload));
-    yield put(actions.createSuccess());
+    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() =>
+      createMyFilter(payload)
+    );
+    yield put(actions.createSuccess(data.data));
   } catch (e) {
     yield put(actions.createFail(e.response.data.message));
   }

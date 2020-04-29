@@ -398,7 +398,7 @@ const BidsPage: React.FC<TPropsFromRedux &
       <Paper className={classes.tableContainer}>
         <div className={innerClasses.topContainer}>
           <div className={innerClasses.leftButtonBlock}>
-            {me && !me.is_buyer && (
+            {me && (
               <Button
                 variant="contained"
                 color="primary"

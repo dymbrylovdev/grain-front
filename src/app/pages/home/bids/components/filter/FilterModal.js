@@ -113,6 +113,7 @@ const FilterModal = ({
   myFilters,
   loadingFilters,
   clearCreateFilter,
+  createdFilterId,
   createFilter,
   createLoading,
   createSuccess,
@@ -131,6 +132,37 @@ const FilterModal = ({
   const innerClasses = useStyles();
   const [valueTabs, setValueTabs] = useState(0);
 
+  const { crops } = useSelector(
+    ({ crops }) => ({
+      crops: (crops.crops && crops.crops.data) || [],
+    }),
+    shallowEqual
+  );
+
+  const getInitialValues = useCallback(
+    filter => {
+      const crop = crops.find(crop => crop.id === cropId);
+      const now = new Date();
+      const name = crop
+        ? `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`
+        : "";
+      return filter ? { name, ...filter } : { name };
+    },
+    [cropId, crops]
+  );
+
+  const formik = useFormik({
+    initialValues: getInitialValues(currentFilter),
+    onSubmit: (values, { setStatus, setSubmitting }) => {
+      //console.log(values);
+      //handleSubmit(values, setStatus, setSubmitting);
+    },
+    validationSchema: Yup.object().shape({
+      filter_name: Yup.string().required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" })),
+    }),
+  });
+  const { resetForm, values } = formik;
+
   const handleTabsChange = (event, newValue) => {
     setValueTabs(newValue);
   };
@@ -148,6 +180,9 @@ const FilterModal = ({
       );
       clearCreateFilter();
       if (createSuccess) {
+        if (createdFilterId) {
+          handleSubmit({ ...values, id: createdFilterId });
+        }
         fetchFilters(salePurchaseMode);
       }
     }
@@ -155,11 +190,13 @@ const FilterModal = ({
     clearCreateFilter,
     createError,
     createSuccess,
+    createdFilterId,
     enqueueSnackbar,
     fetchFilters,
+    handleSubmit,
     intl,
-    me,
     salePurchaseMode,
+    values,
   ]);
 
   useEffect(() => {
@@ -189,25 +226,6 @@ const FilterModal = ({
     salePurchaseMode,
   ]);
 
-  const { crops } = useSelector(
-    ({ crops }) => ({
-      crops: (crops.crops && crops.crops.data) || [],
-    }),
-    shallowEqual
-  );
-
-  const getInitialValues = useCallback(
-    filter => {
-      const crop = crops.find(crop => crop.id === cropId);
-      const now = new Date();
-      const name = crop
-        ? `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`
-        : "";
-      return filter ? { name, ...filter } : { name };
-    },
-    [cropId, crops]
-  );
-
   const newCropName = () => {
     const crop = crops.find(crop => crop.id === cropId);
     const now = new Date();
@@ -216,18 +234,6 @@ const FilterModal = ({
       .slice(0, -3)}`;
     return name;
   };
-
-  const formik = useFormik({
-    initialValues: getInitialValues(currentFilter),
-    onSubmit: (values, { setStatus, setSubmitting }) => {
-      //console.log(values);
-      //handleSubmit(values, setStatus, setSubmitting);
-    },
-    validationSchema: Yup.object().shape({
-      filter_name: Yup.string().required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" })),
-    }),
-  });
-  const { resetForm, values } = formik;
 
   useEffect(() => {
     if (isOpen) {
@@ -435,6 +441,7 @@ export default compose(
       me: state.auth.user,
       myFilters: state.myFilters.myFilters,
       loadingFilters: state.myFilters.loading,
+      createdFilterId: state.myFilters.createdFilterId,
       createLoading: state.myFilters.createLoading,
       createSuccess: state.myFilters.createSuccess,
       createError: state.myFilters.createError,

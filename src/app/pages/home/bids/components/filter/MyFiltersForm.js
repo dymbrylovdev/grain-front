@@ -68,7 +68,7 @@ function MyFiltersForm({
       autoComplete="off"
       initialValues={fromApiToFilter(filter)}
       onSubmit={values => {
-        console.log("values: ", values);
+        //console.log("values: ", values);
         handleSubmit({ ...values, id: filter.id });
       }}
       innerRef={formRef}

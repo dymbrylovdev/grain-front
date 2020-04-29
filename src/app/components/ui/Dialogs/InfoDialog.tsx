@@ -11,6 +11,8 @@ import CloseIcon from "@material-ui/icons/Close";
 
 const useInnerStyles = makeStyles(theme => ({
   title: {
+    padding: 8,
+    paddingLeft: 24,
     "& h2": {
       display: "flex",
       width: "100%",
