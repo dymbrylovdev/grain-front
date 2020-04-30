@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { compose } from "redux";
-import { useHistory, RouteComponentProps, Link } from "react-router-dom";
+import { RouteComponentProps, Link } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
 import {
@@ -53,8 +53,8 @@ const DealViewPage: React.FC<TPropsFromRedux &
   const classes = useStyles();
 
   useEffect(() => {
-    fetch(+cropId);
-  }, [cropId, fetch]);
+    fetch({ page, perPage, id: +cropId });
+  }, [cropId, fetch, page, perPage]);
 
   useEffect(() => {
     fetchCropParams(+cropId);

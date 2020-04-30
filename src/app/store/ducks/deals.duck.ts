@@ -221,7 +221,8 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 };
 
 export const actions = {
-  fetchRequest: (filter_id: number) => createAction(FETCH_REQUEST, { filter_id }),
+  fetchRequest: (payload: { page: number; perPage: number; id: number }) =>
+    createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IDeal[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
@@ -250,10 +251,10 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga({ payload }: { payload: { filter_id: number } }) {
+function* fetchSaga({ payload }: { payload: { page: number; perPage: number; id: number } }) {
   try {
     const { data }: { data: IServerResponse<IDeal[]> } = yield call(() =>
-      getDeals(payload.filter_id)
+      getDeals(payload.page, payload.perPage, payload.id)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {

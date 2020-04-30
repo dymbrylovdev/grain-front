@@ -10,7 +10,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  // TableFooter,
+  TableFooter,
 } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
@@ -22,7 +22,7 @@ import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
-// import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
+import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
 import { Skeleton } from "@material-ui/lab";
 import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
@@ -68,13 +68,13 @@ const DealsPage: React.FC<TPropsFromRedux &
       clearEdit();
     }
     if (editSuccess) {
-      fetch(+cropId);
+      fetch({ page, perPage, id: +cropId });
     }
-  }, [clearEdit, cropId, editError, editSuccess, enqueueSnackbar, fetch, intl]);
+  }, [clearEdit, cropId, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage]);
 
   useEffect(() => {
-    fetch(+cropId);
-  }, [cropId, fetch]);
+    fetch({ page, perPage, id: +cropId });
+  }, [cropId, fetch, page, perPage]);
 
   useEffect(() => {
     fetchCrops();
@@ -196,17 +196,18 @@ const DealsPage: React.FC<TPropsFromRedux &
                   </TableRow>
                 ))}
             </TableBody>
-            {/* <TableFooter>
-            <TableRow>
-              <TablePaginator
-                page={page}
-                realPerPage={deals.length}
-                perPage={perPage}
-                total={total}
-                fetchRows={fetch}
-              />
-            </TableRow>
-          </TableFooter> */}
+            <TableFooter>
+              <TableRow>
+                <TablePaginator
+                  id={+cropId}
+                  page={page}
+                  realPerPage={deals.length}
+                  perPage={perPage}
+                  total={total}
+                  fetchRows={fetch}
+                />
+              </TableRow>
+            </TableFooter>
           </Table>
         )
       )}
