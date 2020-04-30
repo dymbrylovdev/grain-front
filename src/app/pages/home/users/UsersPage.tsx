@@ -15,6 +15,7 @@ import {
   Button,
   TextField,
   MenuItem,
+  Grid,
 } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -167,7 +168,15 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TableRow key={item.id}>
                   <TableCell>{item.id}</TableCell>
                   <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.fio}</TableCell>
+                  <TableCell>
+                    <Grid container direction="column" justify="center" alignItems="flex-start">
+                      <div>{`${item.fio || ""}`}</div>
+                      {item.company && (
+                        <div style={!!item.fio ? { marginTop: 10 } : {}}>{`${item.company
+                          .short_name || ""}`}</div>
+                      )}
+                    </Grid>
+                  </TableCell>
                   <TableCell>
                     {funnelStateEditId === item.id ? (
                       <TextField

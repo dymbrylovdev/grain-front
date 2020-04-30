@@ -124,7 +124,7 @@
   "USERLIST.BUTTON.ADD_USER": "Добавить пользователя",
   "USERLIST.TABLE.ID": "Id",
   "USERLIST.TABLE.EMAIL": "Email",
-  "USERLIST.TABLE.NAME": "ФИО",
+  "USERLIST.TABLE.NAME": "ФИО/Компания",
   "USERLIST.TABLE.COMPANY": "Компания",
   "USERLIST.TABLE.ACTIVITY": "Активность",
   "USERLIST.TABLE.ACTIONS": "Действия",
