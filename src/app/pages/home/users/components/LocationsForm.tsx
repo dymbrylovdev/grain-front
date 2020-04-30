@@ -45,7 +45,7 @@ const innerStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface IProps {
-  editMode: "profile" | "create" | "edit";
+  editMode: "profile" | "create" | "edit" | "view";
   userId?: number;
 }
 
@@ -94,7 +94,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   const classes = useStyles();
   let locations: ILocation[] = [];
   if (editMode === "profile" && me) locations = me.points;
-  if (editMode === "edit" && user) locations = user.points;
+  if ((editMode === "edit" || editMode === "view") && user) locations = user.points;
 
   const [editNameId, setEditNameId] = useState(-1);
   const [creatingLocation, setCreatingLocation] = useState(false);
@@ -115,6 +115,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         fetchMe();
         break;
       case "edit":
+      case "view":
         if (userId) fetchUser({ id: userId });
         break;
     }
@@ -244,18 +245,20 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               ) : (
                 <>
                   <div className={innerClasses.name}>{item.name}</div>
-                  <div>
-                    <IconButton
-                      color="primary"
-                      size={"medium"}
-                      onClick={() => {
-                        setEditNameId(item.id);
-                        resetForm({ values: { name: item.name } });
-                      }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </div>
+                  {editMode !== "view" && (
+                    <div>
+                      <IconButton
+                        color="primary"
+                        size={"medium"}
+                        onClick={() => {
+                          setEditNameId(item.id);
+                          resetForm({ values: { name: item.name } });
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -288,71 +291,75 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                           edit({ id: item.id, data: location });
                         }
                       }}
-                      disable={false}
+                      disable={editMode === "view"}
                       prompterRunning={prompterRunning}
                       prompterStep={prompterStep}
                     />
                   </div>
-                  <div>
-                    <IconButton
-                      size={"medium"}
-                      onClick={() => {
-                        setDeleteLocationId(item.id);
-                        setAlertOpen(true);
-                      }}
-                      color="secondary"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </div>
+                  {editMode !== "view" && (
+                    <div>
+                      <IconButton
+                        size={"medium"}
+                        onClick={() => {
+                          setDeleteLocationId(item.id);
+                          setAlertOpen(true);
+                        }}
+                        color="secondary"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </div>
+                  )}
                 </>
               )}
             </div>
           </div>
         ))
       )}
-      <div className={innerClasses.group}>
-        <div className={classes.textFieldContainer}>
-          {!creatingLocation ? (
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setCreatingLocation(true)}
-              disabled={loadingMe || loadingUser}
-            >
-              {intl.formatMessage({ id: "LOCATIONS.FORM.ADD_LOCATIONS" })}
-            </Button>
-          ) : (
-            <div className={classes.textField}>
-              <AutocompleteLocations
-                options={googleLocations ? googleLocations : [{ text: "" }]}
-                loading={false}
-                defaultValue={{ text: "" }}
-                label={intl.formatMessage({
-                  id: "PROFILE.INPUT.LOCATION",
-                })}
-                editable={true}
-                inputClassName={classes.textField}
-                inputError={Boolean(errorGoogleLocations)}
-                inputHelperText={errorGoogleLocations}
-                fetchLocations={fetchGoogleLocations}
-                clearLocations={clearGoogleLocations}
-                setSelectedLocation={(location: ILocationToRequest) => {
-                  if (location) {
-                    userId ? (location.user_id = userId) : (location.user_id = me?.id);
-                    setCreatingLocation(false);
-                    create(location);
-                  }
-                }}
-                handleBlur={() => setCreatingLocation(false)}
-                disable={false}
-                prompterRunning={prompterRunning}
-                prompterStep={prompterStep}
-              />
-            </div>
-          )}
+      {editMode !== "view" && (
+        <div className={innerClasses.group}>
+          <div className={classes.textFieldContainer}>
+            {!creatingLocation ? (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setCreatingLocation(true)}
+                disabled={loadingMe || loadingUser}
+              >
+                {intl.formatMessage({ id: "LOCATIONS.FORM.ADD_LOCATIONS" })}
+              </Button>
+            ) : (
+              <div className={classes.textField}>
+                <AutocompleteLocations
+                  options={googleLocations ? googleLocations : [{ text: "" }]}
+                  loading={false}
+                  defaultValue={{ text: "" }}
+                  label={intl.formatMessage({
+                    id: "PROFILE.INPUT.LOCATION",
+                  })}
+                  editable={true}
+                  inputClassName={classes.textField}
+                  inputError={Boolean(errorGoogleLocations)}
+                  inputHelperText={errorGoogleLocations}
+                  fetchLocations={fetchGoogleLocations}
+                  clearLocations={clearGoogleLocations}
+                  setSelectedLocation={(location: ILocationToRequest) => {
+                    if (location) {
+                      userId ? (location.user_id = userId) : (location.user_id = me?.id);
+                      setCreatingLocation(false);
+                      create(location);
+                    }
+                  }}
+                  handleBlur={() => setCreatingLocation(false)}
+                  disable={false}
+                  prompterRunning={prompterRunning}
+                  prompterStep={prompterStep}
+                />
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
       <AlertDialog
         isOpen={isAlertOpen}
         text={intl.formatMessage({

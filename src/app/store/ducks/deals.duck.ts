@@ -13,6 +13,8 @@ const FETCH_REQUEST = "deals/FETCH_REQUEST";
 const FETCH_SUCCESS = "deals/FETCH_SUCCESS";
 const FETCH_FAIL = "deals/FETCH_FAIL";
 
+const SET_DEAL = "deals/SET_DEAL";
+
 const CLEAR_FETCH_BY_ID = "deals/CLEAR_FETCH_BY_ID";
 const FETCH_BY_ID_REQUEST = "deals/FETCH_BY_ID_REQUEST";
 const FETCH_BY_ID_SUCCESS = "deals/FETCH_BY_ID_SUCCESS";
@@ -114,6 +116,10 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 
     case FETCH_FAIL: {
       return { ...state, loading: false, error: action.payload };
+    }
+
+    case SET_DEAL: {
+      return { ...state, deal: action.payload.deal };
     }
 
     case CLEAR_FETCH_BY_ID: {
@@ -218,6 +224,8 @@ export const actions = {
   fetchRequest: (filter_id: number) => createAction(FETCH_REQUEST, { filter_id }),
   fetchSuccess: (payload: IServerResponse<IDeal[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
+
+  setDeal: (deal: IDeal | undefined) => createAction(SET_DEAL, { deal }),
 
   clearFetchById: () => createAction(CLEAR_FETCH_BY_ID),
   fetchByIdRequest: (payload: { id: number }) => createAction(FETCH_BY_ID_REQUEST, payload),

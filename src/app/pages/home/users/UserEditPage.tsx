@@ -85,22 +85,42 @@ const UserEditPage: React.FC<TPropsFromRedux &
   const classes = useStyles();
   const history = useHistory();
 
-  let editMode: "profile" | "create" | "edit";
-  if (match.url.indexOf("profile") === -1) {
-    if (+id) {
-      editMode = "edit";
-    } else {
-      editMode = "create";
-    }
-  } else {
-    editMode = "profile";
-  }
+  let editMode: "profile" | "create" | "edit" | "view" = "profile";
+  if (match.url.indexOf("profile") !== -1) editMode = "profile";
+  if (match.url.indexOf("create") !== -1) editMode = "create";
+  if (match.url.indexOf("edit") !== -1) editMode = "edit";
+  if (match.url.indexOf("view") !== -1) editMode = "view";
 
   const [isAlertOpen, setAlertOpen] = useState(false);
 
   const [valueTabs, setValueTabs] = useState(0);
   const handleTabsChange = (event: any, newValue: number) => {
     setValueTabs(newValue);
+  };
+
+  const subTitle = (editMode: "profile" | "create" | "edit" | "view"): string => {
+    switch (editMode) {
+      case "profile":
+        return intl.formatMessage({ id: "SUBMENU.PROFILE" });
+      case "create":
+        return (
+          intl.formatMessage({ id: "SUBHEADER.PARTS.CREATE" }) +
+          " " +
+          intl.formatMessage({ id: "SUBHEADER.PARTS.USER" })
+        );
+      case "edit":
+        return (
+          intl.formatMessage({ id: "SUBHEADER.PARTS.EDIT" }) +
+          " " +
+          intl.formatMessage({ id: "SUBHEADER.PARTS.USER" })
+        );
+      case "view":
+        return (
+          intl.formatMessage({ id: "SUBHEADER.PARTS.VIEW" }) +
+          " " +
+          intl.formatMessage({ id: "SUBHEADER.PARTS.USER" })
+        );
+    }
   };
 
   const { enqueueSnackbar } = useSnackbar();
@@ -129,6 +149,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
         if (!me && !loadingMe) fetchMe();
         break;
       case "edit":
+      case "view":
         if (!user && !loadingUser) fetchUser({ id: +id });
         break;
     }
@@ -138,19 +159,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
   return (
     <Paper className={classes.container}>
-      <LayoutSubheader
-        title={
-          editMode === "profile"
-            ? intl.formatMessage({ id: "SUBMENU.PROFILE" })
-            : `${
-                editMode === "create"
-                  ? intl.formatMessage({ id: "SUBHEADER.PARTS.CREATE" })
-                  : intl.formatMessage({ id: "SUBHEADER.PARTS.EDIT" })
-              } ${intl.formatMessage({ id: "SUBHEADER.PARTS.USER" })}`
-        }
-        breadcrumb={undefined}
-        description={undefined}
-      />
+      <LayoutSubheader title={subTitle(editMode)} breadcrumb={undefined} description={undefined} />
       <div className={classes.form}>
         <AppBar position="static" color="default" className={classes.appBar}>
           <Tabs

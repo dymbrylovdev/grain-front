@@ -40,7 +40,7 @@ const innerStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface IProps {
-  editMode: "profile" | "create" | "edit";
+  editMode: "profile" | "create" | "edit" | "view";
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
   userId?: number;
 }
@@ -208,6 +208,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         fetchMe();
         break;
       case "edit":
+      case "view":
         if (userId) fetchUser({ id: userId });
         break;
     }
@@ -219,6 +220,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         resetForm({ values: getInitialValues(me) });
         break;
       case "edit":
+      case "view":
         resetForm({ values: getInitialValues(user) });
         break;
       case "create":
@@ -248,7 +250,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               variant="outlined"
               helperText={touched.role && errors.role}
               error={Boolean(touched.role && errors.role)}
-              disabled={editMode === "edit"}
+              disabled={editMode === "edit" || editMode === "view"}
             >
               <MenuItem value="EMPTY">{intl.formatMessage({ id: "ALL.SELECTS.EMPTY" })}</MenuItem>
               {roles.map((item, i) => (
@@ -278,6 +280,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               variant="outlined"
               helperText={touched.status && errors.status}
               error={Boolean(touched.status && errors.status)}
+              disabled={editMode === "view"}
             >
               <MenuItem value="EMPTY">{intl.formatMessage({ id: "ALL.SELECTS.EMPTY" })}</MenuItem>
               {statuses &&
@@ -290,7 +293,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           )}
         </div>
       )}
-      {user && !user.is_admin && editMode === "edit" && (
+      {user && !user.is_admin && (editMode === "edit" || editMode === "view") && (
         <>
           <div className={classes.textFieldContainer}>
             {meLoading || userLoading || !funnelStates ? (
@@ -306,7 +309,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 onChange={handleChange}
                 name="funnel_state_id"
                 variant="outlined"
-                disabled={values.is_funnel_state_automate}
+                disabled={values.is_funnel_state_automate || editMode === "view"}
               >
                 <MenuItem value={0} style={{ backgroundColor: "#f2f2f2" }}>
                   {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
@@ -337,19 +340,21 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               </TextField>
             )}
           </div>
-          <div>
-            {meLoading || userLoading || !funnelStates ? (
-              <Skeleton width={322} height={37.5} animation="wave" />
-            ) : (
-              <FormControlLabel
-                control={
-                  <Checkbox checked={values.is_funnel_state_automate} onChange={handleChange} />
-                }
-                label={intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.AUTO" })}
-                name="is_funnel_state_automate"
-              />
-            )}
-          </div>
+          {editMode !== "view" && (
+            <div>
+              {meLoading || userLoading || !funnelStates ? (
+                <Skeleton width={322} height={37.5} animation="wave" />
+              ) : (
+                <FormControlLabel
+                  control={
+                    <Checkbox checked={values.is_funnel_state_automate} onChange={handleChange} />
+                  }
+                  label={intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.AUTO" })}
+                  name="is_funnel_state_automate"
+                />
+              )}
+            </div>
+          )}
         </>
       )}
       <div className={classes.textFieldContainer}>
@@ -370,6 +375,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             onChange={handleChange}
             helperText={touched.login && errors.login}
             error={Boolean(touched.login && errors.login)}
+            disabled={editMode === "view"}
           />
         )}
       </div>
@@ -397,6 +403,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             onChange={handleChange}
             helperText={touched.fio && errors.fio}
             error={Boolean(touched.fio && errors.fio)}
+            disabled={editMode === "view"}
           />
         )}
       </div>
@@ -420,6 +427,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             helperText={touched.email && errors.email}
             error={Boolean(touched.email && errors.email)}
             autoComplete="off"
+            disabled={editMode === "view"}
           />
         )}
       </div>
@@ -442,98 +450,105 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             onChange={handleChange}
             helperText={touched.phone && errors.phone}
             error={Boolean(touched.phone && errors.phone)}
+            disabled={editMode === "view"}
           />
         )}
       </div>
 
-      <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
-          <Skeleton width="100%" height={70} animation="wave" />
-        ) : (
-          <TextField
-            type="password"
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.PASSWORD",
-            })}
-            margin="normal"
-            className={classes.textField}
-            name="password"
-            value={values.password}
-            variant="outlined"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            helperText={touched.password && errors.password}
-            error={Boolean(touched.password && errors.password)}
-            autoComplete="new-password"
-          />
-        )}
-      </div>
-
-      <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
-          <Skeleton width="100%" height={70} animation="wave" />
-        ) : (
-          <TextField
-            type="password"
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.REPEATPASSWORD",
-            })}
-            margin="normal"
-            className={classes.textField}
-            name="repeatPassword"
-            value={values.repeatPassword}
-            variant="outlined"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            helperText={touched.repeatPassword && errors.repeatPassword}
-            error={Boolean(touched.repeatPassword && errors.repeatPassword)}
-          />
-        )}
-      </div>
-
-      <div className={classes.bottomButtonsContainer}>
-        {editMode !== "profile" && (
-          <div className={classes.button}>
-            <Button
+      {editMode !== "view" && (
+        <div className={classes.textFieldContainer}>
+          {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
+            <Skeleton width="100%" height={70} animation="wave" />
+          ) : (
+            <TextField
+              type="password"
+              label={intl.formatMessage({
+                id: "PROFILE.INPUT.PASSWORD",
+              })}
+              margin="normal"
+              className={classes.textField}
+              name="password"
+              value={values.password}
               variant="outlined"
-              color="primary"
-              onClick={() => history.push("/user-list")}
-              disabled={meLoading || userLoading || !funnelStates}
-            >
-              {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-            </Button>
-          </div>
-        )}
-        <div className={classes.button}>
-          <ButtonWithLoader
-            loading={editMeLoading || createLoading || editLoading}
-            disabled={
-              editMeLoading ||
-              createLoading ||
-              editLoading ||
-              meLoading ||
-              userLoading ||
-              (editMode !== "profile" && !funnelStates)
-            }
-            onPress={handleSubmit}
-          >
-            {editMode === "create"
-              ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
-              : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
-          </ButtonWithLoader>
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={touched.password && errors.password}
+              error={Boolean(touched.password && errors.password)}
+              autoComplete="new-password"
+            />
+          )}
         </div>
-        {editMode === "edit" && (
-          <div className={classes.button}>
-            <OutlinedRedButton
+      )}
+
+      {editMode !== "view" && (
+        <div className={classes.textFieldContainer}>
+          {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
+            <Skeleton width="100%" height={70} animation="wave" />
+          ) : (
+            <TextField
+              type="password"
+              label={intl.formatMessage({
+                id: "PROFILE.INPUT.REPEATPASSWORD",
+              })}
+              margin="normal"
+              className={classes.textField}
+              name="repeatPassword"
+              value={values.repeatPassword}
               variant="outlined"
-              onClick={() => setAlertOpen(true)}
-              disabled={meLoading || userLoading || !funnelStates}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={touched.repeatPassword && errors.repeatPassword}
+              error={Boolean(touched.repeatPassword && errors.repeatPassword)}
+            />
+          )}
+        </div>
+      )}
+
+      {editMode !== "view" && (
+        <div className={classes.bottomButtonsContainer}>
+          {editMode !== "profile" && (
+            <div className={classes.button}>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => history.push("/user-list")}
+                disabled={meLoading || userLoading || !funnelStates}
+              >
+                {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+              </Button>
+            </div>
+          )}
+          <div className={classes.button}>
+            <ButtonWithLoader
+              loading={editMeLoading || createLoading || editLoading}
+              disabled={
+                editMeLoading ||
+                createLoading ||
+                editLoading ||
+                meLoading ||
+                userLoading ||
+                (editMode !== "profile" && !funnelStates)
+              }
+              onPress={handleSubmit}
             >
-              {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
-            </OutlinedRedButton>
+              {editMode === "create"
+                ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
+                : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+            </ButtonWithLoader>
           </div>
-        )}
-      </div>
+          {editMode === "edit" && (
+            <div className={classes.button}>
+              <OutlinedRedButton
+                variant="outlined"
+                onClick={() => setAlertOpen(true)}
+                disabled={meLoading || userLoading || !funnelStates}
+              >
+                {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
+              </OutlinedRedButton>
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 };

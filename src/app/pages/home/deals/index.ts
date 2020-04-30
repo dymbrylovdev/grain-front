@@ -1,2 +1,2 @@
 export { default as DealsPage } from "./DealsPage";
-export { default as DealEditPage } from "./DealEditPage";
+export { default as DealViewPage } from "./DealViewPage";

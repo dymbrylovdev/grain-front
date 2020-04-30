@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { compose } from "redux";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
@@ -54,8 +54,6 @@ const DealsPage: React.FC<TPropsFromRedux &
   const classes = useStyles();
   const history = useHistory();
 
-  const [isInfoOpen, setInfoOpen] = useState(false);
-
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (editSuccess || editError) {
@@ -86,12 +84,14 @@ const DealsPage: React.FC<TPropsFromRedux &
 
   return (
     <Paper className={classes.tableContainer}>
-      <LayoutSubheader
-        title={intl.formatMessage(
-          { id: "DEALS.TITLE" },
-          { name: crops?.find(item => item.id === +cropId)?.name }
-        )}
-      />
+      {!!crops && (
+        <LayoutSubheader
+          title={intl.formatMessage(
+            { id: "DEALS.TITLE" },
+            { name: crops.find(item => item.id === +cropId)?.name }
+          )}
+        />
+      )}
       <div className={classes.tableTitle}>
         {!!deals && !deals?.length
           ? intl.formatMessage(
@@ -150,9 +150,9 @@ const DealsPage: React.FC<TPropsFromRedux &
                         </div>
                         <div>
                           {intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}
-                          {item.sale_bid.author.company.short_name ||
-                            item.sale_bid.author.fio ||
-                            item.sale_bid.author.login}
+                          {item.sale_bid.vendor.company.short_name ||
+                            item.sale_bid.vendor.fio ||
+                            item.sale_bid.vendor.login}
                         </div>
                       </div>
                     </TableCell>
@@ -184,7 +184,11 @@ const DealsPage: React.FC<TPropsFromRedux &
                       <IconButton
                         size="medium"
                         color="primary"
-                        onClick={() => history.push(`/user/edit/`)}
+                        onClick={() =>
+                          history.push(
+                            `/deals/view/${cropId}/${item.sale_bid.id}/${item.purchase_bid.id}`
+                          )
+                        }
                       >
                         <VisibilityIcon />
                       </IconButton>

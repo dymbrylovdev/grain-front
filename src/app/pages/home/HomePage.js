@@ -16,7 +16,7 @@ import Dashboard from "./Dashboard";
 import { FunnelStatesPage, FunnelStateEditPage } from "./funnelStates";
 import { ActivityReportPage } from "./activityReport";
 import { BidsPage, BidCreatePage } from "./bids";
-import { DealsPage } from "./deals";
+import { DealsPage, DealViewPage } from "./deals";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { crops, user } = useSelector(
@@ -40,6 +40,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
           <Redirect exact from="/" to="/user/profile" />
         }
         <Route path="/userDocs/legacy" component={UserDocPage} />
+        <Route path="/user/view/:id" exact component={UserEditPage} />
         <Route path="/user/profile" exact component={UserEditPage} />
         <Route path="/user-list" component={UsersPage} />
         <Route path="/user/create" component={UserEditPage} />
@@ -87,6 +88,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/companyList" component={CompaniesListPage} />
         <Route path="/company/confirm/:companyId" component={CompanyConfirmPage} />
 
+        <Route path="/deals/view/:cropId/:saleId/:purchaseId" component={DealViewPage} />
         <Route path="/deals/:cropId" component={DealsPage} />
 
         <Route path="/dash" component={Dashboard} />

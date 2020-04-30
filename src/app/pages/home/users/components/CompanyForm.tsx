@@ -34,7 +34,7 @@ const isNonConfirm = (values: {
 };
 
 interface IProps {
-  editMode: "profile" | "create" | "edit";
+  editMode: "profile" | "create" | "edit" | "view";
   userId?: number;
 }
 
@@ -97,6 +97,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         fetchMe();
         break;
       case "edit":
+      case "view":
         if (userId) fetchUser({ id: userId });
         break;
     }
@@ -153,6 +154,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         setCurrentUser(me);
         break;
       case "edit":
+      case "view":
         resetForm({ values: getInitialValues(user) });
         setCurrentUser(user);
         break;
@@ -185,9 +187,11 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                   disabled={true}
                   className={classes.textField}
                 />
-                <IconButton size={"medium"} color="secondary" onClick={() => setAlertOpen(true)}>
-                  <DeleteIcon />
-                </IconButton>
+                {editMode !== "view" && (
+                  <IconButton size={"medium"} color="secondary" onClick={() => setAlertOpen(true)}>
+                    <DeleteIcon />
+                  </IconButton>
+                )}
               </>
             )}
           </div>
@@ -198,7 +202,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 ? editMe
                 : ({ data }: any) => editUser({ id: userId as number, data: data })
             }
-            disabled={editMode === "profile" || !me?.is_admin}
+            disabled={editMode === "profile" || editMode === "view" || !me?.is_admin}
             loading={!currentUser || meLoading || userLoading}
           />
           {isNonConfirm(values) && !me?.is_admin && (
@@ -229,7 +233,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
         </div>
       )}
-      {
+      {editMode !== "view" && (
         <CompanySearchForm
           classes={classes}
           company={user && user.company}
@@ -247,7 +251,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           }
           confirms={editMode === "profile" && me?.is_admin}
         />
-      }
+      )}
       <CompanyConfirmDialog
         id={companyConfirmId}
         intl={intl}
