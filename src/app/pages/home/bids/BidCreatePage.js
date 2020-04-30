@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import BidForm from "./components/BidForm";
 import useStyles from "../styles";
 import userSelector from "../../../store/selectors/user";
-import bidSelector from "../../../store/selectors/bid";
+// import bidSelector from "../../../store/selectors/bid";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import * as bids from "../../../store/ducks/bids.duck";
 import * as yaLocations from "../../../store/ducks/yaLocations.duck";
@@ -16,9 +16,9 @@ import * as prompter from "../../../store/ducks/prompter.duck";
 import * as users from "../../../store/ducks/users.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import LocationDialog from "./components/location/LocationDialog";
-import { LoadError } from "../../../components/ui/Errors";
 import Prompter from "../prompter/Prompter";
 import { useSnackbar } from "notistack";
+import { ErrorPage } from "../../../components/ErrorPage";
 
 function BidCreatePage({
   intl,
@@ -27,7 +27,7 @@ function BidCreatePage({
   createBid,
   fetchLocationsRequest,
   clearLocations,
-  getBidById,
+  fetchBidById,
   editUser,
   getCropParams,
   setActiveStep,
@@ -50,6 +50,7 @@ function BidCreatePage({
     editBidSuccess,
     editBidError,
     editBidLoading,
+    bid,
   } = useSelector(
     ({ crops: { crops }, auth, users, bids }) => ({
       crops: (crops && crops.data) || [],
@@ -63,17 +64,18 @@ function BidCreatePage({
       editBidLoading: bids.editLoading,
       editBidSuccess: bids.editSuccess,
       editBidError: bids.editError,
+      bid: bids.bid,
     }),
     shallowEqual
   );
 
   const creating = match.url.indexOf("create") !== -1;
-  const by =
-    (match.url.indexOf("fromMy") !== -1 && "fromMy") ||
-    (match.url.indexOf("fromAdmin") !== -1 && "fromAdmin");
+  // const by =
+  //   (match.url.indexOf("fromMy") !== -1 && "fromMy") ||
+  //   (match.url.indexOf("fromAdmin") !== -1 && "fromAdmin");
   const vendorId = match.params.vendorId;
   const bidId = match.params.bidId;
-  const { bid } = bidSelector(bidId, by);
+  // const { bid } = bidSelector(bidId, by);
   // console.log("bid: ", bid);
   const isEditable = match.url.indexOf("view") === -1;
   const vendor_id = vendorId || (bid && bid.vendor && bid.vendor.id) || user.id;
@@ -143,9 +145,9 @@ function BidCreatePage({
     editBid(bid.id, params);
   };
 
-  // useEffect(() => {
-  //   if (!!user) getBidById(+bidId);
-  // }, [user, bidId, getBidById]);
+  useEffect(() => {
+    if (!!user) fetchBidById(+bidId);
+  }, [user, bidId, fetchBidById]);
 
   useEffect(() => {
     if (+vendor_id) fetchUser({ id: +vendor_id });
@@ -188,8 +190,8 @@ function BidCreatePage({
     title = intl.formatMessage({ id: "BID.TITLE.EDIT" });
   }
 
-  if (preloading || !fromUser) return <Preloader />;
-  if (errors.get) return <LoadError handleClick={() => getBidById(+bidId)} />;
+  if (preloading || !fromUser || !bid) return <Preloader />;
+  if (errors.get) return <ErrorPage />;
 
   return (
     <>
@@ -236,7 +238,7 @@ export default injectIntl(
     ...prompter.actions,
     fetchLocationsRequest: yaLocations.actions.fetchRequest,
     clearLocations: yaLocations.actions.clear,
-    getBidById: bids.actions.fetchByIdRequest,
+    fetchBidById: bids.actions.fetchByIdRequest,
     clearCreateBid: bids.actions.clearCreate,
     createBid: bids.actions.createRequest,
     clearEditBid: bids.actions.clearEdit,

@@ -138,7 +138,7 @@ function BidForm({
   const toUserPath =
     user.id === (bid.vendor && bid.vendor.id)
       ? "/user/profile"
-      : `/user/edit/${bid.vendor && bid.vendor.id}`;
+      : `/user/view/${bid.vendor && bid.vendor.id}`;
 
   return (
     <Paper className={classes.container}>

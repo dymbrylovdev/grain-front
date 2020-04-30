@@ -12,8 +12,6 @@ import {
   Paper,
   // TableFooter,
 } from "@material-ui/core";
-import { IconButton } from "@material-ui/core";
-import VisibilityIcon from "@material-ui/icons/Visibility";
 
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
@@ -46,13 +44,21 @@ const DealViewPage: React.FC<TPropsFromRedux &
 
   crops,
   fetchCrops,
+  cropsError,
+
+  fetchCropParams,
+  cropParams,
+  cropParamsError,
 }) => {
   const classes = useStyles();
-  const history = useHistory();
 
   useEffect(() => {
     fetch(+cropId);
   }, [cropId, fetch]);
+
+  useEffect(() => {
+    fetchCropParams(+cropId);
+  }, [cropId, fetchCropParams]);
 
   useEffect(() => {
     fetchCrops();
@@ -93,7 +99,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
           ? intl.formatMessage({ id: "DEALS.EMPTY_DEAL" })
           : ""}
       </div>
-      {!deals || !crops ? (
+      {!deals || !crops || !cropParams ? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />
           <Skeleton width="100%" height={77} animation="wave" />
@@ -104,7 +110,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
           <Skeleton width="100%" height={53} animation="wave" />
         </>
       ) : (
-        deal && (
+        !!deal && (
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -118,6 +124,54 @@ const DealViewPage: React.FC<TPropsFromRedux &
               </TableRow>
             </TableHead>
             <TableBody>
+              {cropParams.map(
+                item =>
+                  (deal.sale_bid.parameter_values.find(param => param.parameter_id === item.id) ||
+                    deal.purchase_bid.parameter_values.find(
+                      param => param.parameter_id === item.id
+                    )) && (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>
+                        {deal.sale_bid.parameter_values.find(
+                          param => param.parameter_id === item.id
+                        )?.value || "-"}
+                      </TableCell>
+                      <TableCell>
+                        {deal.purchase_bid.parameter_values.find(
+                          param => param.parameter_id === item.id
+                        )?.value || "-"}
+                      </TableCell>
+                    </TableRow>
+                  )
+              )}
+              <TableRow>
+                <TableCell>{intl.formatMessage({ id: "DEALS.PRICE" })}</TableCell>
+                <TableCell>{deal.sale_bid.price}</TableCell>
+                <TableCell>{deal.purchase_bid.price}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  {intl.formatMessage({ id: "DEALS.TABLE.PROFIT_WITHOUT_DELIVERY" })}
+                </TableCell>
+                <TableCell colSpan={2} align="center">
+                  {deal.profit_without_delivery_price}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  {intl.formatMessage({ id: "DEALS.TABLE.PROFIT_WITH_DELIVERY" })}
+                </TableCell>
+                <TableCell colSpan={2} align="center">
+                  {deal.profit_with_delivery_price}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>{intl.formatMessage({ id: "DEALS.TABLE.DISTANCE" })}</TableCell>
+                <TableCell colSpan={2} align="center">
+                  {deal.distance}
+                </TableCell>
+              </TableRow>
               <TableRow>
                 <TableCell>{intl.formatMessage({ id: "DEALS.TABLE.AGENT" })}</TableCell>
                 <TableCell>
@@ -128,6 +182,19 @@ const DealViewPage: React.FC<TPropsFromRedux &
                 <TableCell>
                   <Link to={`/user/view/${deal.purchase_bid.vendor.id}`}>
                     {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
+                  </Link>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>
+                  <Link to={`/bid/edit/${deal.sale_bid.id}/fromAdmin`}>
+                    {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  <Link to={`/bid/edit/${deal.purchase_bid.id}/fromAdmin`}>
+                    {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
                   </Link>
                 </TableCell>
               </TableRow>
@@ -160,10 +227,14 @@ const connector = connect(
     error: state.deals.error,
     deal: state.deals.deal,
     crops: state.crops2.crops,
+    cropsError: state.crops2.error,
+    cropParams: state.crops2.cropParams,
+    cropParamsError: state.crops2.cropParamsError,
   }),
   {
     fetch: dealsActions.fetchRequest,
     fetchCrops: crops2Actions.fetchRequest,
+    fetchCropParams: crops2Actions.cropParamsRequest,
     setDeal: dealsActions.setDeal,
   }
 );

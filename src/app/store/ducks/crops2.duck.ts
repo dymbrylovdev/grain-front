@@ -87,7 +87,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case CROP_PARAMS_SUCCESS: {
-        //console.log(action.payload.data);
+        console.log(action.payload.data);
         return {
           ...state,
           cropParams: action.payload.data,
