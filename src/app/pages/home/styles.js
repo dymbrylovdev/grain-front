@@ -112,6 +112,11 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "row",
     alignItems: "center",
   },
+  flexColumn: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
 
   // buttons ********************************************************************************************************************
 

@@ -10,14 +10,14 @@ import { IServerResponse } from "../../interfaces/server";
 import { getCropParams, getCrops } from "../../crud/crops.crud";
 import { ICrop, ICropParam } from "../../interfaces/crops";
 
-const FETCH_REQUEST = "cropParams/FETCH_REQUEST";
-const FETCH_SUCCESS = "cropParams/FETCH_SUCCESS";
-const FETCH_FAIL = "cropParams/FETCH_FAIL";
+const FETCH_REQUEST = "crops2/FETCH_REQUEST";
+const FETCH_SUCCESS = "crops2/FETCH_SUCCESS";
+const FETCH_FAIL = "crops2/FETCH_FAIL";
 
-const CLEAR_CROP_PARAMS = "cropParams/CLEAR_CROP_PARAMS";
-const CROP_PARAMS_REQUEST = "cropParams/CROP_PARAMS_REQUEST";
-const CROP_PARAMS_SUCCESS = "cropParams/CROP_PARAMS_SUCCESS";
-const CROP_PARAMS_FAIL = "cropParams/CROP_PARAMS_FAIL";
+const CLEAR_CROP_PARAMS = "crops2/CLEAR_CROP_PARAMS";
+const CROP_PARAMS_REQUEST = "crops2/CROP_PARAMS_REQUEST";
+const CROP_PARAMS_SUCCESS = "crops2/CROP_PARAMS_SUCCESS";
+const CROP_PARAMS_FAIL = "crops2/CROP_PARAMS_FAIL";
 
 export interface IInitialState {
   crops: ICrop[] | undefined;

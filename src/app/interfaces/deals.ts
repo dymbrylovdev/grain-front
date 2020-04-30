@@ -1,94 +1,150 @@
-export type TBidType = "sale" | "purchase";
-
-export interface IBid {
-  id: number;
-  price: number;
-  volume: number;
-  description: string;
-  author: {
+export interface IDeal {
+  purchase_bid: {
     id: number;
-    fio: string;
-    login: string;
-    company: {
+    price: number;
+    volume: number;
+    description: string;
+    author: {
       id: number;
-      short_name: string;
-    };
-  };
-  createdAt: string;
-  vendor: {
-    id: number;
-    fio: string;
-    login: string;
-    company: {
-      id: number;
-      short_name: string;
-    };
-  };
-  location: {
-    lat: number;
-    lng: number;
-    country: string;
-    province: string;
-    city: string;
-    street: string;
-    text: string;
-    house: string;
-  };
-  crop_id: number;
-  parameter_values: [
-    {
-      id: number;
-      value: string;
-      parameter_id: number;
-    }
-  ];
-  point_prices: [
-    {
-      point: {
+      fio: string;
+      login: string;
+      company: {
         id: number;
-        name: string;
-        lat: number;
-        lng: number;
+        short_name: string;
       };
-      price_delivery: number;
-      distance: number;
-      price_delivery_per_km: number;
-      price_with_delivery: number;
-      profit: number;
-    }
-  ];
-  distance: number;
-  price_delivery_per_km: number;
-  price_delivery: number;
-  price_with_delivery: number;
-  profit: number;
-}
-
-export interface IBidToRequest {
-  price?: number;
-  volume?: number;
-  description?: string;
-  location?: {
-    lat?: number;
-    lng?: number;
-    country?: string;
-    province?: string;
-    city?: string;
-    street?: string;
-    text?: string;
-    house?: string;
+    };
+    createdAt: string;
+    vendor: {
+      id: number;
+      fio: string;
+      login: string;
+      company: {
+        id: number;
+        short_name: string;
+      };
+    };
+    location: {
+      lat: number;
+      lng: number;
+      country: string;
+      province: string;
+      city: string;
+      street: string;
+      text: string;
+      house: string;
+    };
+    crop_id: number;
+    parameter_values: [
+      {
+        id: number;
+        value: string;
+        parameter_id: number;
+      }
+    ];
+    point_prices: [
+      {
+        point: {
+          id: number;
+          name: string;
+          lat: number;
+          lng: number;
+          country: string;
+          province: string;
+          city: string;
+          street: string;
+          text: string;
+          house: string;
+        };
+        price: number;
+        price_delivery: number;
+        distance: number;
+        price_delivery_per_km: number;
+        price_with_delivery: number;
+        profit: number;
+      }
+    ];
+    distance: number;
+    price_delivery_per_km: number;
+    price_delivery: number;
+    price_with_delivery: number;
+    profit: number;
   };
-  crop_id?: number;
-  parameter_values?: [
-    {
-      value?: string;
-      parameter_id?: number;
-    }
-  ];
-  vendor_id?: number;
-}
-
-export interface IBestBids {
-  equal: IBid[];
-  inexact: IBid[];
+  sale_bid: {
+    id: number;
+    price: number;
+    volume: number;
+    description: string;
+    author: {
+      id: number;
+      fio: string;
+      login: string;
+      company: {
+        id: number;
+        short_name: string;
+      };
+    };
+    createdAt: string;
+    vendor: {
+      id: number;
+      fio: string;
+      login: string;
+      company: {
+        id: number;
+        short_name: string;
+      };
+    };
+    location: {
+      lat: number;
+      lng: number;
+      country: string;
+      province: string;
+      city: string;
+      street: string;
+      text: string;
+      house: string;
+    };
+    crop_id: number;
+    parameter_values: [
+      {
+        id: number;
+        value: string;
+        parameter_id: number;
+      }
+    ];
+    point_prices: [
+      {
+        point: {
+          id: number;
+          name: string;
+          lat: number;
+          lng: number;
+          country: string;
+          province: string;
+          city: string;
+          street: string;
+          text: string;
+          house: string;
+        };
+        price: number;
+        price_delivery: number;
+        distance: number;
+        price_delivery_per_km: number;
+        price_with_delivery: number;
+        profit: number;
+      }
+    ];
+    distance: number;
+    price_delivery_per_km: number;
+    price_delivery: number;
+    price_with_delivery: number;
+    profit: number;
+  };
+  distance: number;
+  profit_without_delivery_price: number;
+  profit_with_delivery_price: number;
+  delivery_price: number;
+  page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
 }

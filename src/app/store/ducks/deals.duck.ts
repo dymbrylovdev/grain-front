@@ -4,8 +4,10 @@ import { put, takeLatest, call } from "redux-saga/effects";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
-import { getUsers, getUserById, deleteUser, createUser, editUser } from "../../crud/users.crud";
+import { getUserById, deleteUser, createUser, editUser } from "../../crud/users.crud";
 import { IUser, IUserForCreate, IUserForEdit } from "../../interfaces/users";
+import { getDeals } from "../../crud/deals.crud";
+import { IDeal } from "../../interfaces/deals";
 
 const FETCH_REQUEST = "deals/FETCH_REQUEST";
 const FETCH_SUCCESS = "deals/FETCH_SUCCESS";
@@ -35,12 +37,12 @@ export interface IInitialState {
   page: number;
   per_page: number;
   total: number;
-  deals: IUser[] | undefined;
+  deals: IDeal[] | undefined;
   loading: boolean;
   success: boolean;
   error: string | null;
 
-  deal: IUser | undefined;
+  deal: IDeal | undefined;
   byIdLoading: boolean;
   byIdSuccess: boolean;
   byIdError: string | null;
@@ -98,7 +100,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_SUCCESS: {
-      // console.log("Fetch deals: ", action.payload);
+      console.log("Fetch deals: ", action.payload);
       return {
         ...state,
         page: action.payload.page,
@@ -213,14 +215,13 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 };
 
 export const actions = {
-  fetchRequest: (payload: { page: number; perPage: number }) =>
-    createAction(FETCH_REQUEST, payload),
-  fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
+  fetchRequest: (filter_id: number) => createAction(FETCH_REQUEST, { filter_id }),
+  fetchSuccess: (payload: IServerResponse<IDeal[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
   clearFetchById: () => createAction(CLEAR_FETCH_BY_ID),
   fetchByIdRequest: (payload: { id: number }) => createAction(FETCH_BY_ID_REQUEST, payload),
-  fetchByIdSuccess: (payload: IServerResponse<IUser>) => createAction(FETCH_BY_ID_SUCCESS, payload),
+  fetchByIdSuccess: (payload: IServerResponse<IDeal>) => createAction(FETCH_BY_ID_SUCCESS, payload),
   fetchByIdFail: (payload: string) => createAction(FETCH_BY_ID_FAIL, payload),
 
   clearCreate: () => createAction(CLEAR_CREATE),
@@ -241,10 +242,10 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga({ payload }: { payload: { page: number; perPage: number } }) {
+function* fetchSaga({ payload }: { payload: { filter_id: number } }) {
   try {
-    const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
-      getUsers(payload.page, payload.perPage)
+    const { data }: { data: IServerResponse<IDeal[]> } = yield call(() =>
+      getDeals(payload.filter_id)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
@@ -254,7 +255,7 @@ function* fetchSaga({ payload }: { payload: { page: number; perPage: number } })
 
 function* fetchByIdSaga({ payload }: { payload: { id: number } }) {
   try {
-    const { data }: { data: IServerResponse<IUser> } = yield call(() => getUserById(payload.id));
+    const { data }: { data: IServerResponse<IDeal> } = yield call(() => getUserById(payload.id));
     yield put(actions.fetchByIdSuccess(data));
   } catch (e) {
     yield put(actions.fetchByIdFail(e.response.data.message));
