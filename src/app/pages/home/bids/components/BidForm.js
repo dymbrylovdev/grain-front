@@ -14,15 +14,15 @@ import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 
 const getInitialValues = (bid, crop, userRole) => {
   const values = {
-    volume: bid.volume || "",
-    price: bid.price || "",
-    description: bid.description || "",
+    volume: bid?.volume || "",
+    price: bid?.price || "",
+    description: bid?.description || "",
     crop: crop,
-    location: bid.location || {},
-    pricePerKm: bid.price_delivery_per_km || 4,
+    location: bid?.location || {},
+    pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: userRole === "buyer" ? "purchase" : "sale",
   };
-  if (bid.parameter_values && bid.parameter_values.length > 0) {
+  if (bid && bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.forEach(item => {
       values[`parameter${item.parameter_id}`] = item.value;
     });
@@ -105,7 +105,10 @@ function BidForm({
 
   const [selectedLocation, setSelectedLocation] = useState(null);
 
-  const filterCrops = crops && crops.filter(item => item.id === bid.crop_id);
+  const filterCrops =
+    bid && crops && crops.filter(item => item.id === bid.crop_id)
+      ? crops.filter(item => item.id === bid.crop_id)
+      : null;
   const currentCrop = filterCrops && filterCrops.length > 0 ? filterCrops[0] : null;
 
   const getCropParamsAction = cropId => {
@@ -136,9 +139,9 @@ function BidForm({
   }, [bidId, currentCrop]); // eslint-disable-line
 
   const toUserPath =
-    user.id === (bid.vendor && bid.vendor.id)
+    user.id === (!!bid && bid.vendor && bid.vendor.id)
       ? "/user/profile"
-      : `/user/view/${bid.vendor && bid.vendor.id}`;
+      : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`;
 
   return (
     <Paper className={classes.container}>
@@ -382,7 +385,7 @@ function BidForm({
                   multiline
                   disabled={!isEditable}
                 />
-                {bid.vendor && (
+                {bid?.vendor && (
                   <Link to={toUserPath}>
                     <div className={innerClasses.authorText}>
                       {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.fio ||

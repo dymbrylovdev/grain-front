@@ -125,7 +125,10 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     color="primary"
                     onClick={() => {
                       setActiveStep(activeStep + 1);
-                      if (activeStep === 1) history.push("/bidsList/1");
+                      if (activeStep === 1) {
+                        if (dullRole === "seller") history.push("/purchase/best-bids/1");
+                        if (dullRole === "buyer") history.push("/sale/best-bids/1");
+                      }
                       if (activeStep === 4) history.push("/bid/create");
                     }}
                   >

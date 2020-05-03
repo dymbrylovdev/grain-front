@@ -3,13 +3,15 @@ import { compose } from "redux";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Paper, AppBar, Tabs, Tab, Divider } from "@material-ui/core";
+import { Paper, AppBar, Tabs, Tab, Divider, makeStyles } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 
 import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
 import { actions as locationsActions } from "../../../store/ducks/locations.duck";
 import { actions as googleLocationsActions } from "../../../store/ducks/yaLocations.duck";
+import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
+
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
@@ -17,6 +19,13 @@ import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
 import { ProfileForm, CompanyForm, LocationsForm } from "./components";
 import { ErrorPage } from "../../../components/ErrorPage";
+import Prompter from "../prompter/Prompter";
+
+const innerStyles = makeStyles(theme => ({
+  pulseRoot: {
+    animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
+  },
+}));
 
 const UserEditPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -63,6 +72,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
   editError,
 
   statuses,
+  runPrompter,
   prompterRunning,
   prompterStep,
 
@@ -79,10 +89,9 @@ const UserEditPage: React.FC<TPropsFromRedux &
   delUser,
   clearEditUser,
   editUser,
-
-  mergeUser,
 }) => {
   const classes = useStyles();
+  const innerClasses = innerStyles();
   const history = useHistory();
 
   let editMode: "profile" | "create" | "edit" | "view" = "profile";
@@ -155,64 +164,90 @@ const UserEditPage: React.FC<TPropsFromRedux &
     }
   }, [editMode, fetchMe, fetchUser, id, loadingMe, loadingUser, me, user]);
 
+  useEffect(() => {
+    if (!me?.fio || me.points.length === 0) {
+      if (me?.is_buyer) runPrompter("buyer");
+      if (me?.is_vendor) runPrompter("seller");
+    }
+  }, [me, runPrompter]);
+
   if (errorMe || errorUser || funnelStatesError) return <ErrorPage />;
 
   return (
-    <Paper className={classes.container}>
-      <LayoutSubheader title={subTitle(editMode)} breadcrumb={undefined} description={undefined} />
-      <div className={classes.form}>
-        <AppBar position="static" color="default" className={classes.appBar}>
-          <Tabs
-            value={valueTabs}
-            onChange={handleTabsChange}
-            indicatorColor="primary"
-            textColor="primary"
-            aria-label="tabs"
-            centered
-          >
-            <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
-            <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })} {...a11yProps(1)} />
-            <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })} {...a11yProps(2)} />
-          </Tabs>
-        </AppBar>
-        <Divider />
-        <TabPanel value={valueTabs} index={0}>
-          <ProfileForm userId={+id || undefined} editMode={editMode} setAlertOpen={setAlertOpen} />
-        </TabPanel>
-        <TabPanel value={valueTabs} index={1}>
-          {editMode === "create" ? (
-            <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
-          ) : (
-            <CompanyForm userId={+id || undefined} editMode={editMode} />
-          )}
-        </TabPanel>
-        <TabPanel value={valueTabs} index={2}>
-          {editMode === "create" ? (
-            <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
-          ) : (
-            <LocationsForm editMode={editMode} userId={+id || undefined} />
-          )}
-        </TabPanel>
-      </div>
-      <AlertDialog
-        isOpen={isAlertOpen}
-        text={intl.formatMessage({
-          id: "USERLIST.DIALOGS.DELETE_TEXT",
-        })}
-        okText={intl.formatMessage({
-          id: "USERLIST.DIALOGS.AGREE_TEXT",
-        })}
-        cancelText={intl.formatMessage({
-          id: "USERLIST.DIALOGS.CANCEL_TEXT",
-        })}
-        handleClose={() => setAlertOpen(false)}
-        handleAgree={() => delUser({ id: +id })}
-        loadingText={intl.formatMessage({
-          id: "USERLIST.DIALOGS.LOADING_TEXT",
-        })}
-        isLoading={delLoading}
-      />
-    </Paper>
+    <>
+      <Prompter />
+      <Paper className={classes.container}>
+        <LayoutSubheader
+          title={subTitle(editMode)}
+          breadcrumb={undefined}
+          description={undefined}
+        />
+        <div className={classes.form}>
+          <AppBar position="static" color="default" className={classes.appBar}>
+            <Tabs
+              value={valueTabs}
+              onChange={handleTabsChange}
+              indicatorColor="primary"
+              textColor="primary"
+              aria-label="tabs"
+              centered
+            >
+              <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
+              <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })} {...a11yProps(1)} />
+              <Tab
+                classes={
+                  prompterRunning && prompterStep === 0 && me?.points.length === 0
+                    ? { root: innerClasses.pulseRoot }
+                    : {}
+                }
+                label={intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })}
+                {...a11yProps(2)}
+              />
+            </Tabs>
+          </AppBar>
+          <Divider />
+          <TabPanel value={valueTabs} index={0}>
+            <ProfileForm
+              userId={+id || undefined}
+              editMode={editMode}
+              setAlertOpen={setAlertOpen}
+            />
+          </TabPanel>
+          <TabPanel value={valueTabs} index={1}>
+            {editMode === "create" ? (
+              <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
+            ) : (
+              <CompanyForm userId={+id || undefined} editMode={editMode} />
+            )}
+          </TabPanel>
+          <TabPanel value={valueTabs} index={2}>
+            {editMode === "create" ? (
+              <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
+            ) : (
+              <LocationsForm editMode={editMode} userId={+id || undefined} />
+            )}
+          </TabPanel>
+        </div>
+        <AlertDialog
+          isOpen={isAlertOpen}
+          text={intl.formatMessage({
+            id: "USERLIST.DIALOGS.DELETE_TEXT",
+          })}
+          okText={intl.formatMessage({
+            id: "USERLIST.DIALOGS.AGREE_TEXT",
+          })}
+          cancelText={intl.formatMessage({
+            id: "USERLIST.DIALOGS.CANCEL_TEXT",
+          })}
+          handleClose={() => setAlertOpen(false)}
+          handleAgree={() => delUser({ id: +id })}
+          loadingText={intl.formatMessage({
+            id: "USERLIST.DIALOGS.LOADING_TEXT",
+          })}
+          isLoading={delLoading}
+        />
+      </Paper>
+    </>
   );
 };
 
@@ -275,7 +310,7 @@ const connector = connect(
     clearEditUser: usersActions.clearEdit,
     editUser: usersActions.editRequest,
 
-    mergeUser: authActions.mergeUser,
+    runPrompter: prompterActions.runPrompter,
   }
 );
 

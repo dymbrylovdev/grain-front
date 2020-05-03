@@ -146,8 +146,8 @@ function BidCreatePage({
   };
 
   useEffect(() => {
-    if (!!user) fetchBidById(+bidId);
-  }, [user, bidId, fetchBidById]);
+    if (!!user && !creating) fetchBidById(+bidId);
+  }, [user, bidId, fetchBidById, creating]);
 
   useEffect(() => {
     if (+vendor_id) fetchUser({ id: +vendor_id });
@@ -190,7 +190,7 @@ function BidCreatePage({
     title = intl.formatMessage({ id: "BID.TITLE.EDIT" });
   }
 
-  if (preloading || !fromUser || !bid) return <Preloader />;
+  if (preloading || !fromUser || (!bid && !creating)) return <Preloader />;
   if (errors.get) return <ErrorPage />;
 
   return (

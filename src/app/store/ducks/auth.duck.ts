@@ -132,7 +132,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case FETCH_SUCCESS: {
-        console.log("Fetch Me: ", action.payload);
+        // console.log("Fetch Me: ", action.payload);
         return {
           ...state,
           user: action.payload.data,
