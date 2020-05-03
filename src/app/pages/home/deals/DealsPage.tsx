@@ -140,12 +140,12 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     <TableCell>
                       <div className={classes.flexColumn}>
                         <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}
-                          {item.sale_bid.volume}
+                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                          <strong>{item.sale_bid.price}</strong>
                         </div>
                         <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}
-                          {item.sale_bid.price}
+                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                          <strong>{item.sale_bid.volume}</strong>
                         </div>
                         <div>
                           {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
@@ -162,12 +162,12 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     <TableCell>
                       <div className={classes.flexColumn}>
                         <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}
-                          {item.purchase_bid.volume}
+                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                          <strong>{item.purchase_bid.price}</strong>
                         </div>
                         <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}
-                          {item.purchase_bid.price}
+                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                          <strong>{item.purchase_bid.volume}</strong>
                         </div>
                         <div>
                           {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
