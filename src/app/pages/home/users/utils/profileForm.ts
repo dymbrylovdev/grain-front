@@ -25,6 +25,7 @@ export const getInitialValues = (user: IUser | undefined) => ({
   status: user ? user.status || "EMPTY" : "EMPTY",
   funnel_state_id: user && user.funnel_state ? user.funnel_state.id || 0 : 0,
   is_funnel_state_automate: user ? user.is_funnel_state_automate : false,
+  use_vat: user ? user.use_vat : true,
 });
 
 export const roles = [admin, buyer, vendor];

@@ -108,10 +108,10 @@
   "DEALS.TABLE.PROFIT_WITH_DELIVERY": "Прибыль на тонну с учетом доставки, руб.",
   "DEALS.TABLE.PROFIT_WITHOUT_DELIVERY": "Прибыль на тонну без учета доставки, руб.",
   "DEALS.TABLE.DISTANCE": "Расстояние, км",
-  "DEALS.EMPTY": "Сделок по культуре \"{name}\" не найдено.",
+  "DEALS.EMPTY": "Сделок не найдено.",
   "DEALS.EMPTY_DEAL": "Запрашиваемая сделка не найдена.",
-  "DEALS.TITLE": "Сделки по культуре \"{name}\"",
-  "DEALS.VIEW.TITLE": "Сделка по культуре \"{name}\"",
+  "DEALS.TITLE": "Сделки",
+  "DEALS.VIEW.TITLE": "Сделка",
   "DEALS.TABLE.PRICE": "Цена: ",
   "DEALS.PRICE": "Цена за тонну, руб.",
   "DEALS.TABLE.VOLUME": "Объём, т: ",
@@ -167,6 +167,7 @@
   "USER.EDIT_FORM.PROFILE": "Профиль",
   "USER.EDIT_FORM.COMPANY": "Компания",
   "USER.EDIT_FORM.LOCATIONS": "Точки отгрузки",
+  "USER.EDIT_FORM.USE_VAT": "Работаю с НДС.",
 
   "LOCATION.STATUS.ERROR": "Ошибка сохранения локации",
 

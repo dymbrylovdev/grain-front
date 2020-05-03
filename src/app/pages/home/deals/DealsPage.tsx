@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { compose } from "redux";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
 import {
@@ -27,12 +27,7 @@ import { Skeleton } from "@material-ui/lab";
 import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
 
-const DealsPage: React.FC<TPropsFromRedux &
-  WrappedComponentProps &
-  RouteComponentProps<{ cropId: string }>> = ({
-  match: {
-    params: { cropId },
-  },
+const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
   page,
   perPage,
@@ -42,8 +37,14 @@ const DealsPage: React.FC<TPropsFromRedux &
   loading,
   error,
 
+  fetchDealsFilters,
+  dealsFilters,
+  filtersLoading,
+  filtersError,
+
   crops,
   fetchCrops,
+  cropsError,
 
   clearEdit,
   edit,
@@ -68,37 +69,39 @@ const DealsPage: React.FC<TPropsFromRedux &
       clearEdit();
     }
     if (editSuccess) {
-      fetch({ page, perPage, id: +cropId });
+      if (!!dealsFilters) fetch({ page, perPage, id: 1 });
     }
-  }, [clearEdit, cropId, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage]);
+  }, [
+    clearEdit,
+    dealsFilters,
+    editError,
+    editSuccess,
+    enqueueSnackbar,
+    fetch,
+    intl,
+    page,
+    perPage,
+  ]);
 
   useEffect(() => {
-    fetch({ page, perPage, id: +cropId });
-  }, [cropId, fetch, page, perPage]);
+    if (!!dealsFilters) fetch({ page, perPage, id: 1 });
+  }, [dealsFilters, fetch, page, perPage]);
 
   useEffect(() => {
     fetchCrops();
   }, [fetchCrops]);
 
-  if (error) return <ErrorPage />;
+  useEffect(() => {
+    fetchDealsFilters();
+  }, [fetchDealsFilters]);
+
+  if (error || filtersError || cropsError) return <ErrorPage />;
 
   return (
     <Paper className={classes.tableContainer}>
-      {!!crops && (
-        <LayoutSubheader
-          title={intl.formatMessage(
-            { id: "DEALS.TITLE" },
-            { name: crops.find(item => item.id === +cropId)?.name }
-          )}
-        />
-      )}
+      {!!crops && <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />}
       <div className={classes.tableTitle}>
-        {!!deals && !deals?.length
-          ? intl.formatMessage(
-              { id: "DEALS.EMPTY" },
-              { name: crops?.find(item => item.id === +cropId)?.name }
-            )
-          : ""}
+        {!!deals && !deals?.length ? intl.formatMessage({ id: "DEALS.EMPTY" }) : ""}
       </div>
       {!deals || !crops ? (
         <>
@@ -186,7 +189,7 @@ const DealsPage: React.FC<TPropsFromRedux &
                         color="primary"
                         onClick={() =>
                           history.push(
-                            `/deals/view/${cropId}/${item.sale_bid.id}/${item.purchase_bid.id}`
+                            `/deals/view/${item.sale_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`
                           )
                         }
                       >
@@ -199,7 +202,9 @@ const DealsPage: React.FC<TPropsFromRedux &
             <TableFooter>
               <TableRow>
                 <TablePaginator
-                  id={+cropId}
+                  // id={
+                  //   (!!dealsFilters && dealsFilters.find(item => item.crop.id === +cropId)?.id) || 0
+                  // }
                   page={page}
                   realPerPage={deals.length}
                   perPage={perPage}
@@ -224,7 +229,12 @@ const connector = connect(
     loading: state.deals.loading,
     error: state.deals.error,
 
+    dealsFilters: state.deals.filters,
+    filtersLoading: state.deals.filtersLoading,
+    filtersError: state.deals.filtersError,
+
     crops: state.crops2.crops,
+    cropsError: state.crops2.error,
 
     editLoading: state.deals.editLoading,
     editSuccess: state.deals.editSuccess,
@@ -232,6 +242,7 @@ const connector = connect(
   }),
   {
     fetch: dealsActions.fetchRequest,
+    fetchDealsFilters: dealsActions.fetchFiltersRequest,
     fetchCrops: crops2Actions.fetchRequest,
     clearEdit: dealsActions.clearEdit,
     edit: dealsActions.editRequest,

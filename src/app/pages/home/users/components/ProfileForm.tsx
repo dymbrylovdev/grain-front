@@ -111,6 +111,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         let params: IUserForEdit = setEditValues(values);
         params.funnel_state_id = values.funnel_state_id;
         params.is_funnel_state_automate = values.is_funnel_state_automate;
+        params.use_vat = values.use_vat;
         editUser({ id: user.id, data: params });
       }
     },
@@ -503,6 +504,19 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           )}
         </div>
       )}
+
+      <div>
+        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
+          <Skeleton width={135} height={37.5} animation="wave" />
+        ) : (
+          <FormControlLabel
+            control={<Checkbox checked={values.use_vat} onChange={handleChange} />}
+            label={intl.formatMessage({ id: "USER.EDIT_FORM.USE_VAT" })}
+            name="use_vat"
+            disabled={editMode === "view"}
+          />
+        )}
+      </div>
 
       {editMode !== "view" && (
         <div className={classes.bottomButtonsContainer}>

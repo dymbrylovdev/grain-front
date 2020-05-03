@@ -114,17 +114,8 @@ const getAdminMenu = crops => ({
           {
             title: "Сделки",
             root: true,
-            page: "",
+            page: "deals",
             translate: "SUBMENU.BIDS.DEALS",
-            bullet: "dot",
-            submenu:
-              crops &&
-              crops.map &&
-              crops.map(crop => ({
-                title: crop.name,
-                root: true,
-                page: `deals/${crop.id}`,
-              })),
           },
         ],
       },

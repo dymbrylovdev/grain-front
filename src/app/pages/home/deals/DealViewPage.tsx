@@ -46,6 +46,11 @@ const DealViewPage: React.FC<TPropsFromRedux &
   fetchCrops,
   cropsError,
 
+  fetchDealsFilters,
+  dealsFilters,
+  filtersLoading,
+  filtersError,
+
   fetchCropParams,
   cropParams,
   cropParamsError,
@@ -53,8 +58,9 @@ const DealViewPage: React.FC<TPropsFromRedux &
   const classes = useStyles();
 
   useEffect(() => {
-    fetch({ page, perPage, id: +cropId });
-  }, [cropId, fetch, page, perPage]);
+    if (!!dealsFilters)
+      fetch({ page, perPage, id: dealsFilters.find(item => item.crop.id === +cropId)?.id || 0 });
+  }, [cropId, dealsFilters, fetch, page, perPage]);
 
   useEffect(() => {
     fetchCropParams(+cropId);
@@ -63,6 +69,10 @@ const DealViewPage: React.FC<TPropsFromRedux &
   useEffect(() => {
     fetchCrops();
   }, [fetchCrops]);
+
+  useEffect(() => {
+    fetchDealsFilters();
+  }, [fetchDealsFilters]);
 
   useEffect(() => {
     if (!!deals) {
@@ -81,7 +91,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
     };
   }, [deals, purchaseId, saleId, setDeal]);
 
-  if (error) return <ErrorPage />;
+  if (error || filtersError || cropsError || cropParamsError) return <ErrorPage />;
 
   return (
     <Paper className={classes.tableContainer}>
@@ -199,17 +209,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
                 </TableCell>
               </TableRow>
             </TableBody>
-            {/* <TableFooter>
-            <TableRow>
-              <TablePaginator
-                page={page}
-                realPerPage={deals.length}
-                perPage={perPage}
-                total={total}
-                fetchRows={fetch}
-              />
-            </TableRow>
-          </TableFooter> */}
           </Table>
         )
       )}
@@ -230,12 +229,17 @@ const connector = connect(
     cropsError: state.crops2.error,
     cropParams: state.crops2.cropParams,
     cropParamsError: state.crops2.cropParamsError,
+
+    dealsFilters: state.deals.filters,
+    filtersLoading: state.deals.filtersLoading,
+    filtersError: state.deals.filtersError,
   }),
   {
     fetch: dealsActions.fetchRequest,
     fetchCrops: crops2Actions.fetchRequest,
     fetchCropParams: crops2Actions.cropParamsRequest,
     setDeal: dealsActions.setDeal,
+    fetchDealsFilters: dealsActions.fetchFiltersRequest,
   }
 );
 

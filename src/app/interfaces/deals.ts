@@ -148,3 +148,20 @@ export interface IDeal {
   total: number;
   total_pages: number;
 }
+
+export interface IDealsFilter {
+  id: number;
+  crop: {
+    id: number;
+    name: string;
+    vat: number;
+  };
+  parameters: [
+    {
+      id: number;
+      name: string;
+      type: "enum" | "number";
+      enum: string[];
+    }
+  ];
+}

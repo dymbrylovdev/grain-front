@@ -89,7 +89,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/company/confirm/:companyId" component={CompanyConfirmPage} />
 
         <Route path="/deals/view/:cropId/:saleId/:purchaseId" component={DealViewPage} />
-        <Route path="/deals/:cropId" component={DealsPage} />
+        <Route path="/deals" component={DealsPage} />
 
         <Route path="/dash" component={Dashboard} />
 

@@ -27,6 +27,7 @@ export interface IUser {
     role: TRole;
   } | null;
   is_funnel_state_automate: boolean;
+  use_vat: boolean;
 }
 
 export interface IUserForRegister {
@@ -45,6 +46,7 @@ export interface IUserForCreate {
   status?: string;
   location?: ILocation;
   company_id?: number;
+  use_vat?: boolean;
 }
 
 export interface IUserForEdit {
@@ -61,6 +63,7 @@ export interface IUserForEdit {
   company_confirmed_by_payment?: boolean;
   funnel_state_id?: number;
   is_funnel_state_automate?: boolean;
+  use_vat?: boolean;
 }
 
 export interface IChangePasswordData {

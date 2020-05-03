@@ -6,8 +6,8 @@ import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
 import { getUserById, deleteUser, createUser, editUser } from "../../crud/users.crud";
 import { IUser, IUserForCreate, IUserForEdit } from "../../interfaces/users";
-import { getDeals } from "../../crud/deals.crud";
-import { IDeal } from "../../interfaces/deals";
+import { getDeals, getDealsFilters } from "../../crud/deals.crud";
+import { IDeal, IDealsFilter } from "../../interfaces/deals";
 
 const FETCH_REQUEST = "deals/FETCH_REQUEST";
 const FETCH_SUCCESS = "deals/FETCH_SUCCESS";
@@ -19,6 +19,11 @@ const CLEAR_FETCH_BY_ID = "deals/CLEAR_FETCH_BY_ID";
 const FETCH_BY_ID_REQUEST = "deals/FETCH_BY_ID_REQUEST";
 const FETCH_BY_ID_SUCCESS = "deals/FETCH_BY_ID_SUCCESS";
 const FETCH_BY_ID_FAIL = "deals/FETCH_BY_ID_FAIL";
+
+const CLEAR_FETCH_FILTERS = "deals/CLEAR_FETCH_FILTERS";
+const FETCH_FILTERS_REQUEST = "deals/FETCH_FILTERS_REQUEST";
+const FETCH_FILTERS_SUCCESS = "deals/FETCH_FILTERS_SUCCESS";
+const FETCH_FILTERS_FAIL = "deals/FETCH_FILTERS_FAIL";
 
 const CLEAR_CREATE = "deals/CLEAR_CREATE";
 const CREATE_REQUEST = "deals/CREATE_REQUEST";
@@ -49,6 +54,11 @@ export interface IInitialState {
   byIdSuccess: boolean;
   byIdError: string | null;
 
+  filters: IDealsFilter[] | undefined;
+  filtersLoading: boolean;
+  filtersSuccess: boolean;
+  filtersError: string | null;
+
   createLoading: boolean;
   createSuccess: boolean;
   createError: string | null;
@@ -75,6 +85,11 @@ const initialState: IInitialState = {
   byIdLoading: false,
   byIdSuccess: false,
   byIdError: null,
+
+  filters: undefined,
+  filtersLoading: false,
+  filtersSuccess: false,
+  filtersError: null,
 
   createLoading: false,
   createSuccess: false,
@@ -156,6 +171,40 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return { ...state, deal: undefined, byIdLoading: false, byIdError: action.payload };
     }
 
+    case CLEAR_FETCH_FILTERS: {
+      //console.log("CLEAR_FETCH_FILTERS");
+      return {
+        ...state,
+        filtersLoading: false,
+        filtersSuccess: false,
+        filtersError: null,
+      };
+    }
+
+    case FETCH_FILTERS_REQUEST: {
+      //console.log("FETCH_FILTERS_REQUEST");
+      return {
+        ...state,
+        filtersLoading: true,
+        filtersSuccess: false,
+        filtersError: null,
+      };
+    }
+
+    case FETCH_FILTERS_SUCCESS: {
+      console.log("Fetch FILTERS: ", action.payload);
+      return {
+        ...state,
+        filters: action.payload.data,
+        filtersLoading: false,
+        filtersSuccess: true,
+      };
+    }
+
+    case FETCH_FILTERS_FAIL: {
+      return { ...state, filters: undefined, filtersLoading: false, filtersError: action.payload };
+    }
+
     case CLEAR_CREATE: {
       return { ...state, createLoading: false, createSuccess: false, createError: null };
     }
@@ -221,7 +270,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 };
 
 export const actions = {
-  fetchRequest: (payload: { page: number; perPage: number; id: number }) =>
+  fetchRequest: (payload: { page: number; perPage: number; id?: number }) =>
     createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IDeal[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
@@ -232,6 +281,12 @@ export const actions = {
   fetchByIdRequest: (payload: { id: number }) => createAction(FETCH_BY_ID_REQUEST, payload),
   fetchByIdSuccess: (payload: IServerResponse<IDeal>) => createAction(FETCH_BY_ID_SUCCESS, payload),
   fetchByIdFail: (payload: string) => createAction(FETCH_BY_ID_FAIL, payload),
+
+  clearFetchFilters: () => createAction(CLEAR_FETCH_FILTERS),
+  fetchFiltersRequest: () => createAction(FETCH_FILTERS_REQUEST),
+  fetchFiltersSuccess: (payload: IServerResponse<IDealsFilter[]>) =>
+    createAction(FETCH_FILTERS_SUCCESS, payload),
+  fetchFiltersFail: (payload: string) => createAction(FETCH_FILTERS_FAIL, payload),
 
   clearCreate: () => createAction(CLEAR_CREATE),
   createRequest: (payload: IUserForCreate) => createAction(CREATE_REQUEST, payload),
@@ -251,7 +306,7 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga({ payload }: { payload: { page: number; perPage: number; id: number } }) {
+function* fetchSaga({ payload }: { payload: { page: number; perPage: number; id?: number } }) {
   try {
     const { data }: { data: IServerResponse<IDeal[]> } = yield call(() =>
       getDeals(payload.page, payload.perPage, payload.id)
@@ -259,6 +314,15 @@ function* fetchSaga({ payload }: { payload: { page: number; perPage: number; id:
     yield put(actions.fetchSuccess(data));
   } catch (e) {
     yield put(actions.fetchFail(e.response.data.message));
+  }
+}
+
+function* fetchFiltersSaga() {
+  try {
+    const { data }: { data: IServerResponse<IDealsFilter[]> } = yield call(() => getDealsFilters());
+    yield put(actions.fetchFiltersSuccess(data));
+  } catch (e) {
+    yield put(actions.fetchFiltersFail(e.response.data.message));
   }
 }
 
@@ -300,6 +364,10 @@ function* delSaga({ payload }: { payload: { id: number } }) {
 
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
+  yield takeLatest<ReturnType<typeof actions.fetchFiltersRequest>>(
+    FETCH_FILTERS_REQUEST,
+    fetchFiltersSaga
+  );
   yield takeLatest<ReturnType<typeof actions.fetchByIdRequest>>(FETCH_BY_ID_REQUEST, fetchByIdSaga);
   yield takeLatest<ReturnType<typeof actions.createRequest>>(CREATE_REQUEST, createSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
