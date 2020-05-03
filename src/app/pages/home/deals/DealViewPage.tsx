@@ -111,6 +111,9 @@ const DealViewPage: React.FC<TPropsFromRedux &
       </div>
       {!deals || !crops || !cropParams ? (
         <>
+          <Skeleton width={340} height={33} animation="wave" />
+          <Skeleton width={340} height={33} animation="wave" />
+          <Skeleton width={140} height={33} animation="wave" />
           <Skeleton width="100%" height={52} animation="wave" />
           <Skeleton width="100%" height={77} animation="wave" />
           <Skeleton width="100%" height={77} animation="wave" />
@@ -121,95 +124,129 @@ const DealViewPage: React.FC<TPropsFromRedux &
         </>
       ) : (
         !!deal && (
-          <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TopTableCell></TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.SALE" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.PURCHASE" />
-                </TopTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {cropParams.map(
-                item =>
-                  (deal.sale_bid.parameter_values.find(param => param.parameter_id === item.id) ||
-                    deal.purchase_bid.parameter_values.find(
-                      param => param.parameter_id === item.id
-                    )) && (
-                    <TableRow key={item.id}>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>
-                        {deal.sale_bid.parameter_values.find(
-                          param => param.parameter_id === item.id
-                        )?.value || "-"}
-                      </TableCell>
-                      <TableCell>
-                        {deal.purchase_bid.parameter_values.find(
-                          param => param.parameter_id === item.id
-                        )?.value || "-"}
-                      </TableCell>
-                    </TableRow>
-                  )
-              )}
-              <TableRow>
-                <TableCell>{intl.formatMessage({ id: "DEALS.PRICE" })}</TableCell>
-                <TableCell>{deal.sale_bid.price}</TableCell>
-                <TableCell>{deal.purchase_bid.price}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  {intl.formatMessage({ id: "DEALS.TABLE.PROFIT_WITHOUT_DELIVERY" })}
-                </TableCell>
-                <TableCell colSpan={2} align="center">
-                  {deal.profit_without_delivery_price}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  {intl.formatMessage({ id: "DEALS.TABLE.PROFIT_WITH_DELIVERY" })}
-                </TableCell>
-                <TableCell colSpan={2} align="center">
-                  {deal.profit_with_delivery_price}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>{intl.formatMessage({ id: "DEALS.TABLE.DISTANCE" })}</TableCell>
-                <TableCell colSpan={2} align="center">
-                  {deal.distance}
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>{intl.formatMessage({ id: "DEALS.TABLE.AGENT" })}</TableCell>
-                <TableCell>
-                  <Link to={`/user/view/${deal.sale_bid.vendor.id}`}>
-                    {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <Link to={`/user/view/${deal.purchase_bid.vendor.id}`}>
-                    {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
-                  </Link>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>
-                  <Link to={`/bid/edit/${deal.sale_bid.id}/fromAdmin`}>
-                    {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <Link to={`/bid/edit/${deal.purchase_bid.id}/fromAdmin`}>
-                    {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
-                  </Link>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+          <>
+            <p>
+              <strong>
+                {intl.formatMessage(
+                  { id: "DEALS.TABLE.PROFIT_WITHOUT_DELIVERY" },
+                  { price: Math.round(deal.profit_without_delivery_price) }
+                )}
+              </strong>
+            </p>
+            <p>
+              <strong>
+                {intl.formatMessage(
+                  { id: "DEALS.TABLE.PROFIT_WITH_DELIVERY" },
+                  { price: Math.round(deal.profit_with_delivery_price) }
+                )}
+              </strong>
+            </p>
+            <p>
+              <strong>
+                {intl.formatMessage(
+                  { id: "DEALS.UP_TABLE.DISTANCE" },
+                  { distance: Math.round(deal.distance) }
+                )}
+              </strong>
+            </p>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TopTableCell></TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.SALE" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.PURCHASE" />
+                  </TopTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                    <strong>{intl.formatMessage({ id: "DEALS.PRICE" })}</strong>
+                  </TableCell>
+                  <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                    {deal.sale_bid.price}
+                  </TableCell>
+                  <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                    {deal.purchase_bid.price}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                    <strong>{intl.formatMessage({ id: "DEALS.DEAL.VOLUME" })}</strong>
+                  </TableCell>
+                  <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                    {deal.sale_bid.volume}
+                  </TableCell>
+                  <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                    {deal.purchase_bid.volume}
+                  </TableCell>
+                </TableRow>
+                {cropParams.map(
+                  item =>
+                    (deal.sale_bid.parameter_values.find(param => param.parameter_id === item.id) ||
+                      deal.purchase_bid.parameter_values.find(
+                        param => param.parameter_id === item.id
+                      )) && (
+                      <TableRow key={item.id}>
+                        <TableCell>
+                          <strong>{item.name}</strong>
+                        </TableCell>
+                        <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                          {deal.sale_bid.parameter_values.find(
+                            param => param.parameter_id === item.id
+                          )?.value || "-"}
+                        </TableCell>
+                        <TableCell>
+                          {deal.purchase_bid.parameter_values.find(
+                            param => param.parameter_id === item.id
+                          )?.value || "-"}
+                        </TableCell>
+                      </TableRow>
+                    )
+                )}
+                <TableRow>
+                  <TableCell>
+                    <strong>{intl.formatMessage({ id: "DEALS.DEAL.LOCATION" })}</strong>
+                  </TableCell>
+                  <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                    {deal.sale_bid.location.text}
+                  </TableCell>
+                  <TableCell>{deal.purchase_bid.location.text}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <strong>{intl.formatMessage({ id: "DEALS.TABLE.AGENT" })}</strong>
+                  </TableCell>
+                  <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                    <Link to={`/user/view/${deal.sale_bid.vendor.id}`}>
+                      {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link to={`/user/view/${deal.purchase_bid.vendor.id}`}>
+                      {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
+                    </Link>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                    <Link to={`/bid/edit/${deal.sale_bid.id}/fromAdmin`}>
+                      {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Link to={`/bid/edit/${deal.purchase_bid.id}/fromAdmin`}>
+                      {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </>
         )
       )}
     </Paper>

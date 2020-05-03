@@ -188,9 +188,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         size="medium"
                         color="primary"
                         onClick={() =>
-                          history.push(
-                            `/deals/view/${item.sale_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`
-                          )
+                          history.push(`/deals/view/1/${item.sale_bid.id}/${item.purchase_bid.id}`)
                         }
                       >
                         <VisibilityIcon />
