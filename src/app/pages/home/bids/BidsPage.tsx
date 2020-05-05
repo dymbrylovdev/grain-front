@@ -442,6 +442,7 @@ const BidsPage: React.FC<TPropsFromRedux &
               user={me as IUser}
               title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
               loading={!bestBids || !cropParams}
+              salePurchaseMode={salePurchaseMode}
             />
             <div className={innerClasses.topSpaceContainer}>
               <BidTable
@@ -455,6 +456,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 user={me as IUser}
                 title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
                 loading={!bestBids || !cropParams}
+                salePurchaseMode={salePurchaseMode}
               />
             </div>
             {!!bestBids && (!!bestBids.equal.length || !!bestBids.inexact.length) && (

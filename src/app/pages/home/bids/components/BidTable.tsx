@@ -35,6 +35,7 @@ interface IProps {
   fetcher?: (page: number, perPage: number) => void;
   loading: boolean;
   addUrl?: string;
+  salePurchaseMode?: "sale" | "purchase";
 }
 
 const BidTable: React.FC<IProps> = ({
@@ -49,9 +50,9 @@ const BidTable: React.FC<IProps> = ({
   loading,
   fetcher,
   addUrl,
+  salePurchaseMode,
 }) => {
   const history = useHistory();
-
   return (
     <>
       <div className={classes.tableTitle}>{title || ""}</div>
@@ -95,7 +96,32 @@ const BidTable: React.FC<IProps> = ({
               <TableRow key={bid.id}>
                 <TableCell>{bid.id}</TableCell>
                 <TableCell>{bid.price}</TableCell>
-                <TableCell>{bid.price_with_delivery || "-"}</TableCell>
+                <TableCell>
+                  {!!user &&
+                  user.use_vat &&
+                  salePurchaseMode === "sale" &&
+                  !!bid &&
+                  !bid.vendor.use_vat ? (
+                    !bid.price_with_delivery ? (
+                      "-"
+                    ) : (
+                      <>
+                        <p style={{ marginBottom: "1px" }}>
+                          {!!bid &&
+                            !!bid.vat &&
+                            Math.round(bid.price_with_delivery * (bid.vat / 100 + 1))}
+                        </p>
+                        {`${bid.price_with_delivery && Math.round(bid.price_with_delivery)} + ${
+                          bid.vat
+                        }% НДС`}
+                      </>
+                    )
+                  ) : bid.price_with_delivery ? (
+                    Math.round(bid.price_with_delivery)
+                  ) : (
+                    "-"
+                  )}
+                </TableCell>
                 <TableCell>
                   <Grid container direction="column" justify="center" alignItems="flex-start">
                     {bid.point_prices.map(
