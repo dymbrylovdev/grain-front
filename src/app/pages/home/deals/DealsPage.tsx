@@ -200,9 +200,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             <TableFooter>
               <TableRow>
                 <TablePaginator
-                  // id={
-                  //   (!!dealsFilters && dealsFilters.find(item => item.crop.id === +cropId)?.id) || 0
-                  // }
+                  id={1}
                   page={page}
                   realPerPage={deals.length}
                   perPage={perPage}

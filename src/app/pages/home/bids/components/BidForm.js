@@ -226,6 +226,35 @@ function BidForm({
                   }}
                   disabled={!isEditable}
                 />
+                {!!user &&
+                  user.use_vat &&
+                  values.bid_type === "sale" &&
+                  !!bid &&
+                  !bid.vendor.use_vat && (
+                    <>
+                      <TextField
+                        type="text"
+                        label={intl.formatMessage(
+                          { id: "BIDSLIST.TABLE.COST_WITH_VAT" },
+                          { vat: bid.vat }
+                        )}
+                        margin="normal"
+                        name="price"
+                        value={Math.round(+values.price + (+values.price * +bid.vat) / 100)}
+                        variant="outlined"
+                        InputProps={{
+                          inputComponent: NumberFormatCustom,
+                        }}
+                        disabled
+                      />
+                      <p>
+                        {intl.formatMessage(
+                          { id: "BIDSLIST.TABLE.COST_WITH_VAT.ABOUT" },
+                          { vat: Math.round((+values.price * +bid.vat) / 100) }
+                        )}
+                      </p>
+                    </>
+                  )}
                 <TextField
                   type="text"
                   label={intl.formatMessage({

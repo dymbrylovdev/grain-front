@@ -13,6 +13,7 @@ export interface IBid {
       id: number;
       short_name: string;
     };
+    use_vat: boolean;
   };
   createdAt: string;
   vendor: {
@@ -23,6 +24,7 @@ export interface IBid {
       id: number;
       short_name: string;
     };
+    use_vat: boolean;
   };
   location: {
     lat: number;
@@ -60,8 +62,10 @@ export interface IBid {
   distance: number;
   price_delivery_per_km: number;
   price_delivery: number;
-  price_with_delivery: number;
+  price_with_delivery: number | null;
+  price_with_delivery_with_vat: number | null;
   profit: number;
+  vat: number | null;
 }
 
 export interface IBidToRequest {

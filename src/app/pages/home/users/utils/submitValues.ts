@@ -5,6 +5,7 @@ export const setMeValues = (values: { [key: string]: any }) => {
       if (key !== "role" && key !== "status") newValues[key] = values[key];
     }
   }
+  newValues.use_vat = values.use_vat;
   return newValues;
 };
 
@@ -19,6 +20,7 @@ export const setCreateValues = (values: { [key: string]: any }) => {
       }
     }
   }
+  newValues.use_vat = values.use_vat;
   return newValues;
 };
 
