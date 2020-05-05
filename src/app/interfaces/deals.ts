@@ -22,6 +22,7 @@ export interface IDeal {
         id: number;
         short_name: string;
       };
+      use_vat: boolean;
     };
     location: {
       lat: number;
@@ -68,6 +69,7 @@ export interface IDeal {
     price_delivery: number;
     price_with_delivery: number;
     profit: number;
+    vat: number;
   };
   sale_bid: {
     id: number;
@@ -92,6 +94,7 @@ export interface IDeal {
         id: number;
         short_name: string;
       };
+      use_vat: boolean;
     };
     location: {
       lat: number;
@@ -138,6 +141,7 @@ export interface IDeal {
     price_delivery: number;
     price_with_delivery: number;
     profit: number;
+    vat: number;
   };
   distance: number;
   profit_without_delivery_price: number;

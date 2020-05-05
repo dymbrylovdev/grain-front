@@ -12,6 +12,9 @@
 
   "ALL.SELECTS.EMPTY": "Не выбрано",
 
+  "ALL.YES": "Да",
+  "ALL.NO": "Нет",
+
   "MENU.GRAIN": "Рынок зерна",
   "MENU.ANALITICS": "Аналитика",
   "MENU.USERS": "Пользователи",
@@ -102,12 +105,14 @@
   "AUTH.PASSWORD.BUTTON": "Подтвердить",
   "AUTH.TERM.LOADING": "Загрузка...",
 
+  "DEALS.TABLE.CROP": "Культура",
   "DEALS.TABLE.SALE": "Продажа",
   "DEALS.TABLE.PURCHASE": "Покупка",
   "DEALS.TABLE.PROFIT": "Прибыль, руб.",
   "DEALS.TABLE.PROFIT_WITH_DELIVERY": "Прибыль на тонну с учетом доставки: {price} руб.",
   "DEALS.TABLE.PROFIT_WITHOUT_DELIVERY": "Прибыль на тонну без учета доставки: {price} руб.",
   "DEALS.TABLE.DISTANCE": "Расстояние, км",
+  "DEALS.TABLE.ABOUT_VAT": "При совершении этой сделки покупателю не вернётся НДС в размере {vat}%. Прибыль по сделке была уменьшена на размер НДС.",
   "DEALS.UP_TABLE.DISTANCE": "Расстояние: {distance} км.",
   "DEALS.EMPTY": "Сделок не найдено.",
   "DEALS.EMPTY_DEAL": "Запрашиваемая сделка не найдена.",
@@ -117,12 +122,14 @@
   "DEALS.PRICE": "Цена за тонну, руб.",
   "DEALS.TABLE.VOLUME": "Объём, т.: ",
   "DEALS.DEAL.VOLUME": "Объём, т.",
+  "DEALS.DEAL.WORK_WITH_VAT": "Работает с НДС",
   "DEALS.TABLE.LOCATION": "Точка отгрузки: ",
   "DEALS.DEAL.LOCATION": "Точка отгрузки",
   "DEALS.TABLE.SELLER": "Продавец: ",
   "DEALS.TABLE.BUYER": "Покупатель: ",
   "DEALS.TABLE.AGENT": "Контрагент",
   "DEALS.TABLE.EDIT_TEXT": "Редактировать заявку",
+  "DEALS.FILTER.NAME": "Фильтр по параметрам",
 
   "PROFILE.INPUT.FIO": "ФИО",
   "PROFILE.INPUT.LOCATION": "Точка отгрузки",

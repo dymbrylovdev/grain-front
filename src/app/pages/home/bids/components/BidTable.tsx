@@ -111,9 +111,11 @@ const BidTable: React.FC<IProps> = ({
                             !!bid.vat &&
                             Math.round(bid.price_with_delivery * (bid.vat / 100 + 1))}
                         </p>
-                        {`${bid.price_with_delivery && Math.round(bid.price_with_delivery)} + ${
-                          bid.vat
-                        }% НДС`}
+                        <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
+                          {`${bid.price_with_delivery && Math.round(bid.price_with_delivery)} + ${
+                            bid.vat
+                          }% НДС`}
+                        </p>
                       </>
                     )
                   ) : bid.price_with_delivery ? (

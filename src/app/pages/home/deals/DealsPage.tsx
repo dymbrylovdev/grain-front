@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { compose } from "redux";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import { useSnackbar } from "notistack";
 
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
@@ -54,6 +55,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 }) => {
   const classes = useStyles();
   const history = useHistory();
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -103,6 +105,16 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       <div className={classes.tableTitle}>
         {!!deals && !deals?.length ? intl.formatMessage({ id: "DEALS.EMPTY" }) : ""}
       </div>
+      <div className={classes.flexRow} style={{ justifyContent: "flex-end", marginBottom: "8px" }}>
+        {intl.formatMessage({ id: "DEALS.FILTER.NAME" })}
+        <IconButton
+          onClick={() => {
+            setFilterModalOpen(true);
+          }}
+        >
+          <CustomIcon path="/media/filter/filter_full.svg" />
+        </IconButton>
+      </div>
       {!deals || !crops ? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />
@@ -118,6 +130,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
+                <TopTableCell>
+                  <FormattedMessage id="DEALS.TABLE.CROP" />
+                </TopTableCell>
                 <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.SALE" />
                 </TopTableCell>
@@ -137,6 +152,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {!!deals &&
                 deals.map((item, i) => (
                   <TableRow key={i}>
+                    <TableCell>
+                      {crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}
+                    </TableCell>
                     <TableCell>
                       <div className={classes.flexColumn}>
                         <div>

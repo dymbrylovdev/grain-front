@@ -148,6 +148,14 @@ const DealViewPage: React.FC<TPropsFromRedux &
                 )}
               </strong>
             </p>
+            {!deal.sale_bid.vendor.use_vat && deal.purchase_bid.vendor.use_vat && (
+              <p>
+                {intl.formatMessage(
+                  { id: "DEALS.TABLE.ABOUT_VAT" },
+                  { vat: deal.purchase_bid.vat }
+                )}
+              </p>
+            )}
             <Table className={classes.table} aria-label="simple table">
               <TableHead>
                 <TableRow>
@@ -181,6 +189,21 @@ const DealViewPage: React.FC<TPropsFromRedux &
                   </TableCell>
                   <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
                     {deal.purchase_bid.volume}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
+                    <strong>{intl.formatMessage({ id: "DEALS.DEAL.WORK_WITH_VAT" })}</strong>
+                  </TableCell>
+                  <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                    {deal.sale_bid.vendor.use_vat
+                      ? `${intl.formatMessage({ id: "ALL.YES" })}, ${deal.sale_bid.vat}%`
+                      : intl.formatMessage({ id: "ALL.NO" })}
+                  </TableCell>
+                  <TableCell>
+                    {deal.purchase_bid.vendor.use_vat
+                      ? `${intl.formatMessage({ id: "ALL.YES" })}, ${deal.purchase_bid.vat}%`
+                      : intl.formatMessage({ id: "ALL.NO" })}
                   </TableCell>
                 </TableRow>
                 {cropParams.map(
