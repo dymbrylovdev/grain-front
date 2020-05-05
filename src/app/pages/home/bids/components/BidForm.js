@@ -240,7 +240,7 @@ function BidForm({
                         )}
                         margin="normal"
                         name="price"
-                        value={Math.round(+values.price + (+values.price * +bid.vat) / 100)}
+                        value={Math.round(+values.price * (+bid.vat / 100 + 1))}
                         variant="outlined"
                         InputProps={{
                           inputComponent: NumberFormatCustom,
@@ -299,7 +299,16 @@ function BidForm({
                       }}
                     />
                     <div className={innerClasses.calcDescription}>
-                      {`${intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}`}
+                      {!!user &&
+                      user.use_vat &&
+                      values.bid_type === "sale" &&
+                      !!bid &&
+                      !bid.vendor.use_vat
+                        ? intl.formatMessage(
+                            { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" },
+                            { vat: bid.vat }
+                          )
+                        : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
                     </div>
                     <div style={{ height: 8 }}></div>
                     <Grid container direction="column" justify="center" alignItems="flex-start">
@@ -307,7 +316,19 @@ function BidForm({
                         bid.point_prices &&
                         bid.point_prices.map((item, i) => (
                           <div key={i}>
-                            <strong>{getFinalPrice(bid, i, values.pricePerKm)}</strong>
+                            {!!user &&
+                            user.use_vat &&
+                            values.bid_type === "sale" &&
+                            !!bid &&
+                            !bid.vendor.use_vat ? (
+                              <strong>
+                                {Math.round(
+                                  getFinalPrice(bid, i, values.pricePerKm) * (+bid.vat / 100 + 1)
+                                )}
+                              </strong>
+                            ) : (
+                              <strong>{getFinalPrice(bid, i, values.pricePerKm)}</strong>
+                            )}
                             {` • ${item.point.name}`}
                           </div>
                         ))}
