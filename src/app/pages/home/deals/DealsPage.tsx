@@ -69,7 +69,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEdit();
     }
     if (editSuccess) {
-      if (!!dealsFilters) fetch({ page, perPage, id: 1 });
+      if (!!dealsFilters) fetch({ page, perPage });
     }
   }, [
     clearEdit,
@@ -84,8 +84,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   ]);
 
   useEffect(() => {
-    if (!!dealsFilters) fetch({ page, perPage, id: 1 });
-  }, [dealsFilters, fetch, page, perPage]);
+    if (!!dealsFilters && !deals && !loading) fetch({ page, perPage });
+  }, [deals, dealsFilters, fetch, loading, page, perPage]);
 
   useEffect(() => {
     fetchCrops();
@@ -134,7 +134,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {deals &&
+              {!!deals &&
                 deals.map((item, i) => (
                   <TableRow key={i}>
                     <TableCell>
@@ -153,9 +153,12 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         </div>
                         <div>
                           {intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}
-                          {item.sale_bid.vendor.company.short_name ||
-                            item.sale_bid.vendor.fio ||
-                            item.sale_bid.vendor.login}
+                          {item.sale_bid &&
+                            item.sale_bid.vendor &&
+                            ((item.sale_bid.vendor.company &&
+                              item.sale_bid.vendor.company.short_name) ||
+                              item.sale_bid.vendor.fio ||
+                              item.sale_bid.vendor.login)}
                         </div>
                       </div>
                     </TableCell>
@@ -175,9 +178,12 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         </div>
                         <div>
                           {intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}
-                          {item.purchase_bid.author.company.short_name ||
-                            item.purchase_bid.author.fio ||
-                            item.purchase_bid.author.login}
+                          {item.purchase_bid &&
+                            item.purchase_bid.vendor &&
+                            ((item.purchase_bid.vendor.company &&
+                              item.purchase_bid.vendor.company.short_name) ||
+                              item.purchase_bid.vendor.fio ||
+                              item.purchase_bid.vendor.login)}
                         </div>
                       </div>
                     </TableCell>
@@ -200,7 +206,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             <TableFooter>
               <TableRow>
                 <TablePaginator
-                  id={1}
                   page={page}
                   realPerPage={deals.length}
                   perPage={perPage}

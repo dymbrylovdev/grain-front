@@ -58,9 +58,8 @@ const DealViewPage: React.FC<TPropsFromRedux &
   const classes = useStyles();
 
   useEffect(() => {
-    if (!!dealsFilters)
-      fetch({ page, perPage, id: dealsFilters.find(item => item.crop.id === +cropId)?.id || 0 });
-  }, [cropId, dealsFilters, fetch, page, perPage]);
+    if (!!dealsFilters && !deals && !loading) fetch({ page, perPage });
+  }, [deals, dealsFilters, fetch, loading, page, perPage]);
 
   useEffect(() => {
     fetchCropParams(+cropId);
