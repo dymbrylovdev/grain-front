@@ -17,7 +17,7 @@ interface IOptionsItem {
 
 interface IProps {
   id?: string;
-  options: IOptionsItem[];
+  options: IOptionsItem[] | undefined;
   defaultValue: IOptionsItem;
   label: string;
   inputClassName: any;
