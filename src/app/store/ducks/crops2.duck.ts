@@ -7,8 +7,8 @@ import { put, takeLatest, call } from "redux-saga/effects";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
-import { getCropParams, getCrops } from "../../crud/crops.crud";
-import { ICrop, ICropParam } from "../../interfaces/crops";
+import { getCropParams, getCrops, getAllCropParams } from "../../crud/crops.crud";
+import { ICrop, ICropParam, TAllCropRequest } from "../../interfaces/crops";
 
 const FETCH_REQUEST = "crops2/FETCH_REQUEST";
 const FETCH_SUCCESS = "crops2/FETCH_SUCCESS";
@@ -18,6 +18,11 @@ const CLEAR_CROP_PARAMS = "crops2/CLEAR_CROP_PARAMS";
 const CROP_PARAMS_REQUEST = "crops2/CROP_PARAMS_REQUEST";
 const CROP_PARAMS_SUCCESS = "crops2/CROP_PARAMS_SUCCESS";
 const CROP_PARAMS_FAIL = "crops2/CROP_PARAMS_FAIL";
+
+const CLEAR_ALL_CROP_PARAMS = "crops2/CLEAR_ALL_CROP_PARAMS";
+const ALL_CROP_PARAMS_REQUEST = "crops2/ALL_CROP_PARAMS_REQUEST";
+const ALL_CROP_PARAMS_SUCCESS = "crops2/ALL_CROP_PARAMS_SUCCESS";
+const ALL_CROP_PARAMS_FAIL = "crops2/ALL_CROP_PARAMS_FAIL";
 
 export interface IInitialState {
   crops: ICrop[] | undefined;
@@ -29,6 +34,11 @@ export interface IInitialState {
   cropParamsLoading: boolean;
   cropParamsSuccess: boolean;
   cropParamsError: string | null;
+
+  allCropParams: { [key: string]: ICropParam[] } | undefined;
+  allCropParamsLoading: boolean;
+  allCropParamsSuccess: boolean;
+  allCropParamsError: string | null;
 }
 
 const initialState: IInitialState = {
@@ -41,6 +51,11 @@ const initialState: IInitialState = {
   cropParamsLoading: false,
   cropParamsSuccess: false,
   cropParamsError: null,
+
+  allCropParams: undefined,
+  allCropParamsLoading: false,
+  allCropParamsSuccess: false,
+  allCropParamsError: null,
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
@@ -100,6 +115,40 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, cropParamsLoading: false, cropParamsError: action.payload };
       }
 
+      case CLEAR_ALL_CROP_PARAMS: {
+        return {
+          ...state,
+          allCropParams: undefined,
+          allCropParamsLoading: false,
+          allCropParamsSuccess: false,
+          allCropParamsError: null,
+        };
+      }
+
+      case ALL_CROP_PARAMS_REQUEST: {
+        return {
+          ...state,
+          allCropParams: undefined,
+          allCropParamsLoading: true,
+          allCropParamsSuccess: false,
+          allCropParamsError: null,
+        };
+      }
+
+      case ALL_CROP_PARAMS_SUCCESS: {
+        console.log("ALL_CROP_PARAMS: ", action.payload.data);
+        return {
+          ...state,
+          allCropParams: action.payload.data,
+          allCropParamsLoading: false,
+          allCropParamsSuccess: true,
+        };
+      }
+
+      case ALL_CROP_PARAMS_FAIL: {
+        return { ...state, allCropParamsLoading: false, allCropParamsError: action.payload };
+      }
+
       default:
         return state;
     }
@@ -116,6 +165,12 @@ export const actions = {
   cropParamsSuccess: (payload: IServerResponse<ICropParam[]>) =>
     createAction(CROP_PARAMS_SUCCESS, payload),
   cropParamsFail: (payload: string) => createAction(CROP_PARAMS_FAIL, payload),
+
+  clearAllCropParams: () => createAction(CLEAR_ALL_CROP_PARAMS),
+  allCropParamsRequest: (type: TAllCropRequest) => createAction(ALL_CROP_PARAMS_REQUEST, { type }),
+  allCropParamsSuccess: (payload: IServerResponse<{ [key: string]: ICropParam[] }>) =>
+    createAction(ALL_CROP_PARAMS_SUCCESS, payload),
+  allCropParamsFail: (payload: string) => createAction(ALL_CROP_PARAMS_FAIL, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -140,10 +195,25 @@ function* fetchCropParamsSaga({ payload: { cropId } }: { payload: { cropId: numb
   }
 }
 
+function* fetchAllCropParamsSaga({ payload }: { payload: { type: TAllCropRequest } }) {
+  try {
+    const { data }: { data: IServerResponse<{ [key: string]: ICropParam[] }> } = yield call(() =>
+      getAllCropParams(payload.type)
+    );
+    yield put(actions.allCropParamsSuccess(data));
+  } catch (e) {
+    yield put(actions.allCropParamsFail(e.response.data.message));
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.cropParamsRequest>>(
     CROP_PARAMS_REQUEST,
     fetchCropParamsSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.allCropParamsRequest>>(
+    ALL_CROP_PARAMS_REQUEST,
+    fetchAllCropParamsSaga
   );
 }

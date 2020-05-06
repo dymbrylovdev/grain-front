@@ -27,6 +27,7 @@ import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
 import { Skeleton } from "@material-ui/lab";
 import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
+import { FilterModal } from "./components";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -43,15 +44,19 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   filtersLoading,
   filtersError,
 
-  crops,
   fetchCrops,
+  crops,
   cropsError,
 
-  clearEdit,
-  edit,
-  editLoading,
-  editSuccess,
-  editError,
+  fetchAllCropParams,
+  allCropParams,
+  allCropParamsError,
+
+  clearEditFilter,
+  editFilter,
+  editFilterLoading,
+  editFilterSuccess,
+  editFilterError,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -59,27 +64,28 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
-    if (editSuccess || editError) {
+    if (editFilterSuccess || editFilterError) {
       enqueueSnackbar(
-        editSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_USER" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editError}`,
+        editFilterSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.EDIT_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editFilterError}`,
         {
-          variant: editSuccess ? "success" : "error",
+          variant: editFilterSuccess ? "success" : "error",
         }
       );
-      clearEdit();
+      clearEditFilter();
     }
-    if (editSuccess) {
-      if (!!dealsFilters) fetch({ page, perPage });
+    if (editFilterSuccess) {
+      fetch({ page: 1, perPage });
+      fetchDealsFilters();
     }
   }, [
-    clearEdit,
-    dealsFilters,
-    editError,
-    editSuccess,
+    clearEditFilter,
+    editFilterError,
+    editFilterSuccess,
     enqueueSnackbar,
     fetch,
+    fetchDealsFilters,
     intl,
     page,
     perPage,
@@ -94,10 +100,14 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchCrops]);
 
   useEffect(() => {
+    fetchAllCropParams("enum");
+  }, [fetchAllCropParams]);
+
+  useEffect(() => {
     fetchDealsFilters();
   }, [fetchDealsFilters]);
 
-  if (error || filtersError || cropsError) return <ErrorPage />;
+  if (error || filtersError || cropsError || allCropParamsError) return <ErrorPage />;
 
   return (
     <Paper className={classes.tableContainer}>
@@ -105,17 +115,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       <div className={classes.tableTitle}>
         {!!deals && !deals?.length ? intl.formatMessage({ id: "DEALS.EMPTY" }) : ""}
       </div>
-      <div className={classes.flexRow} style={{ justifyContent: "flex-end", marginBottom: "8px" }}>
-        {intl.formatMessage({ id: "DEALS.FILTER.NAME" })}
-        <IconButton
-          onClick={() => {
-            setFilterModalOpen(true);
-          }}
-        >
-          <CustomIcon path="/media/filter/filter_full.svg" />
-        </IconButton>
-      </div>
-      {!deals || !crops ? (
+      {!deals || !crops || !dealsFilters || !allCropParams ? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />
           <Skeleton width="100%" height={77} animation="wave" />
@@ -127,114 +127,141 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         </>
       ) : (
         !!deals.length && (
-          <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.CROP" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.SALE" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.PURCHASE" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.PROFIT" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.DISTANCE" />
-                </TopTableCell>
-                <TopTableCell></TopTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {!!deals &&
-                deals.map((item, i) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      {crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}
-                    </TableCell>
-                    <TableCell>
-                      <div className={classes.flexColumn}>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                          <strong>{item.sale_bid.price}</strong>
+          <>
+            <div
+              className={classes.flexRow}
+              style={{ justifyContent: "flex-end", marginBottom: "8px" }}
+            >
+              {intl.formatMessage({ id: "DEALS.FILTER.NAME" })}
+              <IconButton
+                onClick={() => {
+                  setFilterModalOpen(true);
+                }}
+              >
+                <CustomIcon path="/media/filter/filter_full.svg" />
+              </IconButton>
+            </div>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.CROP" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.SALE" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.PURCHASE" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.PROFIT" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.DISTANCE" />
+                  </TopTableCell>
+                  <TopTableCell></TopTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {!!deals &&
+                  deals.map((item, i) => (
+                    <TableRow key={i}>
+                      <TableCell>
+                        {crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}
+                      </TableCell>
+                      <TableCell>
+                        <div className={classes.flexColumn}>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                            <strong>{item.sale_bid.price}</strong>
+                          </div>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                            <strong>{item.sale_bid.volume}</strong>
+                          </div>
+                          <div>
+                            {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
+                            {item.sale_bid.location.text}
+                          </div>
+                          <div>
+                            {intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}
+                            {item.sale_bid &&
+                              item.sale_bid.vendor &&
+                              ((item.sale_bid.vendor.company &&
+                                item.sale_bid.vendor.company.short_name) ||
+                                item.sale_bid.vendor.fio ||
+                                item.sale_bid.vendor.login)}
+                          </div>
                         </div>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                          <strong>{item.sale_bid.volume}</strong>
+                      </TableCell>
+                      <TableCell>
+                        <div className={classes.flexColumn}>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                            <strong>{item.purchase_bid.price}</strong>
+                          </div>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                            <strong>{item.purchase_bid.volume}</strong>
+                          </div>
+                          <div>
+                            {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
+                            {item.purchase_bid.location.text}
+                          </div>
+                          <div>
+                            {intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}
+                            {item.purchase_bid &&
+                              item.purchase_bid.vendor &&
+                              ((item.purchase_bid.vendor.company &&
+                                item.purchase_bid.vendor.company.short_name) ||
+                                item.purchase_bid.vendor.fio ||
+                                item.purchase_bid.vendor.login)}
+                          </div>
                         </div>
-                        <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
-                          {item.sale_bid.location.text}
-                        </div>
-                        <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}
-                          {item.sale_bid &&
-                            item.sale_bid.vendor &&
-                            ((item.sale_bid.vendor.company &&
-                              item.sale_bid.vendor.company.short_name) ||
-                              item.sale_bid.vendor.fio ||
-                              item.sale_bid.vendor.login)}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className={classes.flexColumn}>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                          <strong>{item.purchase_bid.price}</strong>
-                        </div>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                          <strong>{item.purchase_bid.volume}</strong>
-                        </div>
-                        <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
-                          {item.purchase_bid.location.text}
-                        </div>
-                        <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}
-                          {item.purchase_bid &&
-                            item.purchase_bid.vendor &&
-                            ((item.purchase_bid.vendor.company &&
-                              item.purchase_bid.vendor.company.short_name) ||
-                              item.purchase_bid.vendor.fio ||
-                              item.purchase_bid.vendor.login)}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{Math.round(item.profit_with_delivery_price)}</TableCell>
-                    <TableCell>{item.distance}</TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        size="medium"
-                        color="primary"
-                        onClick={() =>
-                          history.push(`/deals/view/1/${item.sale_bid.id}/${item.purchase_bid.id}`)
-                        }
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePaginator
-                  page={page}
-                  realPerPage={deals.length}
-                  perPage={perPage}
-                  total={total}
-                  fetchRows={fetch}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
+                      </TableCell>
+                      <TableCell>{Math.round(item.profit_with_delivery_price)}</TableCell>
+                      <TableCell>{item.distance}</TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          size="medium"
+                          color="primary"
+                          onClick={() =>
+                            history.push(
+                              `/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`
+                            )
+                          }
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePaginator
+                    page={page}
+                    realPerPage={deals.length}
+                    perPage={perPage}
+                    total={total}
+                    fetchRows={fetch}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </>
         )
       )}
+      <FilterModal
+        intl={intl}
+        isOpen={filterModalOpen}
+        handleClose={() => setFilterModalOpen(false)}
+        dealsFilters={dealsFilters}
+        crops={crops}
+        allCropParams={allCropParams}
+        editFilter={editFilter}
+        editFilterLoading={editFilterLoading}
+      />
     </Paper>
   );
 };
@@ -255,16 +282,20 @@ const connector = connect(
     crops: state.crops2.crops,
     cropsError: state.crops2.error,
 
-    editLoading: state.deals.editLoading,
-    editSuccess: state.deals.editSuccess,
-    editError: state.deals.editError,
+    allCropParams: state.crops2.allCropParams,
+    allCropParamsError: state.crops2.allCropParamsError,
+
+    editFilterLoading: state.deals.editFilterLoading,
+    editFilterSuccess: state.deals.editFilterSuccess,
+    editFilterError: state.deals.editFilterError,
   }),
   {
     fetch: dealsActions.fetchRequest,
     fetchDealsFilters: dealsActions.fetchFiltersRequest,
     fetchCrops: crops2Actions.fetchRequest,
-    clearEdit: dealsActions.clearEdit,
-    edit: dealsActions.editRequest,
+    fetchAllCropParams: crops2Actions.allCropParamsRequest,
+    clearEditFilter: dealsActions.clearEditFilter,
+    editFilter: dealsActions.editFilterRequest,
   }
 );
 

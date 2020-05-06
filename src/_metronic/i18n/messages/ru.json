@@ -7,6 +7,7 @@
   "ALL.BUTTONS.SAVE": "Сохранить",
   "ALL.BUTTONS.CREATE": "Добавить",
   "ALL.BUTTONS.CLEAR": "Очистить",
+  "ALL.BUTTONS.SUBMIT": "Применить",
 
   "ALL.DIALOGS.DEL_TEXT": "Удаление...",
 
@@ -130,6 +131,7 @@
   "DEALS.TABLE.AGENT": "Контрагент",
   "DEALS.TABLE.EDIT_TEXT": "Редактировать заявку",
   "DEALS.FILTER.NAME": "Фильтр по параметрам",
+  "DEALS.FILTER.EMPTY": "По этой культуре нет параметров для фильтрации.",
 
   "PROFILE.INPUT.FIO": "ФИО",
   "PROFILE.INPUT.LOCATION": "Точка отгрузки",
@@ -414,6 +416,7 @@
   "NOTISTACK.ERRORS.CREATE_FILTER": "Фильтр создан",
   "NOTISTACK.ERRORS.SAVE_FILTER": "Фильтр сохранен",
   "NOTISTACK.ERRORS.DEL_FILTER": "Фильтр удален",
+  "NOTISTACK.EDIT_FILTER": "Фильтр изменен",
   "NOTISTACK.ERRORS.DEL_USER": "Пользователь удален",
   "NOTISTACK.USERS.SAVE_PROFILE": "Мой профиль сохранен",
   "NOTISTACK.USERS.SAVE_USER": "Пользователь сохранен",

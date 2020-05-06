@@ -169,3 +169,7 @@ export interface IDealsFilter {
     }
   ];
 }
+
+export interface IDealsFilterForEdit {
+  parameter_ids: number[];
+}

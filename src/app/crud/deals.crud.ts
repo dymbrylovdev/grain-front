@@ -1,4 +1,5 @@
 import axios from "axios";
+import { IDealsFilterForEdit } from "../interfaces/deals";
 
 const DEALS_URL = "/api/bids/pairs";
 
@@ -10,4 +11,8 @@ export const getDeals = (page: number, perPage: number, id?: number) => {
 
 export const getDealsFilters = () => {
   return axios.post(`${DEALS_URL}/filters`);
+};
+
+export const editDealsFilter = (id: number, data: IDealsFilterForEdit) => {
+  return axios.put(`${DEALS_URL}/filter/${id}`, data);
 };
