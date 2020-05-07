@@ -129,7 +129,7 @@ const BidTable: React.FC<IProps> = ({
                     {bid.point_prices.map(
                       (item, i) =>
                         !!item.profit &&
-                        (item.profit === bid.profit ? (
+                        (i === 0 ? (
                           <div key={i}>
                             <strong>{Math.round(item.profit)}</strong>
                             {` • ${item.point.name}`}
