@@ -231,14 +231,14 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   }, [editMode, me, resetForm, user]);
 
   useEffect(() => {
-    if (editMode !== "profile") fetchFunnelStates();
-  }, [editMode, fetchFunnelStates]);
+    if (!!me && me.is_admin) fetchFunnelStates();
+  }, [editMode, fetchFunnelStates, me]);
 
   return (
     <>
       {editMode !== "profile" && (
         <div className={classes.textFieldContainer}>
-          {meLoading || userLoading || !funnelStates ? (
+          {meLoading || userLoading || funnelStatesLoading ? (
             <Skeleton width="100%" height={70} animation="wave" />
           ) : (
             <TextField
@@ -266,7 +266,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       {editMode !== "profile" && (
         <div className={classes.textFieldContainer}>
-          {meLoading || userLoading || !funnelStates ? (
+          {meLoading || userLoading || funnelStatesLoading ? (
             <Skeleton width="100%" height={70} animation="wave" />
           ) : (
             <TextField
@@ -294,72 +294,78 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           )}
         </div>
       )}
-      {user && !user.is_admin && (editMode === "edit" || editMode === "view") && (
-        <>
-          <div className={classes.textFieldContainer}>
-            {meLoading || userLoading || !funnelStates ? (
-              <Skeleton width="100%" height={70} animation="wave" />
-            ) : (
-              <TextField
-                select
-                margin="normal"
-                label={intl.formatMessage({
-                  id: "USERLIST.TABLE.ACTIVITY",
-                })}
-                value={values.funnel_state_id}
-                onChange={handleChange}
-                name="funnel_state_id"
-                variant="outlined"
-                disabled={values.is_funnel_state_automate || editMode === "view"}
-              >
-                <MenuItem value={0} style={{ backgroundColor: "#f2f2f2" }}>
-                  {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
-                </MenuItem>
-                {user && user.is_buyer
-                  ? funnelStates
-                      .filter(fs => fs.role === "ROLE_BUYER")
-                      .map(option => (
-                        <MenuItem
-                          key={option.id}
-                          value={option.id}
-                          style={{ backgroundColor: `${option.color || "#ededed"}` }}
-                        >
-                          {`${option.engagement || "0"} • ${option.name}`}
-                        </MenuItem>
-                      ))
-                  : funnelStates
-                      .filter(fs => fs.role === "ROLE_VENDOR")
-                      .map(option => (
-                        <MenuItem
-                          key={option.id}
-                          value={option.id}
-                          style={{ backgroundColor: `${option.color || "#ededed"}` }}
-                        >
-                          {`${option.engagement || "0"} • ${option.name}`}
-                        </MenuItem>
-                      ))}
-              </TextField>
-            )}
-          </div>
-          {editMode !== "view" && (
-            <div>
-              {meLoading || userLoading || !funnelStates ? (
-                <Skeleton width={322} height={37.5} animation="wave" />
+      {!!user &&
+        !user.is_admin &&
+        !!me &&
+        me.is_admin &&
+        (editMode === "edit" || editMode === "view") && (
+          <>
+            <div className={classes.textFieldContainer}>
+              {meLoading || userLoading || funnelStatesLoading ? (
+                <Skeleton width="100%" height={70} animation="wave" />
               ) : (
-                <FormControlLabel
-                  control={
-                    <Checkbox checked={values.is_funnel_state_automate} onChange={handleChange} />
-                  }
-                  label={intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.AUTO" })}
-                  name="is_funnel_state_automate"
-                />
+                <TextField
+                  select
+                  margin="normal"
+                  label={intl.formatMessage({
+                    id: "USERLIST.TABLE.ACTIVITY",
+                  })}
+                  value={values.funnel_state_id}
+                  onChange={handleChange}
+                  name="funnel_state_id"
+                  variant="outlined"
+                  disabled={values.is_funnel_state_automate || editMode === "view"}
+                >
+                  <MenuItem value={0} style={{ backgroundColor: "#f2f2f2" }}>
+                    {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
+                  </MenuItem>
+                  {user && user.is_buyer
+                    ? !!funnelStates &&
+                      funnelStates
+                        .filter(fs => fs.role === "ROLE_BUYER")
+                        .map(option => (
+                          <MenuItem
+                            key={option.id}
+                            value={option.id}
+                            style={{ backgroundColor: `${option.color || "#ededed"}` }}
+                          >
+                            {`${option.engagement || "0"} • ${option.name}`}
+                          </MenuItem>
+                        ))
+                    : !!funnelStates &&
+                      funnelStates
+                        .filter(fs => fs.role === "ROLE_VENDOR")
+                        .map(option => (
+                          <MenuItem
+                            key={option.id}
+                            value={option.id}
+                            style={{ backgroundColor: `${option.color || "#ededed"}` }}
+                          >
+                            {`${option.engagement || "0"} • ${option.name}`}
+                          </MenuItem>
+                        ))}
+                </TextField>
               )}
             </div>
-          )}
-        </>
-      )}
+            {editMode !== "view" && (
+              <div>
+                {meLoading || userLoading || funnelStatesLoading ? (
+                  <Skeleton width={322} height={37.5} animation="wave" />
+                ) : (
+                  <FormControlLabel
+                    control={
+                      <Checkbox checked={values.is_funnel_state_automate} onChange={handleChange} />
+                    }
+                    label={intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.AUTO" })}
+                    name="is_funnel_state_automate"
+                  />
+                )}
+              </div>
+            )}
+          </>
+        )}
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -382,7 +388,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       </div>
 
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -410,7 +416,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       </div>
 
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -434,7 +440,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       </div>
 
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -458,7 +464,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       {editMode !== "view" && (
         <div className={classes.textFieldContainer}>
-          {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
+          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
             <Skeleton width="100%" height={70} animation="wave" />
           ) : (
             <TextField
@@ -483,7 +489,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       {editMode !== "view" && (
         <div className={classes.textFieldContainer}>
-          {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
+          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
             <Skeleton width="100%" height={70} animation="wave" />
           ) : (
             <TextField
@@ -506,7 +512,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       )}
 
       <div>
-        {meLoading || userLoading || (editMode !== "profile" && !funnelStates) ? (
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width={135} height={37.5} animation="wave" />
         ) : (
           <FormControlLabel
@@ -526,7 +532,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 variant="outlined"
                 color="primary"
                 onClick={() => history.push("/user-list")}
-                disabled={meLoading || userLoading || !funnelStates}
+                disabled={meLoading || userLoading || funnelStatesLoading}
               >
                 {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
               </Button>
@@ -541,7 +547,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 editLoading ||
                 meLoading ||
                 userLoading ||
-                (editMode !== "profile" && !funnelStates)
+                (editMode !== "profile" && funnelStatesLoading)
               }
               onPress={handleSubmit}
             >
@@ -555,7 +561,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               <OutlinedRedButton
                 variant="outlined"
                 onClick={() => setAlertOpen(true)}
-                disabled={meLoading || userLoading || !funnelStates}
+                disabled={meLoading || userLoading || funnelStatesLoading}
               >
                 {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
               </OutlinedRedButton>
