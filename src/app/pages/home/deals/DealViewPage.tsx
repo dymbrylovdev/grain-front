@@ -240,6 +240,26 @@ const DealViewPage: React.FC<TPropsFromRedux &
                 </TableRow>
                 <TableRow>
                   <TableCell>
+                    <strong>{intl.formatMessage({ id: "DEALS.DEAL.DATE" })}</strong>
+                  </TableCell>
+                  <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                    {`${deal.sale_bid.modified_at.slice(8, 10)}.${deal.sale_bid.modified_at.slice(
+                      5,
+                      7
+                    )}.${deal.sale_bid.modified_at.slice(0, 4)}`}
+                  </TableCell>
+                  <TableCell>
+                    {`${deal.purchase_bid.modified_at.slice(
+                      8,
+                      10
+                    )}.${deal.purchase_bid.modified_at.slice(
+                      5,
+                      7
+                    )}.${deal.purchase_bid.modified_at.slice(0, 4)}`}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>
                     <strong>{intl.formatMessage({ id: "DEALS.TABLE.AGENT" })}</strong>
                   </TableCell>
                   <TableCell style={{ backgroundColor: "#eeeeee" }}>

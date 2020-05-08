@@ -102,7 +102,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case CROP_PARAMS_SUCCESS: {
-        console.log(action.payload.data);
+        // console.log(action.payload.data);
         return {
           ...state,
           cropParams: action.payload.data,
@@ -136,7 +136,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case ALL_CROP_PARAMS_SUCCESS: {
-        console.log("ALL_CROP_PARAMS: ", action.payload.data);
+        // console.log("ALL_CROP_PARAMS: ", action.payload.data);
         return {
           ...state,
           allCropParams: action.payload.data,

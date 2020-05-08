@@ -119,7 +119,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_FILTERS_SUCCESS: {
-      console.log("Fetch FILTERS: ", action.payload);
+      // console.log("Fetch FILTERS: ", action.payload);
       return {
         ...state,
         filters: action.payload.data,

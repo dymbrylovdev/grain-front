@@ -13,7 +13,8 @@ export interface IDeal {
         short_name: string;
       };
     };
-    createdAt: string;
+    created_at: string;
+    modified_at: string;
     vendor: {
       id: number;
       fio: string;
@@ -85,7 +86,8 @@ export interface IDeal {
         short_name: string;
       };
     };
-    createdAt: string;
+    created_at: string;
+    modified_at: string;
     vendor: {
       id: number;
       fio: string;

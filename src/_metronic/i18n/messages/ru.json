@@ -126,6 +126,7 @@
   "DEALS.DEAL.WORK_WITH_VAT": "Работает с НДС",
   "DEALS.TABLE.LOCATION": "Точка отгрузки: ",
   "DEALS.DEAL.LOCATION": "Точка отгрузки",
+  "DEALS.DEAL.DATE": "Дата последнего изменения",
   "DEALS.TABLE.SELLER": "Продавец: ",
   "DEALS.TABLE.BUYER": "Покупатель: ",
   "DEALS.TABLE.AGENT": "Контрагент",
