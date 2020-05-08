@@ -40,7 +40,10 @@ const InfoDialog: React.FC<IProps> = ({ isOpen, handleClose, text, title }) => {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <DialogContentText dangerouslySetInnerHTML={{ __html: text }}></DialogContentText>
+        <DialogContentText
+          dangerouslySetInnerHTML={{ __html: text }}
+          style={{ color: "black" }}
+        ></DialogContentText>
       </DialogContent>
     </Dialog>
   );

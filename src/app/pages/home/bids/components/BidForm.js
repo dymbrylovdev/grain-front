@@ -85,6 +85,7 @@ function BidForm({
   intl,
   classes,
   crops,
+  cropId,
   bid,
   bidId,
   isEditable,
@@ -109,8 +110,15 @@ function BidForm({
     bid && crops && crops.filter(item => item.id === bid.crop_id)
       ? crops.filter(item => item.id === bid.crop_id)
       : null;
-  const currentCrop = filterCrops && filterCrops.length > 0 ? filterCrops[0] : null;
 
+  const currentCrop =
+    filterCrops && filterCrops.length > 0
+      ? filterCrops[0]
+      : !!cropId && !!crops
+      ? crops.find(item => item.id === +cropId)
+      : null;
+  console.log("crops: ", crops);
+  console.log("currentCrop: ", currentCrop);
   const getCropParamsAction = cropId => {
     setCropParamLoading(true);
     setCropParams([]);
@@ -129,7 +137,7 @@ function BidForm({
     if (currentCrop) {
       getCropParamsAction(currentCrop.id);
     }
-  }, []); // eslint-disable-line
+  }, [currentCrop]); // eslint-disable-line
   useEffect(() => {
     //console.log("--currentBid", bid);
     formRef.current.resetForm({ values: getInitialValues(bid, currentCrop, userRole) });

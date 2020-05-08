@@ -64,6 +64,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/funnel-states" component={FunnelStatesPage} />
 
         <Route path="/bid/create" exact component={BidCreatePage} />
+        <Route path="/bid/create/crop/:cropId" component={BidCreatePage} />
         <Route path="/bid/create/:vendorId" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId" exact component={BidCreatePage} />
         <Route path="/bid/view/:bidId" exact component={BidCreatePage} />

@@ -75,6 +75,8 @@ function BidCreatePage({
   //   (match.url.indexOf("fromAdmin") !== -1 && "fromAdmin");
   const vendorId = match.params.vendorId;
   const bidId = match.params.bidId;
+  const cropId = match.params.cropId;
+  // console.log(match.params);
   // const { bid } = bidSelector(bidId, by);
   // console.log("bid: ", bid);
   const isEditable = match.url.indexOf("view") === -1;
@@ -215,7 +217,7 @@ function BidCreatePage({
           loading={createBidLoading || editBidLoading}
           submitAction={submitAction}
           crops={crops}
-          bid={bid}
+          bid={!!bidId ? bid : undefined}
           isEditable={isEditable}
           fetchLocations={fetchLocationsRequest}
           clearLocations={clearLocations}
@@ -223,6 +225,7 @@ function BidCreatePage({
           openLocation={() => setLocationModalOpen(true)}
           user={user}
           bidId={bidId}
+          cropId={cropId}
           userRole={userRole()}
         />
       )}
