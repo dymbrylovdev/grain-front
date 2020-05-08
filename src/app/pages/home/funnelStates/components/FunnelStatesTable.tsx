@@ -145,16 +145,18 @@ const FunnelStatesTable: React.FC<IProps> = ({
                   >
                     <EditIcon />
                   </IconButton>
-                  <IconButton
-                    size="medium"
-                    color="secondary"
-                    onClick={() => {
-                      setDeleteUserId(item.id);
-                      setAlertOpen(true);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                  {!item.auto && (
+                    <IconButton
+                      size="medium"
+                      color="secondary"
+                      onClick={() => {
+                        setDeleteUserId(item.id);
+                        setAlertOpen(true);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
