@@ -94,13 +94,15 @@ function CropPage({
       ? editCropParam(paramId, params, successCallback, failCallback)
       : createCropParam(cropId, params, successCallback, failCallback);
   };
+
   useEffect(() => {
     getCropParamsAction();
   }, [getCropParamsAction]);
+
   return (
     <CropForm
       classes={classes}
-      crop={crop}
+      crop={!!cropId ? crop : undefined}
       editCropAction={editCropAction}
       cropId={cropId}
       cropParams={cropParams}

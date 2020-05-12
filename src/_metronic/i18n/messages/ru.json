@@ -246,6 +246,7 @@
   "CROP.STATUS.CROP_PARAM_CREATE": "Параметр успешно сохранен",
   "CROP.STATUS.CROP_PARAM_CREATE_ERROR": "Ошибка сохранения параметра",
   "CROP.FORM.NAME": "Название культуры",
+  "CROP.FORM.VAT": "Размер НДС",
   "CROP.FORM.PARAM_NAME": "Название параметра",
   "CROP.FORM.PARAM_NAME_NUMBER": "Значение параметра",
   "CROP.FORM.PARAM_NUMBER": "Значение",

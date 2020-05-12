@@ -7,10 +7,11 @@ import {
   TableRow,
   IconButton,
   Paper,
+  Button,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import { FormattedMessage, injectIntl } from "react-intl";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { connect, useSelector, shallowEqual } from "react-redux";
 import * as crops from "../../../store/ducks/crops.duck";
 import * as builder from "../../../../_metronic/ducks/builder";
@@ -21,6 +22,8 @@ import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LoadError } from "../../../components/ui/Errors";
 
 function CropsListPage({ setMenuConfig, getCrops, match }) {
+  const history = useHistory();
+
   const { crops, user, loading, errors } = useSelector(
     ({ crops: { crops, errors }, auth }) => ({
       crops: (crops && crops.data) || [],
@@ -46,11 +49,9 @@ function CropsListPage({ setMenuConfig, getCrops, match }) {
   return (
     <Paper className={classes.tableContainer}>
       <div className={classes.buttonContainer}>
-        <Link to="/crop/create">
-          <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
-            <FormattedMessage id="CROPSLIST.BUTTON.CREATE" />
-          </button>
-        </Link>
+        <Button variant="contained" color="primary" onClick={() => history.push("/crop/create")}>
+          <FormattedMessage id="CROPSLIST.BUTTON.CREATE" />
+        </Button>
       </div>
       <Table aria-label="simple table" className={classes.table}>
         <TableHead>
