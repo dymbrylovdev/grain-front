@@ -11,11 +11,15 @@ import {
   TableRow,
   Paper,
   TableFooter,
+  TextField,
+  Button,
 } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import { useSnackbar } from "notistack";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
@@ -23,17 +27,19 @@ import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
-import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
 import { Skeleton } from "@material-ui/lab";
 import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
 import { FilterModal } from "./components";
+import { TablePaginator } from "./components/TablePaginator";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
   page,
   perPage,
   total,
+  weeks,
+  setWeeks,
   fetch,
   deals,
   loading,
@@ -62,6 +68,20 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const history = useHistory();
   const [filterModalOpen, setFilterModalOpen] = useState(false);
 
+  const { values, handleSubmit, handleChange, touched, errors } = useFormik({
+    initialValues: { weeks },
+    onSubmit: values => {
+      setWeeks(values.weeks);
+    },
+    validationSchema: Yup.object().shape({
+      weeks: Yup.number()
+        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+        .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
+        .max(100, intl.formatMessage({ id: "YUP.NUMBERS.MAX" }, { max: 100 }))
+        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+    }),
+  });
+
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (editFilterSuccess || editFilterError) {
@@ -76,7 +96,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEditFilter();
     }
     if (editFilterSuccess) {
-      fetch({ page: 1, perPage });
+      fetch({ page: 1, perPage, weeks });
       fetchDealsFilters();
     }
   }, [
@@ -89,11 +109,12 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     intl,
     page,
     perPage,
+    weeks,
   ]);
 
   useEffect(() => {
-    if (!!dealsFilters && !deals && !loading) fetch({ page, perPage });
-  }, [deals, dealsFilters, fetch, loading, page, perPage]);
+    if (!!dealsFilters) fetch({ page, perPage, weeks });
+  }, [dealsFilters, fetch, page, perPage, weeks]);
 
   useEffect(() => {
     fetchCrops();
@@ -130,16 +151,43 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           <>
             <div
               className={classes.flexRow}
-              style={{ justifyContent: "flex-end", marginBottom: "8px" }}
+              style={{ justifyContent: "space-between", marginBottom: "8px" }}
             >
-              {intl.formatMessage({ id: "DEALS.FILTER.NAME" })}
-              <IconButton
-                onClick={() => {
-                  setFilterModalOpen(true);
-                }}
-              >
-                <CustomIcon path="/media/filter/filter_full.svg" />
-              </IconButton>
+              <div>
+                <div>{intl.formatMessage({ id: "DEALS.WEEKS.TEXT" })}</div>
+                <div className={classes.flexRow}>
+                  <div>
+                    <TextField
+                      margin="normal"
+                      label={intl.formatMessage({
+                        id: "DEALS.WEEKS.WEEKS",
+                      })}
+                      value={values.weeks}
+                      onChange={handleChange}
+                      onBlur={() => handleSubmit()}
+                      name="weeks"
+                      variant="outlined"
+                      helperText={touched.weeks && errors.weeks}
+                      error={Boolean(touched.weeks && errors.weeks)}
+                    />
+                  </div>
+                  <div style={{ marginLeft: "16px" }}>
+                    <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
+                      {intl.formatMessage({ id: "DEALS.WEEKS.BUTTON" })}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div>
+                {intl.formatMessage({ id: "DEALS.FILTER.NAME" })}
+                <IconButton
+                  onClick={() => {
+                    setFilterModalOpen(true);
+                  }}
+                >
+                  <CustomIcon path="/media/filter/filter_full.svg" />
+                </IconButton>
+              </div>
             </div>
             <Table className={classes.table} aria-label="simple table">
               <TableHead>
@@ -244,6 +292,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realPerPage={deals.length}
                     perPage={perPage}
                     total={total}
+                    weeks={weeks}
                     fetchRows={fetch}
                   />
                 </TableRow>
@@ -271,6 +320,7 @@ const connector = connect(
     page: state.deals.page,
     perPage: state.deals.per_page,
     total: state.deals.total,
+    weeks: state.deals.weeks,
     deals: state.deals.deals,
     loading: state.deals.loading,
     error: state.deals.error,
@@ -296,6 +346,7 @@ const connector = connect(
     fetchAllCropParams: crops2Actions.allCropParamsRequest,
     clearEditFilter: dealsActions.clearEditFilter,
     editFilter: dealsActions.editFilterRequest,
+    setWeeks: dealsActions.setWeeks,
   }
 );
 

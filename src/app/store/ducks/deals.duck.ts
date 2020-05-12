@@ -11,6 +11,7 @@ const FETCH_REQUEST = "deals/FETCH_REQUEST";
 const FETCH_SUCCESS = "deals/FETCH_SUCCESS";
 const FETCH_FAIL = "deals/FETCH_FAIL";
 
+const SET_WEEKS = "deals/SET_WEEKS";
 const SET_DEAL = "deals/SET_DEAL";
 
 const CLEAR_FETCH_FILTERS = "deals/CLEAR_FETCH_FILTERS";
@@ -27,6 +28,7 @@ export interface IInitialState {
   page: number;
   per_page: number;
   total: number;
+  weeks: number;
   deals: IDeal[] | undefined;
   loading: boolean;
   success: boolean;
@@ -48,6 +50,7 @@ const initialState: IInitialState = {
   page: 1,
   per_page: 20,
   total: 0,
+  weeks: 2,
   deals: undefined,
   loading: false,
   success: false,
@@ -78,7 +81,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_SUCCESS: {
-      console.log("Fetch deals: ", action.payload);
+      // console.log("Fetch deals: ", action.payload);
       return {
         ...state,
         page: action.payload.page,
@@ -92,6 +95,10 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 
     case FETCH_FAIL: {
       return { ...state, loading: false, error: action.payload };
+    }
+
+    case SET_WEEKS: {
+      return { ...state, weeks: action.payload.weeks };
     }
 
     case SET_DEAL: {
@@ -163,11 +170,12 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 };
 
 export const actions = {
-  fetchRequest: (payload: { page: number; perPage: number }) =>
+  fetchRequest: (payload: { page: number; perPage: number; weeks: number }) =>
     createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IDeal[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
+  setWeeks: (weeks: number) => createAction(SET_WEEKS, { weeks }),
   setDeal: (deal: IDeal | undefined) => createAction(SET_DEAL, { deal }),
 
   clearFetchFilters: () => createAction(CLEAR_FETCH_FILTERS),
@@ -185,10 +193,10 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga({ payload }: { payload: { page: number; perPage: number } }) {
+function* fetchSaga({ payload }: { payload: { page: number; perPage: number; weeks: number } }) {
   try {
     const { data }: { data: IServerResponse<IDeal[]> } = yield call(() =>
-      getDeals(payload.page, payload.perPage)
+      getDeals(payload.page, payload.perPage, payload.weeks)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {

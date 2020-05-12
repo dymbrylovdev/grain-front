@@ -34,6 +34,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
   page,
   perPage,
   total,
+  weeks,
   fetch,
   deals,
   loading,
@@ -58,8 +59,8 @@ const DealViewPage: React.FC<TPropsFromRedux &
   const classes = useStyles();
 
   useEffect(() => {
-    if (!!dealsFilters && !deals && !loading) fetch({ page, perPage });
-  }, [deals, dealsFilters, fetch, loading, page, perPage]);
+    if (!!dealsFilters && !deals && !loading) fetch({ page, perPage, weeks });
+  }, [deals, dealsFilters, fetch, loading, page, perPage, weeks]);
 
   useEffect(() => {
     fetchCropParams(+cropId);
@@ -300,6 +301,8 @@ const connector = connect(
     page: state.deals.page,
     perPage: state.deals.per_page,
     total: state.deals.total,
+    weeks: state.deals.weeks,
+
     deals: state.deals.deals,
     loading: state.deals.loading,
     error: state.deals.error,

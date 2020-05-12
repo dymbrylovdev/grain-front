@@ -133,6 +133,9 @@
   "DEALS.TABLE.EDIT_TEXT": "Редактировать заявку",
   "DEALS.FILTER.NAME": "Фильтр по параметрам",
   "DEALS.FILTER.EMPTY": "По этой культуре нет параметров для фильтрации.",
+  "DEALS.WEEKS.TEXT": "Лучшие сделки за последние",
+  "DEALS.WEEKS.WEEKS": "Недели",
+  "DEALS.WEEKS.BUTTON": "Показать",
 
   "PROFILE.INPUT.FIO": "ФИО",
   "PROFILE.INPUT.LOCATION": "Точка отгрузки",
@@ -246,7 +249,7 @@
   "CROP.STATUS.CROP_PARAM_CREATE": "Параметр успешно сохранен",
   "CROP.STATUS.CROP_PARAM_CREATE_ERROR": "Ошибка сохранения параметра",
   "CROP.FORM.NAME": "Название культуры",
-  "CROP.FORM.VAT": "Размер НДС",
+  "CROP.FORM.VAT": "Размер НДС, %",
   "CROP.FORM.PARAM_NAME": "Название параметра",
   "CROP.FORM.PARAM_NAME_NUMBER": "Значение параметра",
   "CROP.FORM.PARAM_NUMBER": "Значение",
