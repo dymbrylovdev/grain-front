@@ -52,7 +52,7 @@ export interface IAppState {
   companies: typeof companies.reducer;
   funnelStates: funnelStates.IInitialState;
   prompter: prompter.IInitialState & PersistPartial;
-  deals: deals.IInitialState;
+  deals: deals.IInitialState & PersistPartial;
 }
 
 export const rootReducer: Reducer<IAppState, TAppActions> = combineReducers<IAppState, TAppActions>(

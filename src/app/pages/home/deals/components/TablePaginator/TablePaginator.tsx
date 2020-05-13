@@ -4,20 +4,16 @@ import TablePaginationActions from "./TablePaginationActions";
 import { WrappedComponentProps, injectIntl } from "react-intl";
 
 interface IProps {
-  id?: number;
   label?: string;
   page: number;
   realPerPage: number;
   perPage: number;
   total: number;
-  weeks: number;
-  fetchRows: any;
+  fetchRows: (page: number, perPage: number) => void;
 }
 
 const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
   intl,
-  id,
-  weeks,
   label = intl.formatMessage({ id: "TABLE.PAGINATOR.LABEL" }),
   page,
   realPerPage,
@@ -25,19 +21,12 @@ const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
   total,
   fetchRows,
 }) => {
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    id
-      ? fetchRows({ page: newPage + 1, perPage, id, weeks })
-      : fetchRows({ page: newPage + 1, perPage, weeks });
-  };
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) =>
+    fetchRows(newPage + 1, perPage);
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    id
-      ? fetchRows({ page: 1, perPage: parseInt(event.target.value, 10), id })
-      : fetchRows({ page: 1, perPage: parseInt(event.target.value, 10) });
-  };
+  ) => fetchRows(1, parseInt(event.target.value, 10));
 
   return (
     <TablePagination

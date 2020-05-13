@@ -72,6 +72,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     initialValues: { weeks },
     onSubmit: values => {
       setWeeks(values.weeks);
+      fetch(page, perPage, values.weeks);
     },
     validationSchema: Yup.object().shape({
       weeks: Yup.number()
@@ -96,7 +97,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEditFilter();
     }
     if (editFilterSuccess) {
-      fetch({ page: 1, perPage, weeks });
+      fetch(1, perPage, weeks);
       fetchDealsFilters();
     }
   }, [
@@ -113,7 +114,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   ]);
 
   useEffect(() => {
-    if (!!dealsFilters) fetch({ page, perPage, weeks });
+    if (!!dealsFilters) fetch(page, perPage, weeks);
   }, [dealsFilters, fetch, page, perPage, weeks]);
 
   useEffect(() => {
@@ -292,8 +293,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realPerPage={deals.length}
                     perPage={perPage}
                     total={total}
-                    weeks={weeks}
-                    fetchRows={fetch}
+                    fetchRows={(page, perPage) => fetch(page, perPage, weeks)}
                   />
                 </TableRow>
               </TableFooter>

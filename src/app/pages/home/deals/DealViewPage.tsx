@@ -59,7 +59,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
   const classes = useStyles();
 
   useEffect(() => {
-    if (!!dealsFilters && !deals && !loading) fetch({ page, perPage, weeks });
+    if (!!dealsFilters && !deals && !loading) fetch(page, perPage, weeks);
   }, [deals, dealsFilters, fetch, loading, page, perPage, weeks]);
 
   useEffect(() => {

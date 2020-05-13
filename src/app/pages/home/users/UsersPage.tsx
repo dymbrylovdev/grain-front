@@ -268,10 +268,18 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         >
                           <HelpOutlineIcon />
                         </IconButton>
-                        <SpellcheckIcon
-                          color={item.is_funnel_state_automate ? "secondary" : "disabled"}
-                          className={classes.leftMargin1}
-                        />
+                        <Tooltip
+                          title={
+                            item.is_funnel_state_automate
+                              ? intl.formatMessage({ id: "FUNNEL_STATES.TOOLTIP.ON" })
+                              : intl.formatMessage({ id: "FUNNEL_STATES.TOOLTIP.OFF" })
+                          }
+                        >
+                          <SpellcheckIcon
+                            color={item.is_funnel_state_automate ? "secondary" : "disabled"}
+                            className={classes.leftMargin1}
+                          />
+                        </Tooltip>
                       </div>
                     ) : (
                       <div className={classes.flexRow}>
@@ -303,10 +311,18 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         >
                           <HelpOutlineIcon />
                         </IconButton>
-                        <SpellcheckIcon
-                          color={item.is_funnel_state_automate ? "secondary" : "disabled"}
-                          className={classes.leftMargin1}
-                        />
+                        <Tooltip
+                          title={
+                            item.is_funnel_state_automate
+                              ? intl.formatMessage({ id: "FUNNEL_STATES.TOOLTIP.ON" })
+                              : intl.formatMessage({ id: "FUNNEL_STATES.TOOLTIP.OFF" })
+                          }
+                        >
+                          <SpellcheckIcon
+                            color={item.is_funnel_state_automate ? "secondary" : "disabled"}
+                            className={classes.leftMargin1}
+                          />
+                        </Tooltip>
                       </div>
                     )}
                   </TableCell>

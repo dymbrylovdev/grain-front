@@ -1,6 +1,9 @@
 import { Reducer } from "redux";
 import { TAppActions } from "../rootDuck";
 import { put, takeLatest, call } from "redux-saga/effects";
+import { persistReducer } from "redux-persist";
+import { PersistPartial } from "redux-persist/es/persistReducer";
+import storage from "redux-persist/lib/storage";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
@@ -68,110 +71,123 @@ const initialState: IInitialState = {
   editFilterError: null,
 };
 
-export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
-  switch (action.type) {
-    case FETCH_REQUEST: {
-      return {
-        ...state,
-        deals: undefined,
-        loading: true,
-        success: false,
-        error: null,
-      };
-    }
+export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
+  { storage, key: "deals", whitelist: ["weeks"] },
+  (state = initialState, action) => {
+    switch (action.type) {
+      case FETCH_REQUEST: {
+        return {
+          ...state,
+          deals: undefined,
+          loading: true,
+          success: false,
+          error: null,
+        };
+      }
 
-    case FETCH_SUCCESS: {
-      // console.log("Fetch deals: ", action.payload);
-      return {
-        ...state,
-        page: action.payload.page,
-        per_page: action.payload.per_page,
-        total: action.payload.total,
-        deals: action.payload.data,
-        loading: false,
-        success: true,
-      };
-    }
+      case FETCH_SUCCESS: {
+        // console.log("Fetch deals: ", action.payload);
+        return {
+          ...state,
+          page: action.payload.page,
+          per_page: action.payload.per_page,
+          total: action.payload.total,
+          deals: action.payload.data,
+          loading: false,
+          success: true,
+        };
+      }
 
-    case FETCH_FAIL: {
-      return { ...state, loading: false, error: action.payload };
-    }
+      case FETCH_FAIL: {
+        return { ...state, loading: false, error: action.payload };
+      }
 
-    case SET_WEEKS: {
-      return { ...state, weeks: action.payload.weeks };
-    }
+      case SET_WEEKS: {
+        return { ...state, weeks: action.payload.weeks };
+      }
 
-    case SET_DEAL: {
-      return { ...state, deal: action.payload.deal };
-    }
+      case SET_DEAL: {
+        return { ...state, deal: action.payload.deal };
+      }
 
-    case CLEAR_FETCH_FILTERS: {
-      //console.log("CLEAR_FETCH_FILTERS");
-      return {
-        ...state,
-        filtersLoading: false,
-        filtersSuccess: false,
-        filtersError: null,
-      };
-    }
+      case CLEAR_FETCH_FILTERS: {
+        //console.log("CLEAR_FETCH_FILTERS");
+        return {
+          ...state,
+          filtersLoading: false,
+          filtersSuccess: false,
+          filtersError: null,
+        };
+      }
 
-    case FETCH_FILTERS_REQUEST: {
-      //console.log("FETCH_FILTERS_REQUEST");
-      return {
-        ...state,
-        filtersLoading: true,
-        filtersSuccess: false,
-        filtersError: null,
-      };
-    }
+      case FETCH_FILTERS_REQUEST: {
+        //console.log("FETCH_FILTERS_REQUEST");
+        return {
+          ...state,
+          filtersLoading: true,
+          filtersSuccess: false,
+          filtersError: null,
+        };
+      }
 
-    case FETCH_FILTERS_SUCCESS: {
-      // console.log("Fetch FILTERS: ", action.payload);
-      return {
-        ...state,
-        filters: action.payload.data,
-        filtersLoading: false,
-        filtersSuccess: true,
-      };
-    }
+      case FETCH_FILTERS_SUCCESS: {
+        // console.log("Fetch FILTERS: ", action.payload);
+        return {
+          ...state,
+          filters: action.payload.data,
+          filtersLoading: false,
+          filtersSuccess: true,
+        };
+      }
 
-    case FETCH_FILTERS_FAIL: {
-      return { ...state, filters: undefined, filtersLoading: false, filtersError: action.payload };
-    }
+      case FETCH_FILTERS_FAIL: {
+        return {
+          ...state,
+          filters: undefined,
+          filtersLoading: false,
+          filtersError: action.payload,
+        };
+      }
 
-    case CLEAR_EDIT_FILTER: {
-      return {
-        ...state,
-        editFilterLoading: false,
-        editFilterSuccess: false,
-        editFilterError: null,
-      };
-    }
+      case CLEAR_EDIT_FILTER: {
+        return {
+          ...state,
+          editFilterLoading: false,
+          editFilterSuccess: false,
+          editFilterError: null,
+        };
+      }
 
-    case EDIT_FILTER_REQUEST: {
-      return { ...state, editFilterLoading: true, editFilterSuccess: false, editFilterError: null };
-    }
+      case EDIT_FILTER_REQUEST: {
+        return {
+          ...state,
+          editFilterLoading: true,
+          editFilterSuccess: false,
+          editFilterError: null,
+        };
+      }
 
-    case EDIT_FILTER_SUCCESS: {
-      return {
-        ...state,
-        editFilterLoading: false,
-        editFilterSuccess: true,
-      };
-    }
+      case EDIT_FILTER_SUCCESS: {
+        return {
+          ...state,
+          editFilterLoading: false,
+          editFilterSuccess: true,
+        };
+      }
 
-    case EDIT_FILTER_FAIL: {
-      return { ...state, editFilterLoading: false, editFilterError: action.payload };
-    }
+      case EDIT_FILTER_FAIL: {
+        return { ...state, editFilterLoading: false, editFilterError: action.payload };
+      }
 
-    default:
-      return state;
+      default:
+        return state;
+    }
   }
-};
+);
 
 export const actions = {
-  fetchRequest: (payload: { page: number; perPage: number; weeks: number }) =>
-    createAction(FETCH_REQUEST, payload),
+  fetchRequest: (page: number, perPage: number, weeks: number) =>
+    createAction(FETCH_REQUEST, { page, perPage, weeks }),
   fetchSuccess: (payload: IServerResponse<IDeal[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
