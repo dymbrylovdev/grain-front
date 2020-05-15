@@ -136,7 +136,7 @@ function BidCreatePage({
   };
 
   const editAction = (values, setStatus, setSubmitting) => {
-    console.log("editValues", values);
+    // console.log("editValues", values);
     const params = {
       ...values,
       vendor_id,

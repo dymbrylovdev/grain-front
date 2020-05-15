@@ -3,14 +3,17 @@ import { injectIntl, FormattedMessage } from "react-intl";
 import { TextField, CircularProgress, MenuItem, Box, Grid } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { Formik } from "formik";
+import { useSnackbar } from "notistack";
 import { Paper } from "@material-ui/core";
 import NumberFormat from "react-number-format";
 import * as Yup from "yup";
 import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
+
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
+import { isEmptyObject } from "../../../../utils";
 
 const getInitialValues = (bid, crop, userRole) => {
   const values = {
@@ -104,8 +107,6 @@ function BidForm({
   const [cropParams, setCropParams] = useState([]);
   const [isParamLoading, setCropParamLoading] = useState(false);
 
-  const [selectedLocation, setSelectedLocation] = useState(null);
-
   const filterCrops =
     bid && crops && crops.filter(item => item.id === bid.crop_id)
       ? crops.filter(item => item.id === bid.crop_id)
@@ -117,8 +118,8 @@ function BidForm({
       : !!cropId && !!crops
       ? crops.find(item => item.id === +cropId)
       : null;
-  console.log("crops: ", crops);
-  console.log("currentCrop: ", currentCrop);
+  // console.log("crops: ", crops);
+  // console.log("currentCrop: ", currentCrop);
   const getCropParamsAction = cropId => {
     setCropParamLoading(true);
     setCropParams([]);
@@ -138,6 +139,7 @@ function BidForm({
       getCropParamsAction(currentCrop.id);
     }
   }, [currentCrop]); // eslint-disable-line
+
   useEffect(() => {
     //console.log("--currentBid", bid);
     formRef.current.resetForm({ values: getInitialValues(bid, currentCrop, userRole) });
@@ -161,6 +163,11 @@ function BidForm({
             <FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />
           ),
           price: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
+          location: Yup.object({
+            text: Yup.string().required(
+              <FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />
+            ),
+          }),
           crop: Yup.mixed().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
         })}
         onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
@@ -173,12 +180,6 @@ function BidForm({
           });
           const cropId = values.crop.id;
           values.description === "" && delete values.description;
-
-          if (selectedLocation) {
-            values.location = { ...selectedLocation };
-          } else {
-            delete values.location;
-          }
           submitAction({ ...values, crop_id: cropId, parameter_values: paramValues });
         }}
         innerRef={formRef}
@@ -192,8 +193,9 @@ function BidForm({
           handleBlur,
           handleSubmit,
           isSubmitting,
+          setFieldValue,
         }) => {
-          //console.log(values);
+          // console.log("values: ", values);
           return (
             <div className={classes.form}>
               <form noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
@@ -354,11 +356,14 @@ function BidForm({
                     id: "PROFILE.INPUT.LOCATION",
                   })}
                   inputClassName={classes.textField}
-                  inputError={Boolean(touched.location && errors.location)}
-                  inputHelperText={touched.location && errors.location}
+                  inputError={Boolean(touched.location && errors.location && errors.location.text)}
+                  inputHelperText={touched.location && errors.location && errors.location.text}
                   fetchLocations={fetchLocations}
                   clearLocations={clearLocations}
-                  setSelectedLocation={setSelectedLocation}
+                  setSelectedLocation={location =>
+                    !!location ? setFieldValue("location", location) : setFieldValue("location", {})
+                  }
+                  handleBlur={handleBlur}
                   disable={!isEditable}
                 />
                 <div className={classes.textFieldContainer}>
@@ -454,7 +459,13 @@ function BidForm({
                 <StatusAlert status={status} />
                 {isEditable && (
                   <div className={classes.buttonContainer}>
-                    <ButtonWithLoader loading={loading} disabled={loading} onPress={handleSubmit}>
+                    <ButtonWithLoader
+                      loading={loading}
+                      disabled={loading}
+                      onPress={() => {
+                        handleSubmit();
+                      }}
+                    >
                       {bid && bid.id
                         ? intl.formatMessage({ id: "BIDSLIST.BUTTON.EDIT_BID" })
                         : intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}

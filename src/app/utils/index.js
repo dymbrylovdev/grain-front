@@ -95,3 +95,12 @@ export const getQueryString = (values = {}) => {
 
 export const getResponseMessage = e =>
   e && e.response && e.response.data && e.response.data.message;
+
+export const isEmptyObject = obj => {
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      return false;
+    }
+  }
+  return true;
+};

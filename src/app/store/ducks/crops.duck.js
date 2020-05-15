@@ -43,7 +43,7 @@ export const reducer = persistReducer(
   (state = initialCropState, action) => {
     switch (action.type) {
       case actionTypes.SetFilterForCrop: {
-        console.log("SetFilterForCrop: ", action.payload);
+        // console.log("SetFilterForCrop: ", action.payload);
         const { filter, cropId } = action.payload;
         return { ...state, filters: { ...state.filters, [cropId]: filter } };
       }
