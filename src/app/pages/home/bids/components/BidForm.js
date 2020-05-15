@@ -107,6 +107,18 @@ function BidForm({
   const [cropParams, setCropParams] = useState([]);
   const [isParamLoading, setCropParamLoading] = useState(false);
 
+  const [formikErrored, setFormikErrored] = useState(false);
+
+  const { enqueueSnackbar } = useSnackbar();
+  useEffect(() => {
+    if (formikErrored) {
+      enqueueSnackbar(intl.formatMessage({ id: "NOTISTACK.ERRORS.EMPTY_FIELDS" }), {
+        variant: "error",
+      });
+      setFormikErrored(false);
+    }
+  }, [enqueueSnackbar, formikErrored, intl]);
+
   const filterCrops =
     bid && crops && crops.filter(item => item.id === bid.crop_id)
       ? crops.filter(item => item.id === bid.crop_id)
@@ -463,6 +475,7 @@ function BidForm({
                       loading={loading}
                       disabled={loading}
                       onPress={() => {
+                        !isEmptyObject(errors) ? setFormikErrored(true) : setFormikErrored(false);
                         handleSubmit();
                       }}
                     >
