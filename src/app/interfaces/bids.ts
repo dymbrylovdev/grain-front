@@ -1,6 +1,7 @@
 export type TBidType = "sale" | "purchase";
 
 export interface IBid {
+  type: "sale" | "purchase";
   id: number;
   price: number;
   volume: number;

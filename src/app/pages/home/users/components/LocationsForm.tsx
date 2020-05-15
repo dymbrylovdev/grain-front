@@ -270,7 +270,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   <div className={classes.textField}>
                     <AutocompleteLocations
                       id={item.id.toString()}
-                      options={googleLocations}
+                      options={googleLocations || []}
                       loading={false}
                       defaultValue={{
                         text: item.text ? item.text : "",
@@ -331,7 +331,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             ) : (
               <div className={classes.textField}>
                 <AutocompleteLocations
-                  options={googleLocations}
+                  options={googleLocations || []}
                   loading={false}
                   defaultValue={{ text: "" }}
                   label={intl.formatMessage({

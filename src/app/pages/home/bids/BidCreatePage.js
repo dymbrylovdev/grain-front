@@ -84,17 +84,17 @@ function BidCreatePage({
   const isNoModerate = !vendorId && !bidId && user.is_vendor && user.status === "На модерации";
 
   const userRole = () => {
-    if (!!fromUser) {
-      if (+vendor_id === user.id) {
-        if (user.is_admin) return "admin";
-        if (user.is_buyer) return "buyer";
-        if (user.is_vendor) return "vendor";
-      } else {
-        if (fromUser.is_admin) return "admin";
-        if (fromUser.is_buyer) return "buyer";
-        if (fromUser.is_vendor) return "vendor";
-      }
-    }
+    // if (!!fromUser) {
+    //   if (+vendor_id === user.id) {
+    if (user.is_admin) return "admin";
+    if (user.is_buyer) return "buyer";
+    if (user.is_vendor) return "vendor";
+    //   } else {
+    //     if (fromUser.is_admin) return "admin";
+    //     if (fromUser.is_buyer) return "buyer";
+    //     if (fromUser.is_vendor) return "vendor";
+    //   }
+    // }
   };
 
   const { enqueueSnackbar } = useSnackbar();

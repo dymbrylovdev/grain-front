@@ -16,6 +16,7 @@ import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import { isEmptyObject } from "../../../../utils";
 
 const getInitialValues = (bid, crop, userRole) => {
+  // debugger;
   const values = {
     volume: bid?.volume || "",
     price: bid?.price || "",
@@ -23,7 +24,7 @@ const getInitialValues = (bid, crop, userRole) => {
     crop: crop,
     location: bid?.location || {},
     pricePerKm: bid?.price_delivery_per_km || 4,
-    bid_type: userRole === "buyer" ? "purchase" : "sale",
+    bid_type: !!bid ? bid.type : userRole === "buyer" ? "purchase" : "sale",
   };
   if (bid && bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.forEach(item => {
@@ -358,7 +359,7 @@ function BidForm({
                   </Box>
                 )}
                 <AutocompleteLocations
-                  options={locations}
+                  options={locations || []}
                   loading={isLoadingLocations}
                   defaultValue={{
                     text: values.location && values.location.text ? values.location.text : "",
