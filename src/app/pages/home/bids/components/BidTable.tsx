@@ -83,7 +83,11 @@ const BidTable: React.FC<IProps> = ({
                 <FormattedMessage id="BIDSLIST.TABLE.VOLUME" />
               </TopTableCell>
               <TopTableCell>
-                <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
+                {salePurchaseMode === "sale" ? (
+                  <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
+                ) : (
+                  <FormattedMessage id="BIDSLIST.TABLE.BUYER" />
+                )}
               </TopTableCell>
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
@@ -101,17 +105,19 @@ const BidTable: React.FC<IProps> = ({
                   user.use_vat &&
                   salePurchaseMode === "sale" &&
                   !!bid &&
+                  !!bid.vat &&
                   !bid.vendor.use_vat ? (
                     !bid.price_with_delivery ? (
                       "-"
                     ) : (
                       <>
                         <p style={{ marginBottom: "1px" }}>
-                          {!!bid && Math.round(bid.price_with_delivery * (bid.vat || 0 / 100 + 1))}
+                          {!!bid && Math.round(bid.price_with_delivery * (bid.vat / 100 + 1))}
                         </p>
                         <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
-                          {`${bid.price_with_delivery &&
-                            Math.round(bid.price_with_delivery)} + ${bid.vat || 0}% НДС`}
+                          {`${bid.price_with_delivery && Math.round(bid.price_with_delivery)} + ${
+                            bid.vat
+                          }% НДС`}
                         </p>
                       </>
                     )

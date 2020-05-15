@@ -201,6 +201,7 @@
   "BIDSLIST.TABLE.CROP": "Культура",
   "BIDSLIST.TABLE.DESTINATION": "Расстояниe",
   "BIDSLIST.TABLE.AUTHOR": "Поставщик",
+  "BIDSLIST.TABLE.BUYER": "Покупатель",
   "BIDSLIST.TABLE.FINAL_PRICE": "Цена с учетом доставки",
   "BIDSLIST.TABLE.PROFIT": "Прибыль",
   "BIDSLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить заявку?",

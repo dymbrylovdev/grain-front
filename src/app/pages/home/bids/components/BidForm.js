@@ -13,7 +13,6 @@ import { makeStyles } from "@material-ui/styles";
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
-import { isEmptyObject } from "../../../../utils";
 
 const getInitialValues = (bid, crop, userRole) => {
   // debugger;
@@ -253,6 +252,7 @@ function BidForm({
                   user.use_vat &&
                   values.bid_type === "sale" &&
                   !!bid &&
+                  !!bid.vat &&
                   !bid.vendor.use_vat && (
                     <>
                       <TextField
