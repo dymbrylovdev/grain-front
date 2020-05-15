@@ -35,6 +35,7 @@ import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { IMyFilterItem } from "../../../interfaces/filters";
 import { OutlinedRedButton } from "../../../components/ui/Buttons/RedButtons";
 import { itemById } from "../../../utils/utils";
+import NumberFormat from "react-number-format";
 
 const useInnerStyles = makeStyles(theme => ({
   buttonContainer: {
@@ -54,6 +55,21 @@ const useInnerStyles = makeStyles(theme => ({
     paddingRight: theme.spacing(0),
   },
 }));
+
+function NumberFormatCustom(props: any) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange={values => {
+        onChange(values.value);
+      }}
+      decimalScale={2}
+    />
+  );
+}
 
 const MyFiltersEditPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -340,6 +356,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                       InputProps={
                         isEditable
                           ? {
+                              inputComponent: NumberFormatCustom,
                               endAdornment: (
                                 <IconButton onClick={() => setFieldValue("max_full_price", "")}>
                                   <CloseIcon />
@@ -365,6 +382,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                       InputProps={
                         isEditable
                           ? {
+                              inputComponent: NumberFormatCustom,
                               endAdornment: (
                                 <IconButton onClick={() => setFieldValue("max_destination", "")}>
                                   <CloseIcon />

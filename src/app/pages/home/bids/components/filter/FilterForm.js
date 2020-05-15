@@ -1,11 +1,27 @@
 import React from "react";
 
 import { TextField, Divider, IconButton } from "@material-ui/core";
+import NumberFormat from "react-number-format";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckBoxParamGroup from "./CheckBoxParamGroup";
 import NumberParam from "./NumberParam";
+
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange={values => {
+        onChange(values.value);
+      }}
+      decimalScale={2}
+    />
+  );
+}
 
 function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
   return (
@@ -35,6 +51,7 @@ function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
           onBlur={formik.handleBlur}
           onChange={formik.handleChange("max_full_price")}
           InputProps={{
+            inputComponent: NumberFormatCustom,
             endAdornment: (
               <IconButton onClick={() => formik.setFieldValue("max_full_price", "")}>
                 <CloseIcon />
@@ -56,6 +73,7 @@ function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
           onBlur={formik.handleBlur}
           onChange={formik.handleChange("max_destination")}
           InputProps={{
+            inputComponent: NumberFormatCustom,
             endAdornment: (
               <IconButton onClick={() => formik.setFieldValue("max_destination", "")}>
                 <CloseIcon />
