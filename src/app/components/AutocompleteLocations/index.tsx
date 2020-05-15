@@ -80,7 +80,7 @@ const Autocomplete: React.FC<IProps> = ({
       loading={loading}
       getOptionLabel={option => option.text}
       onChange={(e: any, val: any) => {
-        console.log("val: ", val);
+        // console.log("val: ", val);
         if (val) {
           setSelectedLocation(val);
           setEditableLocation(false);
@@ -91,7 +91,7 @@ const Autocomplete: React.FC<IProps> = ({
       filterOptions={options => options}
       disabled={!editableLocation}
       defaultValue={defaultValue}
-      inputValue={defaultValue.text}
+      value={{ text: location }}
       onInputChange={(_e: any, _val: any, reason: any) => {
         if (reason === "clear") setSelectedLocation(null);
       }}
@@ -110,9 +110,9 @@ const Autocomplete: React.FC<IProps> = ({
             label={label}
             className={inputClassName}
             onBlur={handleBlur}
-            value={"location"}
+            // value={"location"}
             onChange={e => {
-              console.log("e.target.value: ", e.target.value);
+              // console.log("e.target.value: ", e.target.value);
               setLocation(e.target.value);
             }}
             helperText={inputHelperText}

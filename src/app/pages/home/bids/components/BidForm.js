@@ -476,7 +476,10 @@ function BidForm({
                       loading={loading}
                       disabled={loading}
                       onPress={() => {
-                        !isEmptyObject(errors) ? setFormikErrored(true) : setFormikErrored(false);
+                        // console.log(errors);
+                        !values.location.text || !values.volume || !values.price || !values.crop
+                          ? setFormikErrored(true)
+                          : setFormikErrored(false);
                         handleSubmit();
                       }}
                     >
