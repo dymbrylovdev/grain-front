@@ -180,7 +180,7 @@ function BidCreatePage({
     }, 1000);
   };
 
-  const submitAction = bid && bid.id ? editAction : createAction;
+  const submitAction = !creating ? editAction : createAction;
 
   let title = null;
   if (creating) title = intl.formatMessage({ id: "BID.TITLE.CREATE" });
