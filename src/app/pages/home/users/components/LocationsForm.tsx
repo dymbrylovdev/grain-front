@@ -100,6 +100,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   const [creatingLocation, setCreatingLocation] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [deleteLocationId, setDeleteLocationId] = useState(-1);
+  const [autoLocation, setAutoLocation] = useState({ text: "" });
 
   const { values, handleChange, resetForm } = useFormik({
     initialValues: { name: "" },
@@ -272,9 +273,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       id={item.id.toString()}
                       options={googleLocations || []}
                       loading={false}
-                      defaultValue={{
-                        text: item.text ? item.text : "",
-                      }}
+                      inputValue={item}
                       label={intl.formatMessage({
                         id: "PROFILE.INPUT.LOCATION",
                       })}
@@ -285,7 +284,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       fetchLocations={fetchGoogleLocations}
                       clearLocations={clearGoogleLocations}
                       setSelectedLocation={(location: ILocationToRequest) => {
-                        if (location) {
+                        if (location.text !== "") {
                           delete location.name;
                           location.user_id = userId || me?.id;
                           edit({ id: item.id, data: location });
@@ -333,7 +332,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 <AutocompleteLocations
                   options={googleLocations || []}
                   loading={false}
-                  defaultValue={{ text: "" }}
+                  inputValue={autoLocation}
                   label={intl.formatMessage({
                     id: "PROFILE.INPUT.LOCATION",
                   })}
@@ -344,7 +343,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   fetchLocations={fetchGoogleLocations}
                   clearLocations={clearGoogleLocations}
                   setSelectedLocation={(location: ILocationToRequest) => {
-                    if (location) {
+                    if (location.text !== "") {
+                      setAutoLocation({ text: "" });
                       userId ? (location.user_id = userId) : (location.user_id = me?.id);
                       setCreatingLocation(false);
                       console.log(location);

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Autocomplete as MaterialAutocomplete } from "@material-ui/lab";
-import { TextField, CircularProgress, IconButton } from "@material-ui/core";
+import { TextField, CircularProgress, IconButton, makeStyles } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 
-// const innerStyles = makeStyles(theme => ({
-//   pulseRoot: {
-//     "& fieldset": {
-//       animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
-//     },
-//   },
-// }));
+const innerStyles = makeStyles(theme => ({
+  pulseRoot: {
+    "& fieldset": {
+      animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
+    },
+  },
+}));
 
 interface IOptionsItem {
   text: string;
@@ -18,7 +18,7 @@ interface IOptionsItem {
 interface IProps {
   id?: string;
   options: IOptionsItem[];
-  defaultValue: IOptionsItem;
+  inputValue: IOptionsItem;
   label: string;
   inputClassName: any;
   editable: boolean;
@@ -37,7 +37,7 @@ interface IProps {
 const Autocomplete: React.FC<IProps> = ({
   id = "",
   options,
-  defaultValue,
+  inputValue,
   label,
   inputClassName,
   handleBlur,
@@ -54,8 +54,8 @@ const Autocomplete: React.FC<IProps> = ({
 }) => {
   const [editableLocation, setEditableLocation] = useState(editable);
   const [location, setLocation] = useState<string>("");
-  // const innerClasses = innerStyles();
-  // console.log("editableLocation: ", editableLocation);
+  const innerClasses = innerStyles();
+
   useEffect(() => {
     clearLocations();
   }, [clearLocations]);
@@ -64,14 +64,14 @@ const Autocomplete: React.FC<IProps> = ({
     fetchLocations(location);
   }, [fetchLocations, location]);
 
-  useEffect(() => {
-    setLocation(defaultValue.text);
-  }, [setLocation, defaultValue.text]);
+  // useEffect(() => {
+  //   setLocation(defaultValue.text);
+  // }, [setLocation, defaultValue.text]);
 
-  useEffect(() => {
-    if (!defaultValue.text) setEditableLocation(true);
-  }, [setEditableLocation, defaultValue.text]);
-  // debugger;
+  // useEffect(() => {
+  //   if (!defaultValue.text) setEditableLocation(true);
+  // }, [setEditableLocation, defaultValue.text]);
+
   return (
     <MaterialAutocomplete
       id={`autocomplete${id}`}
@@ -80,7 +80,7 @@ const Autocomplete: React.FC<IProps> = ({
       loading={loading}
       getOptionLabel={option => option.text}
       onChange={(e: any, val: any) => {
-        // console.log("val: ", val);
+        console.log("val: ", val);
         if (val) {
           setSelectedLocation(val);
           setEditableLocation(false);
@@ -90,14 +90,13 @@ const Autocomplete: React.FC<IProps> = ({
       }}
       filterOptions={options => options}
       disabled={!editableLocation}
-      defaultValue={defaultValue}
-      value={{ text: location }}
+      value={inputValue}
       onInputChange={(_e: any, _val: any, reason: any) => {
-        if (reason === "clear") setSelectedLocation(null);
+        if (reason === "clear") setSelectedLocation({ text: "" });
       }}
-      // classes={
-      //   prompterRunning && prompterStep === 0 && !location ? { root: innerClasses.pulseRoot } : {}
-      // }
+      classes={
+        prompterRunning && prompterStep === 0 && !location ? { root: innerClasses.pulseRoot } : {}
+      }
       renderInput={(params: any) => {
         // console.log(params);
         return (
@@ -110,9 +109,7 @@ const Autocomplete: React.FC<IProps> = ({
             label={label}
             className={inputClassName}
             onBlur={handleBlur}
-            // value={"location"}
             onChange={e => {
-              // console.log("e.target.value: ", e.target.value);
               setLocation(e.target.value);
             }}
             helperText={inputHelperText}

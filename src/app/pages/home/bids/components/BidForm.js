@@ -21,7 +21,7 @@ const getInitialValues = (bid, crop, userRole) => {
     price: bid?.price || "",
     description: bid?.description || "",
     crop: crop,
-    location: bid?.location || {},
+    location: bid?.location || { text: "" },
     pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: !!bid ? bid.type : userRole === "buyer" ? "purchase" : "sale",
   };
@@ -207,7 +207,7 @@ function BidForm({
           isSubmitting,
           setFieldValue,
         }) => {
-          // console.log("values: ", values);
+          console.log("values: ", values);
           return (
             <div className={classes.form}>
               <form noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
@@ -361,9 +361,7 @@ function BidForm({
                 <AutocompleteLocations
                   options={locations || []}
                   loading={isLoadingLocations}
-                  defaultValue={{
-                    text: values.location && values.location.text ? values.location.text : "",
-                  }}
+                  inputValue={values.location}
                   editable={!(values.location && values.location.text)}
                   label={intl.formatMessage({
                     id: "PROFILE.INPUT.LOCATION",
