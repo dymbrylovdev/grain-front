@@ -192,6 +192,7 @@ function BidForm({
           });
           const cropId = values.crop.id;
           values.description === "" && delete values.description;
+          console.log(values);
           submitAction({ ...values, crop_id: cropId, parameter_values: paramValues });
         }}
         innerRef={formRef}

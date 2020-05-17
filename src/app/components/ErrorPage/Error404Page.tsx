@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles, createStyles, Button } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 const useInnerStyles = makeStyles(theme =>
   createStyles({
@@ -17,27 +18,25 @@ const useInnerStyles = makeStyles(theme =>
   })
 );
 
-const ErrorPage: React.FC = () => {
+const Error404Page: React.FC = () => {
   const innerClasses = useInnerStyles();
 
-  const [offButton, setOffButton] = useState(false);
+  const history = useHistory();
 
   return (
     <div className={innerClasses.container}>
-      <div className={innerClasses.text}>Что-то пошло не так</div>
+      <div className={innerClasses.text}>Этой страницы не существует</div>
       <Button
-        variant="contained"
+        variant="outlined"
         color="primary"
-        disabled={offButton}
         onClick={() => {
-          setOffButton(true);
-          document.location.reload(true);
+          history.goBack();
         }}
       >
-        Обновить страницу
+        Назад
       </Button>
     </div>
   );
 };
 
-export default ErrorPage;
+export default Error404Page;

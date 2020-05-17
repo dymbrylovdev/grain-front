@@ -26,7 +26,7 @@ interface IProps {
   inputError: boolean;
   inputHelperText: any;
   disable: boolean;
-  handleBlur?: () => {} | void;
+  handleBlur?: (e: any) => {} | void;
   fetchLocations: (location: string) => {};
   clearLocations: () => {};
   setSelectedLocation: (location: any) => {} | void;
@@ -68,9 +68,10 @@ const Autocomplete: React.FC<IProps> = ({
   //   setLocation(defaultValue.text);
   // }, [setLocation, defaultValue.text]);
 
-  // useEffect(() => {
-  //   if (!defaultValue.text) setEditableLocation(true);
-  // }, [setEditableLocation, defaultValue.text]);
+  useEffect(() => {
+    if (inputValue.text === "") setEditableLocation(true);
+    if (inputValue.text !== "") setEditableLocation(false);
+  }, [inputValue, setEditableLocation]);
 
   return (
     <MaterialAutocomplete
@@ -80,7 +81,7 @@ const Autocomplete: React.FC<IProps> = ({
       loading={loading}
       getOptionLabel={option => option.text}
       onChange={(e: any, val: any) => {
-        console.log("val: ", val);
+        // console.log("val: ", val);
         if (val) {
           setSelectedLocation(val);
           setEditableLocation(false);

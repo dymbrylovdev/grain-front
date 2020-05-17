@@ -277,12 +277,12 @@ const DealViewPage: React.FC<TPropsFromRedux &
                 <TableRow>
                   <TableCell></TableCell>
                   <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                    <Link to={`/bid/edit/${deal.sale_bid.id}/fromAdmin`}>
+                    <Link to={`/bid/edit/sale/${deal.sale_bid.id}`}>
                       {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
                     </Link>
                   </TableCell>
                   <TableCell>
-                    <Link to={`/bid/edit/${deal.purchase_bid.id}/fromAdmin`}>
+                    <Link to={`/bid/edit/purchase/${deal.purchase_bid.id}`}>
                       {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
                     </Link>
                   </TableCell>

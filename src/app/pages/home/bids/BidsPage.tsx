@@ -402,7 +402,17 @@ const BidsPage: React.FC<TPropsFromRedux &
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => history.push(`/bid/create${!cropId ? "" : "/crop/" + cropId}`)}
+                onClick={() =>
+                  history.push(
+                    `/bid/create/${
+                      (!!me && me.is_admin) || bestAllMyMode === "my-bids"
+                        ? salePurchaseMode
+                        : salePurchaseMode === "sale"
+                        ? "purchase"
+                        : "sale"
+                    }/0${!!cropId ? "/" + cropId : ""}`
+                  )
+                }
               >
                 {intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
               </Button>

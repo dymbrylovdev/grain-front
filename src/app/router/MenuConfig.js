@@ -291,7 +291,7 @@ const getVendorMenu = crops => ({
           {
             title: "Добавить заявку",
             root: true,
-            page: "bid/create",
+            page: "bid/create/sale/0/0",
             translate: "SUBMENU.GRAIN.CREATE_AD",
           },
           {
@@ -365,7 +365,7 @@ const getBuyerMenu = crops => ({
           {
             title: "Добавить заявку",
             root: true,
-            page: "bid/create",
+            page: "bid/create/purchase/0/0",
             translate: "SUBMENU.GRAIN.CREATE_AD",
           },
           {

@@ -15,8 +15,9 @@ import { MyFiltersPage, MyFiltersEditPage, MyFiltersMoneyPage } from "./myFilter
 import Dashboard from "./Dashboard";
 import { FunnelStatesPage, FunnelStateEditPage } from "./funnelStates";
 import { ActivityReportPage } from "./activityReport";
-import { BidsPage, BidCreatePage } from "./bids";
+import { BidsPage, BidEditPage } from "./bids";
 import { DealsPage, DealViewPage } from "./deals";
+import Error404Page from "../../components/ErrorPage/Error404Page";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { crops, user } = useSelector(
@@ -63,7 +64,12 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/funnel-states/edit/:id" component={FunnelStateEditPage} />
         <Route path="/funnel-states" component={FunnelStatesPage} />
 
-        <Route path="/bid/create" exact component={BidCreatePage} />
+        <Route
+          path="/bid/:editMode/:salePurchaseMode/:bidId/:cropId?/:vendorId?"
+          component={BidEditPage}
+        />
+
+        {/* <Route path="/bid/create" exact component={BidCreatePage} />
         <Route path="/bid/create/crop/:cropId" component={BidCreatePage} />
         <Route path="/bid/create/:vendorId" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId" exact component={BidCreatePage} />
@@ -71,7 +77,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/bid/view/:bidId/fromMy" component={BidCreatePage} />
         <Route path="/bid/view/:bidId/fromAdmin" component={BidCreatePage} />
         <Route path="/bid/edit/:bidId/fromMy" component={BidCreatePage} />
-        <Route path="/bid/edit/:bidId/fromAdmin" component={BidCreatePage} />
+        <Route path="/bid/edit/:bidId/fromAdmin" component={BidCreatePage} /> */}
 
         <Route path="/sale/best-bids/:cropId" component={BidsPage} />
         <Route path="/purchase/best-bids/:cropId" component={BidsPage} />
@@ -115,6 +121,8 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         )}
 
         <Redirect from="/allBidsList/:cropId" to="/sale/all-bids/:cropId" />
+
+        <Route path="/" component={Error404Page} />
       </Switch>
     </Suspense>
   );

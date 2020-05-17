@@ -162,7 +162,7 @@ const BidTable: React.FC<IProps> = ({
                   <IconButton
                     size="medium"
                     color="primary"
-                    onClick={() => history.push(`/bid/view/${bid.id}/${addUrl || ""}`)}
+                    onClick={() => history.push(`/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`)}
                   >
                     <VisibilityIcon />
                   </IconButton>
@@ -171,7 +171,9 @@ const BidTable: React.FC<IProps> = ({
                       <IconButton
                         size="medium"
                         color="primary"
-                        onClick={() => history.push(`/bid/edit/${bid.id}/${addUrl || ""}`)}
+                        onClick={() =>
+                          history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`)
+                        }
                       >
                         {isHaveRules(user, bid.vendor.id) ? <EditIcon /> : <VisibilityIcon />}
                       </IconButton>

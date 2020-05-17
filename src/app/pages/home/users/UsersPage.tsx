@@ -349,7 +349,11 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       <IconButton
                         size="medium"
                         color="primary"
-                        onClick={() => history.push(`/bid/create/${item.id}`)}
+                        onClick={() =>
+                          history.push(
+                            `/bid/create/${item.is_buyer ? "purchase" : "sale"}/0/0/${item.id}`
+                          )
+                        }
                       >
                         <AddIcon />
                       </IconButton>
