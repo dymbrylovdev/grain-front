@@ -110,8 +110,20 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       );
       setAlertOpen(false);
       clearDel();
+      fetch({ page, perPage });
+      fetchFunnelStates();
     }
-  }, [clearDel, delError, delSuccess, enqueueSnackbar, intl]);
+  }, [
+    clearDel,
+    delError,
+    delSuccess,
+    enqueueSnackbar,
+    fetch,
+    fetchFunnelStates,
+    intl,
+    page,
+    perPage,
+  ]);
 
   useEffect(() => {
     fetch({ page, perPage });

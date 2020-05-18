@@ -382,6 +382,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             onChange={handleChange}
             helperText={touched.login && errors.login}
             error={Boolean(touched.login && errors.login)}
+            autoComplete="off"
             disabled={editMode === "view"}
           />
         )}
@@ -410,6 +411,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             onChange={handleChange}
             helperText={touched.fio && errors.fio}
             error={Boolean(touched.fio && errors.fio)}
+            autoComplete="off"
             disabled={editMode === "view"}
           />
         )}
@@ -458,6 +460,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             helperText={touched.phone && errors.phone}
             error={Boolean(touched.phone && errors.phone)}
             disabled={editMode === "view"}
+            autoComplete="off"
           />
         )}
       </div>
