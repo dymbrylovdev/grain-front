@@ -235,6 +235,13 @@ const FilterModal = ({
     return name;
   };
 
+  const handleClear = () => {
+    setCurrentFilter(cropId, undefined);
+    formik.resetForm({ values: getInitialValues(currentFilter) });
+    clearBids();
+    handleClose();
+  };
+
   useEffect(() => {
     if (isOpen) {
       resetForm({ values: getInitialValues(currentFilter) });
@@ -328,6 +335,7 @@ const FilterModal = ({
           <MyFilters
             classes={classes}
             handleSubmit={handleSubmit}
+            handleClear={handleClear}
             cropId={cropId}
             enumParams={enumParams}
             numberParams={numberParams}
@@ -415,12 +423,7 @@ const FilterModal = ({
                   <Button
                     variant="contained"
                     color="secondary"
-                    onClick={() => {
-                      setCurrentFilter(cropId, undefined);
-                      formik.resetForm({ values: getInitialValues(currentFilter) });
-                      clearBids();
-                      handleClose();
-                    }}
+                    onClick={handleClear}
                     disabled={!currentFilter}
                   >
                     {intl.formatMessage({ id: "FILTER.FORM.BUTTON.RESET" })}

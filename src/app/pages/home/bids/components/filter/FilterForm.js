@@ -64,6 +64,27 @@ function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
         <TextField
           type="text"
           label={intl.formatMessage({
+            id: "FILTER.FORM.MIN_PRICE",
+          })}
+          margin="normal"
+          name="min_full_price"
+          value={formik.values.min_full_price || ""}
+          variant="outlined"
+          onBlur={formik.handleBlur}
+          onChange={formik.handleChange("min_full_price")}
+          InputProps={{
+            endAdornment: (
+              <IconButton onClick={() => formik.setFieldValue("min_full_price", "")}>
+                <CloseIcon />
+              </IconButton>
+            ),
+          }}
+        />
+      </div>
+      <div className={classes.textFieldContainer}>
+        <TextField
+          type="text"
+          label={intl.formatMessage({
             id: "FILTER.FORM.MAX_DESTINATION",
           })}
           margin="normal"

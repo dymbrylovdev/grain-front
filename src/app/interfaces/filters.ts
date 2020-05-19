@@ -34,6 +34,7 @@ export interface IMyFilterItem {
     name: string;
   };
   max_full_price: number;
+  min_full_price: number;
   max_distance: number;
   parameter_values: IMyFiltersParam[];
   point_prices: IPointPrice[];
@@ -49,6 +50,7 @@ export interface IFilterForCreate {
   name?: string;
   cropId?: number;
   max_full_price?: number;
+  min_full_price?: number;
   max_distance?: number;
   parameter_values?: IParamValue[];
   point_prices?: IPointPriceForEdit[];
@@ -67,6 +69,7 @@ export interface IFilterForBids {
   filter: {
     cropId?: number;
     max_full_price?: number;
+    min_full_price?: number;
     max_distance?: number;
     parameter_values?: IParamValue[];
     point_prices?: IPointPriceForEdit[];

@@ -8,6 +8,7 @@ import {
   Grid,
   FormControlLabel,
   Checkbox,
+  Button,
 } from "@material-ui/core";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl } from "react-intl";
@@ -45,6 +46,8 @@ function MyFiltersForm({
   numberParams,
   cropId,
   filter,
+  savedFilter,
+  handleClear,
   delFilter,
   delLoading,
   editFilter,
@@ -86,9 +89,17 @@ function MyFiltersForm({
         initialValues,
       }) => (
         <Col>
-          <ButtonWithLoader onPress={handleSubmit}>
-            {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
-          </ButtonWithLoader>
+          <div style={{ marginBottom: "16px" }}>
+            {savedFilter && savedFilter.id && savedFilter.id === filter.id ? (
+              <Button variant="contained" color="secondary" onClick={handleClear}>
+                {intl.formatMessage({ id: "FILTER.FORM.BUTTON.RESET" })}
+              </Button>
+            ) : (
+              <ButtonWithLoader onPress={handleSubmit}>
+                {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
+              </ButtonWithLoader>
+            )}
+          </div>
           <div className={innerClasses.textFieldContainer}>
             <TextField
               type="text"
@@ -133,6 +144,27 @@ function MyFiltersForm({
               InputProps={{
                 endAdornment: (
                   <IconButton onClick={() => clearAction("max_full_price")}>
+                    <CloseIcon />
+                  </IconButton>
+                ),
+              }}
+            />
+          </div>
+          <div className={classes.textFieldContainer}>
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "FILTER.FORM.MIN_PRICE",
+              })}
+              margin="normal"
+              name="min_full_price"
+              value={values.min_full_price || ""}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange("min_full_price")}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={() => clearAction("min_full_price")}>
                     <CloseIcon />
                   </IconButton>
                 ),
@@ -192,6 +224,7 @@ function MyFiltersForm({
                 loading={editLoading}
                 disabled={editLoading}
                 onPress={() => {
+                  console.log(values);
                   let params = values;
                   params.point_prices = [];
                   filter.point_prices.forEach(item => {

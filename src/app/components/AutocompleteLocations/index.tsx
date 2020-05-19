@@ -72,6 +72,7 @@ const Autocomplete: React.FC<IProps> = ({
     if (inputValue.text === "") setEditableLocation(true);
     if (inputValue.text !== "") setEditableLocation(false);
   }, [inputValue, setEditableLocation]);
+  console.log(options);
 
   return (
     <MaterialAutocomplete

@@ -539,6 +539,7 @@ const BidsPage: React.FC<TPropsFromRedux &
           handleClose={() => setFilterModalOpen(false)}
           classes={classes}
           handleSubmit={(values: any) => {
+            console.log(values);
             setFilterModalOpen(false);
             if (salePurchaseMode === "sale")
               setCurrentSaleFilter(+cropId, { ...values, cropId: +cropId });

@@ -17,8 +17,9 @@ export const filterForCreate = (
   const filter: IFilterForCreate = {
     name: data.name,
     cropId: +data.cropId,
-    max_full_price: data.max_full_price || 0,
-    max_distance: data.max_destination || 0,
+    max_full_price: +data.max_full_price || 0,
+    min_full_price: +data.min_full_price || 0,
+    max_distance: +data.max_destination || 0,
     subscribed: data.subscribed,
     point_prices: data.point_prices,
     bid_type: data.bid_type,
@@ -62,6 +63,7 @@ export const filterForBids = (
     filter: {
       cropId: +data.cropId,
       max_full_price: data.max_full_price || 0,
+      min_full_price: data.min_full_price || 0,
       max_distance: data.max_destination || 0,
       point_prices: data.point_prices,
     },
@@ -102,6 +104,7 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
   if (data && data.name) newFilter["name"] = data.name;
   if (data && data.crop && data.crop.id) newFilter["cropId"] = +data.crop.id;
   if (data && data.max_full_price) newFilter["max_full_price"] = data.max_full_price;
+  if (data && data.min_full_price) newFilter["min_full_price"] = data.min_full_price;
   if (data && data.max_distance) newFilter["max_destination"] = data.max_distance;
   if (data && data.parameter_values && data.parameter_values.length) {
     data.parameter_values.forEach(item => {
