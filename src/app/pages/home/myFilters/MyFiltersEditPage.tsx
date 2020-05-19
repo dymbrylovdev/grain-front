@@ -371,6 +371,32 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                     <TextField
                       type="text"
                       label={intl.formatMessage({
+                        id: "FILTER.FORM.MIN_PRICE",
+                      })}
+                      margin="normal"
+                      name="min_full_price"
+                      value={values.min_full_price || ""}
+                      variant="outlined"
+                      onBlur={handleBlur}
+                      onChange={handleChange("min_full_price")}
+                      InputProps={
+                        isEditable
+                          ? {
+                              inputComponent: NumberFormatCustom,
+                              endAdornment: (
+                                <IconButton onClick={() => setFieldValue("min_full_price", "")}>
+                                  <CloseIcon />
+                                </IconButton>
+                              ),
+                            }
+                          : undefined
+                      }
+                      disabled={!isEditable}
+                    />
+
+                    <TextField
+                      type="text"
+                      label={intl.formatMessage({
                         id: "FILTER.FORM.MAX_DESTINATION",
                       })}
                       margin="normal"
