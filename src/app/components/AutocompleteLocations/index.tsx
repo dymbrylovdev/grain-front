@@ -72,7 +72,6 @@ const Autocomplete: React.FC<IProps> = ({
     if (inputValue.text === "") setEditableLocation(true);
     if (inputValue.text !== "") setEditableLocation(false);
   }, [inputValue, setEditableLocation]);
-  console.log(options);
 
   return (
     <MaterialAutocomplete
@@ -82,7 +81,6 @@ const Autocomplete: React.FC<IProps> = ({
       loading={loading}
       getOptionLabel={option => option.text}
       onChange={(e: any, val: any) => {
-        // console.log("val: ", val);
         if (val) {
           setSelectedLocation(val);
           setEditableLocation(false);
@@ -100,7 +98,6 @@ const Autocomplete: React.FC<IProps> = ({
         prompterRunning && prompterStep === 0 && !location ? { root: innerClasses.pulseRoot } : {}
       }
       renderInput={(params: any) => {
-        // console.log(params);
         return (
           <TextField
             {...params}

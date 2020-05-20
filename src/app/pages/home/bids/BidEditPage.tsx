@@ -115,9 +115,24 @@ const BidEditPage: React.FC<TPropsFromRedux &
         }
       );
       clearCreate();
-      if (createSuccess) history.goBack();
+      if (createSuccess) {
+        if (!!+vendorId) {
+          history.push("/user-list");
+        } else {
+          history.push(`/${salePurchaseMode}/my-bids`);
+        }
+      }
     }
-  }, [clearCreate, createError, createSuccess, enqueueSnackbar, history, intl]);
+  }, [
+    clearCreate,
+    createError,
+    createSuccess,
+    enqueueSnackbar,
+    history,
+    intl,
+    salePurchaseMode,
+    vendorId,
+  ]);
 
   useEffect(() => {
     if (editSuccess || editError) {

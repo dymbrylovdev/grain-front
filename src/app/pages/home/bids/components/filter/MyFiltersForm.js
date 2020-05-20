@@ -224,7 +224,6 @@ function MyFiltersForm({
                 loading={editLoading}
                 disabled={editLoading}
                 onPress={() => {
-                  console.log(values);
                   let params = values;
                   params.point_prices = [];
                   filter.point_prices.forEach(item => {

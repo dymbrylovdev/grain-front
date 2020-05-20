@@ -347,7 +347,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       setAutoLocation({ text: "" });
                       userId ? (location.user_id = userId) : (location.user_id = me?.id);
                       setCreatingLocation(false);
-                      console.log(location);
                       create(location);
                     }
                   }}

@@ -90,7 +90,6 @@ export const reducer = persistReducer(
         };
       }
       case actionTypes.BestBidsSuccess: {
-        console.log(action.payload);
         const { data } = action.payload;
         return { ...state, bestBids: data };
       }

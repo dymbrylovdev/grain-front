@@ -66,8 +66,6 @@ const FilterForm: React.FC<IProps> = ({
   const { values, handleSubmit, handleChange, resetForm } = useFormik({
     initialValues: getInitialValues(crop.id, allCropParams, dealsFilters),
     onSubmit: values => {
-      console.log(values);
-      console.log(getValuesToRequest(values));
       if (!!dealsFilters) {
         const id = dealsFilters.find(item => item.crop.id === crop.id)?.id;
         if (!!id) editFilter(id, getValuesToRequest(values));

@@ -139,7 +139,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_REPORT_SUCCESS: {
-      console.log(action.payload);
+      // console.log(action.payload);
       return {
         ...state,
         reports: action.payload.data,
