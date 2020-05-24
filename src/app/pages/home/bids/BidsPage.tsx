@@ -499,6 +499,7 @@ const BidsPage: React.FC<TPropsFromRedux &
               user={me as IUser}
               loading={!myBids}
               addUrl={"fromMy"}
+              salePurchaseMode={salePurchaseMode}
             />
             {!!myBids && !!myBids.length && (
               <div className={innerClasses.text}>
@@ -525,6 +526,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 fetch(+cropId, salePurchaseMode, newPage, newPerPage)
               }
               addUrl={"fromAdmin"}
+              salePurchaseMode={salePurchaseMode}
             />
             {!!bids && !!bids.length && (
               <div className={innerClasses.text}>

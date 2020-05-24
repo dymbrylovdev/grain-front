@@ -53,6 +53,7 @@ const BidTable: React.FC<IProps> = ({
   salePurchaseMode,
 }) => {
   const history = useHistory();
+  console.log("salePurchaseMode: ", salePurchaseMode);
   return (
     <>
       <div className={classes.tableTitle}>{title || ""}</div>
@@ -73,9 +74,11 @@ const BidTable: React.FC<IProps> = ({
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.COST" />
               </TopTableCell>
-              <TopTableCell>
-                <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
-              </TopTableCell>
+              {salePurchaseMode === "sale" && (
+                <TopTableCell>
+                  <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
+                </TopTableCell>
+              )}
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
               </TopTableCell>
@@ -100,33 +103,35 @@ const BidTable: React.FC<IProps> = ({
               <TableRow key={bid.id}>
                 <TableCell>{bid.id}</TableCell>
                 <TableCell>{bid.price}</TableCell>
-                <TableCell>
-                  {!!user &&
-                  user.use_vat &&
-                  salePurchaseMode === "sale" &&
-                  !!bid &&
-                  !!bid.vat &&
-                  !bid.vendor.use_vat ? (
-                    !bid.price_with_delivery ? (
-                      "-"
+                {salePurchaseMode === "sale" && (
+                  <TableCell>
+                    {!!user &&
+                    user.use_vat &&
+                    // salePurchaseMode === "sale" &&
+                    !!bid &&
+                    !!bid.vat &&
+                    !bid.vendor.use_vat ? (
+                      !bid.price_with_delivery ? (
+                        "-"
+                      ) : (
+                        <>
+                          <p style={{ marginBottom: "1px" }}>
+                            {!!bid && Math.round(bid.price_with_delivery * (bid.vat / 100 + 1))}
+                          </p>
+                          <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
+                            {`${bid.price_with_delivery && Math.round(bid.price_with_delivery)} + ${
+                              bid.vat
+                            }% НДС`}
+                          </p>
+                        </>
+                      )
+                    ) : bid.price_with_delivery ? (
+                      Math.round(bid.price_with_delivery)
                     ) : (
-                      <>
-                        <p style={{ marginBottom: "1px" }}>
-                          {!!bid && Math.round(bid.price_with_delivery * (bid.vat / 100 + 1))}
-                        </p>
-                        <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
-                          {`${bid.price_with_delivery && Math.round(bid.price_with_delivery)} + ${
-                            bid.vat
-                          }% НДС`}
-                        </p>
-                      </>
-                    )
-                  ) : bid.price_with_delivery ? (
-                    Math.round(bid.price_with_delivery)
-                  ) : (
-                    "-"
-                  )}
-                </TableCell>
+                      "-"
+                    )}
+                  </TableCell>
+                )}
                 <TableCell>
                   <Grid container direction="column" justify="center" alignItems="flex-start">
                     {bid.point_prices.map(
