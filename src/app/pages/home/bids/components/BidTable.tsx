@@ -53,7 +53,7 @@ const BidTable: React.FC<IProps> = ({
   salePurchaseMode,
 }) => {
   const history = useHistory();
-  console.log("salePurchaseMode: ", salePurchaseMode);
+
   return (
     <>
       <div className={classes.tableTitle}>{title || ""}</div>

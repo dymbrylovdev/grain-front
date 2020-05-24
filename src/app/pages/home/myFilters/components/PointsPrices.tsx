@@ -25,9 +25,9 @@ const getInitialValues = (me: IUser | undefined, currentFilter: IMyFilterItem) =
 const getValidationObject = (me: IUser | undefined, intl: any) => {
   let validationObject: { [x: string]: any } = {};
   me?.points.forEach(item => {
-    validationObject[`price${item.id}`] = Yup.number().typeError(
-      intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })
-    );
+    validationObject[`price${item.id}`] = Yup.number()
+      .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+      .typeError(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }));
   });
   return validationObject;
 };
