@@ -80,13 +80,11 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               <FormattedMessage id="PROMPTER.STEPPER.STEP3" />
             </StepLabel>
           </Step>
-          {dullRole === "seller" && (
-            <Step>
-              <StepLabel>
-                <FormattedMessage id="PROMPTER.STEPPER.STEP4" />
-              </StepLabel>
-            </Step>
-          )}
+          <Step>
+            <StepLabel>
+              <FormattedMessage id="PROMPTER.STEPPER.STEP4" />
+            </StepLabel>
+          </Step>
         </Stepper>
         <div>
           <div>
@@ -95,31 +93,29 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {activeStep === 1 && <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT1" />}
               {activeStep === 2 && <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT2" />}
               {activeStep === 3 && <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT3" />}
-              {dullRole === "seller"
-                ? activeStep === 4 && <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT4" />
-                : activeStep === 4 && <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT5" />}
-              {dullRole === "seller" && activeStep === 5 && (
-                <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT5" />
-              )}
+              {activeStep === 4 && <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT4" />}
+              {activeStep === 5 && <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT5" />}
             </Typography>
             <Grid container direction="row" justify="space-between" alignItems="center">
               <div>
-                {/*activeStep !== 0 && (
+                {activeStep !== 0 && (
                   <Button
                     variant="outlined"
                     color="primary"
                     onClick={() => {
                       setActiveStep(activeStep - 1);
                       if (activeStep === 2) history.push("/user/profile");
-                      if (activeStep === 5) history.push("/bidsList/1");
+                      if (activeStep === 5) {
+                        if (dullRole === "seller") history.push("/purchase/best-bids/1");
+                        if (dullRole === "buyer") history.push("/sale/best-bids/1");
+                      }
                     }}
                     className={classes.backButton}
                   >
                     <FormattedMessage id="ALL.BUTTONS.PREV" />
                   </Button>
-                  )*/}
-                {((dullRole === "seller" && activeStep !== 5) ||
-                  (dullRole === "buyer" && activeStep !== 4)) && (
+                )}
+                {activeStep !== 5 && (
                   <Button
                     variant="contained"
                     color="primary"
@@ -129,7 +125,10 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         if (dullRole === "seller") history.push("/purchase/best-bids/1");
                         if (dullRole === "buyer") history.push("/sale/best-bids/1");
                       }
-                      if (activeStep === 4) history.push("/bid/create");
+                      if (activeStep === 4) {
+                        if (dullRole === "seller") history.push("/bid/create/sale/0/0");
+                        if (dullRole === "buyer") history.push("/bid/create/purchase/0/0");
+                      }
                     }}
                   >
                     <FormattedMessage id="ALL.BUTTONS.NEXT" />
