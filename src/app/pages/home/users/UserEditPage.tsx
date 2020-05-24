@@ -165,11 +165,13 @@ const UserEditPage: React.FC<TPropsFromRedux &
   }, [editMode, fetchMe, fetchUser, id, loadingMe, loadingUser, me, user]);
 
   useEffect(() => {
-    if (!me?.fio || me.points.length === 0) {
-      if (me?.is_buyer) runPrompter("buyer");
-      if (me?.is_vendor) runPrompter("seller");
+    if (!prompterRunning) {
+      if (!me?.fio || me.points.length === 0) {
+        if (me?.is_buyer) runPrompter("buyer");
+        if (me?.is_vendor) runPrompter("seller");
+      }
     }
-  }, [me, runPrompter]);
+  }, [me, prompterRunning, runPrompter]);
 
   if (errorMe || errorUser || funnelStatesError) return <ErrorPage />;
 

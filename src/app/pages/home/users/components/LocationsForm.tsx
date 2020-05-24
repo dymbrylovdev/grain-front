@@ -291,7 +291,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                         }
                       }}
                       disable={editMode === "view"}
-                      prompterRunning={prompterRunning}
+                      prompterRunning={me?.points.length === 0 ? prompterRunning : false}
                       prompterStep={prompterStep}
                     />
                   </div>
@@ -352,7 +352,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   }}
                   handleBlur={() => setCreatingLocation(false)}
                   disable={false}
-                  prompterRunning={prompterRunning}
+                  prompterRunning={me?.points.length === 0 ? prompterRunning : false}
                   prompterStep={prompterStep}
                 />
               </div>
