@@ -205,7 +205,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             disabled={editMode === "profile" || editMode === "view" || !me?.is_admin}
             loading={!currentUser || meLoading || userLoading}
           />
-          {isNonConfirm(values) && !me?.is_admin && (
+          {isNonConfirm(values) && !me?.is_admin && editMode !== "view" && (
             <div className={classes.textFieldContainer}>
               {!currentUser || meLoading || userLoading ? (
                 <Skeleton width={170} height={70} animation="wave" />
@@ -233,10 +233,10 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
         </div>
       )}
-      {editMode !== "view" && (
+      {editMode !== "view" && !!currentUser && !currentUser.company && (
         <CompanySearchForm
           classes={classes}
-          company={user && user.company}
+          company={currentUser && currentUser.company}
           setCompanyAction={(company: any) => {
             setFieldValue("company_id", company && company.id);
             setFieldValue("company_name", company && company.short_name);

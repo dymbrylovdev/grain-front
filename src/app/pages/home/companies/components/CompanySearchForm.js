@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { injectIntl } from "react-intl";
 import { Formik } from "formik";
+import * as Yup from "yup";
 import { TextField, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 
@@ -121,6 +122,9 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company, editActio
             searchAction(values, successCallback, emptyCallback, failCallback);
           }, 1000);
         }}
+        validationSchema={Yup.object().shape({
+          inn: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+        })}
       >
         {({
           values,
@@ -132,7 +136,7 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company, editActio
           handleSubmit,
           isSubmitting,
         }) => (
-          <div noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
+          <div noValidate className="kt-form" onSubmit={handleSubmit}>
             <Box
               className={classes.paramContainer}
               border={1}
@@ -142,7 +146,7 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company, editActio
               <div className={innerClasses.title}>
                 {`${intl.formatMessage({ id: "COMPANY.SEARCH.TITLE" })}`}
               </div>
-              <TextField
+              {/* <TextField
                 type="text"
                 label={intl.formatMessage({
                   id: "COMPANY.FORM.NAME",
@@ -155,7 +159,7 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company, editActio
                 onChange={handleChange}
                 helperText={touched.short_name && errors.short_name}
                 error={Boolean(touched.short_name && errors.short_name)}
-              />
+              /> */}
               <TextField
                 type="text"
                 label={intl.formatMessage({
@@ -167,8 +171,9 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company, editActio
                 variant="outlined"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                helperText={touched.short_name && errors.short_name}
-                error={Boolean(touched.short_name && errors.short_name)}
+                helperText={touched.inn && errors.inn}
+                error={Boolean(touched.inn && errors.inn)}
+                autoComplete="off"
               />
               <StatusAlert status={status} />
               <div className={classes.buttonContainer}>
