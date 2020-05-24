@@ -229,6 +229,18 @@ const BidForm: React.FC<IProps> = ({
 
   return (
     <div className={classes.form}>
+      <div className={classes.topButtonsContainer}>
+        <div className={classes.button}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => history.goBack()}
+            disabled={buttonLoading || loading}
+          >
+            {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+          </Button>
+        </div>
+      </div>
       {loading ? (
         <Skeleton width="100%" height={70} animation="wave" />
       ) : (
@@ -532,7 +544,7 @@ const BidForm: React.FC<IProps> = ({
       )}
 
       <div className={classes.bottomButtonsContainer}>
-        <div className={classes.button}>
+        {/* <div className={classes.button}>
           <Button
             variant="outlined"
             color="primary"
@@ -541,7 +553,7 @@ const BidForm: React.FC<IProps> = ({
           >
             {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
           </Button>
-        </div>
+        </div> */}
         {editMode !== "view" && (
           <>
             <div className={classes.button}>
