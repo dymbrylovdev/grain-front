@@ -381,15 +381,15 @@ const BidForm: React.FC<IProps> = ({
                     !!bid &&
                     !!bid.vat &&
                     !bid.vendor.use_vat ? (
-                      <strong>
+                      <b>
                         {Math.round(
                           getFinalPrice(bid, i, values.pricePerKm) * (+bid.vat / 100 + 1)
                         )}
-                      </strong>
+                      </b>
                     ) : (
-                      <strong>{getFinalPrice(bid, i, values.pricePerKm)}</strong>
+                      <b>{getFinalPrice(bid, i, values.pricePerKm)}</b>
                     )}
-                    {` • ${item.point.name}`}
+                    {` • ${Math.round(item.distance)} км • ${item.point.name}`}
                   </div>
                 ))}
             </Grid>
