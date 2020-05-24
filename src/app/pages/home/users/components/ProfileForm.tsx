@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { WrappedComponentProps, injectIntl } from "react-intl";
 import { TextField, MenuItem, Theme, Button, FormControlLabel, Checkbox } from "@material-ui/core";
@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
+import isEqual from "lodash.isequal";
 
 import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { actions as authActions } from "../../../../store/ducks/auth.duck";
@@ -54,11 +55,15 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   funnelStatesLoading,
   funnelStatesError,
 
+  clearMe,
   fetchMe,
   me,
   meLoading,
+  meSuccess,
   meError,
 
+  setEditNoNoti,
+  editMeNoNoti,
   clearEditMe,
   editMe,
   editMeLoading,
@@ -83,14 +88,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   editSuccess,
   editError,
 
-  clearDelUser,
-  delUser,
-  delLoading,
-  delSuccess,
-  delError,
-
-  mergeUser,
-
   statuses,
   prompterRunning,
   prompterStep,
@@ -102,10 +99,13 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const classes = useStyles();
   const history = useHistory();
 
+  const [oldValues, setOldValues] = useState<any | undefined>(undefined);
+
   const { values, handleSubmit, handleChange, handleBlur, resetForm, touched, errors } = useFormik({
     initialValues: getInitialValues(undefined),
     onSubmit: values => {
-      if (editMode === "profile") editMe({ data: setMeValues(values) });
+      if (editMode === "profile" && !isEqual(oldValues, values))
+        editMe({ data: setMeValues(values) });
       if (editMode === "create") createUser(setCreateValues(values));
       if (editMode === "edit" && user) {
         let params: IUserForEdit = setEditValues(values);
@@ -138,6 +138,23 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       ),
     }),
   });
+
+  useEffect(() => {
+    if (meSuccess && !!values && !!me && isEqual(getInitialValues(me), values)) {
+      setEditNoNoti(false);
+      clearMe();
+      setOldValues(values);
+    }
+  }, [clearMe, editMode, me, meSuccess, oldValues, setEditNoNoti, user, values]);
+
+  useEffect(() => {
+    return () => {
+      if (editMode === "profile" && !!oldValues) {
+        setEditNoNoti(true);
+        handleSubmit();
+      }
+    };
+  }, [editMode, handleSubmit, oldValues, setEditNoNoti]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -184,24 +201,47 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     if (editSuccess) {
       if (userId) fetchUser({ id: userId });
     }
-  }, [clearEditUser, editError, editSuccess, enqueueSnackbar, fetchUser, intl, userId]);
+  }, [
+    clearEditUser,
+    editError,
+    editMeNoNoti,
+    editSuccess,
+    enqueueSnackbar,
+    fetchUser,
+    intl,
+    setEditNoNoti,
+    userId,
+  ]);
 
   useEffect(() => {
     if (editMeSuccess || editMeError) {
-      enqueueSnackbar(
-        editMeSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_PROFILE" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editMeError}`,
-        {
-          variant: editMeSuccess ? "success" : "error",
-        }
-      );
+      if (!editMeNoNoti) {
+        enqueueSnackbar(
+          editMeSuccess
+            ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_PROFILE" })
+            : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editMeError}`,
+          {
+            variant: editMeSuccess ? "success" : "error",
+          }
+        );
+      }
+      setEditNoNoti(false);
       clearEditMe();
     }
     if (editMeSuccess) {
       fetchMe();
     }
-  }, [clearEditMe, editError, editMeError, editMeSuccess, enqueueSnackbar, fetchMe, intl]);
+  }, [
+    clearEditMe,
+    editError,
+    editMeError,
+    editMeNoNoti,
+    editMeSuccess,
+    enqueueSnackbar,
+    fetchMe,
+    intl,
+    setEditNoNoti,
+  ]);
 
   useEffect(() => {
     switch (editMode) {
@@ -550,7 +590,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 editLoading ||
                 meLoading ||
                 userLoading ||
-                (editMode !== "profile" && funnelStatesLoading)
+                (editMode !== "profile" && funnelStatesLoading) ||
+                isEqual(oldValues, values)
               }
               onPress={handleSubmit}
             >
@@ -584,8 +625,10 @@ const connector = connect(
 
     me: state.auth.user,
     meLoading: state.auth.loading,
+    meSuccess: state.auth.success,
     meError: state.auth.error,
 
+    editMeNoNoti: state.auth.editNoNoti,
     editMeLoading: state.auth.editLoading,
     editMeSuccess: state.auth.editSuccess,
     editMeError: state.auth.editError,
@@ -602,9 +645,6 @@ const connector = connect(
     editLoading: state.users.editLoading,
     editSuccess: state.users.editSuccess,
     editError: state.users.editError,
-    delLoading: state.users.delLoading,
-    delSuccess: state.users.delSuccess,
-    delError: state.users.delError,
 
     statuses: state.statuses.statuses,
     prompterRunning: state.prompter.running,
@@ -613,6 +653,7 @@ const connector = connect(
   {
     fetchFunnelStates: funnelStatesActions.fetchRequest,
 
+    clearMe: authActions.clearFetch,
     fetchMe: authActions.fetchRequest,
     clearEditMe: authActions.clearEdit,
     editMe: authActions.editRequest,
@@ -622,12 +663,10 @@ const connector = connect(
 
     clearCreateUser: usersActions.clearCreate,
     createUser: usersActions.createRequest,
-    clearDelUser: usersActions.clearDel,
-    delUser: usersActions.delRequest,
     clearEditUser: usersActions.clearEdit,
     editUser: usersActions.editRequest,
 
-    mergeUser: authActions.mergeUser,
+    setEditNoNoti: authActions.setEditNoNoti,
   }
 );
 

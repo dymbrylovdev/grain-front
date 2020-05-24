@@ -41,11 +41,15 @@ interface IProps {
 const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   intl,
 
+  clearMe,
   fetchMe,
   me,
   meLoading,
+  meSuccess,
   meError,
 
+  setEditNoNoti,
+  editMeNoNoti,
   clearEditMe,
   editMe,
   editMeLoading,
@@ -103,6 +107,13 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     }
   }, [editMode, fetchMe, fetchUser, userId]);
 
+  // useEffect(() => {
+  //   if (meSuccess) {
+  //     setEditNoNoti(false);
+  //     clearMe();
+  //   }
+  // }, [clearMe, meSuccess, setEditNoNoti]);
+
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
@@ -124,20 +135,33 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   useEffect(() => {
     if (editMeSuccess || editMeError) {
-      enqueueSnackbar(
-        editMeSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_COMPANY" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editMeError}`,
-        {
-          variant: editMeSuccess ? "success" : "error",
-        }
-      );
+      if (!editMeNoNoti) {
+        enqueueSnackbar(
+          editMeSuccess
+            ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_COMPANY" })
+            : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editMeError}`,
+          {
+            variant: editMeSuccess ? "success" : "error",
+          }
+        );
+      }
+      setEditNoNoti(false);
       clearEditMe();
     }
     if (editMeSuccess) {
       fetchMe();
     }
-  }, [clearEditMe, editError, editMeError, editMeSuccess, enqueueSnackbar, fetchMe, intl]);
+  }, [
+    clearEditMe,
+    editError,
+    editMeError,
+    editMeNoNoti,
+    editMeSuccess,
+    enqueueSnackbar,
+    fetchMe,
+    intl,
+    setEditNoNoti,
+  ]);
 
   const { values, handleSubmit, handleChange, handleBlur, resetForm, setFieldValue } = useFormik({
     initialValues: getInitialValues(undefined),
@@ -169,31 +193,31 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       {currentUser && currentUser.company ? (
         <>
           <div className={classes.textFieldContainer}>
-            {meLoading || userLoading ? (
+            {/* {meLoading || userLoading || editLoading ? (
               <Skeleton width="100%" height={70} animation="wave" />
             ) : (
-              <>
-                <TextField
-                  type="text"
-                  label={intl.formatMessage({
-                    id: "PROFILE.INPUT.COMPANY",
-                  })}
-                  margin="normal"
-                  name="company_name"
-                  value={values.company_name}
-                  variant="outlined"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  disabled={true}
-                  className={classes.textField}
-                />
-                {editMode !== "view" && (
-                  <IconButton size={"medium"} color="secondary" onClick={() => setAlertOpen(true)}>
-                    <DeleteIcon />
-                  </IconButton>
-                )}
-              </>
+              <> */}
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "PROFILE.INPUT.COMPANY",
+              })}
+              margin="normal"
+              name="company_name"
+              value={values.company_name}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              disabled={true}
+              className={classes.textField}
+            />
+            {editMode !== "view" && (
+              <IconButton size={"medium"} color="secondary" onClick={() => setAlertOpen(true)}>
+                <DeleteIcon />
+              </IconButton>
             )}
+            {/* </>
+            )} */}
           </div>
           <CompanyConfirmBlock
             values={values}
@@ -203,7 +227,8 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 : ({ data }: any) => editUser({ id: userId as number, data: data })
             }
             disabled={editMode === "profile" || editMode === "view" || !me?.is_admin}
-            loading={!currentUser || meLoading || userLoading}
+            loading={false}
+            // loading={!currentUser || meLoading || userLoading || editLoading}
           />
           {isNonConfirm(values) && !me?.is_admin && editMode !== "view" && (
             <div className={classes.textFieldContainer}>
@@ -291,8 +316,10 @@ const connector = connect(
   (state: IAppState) => ({
     me: state.auth.user,
     meLoading: state.auth.loading,
+    meSuccess: state.auth.success,
     meError: state.auth.error,
 
+    editMeNoNoti: state.auth.editNoNoti,
     editMeLoading: state.auth.editLoading,
     editMeSuccess: state.auth.editSuccess,
     editMeError: state.auth.editError,
@@ -316,6 +343,7 @@ const connector = connect(
     prompterStep: state.prompter.activeStep,
   }),
   {
+    clearMe: authActions.clearFetch,
     fetchMe: authActions.fetchRequest,
     clearEditMe: authActions.clearEdit,
     editMe: authActions.editRequest,
@@ -331,6 +359,8 @@ const connector = connect(
     editUser: usersActions.editRequest,
 
     mergeUser: authActions.mergeUser,
+
+    setEditNoNoti: authActions.setEditNoNoti,
   }
 );
 

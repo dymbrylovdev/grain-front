@@ -37,10 +37,12 @@ const LOGIN_FAIL = "auth/LOGIN_FAIL";
 const LOGOUT = "auth/LOGOUT";
 const MERGE_USER = "auth/MERGE_USER";
 
+const CLEAR_FETCH = "auth/CLEAR_FETCH";
 const FETCH_REQUEST = "auth/FETCH_REQUEST";
 const FETCH_SUCCESS = "auth/FETCH_SUCCESS";
 const FETCH_FAIL = "auth/FETCH_FAIL";
 
+const SET_EDIT_NO_NOTI = "auth/SET_EDIT_NO_NOTI";
 const CLEAR_EDIT = "auth/CLEAR_EDIT";
 const EDIT_REQUEST = "auth/EDIT_REQUEST";
 const EDIT_SUCCESS = "auth/EDIT_SUCCESS";
@@ -72,6 +74,7 @@ export interface IInitialState {
   loginSuccess: boolean;
   loginError: string | null;
 
+  editNoNoti: boolean;
   editLoading: boolean;
   editSuccess: boolean;
   editError: string | null;
@@ -103,6 +106,7 @@ const initialState: IInitialState = {
   loginSuccess: false,
   loginError: null,
 
+  editNoNoti: false,
   editLoading: false,
   editSuccess: false,
   editError: null,
@@ -122,6 +126,9 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
   { storage, key: "auth", whitelist: ["user", "authToken"] },
   (state = initialState, action) => {
     switch (action.type) {
+      case CLEAR_FETCH: {
+        return { ...state, loading: false, success: false, error: null };
+      }
       case FETCH_REQUEST: {
         return {
           ...state,
@@ -143,6 +150,10 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 
       case FETCH_FAIL: {
         return { ...state, loading: false, error: action.payload };
+      }
+
+      case SET_EDIT_NO_NOTI: {
+        return { ...state, editNoNoti: action.payload };
       }
 
       case CLEAR_EDIT: {
@@ -308,10 +319,12 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 );
 
 export const actions = {
+  clearFetch: () => createAction(CLEAR_FETCH),
   fetchRequest: () => createAction(FETCH_REQUEST),
   fetchSuccess: (payload: IServerResponse<IUser>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
+  setEditNoNoti: (payload: boolean) => createAction(SET_EDIT_NO_NOTI, payload),
   clearEdit: () => createAction(CLEAR_EDIT),
   editRequest: (payload: { data: IUserForEdit }) => createAction(EDIT_REQUEST, payload),
   editSuccess: () => createAction(EDIT_SUCCESS),
