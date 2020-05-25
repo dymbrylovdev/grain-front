@@ -52,6 +52,11 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
   editLoading,
   editSuccess,
   editError,
+
+  setCurrentSaleFilter,
+  setCurrentPurchaseFilter,
+  currentSaleFilters,
+  currentPurchaseFilters,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -60,7 +65,8 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
   if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
   if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
 
-  const [deleteFilterId, setDeleteFilterId] = useState(-1);
+  const [deleteFilterId, setDeleteFilterId] = useState(0);
+  const [deleteFilterCropId, setDeleteFilterCropId] = useState(0);
   const [isAlertOpen, setAlertOpen] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -77,10 +83,48 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
       setAlertOpen(false);
       clearDel();
       if (delSuccess) {
+        if (salePurchaseMode === "sale") {
+          // console.log("deleteFilterId: ", deleteFilterId);
+          // console.log("currentFilter: ", currentSaleFilters[deleteFilterCropId]);
+          if (
+            !!deleteFilterId &&
+            currentSaleFilters[deleteFilterCropId] &&
+            currentSaleFilters[deleteFilterCropId].id === deleteFilterId
+          ) {
+            setCurrentSaleFilter(deleteFilterCropId, undefined);
+          }
+        }
+        if (salePurchaseMode === "purchase") {
+          // console.log("deleteFilterId: ", deleteFilterId);
+          // console.log("currentFilter: ", currentPurchaseFilters[deleteFilterCropId]);
+          if (
+            !!deleteFilterId &&
+            currentPurchaseFilters[deleteFilterCropId] &&
+            currentPurchaseFilters[deleteFilterCropId].id === deleteFilterId
+          ) {
+            setCurrentPurchaseFilter(deleteFilterCropId, undefined);
+          }
+        }
+
         fetch(salePurchaseMode);
       }
     }
-  }, [clearDel, delError, delSuccess, enqueueSnackbar, fetch, intl, me, salePurchaseMode]);
+  }, [
+    clearDel,
+    currentPurchaseFilters,
+    currentSaleFilters,
+    delError,
+    delSuccess,
+    deleteFilterCropId,
+    deleteFilterId,
+    enqueueSnackbar,
+    fetch,
+    intl,
+    me,
+    salePurchaseMode,
+    setCurrentPurchaseFilter,
+    setCurrentSaleFilter,
+  ]);
 
   useEffect(() => {
     fetch(salePurchaseMode);
@@ -174,6 +218,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                     <IconButton
                       size="medium"
                       onClick={() => {
+                        setDeleteFilterCropId(item.crop.id);
                         setDeleteFilterId(item.id || 0);
                         setAlertOpen(true);
                       }}
@@ -226,6 +271,9 @@ const connector = connect(
     editLoading: state.myFilters.editLoading,
     editSuccess: state.myFilters.editSuccess,
     editError: state.myFilters.editError,
+
+    currentSaleFilters: state.myFilters.currentSaleFilters,
+    currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
   }),
   {
     fetch: myFiltersActions.fetchRequest,
@@ -235,6 +283,8 @@ const connector = connect(
     del: myFiltersActions.delRequest,
     clearEdit: myFiltersActions.clearEdit,
     edit: myFiltersActions.editRequest,
+    setCurrentSaleFilter: myFiltersActions.setCurrentSaleFilter,
+    setCurrentPurchaseFilter: myFiltersActions.setCurrentPurchaseFilter,
   }
 );
 

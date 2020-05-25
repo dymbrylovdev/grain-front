@@ -48,6 +48,7 @@ function MyFiltersForm({
   filter,
   savedFilter,
   handleClear,
+  setDelFilterId,
   delFilter,
   delLoading,
   editFilter,
@@ -257,6 +258,7 @@ function MyFiltersForm({
             })}
             handleClose={() => setAlertOpen(false)}
             handleAgree={() => {
+              setDelFilterId(filter.id);
               setAlertOpen(false);
               delFilter(filter.id);
             }}

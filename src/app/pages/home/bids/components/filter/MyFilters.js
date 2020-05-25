@@ -38,6 +38,7 @@ const MyFilters = ({
   cropName,
   handleSubmit,
   handleClear,
+  setDelFilterId,
   classes,
   enumParams,
   numberParams,
@@ -96,6 +97,7 @@ const MyFilters = ({
                     filter={item}
                     savedFilter={savedFilter}
                     handleClear={handleClear}
+                    setDelFilterId={setDelFilterId}
                     delFilter={delFilter}
                     delLoading={delLoading}
                     editFilter={editFilter}

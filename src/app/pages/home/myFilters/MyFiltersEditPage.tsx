@@ -112,6 +112,11 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   editLoading,
   editSuccess,
   editError,
+
+  setCurrentPurchaseFilter,
+  setCurrentSaleFilter,
+  currentPurchaseFilters,
+  currentSaleFilters,
 }) => {
   const innerClasses = useInnerStyles();
   const classes = useStyles();
@@ -124,6 +129,9 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
 
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [formikErrored, setFormikErrored] = useState(false);
+
+  const [deleteFilterId, setDeleteFilterId] = useState(0);
+  const [deleteFilterCropId, setDeleteFilterCropId] = useState(0);
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -174,8 +182,46 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   }, [clearEditFilter, editError, editSuccess, enqueueSnackbar, intl]);
 
   useEffect(() => {
-    if (createSuccess || editSuccess || delSuccess) history.push(`/${salePurchaseMode}/filters`);
-  }, [createSuccess, delSuccess, editSuccess, history, salePurchaseMode]);
+    if (delSuccess) {
+      if (salePurchaseMode === "sale") {
+        // console.log("deleteFilterId: ", deleteFilterId);
+        // console.log("currentFilter: ", currentSaleFilters[deleteFilterCropId]);
+        if (
+          !!deleteFilterId &&
+          currentSaleFilters[deleteFilterCropId] &&
+          currentSaleFilters[deleteFilterCropId].id === deleteFilterId
+        ) {
+          setCurrentSaleFilter(deleteFilterCropId, undefined);
+        }
+      }
+      if (salePurchaseMode === "purchase") {
+        // console.log("deleteFilterId: ", deleteFilterId);
+        // console.log("currentFilter: ", currentPurchaseFilters[deleteFilterCropId]);
+        if (
+          !!deleteFilterId &&
+          currentPurchaseFilters[deleteFilterCropId] &&
+          currentPurchaseFilters[deleteFilterCropId].id === deleteFilterId
+        ) {
+          setCurrentPurchaseFilter(deleteFilterCropId, undefined);
+        }
+      }
+      history.push(`/${salePurchaseMode}/filters`);
+    }
+  }, [
+    currentPurchaseFilters,
+    currentSaleFilters,
+    delSuccess,
+    deleteFilterCropId,
+    deleteFilterId,
+    history,
+    salePurchaseMode,
+    setCurrentPurchaseFilter,
+    setCurrentSaleFilter,
+  ]);
+
+  useEffect(() => {
+    if (createSuccess || editSuccess) history.push(`/${salePurchaseMode}/filters`);
+  }, [createSuccess, editSuccess, history, salePurchaseMode]);
 
   useEffect(() => {
     fetchFilters(salePurchaseMode);
@@ -482,7 +528,14 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                       )}
                       {isEditable && Boolean(+id) && (
                         <Grid item>
-                          <OutlinedRedButton variant="outlined" onClick={() => setAlertOpen(true)}>
+                          <OutlinedRedButton
+                            variant="outlined"
+                            onClick={() => {
+                              setDeleteFilterId(+id);
+                              setDeleteFilterCropId(values.cropId);
+                              setAlertOpen(true);
+                            }}
+                          >
                             {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
                           </OutlinedRedButton>
                         </Grid>
@@ -537,6 +590,9 @@ const connector = connect(
     editLoading: state.myFilters.editLoading,
     editSuccess: state.myFilters.editSuccess,
     editError: state.myFilters.editError,
+
+    currentSaleFilters: state.myFilters.currentSaleFilters,
+    currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
   }),
   {
     fetchFilters: myFiltersActions.fetchRequest,
@@ -549,6 +605,9 @@ const connector = connect(
     delFilter: myFiltersActions.delRequest,
     clearEditFilter: myFiltersActions.clearEdit,
     editFilter: myFiltersActions.editRequest,
+
+    setCurrentSaleFilter: myFiltersActions.setCurrentSaleFilter,
+    setCurrentPurchaseFilter: myFiltersActions.setCurrentPurchaseFilter,
   }
 );
 

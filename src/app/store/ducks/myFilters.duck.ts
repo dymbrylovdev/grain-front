@@ -62,6 +62,7 @@ export interface IInitialState {
   editSuccess: boolean;
   editError: string | null;
 
+  delFilterId: number | undefined;
   delLoading: boolean;
   delSuccess: boolean;
   delError: string | null;
@@ -86,6 +87,7 @@ const initialState: IInitialState = {
   editSuccess: false,
   editError: null,
 
+  delFilterId: undefined,
   delLoading: false,
   delSuccess: false,
   delError: null,
@@ -119,7 +121,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case SET_CURRENT_PURCHASE_FILTER: {
-        // console.log("SET_CURRENT_PURCHASE_FILTER");
+        console.log("SET_CURRENT_PURCHASE_FILTER");
         return {
           ...state,
           currentPurchaseFilters: {
@@ -147,7 +149,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case FETCH_SUCCESS: {
-        //console.log("Filters fetch: ", action.payload.data);
+        // console.log("Filters fetch: ", action.payload.data);
         return {
           ...state,
           myFilters: action.payload.data,
@@ -239,7 +241,13 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case CLEAR_DEL: {
-        return { ...state, delLoading: false, delSuccess: false, delError: null };
+        return {
+          ...state,
+          delFilterId: undefined,
+          delLoading: false,
+          delSuccess: false,
+          delError: null,
+        };
       }
 
       case DEL_REQUEST: {
@@ -247,7 +255,14 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case DEL_SUCCESS: {
-        return { ...state, myFilters: undefined, delLoading: false, delSuccess: true };
+        // console.log("DEL_SUCCESS: ", action.payload);
+        return {
+          ...state,
+          delFilterId: action.payload.id,
+          myFilters: undefined,
+          delLoading: false,
+          delSuccess: true,
+        };
       }
 
       case DEL_FAIL: {
@@ -288,7 +303,7 @@ export const actions = {
 
   clearDel: () => createAction(CLEAR_DEL),
   delRequest: (payload: number) => createAction(DEL_REQUEST, payload),
-  delSuccess: () => createAction(DEL_SUCCESS),
+  delSuccess: (payload: IMyFilterItem) => createAction(DEL_SUCCESS, payload),
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
 };
 
@@ -329,8 +344,10 @@ function* editSaga({ payload }: { payload: { id: number; data: IFilterForCreate 
 
 function* delSaga({ payload }: { payload: number }) {
   try {
-    yield call(() => deleteMyFilter(payload));
-    yield put(actions.delSuccess());
+    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() =>
+      deleteMyFilter(payload)
+    );
+    yield put(actions.delSuccess(data.data));
   } catch (e) {
     yield put(actions.delFail(e.response.data.message));
   }

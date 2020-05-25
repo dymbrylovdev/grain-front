@@ -112,17 +112,20 @@ const FilterModal = ({
   fetchFilters,
   myFilters,
   loadingFilters,
+
   clearCreateFilter,
   createdFilterId,
   createFilter,
   createLoading,
   createSuccess,
   createError,
+
   clearDelFilter,
   delFilter,
   delLoading,
   delSuccess,
   delError,
+
   clearEditFilter,
   editFilter,
   editLoading,
@@ -130,6 +133,7 @@ const FilterModal = ({
   editError,
 }) => {
   const innerClasses = useStyles();
+  const [delFilterId, setDelFilterId] = useState(0);
   const [valueTabs, setValueTabs] = useState(0);
 
   const { crops } = useSelector(
@@ -153,15 +157,19 @@ const FilterModal = ({
 
   const formik = useFormik({
     initialValues: getInitialValues(currentFilter),
-    onSubmit: (values, { setStatus, setSubmitting }) => {
-      //console.log(values);
-      //handleSubmit(values, setStatus, setSubmitting);
+    onSubmit: values => {
+      let params = { ...values };
+      delete params.point_prices;
+      params.cropId = cropId;
+      params.bid_type = salePurchaseMode;
+      // console.log(filterForCreate(params, enumParams, numberParams));
+      createFilter(filterForCreate(params, enumParams, numberParams));
     },
     validationSchema: Yup.object().shape({
-      filter_name: Yup.string().required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" })),
+      name: Yup.string().required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" })),
     }),
   });
-  const { resetForm, values } = formik;
+  const { resetForm, values, handleBlur } = formik;
 
   const handleTabsChange = (event, newValue) => {
     setValueTabs(newValue);
@@ -211,19 +219,36 @@ const FilterModal = ({
       );
       clearDelFilter();
       if (delSuccess) {
+        // console.log("delFilterId: ", delFilterId);
+        // console.log("currentFilter: ", currentFilter);
+        if (!!delFilterId && currentFilter && currentFilter.id === delFilterId) {
+          setCurrentFilter(cropId, undefined);
+          formik.resetForm({ values: getInitialValues(currentFilter) });
+          clearBids();
+          handleClose();
+          setDelFilterId(0);
+        }
         fetchFilters(salePurchaseMode);
       }
     }
   }, [
+    clearBids,
     clearDelFilter,
     createSuccess,
+    cropId,
+    currentFilter,
     delError,
+    delFilterId,
     delSuccess,
     enqueueSnackbar,
     fetchFilters,
+    formik,
+    getInitialValues,
+    handleClose,
     intl,
     me,
     salePurchaseMode,
+    setCurrentFilter,
   ]);
 
   const newCropName = () => {
@@ -336,6 +361,7 @@ const FilterModal = ({
             classes={classes}
             handleSubmit={handleSubmit}
             handleClear={handleClear}
+            setDelFilterId={setDelFilterId}
             cropId={cropId}
             enumParams={enumParams}
             numberParams={numberParams}
@@ -372,7 +398,7 @@ const FilterModal = ({
                   name="name"
                   value={values.name || ""}
                   variant="outlined"
-                  onBlur={formik.handleBlur}
+                  onBlur={e => handleBlur(e)}
                   onChange={formik.handleChange}
                   className={innerClasses.textField}
                   helperText={formik.touched.name && formik.errors.name}
@@ -390,12 +416,15 @@ const FilterModal = ({
                     loading={createLoading}
                     disabled={createLoading}
                     onPress={() => {
-                      let params = { ...values };
-                      delete params.point_prices;
-                      params.cropId = cropId;
-                      params.bid_type = salePurchaseMode;
-                      //console.log(filterForCreate(params, enumParams, numberParams));
-                      createFilter(filterForCreate(params, enumParams, numberParams));
+                      if (!!currentFilter && currentFilter.name === formik.values.name) {
+                        const crop = crops.find(crop => crop.id === cropId);
+                        const now = new Date();
+                        const name = `${
+                          crop.name
+                        } ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
+                        formik.setFieldValue("name", name);
+                      }
+                      formik.handleSubmit();
                     }}
                   >
                     {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })}

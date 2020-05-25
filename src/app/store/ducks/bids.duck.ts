@@ -232,7 +232,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_BY_ID_SUCCESS: {
-      console.log("Fetch Bid By Id: ", action.payload);
+      // console.log("Fetch Bid By Id: ", action.payload);
       return {
         ...state,
         bid: action.payload.data,
