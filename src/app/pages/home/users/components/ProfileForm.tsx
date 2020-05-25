@@ -276,33 +276,31 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   return (
     <>
-      {editMode !== "profile" && (
-        <div className={classes.textFieldContainer}>
-          {meLoading || userLoading || funnelStatesLoading ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <TextField
-              select
-              margin="normal"
-              label={intl.formatMessage({ id: "PROFILE.INPUT.ROLE" })}
-              value={values.role}
-              onChange={handleChange}
-              name="role"
-              variant="outlined"
-              helperText={touched.role && errors.role}
-              error={Boolean(touched.role && errors.role)}
-              disabled={editMode === "edit" || editMode === "view"}
-            >
-              <MenuItem value="EMPTY">{intl.formatMessage({ id: "ALL.SELECTS.EMPTY" })}</MenuItem>
-              {roles.map((item, i) => (
-                <MenuItem key={i} value={item.id}>
-                  {item.value}
-                </MenuItem>
-              ))}
-            </TextField>
-          )}
-        </div>
-      )}
+      <div className={classes.textFieldContainer}>
+        {meLoading || userLoading || funnelStatesLoading ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            select
+            margin="normal"
+            label={intl.formatMessage({ id: "PROFILE.INPUT.ROLE" })}
+            value={values.role}
+            onChange={handleChange}
+            name="role"
+            variant="outlined"
+            helperText={touched.role && errors.role}
+            error={Boolean(touched.role && errors.role)}
+            disabled={editMode !== "create"}
+          >
+            <MenuItem value="EMPTY">{intl.formatMessage({ id: "ALL.SELECTS.EMPTY" })}</MenuItem>
+            {roles.map((item, i) => (
+              <MenuItem key={i} value={item.id}>
+                {item.value}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
+      </div>
 
       {editMode !== "profile" && (
         <div className={classes.textFieldContainer}>
