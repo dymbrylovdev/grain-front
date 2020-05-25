@@ -166,7 +166,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
   useEffect(() => {
     if (!prompterRunning) {
-      if (!me?.fio || me.points.length === 0) {
+      if (!me?.fio || !me?.phone || me?.points.length === 0) {
         if (me?.is_buyer) runPrompter("buyer");
         if (me?.is_vendor) runPrompter("seller");
       }
@@ -198,7 +198,11 @@ const UserEditPage: React.FC<TPropsFromRedux &
               <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })} {...a11yProps(1)} />
               <Tab
                 classes={
-                  prompterRunning && prompterStep === 0 && me?.points.length === 0
+                  prompterRunning &&
+                  prompterStep === 0 &&
+                  !!me?.fio &&
+                  !!me?.phone &&
+                  me?.points.length === 0
                     ? { root: innerClasses.pulseRoot }
                     : {}
                 }

@@ -490,6 +490,11 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             })}
             margin="normal"
             className={classes.textField}
+            classes={
+              prompterRunning && prompterStep === 0 && !values.phone
+                ? { root: innerClasses.pulseRoot }
+                : {}
+            }
             name="phone"
             value={values.phone}
             variant="outlined"
