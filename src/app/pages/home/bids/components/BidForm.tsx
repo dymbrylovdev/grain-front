@@ -341,6 +341,7 @@ const BidForm: React.FC<IProps> = ({
       )}
 
       {editMode === "view" &&
+        !me?.is_vendor &&
         (loading ? (
           <Skeleton width="100%" height={225} animation="wave" />
         ) : (

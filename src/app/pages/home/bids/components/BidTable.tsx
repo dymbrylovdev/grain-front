@@ -79,9 +79,11 @@ const BidTable: React.FC<IProps> = ({
                   <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
                 </TopTableCell>
               )}
-              <TopTableCell>
-                <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
-              </TopTableCell>
+              {salePurchaseMode === "sale" && (
+                <TopTableCell>
+                  <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
+                </TopTableCell>
+              )}
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.VOLUME" />
               </TopTableCell>
@@ -138,25 +140,27 @@ const BidTable: React.FC<IProps> = ({
                       : "-"}
                   </TableCell>
                 )}
-                <TableCell>
-                  <Grid container direction="column" justify="center" alignItems="flex-start">
-                    {bid.point_prices.map(
-                      (item, i) =>
-                        !!item.profit &&
-                        (i === 0 ? (
-                          <div key={i}>
-                            <strong>{Math.round(item.profit)}</strong>
-                            {` • ${item.point.name}`}
-                          </div>
-                        ) : (
-                          <div key={i}>
-                            {Math.round(item.profit)}
-                            {` • ${item.point.name}`}
-                          </div>
-                        ))
-                    )}
-                  </Grid>
-                </TableCell>
+                {salePurchaseMode === "sale" && (
+                  <TableCell>
+                    <Grid container direction="column" justify="center" alignItems="flex-start">
+                      {bid.point_prices.map(
+                        (item, i) =>
+                          !!item.profit &&
+                          (i === 0 ? (
+                            <div key={i}>
+                              <strong>{Math.round(item.profit)}</strong>
+                              {` • ${item.point.name}`}
+                            </div>
+                          ) : (
+                            <div key={i}>
+                              {Math.round(item.profit)}
+                              {` • ${item.point.name}`}
+                            </div>
+                          ))
+                      )}
+                    </Grid>
+                  </TableCell>
+                )}
                 <TableCell>{bid.volume}</TableCell>
                 <TableCell>
                   <Grid container direction="column" justify="center" alignItems="flex-start">
