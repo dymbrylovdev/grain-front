@@ -26,7 +26,7 @@ export interface IUser {
     engagement: number;
     role: TRole;
   } | null;
-  is_funnel_state_automate: boolean;
+  is_funnel_state_automate?: boolean;
   use_vat: boolean;
 }
 

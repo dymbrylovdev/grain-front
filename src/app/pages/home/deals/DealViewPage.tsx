@@ -23,6 +23,7 @@ import { IAppState } from "../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
 import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
+import { UserActivity } from "../users/components";
 
 const DealViewPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -270,14 +271,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </Link>
                     </p>
                     <p>тел.: {deal.sale_bid.vendor.phone || "-"}</p>
-                    <p>
-                      состояние:{" "}
-                      {!!deal.sale_bid.vendor.funnel_state
-                        ? deal.sale_bid.vendor.funnel_state.name
-                        : deal.sale_bid.vendor.is_admin
-                        ? "Администратор"
-                        : "-"}
-                    </p>
+                    <UserActivity intl={intl} user={deal.sale_bid.vendor} />
                   </TableCell>
                   <TableCell>
                     <p>
@@ -286,14 +280,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </Link>
                     </p>
                     <p>тел.: {deal.purchase_bid.vendor.phone || "-"}</p>
-                    <p>
-                      состояние:{" "}
-                      {!!deal.purchase_bid.vendor.funnel_state
-                        ? deal.purchase_bid.vendor.funnel_state.name
-                        : deal.purchase_bid.vendor.is_admin
-                        ? "Администратор"
-                        : "-"}
-                    </p>
+                    <UserActivity intl={intl} user={deal.purchase_bid.vendor} />
                   </TableCell>
                 </TableRow>
                 <TableRow>

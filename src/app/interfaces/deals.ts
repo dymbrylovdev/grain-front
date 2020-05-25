@@ -1,4 +1,4 @@
-import { IFunnelState } from "./funnelStates";
+import { IUser } from "./users";
 
 export interface IDeal {
   purchase_bid: {
@@ -6,31 +6,10 @@ export interface IDeal {
     price: number;
     volume: number;
     description: string;
-    author: {
-      id: number;
-      fio: string;
-      login: string;
-      company: {
-        id: number;
-        short_name: string;
-      };
-    };
+    author: IUser;
     created_at: string;
     modified_at: string;
-    vendor: {
-      id: number;
-      fio: string;
-      login: string;
-      company: {
-        id: number;
-        short_name: string;
-      };
-      use_vat: boolean;
-      email: string;
-      funnel_state: IFunnelState | null;
-      phone: string;
-      is_admin: boolean;
-    };
+    vendor: IUser;
     location: {
       lat: number;
       lng: number;
@@ -83,31 +62,10 @@ export interface IDeal {
     price: number;
     volume: number;
     description: string;
-    author: {
-      id: number;
-      fio: string;
-      login: string;
-      company: {
-        id: number;
-        short_name: string;
-      };
-    };
+    author: IUser;
     created_at: string;
     modified_at: string;
-    vendor: {
-      id: number;
-      fio: string;
-      login: string;
-      company: {
-        id: number;
-        short_name: string;
-      };
-      use_vat: boolean;
-      email: string;
-      funnel_state: IFunnelState | null;
-      phone: string;
-      is_admin: boolean;
-    };
+    vendor: IUser;
     location: {
       lat: number;
       lng: number;
