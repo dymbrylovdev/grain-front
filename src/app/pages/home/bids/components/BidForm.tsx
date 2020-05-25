@@ -345,7 +345,7 @@ const BidForm: React.FC<IProps> = ({
         (loading ? (
           <Skeleton width="100%" height={225} animation="wave" />
         ) : (
-          <Box className={classes.paramContainer} border={1} borderColor="#eeeeee" borderRadius={5}>
+          <div className={classes.box}>
             <div className={innerClasses.calcTitle}>
               {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
             </div>
@@ -394,7 +394,7 @@ const BidForm: React.FC<IProps> = ({
                   </div>
                 ))}
             </Grid>
-          </Box>
+          </div>
         ))}
 
       {loading ? (

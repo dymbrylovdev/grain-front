@@ -509,7 +509,14 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       </div>
 
       {editMode !== "view" && (
-        <div className={classes.textFieldContainer}>
+        <div className={classes.box}>
+          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+            <Skeleton width="100%" height={32} animation="wave" />
+          ) : editMode === "create" ? (
+            <p>{intl.formatMessage({ id: "PROFILE.INPUT.PASSWORD.CREATE_TITLE" })}</p>
+          ) : (
+            <p>{intl.formatMessage({ id: "PROFILE.INPUT.PASSWORD.EDIT_TITLE" })}</p>
+          )}
           {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
             <Skeleton width="100%" height={70} animation="wave" />
           ) : (
@@ -519,7 +526,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 id: "PROFILE.INPUT.PASSWORD",
               })}
               margin="normal"
-              className={classes.textField}
               name="password"
               value={values.password}
               variant="outlined"
@@ -530,11 +536,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               autoComplete="new-password"
             />
           )}
-        </div>
-      )}
 
-      {editMode !== "view" && (
-        <div className={classes.textFieldContainer}>
           {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
             <Skeleton width="100%" height={70} animation="wave" />
           ) : (
@@ -544,7 +546,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 id: "PROFILE.INPUT.REPEATPASSWORD",
               })}
               margin="normal"
-              className={classes.textField}
               name="repeatPassword"
               value={values.repeatPassword}
               variant="outlined"

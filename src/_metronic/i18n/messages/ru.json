@@ -148,6 +148,8 @@
   "PROFILE.INPUT.COMPANY": "Компания",
   "PROFILE.INPUT.PASSWORD": "Новый пароль",
   "PROFILE.INPUT.REPEATPASSWORD": "Повторите новый пароль",
+  "PROFILE.INPUT.PASSWORD.CREATE_TITLE": "Установить пароль",
+  "PROFILE.INPUT.PASSWORD.EDIT_TITLE": "Изменить пароль",
   "PROFILE.BUTTON.SAVE": "Сохранить",
   "PROFILE.VALIDATION.REQUIRED_FIELD": "Обязательное поле",
   "PROFILE.VALIDATION.SIMILAR_PASSWORD": "Пароли должны совпадать",

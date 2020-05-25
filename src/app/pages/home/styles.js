@@ -118,6 +118,17 @@ const useStyles = makeStyles(theme => ({
     alignItems: "flex-start",
   },
 
+  box: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    padding: theme.spacing(2),
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    border: "1px solid rgba(0, 0, 0, 0.26)",
+    borderRadius: "4px",
+  },
+
   // buttons ********************************************************************************************************************
 
   topButtonsContainer: {
