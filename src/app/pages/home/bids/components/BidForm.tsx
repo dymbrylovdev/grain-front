@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { IntlShape } from "react-intl";
 import { Link } from "react-router-dom";
-import { TextField, MenuItem, Grid, Box, makeStyles, Button } from "@material-ui/core";
+import { TextField, MenuItem, Grid, makeStyles, Button } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { Skeleton } from "@material-ui/lab";
 import { useFormik } from "formik";
@@ -42,6 +42,9 @@ const useInnerStyles = makeStyles(theme => ({
   },
   authorText: {
     marginBottom: theme.spacing(1),
+  },
+  autoLoc: {
+    width: "100%",
   },
 }));
 
@@ -149,6 +152,16 @@ const BidForm: React.FC<IProps> = ({
   const classes = useStyles();
   const innerClasses = useInnerStyles();
 
+  const inputEl = useRef<HTMLButtonElement>(null);
+  const [goToRef, setGoToRef] = useState(false);
+
+  useEffect(() => {
+    if (goToRef) {
+      inputEl.current?.focus();
+      setGoToRef(false);
+    }
+  }, [goToRef]);
+
   const currentCropId: number = !!bid ? bid.crop_id : !!cropId ? cropId : 0;
   const vendor_id =
     (!bid && +vendorId) || (bid && bid.vendor && bid.vendor.id) || (me?.id as number);
@@ -234,7 +247,10 @@ const BidForm: React.FC<IProps> = ({
           <Button
             variant="outlined"
             color="primary"
-            onClick={() => history.goBack()}
+            onClick={() => {
+              history.goBack();
+            }}
+            style={{ marginTop: "-16px" }}
             disabled={buttonLoading || loading}
           >
             {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
@@ -397,30 +413,148 @@ const BidForm: React.FC<IProps> = ({
           </div>
         ))}
 
-      {loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
+      {editMode === "view" ? (
+        loading ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <AutocompleteLocations
+            options={locations || []}
+            loading={loadingLocations}
+            inputValue={values.location}
+            editable={editMode !== "view"}
+            label={intl.formatMessage({
+              id: "PROFILE.INPUT.LOCATION",
+            })}
+            inputClassName={innerClasses.autoLoc}
+            // @ts-ignore
+            inputError={Boolean(touched.location && errors.location && errors.location.text)}
+            // @ts-ignore
+            inputHelperText={touched.location && errors.location && errors.location.text}
+            fetchLocations={fetchLocations}
+            clearLocations={clearLocations}
+            setSelectedLocation={location =>
+              !!location ? setFieldValue("location", location) : setFieldValue("location", {})
+            }
+            handleBlur={handleBlur}
+            disable={true}
+          />
+        )
+      ) : loading ? (
+        <Skeleton width="100%" height={202} animation="wave" />
       ) : (
-        <AutocompleteLocations
-          options={locations || []}
-          loading={loadingLocations}
-          inputValue={values.location}
-          editable={editMode !== "view"}
-          label={intl.formatMessage({
-            id: "PROFILE.INPUT.LOCATION",
-          })}
-          inputClassName={classes.textField}
-          // @ts-ignore
-          inputError={Boolean(touched.location && errors.location && errors.location.text)}
-          // @ts-ignore
-          inputHelperText={touched.location && errors.location && errors.location.text}
-          fetchLocations={fetchLocations}
-          clearLocations={clearLocations}
-          setSelectedLocation={location =>
-            !!location ? setFieldValue("location", location) : setFieldValue("location", {})
-          }
-          handleBlur={handleBlur}
-          disable={editMode === "view"}
-        />
+        <div className={classes.box}>
+          <p>{intl.formatMessage({ id: "BID.LOCATION.ABOUT" })}</p>
+          <AutocompleteLocations
+            options={locations || []}
+            loading={loadingLocations}
+            inputValue={values.location}
+            editable={editMode !== "view"}
+            label={intl.formatMessage({
+              id: "PROFILE.INPUT.LOCATION",
+            })}
+            inputClassName={innerClasses.autoLoc}
+            // @ts-ignore
+            inputError={Boolean(touched.location && errors.location && errors.location.text)}
+            // @ts-ignore
+            inputHelperText={touched.location && errors.location && errors.location.text}
+            fetchLocations={fetchLocations}
+            clearLocations={clearLocations}
+            setSelectedLocation={location =>
+              !!location ? setFieldValue("location", location) : setFieldValue("location", {})
+            }
+            handleBlur={handleBlur}
+            disable={false}
+          />
+          {(editMode === "edit" && !!user && user.points.length > 0) ||
+          (editMode !== "edit" && !vendorId && !!me && me.points.length > 0) ||
+          (editMode !== "edit" && !!vendorId && !!user && user.points.length > 0) ? (
+            <TextField
+              select
+              margin="normal"
+              label={intl.formatMessage({
+                id: "BIDSLIST.TABLE.MY_POINT",
+              })}
+              value={""}
+              onBlur={handleBlur}
+              onChange={event => {
+                setGoToRef(true);
+                if (editMode === "edit") {
+                  if (!!user) {
+                    let myLocation = user.points.find(item => item.id === +event.target.value);
+                    if (!!myLocation) {
+                      let newLocation = { ...myLocation };
+                      delete newLocation.id;
+                      delete newLocation.name;
+                      setFieldValue("location", newLocation);
+                    }
+                  }
+                } else {
+                  if (!vendorId && !!me) {
+                    let myLocation = me.points.find(item => item.id === +event.target.value);
+                    if (!!myLocation) {
+                      let newLocation = { ...myLocation };
+                      delete newLocation.id;
+                      delete newLocation.name;
+                      setFieldValue("location", newLocation);
+                    }
+                  }
+                  if (!!vendorId && !!user) {
+                    let myLocation = user.points.find(item => item.id === +event.target.value);
+                    if (!!myLocation) {
+                      let newLocation = { ...myLocation };
+                      delete newLocation.id;
+                      delete newLocation.name;
+                      setFieldValue("location", newLocation);
+                    }
+                  }
+                }
+              }}
+              name="my_points"
+              variant="outlined"
+              autoComplete="off"
+            >
+              {editMode === "edit" ? (
+                !!user ? (
+                  user.points.map(option => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value={0}>Пусто</MenuItem>
+                )
+              ) : !vendorId && !!me ? (
+                me.points.map(option => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.name}
+                  </MenuItem>
+                ))
+              ) : (
+                !!user &&
+                user.points.map(option => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.name}
+                  </MenuItem>
+                ))
+              )}
+            </TextField>
+          ) : (
+            <>
+              <p></p>
+              <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
+            </>
+          )}
+          <Button
+            variant="outlined"
+            color="primary"
+            onFocus={() => inputEl.current?.blur()}
+            ref={inputEl}
+            disabled={buttonLoading || loading}
+            style={{ position: "absolute", width: 50, height: 50, zIndex: -100 }}
+          >
+            .
+          </Button>
+        </div>
       )}
 
       {loading ? (

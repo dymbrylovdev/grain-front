@@ -12,14 +12,14 @@ const useStyles = makeStyles(theme => ({
   form: {
     maxWidth: "800px",
     width: "100%",
-    padding: theme.spacing(3),
+    padding: theme.spacing(2),
   },
   form2: {
     maxWidth: "800px",
     width: "100%",
-    paddingLeft: theme.spacing(3),
-    paddingRigth: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+    paddingLeft: theme.spacing(2),
+    paddingRigth: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
   buttonContainer: {
     paddingBottom: theme.spacing(2),
@@ -121,7 +121,7 @@ const useStyles = makeStyles(theme => ({
   box: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "flex-start",
+    // alignItems: "flex-start",
     padding: theme.spacing(2),
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
