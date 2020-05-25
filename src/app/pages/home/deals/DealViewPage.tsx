@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { compose } from "redux";
-import { RouteComponentProps, Link } from "react-router-dom";
+import { RouteComponentProps, Link, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
 import {
@@ -10,6 +10,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
   // TableFooter,
 } from "@material-ui/core";
 
@@ -58,6 +59,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
   cropParamsError,
 }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   useEffect(() => {
     if (!!dealsFilters && !deals && !loading) fetch(page, perPage, weeks);
@@ -104,6 +106,18 @@ const DealViewPage: React.FC<TPropsFromRedux &
           )}
         />
       )}
+      <div className={classes.topButtonsContainer}>
+        <div className={classes.button}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => history.goBack()}
+            disabled={!deals || !crops || !cropParams}
+          >
+            {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+          </Button>
+        </div>
+      </div>
       <div className={classes.tableTitle}>
         {!!deals &&
         !deals.find(item => item.sale_bid.id === +saleId && item.purchase_bid.id === +purchaseId)
