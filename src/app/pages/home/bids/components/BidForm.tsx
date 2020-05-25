@@ -289,7 +289,7 @@ const BidForm: React.FC<IProps> = ({
         <TextField
           type="text"
           label={intl.formatMessage({
-            id: "BIDSLIST.TABLE.COST",
+            id: "ALL.PRICE_OF_TON",
           })}
           margin="normal"
           name="price"
@@ -444,27 +444,6 @@ const BidForm: React.FC<IProps> = ({
       ) : (
         <div className={classes.box}>
           <p>{intl.formatMessage({ id: "BID.LOCATION.ABOUT" })}</p>
-          <AutocompleteLocations
-            options={locations || []}
-            loading={loadingLocations}
-            inputValue={values.location}
-            editable={editMode !== "view"}
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.LOCATION",
-            })}
-            inputClassName={innerClasses.autoLoc}
-            // @ts-ignore
-            inputError={Boolean(touched.location && errors.location && errors.location.text)}
-            // @ts-ignore
-            inputHelperText={touched.location && errors.location && errors.location.text}
-            fetchLocations={fetchLocations}
-            clearLocations={clearLocations}
-            setSelectedLocation={location =>
-              !!location ? setFieldValue("location", location) : setFieldValue("location", {})
-            }
-            handleBlur={handleBlur}
-            disable={false}
-          />
           {(editMode === "edit" && !!user && user.points.length > 0) ||
           (editMode !== "edit" && !vendorId && !!me && me.points.length > 0) ||
           (editMode !== "edit" && !!vendorId && !!user && user.points.length > 0) ? (
@@ -544,6 +523,27 @@ const BidForm: React.FC<IProps> = ({
               <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
             </>
           )}
+          <AutocompleteLocations
+            options={locations || []}
+            loading={loadingLocations}
+            inputValue={values.location}
+            editable={editMode !== "view"}
+            label={intl.formatMessage({
+              id: "PROFILE.INPUT.LOCATION",
+            })}
+            inputClassName={innerClasses.autoLoc}
+            // @ts-ignore
+            inputError={Boolean(touched.location && errors.location && errors.location.text)}
+            // @ts-ignore
+            inputHelperText={touched.location && errors.location && errors.location.text}
+            fetchLocations={fetchLocations}
+            clearLocations={clearLocations}
+            setSelectedLocation={location =>
+              !!location ? setFieldValue("location", location) : setFieldValue("location", {})
+            }
+            handleBlur={handleBlur}
+            disable={false}
+          />
           <Button
             variant="outlined"
             color="primary"

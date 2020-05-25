@@ -117,7 +117,7 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
                 type="text"
                 autoComplete="off"
                 label={intl.formatMessage({
-                  id: "FILTERS.PRICE",
+                  id: "ALL.PRICE_OF_TON",
                 })}
                 margin="normal"
                 name={`price${item.id}`}
