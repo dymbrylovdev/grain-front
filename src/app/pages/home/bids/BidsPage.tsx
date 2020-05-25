@@ -236,6 +236,7 @@ const BidsPage: React.FC<TPropsFromRedux &
       clearEditFilters();
     }
     if (editFilterSuccess) {
+      setPricesModalOpen(false);
       fetchFilters(salePurchaseMode);
     }
   }, [
