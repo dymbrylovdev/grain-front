@@ -1,3 +1,5 @@
+import { IFunnelState } from "./funnelStates";
+
 export interface IDeal {
   purchase_bid: {
     id: number;
@@ -24,6 +26,10 @@ export interface IDeal {
         short_name: string;
       };
       use_vat: boolean;
+      email: string;
+      funnel_state: IFunnelState | null;
+      phone: string;
+      is_admin: boolean;
     };
     location: {
       lat: number;
@@ -97,6 +103,10 @@ export interface IDeal {
         short_name: string;
       };
       use_vat: boolean;
+      email: string;
+      funnel_state: IFunnelState | null;
+      phone: string;
+      is_admin: boolean;
     };
     location: {
       lat: number;

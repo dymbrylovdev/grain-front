@@ -119,7 +119,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
           <Skeleton width="100%" height={77} animation="wave" />
           <Skeleton width="100%" height={77} animation="wave" />
           <Skeleton width="100%" height={77} animation="wave" />
-          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={120} animation="wave" />
           <Skeleton width="100%" height={53} animation="wave" />
         </>
       ) : (
@@ -264,14 +264,36 @@ const DealViewPage: React.FC<TPropsFromRedux &
                     <strong>{intl.formatMessage({ id: "DEALS.TABLE.AGENT" })}</strong>
                   </TableCell>
                   <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                    <Link to={`/user/view/${deal.sale_bid.vendor.id}`}>
-                      {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
-                    </Link>
+                    <p>
+                      <Link to={`/user/view/${deal.sale_bid.vendor.id}`}>
+                        {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
+                      </Link>
+                    </p>
+                    <p>тел.: {deal.sale_bid.vendor.phone || "-"}</p>
+                    <p>
+                      состояние:{" "}
+                      {!!deal.sale_bid.vendor.funnel_state
+                        ? deal.sale_bid.vendor.funnel_state.name
+                        : deal.sale_bid.vendor.is_admin
+                        ? "Администратор"
+                        : "-"}
+                    </p>
                   </TableCell>
                   <TableCell>
-                    <Link to={`/user/view/${deal.purchase_bid.vendor.id}`}>
-                      {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
-                    </Link>
+                    <p>
+                      <Link to={`/user/view/${deal.purchase_bid.vendor.id}`}>
+                        {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
+                      </Link>
+                    </p>
+                    <p>тел.: {deal.purchase_bid.vendor.phone || "-"}</p>
+                    <p>
+                      состояние:{" "}
+                      {!!deal.purchase_bid.vendor.funnel_state
+                        ? deal.purchase_bid.vendor.funnel_state.name
+                        : deal.purchase_bid.vendor.is_admin
+                        ? "Администратор"
+                        : "-"}
+                    </p>
                   </TableCell>
                 </TableRow>
                 <TableRow>
