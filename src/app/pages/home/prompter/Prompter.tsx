@@ -135,9 +135,11 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   </Button>
                 )}
               </div>
-              <Button variant="outlined" color="primary" onClick={() => stopPrompter()}>
-                <FormattedMessage id="ALL.BUTTONS.FINISH" />
-              </Button>
+              {activeStep !== 0 && (
+                <Button variant="outlined" color="primary" onClick={() => stopPrompter()}>
+                  <FormattedMessage id="ALL.BUTTONS.FINISH" />
+                </Button>
+              )}
             </Grid>
           </div>
         </div>

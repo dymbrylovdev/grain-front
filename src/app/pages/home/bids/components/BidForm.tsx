@@ -519,7 +519,6 @@ const BidForm: React.FC<IProps> = ({
             </TextField>
           ) : (
             <>
-              <p></p>
               <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
             </>
           )}
