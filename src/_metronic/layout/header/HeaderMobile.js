@@ -19,6 +19,8 @@ class HeaderMobile extends React.Component {
       //headerMenuSelfDisplay,
       headerMobileCssClasses,
       headerMobileAttributes,
+      running,
+      activeStep,
     } = this.props;
 
     return (
@@ -34,7 +36,10 @@ class HeaderMobile extends React.Component {
         <div className="kt-header-mobile__toolbar">
           {asideDisplay && (
             <button
-              className="kt-header-mobile__toggler kt-header-mobile__toggler--left"
+              // className="kt-header-mobile__toggler kt-header-mobile__toggler--left old_menu_item_text"
+              className={`kt-header-mobile__toggler kt-header-mobile__toggler--left ${running &&
+                activeStep === 1 &&
+                "old_menu_item_text"}`}
               id="kt_aside_mobile_toggler"
             >
               <span />
@@ -77,6 +82,8 @@ const mapStateToProps = store => ({
   headerMobileAttributes: builder.selectors.getAttributes(store, {
     path: "aside_menu",
   }),
+  running: store.prompter.running,
+  activeStep: store.prompter.activeStep,
 });
 
 export default connect(mapStateToProps)(HeaderMobile);
