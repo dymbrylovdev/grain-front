@@ -475,15 +475,17 @@ const BidsPage: React.FC<TPropsFromRedux &
                 {intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}
               </div>
             )}
-            <LocationBlock
-              handleClickLocation={() => {
-                setLocationModalOpen(true);
-              }}
-              handleClickPrices={() => {
-                setPricesModalOpen(true);
-              }}
-              locations={me && me.points}
-            />
+            {salePurchaseMode === "sale" && (
+              <LocationBlock
+                handleClickLocation={() => {
+                  setLocationModalOpen(true);
+                }}
+                handleClickPrices={() => {
+                  setPricesModalOpen(true);
+                }}
+                locations={me && me.points}
+              />
+            )}
           </>
         )}
 

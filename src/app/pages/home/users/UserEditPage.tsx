@@ -20,6 +20,7 @@ import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
 import { ProfileForm, CompanyForm, LocationsForm } from "./components";
 import { ErrorPage } from "../../../components/ErrorPage";
 import Prompter from "../prompter/Prompter";
+import ScrollToTop from "../../../components/ui/ScrollToTop";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -177,6 +178,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
   return (
     <>
+      <ScrollToTop />
       <Prompter />
       <Paper className={classes.container}>
         <LayoutSubheader
