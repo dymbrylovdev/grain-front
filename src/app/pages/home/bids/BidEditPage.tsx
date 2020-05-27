@@ -166,7 +166,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
   }, [bid, editMode, fetchUser]);
 
   useEffect(() => {
-    setActiveStep(5);
+    setActiveStep(4);
   }, [setActiveStep]);
 
   let title = null;

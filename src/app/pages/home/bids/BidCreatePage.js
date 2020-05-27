@@ -156,7 +156,7 @@ function BidCreatePage({
   }, [fetchUser, vendor_id]);
 
   useEffect(() => {
-    setActiveStep(5);
+    setActiveStep(4);
   }, [setActiveStep]);
 
   const locationSubmit = (values, setStatus, setSubmitting) => {

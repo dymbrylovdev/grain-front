@@ -80,11 +80,6 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               <FormattedMessage id="PROMPTER.STEPPER.STEP3" />
             </StepLabel>
           </Step>
-          <Step>
-            <StepLabel>
-              <FormattedMessage id="PROMPTER.STEPPER.STEP4" />
-            </StepLabel>
-          </Step>
         </Stepper>
         <div>
           <div>
@@ -94,7 +89,6 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {activeStep === 2 && <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT2" />}
               {activeStep === 3 && <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT3" />}
               {activeStep === 4 && <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT4" />}
-              {activeStep === 5 && <FormattedMessage id="PROMPTER.STEPPER.STEP_CONTENT5" />}
             </Typography>
             <Grid container direction="row" justify="space-between" alignItems="center">
               <div>
@@ -105,7 +99,7 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     onClick={() => {
                       setActiveStep(activeStep - 1);
                       if (activeStep === 2) history.push("/user/profile");
-                      if (activeStep === 5) {
+                      if (activeStep === 4) {
                         if (dullRole === "seller") history.push("/purchase/best-bids/1");
                         if (dullRole === "buyer") history.push("/sale/best-bids/1");
                       }
@@ -115,7 +109,7 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     <FormattedMessage id="ALL.BUTTONS.PREV" />
                   </Button>
                 )}
-                {activeStep !== 5 && (
+                {activeStep !== 4 && (
                   <Button
                     variant="contained"
                     color="primary"
@@ -125,7 +119,7 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         if (dullRole === "seller") history.push("/purchase/best-bids/1");
                         if (dullRole === "buyer") history.push("/sale/best-bids/1");
                       }
-                      if (activeStep === 4) {
+                      if (activeStep === 3) {
                         if (dullRole === "seller") history.push("/bid/create/sale/0/0");
                         if (dullRole === "buyer") history.push("/bid/create/purchase/0/0");
                       }
