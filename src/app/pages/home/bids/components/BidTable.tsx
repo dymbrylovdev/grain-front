@@ -74,11 +74,9 @@ const BidTable: React.FC<IProps> = ({
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.COST" />
               </TopTableCell>
-              {salePurchaseMode === "sale" && (
-                <TopTableCell>
-                  <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
-                </TopTableCell>
-              )}
+              <TopTableCell>
+                <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
+              </TopTableCell>
               {salePurchaseMode === "sale" && (
                 <TopTableCell>
                   <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
@@ -129,17 +127,19 @@ const BidTable: React.FC<IProps> = ({
                     "-"
                   )}
                 </TableCell>
-                {salePurchaseMode === "sale" && (
-                  <TableCell>
-                    {!!user && user.use_vat && !!bid && !!bid.vat && !bid.vendor.use_vat
-                      ? !bid.price
-                        ? "-"
-                        : !!bid && Math.round(bid.price * (bid.vat / 100 + 1) + bid.price_delivery)
-                      : bid.price
+                <TableCell>
+                  {!!user && user.use_vat && !!bid && !!bid.vat && !bid.vendor.use_vat
+                    ? !bid.price
+                      ? "-"
+                      : salePurchaseMode === "sale"
+                      ? !!bid && Math.round(bid.price * (bid.vat / 100 + 1) + bid.price_delivery)
+                      : !!bid && Math.round(bid.price * (bid.vat / 100 + 1) - bid.price_delivery)
+                    : bid.price
+                    ? salePurchaseMode === "sale"
                       ? Math.round(bid.price + bid.price_delivery)
-                      : "-"}
-                  </TableCell>
-                )}
+                      : Math.round(bid.price - bid.price_delivery)
+                    : "-"}
+                </TableCell>
                 {salePurchaseMode === "sale" && (
                   <TableCell>
                     <Grid container direction="column" justify="center" alignItems="flex-start">
