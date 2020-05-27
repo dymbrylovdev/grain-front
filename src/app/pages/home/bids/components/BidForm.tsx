@@ -535,7 +535,17 @@ const BidForm: React.FC<IProps> = ({
           <AutocompleteLocations
             options={locations || []}
             loading={loadingLocations}
-            inputValue={values.location}
+            inputValue={
+              editMode === "create"
+                ? !!vendorId
+                  ? !!user && user.points.length === 1
+                    ? user.points[0]
+                    : values.location
+                  : !!me && me.points.length === 1
+                  ? me.points[0]
+                  : values.location
+                : values.location
+            }
             editable={editMode !== "view"}
             label={intl.formatMessage({
               id: "PROFILE.INPUT.LOCATION",
