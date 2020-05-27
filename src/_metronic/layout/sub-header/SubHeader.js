@@ -14,7 +14,12 @@ import BreadCrumbs from "./components/BreadCrumbs";
 
 class SubHeader extends React.Component {
   render() {
-    const { subheaderCssClasses, subheaderContainerCssClasses, subheaderMobileToggle } = this.props;
+    const {
+      subheaderCssClasses,
+      subheaderContainerCssClasses,
+      subheaderMobileToggle,
+      me,
+    } = this.props;
     return (
       <div id="kt_subheader" className={`kt-subheader ${subheaderCssClasses} kt-grid__item`}>
         <div className={`kt-container ${subheaderContainerCssClasses}`}>
@@ -48,6 +53,10 @@ class SubHeader extends React.Component {
 
           <div className="kt-subheader__toolbar">
             <div className="kt-subheader__wrapper">
+              <div>логин: {me.login}</div>
+              <div>
+                роль: {me.is_admin ? "Администратор" : me.is_vendor ? "Продавец" : "Покупатель"}
+              </div>
               {/* <button type="button" className="btn kt-subheader__btn-primary">
                 Actions &nbsp;
                 <SortNum1Icon className="kt-svg-icon kt-svg-icon--sm" />
@@ -76,6 +85,7 @@ const mapStateToProps = store => ({
     path: "subheader_container",
     toString: true,
   }),
+  me: store.auth.user,
 });
 
 export default withRouter(connect(mapStateToProps)(SubHeader));
