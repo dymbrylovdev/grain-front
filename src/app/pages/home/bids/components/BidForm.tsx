@@ -66,12 +66,22 @@ const getInitialValues = (bid: IBid | undefined, cropId: number, salePurchaseMod
   return values;
 };
 
-const getFinalPrice = (bid: IBid, i: number, pricePerKm: number) => {
+const getFinalPrice = (
+  bid: IBid,
+  i: number,
+  pricePerKm: number,
+  salePurchaseMode: string,
+  vat: number
+) => {
   const distance =
     !bid.point_prices[i].distance || bid.point_prices[i].distance < 100
       ? 100
       : bid.point_prices[i].distance;
-  return Math.round(bid.price + pricePerKm * distance);
+  if (salePurchaseMode === "sale") {
+    return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * distance);
+  } else {
+    return Math.round(bid.price * (vat / 100 + 1) - pricePerKm * distance);
+  }
 };
 
 interface IProps {
@@ -400,11 +410,11 @@ const BidForm: React.FC<IProps> = ({
                     !bid.vendor.use_vat ? (
                       <b>
                         {Math.round(
-                          getFinalPrice(bid, i, values.pricePerKm) * (+bid.vat / 100 + 1)
+                          getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
                         )}
                       </b>
                     ) : (
-                      <b>{getFinalPrice(bid, i, values.pricePerKm)}</b>
+                      <b>{getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)}</b>
                     )}
                     {` • ${Math.round(item.distance)} км • ${item.point.name}`}
                   </div>
