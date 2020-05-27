@@ -277,7 +277,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   return (
     <>
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || funnelStatesLoading ? (
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField

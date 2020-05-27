@@ -197,7 +197,6 @@ const UserEditPage: React.FC<TPropsFromRedux &
               centered
             >
               <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
-              <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })} {...a11yProps(1)} />
               <Tab
                 classes={
                   prompterRunning &&
@@ -209,8 +208,9 @@ const UserEditPage: React.FC<TPropsFromRedux &
                     : {}
                 }
                 label={intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })}
-                {...a11yProps(2)}
+                {...a11yProps(1)}
               />
+              <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })} {...a11yProps(2)} />
             </Tabs>
           </AppBar>
           <Divider />
@@ -223,16 +223,16 @@ const UserEditPage: React.FC<TPropsFromRedux &
           </TabPanel>
           <TabPanel value={valueTabs} index={1}>
             {editMode === "create" ? (
-              <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
+              <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
             ) : (
-              <CompanyForm userId={+id || undefined} editMode={editMode} />
+              <LocationsForm editMode={editMode} userId={+id || undefined} />
             )}
           </TabPanel>
           <TabPanel value={valueTabs} index={2}>
             {editMode === "create" ? (
-              <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
+              <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
             ) : (
-              <LocationsForm editMode={editMode} userId={+id || undefined} />
+              <CompanyForm userId={+id || undefined} editMode={editMode} />
             )}
           </TabPanel>
         </div>
