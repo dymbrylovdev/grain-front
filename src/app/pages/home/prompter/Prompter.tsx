@@ -129,7 +129,7 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   </Button>
                 )}
               </div>
-              {activeStep !== 0 && (
+              {activeStep === 4 && (
                 <Button variant="outlined" color="primary" onClick={() => stopPrompter()}>
                   <FormattedMessage id="ALL.BUTTONS.FINISH" />
                 </Button>

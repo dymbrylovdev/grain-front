@@ -246,7 +246,8 @@ const BidForm: React.FC<IProps> = ({
 
   useEffect(() => {
     if (!!bid && bid.crop_id) fetchCropParams(bid.crop_id);
-  }, [bid, fetchCropParams]);
+    if (!!cropId) fetchCropParams(cropId);
+  }, [bid, cropId, fetchCropParams]);
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
 
@@ -367,7 +368,6 @@ const BidForm: React.FC<IProps> = ({
       )}
 
       {editMode === "view" &&
-        !me?.is_vendor &&
         (loading ? (
           <Skeleton width="100%" height={225} animation="wave" />
         ) : (
@@ -400,24 +400,28 @@ const BidForm: React.FC<IProps> = ({
             <Grid container direction="column" justify="center" alignItems="flex-start">
               {bid &&
                 bid.point_prices &&
-                bid.point_prices.map((item, i) => (
-                  <div key={i}>
-                    {!!me &&
-                    me.use_vat &&
-                    values.bid_type === "sale" &&
-                    !!bid &&
-                    !!bid.vat &&
-                    !bid.vendor.use_vat ? (
-                      <b>
-                        {Math.round(
-                          getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
-                        )}
-                      </b>
-                    ) : (
-                      <b>{getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)}</b>
-                    )}
-                    {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                  </div>
+                (bid.point_prices.length > 0 ? (
+                  bid.point_prices.map((item, i) => (
+                    <div key={i}>
+                      {!!me &&
+                      me.use_vat &&
+                      values.bid_type === "sale" &&
+                      !!bid &&
+                      !!bid.vat &&
+                      !bid.vendor.use_vat ? (
+                        <b>
+                          {Math.round(
+                            getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
+                          )}
+                        </b>
+                      ) : (
+                        <b>{getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)}</b>
+                      )}
+                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
+                    </div>
+                  ))
+                ) : (
+                  <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                 ))}
             </Grid>
           </div>
