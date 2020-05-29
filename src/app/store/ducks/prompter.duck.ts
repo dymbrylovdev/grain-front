@@ -41,6 +41,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return {
           ...state,
           running: false,
+          activeStep: 0,
         };
       }
 
