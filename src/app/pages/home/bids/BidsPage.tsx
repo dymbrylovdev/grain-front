@@ -431,7 +431,6 @@ const BidsPage: React.FC<TPropsFromRedux &
                 className={activeStep === 2 ? innerClasses.iconButton : ""}
                 onClick={() => {
                   setFilterModalOpen(true);
-                  setActiveStep(2);
                 }}
               >
                 <CustomIcon path={filterIconPath} />
