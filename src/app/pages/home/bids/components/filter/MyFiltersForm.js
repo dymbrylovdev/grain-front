@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Formik } from "formik";
+import * as Yup from "yup";
 import {
   makeStyles,
   TextField,
@@ -39,7 +40,7 @@ const innerStyle = makeStyles(theme => ({
 }));
 
 function MyFiltersForm({
-  handleSubmit,
+  // handleSubmit,
   classes,
   intl,
   enumParams,
@@ -73,8 +74,23 @@ function MyFiltersForm({
       initialValues={fromApiToFilter(filter)}
       onSubmit={values => {
         //console.log("values: ", values);
-        handleSubmit({ ...values, id: filter.id });
+        // handleSubmit({ ...values, id: filter.id });
+        let params = { ...values };
+        params.name = values.name.trim();
+        params.point_prices = [];
+        filter.point_prices.forEach(item => {
+          params.point_prices.push({ point_id: item.point.id, price: item.price });
+        });
+        editFilter({
+          id: filter.id,
+          data: filterForCreate(params, enumParams, numberParams),
+        });
       }}
+      validationSchema={Yup.object().shape({
+        name: Yup.string()
+          .required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" }))
+          .trim(),
+      })}
       innerRef={formRef}
     >
       {({
@@ -113,6 +129,8 @@ function MyFiltersForm({
               variant="outlined"
               onBlur={handleBlur}
               onChange={handleChange("name")}
+              helperText={touched.name && errors.name}
+              error={Boolean(touched.name && errors.name)}
               InputProps={{
                 endAdornment: (
                   <IconButton onClick={() => clearAction("name")}>
@@ -120,6 +138,7 @@ function MyFiltersForm({
                   </IconButton>
                 ),
               }}
+              autoComplete="off"
             />
           </div>
           <Row>
@@ -221,21 +240,7 @@ function MyFiltersForm({
             className={innerClasses.buttonContainer}
           >
             <Grid item>
-              <ButtonWithLoader
-                loading={editLoading}
-                disabled={editLoading}
-                onPress={() => {
-                  let params = values;
-                  params.point_prices = [];
-                  filter.point_prices.forEach(item => {
-                    params.point_prices.push({ point_id: item.point.id, price: item.price });
-                  });
-                  editFilter({
-                    id: filter.id,
-                    data: filterForCreate(params, enumParams, numberParams),
-                  });
-                }}
-              >
+              <ButtonWithLoader loading={editLoading} disabled={editLoading} onPress={handleSubmit}>
                 {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })}
               </ButtonWithLoader>
             </Grid>

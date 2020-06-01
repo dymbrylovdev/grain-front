@@ -543,11 +543,13 @@ const BidsPage: React.FC<TPropsFromRedux &
           handleClose={() => setFilterModalOpen(false)}
           classes={classes}
           handleSubmit={(values: any) => {
+            let params = { ...values };
+            params.name = values.name.trim();
             setFilterModalOpen(false);
             if (salePurchaseMode === "sale")
-              setCurrentSaleFilter(+cropId, { ...values, cropId: +cropId });
+              setCurrentSaleFilter(+cropId, { ...params, cropId: +cropId });
             if (salePurchaseMode === "purchase")
-              setCurrentPurchaseFilter(+cropId, { ...values, cropId: +cropId });
+              setCurrentPurchaseFilter(+cropId, { ...params, cropId: +cropId });
           }}
           cropId={+cropId}
           enumParams={cropParams && cropParams.filter(item => item.type === "enum")}

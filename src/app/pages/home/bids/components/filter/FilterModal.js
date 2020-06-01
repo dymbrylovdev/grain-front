@@ -159,6 +159,7 @@ const FilterModal = ({
     initialValues: getInitialValues(currentFilter),
     onSubmit: values => {
       let params = { ...values };
+      params.name = values.name.trim();
       delete params.point_prices;
       params.cropId = cropId;
       params.bid_type = salePurchaseMode;
@@ -166,7 +167,9 @@ const FilterModal = ({
       createFilter(filterForCreate(params, enumParams, numberParams));
     },
     validationSchema: Yup.object().shape({
-      name: Yup.string().required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" })),
+      name: Yup.string()
+        .required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" }))
+        .trim(),
     }),
   });
   const { resetForm, values, handleBlur } = formik;
@@ -403,10 +406,14 @@ const FilterModal = ({
                   className={innerClasses.textField}
                   helperText={formik.touched.name && formik.errors.name}
                   error={Boolean(formik.touched.name && formik.errors.name)}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton onClick={() => formik.setFieldValue("name", "")}>
+                        <CloseIcon />
+                      </IconButton>
+                    ),
+                  }}
                 />
-                <IconButton onClick={() => formik.setFieldValue("name", "")}>
-                  <CloseIcon />
-                </IconButton>
               </Grid>
             </Grid>
             <Grid item>
@@ -435,11 +442,13 @@ const FilterModal = ({
                     variant="contained"
                     color="primary"
                     onClick={() => {
-                      values.cropId = cropId;
+                      let params = { ...values };
+                      params.name = values.name.trim();
+                      params.cropId = cropId;
                       // console.log(values);
                       setCurrentFilter(
                         cropId,
-                        filterForSubmit(currentFilter, values, newCropName())
+                        filterForSubmit(currentFilter, params, newCropName())
                       );
                       clearBids();
                       handleClose();

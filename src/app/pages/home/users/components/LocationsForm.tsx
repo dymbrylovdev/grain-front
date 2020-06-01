@@ -102,11 +102,18 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   const [deleteLocationId, setDeleteLocationId] = useState(-1);
   const [autoLocation, setAutoLocation] = useState({ text: "" });
 
-  const { values, handleChange, resetForm } = useFormik({
+  const { values, handleChange, resetForm, handleSubmit, errors, touched } = useFormik({
     initialValues: { name: "" },
-    onSubmit: () => {},
+    onSubmit: () => {
+      edit({
+        id: editNameId,
+        data: { name: values.name.trim(), user_id: userId || me?.id },
+      });
+    },
     validationSchema: Yup.object().shape({
-      name: Yup.string().required(intl.formatMessage({ id: "LOCATIONS.INPUT.NAME.YUP" })),
+      name: Yup.string()
+        .required(intl.formatMessage({ id: "LOCATIONS.INPUT.NAME.YUP" }))
+        .trim(),
     }),
   });
 
@@ -223,18 +230,18 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     name="name"
                     variant="outlined"
                     onChange={handleChange}
+                    helperText={touched.name && errors.name}
+                    error={Boolean(touched.name && errors.name)}
                     autoFocus
                   />
                   <div className={innerClasses.button}>
                     <ButtonWithLoader
                       disabled={editLoading}
                       loading={editLoading}
-                      onPress={() =>
-                        edit({
-                          id: item.id,
-                          data: { name: values.name, user_id: userId || me?.id },
-                        })
-                      }
+                      onPress={() => {
+                        setEditNameId(item.id);
+                        handleSubmit();
+                      }}
                     >
                       {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
                     </ButtonWithLoader>

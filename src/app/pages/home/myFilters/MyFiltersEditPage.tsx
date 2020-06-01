@@ -265,7 +265,8 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
             : { name: "" }
         }
         onSubmit={(values, { setStatus, setSubmitting }) => {
-          let params: { [x: string]: any } = values;
+          let params: { [x: string]: any } = { ...values };
+          params.name = values.name.trim();
           params.point_prices = [];
           itemById(myFilters, +id)?.point_prices.forEach(item => {
             params.point_prices.push({ point_id: item.point.id, price: item.price });
@@ -290,7 +291,9 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                 ));
         }}
         validationSchema={Yup.object().shape({
-          name: Yup.string().required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" })),
+          name: Yup.string()
+            .required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" }))
+            .trim(),
         })}
       >
         {({
@@ -516,7 +519,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                             loading={editLoading || createLoading}
                             disabled={editLoading || createLoading}
                             onPress={() => {
-                              values.name === "" && setFormikErrored(true);
+                              values.name.trim() === "" && setFormikErrored(true);
                               handleSubmit();
                             }}
                           >
