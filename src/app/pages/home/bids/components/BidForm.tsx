@@ -461,76 +461,80 @@ const BidForm: React.FC<IProps> = ({
           {(editMode === "edit" && !!user && user.points.length > 0) ||
           (editMode !== "edit" && !vendorId && !!me && me.points.length > 0) ||
           (editMode !== "edit" && !!vendorId && !!user && user.points.length > 0) ? (
-            <TextField
-              select
-              margin="normal"
-              label={intl.formatMessage({
-                id: "BIDSLIST.TABLE.MY_POINT",
-              })}
-              value={""}
-              onBlur={handleBlur}
-              onChange={event => {
-                setGoToRef(true);
-                if (editMode === "edit") {
-                  if (!!user) {
-                    let myLocation = user.points.find(item => item.id === +event.target.value);
-                    if (!!myLocation) {
-                      let newLocation = { ...myLocation };
-                      delete newLocation.id;
-                      delete newLocation.name;
-                      setFieldValue("location", newLocation);
+            ((editMode === "edit" && !!user && user.points.length > 1) ||
+              (editMode !== "edit" && !vendorId && !!me && me.points.length > 1) ||
+              (editMode !== "edit" && !!vendorId && !!user && user.points.length > 1)) && (
+              <TextField
+                select
+                margin="normal"
+                label={intl.formatMessage({
+                  id: "BIDSLIST.TABLE.MY_POINT",
+                })}
+                value={""}
+                onBlur={handleBlur}
+                onChange={event => {
+                  setGoToRef(true);
+                  if (editMode === "edit") {
+                    if (!!user) {
+                      let myLocation = user.points.find(item => item.id === +event.target.value);
+                      if (!!myLocation) {
+                        let newLocation = { ...myLocation };
+                        delete newLocation.id;
+                        delete newLocation.name;
+                        setFieldValue("location", newLocation);
+                      }
+                    }
+                  } else {
+                    if (!vendorId && !!me) {
+                      let myLocation = me.points.find(item => item.id === +event.target.value);
+                      if (!!myLocation) {
+                        let newLocation = { ...myLocation };
+                        delete newLocation.id;
+                        delete newLocation.name;
+                        setFieldValue("location", newLocation);
+                      }
+                    }
+                    if (!!vendorId && !!user) {
+                      let myLocation = user.points.find(item => item.id === +event.target.value);
+                      if (!!myLocation) {
+                        let newLocation = { ...myLocation };
+                        delete newLocation.id;
+                        delete newLocation.name;
+                        setFieldValue("location", newLocation);
+                      }
                     }
                   }
-                } else {
-                  if (!vendorId && !!me) {
-                    let myLocation = me.points.find(item => item.id === +event.target.value);
-                    if (!!myLocation) {
-                      let newLocation = { ...myLocation };
-                      delete newLocation.id;
-                      delete newLocation.name;
-                      setFieldValue("location", newLocation);
-                    }
-                  }
-                  if (!!vendorId && !!user) {
-                    let myLocation = user.points.find(item => item.id === +event.target.value);
-                    if (!!myLocation) {
-                      let newLocation = { ...myLocation };
-                      delete newLocation.id;
-                      delete newLocation.name;
-                      setFieldValue("location", newLocation);
-                    }
-                  }
-                }
-              }}
-              name="my_points"
-              variant="outlined"
-              autoComplete="off"
-            >
-              {editMode === "edit" ? (
-                !!user ? (
-                  user.points.map(option => (
+                }}
+                name="my_points"
+                variant="outlined"
+                autoComplete="off"
+              >
+                {editMode === "edit" ? (
+                  !!user ? (
+                    user.points.map(option => (
+                      <MenuItem key={option.id} value={option.id}>
+                        {option.name}
+                      </MenuItem>
+                    ))
+                  ) : (
+                    <MenuItem value={0}>Пусто</MenuItem>
+                  )
+                ) : !vendorId && !!me ? (
+                  me.points.map(option => (
                     <MenuItem key={option.id} value={option.id}>
                       {option.name}
                     </MenuItem>
                   ))
                 ) : (
-                  <MenuItem value={0}>Пусто</MenuItem>
-                )
-              ) : !vendorId && !!me ? (
-                me.points.map(option => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.name}
-                  </MenuItem>
-                ))
-              ) : (
-                !!user &&
-                user.points.map(option => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.name}
-                  </MenuItem>
-                ))
-              )}
-            </TextField>
+                  !!user &&
+                  user.points.map(option => (
+                    <MenuItem key={option.id} value={option.id}>
+                      {option.name}
+                    </MenuItem>
+                  ))
+                )}
+              </TextField>
+            )
           ) : (
             <>
               <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
