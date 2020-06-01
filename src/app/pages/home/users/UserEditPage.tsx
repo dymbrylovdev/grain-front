@@ -102,6 +102,12 @@ const UserEditPage: React.FC<TPropsFromRedux &
   if (match.url.indexOf("view") !== -1) editMode = "view";
 
   const [isAlertOpen, setAlertOpen] = useState(false);
+  const [isLocTabPulse, setLocTabPulse] = useState(false);
+
+  useEffect(() => {
+    if (!!me?.fio && !!me?.phone && me?.points.length === 0) setLocTabPulse(true);
+    if (me?.points.length !== 0) setLocTabPulse(false);
+  }, [me]);
 
   const [valueTabs, setValueTabs] = useState(0);
   const handleTabsChange = (event: any, newValue: number) => {
@@ -199,11 +205,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
               <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
               <Tab
                 classes={
-                  prompterRunning &&
-                  prompterStep === 0 &&
-                  !!me?.fio &&
-                  !!me?.phone &&
-                  me?.points.length === 0
+                  prompterRunning && prompterStep === 0 && isLocTabPulse
                     ? { root: innerClasses.pulseRoot }
                     : {}
                 }
@@ -219,6 +221,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
               userId={+id || undefined}
               editMode={editMode}
               setAlertOpen={setAlertOpen}
+              setLocTabPulse={setLocTabPulse}
             />
           </TabPanel>
           <TabPanel value={valueTabs} index={1}>

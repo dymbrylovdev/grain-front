@@ -15,17 +15,17 @@ const buyer = {
 };
 
 export const getInitialValues = (user: IUser | undefined) => ({
-  login: user ? user.login || "" : "",
-  fio: user ? user.fio || "" : "",
-  phone: user ? user.phone || "" : "",
-  email: user ? user.email || "" : "",
+  login: user?.login || "",
+  fio: user?.fio || "",
+  phone: user?.phone || "",
+  email: user?.email || "",
   password: "",
   repeatPassword: "",
-  role: user ? (user.is_vendor ? vendor.id : user.is_buyer ? buyer.id : admin.id) : "EMPTY",
-  status: user ? user.status || "EMPTY" : "EMPTY",
-  funnel_state_id: user && user.funnel_state ? user.funnel_state.id || 0 : 0,
-  is_funnel_state_automate: user ? user.is_funnel_state_automate : false,
-  use_vat: user ? user.use_vat : true,
+  role: user ? (user.is_vendor ? vendor.id : user.is_buyer ? buyer.id : admin.id) : "",
+  status: user?.status || "",
+  funnel_state_id: user?.funnel_state?.id || 0,
+  is_funnel_state_automate: user?.is_funnel_state_automate || false,
+  use_vat: user?.use_vat || true,
 });
 
 export const roles = [admin, buyer, vendor];

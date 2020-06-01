@@ -44,6 +44,7 @@ interface IProps {
   editMode: "profile" | "create" | "edit" | "view";
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
   userId?: number;
+  setLocTabPulse: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
@@ -94,6 +95,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   editMode,
   setAlertOpen,
   userId,
+  setLocTabPulse,
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
@@ -116,12 +118,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       }
     },
     validationSchema: Yup.object().shape({
-      role: Yup.string().matches(
-        /(ROLE_ADMIN|ROLE_VENDOR|ROLE_BUYER)/,
-        intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
-      ),
-      status: Yup.string().matches(
-        /(На модерации|Верифицированный|Активный)/,
+      role: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+      status: Yup.string().required(
         intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
       ),
       email: Yup.string()
@@ -132,10 +130,17 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
           : Yup.string(),
       login: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-      repeatPassword: Yup.string().oneOf(
-        [Yup.ref("password"), null],
-        intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" })
+      repeatPassword: Yup.string().test(
+        "passwords-match",
+        intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
+        function(value) {
+          return this.parent.password === value;
+        }
       ),
+      // Yup.string().oneOf(
+      //   [Yup.ref("password"), null],
+      //   intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" })
+      // ),
     }),
   });
 
@@ -155,6 +160,12 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       }
     };
   }, [editMode, handleSubmit, oldValues, setEditNoNoti]);
+
+  useEffect(() => {
+    if (!values.fio) setLocTabPulse(false);
+    if (!!values.fio && !!values.phone) setLocTabPulse(true);
+    if (!!values.fio && !values.phone) setLocTabPulse(false);
+  }, [setLocTabPulse, values.fio, values.phone]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -292,7 +303,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             error={Boolean(touched.role && errors.role)}
             disabled={editMode !== "create"}
           >
-            <MenuItem value="EMPTY">{intl.formatMessage({ id: "ALL.SELECTS.EMPTY" })}</MenuItem>
+            {/* <MenuItem value="EMPTY">{intl.formatMessage({ id: "ALL.SELECTS.EMPTY" })}</MenuItem> */}
             {roles.map((item, i) => (
               <MenuItem key={i} value={item.id}>
                 {item.value}
@@ -304,7 +315,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       {editMode !== "profile" && (
         <div className={classes.textFieldContainer}>
-          {meLoading || userLoading || funnelStatesLoading ? (
+          {meLoading || userLoading || funnelStatesLoading || !statuses ? (
             <Skeleton width="100%" height={70} animation="wave" />
           ) : (
             <TextField
@@ -321,13 +332,12 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               error={Boolean(touched.status && errors.status)}
               disabled={editMode === "view"}
             >
-              <MenuItem value="EMPTY">{intl.formatMessage({ id: "ALL.SELECTS.EMPTY" })}</MenuItem>
-              {statuses &&
-                statuses.map(option => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
+              {/* <MenuItem value="EMPTY">{intl.formatMessage({ id: "ALL.SELECTS.EMPTY" })}</MenuItem> */}
+              {statuses.map(option => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
             </TextField>
           )}
         </div>
