@@ -48,13 +48,31 @@ const useInnerStyles = makeStyles(theme => ({
   },
 }));
 
-const getInitialValues = (bid: IBid | undefined, cropId: number, salePurchaseMode: string) => {
+const getInitialValues = (
+  bid: IBid | undefined,
+  cropId: number,
+  salePurchaseMode: string,
+  editMode: string,
+  vendorId: number,
+  user: IUser | undefined,
+  me: IUser | undefined
+) => {
   const values: { [x: string]: any } = {
     volume: bid?.volume || "",
     price: bid?.price || "",
     description: bid?.description || "",
     crop_id: bid?.crop_id ? bid?.crop_id : cropId ? cropId : 0,
-    location: bid?.location || { text: "" },
+    location2: bid?.location || { text: "" },
+    location:
+      editMode === "create"
+        ? !!vendorId
+          ? !!user && user.points.length === 1
+            ? user.points[0]
+            : { text: "" }
+          : !!me && me.points.length === 1
+          ? me.points[0]
+          : { text: "" }
+        : bid?.location || { text: "" },
     pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: !!bid ? bid.type : salePurchaseMode,
   };
@@ -186,7 +204,15 @@ const BidForm: React.FC<IProps> = ({
     handleSubmit,
     setFieldValue,
   } = useFormik({
-    initialValues: getInitialValues(bid, currentCropId, salePurchaseMode),
+    initialValues: getInitialValues(
+      bid,
+      currentCropId,
+      salePurchaseMode,
+      editMode,
+      vendorId,
+      user,
+      me
+    ),
     onSubmit: values => {
       const paramValues: IParamValue[] = [];
       cropParams?.forEach(param => {
@@ -241,8 +267,10 @@ const BidForm: React.FC<IProps> = ({
   }, [enqueueSnackbar, formikErrored, intl]);
 
   useEffect(() => {
-    resetForm({ values: getInitialValues(bid, currentCropId, salePurchaseMode) });
-  }, [bid, currentCropId, resetForm, salePurchaseMode]);
+    resetForm({
+      values: getInitialValues(bid, currentCropId, salePurchaseMode, editMode, vendorId, user, me),
+    });
+  }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
 
   useEffect(() => {
     if (!!bid && bid.crop_id) fetchCropParams(bid.crop_id);
@@ -250,6 +278,8 @@ const BidForm: React.FC<IProps> = ({
   }, [bid, cropId, fetchCropParams]);
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
+
+  console.log(values);
 
   return (
     <div className={classes.form}>
@@ -543,17 +573,7 @@ const BidForm: React.FC<IProps> = ({
           <AutocompleteLocations
             options={locations || []}
             loading={loadingLocations}
-            inputValue={
-              editMode === "create"
-                ? !!vendorId
-                  ? !!user && user.points.length === 1
-                    ? user.points[0]
-                    : values.location
-                  : !!me && me.points.length === 1
-                  ? me.points[0]
-                  : values.location
-                : values.location
-            }
+            inputValue={values.location}
             editable={editMode !== "view"}
             label={intl.formatMessage({
               id: "PROFILE.INPUT.LOCATION",
