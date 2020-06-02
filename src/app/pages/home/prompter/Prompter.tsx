@@ -25,12 +25,12 @@ const useStyles = makeStyles(theme =>
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      marginBottom: theme.spacing(3),
+      marginBottom: theme.spacing(2),
     },
     container: {
       maxWidth: "800px",
       width: "100%",
-      padding: theme.spacing(3),
+      padding: theme.spacing(2),
     },
     backButton: {
       marginRight: theme.spacing(2),
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme =>
     instructions: {
       textAlign: "justify",
       marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(3),
+      marginBottom: theme.spacing(2),
     },
   })
 );

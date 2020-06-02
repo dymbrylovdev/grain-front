@@ -279,8 +279,6 @@ const BidForm: React.FC<IProps> = ({
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
 
-  console.log(values);
-
   return (
     <div className={classes.form}>
       <div className={classes.topButtonsContainer}>

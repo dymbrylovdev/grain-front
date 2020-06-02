@@ -25,7 +25,7 @@ export const getInitialValues = (user: IUser | undefined) => ({
   status: user?.status || "",
   funnel_state_id: user?.funnel_state?.id || 0,
   is_funnel_state_automate: user?.is_funnel_state_automate || false,
-  use_vat: user?.use_vat || true,
+  use_vat: user?.use_vat === undefined ? false : user.use_vat,
 });
 
 export const roles = [admin, buyer, vendor];

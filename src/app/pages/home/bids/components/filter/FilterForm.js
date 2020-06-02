@@ -73,6 +73,7 @@ function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
           onBlur={formik.handleBlur}
           onChange={formik.handleChange("min_full_price")}
           InputProps={{
+            inputComponent: NumberFormatCustom,
             endAdornment: (
               <IconButton onClick={() => formik.setFieldValue("min_full_price", "")}>
                 <CloseIcon />
