@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { compose } from "redux";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
@@ -32,6 +31,7 @@ import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
 import { FilterModal } from "./components";
 import { TablePaginator } from "./components/TablePaginator";
+import { isDealsFilterEmpty } from "./utils/utils";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -171,7 +171,13 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 setFilterModalOpen(true);
               }}
             >
-              <CustomIcon path="/media/filter/filter_full.svg" />
+              <CustomIcon
+                path={
+                  isDealsFilterEmpty(dealsFilters)
+                    ? "/media/filter/filter.svg"
+                    : "/media/filter/filter_full.svg"
+                }
+              />
             </IconButton>
           </div>
         </div>
@@ -349,4 +355,4 @@ const connector = connect(
 
 type TPropsFromRedux = ConnectedProps<typeof connector>;
 
-export default compose(connector, injectIntl)(DealsPage);
+export default connector(injectIntl(DealsPage));

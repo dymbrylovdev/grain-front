@@ -120,7 +120,13 @@ const FilterModal: React.FC<IProps> = ({
                   aria-controls={`panel${item.id}-content`}
                   id={`panel${item.id}-header`}
                 >
-                  {item.name}
+                  {!!dealsFilters?.find(
+                    df => df.crop.id === item.id && df.parameters.length > 0
+                  ) ? (
+                    <b>{item.name}</b>
+                  ) : (
+                    item.name
+                  )}
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                   <FilterForm
