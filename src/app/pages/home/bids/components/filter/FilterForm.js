@@ -1,27 +1,12 @@
 import React from "react";
 
 import { TextField, Divider, IconButton } from "@material-ui/core";
-import NumberFormat from "react-number-format";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckBoxParamGroup from "./CheckBoxParamGroup";
 import NumberParam from "./NumberParam";
-
-function NumberFormatCustom(props) {
-  const { inputRef, onChange, ...other } = props;
-
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={inputRef}
-      onValueChange={values => {
-        onChange(values.value);
-      }}
-      decimalScale={2}
-    />
-  );
-}
+import NumberFormatCustom from "../../../../../components/ui/NumberFormatCustom";
 
 function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
   return (
@@ -58,6 +43,7 @@ function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
               </IconButton>
             ),
           }}
+          autoComplete="off"
         />
       </div>
       <div className={classes.textFieldContainer}>
@@ -80,6 +66,7 @@ function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
               </IconButton>
             ),
           }}
+          autoComplete="off"
         />
       </div>
       <div className={classes.textFieldContainer}>
@@ -102,6 +89,7 @@ function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
               </IconButton>
             ),
           }}
+          autoComplete="off"
         />
       </div>
       {numberParams &&

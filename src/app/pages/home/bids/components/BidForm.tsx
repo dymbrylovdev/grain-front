@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { IntlShape } from "react-intl";
 import { Link } from "react-router-dom";
-import { TextField, MenuItem, Grid, makeStyles, Button } from "@material-ui/core";
+import { TextField, MenuItem, Grid, makeStyles, Button, IconButton } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
-import { Skeleton } from "@material-ui/lab";
+import { Skeleton, Autocomplete } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
@@ -18,6 +19,7 @@ import useStyles from "../../styles";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
 import { IParamValue } from "../../../../interfaces/filters";
+import NumberFormatCustom from "../../../../components/ui/NumberFormatCustom";
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
@@ -61,8 +63,7 @@ const getInitialValues = (
     volume: bid?.volume || "",
     price: bid?.price || "",
     description: bid?.description || "",
-    crop_id: bid?.crop_id ? bid?.crop_id : cropId ? cropId : 0,
-    location2: bid?.location || { text: "" },
+    crop_id: bid?.crop_id ? bid?.crop_id : cropId ? cropId : "",
     location:
       editMode === "create"
         ? !!vendorId
@@ -116,6 +117,7 @@ interface IProps {
   locations: ILocation[] | undefined;
   loadingLocations: boolean;
   clearLocations: () => Action<"yaLocations/CLEAR">;
+  clearCropParams: () => Action<"crops2/CLEAR_CROP_PARAMS">;
   fetchCropParams: (
     cropId: number
   ) => ActionWithPayload<
@@ -169,6 +171,7 @@ const BidForm: React.FC<IProps> = ({
   loadingLocations,
   clearLocations,
 
+  clearCropParams,
   fetchCropParams,
   cropParams,
   cropParamsLoading,
@@ -239,7 +242,7 @@ const BidForm: React.FC<IProps> = ({
     validationSchema: Yup.object().shape({
       volume: Yup.number()
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-        .min(0, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 0 }))
+        .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       price: Yup.number()
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
@@ -250,7 +253,9 @@ const BidForm: React.FC<IProps> = ({
           intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
         ),
       }),
-      crop_id: Yup.number().min(1, intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+      crop_id: Yup.string().required(
+        intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
+      ),
     }),
   });
 
@@ -338,6 +343,18 @@ const BidForm: React.FC<IProps> = ({
           onChange={handleChange}
           helperText={touched.price && errors.price}
           error={Boolean(touched.price && errors.price)}
+          InputProps={
+            editMode !== "view"
+              ? {
+                  inputComponent: NumberFormatCustom as any,
+                  endAdornment: (
+                    <IconButton onClick={() => setFieldValue("price", "")}>
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }
+              : undefined
+          }
           disabled={editMode === "view"}
           autoComplete="off"
         />
@@ -390,6 +407,18 @@ const BidForm: React.FC<IProps> = ({
           onChange={handleChange}
           helperText={touched.volume && errors.volume}
           error={Boolean(touched.volume && errors.volume)}
+          InputProps={
+            editMode !== "view"
+              ? {
+                  inputComponent: NumberFormatCustom as any,
+                  endAdornment: (
+                    <IconButton onClick={() => setFieldValue("volume", "")}>
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }
+              : undefined
+          }
           disabled={editMode === "view"}
           autoComplete="off"
         />
@@ -605,32 +634,33 @@ const BidForm: React.FC<IProps> = ({
       {loading ? (
         <Skeleton width="100%" height={70} animation="wave" />
       ) : (
-        <TextField
-          select
-          margin="normal"
-          label={intl.formatMessage({
-            id: "BIDSLIST.TABLE.CROP",
+        <Autocomplete
+          id="crop_id"
+          options={crops}
+          getOptionLabel={option => option.name}
+          noOptionsText={intl.formatMessage({
+            id: "ALL.AUTOCOMPLIT.EMPTY",
           })}
-          value={values.crop_id}
-          onBlur={handleBlur}
-          onChange={event => {
-            if (+event.target.value) fetchCropParams(+event.target.value);
-            handleChange(event);
+          value={crops?.find(item => item.id === values.crop_id) || null}
+          onChange={(e: any, val: ICrop | null) => {
+            setFieldValue("crop_id", val?.id || "");
+            !!val?.id ? fetchCropParams(val.id) : clearCropParams();
           }}
-          name="crop_id"
-          variant="outlined"
-          helperText={touched.crop_id && errors.crop_id}
-          error={Boolean(touched.crop_id && errors.crop_id)}
           disabled={editMode === "view"}
-        >
-          <MenuItem value={0}>{intl.formatMessage({ id: "ALL.SELECTS.EMPTY" })}</MenuItem>
-          {crops &&
-            crops.map(option => (
-              <MenuItem key={option.id} value={option.id}>
-                {option.name}
-              </MenuItem>
-            ))}
-        </TextField>
+          renderInput={params => (
+            <TextField
+              {...params}
+              margin="normal"
+              label={intl.formatMessage({
+                id: "FILTER.FORM.NAME.CROP",
+              })}
+              variant="outlined"
+              onBlur={handleBlur}
+              helperText={touched.crop_id && errors.crop_id}
+              error={Boolean(touched.crop_id && errors.crop_id)}
+            />
+          )}
+        />
       )}
 
       {!loading &&
@@ -648,6 +678,7 @@ const BidForm: React.FC<IProps> = ({
           cropParams.map(cropParam =>
             cropParam.type === "number" ? (
               <TextField
+                key={cropParam.id}
                 type="text"
                 label={cropParam.name}
                 margin="normal"
@@ -655,31 +686,46 @@ const BidForm: React.FC<IProps> = ({
                 value={values[`parameter${cropParam.id}`] || ""}
                 variant="outlined"
                 onBlur={handleBlur}
-                disabled={editMode === "view"}
                 onChange={handleChange}
-                key={cropParam.id}
+                InputProps={
+                  editMode !== "view"
+                    ? {
+                        inputComponent: NumberFormatCustom as any,
+                        endAdornment: (
+                          <IconButton onClick={() => setFieldValue(`parameter${cropParam.id}`, "")}>
+                            <CloseIcon />
+                          </IconButton>
+                        ),
+                      }
+                    : undefined
+                }
+                disabled={editMode === "view"}
                 autoComplete="off"
               />
             ) : (
-              <TextField
-                select
-                type="text"
-                label={cropParam.name}
-                margin="normal"
-                name={`parameter${cropParam.id}`}
-                value={values[`parameter${cropParam.id}`] || ""}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                disabled={editMode === "view"}
+              <Autocomplete
                 key={cropParam.id}
-              >
-                {cropParam.enum.map(option => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </TextField>
+                id={`parameter${cropParam.id}`}
+                options={cropParam.enum}
+                getOptionLabel={option => option}
+                noOptionsText={intl.formatMessage({
+                  id: "ALL.AUTOCOMPLIT.EMPTY",
+                })}
+                value={values[`parameter${cropParam.id}`] || null}
+                onChange={(e: any, val: string | null) => {
+                  setFieldValue(`parameter${cropParam.id}`, val || "");
+                }}
+                disabled={editMode === "view"}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    margin="normal"
+                    label={cropParam.name}
+                    variant="outlined"
+                    onBlur={handleBlur}
+                  />
+                )}
+              />
             )
           )
         ))}

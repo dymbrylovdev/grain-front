@@ -55,6 +55,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
   cropsLoading,
   cropsError,
 
+  clearCropParams,
   fetchCropParams,
   cropParams,
   cropParamsLoading,
@@ -229,6 +230,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
             locations={locations}
             loadingLocations={loadingLocations}
             clearLocations={clearLocations}
+            clearCropParams={clearCropParams}
             fetchCropParams={fetchCropParams}
             cropParams={cropParams}
             cropParamsLoading={cropParamsLoading}
@@ -310,6 +312,7 @@ const connector = connect(
 
     setActiveStep: prompterActions.setActiveStep,
     fetchCrops: crops2Actions.fetchRequest,
+    clearCropParams: crops2Actions.clearCropParams,
     fetchCropParams: crops2Actions.cropParamsRequest,
 
     fetchLocations: yaLocationsActions.fetchRequest,

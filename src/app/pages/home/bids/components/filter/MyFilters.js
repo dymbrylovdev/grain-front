@@ -90,7 +90,7 @@ const MyFilters = ({
                 <ExpansionPanelDetails>
                   <MyFiltersForm
                     classes={classes}
-                    handleSubmit={handleSubmit}
+                    handleSubmitFilter={handleSubmit}
                     cropId={cropId}
                     enumParams={enumParams}
                     numberParams={numberParams}

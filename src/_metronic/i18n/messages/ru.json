@@ -18,6 +18,8 @@
 
   "ALL.PRICE_OF_TON": "Цена за тонну",
 
+  "ALL.AUTOCOMPLIT.EMPTY": "Нет совпадений",
+
   "MENU.GRAIN": "Рынок зерна",
   "MENU.ANALITICS": "Аналитика",
   "MENU.USERS": "Пользователи",

@@ -9,7 +9,6 @@ import {
   IconButton,
   Grid,
   Paper,
-  MenuItem,
   Button,
   FormControlLabel,
   Checkbox,
@@ -35,7 +34,9 @@ import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { IMyFilterItem } from "../../../interfaces/filters";
 import { OutlinedRedButton } from "../../../components/ui/Buttons/RedButtons";
 import { itemById } from "../../../utils/utils";
-import NumberFormat from "react-number-format";
+import { Autocomplete } from "@material-ui/lab";
+import { ICrop } from "../../../interfaces/crops";
+import NumberFormatCustom from "../../../components/ui/NumberFormatCustom";
 
 const useInnerStyles = makeStyles(theme => ({
   buttonContainer: {
@@ -55,21 +56,6 @@ const useInnerStyles = makeStyles(theme => ({
     paddingRight: theme.spacing(0),
   },
 }));
-
-function NumberFormatCustom(props: any) {
-  const { inputRef, onChange, ...other } = props;
-
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={inputRef}
-      onValueChange={values => {
-        onChange(values.value);
-      }}
-      decimalScale={2}
-    />
-  );
-}
 
 const MyFiltersEditPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -184,8 +170,6 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   useEffect(() => {
     if (delSuccess) {
       if (salePurchaseMode === "sale") {
-        // console.log("deleteFilterId: ", deleteFilterId);
-        // console.log("currentFilter: ", currentSaleFilters[deleteFilterCropId]);
         if (
           !!deleteFilterId &&
           currentSaleFilters[deleteFilterCropId] &&
@@ -195,8 +179,6 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
         }
       }
       if (salePurchaseMode === "purchase") {
-        // console.log("deleteFilterId: ", deleteFilterId);
-        // console.log("currentFilter: ", currentPurchaseFilters[deleteFilterCropId]);
         if (
           !!deleteFilterId &&
           currentPurchaseFilters[deleteFilterCropId] &&
@@ -337,31 +319,35 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                 helperText={touched.name && errors.name}
                 error={Boolean(touched.name && errors.name)}
                 disabled={!isEditable}
+                autoComplete="off"
               />
 
-              <TextField
-                select
-                label={intl.formatMessage({
-                  id: "FILTER.FORM.NAME.CROP",
+              <Autocomplete
+                id="cropId"
+                options={crops}
+                getOptionLabel={option => option.name}
+                noOptionsText={intl.formatMessage({
+                  id: "ALL.AUTOCOMPLIT.EMPTY",
                 })}
-                margin="normal"
-                name="cropId"
-                value={values.cropId || 0}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={e => {
-                  setFieldValue("cropId", +e.target.value);
-                  +e.target.value ? fetchCropParams(+e.target.value) : clearCropParams();
+                value={crops.find(item => item.id === values.cropId) || null}
+                onChange={(e: any, val: ICrop | null) => {
+                  setFieldValue("cropId", val?.id || "");
+                  !!val?.id ? fetchCropParams(val.id) : clearCropParams();
                 }}
-                disabled={id !== "new" || cropParamsLoading}
-              >
-                <MenuItem value={0}>Не выбрано</MenuItem>
-                {crops.map(item => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.name}
-                  </MenuItem>
-                ))}
-              </TextField>
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    margin="normal"
+                    label={intl.formatMessage({
+                      id: "FILTER.FORM.NAME.CROP",
+                    })}
+                    variant="outlined"
+                    onBlur={handleBlur}
+                    helperText={touched.cropId && errors.cropId}
+                    error={Boolean(touched.cropId && errors.cropId)}
+                  />
+                )}
+              />
 
               <div>
                 {!cropParams ? (
@@ -405,7 +391,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                       InputProps={
                         isEditable
                           ? {
-                              inputComponent: NumberFormatCustom,
+                              inputComponent: NumberFormatCustom as any,
                               endAdornment: (
                                 <IconButton onClick={() => setFieldValue("max_full_price", "")}>
                                   <CloseIcon />
@@ -415,6 +401,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                           : undefined
                       }
                       disabled={!isEditable}
+                      autoComplete="off"
                     />
 
                     <TextField
@@ -431,7 +418,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                       InputProps={
                         isEditable
                           ? {
-                              inputComponent: NumberFormatCustom,
+                              inputComponent: NumberFormatCustom as any,
                               endAdornment: (
                                 <IconButton onClick={() => setFieldValue("min_full_price", "")}>
                                   <CloseIcon />
@@ -441,6 +428,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                           : undefined
                       }
                       disabled={!isEditable}
+                      autoComplete="off"
                     />
 
                     <TextField
@@ -457,7 +445,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                       InputProps={
                         isEditable
                           ? {
-                              inputComponent: NumberFormatCustom,
+                              inputComponent: NumberFormatCustom as any,
                               endAdornment: (
                                 <IconButton onClick={() => setFieldValue("max_destination", "")}>
                                   <CloseIcon />
@@ -467,6 +455,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                           : undefined
                       }
                       disabled={!isEditable}
+                      autoComplete="off"
                     />
 
                     {cropParams

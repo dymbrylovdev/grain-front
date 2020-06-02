@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core";
+import NumberFormatCustom from "../../../../../components/ui/NumberFormatCustom";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -61,6 +62,7 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
               InputProps={
                 isEditable
                   ? {
+                      inputComponent: NumberFormatCustom,
                       endAdornment: (
                         <IconButton
                           onClick={() => {
@@ -75,6 +77,7 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
                   : undefined
               }
               disabled={!isEditable}
+              autoComplete="off"
             />
           </Grid>
         </Grid>

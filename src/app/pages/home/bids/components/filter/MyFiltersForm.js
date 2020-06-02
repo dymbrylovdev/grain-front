@@ -21,6 +21,7 @@ import { fromApiToFilter } from "../../../myFilters/utils";
 import { filterForCreate } from "../../../myFilters/utils";
 import AlertDialog from "../../../../../components/ui/Dialogs/AlertDialog";
 import { OutlinedRedButton } from "../../../../../components/ui/Buttons/RedButtons";
+import NumberFormatCustom from "../../../../../components/ui/NumberFormatCustom";
 
 const innerStyle = makeStyles(theme => ({
   buttonContainer: {
@@ -40,7 +41,7 @@ const innerStyle = makeStyles(theme => ({
 }));
 
 function MyFiltersForm({
-  // handleSubmit,
+  handleSubmitFilter,
   classes,
   intl,
   enumParams,
@@ -112,7 +113,7 @@ function MyFiltersForm({
                 {intl.formatMessage({ id: "FILTER.FORM.BUTTON.RESET" })}
               </Button>
             ) : (
-              <ButtonWithLoader onPress={handleSubmit}>
+              <ButtonWithLoader onPress={() => handleSubmitFilter({ ...values, id: filter.id })}>
                 {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
               </ButtonWithLoader>
             )}
@@ -162,12 +163,14 @@ function MyFiltersForm({
               onBlur={handleBlur}
               onChange={handleChange("max_full_price")}
               InputProps={{
+                inputComponent: NumberFormatCustom,
                 endAdornment: (
                   <IconButton onClick={() => clearAction("max_full_price")}>
                     <CloseIcon />
                   </IconButton>
                 ),
               }}
+              autoComplete="off"
             />
           </div>
           <div className={classes.textFieldContainer}>
@@ -183,12 +186,14 @@ function MyFiltersForm({
               onBlur={handleBlur}
               onChange={handleChange("min_full_price")}
               InputProps={{
+                inputComponent: NumberFormatCustom,
                 endAdornment: (
                   <IconButton onClick={() => clearAction("min_full_price")}>
                     <CloseIcon />
                   </IconButton>
                 ),
               }}
+              autoComplete="off"
             />
           </div>
           <div className={classes.textFieldContainer}>
@@ -204,12 +209,14 @@ function MyFiltersForm({
               onBlur={handleBlur}
               onChange={handleChange("max_destination")}
               InputProps={{
+                inputComponent: NumberFormatCustom,
                 endAdornment: (
                   <IconButton onClick={() => clearAction("max_destination")}>
                     <CloseIcon />
                   </IconButton>
                 ),
               }}
+              autoComplete="off"
             />
           </div>
           {numberParams &&
