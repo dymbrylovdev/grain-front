@@ -121,7 +121,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case SET_CURRENT_PURCHASE_FILTER: {
-        console.log("SET_CURRENT_PURCHASE_FILTER");
+        // console.log("SET_CURRENT_PURCHASE_FILTER");
         return {
           ...state,
           currentPurchaseFilters: {

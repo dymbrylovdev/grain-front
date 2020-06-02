@@ -69,6 +69,7 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   me,
   activeStep,
+  prompterRunning,
   setActiveStep,
   currentSaleFilters,
   setCurrentSaleFilter,
@@ -428,7 +429,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 {filterName}
               </div>
               <IconButton
-                className={activeStep === 2 ? innerClasses.iconButton : ""}
+                className={!!prompterRunning && activeStep === 2 ? innerClasses.iconButton : ""}
                 onClick={() => {
                   setFilterModalOpen(true);
                 }}
@@ -602,6 +603,7 @@ const connector = connect(
   (state: IAppState) => ({
     me: state.auth.user,
     activeStep: state.prompter.activeStep,
+    prompterRunning: state.prompter.running,
     currentSaleFilters: state.myFilters.currentSaleFilters,
     currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
 

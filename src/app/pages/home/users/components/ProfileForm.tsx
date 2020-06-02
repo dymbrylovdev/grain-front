@@ -139,10 +139,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           return this.parent.password === value;
         }
       ),
-      // Yup.string().oneOf(
-      //   [Yup.ref("password"), null],
-      //   intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" })
-      // ),
     }),
   });
 
@@ -165,9 +161,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   useEffect(() => {
     if (!values.fio) setLocTabPulse(false);
-    if (!!values.fio && !!values.phone) setLocTabPulse(true);
+    if (!!values.fio && !!values.phone && me?.points.length === 0) setLocTabPulse(true);
     if (!!values.fio && !values.phone) setLocTabPulse(false);
-  }, [setLocTabPulse, values.fio, values.phone]);
+  }, [me, setLocTabPulse, values.fio, values.phone]);
 
   const { enqueueSnackbar } = useSnackbar();
 
