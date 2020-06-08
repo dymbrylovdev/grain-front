@@ -463,6 +463,19 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
+      <div>
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+          <Skeleton width={135} height={37.5} animation="wave" />
+        ) : (
+          <FormControlLabel
+            control={<Checkbox checked={values.use_vat} onChange={handleChange} />}
+            label={intl.formatMessage({ id: "USER.EDIT_FORM.USE_VAT" })}
+            name="use_vat"
+            disabled={editMode === "view"}
+          />
+        )}
+      </div>
+
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
@@ -565,19 +578,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           )}
         </div>
       )}
-
-      <div>
-        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-          <Skeleton width={135} height={37.5} animation="wave" />
-        ) : (
-          <FormControlLabel
-            control={<Checkbox checked={values.use_vat} onChange={handleChange} />}
-            label={intl.formatMessage({ id: "USER.EDIT_FORM.USE_VAT" })}
-            name="use_vat"
-            disabled={editMode === "view"}
-          />
-        )}
-      </div>
 
       {editMode !== "view" && (
         <div className={classes.bottomButtonsContainer}>
