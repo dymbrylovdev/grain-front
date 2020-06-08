@@ -38,7 +38,17 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
       <Switch>
         {
           /* Redirect from root URL to /dashboard. */
-          <Redirect exact from="/" to="/user/profile" />
+          <Redirect
+            exact
+            from="/"
+            to={
+              !user.fio || !user.phone || user.points.length < 1
+                ? "/user/profile"
+                : user.is_buyer
+                ? "purchase/my-bids"
+                : "sale/my-bids"
+            }
+          />
         }
         <Route path="/userDocs/legacy" component={UserDocPage} />
         <Route path="/user/view/:id" exact component={UserEditPage} />
