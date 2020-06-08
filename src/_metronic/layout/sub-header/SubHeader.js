@@ -11,6 +11,7 @@ import * as builder from "../../ducks/builder";
 // import { QuickActions } from './components/QuickActions';
 // import { ReactComponent as SortNum1Icon } from '../../../_metronic/layout/assets/layout-svg-icons/SortNum1.svg';
 import BreadCrumbs from "./components/BreadCrumbs";
+import { Button } from "@material-ui/core";
 
 class SubHeader extends React.Component {
   render() {
@@ -19,6 +20,7 @@ class SubHeader extends React.Component {
       subheaderContainerCssClasses,
       subheaderMobileToggle,
       me,
+      history,
     } = this.props;
     return (
       <div id="kt_subheader" className={`kt-subheader ${subheaderCssClasses} kt-grid__item`}>
@@ -52,8 +54,17 @@ class SubHeader extends React.Component {
           </div>
 
           <div className="kt-subheader__toolbar">
-            <div className="kt-subheader__wrapper">
-              <div>логин: {me.login}</div>
+            {me && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => history.push(`/bid/create/${me.is_buyer ? "purchase" : "sale"}/0`)}
+              >
+                Добавить объявление
+              </Button>
+            )}
+            <div className="kt-subheader__wrapper" style={{ marginLeft: 16 }}>
+              <div>email: {me.login}</div>
               <div>
                 роль: {me.is_admin ? "Администратор" : me.is_vendor ? "Продавец" : "Покупатель"}
               </div>
