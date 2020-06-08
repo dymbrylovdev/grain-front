@@ -180,6 +180,10 @@ const UserEditPage: React.FC<TPropsFromRedux &
     }
   }, [me, prompterRunning, runPrompter]);
 
+  useEffect(() => {
+    document.getElementById("kt_aside_close_btn")?.click();
+  });
+
   if (errorMe || errorUser || funnelStatesError) return <ErrorPage />;
 
   return (

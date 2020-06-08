@@ -49,6 +49,11 @@ function CompaniesListPage({ intl, getCompanies }) {
     handleChangePage,
   };
 
+  useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
+    document.getElementById("kt_aside_close_btn")?.click();
+  });
+
   if (loading) return <Preloader />;
   if (errors.all) return <LoadError handleClick={() => getCompaniessAction(page)} />;
   return (

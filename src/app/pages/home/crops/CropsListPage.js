@@ -43,6 +43,11 @@ function CropsListPage({ setMenuConfig, getCrops, match }) {
     getCropsAction();
   }, [getCropsAction]);
 
+  useEffect(() => {
+    // eslint-disable-next-line no-unused-expressions
+    document.getElementById("kt_aside_close_btn")?.click();
+  });
+
   if (loading) return <Preloader />;
 
   if (errors.crops) return <LoadError handleClick={() => getCropsAction()} />;

@@ -130,6 +130,10 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
     fetch(salePurchaseMode);
   }, [fetch, me, salePurchaseMode]);
 
+  useEffect(() => {
+    document.getElementById("kt_aside_close_btn")?.click();
+  });
+
   if (error) return <ErrorPage />;
 
   return (

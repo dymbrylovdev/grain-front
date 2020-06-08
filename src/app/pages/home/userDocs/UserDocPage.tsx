@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { Formik, Form } from "formik";
 import { EditorState } from "draft-js";
@@ -69,6 +69,10 @@ function UserDocPage() {
         .catch(handleUnLoading);
     }
   };
+
+  useEffect(() => {
+    document.getElementById("kt_aside_close_btn")?.click();
+  });
 
   return (
     <>
