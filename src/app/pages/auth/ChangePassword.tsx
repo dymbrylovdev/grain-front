@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik } from "formik";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { TextField } from "@material-ui/core";
+import { TextField, IconButton } from "@material-ui/core";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 
 import { actions as authActions } from "../../store/ducks/auth.duck";
 import { IAppState } from "../../store/rootDuck";
@@ -25,6 +27,7 @@ const ChangePassword: React.FC<RouteComponentProps<{ code: string }> &
   newPasswordError,
 }) => {
   const history = useHistory();
+  const [visiblePass, setVisiblePass] = useState(true);
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
@@ -55,23 +58,22 @@ const ChangePassword: React.FC<RouteComponentProps<{ code: string }> &
             password: Yup.string().required(
               intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
             ),
-            password2: Yup.string()
-              .oneOf(
-                [Yup.ref("password"), null],
-                intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" })
-              )
-              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+            // password2: Yup.string()
+            //   .oneOf(
+            //     [Yup.ref("password"), null],
+            //     intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" })
+            //   )
+            //   .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
           })}
           onSubmit={values => {
-            newPasswordRequest({ password: values.password, password2: values.password2, code });
+            newPasswordRequest({ password: values.password, password2: values.password, code });
           }}
         >
           {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
             <form onSubmit={handleSubmit} className="kt-form">
               <div className="form-group">
                 <TextField
-                  autoComplete="off"
-                  type="password"
+                  type={!visiblePass ? "password" : "text"}
                   margin="normal"
                   label="Новый пароль"
                   className="kt-width-full"
@@ -81,10 +83,22 @@ const ChangePassword: React.FC<RouteComponentProps<{ code: string }> &
                   value={values.password}
                   helperText={touched.password && errors.password}
                   error={Boolean(touched.password && errors.password)}
+                  InputProps={{
+                    endAdornment: !visiblePass ? (
+                      <IconButton onClick={() => setVisiblePass(true)}>
+                        <VisibilityIcon />
+                      </IconButton>
+                    ) : (
+                      <IconButton onClick={() => setVisiblePass(false)}>
+                        <VisibilityOffIcon />
+                      </IconButton>
+                    ),
+                  }}
+                  autoComplete="off"
                 />
               </div>
 
-              <div className="form-group">
+              {/* <div className="form-group">
                 <TextField
                   autoComplete="off"
                   type="password"
@@ -98,7 +112,7 @@ const ChangePassword: React.FC<RouteComponentProps<{ code: string }> &
                   helperText={touched.password2 && errors.password2}
                   error={Boolean(touched.password2 && errors.password2)}
                 />
-              </div>
+              </div> */}
 
               <div className="kt-login__actions">
                 <ButtonWithLoader

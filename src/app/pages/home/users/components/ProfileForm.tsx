@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { WrappedComponentProps, injectIntl } from "react-intl";
-import { TextField, MenuItem, Theme, Button, FormControlLabel, Checkbox } from "@material-ui/core";
+import {
+  TextField,
+  MenuItem,
+  Theme,
+  Button,
+  FormControlLabel,
+  Checkbox,
+  IconButton,
+} from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import isEqual from "lodash.isequal";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 
 import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { actions as authActions } from "../../../../store/ducks/auth.duck";
@@ -102,6 +112,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const history = useHistory();
 
   const [oldValues, setOldValues] = useState<any | undefined>(undefined);
+  const [visiblePass, setVisiblePass] = useState(true);
 
   const { values, handleSubmit, handleChange, handleBlur, resetForm, touched, errors } = useFormik({
     initialValues: getInitialValues(undefined),
@@ -132,13 +143,13 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       login: Yup.string()
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
         .trim(),
-      repeatPassword: Yup.string().test(
-        "passwords-match",
-        intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
-        function(value) {
-          return this.parent.password === value;
-        }
-      ),
+      // repeatPassword: Yup.string().test(
+      //   "passwords-match",
+      //   intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
+      //   function(value) {
+      //     return this.parent.password === value;
+      //   }
+      // ),
     }),
   });
 
@@ -301,7 +312,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             error={Boolean(touched.role && errors.role)}
             disabled={editMode !== "create"}
           >
-            {/* <MenuItem value="EMPTY">{intl.formatMessage({ id: "ALL.SELECTS.EMPTY" })}</MenuItem> */}
             {roles.map((item, i) => (
               <MenuItem key={i} value={item.id}>
                 {item.value}
@@ -330,7 +340,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               error={Boolean(touched.status && errors.status)}
               disabled={editMode === "view"}
             >
-              {/* <MenuItem value="EMPTY">{intl.formatMessage({ id: "ALL.SELECTS.EMPTY" })}</MenuItem> */}
               {statuses.map(option => (
                 <MenuItem key={option} value={option}>
                   {option}
@@ -410,7 +419,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             )}
           </>
         )}
-      <div className={classes.textFieldContainer}>
+      {/* <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
@@ -428,6 +437,30 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             onChange={handleChange}
             helperText={touched.login && errors.login}
             error={Boolean(touched.login && errors.login)}
+            autoComplete="off"
+            disabled={editMode === "view"}
+          />
+        )}
+      </div> */}
+
+      <div className={classes.textFieldContainer}>
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            type="text"
+            label={intl.formatMessage({
+              id: "PROFILE.INPUT.EMAIL",
+            })}
+            margin="normal"
+            className={classes.textField}
+            name="email"
+            value={values.email}
+            variant="outlined"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            helperText={touched.email && errors.email}
+            error={Boolean(touched.email && errors.email)}
             autoComplete="off"
             disabled={editMode === "view"}
           />
@@ -481,30 +514,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
-            type="text"
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.EMAIL",
-            })}
-            margin="normal"
-            className={classes.textField}
-            name="email"
-            value={values.email}
-            variant="outlined"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            helperText={touched.email && errors.email}
-            error={Boolean(touched.email && errors.email)}
-            autoComplete="off"
-            disabled={editMode === "view"}
-          />
-        )}
-      </div>
-
-      <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-          <Skeleton width="100%" height={70} animation="wave" />
-        ) : (
-          <TextField
             type="tel"
             label={intl.formatMessage({
               id: "PROFILE.INPUT.PHONE",
@@ -542,7 +551,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             <Skeleton width="100%" height={70} animation="wave" />
           ) : (
             <TextField
-              type="password"
+              type={!visiblePass ? "password" : "text"}
               label={intl.formatMessage({
                 id: "PROFILE.INPUT.PASSWORD",
               })}
@@ -554,11 +563,22 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               onChange={handleChange}
               helperText={touched.password && errors.password}
               error={Boolean(touched.password && errors.password)}
-              autoComplete="new-password"
+              InputProps={{
+                endAdornment: !visiblePass ? (
+                  <IconButton onClick={() => setVisiblePass(true)}>
+                    <VisibilityIcon />
+                  </IconButton>
+                ) : (
+                  <IconButton onClick={() => setVisiblePass(false)}>
+                    <VisibilityOffIcon />
+                  </IconButton>
+                ),
+              }}
+              autoComplete="off"
             />
           )}
 
-          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+          {/* {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
             <Skeleton width="100%" height={70} animation="wave" />
           ) : (
             <TextField
@@ -575,7 +595,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               helperText={touched.repeatPassword && errors.repeatPassword}
               error={Boolean(touched.repeatPassword && errors.repeatPassword)}
             />
-          )}
+          )} */}
         </div>
       )}
 

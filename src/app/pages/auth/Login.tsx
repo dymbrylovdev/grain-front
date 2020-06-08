@@ -66,19 +66,19 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
           <Formik
             initialValues={{
-              login: "",
+              email: "",
               password: "",
             }}
             validationSchema={Yup.object().shape({
-              login: Yup.string().required(
-                intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })
-              ),
+              email: Yup.string()
+                .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
+                .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
               password: Yup.string().required(
                 intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })
               ),
             })}
             onSubmit={values => {
-              login({ login: values.login, password: values.password });
+              login({ login: values.email, password: values.password });
             }}
           >
             {({
@@ -101,16 +101,16 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <TextField
                     type="email"
                     label={intl.formatMessage({
-                      id: "AUTH.INPUT.LOGIN",
+                      id: "AUTH.INPUT.EMAIL",
                     })}
                     margin="normal"
                     className="kt-width-full"
-                    name="login"
+                    name="email"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.login}
-                    helperText={touched.login && errors.login}
-                    error={Boolean(touched.login && errors.login)}
+                    value={values.email}
+                    helperText={touched.email && errors.email}
+                    error={Boolean(touched.email && errors.email)}
                   />
                 </div>
 

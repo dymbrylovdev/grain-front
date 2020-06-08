@@ -68,15 +68,12 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               email: Yup.string()
                 .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
                 .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-              login: Yup.string().required(
-                intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
-              ),
             })}
             onSubmit={values => {
               register({
                 email: values.email,
                 roles: [values.role as TRole],
-                login: values.login,
+                login: values.email,
               });
             }}
           >
@@ -101,20 +98,6 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     })}
                   />
                 </RadioGroup>
-
-                <div className="form-group mb-0">
-                  <TextField
-                    margin="normal"
-                    label={intl.formatMessage({ id: "AUTH.INPUT.LOGIN" })}
-                    className="kt-width-full"
-                    name="login"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.login}
-                    helperText={touched.login && errors.login}
-                    error={Boolean(touched.login && errors.login)}
-                  />
-                </div>
 
                 <div className="form-group mb-0">
                   <TextField
