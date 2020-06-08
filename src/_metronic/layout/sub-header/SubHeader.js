@@ -54,16 +54,7 @@ class SubHeader extends React.Component {
           </div>
 
           <div className="kt-subheader__toolbar">
-            {me && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => history.push(`/bid/create/${me.is_buyer ? "purchase" : "sale"}/0`)}
-              >
-                Добавить объявление
-              </Button>
-            )}
-            <div className="kt-subheader__wrapper" style={{ marginLeft: 16 }}>
+            <div className="kt-subheader__wrapper" style={{ marginRight: 16 }}>
               <div>email: {me.login}</div>
               <div>
                 роль: {me.is_admin ? "Администратор" : me.is_vendor ? "Продавец" : "Покупатель"}
@@ -77,6 +68,15 @@ class SubHeader extends React.Component {
                 <SaveIcon className="kt-svg-icon kt-svg-icon--primary kt-svg-icon--md" />
               </IconButton> */}
             </div>
+            {me && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => history.push(`/bid/create/${me.is_buyer ? "purchase" : "sale"}/0`)}
+              >
+                Добавить объявление
+              </Button>
+            )}
           </div>
         </div>
       </div>
