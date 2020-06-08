@@ -203,16 +203,24 @@ const UserEditPage: React.FC<TPropsFromRedux &
               centered
             >
               <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
-              <Tab
-                classes={
-                  prompterRunning && prompterStep === 0 && isLocTabPulse
-                    ? { root: innerClasses.pulseRoot }
-                    : {}
-                }
-                label={intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })}
-                {...a11yProps(1)}
-              />
-              <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })} {...a11yProps(2)} />
+
+              {editMode !== "create" && (
+                <Tab
+                  classes={
+                    prompterRunning && prompterStep === 0 && isLocTabPulse
+                      ? { root: innerClasses.pulseRoot }
+                      : {}
+                  }
+                  label={intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })}
+                  {...a11yProps(1)}
+                />
+              )}
+              {editMode !== "create" && (
+                <Tab
+                  label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })}
+                  {...a11yProps(2)}
+                />
+              )}
             </Tabs>
           </AppBar>
           <Divider />
