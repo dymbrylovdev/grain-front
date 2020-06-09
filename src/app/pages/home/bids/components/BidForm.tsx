@@ -282,6 +282,8 @@ const BidForm: React.FC<IProps> = ({
     if (!!cropId) fetchCropParams(cropId);
   }, [bid, cropId, fetchCropParams]);
 
+  console.log(values);
+
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
 
   return (
@@ -513,8 +515,15 @@ const BidForm: React.FC<IProps> = ({
       ) : loading ? (
         <Skeleton width="100%" height={202} animation="wave" />
       ) : (
-        <div className={classes.box}>
-          <p>{intl.formatMessage({ id: "BID.LOCATION.ABOUT" })}</p>
+        <div
+          className={classes.box}
+          style={!!values.location.text ? { borderColor: "#0abb87" } : {}}
+        >
+          {!values.location.text ? (
+            <p>{intl.formatMessage({ id: "BID.LOCATION.ABOUT" })}</p>
+          ) : (
+            <p style={{ color: "#0abb87" }}>{intl.formatMessage({ id: "BID.LOCATION.DONE" })}</p>
+          )}
           {(editMode === "edit" && !!user && user.points.length > 0) ||
           (editMode !== "edit" && !vendorId && !!me && me.points.length > 0) ||
           (editMode !== "edit" && !!vendorId && !!user && user.points.length > 0) ? (

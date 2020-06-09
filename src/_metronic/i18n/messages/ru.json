@@ -229,6 +229,7 @@
   "BID.LOCATION.NO_TEXT": "Ваше местоположение не указано.",
   "BID.LOCATION.BUTTON": "Изменить точки",
   "BID.LOCATION.ABOUT": "Введите вручную или выберите из уже имеющихся точку отгрузки.",
+  "BID.LOCATION.DONE": "Точка отгрузки указана.",
   "BID.PRICES.BUTTON": "Цены по точкам",
   "BID.STATUS.CREATE_SUCCESS": "Объявление успешно добавлено",
   "BID.STATUS.EDIT_SUCCESS": "Объявление успешно сохранено",
