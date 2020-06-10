@@ -133,10 +133,6 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetchFunnelStates();
   }, [fetchFunnelStates]);
 
-  useEffect(() => {
-    document.getElementById("kt_aside_close_btn")?.click();
-  });
-
   if (error || funnelStatesError) return <ErrorPage />;
 
   return (

@@ -170,10 +170,6 @@ const BidEditPage: React.FC<TPropsFromRedux &
     setActiveStep(4);
   }, [setActiveStep]);
 
-  useEffect(() => {
-    document.getElementById("kt_aside_close_btn")?.click();
-  });
-
   let title = null;
   if (editMode === "create" && !vendorId) title = intl.formatMessage({ id: "BID.TITLE.CREATE" });
   if (editMode === "create" && !!vendorId && !!user && user.id === +vendorId)

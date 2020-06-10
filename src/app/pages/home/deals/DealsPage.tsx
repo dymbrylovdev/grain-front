@@ -129,10 +129,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetchDealsFilters();
   }, [fetchDealsFilters]);
 
-  useEffect(() => {
-    document.getElementById("kt_aside_close_btn")?.click();
-  });
-
   if (error || filtersError || cropsError || allCropParamsError) return <ErrorPage />;
 
   return (

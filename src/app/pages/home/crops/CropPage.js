@@ -99,11 +99,6 @@ function CropPage({
     getCropParamsAction();
   }, [getCropParamsAction]);
 
-  useEffect(() => {
-    // eslint-disable-next-line no-unused-expressions
-    document.getElementById("kt_aside_close_btn")?.click();
-  });
-
   return (
     <CropForm
       classes={classes}

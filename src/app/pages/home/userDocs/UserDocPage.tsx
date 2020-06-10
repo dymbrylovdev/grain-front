@@ -70,10 +70,6 @@ function UserDocPage() {
     }
   };
 
-  useEffect(() => {
-    document.getElementById("kt_aside_close_btn")?.click();
-  });
-
   return (
     <>
       <Formik initialValues={{}} onSubmit={handleSubmit}>

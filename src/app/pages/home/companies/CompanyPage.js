@@ -93,11 +93,6 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
     companyAction();
   }, [companyAction, companyId]);
 
-  useEffect(() => {
-    // eslint-disable-next-line no-unused-expressions
-    document.getElementById("kt_aside_close_btn")?.click();
-  });
-
   const title = companyId
     ? intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })
     : intl.formatMessage({ id: "COMPANY.CREATE.TITLE" });
