@@ -173,9 +173,16 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   useEffect(() => {
     if (!values.fio) setLocTabPulse(false);
-    if (!!values.fio && !!values.phone && me?.points.length === 0) setLocTabPulse(true);
+    if (
+      prompterRunning &&
+      prompterStep === 0 &&
+      !!values.fio &&
+      !!values.phone &&
+      me?.points.length === 0
+    )
+      setLocTabPulse(true);
     if (!!values.fio && !values.phone) setLocTabPulse(false);
-  }, [me, setLocTabPulse, values.fio, values.phone]);
+  }, [me, prompterRunning, prompterStep, setLocTabPulse, values.fio, values.phone]);
 
   const { enqueueSnackbar } = useSnackbar();
 
