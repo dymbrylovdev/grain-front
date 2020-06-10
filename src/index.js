@@ -17,6 +17,8 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "./_metronic/_assets/plugins/line-awesome/css/line-awesome.css";
 import "./_metronic/_assets/plugins/flaticon/flaticon.css";
 import "./_metronic/_assets/plugins/flaticon2/flaticon.css";
+
+import * as Sentry from "@sentry/browser";
 /**
  * Base URL of the website.
  *
@@ -38,11 +40,9 @@ const { PUBLIC_URL } = process.env;
  */
 setupAxios(axios, store);
 
+Sentry.init({ dsn: "https://79385bc9032e4d4a8d85a414cef052c8@o405508.ingest.sentry.io/5271260" });
+
 ReactDOM.render(
-  <App
-    store={store}
-    persistor={persistor}
-    basename={PUBLIC_URL}
-  />,
+  <App store={store} persistor={persistor} basename={PUBLIC_URL} />,
   document.getElementById("root")
 );

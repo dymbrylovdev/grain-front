@@ -599,6 +599,20 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
+      {/* <div className={classes.button}>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => {
+            throw Error("Ошибка ошибка");
+            console.log(Error);
+          }}
+          disabled={meLoading || userLoading || funnelStatesLoading}
+        >
+          Error
+        </Button>
+      </div> */}
+
       {editMode !== "view" && (
         <div className={classes.bottomButtonsContainer}>
           {editMode !== "profile" && (
