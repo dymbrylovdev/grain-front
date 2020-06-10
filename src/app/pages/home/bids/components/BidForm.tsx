@@ -301,6 +301,29 @@ const BidForm: React.FC<IProps> = ({
           </Button>
         </div>
       </div>
+
+      {loading ? (
+        <Skeleton width="100%" height={127} animation="wave" />
+      ) : (
+        bid?.vendor && (
+          <Link
+            to={
+              me?.id === (!!bid && bid.vendor && bid.vendor.id)
+                ? "/user/profile"
+                : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
+            }
+          >
+            <div className={innerClasses.authorText}>
+              {`${
+                bid.type === "sale"
+                  ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
+                  : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
+              }: ${bid.vendor.fio || bid.vendor.login}`}
+            </div>
+          </Link>
+        )
+      )}
+
       {loading ? (
         <Skeleton width="100%" height={70} animation="wave" />
       ) : (
@@ -425,6 +448,7 @@ const BidForm: React.FC<IProps> = ({
       )}
 
       {editMode === "view" &&
+        me?.id !== bid?.vendor.id &&
         (loading ? (
           <Skeleton width="100%" height={225} animation="wave" />
         ) : (
@@ -755,25 +779,6 @@ const BidForm: React.FC<IProps> = ({
           multiline
           disabled={editMode === "view"}
         />
-      )}
-
-      {loading ? (
-        <Skeleton width="100%" height={127} animation="wave" />
-      ) : (
-        bid?.vendor && (
-          <Link
-            to={
-              me?.id === (!!bid && bid.vendor && bid.vendor.id)
-                ? "/user/profile"
-                : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
-            }
-          >
-            <div className={innerClasses.authorText}>
-              {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.fio ||
-                bid.vendor.login}`}
-            </div>
-          </Link>
-        )
       )}
 
       <div className={classes.bottomButtonsContainer}>

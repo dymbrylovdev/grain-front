@@ -18,6 +18,7 @@ import { useSnackbar } from "notistack";
 import isEqual from "lodash.isequal";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { actions as authActions } from "../../../../store/ducks/auth.duck";
@@ -508,6 +509,19 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           />
         )}
       </div>
+
+      {prompterRunning && prompterStep === 0 && values.use_vat && (
+        <div>
+          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+            <Skeleton width="100%" height={37.5} animation="wave" />
+          ) : (
+            <div style={{ color: "#fd397a", marginBottom: 16 }}>
+              <ReportProblemIcon color="error" />{" "}
+              <b>{intl.formatMessage({ id: "USER.EDIT_FORM.ATTENTION" })}</b>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (

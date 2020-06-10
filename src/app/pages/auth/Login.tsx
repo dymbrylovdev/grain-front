@@ -132,16 +132,20 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </div>
 
                 <div className="kt-login__actions">
-                  <Link to="/auth/forgot-password" className="kt-link kt-login__link-forgot">
-                    <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
-                  </Link>
-                  <ButtonWithLoader
-                    onPress={handleSubmit}
-                    disabled={fetchLoading || loginLoading}
-                    loading={fetchLoading || loginLoading}
-                  >
-                    <FormattedMessage id="AUTH.LOGIN.BUTTON" />
-                  </ButtonWithLoader>
+                  <div>
+                    <ButtonWithLoader
+                      onPress={handleSubmit}
+                      disabled={fetchLoading || loginLoading}
+                      loading={fetchLoading || loginLoading}
+                    >
+                      <FormattedMessage id="AUTH.LOGIN.BUTTON" />
+                    </ButtonWithLoader>
+                    <div style={{ marginTop: 16 }}>
+                      <Link to="/auth/forgot-password" className="kt-link kt-login__link-forgot">
+                        <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </form>
             )}

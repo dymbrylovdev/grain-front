@@ -212,116 +212,126 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           )}
         </div>
       ) : (
-        locations.map(item => (
-          <div key={item.id} className={innerClasses.group}>
-            <div className={classes.textFieldContainer}>
-              {loadingMe || loadingUser ? (
-                <Skeleton width="70%" height={30} animation="wave" />
-              ) : editNameId === item.id ? (
-                <>
-                  <TextField
-                    type="text"
-                    label={intl.formatMessage({
-                      id: "LOCATIONS.INPUT.NAME",
-                    })}
-                    margin="normal"
-                    className={classes.textField}
-                    value={values.name}
-                    name="name"
-                    variant="outlined"
-                    onChange={handleChange}
-                    helperText={touched.name && errors.name}
-                    error={Boolean(touched.name && errors.name)}
-                    autoFocus
-                  />
-                  <div className={innerClasses.button}>
-                    <ButtonWithLoader
-                      disabled={editLoading}
-                      loading={editLoading}
-                      onPress={() => {
-                        setEditNameId(item.id);
-                        handleSubmit();
-                      }}
-                    >
-                      {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
-                    </ButtonWithLoader>
-                  </div>
-                  <Button variant="outlined" color="primary" onClick={() => setEditNameId(-1)}>
-                    {intl.formatMessage({ id: "ALL.BUTTONS.CANCEL" })}
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <div className={innerClasses.name}>{item.name}</div>
-                  {editMode !== "view" && (
-                    <div>
-                      <IconButton
-                        color="primary"
-                        size={"medium"}
-                        onClick={() => {
-                          setEditNameId(item.id);
-                          resetForm({ values: { name: item.name } });
-                        }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-            <div className={classes.textFieldContainer}>
-              {loadingMe || loadingUser ? (
-                <Skeleton width="100%" height={70} animation="wave" />
-              ) : (
-                <>
-                  <div className={classes.textField}>
-                    <AutocompleteLocations
-                      id={item.id.toString()}
-                      options={googleLocations || []}
-                      loading={false}
-                      inputValue={item}
+        <>
+          {locations.map(item => (
+            <div key={item.id} className={innerClasses.group}>
+              <div className={classes.textFieldContainer}>
+                {loadingMe || loadingUser ? (
+                  <Skeleton width="70%" height={30} animation="wave" />
+                ) : editNameId === item.id ? (
+                  <>
+                    <TextField
+                      type="text"
                       label={intl.formatMessage({
-                        id: "PROFILE.INPUT.LOCATION",
+                        id: "LOCATIONS.INPUT.NAME",
                       })}
-                      editable={!(item && item.text)}
-                      inputClassName={classes.textField}
-                      inputError={Boolean(errorGoogleLocations)}
-                      inputHelperText={errorGoogleLocations}
-                      fetchLocations={fetchGoogleLocations}
-                      clearLocations={clearGoogleLocations}
-                      setSelectedLocation={(location: ILocationToRequest) => {
-                        if (location.text !== "") {
-                          delete location.name;
-                          location.user_id = userId || me?.id;
-                          edit({ id: item.id, data: location });
-                        }
-                      }}
-                      disable={editMode === "view"}
-                      prompterRunning={me?.points.length === 0 ? prompterRunning : false}
-                      prompterStep={prompterStep}
+                      margin="normal"
+                      className={classes.textField}
+                      value={values.name}
+                      name="name"
+                      variant="outlined"
+                      onChange={handleChange}
+                      helperText={touched.name && errors.name}
+                      error={Boolean(touched.name && errors.name)}
+                      autoFocus
                     />
-                  </div>
-                  {editMode !== "view" && (
-                    <div>
-                      <IconButton
-                        size={"medium"}
-                        onClick={() => {
-                          setDeleteLocationId(item.id);
-                          setAlertOpen(true);
+                    <div className={innerClasses.button}>
+                      <ButtonWithLoader
+                        disabled={editLoading}
+                        loading={editLoading}
+                        onPress={() => {
+                          setEditNameId(item.id);
+                          handleSubmit();
                         }}
-                        color="secondary"
                       >
-                        <DeleteIcon />
-                      </IconButton>
+                        {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+                      </ButtonWithLoader>
                     </div>
-                  )}
-                </>
-              )}
+                    <Button variant="outlined" color="primary" onClick={() => setEditNameId(-1)}>
+                      {intl.formatMessage({ id: "ALL.BUTTONS.CANCEL" })}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div className={innerClasses.name}>{item.name}</div>
+                    {editMode !== "view" && (
+                      <div>
+                        <IconButton
+                          color="primary"
+                          size={"medium"}
+                          onClick={() => {
+                            setEditNameId(item.id);
+                            resetForm({ values: { name: item.name } });
+                          }}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+              <div className={classes.textFieldContainer}>
+                {loadingMe || loadingUser ? (
+                  <Skeleton width="100%" height={70} animation="wave" />
+                ) : (
+                  <>
+                    <div className={classes.textField}>
+                      <AutocompleteLocations
+                        id={item.id.toString()}
+                        options={googleLocations || []}
+                        loading={false}
+                        inputValue={item}
+                        label={intl.formatMessage({
+                          id: "PROFILE.INPUT.LOCATION",
+                        })}
+                        editable={!(item && item.text)}
+                        inputClassName={classes.textField}
+                        inputError={Boolean(errorGoogleLocations)}
+                        inputHelperText={errorGoogleLocations}
+                        fetchLocations={fetchGoogleLocations}
+                        clearLocations={clearGoogleLocations}
+                        setSelectedLocation={(location: ILocationToRequest) => {
+                          if (location.text !== "") {
+                            delete location.name;
+                            location.user_id = userId || me?.id;
+                            edit({ id: item.id, data: location });
+                          }
+                        }}
+                        disable={editMode === "view"}
+                        prompterRunning={me?.points.length === 0 ? prompterRunning : false}
+                        prompterStep={prompterStep}
+                      />
+                    </div>
+                    {editMode !== "view" && (
+                      <div>
+                        <IconButton
+                          size={"medium"}
+                          onClick={() => {
+                            setDeleteLocationId(item.id);
+                            setAlertOpen(true);
+                          }}
+                          color="secondary"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        ))
+          ))}
+          {loadingMe || loadingUser ? (
+            <p>
+              <Skeleton width="100%" height={19} animation="wave" />
+            </p>
+          ) : (
+            <p>{intl.formatMessage({ id: "LOCATIONS.MORE" })}</p>
+          )}
+        </>
       )}
+
       {editMode !== "view" && (
         <div className={innerClasses.group}>
           <div className={classes.textFieldContainer}>
