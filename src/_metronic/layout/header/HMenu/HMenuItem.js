@@ -57,8 +57,7 @@ export default class HMenuItem extends React.Component {
 
     if (item.submenu && item.submenu.columns) {
       for (const _column of item.submenu.columns) {
-        for (const _subItem of _column.items)
-        {
+        for (const _subItem of _column.items) {
           const isActive = this.isMenuItemIsActive(_subItem);
           if (isActive) {
             return true;
@@ -162,14 +161,10 @@ export default class HMenuItem extends React.Component {
         {item.submenu && (
           <a
             className={`kt-menu__link ${clsx({
-              "kt-menu__toggle": item.root || item.submenu
+              "kt-menu__toggle": item.root || item.submenu,
             })}`}
           >
-            <MenuItemInner
-              item={item}
-              parentItem={parentItem}
-              currentUrl={currentUrl}
-            />
+            <MenuItemInner item={item} parentItem={parentItem} currentUrl={currentUrl} />
             {rootArrowEnabled && (
               <>
                 {item.submenu && item.root && (
@@ -193,11 +188,7 @@ export default class HMenuItem extends React.Component {
         {/* if item hasn't submenu */}
         {!item.submenu && (
           <Link to={`/${item.page || ""}`} className="kt-menu__link">
-            <MenuItemInner
-              item={item}
-              parentItem={parentItem}
-              currentUrl={currentUrl}
-            />
+            <MenuItemInner item={item} parentItem={parentItem} currentUrl={currentUrl} />
           </Link>
         )}
 
@@ -209,7 +200,7 @@ export default class HMenuItem extends React.Component {
           >
             <span
               className={`kt-menu__arrow ${clsx({
-                "kt-menu__arrow--adjust": item.root
+                "kt-menu__arrow--adjust": item.root,
               })}`}
             />
 
@@ -218,11 +209,7 @@ export default class HMenuItem extends React.Component {
                 {item.submenu.map((child, index) => {
                   return (
                     <React.Fragment key={`hmenuListInner${index}`}>
-                      <HMenuItem
-                        item={child}
-                        parentItem={item}
-                        currentUrl={currentUrl}
-                      />
+                      <HMenuItem item={child} parentItem={item} currentUrl={currentUrl} />
                     </React.Fragment>
                   );
                 })}
@@ -234,35 +221,26 @@ export default class HMenuItem extends React.Component {
                 {item.submenu.items.map((child, index) => {
                   return (
                     <React.Fragment key={`hmenuListInner2${index}`}>
-                      <HMenuItem
-                        item={child}
-                        parentItem={item}
-                        currentUrl={currentUrl}
-                      />
+                      <HMenuItem item={child} parentItem={item} currentUrl={currentUrl} />
                     </React.Fragment>
                   );
                 })}
               </ul>
             )}
 
-            {item.submenu.type === "mega" &&
-              (item.submenu.columns && item.submenu.columns.length) && (
-                <div className="kt-menu__subnav">
-                  <ul className="kt-menu__content">
-                    {item.submenu.columns.map((child, index) => {
-                      return (
-                        <React.Fragment key={`hmenuColumnInner${index}`}>
-                          <HMenuColumn
-                            item={child}
-                            parentItem={item}
-                            currentUrl={currentUrl}
-                          />
-                        </React.Fragment>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
+            {item.submenu.type === "mega" && item.submenu.columns && item.submenu.columns.length && (
+              <div className="kt-menu__subnav">
+                <ul className="kt-menu__content">
+                  {item.submenu.columns.map((child, index) => {
+                    return (
+                      <React.Fragment key={`hmenuColumnInner${index}`}>
+                        <HMenuColumn item={child} parentItem={item} currentUrl={currentUrl} />
+                      </React.Fragment>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </div>
         )}
       </li>

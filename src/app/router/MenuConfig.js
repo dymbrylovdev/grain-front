@@ -18,20 +18,17 @@ const getAdminMenu = crops => ({
     items: [
       {
         title: "Рынок зерна",
-        root: true,
         icon: "flaticon2-architecture-and-city",
         page: "",
         translate: "MENU.GRAIN",
         submenu: [
           {
             title: "Объявления на продажу",
-            root: true,
             page: "",
             translate: "SUBMENU.BIDS.SALE",
             submenu: [
               {
                 title: "Лучшие объявления",
-                root: true,
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
@@ -40,19 +37,16 @@ const getAdminMenu = crops => ({
                   crops.map &&
                   crops.map(crop => ({
                     title: crop.name,
-                    root: true,
                     page: `sale/best-bids/${crop.id}`,
                   })),
               },
               {
                 title: "Мои объявления",
-                root: true,
                 page: "sale/my-bids",
                 translate: "SUBMENU.MY_BIDS",
               },
               {
                 title: "Все объявления",
-                root: true,
                 page: "",
                 translate: "SUBMENU.ALL_BIDS",
                 bullet: "dot",
@@ -61,7 +55,6 @@ const getAdminMenu = crops => ({
                   crops.map &&
                   crops.map(crop => ({
                     title: crop.name,
-                    root: true,
                     page: `sale/all-bids/${crop.id}`,
                   })),
               },
@@ -69,13 +62,11 @@ const getAdminMenu = crops => ({
           },
           {
             title: "Объявления на покупку",
-            root: true,
             page: "",
             translate: "SUBMENU.BIDS.PURCHASE",
             submenu: [
               {
                 title: "Лучшие объявления",
-                root: true,
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
@@ -84,19 +75,16 @@ const getAdminMenu = crops => ({
                   crops.map &&
                   crops.map(crop => ({
                     title: crop.name,
-                    root: true,
                     page: `purchase/best-bids/${crop.id}`,
                   })),
               },
               {
                 title: "Мои объявления",
-                root: true,
                 page: "purchase/my-bids",
                 translate: "SUBMENU.MY_BIDS",
               },
               {
                 title: "Все объявления",
-                root: true,
                 page: "",
                 translate: "SUBMENU.ALL_BIDS",
                 bullet: "dot",
@@ -105,7 +93,6 @@ const getAdminMenu = crops => ({
                   crops.map &&
                   crops.map(crop => ({
                     title: crop.name,
-                    root: true,
                     page: `purchase/all-bids/${crop.id}`,
                   })),
               },
@@ -113,7 +100,6 @@ const getAdminMenu = crops => ({
           },
           {
             title: "Сделки",
-            root: true,
             page: "deals",
             translate: "SUBMENU.BIDS.DEALS",
           },
@@ -121,14 +107,12 @@ const getAdminMenu = crops => ({
       },
       {
         title: "Аналитика",
-        root: true,
         icon: "flaticon2-graphic-1",
         page: "builder",
         translate: "MENU.ANALITICS",
         submenu: [
           {
             title: "Отчёт по активности",
-            root: true,
             page: "activity-report",
             translate: "SUBMENU.ACTIVITY_REPORT",
           },
@@ -136,32 +120,27 @@ const getAdminMenu = crops => ({
       },
       {
         title: "Пользователи",
-        root: true,
         icon: "flaticon2-avatar",
         page: "builder",
         translate: "MENU.USERS",
         submenu: [
           {
             title: "Список пользователей",
-            root: true,
             page: "user-list",
             translate: "SUBMENU.USER.LIST",
           },
           {
             title: "Добавить пользователя",
-            root: true,
             page: "user/create",
             translate: "SUBMENU.USER.CREATE_USER",
           },
           {
             title: "Список компаний",
-            root: true,
             page: "companyList",
             translate: "SUBMENU.COMPANY.LIST",
           },
           {
             title: "Добавить компанию",
-            root: true,
             page: "company/create",
             translate: "SUBMENU.COMPANY.CREATE",
           },
@@ -169,32 +148,27 @@ const getAdminMenu = crops => ({
       },
       {
         title: "Настройки",
-        root: true,
         icon: "flaticon2-settings",
         page: "builder",
         translate: "MENU.SETTINGS",
         submenu: [
           {
             title: "Мой профайл",
-            root: true,
             page: "user/profile",
             translate: "SUBMENU.PROFILE",
           },
           {
             title: "Мои фильтры",
-            root: true,
             page: "",
             translate: "SUBMENU.MY_FILTERS",
             submenu: [
               {
                 title: "Фильтры на продажу",
-                root: true,
                 page: "sale/filters",
                 translate: "SUBMENU.BUYER_FILTERS",
               },
               {
                 title: "Фильтры на покупку",
-                root: true,
                 page: "purchase/filters",
                 translate: "SUBMENU.SELLER_FILTERS",
               },
@@ -202,19 +176,16 @@ const getAdminMenu = crops => ({
           },
           {
             title: "Настройки каталога",
-            root: true,
             page: "",
             translate: "SUBMENU.CATALOG.SETTINGS",
             submenu: [
               {
                 title: "Список культур",
-                root: true,
                 page: "cropList",
                 translate: "SUBMENU.CATALOG.CROP_LIST",
               },
               {
                 title: "Добавить культуру",
-                root: true,
                 page: "crop/create",
                 translate: "SUBMENU.CATALOG.CREATE_CROP",
               },
@@ -222,7 +193,6 @@ const getAdminMenu = crops => ({
           },
           {
             title: "Настройка воронки",
-            root: true,
             page: "funnel-states",
             translate: "SUBMENU.FUNNEL_STATES",
           },
@@ -236,14 +206,12 @@ const getAdminMenu = crops => ({
       },
       {
         title: "Документы",
-        root: true,
         icon: "flaticon2-document",
         page: "builder",
         translate: "MENU.DOCS",
         submenu: [
           {
             title: "Пользовательское соглашение",
-            root: true,
             page: "userDocs/legacy",
             translate: "SUBMENU.LEGAL",
           },
@@ -251,7 +219,6 @@ const getAdminMenu = crops => ({
       },
       {
         title: "Выход",
-        root: true,
         icon: "flaticon-logout",
         page: "logout",
         translate: "MENU.LOGOUT",
@@ -270,33 +237,27 @@ const getVendorMenu = crops => ({
     items: [
       {
         title: "Рынок зерна",
-        root: true,
         icon: "flaticon2-architecture-and-city",
         page: "",
         translate: "MENU.GRAIN",
         submenu: [
           {
             title: "Лучшие объявления",
-            root: true,
             page: "",
             translate: "SUBMENU.BIDS.BEST",
             bullet: "dot",
             submenu: crops.map(crop => ({
               title: crop.name,
-              root: true,
               page: `purchase/best-bids/${crop.id}`,
-              //translate: crop.name,
             })),
           },
           {
             title: "Добавить объявление",
-            root: true,
             page: "bid/create/sale/0/0",
             translate: "SUBMENU.GRAIN.CREATE_AD",
           },
           {
             title: "Мои объявления",
-            root: true,
             page: "sale/my-bids",
             translate: "SUBMENU.MY_BIDS",
           },
@@ -304,20 +265,17 @@ const getVendorMenu = crops => ({
       },
       {
         title: "Настройки",
-        root: true,
         icon: "flaticon2-settings",
         page: "builder",
         translate: "MENU.SETTINGS",
         submenu: [
           {
             title: "Мой профайл",
-            root: true,
             page: "user/profile",
             translate: "SUBMENU.PROFILE",
           },
           {
             title: "Мои фильтры",
-            root: true,
             page: "purchase/filters",
             translate: "SUBMENU.MY_FILTERS",
           },
@@ -325,7 +283,6 @@ const getVendorMenu = crops => ({
       },
       {
         title: "Выход",
-        root: true,
         icon: "flaticon-logout",
         page: "logout",
         translate: "MENU.LOGOUT",
@@ -344,33 +301,27 @@ const getBuyerMenu = crops => ({
     items: [
       {
         title: "Рынок зерна",
-        root: true,
         icon: "flaticon2-architecture-and-city",
         page: "",
         translate: "MENU.GRAIN",
         submenu: [
           {
             title: "Лучшие объявления",
-            root: true,
             page: "",
             translate: "SUBMENU.BIDS.BEST",
             bullet: "dot",
             submenu: crops.map(crop => ({
               title: crop.name,
-              root: true,
               page: `sale/best-bids/${crop.id}`,
-              //translate: crop.name,
             })),
           },
           {
             title: "Добавить объявление",
-            root: true,
             page: "bid/create/purchase/0/0",
             translate: "SUBMENU.GRAIN.CREATE_AD",
           },
           {
             title: "Мои объявления",
-            root: true,
             page: "purchase/my-bids",
             translate: "SUBMENU.MY_BIDS",
           },
@@ -378,20 +329,17 @@ const getBuyerMenu = crops => ({
       },
       {
         title: "Настройки",
-        root: true,
         icon: "flaticon2-settings",
         page: "builder",
         translate: "MENU.SETTINGS",
         submenu: [
           {
             title: "Мой профайл",
-            root: true,
             page: "user/profile",
             translate: "SUBMENU.PROFILE",
           },
           {
             title: "Мои фильтры",
-            root: true,
             page: "sale/filters",
             translate: "SUBMENU.MY_FILTERS",
           },
@@ -399,7 +347,6 @@ const getBuyerMenu = crops => ({
       },
       {
         title: "Выход",
-        root: true,
         icon: "flaticon-logout",
         page: "logout",
         translate: "MENU.LOGOUT",
