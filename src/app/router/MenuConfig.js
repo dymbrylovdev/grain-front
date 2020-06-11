@@ -49,7 +49,7 @@ const getAdminMenu = crops => ({
                 title: "Все объявления",
                 page: "",
                 translate: "SUBMENU.ALL_BIDS",
-                bullet: "dot",
+                // bullet: "dot",
                 submenu:
                   crops &&
                   crops.map &&

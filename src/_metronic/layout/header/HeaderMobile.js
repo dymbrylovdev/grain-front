@@ -41,6 +41,7 @@ class HeaderMobile extends React.Component {
                 activeStep === 1 &&
                 "old_menu_item_text"}`}
               id="kt_aside_mobile_toggler"
+              onClick={() => {}}
             >
               <span />
             </button>
