@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import objectPath from "object-path";
-import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import MenuItemText from "./MenuItemText";
 import MenuSubmenu from "./MenuSubmenu";
 import clsx from "clsx";
@@ -73,6 +73,7 @@ class MenuItem extends React.Component {
   render() {
     const { item, currentUrl, parentItem, layoutConfig, index, running, activeStep } = this.props;
     const isActive = this.isMenuItemIsActive(item);
+    const { history } = this.props;
     return (
       <li
         ref={this.asideLeftLIRef}
@@ -94,13 +95,17 @@ class MenuItem extends React.Component {
         data-ktmenu-dropdown-toggle-class={item["dropdown-toggle-class"]}
       >
         {!item.submenu && (
-          <Link
-            to={`/${item.page}`}
+          <div
             className="kt-menu__link kt-menu__toggle"
-            onClick={() => document.getElementById("kt_aside_close_btn")?.click()}
+            onClick={() => {
+              history.push(`/${item.page}`);
+              // eslint-disable-next-line no-unused-expressions
+              document.getElementById("kt_aside_close_btn")?.click();
+            }}
+            style={{ cursor: "pointer" }}
           >
             <MenuItemText item={item} parentItem={parentItem} />
-          </Link>
+          </div>
         )}
         {item.submenu && (
           // eslint-disable-next-line jsx-a11y/anchor-is-valid
@@ -139,7 +144,9 @@ class MenuItem extends React.Component {
   }
 }
 
-export default connect(state => ({
-  running: state.prompter.running,
-  activeStep: state.prompter.activeStep,
-}))(MenuItem);
+export default withRouter(
+  connect(state => ({
+    running: state.prompter.running,
+    activeStep: state.prompter.activeStep,
+  }))(MenuItem)
+);

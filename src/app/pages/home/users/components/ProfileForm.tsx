@@ -517,7 +517,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
-      {prompterRunning && prompterStep === 0 && values.use_vat && (
+      {prompterRunning && prompterStep === 0 && !values.use_vat && (
         <div>
           {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
             <Skeleton width="100%" height={37.5} animation="wave" />
