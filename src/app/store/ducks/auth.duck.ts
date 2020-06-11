@@ -299,6 +299,8 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       case NEW_PASSWORD_SUCCESS: {
         return {
           ...state,
+          user: action.payload.data,
+          authToken: action.payload.data.api_token,
           newPasswordLoading: false,
           newPasswordSuccess: true,
         };
@@ -356,7 +358,7 @@ export const actions = {
   clearNewPassword: () => createAction(CLEAR_NEW_PASSWORD),
   newPasswordRequest: (payload: { password: string; password2: string; code: string }) =>
     createAction(NEW_PASSWORD_REQUEST, payload),
-  newPasswordSuccess: (payload: IServerResponse<IUser>) =>
+  newPasswordSuccess: (payload: IServerResponse<ILoginSuccessData>) =>
     createAction(NEW_PASSWORD_SUCCESS, payload),
   newPasswordFail: (payload: string) => createAction(NEW_PASSWORD_FAIL, payload),
 };
@@ -420,7 +422,9 @@ function* newPasswordSaga({
   payload: { password: string; password2: string; code: string };
 }) {
   try {
-    const { data }: { data: IServerResponse<IUser> } = yield call(() => changePassword(payload));
+    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() =>
+      changePassword(payload)
+    );
     yield put(actions.newPasswordSuccess(data));
   } catch (e) {
     yield put(actions.newPasswordFail(e.response.data.message));
