@@ -14,8 +14,8 @@ const offcanvasOptions = {
   closeBy: "kt_header_menu_mobile_close_btn",
   toggleBy: {
     target: "kt_header_mobile_toggler",
-    state: "kt-header-mobile__toolbar-toggler--active"
-  }
+    state: "kt-header-mobile__toolbar-toggler--active",
+  },
 };
 
 class HMenu extends React.Component {
@@ -52,27 +52,25 @@ class HMenu extends React.Component {
       submenu: {
         desktop: "dropdown",
         tablet: "accordion",
-        mobile: "accordion"
+        mobile: "accordion",
       },
       accordion: {
         slideSpeed: 200, // accordion toggle slide speed in milliseconds
-        expandAll: false // allow having multiple expanded accordions in the menu
+        expandAll: false, // allow having multiple expanded accordions in the menu
       },
       dropdown: {
-        timeout: 50
-      }
+        timeout: 50,
+      },
     };
 
     let menuDesktopMode = "accordion";
-    if (
-      this.ktMenuCommonRef.current.getAttribute("data-ktmenu-dropdown") === "1"
-    ) {
+    if (this.ktMenuCommonRef.current.getAttribute("data-ktmenu-dropdown") === "1") {
       menuDesktopMode = "dropdown";
     }
 
     if (typeof objectPath.get(menuOptions, "submenu.desktop") === "object") {
       menuOptions.submenu.desktop = {
-        default: menuDesktopMode
+        default: menuDesktopMode,
       };
     }
 
@@ -81,19 +79,11 @@ class HMenu extends React.Component {
   };
 
   render() {
-    const {
-      disabledAsideSelfDisplay,
-      ktMenuClasses,
-      ulClasses,
-      rootArrowEnabled
-    } = this.props;
+    const { disabledAsideSelfDisplay, ktMenuClasses, ulClasses, rootArrowEnabled } = this.props;
     const items = this.props.menuConfig.header.items;
     return (
       <>
-        <button
-          className="kt-header-menu-wrapper-close"
-          id="kt_header_menu_mobile_close_btn"
-        >
+        <button className="kt-header-menu-wrapper-close" id="kt_header_menu_mobile_close_btn">
           <i className="la la-close" />
         </button>
         <div
@@ -101,7 +91,6 @@ class HMenu extends React.Component {
           id="kt_header_menu_wrapper"
           ref={this.offCanvasCommonRef}
         >
-
           <div
             id="kt_header_menu"
             className={`kt-header-menu kt-header-menu-mobile ${ktMenuClasses}`}
@@ -134,19 +123,16 @@ const mapStateToProps = store => ({
   menuConfig: store.builder.menuConfig,
   ktMenuClasses: builder.selectors.getClasses(store, {
     path: "header_menu",
-    toString: true
+    toString: true,
   }),
-  rootArrowEnabled: builder.selectors.getConfig(
-    store,
-    "header.menu.self.root-arrow"
-  ),
+  rootArrowEnabled: builder.selectors.getConfig(store, "header.menu.self.root-arrow"),
   headerSelfSkin: builder.selectors.getConfig(store, "header.self.skin"),
   ulClasses: builder.selectors.getClasses(store, {
     path: "header_menu_nav",
-    toString: true
+    toString: true,
   }),
   disabledAsideSelfDisplay:
-    objectPath.get(store.builder.layoutConfig, "aside.self.display") === false
+    objectPath.get(store.builder.layoutConfig, "aside.self.display") === false,
 });
 
 export default withRouter(connect(mapStateToProps)(HMenu));

@@ -34,6 +34,13 @@ const theme = createMuiTheme(
         // contrastText: will be calculated to contrast with palette.primary.main
         contrastText: "#fff",
       },
+      success: {
+        // light: will be calculated from palette.primary.main,
+        main: "#0abb87",
+        // dark: will be calculated from palette.primary.main,
+        // contrastText: will be calculated to contrast with palette.primary.main
+        contrastText: "#fff",
+      },
     },
 
     /**
@@ -43,6 +50,42 @@ const theme = createMuiTheme(
       MuiIconButton: {
         colorSecondary: {
           color: "#fd397a",
+        },
+      },
+      MuiTextField: {
+        root: {
+          marginTop: 8,
+        },
+      },
+      MuiBadge: {
+        colorPrimary: {
+          fontWeight: "bold",
+          backgroundColor: "#9e9e9e",
+          transition: "100ms",
+        },
+        colorSecondary: {
+          fontWeight: "bold",
+          transition: "100ms",
+        },
+      },
+      MuiOutlinedInput: {
+        adornedEnd: {
+          paddingRight: "none",
+        },
+      },
+      MuiFormControlLabel: {
+        root: {
+          marginBottom: 0,
+        },
+      },
+      MuiSkeleton: {
+        root: {
+          backgroundColor: "rgba(158, 158, 158,.15)",
+        },
+      },
+      MuiAppBar: {
+        colorDefault: {
+          backgroundColor: "#fff",
         },
       },
     },

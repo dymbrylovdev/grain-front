@@ -28,5 +28,5 @@ export function getDocs(params) {
 }
 
 export function getPublicDoc(code) {
-  return axios.get(`${GET_PUBLIC_DOC}/${code}`);
+  return axios.get(`/api/_public/document/${code}`);
 }

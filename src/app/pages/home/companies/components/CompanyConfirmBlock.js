@@ -1,21 +1,11 @@
 import React, { useCallback } from "react";
 import { injectIntl } from "react-intl";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
-import { Row, Col } from "react-bootstrap";
+import useStyles from "../../styles";
+import { Skeleton } from "@material-ui/lab";
 
-const innerStyles = makeStyles(theme => ({
-  container: {
-    paddingBottom: theme.spacing(1),
-  },
-  title: {
-      fontSize: 14,
-      paddingBottom: theme.spacing(1),
-  }
-}));
-
-function CompanyConfirmBlock({ intl, values, handleChange, disabled }) {
-  const innerClasses = innerStyles();
+function CompanyConfirmBlock({ intl, values, handleChange, disabled, loading }) {
+  const classes = useStyles();
   const getTitleText = useCallback(
     (disabled, values) => {
       if (!disabled) return `${intl.formatMessage({ id: "COMPANY.CONFIRM.TITLE" })}`;
@@ -40,56 +30,86 @@ function CompanyConfirmBlock({ intl, values, handleChange, disabled }) {
           : ""
       }`;
     },
-    [values, disabled]
+    [intl]
   );
 
   return (
-    <Col className={innerClasses.container}>
-      <Row className={innerClasses.title}>{getTitleText(disabled, values)}</Row>
+    <>
+      <div className={classes.text}>
+        {loading ? (
+          <Skeleton width="50%" height={24} animation="wave" />
+        ) : (
+          getTitleText(disabled, values)
+        )}
+      </div>
       {!disabled && (
         <>
-          <Row>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={values.company_confirmed_by_email}
-                  onChange={handleChange}
-                  disabled={disabled}
-                />
-              }
-              label={intl.formatMessage({ id: "COMPANY.CONFIRM.BY_EMAIL" })}
-              name={"company_confirmed_by_email"}
-            />
-          </Row>
-          <Row>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={values.company_confirmed_by_phone}
-                  onChange={handleChange}
-                  disabled={disabled}
-                />
-              }
-              label={intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PHONE" })}
-              name={"company_confirmed_by_phone"}
-            />
-          </Row>
-          <Row>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={values.company_confirmed_by_payment}
-                  onChange={handleChange}
-                  disabled={disabled}
-                />
-              }
-              label={intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PAY" })}
-              name={"company_confirmed_by_payment"}
-            />
-          </Row>
+          <div className={classes.text}>
+            {loading ? (
+              <Skeleton width={95} height={24} animation="wave" />
+            ) : (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={values.company_confirmed_by_email}
+                    onChange={e => {
+                      handleChange({
+                        data: { company_confirmed_by_email: e.target.checked },
+                      });
+                    }}
+                    disabled={disabled}
+                  />
+                }
+                label={intl.formatMessage({ id: "COMPANY.CONFIRM.BY_EMAIL" })}
+                name={"company_confirmed_by_email"}
+              />
+            )}
+          </div>
+          <div className={classes.text}>
+            {loading ? (
+              <Skeleton width={123} height={24} animation="wave" />
+            ) : (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={values.company_confirmed_by_phone}
+                    onChange={e => {
+                      handleChange({
+                        data: { company_confirmed_by_phone: e.target.checked },
+                      });
+                    }}
+                    disabled={disabled}
+                  />
+                }
+                label={intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PHONE" })}
+                name={"company_confirmed_by_phone"}
+              />
+            )}
+          </div>
+          <div className={classes.text}>
+            {loading ? (
+              <Skeleton width={97} height={24} animation="wave" />
+            ) : (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={values.company_confirmed_by_payment}
+                    onChange={e => {
+                      handleChange({
+                        data: { company_confirmed_by_payment: e.target.checked },
+                      });
+                    }}
+                    disabled={disabled}
+                  />
+                }
+                label={intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PAY" })}
+                name={"company_confirmed_by_payment"}
+              />
+            )}
+          </div>
         </>
       )}
-    </Col>
+    </>
   );
 }
 

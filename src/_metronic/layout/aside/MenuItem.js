@@ -1,13 +1,16 @@
 import React from "react";
+import { connect } from "react-redux";
 import objectPath from "object-path";
-import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import MenuItemText from "./MenuItemText";
 import MenuSubmenu from "./MenuSubmenu";
 import clsx from "clsx";
+import "./menuItem.scss";
+import "../../animations.scss";
 
-export default class MenuItem extends React.Component {
+class MenuItem extends React.Component {
   asideLeftLIRef = React.createRef();
-  isDropdown =  document.body.classList.contains("kt-aside-menu--dropdown");
+  isDropdown = document.body.classList.contains("kt-aside-menu--dropdown");
 
   submenuToggle =
     this.props.item.toggle === "click"
@@ -27,10 +30,7 @@ export default class MenuItem extends React.Component {
 
     if (this.props.item.submenu) {
       this.asideLeftLIRef.current.classList.add("kt-menu__item--hover");
-      this.asideLeftLIRef.current.setAttribute(
-        "data-ktmenu-submenu-toggle",
-        this.submenuToggle
-      );
+      this.asideLeftLIRef.current.setAttribute("data-ktmenu-submenu-toggle", this.submenuToggle);
     }
   };
 
@@ -57,7 +57,7 @@ export default class MenuItem extends React.Component {
       return false;
     }
     const indexOfPage = this.props.currentUrl.indexOf(item.page);
-    return indexOfPage !== -1  && (indexOfPage + item.page.length  === this.props.currentUrl.length);
+    return indexOfPage !== -1 && indexOfPage + item.page.length === this.props.currentUrl.length;
   };
 
   isMenuRootItemIsActive = item => {
@@ -71,9 +71,9 @@ export default class MenuItem extends React.Component {
   };
 
   render() {
-    const { item, currentUrl, parentItem, layoutConfig } = this.props;
+    const { item, currentUrl, parentItem, layoutConfig, index, running, activeStep } = this.props;
     const isActive = this.isMenuItemIsActive(item);
-
+    const { history } = this.props;
     return (
       <li
         ref={this.asideLeftLIRef}
@@ -87,23 +87,34 @@ export default class MenuItem extends React.Component {
           {
             "kt-menu__item--submenu": item.submenu,
             "kt-menu__item--open kt-menu__item--here": isActive && item.submenu,
-            "kt-menu__item--active kt-menu__item--here":
-              isActive && !item.submenu,
-            "kt-menu__item--icon-only": item["icon-only"]
+            "kt-menu__item--active kt-menu__item--here": isActive && !item.submenu,
+            "kt-menu__item--icon-only": item["icon-only"],
           },
           item["custom-class"]
         )}
         data-ktmenu-dropdown-toggle-class={item["dropdown-toggle-class"]}
       >
         {!item.submenu && (
-          <Link to={`/${item.page}`} className="kt-menu__link kt-menu__toggle">
+          <div
+            className="kt-menu__link kt-menu__toggle"
+            onClick={() => {
+              history.push(`/${item.page}`);
+              // eslint-disable-next-line no-unused-expressions
+              document.getElementById("kt_aside_close_btn")?.click();
+            }}
+            style={{ cursor: "pointer" }}
+          >
             <MenuItemText item={item} parentItem={parentItem} />
-          </Link>
+          </div>
         )}
-
         {item.submenu && (
           // eslint-disable-next-line jsx-a11y/anchor-is-valid
-          <a className="kt-menu__link kt-menu__toggle">
+          <a
+            className={`kt-menu__link kt-menu__toggle ${index === 0 &&
+              running &&
+              activeStep === 1 &&
+              "old_menu_item_text"}`}
+          >
             <MenuItemText item={item} parentItem={parentItem} />
           </a>
         )}
@@ -114,11 +125,7 @@ export default class MenuItem extends React.Component {
 
             {item["custom-class"] === "kt-menu__item--submenu-fullheight" && (
               <div className="kt-menu__wrapper">
-                <MenuSubmenu
-                  item={item}
-                  parentItem={item}
-                  currentUrl={currentUrl}
-                />
+                <MenuSubmenu item={item} parentItem={item} currentUrl={currentUrl} />
               </div>
             )}
 
@@ -136,3 +143,10 @@ export default class MenuItem extends React.Component {
     );
   }
 }
+
+export default withRouter(
+  connect(state => ({
+    running: state.prompter.running,
+    activeStep: state.prompter.activeStep,
+  }))(MenuItem)
+);

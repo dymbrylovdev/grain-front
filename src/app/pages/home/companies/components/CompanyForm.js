@@ -119,7 +119,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
               autoComplete="off"
               className="kt-form"
               onSubmit={() => {
-                console.log("submit ");
+                //console.log("submit ");
               }}
             >
               <TextField

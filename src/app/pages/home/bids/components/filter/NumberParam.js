@@ -1,57 +1,88 @@
 import React from "react";
-import { Radio, FormControlLabel, RadioGroup, TextField, IconButton } from "@material-ui/core";
+import {
+  Radio,
+  FormControlLabel,
+  RadioGroup,
+  TextField,
+  IconButton,
+  Grid,
+} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { Row, Col } from "react-bootstrap";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core";
+import NumberFormatCustom from "../../../../../components/ui/NumberFormatCustom";
 
 const useStyles = makeStyles(theme => ({
   container: {
     alignItems: "center",
-    paddingTop: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
+    width: "100%",
+  },
+  textField: {
+    marginBottom: 0,
+    marginTop: 0,
   },
 }));
 
-function NumberParam({ values, param, handleChange, clearAction }) {
+function NumberParam({ values, param, handleChange, clearAction, isEditable = true }) {
   const composeName = `compose${param.id}`;
   const numberName = `number${param.id}`;
   const classes = useStyles();
   return (
-    <Row className={classes.container}>
-      <Col> 
-        {param.name}
-        </Col>
-        <Col>
-        <RadioGroup
-          name={composeName}
-          value={values[composeName] || "≤"}
-          onChange={handleChange}
-          row={true}
-        >
-          <FormControlLabel value="≤" control={<Radio />} label="≤" />
-          <FormControlLabel value="≥" control={<Radio />} label=" ≥" />
-        </RadioGroup>
-        </Col>
-      <Col md="5" lg="5" sm="5" xs="10" xl="5">
-        <TextField
-          type="text"
-          margin="normal"
-          name={numberName}
-          value={values[numberName] || ""}
-          variant="outlined"
-          onChange={handleChange}
-        />
-      </Col>
-      <Row>
-        <IconButton
-          onClick={() => {
-            clearAction(composeName);
-            clearAction(numberName);
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-      </Row>
-    </Row>
+    <Grid
+      container
+      direction="row"
+      justify="space-between"
+      alignItems="center"
+      className={classes.container}
+    >
+      <Grid item>{param.name}</Grid>
+      <Grid item>
+        <Grid container direction="row" justify="space-between" alignItems="center" spacing={10}>
+          <Grid item>
+            <RadioGroup
+              name={composeName}
+              value={values[composeName] || "≤"}
+              onChange={handleChange}
+              row={true}
+            >
+              <FormControlLabel value="≤" control={<Radio />} label="≤" disabled={!isEditable} />
+              <FormControlLabel value="≥" control={<Radio />} label=" ≥" disabled={!isEditable} />
+            </RadioGroup>
+          </Grid>
+          <Grid item>
+            <TextField
+              className={classes.textField}
+              type="text"
+              margin="normal"
+              name={numberName}
+              value={values[numberName] || ""}
+              variant="outlined"
+              onChange={handleChange}
+              InputProps={
+                isEditable
+                  ? {
+                      inputComponent: NumberFormatCustom,
+                      endAdornment: (
+                        <IconButton
+                          onClick={() => {
+                            clearAction(composeName, "");
+                            clearAction(numberName, "");
+                          }}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      ),
+                    }
+                  : undefined
+              }
+              disabled={!isEditable}
+              autoComplete="off"
+            />
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 }
 

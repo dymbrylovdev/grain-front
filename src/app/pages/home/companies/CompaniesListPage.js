@@ -1,68 +1,72 @@
-import React, {useEffect} from "react";
+import React, { useEffect, useCallback } from "react";
 import { injectIntl } from "react-intl";
-import {connect, useSelector, shallowEqual } from "react-redux";
-import { Paper } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { connect, useSelector, shallowEqual } from "react-redux";
+import { Paper, Button } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 import * as companies from "../../../store/ducks/companies.duck";
 import useStyles from "../styles";
 import CompanyTable from "./components/CompanyTable";
 import Preloader from "../../../components/ui/Loaders/Preloader";
-import { LoadError } from "../../../components/ui/Erros";
+import { LoadError } from "../../../components/ui/Errors";
+import { LayoutSubheader } from "../../../../_metronic";
 
-
-function CompaniesListPage({intl, getCompanies}){
-    const classes = useStyles();
-    const { companies, page, per_page, total, loading, errors } = useSelector(({ companies: {companies, errors} }) => {
-        if (!companies) return { companies: [], page: 1, per_page: 20, total: 0, loading: false };
-        return {
-          companies: companies.data,
-          page: companies.page,
-          per_page: companies.per_page,
-          total: companies.total,
-          loading: companies.loading,
-          errors: errors || {}
-        };
-      }, shallowEqual);
-
-
-      const getCompaniessAction = (page) => {
-        getCompanies(page);
+function CompaniesListPage({ intl, getCompanies }) {
+  const classes = useStyles();
+  const history = useHistory();
+  const { companies, page, per_page, total, loading, errors } = useSelector(
+    ({ companies: { companies, errors } }) => {
+      if (!companies) return { companies: [], page: 1, per_page: 20, total: 0, loading: false };
+      return {
+        companies: companies.data,
+        page: companies.page,
+        per_page: companies.per_page,
+        total: companies.total,
+        loading: companies.loading,
+        errors: errors || {},
       };
-      useEffect(() => {
-        getCompaniessAction( 1);
-      }, []);
-    
-      const handleChangePage = (event, page) => {
-        getCompaniessAction(page + 1);
-      };
-      const paginationData = {
-        page,
-        per_page,
-        total,
-        handleChangePage,
-      };
+    },
+    shallowEqual
+  );
 
-      if (loading) return <Preloader />;
-      if (errors.all) return <LoadError handleClick={() => getCompaniessAction(page)} />;
-      return (
-        <Paper className={classes.tableContainer}>
-          <Link to="/company/create">
-            <div className={classes.topMargin}>
-              <button className={"btn btn-primary btn-elevate kt-login__btn-primary"}>
-                {intl.formatMessage({ id: "COMPANY.BUTTON.ADD" })}
-              </button>
-            </div>
-          </Link>
-          <CompanyTable
-            classes={classes}
-            companies={companies}
-            paginationData={paginationData}
-            title = {intl.formatMessage({id: "COMPANY.TABLE.TITLE"})}
-          />
-        </Paper>
-      )
+  const getCompaniessAction = useCallback(
+    page => {
+      getCompanies(page);
+    },
+    [getCompanies]
+  );
+  useEffect(() => {
+    getCompaniessAction(1);
+  }, [getCompaniessAction]);
 
+  const handleChangePage = (event, page) => {
+    getCompaniessAction(page + 1);
+  };
+  const paginationData = {
+    page,
+    per_page,
+    total,
+    handleChangePage,
+  };
+
+  if (loading) return <Preloader />;
+  if (errors.all) return <LoadError handleClick={() => getCompaniessAction(page)} />;
+  return (
+    <Paper className={classes.tableContainer}>
+      <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.COMPANY.LIST" })} />
+      <div className={classes.topMargin}>
+        <Button variant="contained" color="primary" onClick={() => history.push("/company/create")}>
+          {intl.formatMessage({ id: "COMPANY.BUTTON.ADD" })}
+        </Button>
+      </div>
+      <CompanyTable
+        classes={classes}
+        companies={companies}
+        paginationData={paginationData}
+        title={intl.formatMessage({ id: "COMPANY.TABLE.TITLE" })}
+      />
+    </Paper>
+  );
 }
 
-export default injectIntl(connect(null, companies.actions)(CompaniesListPage))
+export default injectIntl(connect(null, companies.actions)(CompaniesListPage));
