@@ -662,7 +662,7 @@ const BidForm: React.FC<IProps> = ({
         </div>
       )}
 
-      {loading ? (
+      {loading || !crops ? (
         <Skeleton width="100%" height={70} animation="wave" />
       ) : (
         <Autocomplete

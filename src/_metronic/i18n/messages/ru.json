@@ -50,6 +50,7 @@
   "SUBMENU.LEGAL": "Пользовательское соглашение",
   "SUBMENU.FUNNEL_STATES": "Настройка воронки",
   "SUBMENU.ACTIVITY_REPORT": "Отчёт по активности",
+  "SUBMENU.TARIFFS": "Тарифы",
 
   "SUBHEADER.PARTS.EDIT": "Редактирование",
   "SUBHEADER.PARTS.CREATE": "Добавление",
@@ -389,6 +390,17 @@
   "LOCATIONS.PRICES.MODAL_NAME": "Цены по точкам",
   "LOCATIONS.MORE": "Вы можете добавить еще одну точку.",
 
+  "TARIFFS.TITLE1": "Публикация объявлений",
+  "TARIFFS.TEXT11": "Отображение объявлений на портале, приоритетных мест, не более 10",
+  "TARIFFS.TEXT12": "Отображение объявлений в рассылках, приоритетных мест, не более 5",
+  "TARIFFS.TITLE2": "Поиск встречных объявлений",
+  "TARIFFS.TEXT21": "Общее количество отображаемых объявлений (лучших заявок)",
+  "TARIFFS.TITLE3": "Фильтры и подписки",
+  "TARIFFS.TEXT31": "Максимальное количество фильтров и подписок",
+  "TARIFFS.TITLE4": "Зерновые культуры",
+  "TARIFFS.TEXT41": "Количество культур, с которыми можно работать в системе",
+  "TARIFFS.GENERAL_TERMS": "Общие условия",
+
   "PROMPTER.STEPPER.STEP0": "Профиль",
   "PROMPTER.STEPPER.STEP1": "Выбор культуры",
   "PROMPTER.STEPPER.STEP2": "Список объявлений",
@@ -451,6 +463,7 @@
   "NOTISTACK.POINTS.CHANGE_PRICE": "Цены по точкам изменены",
   "NOTISTACK.BIDS.ADD": "Объявление добавлено",
   "NOTISTACK.BIDS.EDIT": "Объявление изменено",
+  "NOTISTACK.TARIFF.EDIT": "Тариф изменен",
 
   "NOTISTACK.ERRORS.ERROR": "Ошибка: "
 }

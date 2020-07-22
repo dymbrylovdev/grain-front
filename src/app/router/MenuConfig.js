@@ -196,6 +196,11 @@ const getAdminMenu = crops => ({
             page: "funnel-states",
             translate: "SUBMENU.FUNNEL_STATES",
           },
+          {
+            title: "Тарифы",
+            page: "tariffs",
+            translate: "SUBMENU.TARIFFS",
+          },
           // {
           //   title: "Настройки системы",
           //   root: true,

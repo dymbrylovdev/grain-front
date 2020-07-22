@@ -18,6 +18,7 @@ import * as crops2 from "./ducks/crops2.duck";
 import * as companies from "./ducks/companies.duck";
 import * as funnelStates from "./ducks/funnelStates.duck";
 import * as deals from "./ducks/deals.duck";
+import * as tariffs from "./ducks/tariffs.duck";
 
 import * as prompter from "./ducks/prompter.duck";
 
@@ -33,7 +34,8 @@ export type TAppActions =
   | bids.TActions
   | crops2.TActions
   | funnelStates.TActions
-  | deals.TActions;
+  | deals.TActions
+  | tariffs.TActions;
 
 export interface IAppState {
   i18n: typeof metronic.i18n.reducer;
@@ -53,6 +55,7 @@ export interface IAppState {
   funnelStates: funnelStates.IInitialState;
   prompter: prompter.IInitialState & PersistPartial;
   deals: deals.IInitialState & PersistPartial;
+  tariffs: tariffs.IInitialState;
 }
 
 export const rootReducer: Reducer<IAppState, TAppActions> = combineReducers<IAppState, TAppActions>(
@@ -74,6 +77,7 @@ export const rootReducer: Reducer<IAppState, TAppActions> = combineReducers<IApp
     funnelStates: funnelStates.reducer,
     prompter: prompter.reducer,
     deals: deals.reducer,
+    tariffs: tariffs.reducer,
   }
 );
 
@@ -93,6 +97,7 @@ export function* rootSaga() {
       companies.saga,
       funnelStates.saga,
       deals.saga,
+      tariffs.saga,
     ].map(saga => fork(saga))
   );
 }

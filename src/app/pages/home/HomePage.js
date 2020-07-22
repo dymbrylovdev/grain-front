@@ -18,6 +18,7 @@ import { ActivityReportPage } from "./activityReport";
 import { BidsPage, BidEditPage } from "./bids";
 import { DealsPage, DealViewPage } from "./deals";
 import Error404Page from "../../components/ErrorPage/Error404Page";
+import { TariffsEditPage } from "./tariffs";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { crops, user } = useSelector(
@@ -107,6 +108,8 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
 
         <Route path="/deals/view/:cropId/:saleId/:purchaseId" component={DealViewPage} />
         <Route path="/deals" component={DealsPage} />
+
+        <Route path="/tariffs" component={TariffsEditPage} />
 
         <Route path="/dash" component={Dashboard} />
 
