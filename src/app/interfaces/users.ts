@@ -28,6 +28,23 @@ export interface IUser {
   } | null;
   is_funnel_state_automate?: boolean;
   use_vat: boolean;
+  tariff: {
+    id: number;
+    name: string;
+    role: TRole;
+    priority_places_bids_count: number;
+    priority_places_bids_on_mailing_count: number;
+    common_bids_count: number;
+    max_filters_count: number;
+    max_crops_count: number;
+  };
+  crops: [
+    {
+      id: number;
+      name: string;
+      vat: number;
+    }
+  ];
 }
 
 export interface IUserForRegister {
@@ -64,6 +81,8 @@ export interface IUserForEdit {
   funnel_state_id?: number;
   is_funnel_state_automate?: boolean;
   use_vat?: boolean;
+  tariff_id?: number;
+  crop_ids?: number[];
 }
 
 export interface IChangePasswordData {

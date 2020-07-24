@@ -7,6 +7,7 @@ import { IServerResponse } from "../../interfaces/server";
 import { getUsers, getUserById, deleteUser, createUser, editUser } from "../../crud/users.crud";
 import { IUser, IUserForCreate, IUserForEdit } from "../../interfaces/users";
 
+const CLEAR_FETCH = "users/CLEAR_FETCH";
 const FETCH_REQUEST = "users/FETCH_REQUEST";
 const FETCH_SUCCESS = "users/FETCH_SUCCESS";
 const FETCH_FAIL = "users/FETCH_FAIL";
@@ -91,6 +92,17 @@ const initialState: IInitialState = {
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
   switch (action.type) {
+    case CLEAR_FETCH: {
+      //console.log("CLEAR_FETCH");
+      return {
+        ...state,
+        users: undefined,
+        loading: true,
+        success: false,
+        error: null,
+      };
+    }
+
     case FETCH_REQUEST: {
       return {
         ...state,
@@ -123,6 +135,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       //console.log("CLEAR_FETCH_BY_ID");
       return {
         ...state,
+        user: undefined,
         byIdLoading: false,
         byIdSuccess: false,
         byIdError: null,
@@ -133,6 +146,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       //console.log("FETCH_BY_ID_REQUEST");
       return {
         ...state,
+        user: undefined,
         byIdLoading: true,
         byIdSuccess: false,
         byIdError: null,
@@ -140,7 +154,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_BY_ID_SUCCESS: {
-      // console.log("Fetch User: ", action.payload);
+      console.log("Fetch User: ", action.payload);
       return {
         ...state,
         user: action.payload.data,
@@ -219,6 +233,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 };
 
 export const actions = {
+  clearFetch: () => createAction(CLEAR_FETCH),
   fetchRequest: (payload: { page: number; perPage: number }) =>
     createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),

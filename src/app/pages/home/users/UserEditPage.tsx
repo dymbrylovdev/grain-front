@@ -21,6 +21,7 @@ import { ProfileForm, CompanyForm, LocationsForm } from "./components";
 import { ErrorPage } from "../../../components/ErrorPage";
 import Prompter from "../prompter/Prompter";
 import ScrollToTop from "../../../components/ui/ScrollToTop";
+import TariffForm from "./components/TariffForm";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -161,15 +162,15 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
   useEffect(() => {
     switch (editMode) {
-      case "profile":
-        if (!me && !loadingMe) fetchMe();
-        break;
       case "edit":
       case "view":
-        if (!user && !loadingUser) fetchUser({ id: +id });
+        fetchUser({ id: +id });
         break;
     }
-  }, [editMode, fetchMe, fetchUser, id, loadingMe, loadingUser, me, user]);
+    return () => {
+      clearUser();
+    };
+  }, [clearUser, editMode, fetchUser, id]);
 
   useEffect(() => {
     if (!prompterRunning && editMode === "profile") {
@@ -221,6 +222,12 @@ const UserEditPage: React.FC<TPropsFromRedux &
                   {...a11yProps(2)}
                 />
               )}
+              {editMode !== "create" && (
+                <Tab
+                  label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
+                  {...a11yProps(3)}
+                />
+              )}
             </Tabs>
           </AppBar>
           <Divider />
@@ -245,6 +252,9 @@ const UserEditPage: React.FC<TPropsFromRedux &
             ) : (
               <CompanyForm userId={+id || undefined} editMode={editMode} />
             )}
+          </TabPanel>
+          <TabPanel value={valueTabs} index={3}>
+            <TariffForm editMode={editMode} userId={+id || undefined} />
           </TabPanel>
         </div>
         <AlertDialog

@@ -95,17 +95,17 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<IUser>();
 
-  useEffect(() => {
-    switch (editMode) {
-      case "profile":
-        fetchMe();
-        break;
-      case "edit":
-      case "view":
-        if (userId) fetchUser({ id: userId });
-        break;
-    }
-  }, [editMode, fetchMe, fetchUser, userId]);
+  // useEffect(() => {
+  //   switch (editMode) {
+  //     case "profile":
+  //       fetchMe();
+  //       break;
+  //     case "edit":
+  //     case "view":
+  //       if (userId) fetchUser({ id: userId });
+  //       break;
+  //   }
+  // }, [editMode, fetchMe, fetchUser, userId]);
 
   // useEffect(() => {
   //   if (meSuccess) {

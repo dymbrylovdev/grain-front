@@ -190,6 +190,7 @@
   "USER.EDIT_FORM.PROFILE": "Профиль",
   "USER.EDIT_FORM.COMPANY": "Компания",
   "USER.EDIT_FORM.LOCATIONS": "Точки отгрузки",
+  "USER.EDIT_FORM.TARIFFS": "Тариф",
   "USER.EDIT_FORM.USE_VAT": "Работаю с НДС.",
   "USER.EDIT_FORM.ATTENTION": "Внимание! Если вы работаете с НДС, поставьте галочку в это поле.",
 

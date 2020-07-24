@@ -299,8 +299,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   }, [editMode, me, resetForm, user]);
 
   useEffect(() => {
-    if (!!me && me.is_admin) fetchFunnelStates();
-  }, [editMode, fetchFunnelStates, me]);
+    if (!!me && me.is_admin && !funnelStates) fetchFunnelStates();
+  }, [editMode, fetchFunnelStates, funnelStates, me]);
 
   return (
     <>
