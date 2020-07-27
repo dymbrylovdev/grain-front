@@ -1,14 +1,21 @@
 import React from "react";
-
+import { useSelector } from "react-redux";
 import { TextField, Divider, IconButton } from "@material-ui/core";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
 import CheckBoxParamGroup from "./CheckBoxParamGroup";
+
+import { declOfNum } from "../../../../../utils/index";
 import NumberParam from "./NumberParam";
 import NumberFormatCustom from "../../../../../components/ui/NumberFormatCustom";
 
 function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
+  const { me, myFilters } = useSelector(state => ({
+    me: state.auth.user,
+    myFilters: state.myFilters.myFilters,
+  }));
+
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
       <Row>
@@ -101,9 +108,24 @@ function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
               handleChange={formik.handleChange}
               clearAction={formik.setFieldValue}
             />
-            {index !== numberParams.length - 1 && <Divider />}
+            {/* {index !== numberParams.length - 1 && <Divider />} */}
+            <Divider />
           </div>
         ))}
+      <div className={classes.topMargin} style={{ fontWeight: "bold" }}>
+        {intl.formatMessage(
+          { id: "FILTER.FORM.LIMIT" },
+          {
+            count: me.tariff.max_filters_count - myFilters?.length || "",
+            word: declOfNum(me.tariff.max_filters_count - myFilters?.length, [
+              "фильтр",
+              "фильтра",
+              "фильтров",
+            ]),
+            fullCount: me.tariff.max_filters_count,
+          }
+        )}
+      </div>
     </form>
   );
 }

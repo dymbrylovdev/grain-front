@@ -290,6 +290,7 @@
   "FILTER.FORM.TABS.EDIT_PRICES": "Изменить цены",
   "FILTER.FORM.CROPS.EMPTY": "Выберите культуру",
   "FILTER.FORM.TABS.MY_FILTERS": "Мои фильтры",
+  "FILTER.FORM.LIMIT": "Вам доступно {count} {word} из {fullCount} в рамках вашего тарифа.",
   "FILTER.MY_FILTERS.EMPTY": "У Вас нет сохранённых фильтров для культуры \"{name}\".",
   "FILTER.MY_FILTERS.APLIED": "Применен этот фильтр",
   "FILTER.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить этот фильтр?",
