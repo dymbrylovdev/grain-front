@@ -13,27 +13,21 @@ import {
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
 import { useSnackbar } from "notistack";
-import * as Yup from "yup";
 
-import { actions as googleLocationsActions } from "../../../../store/ducks/yaLocations.duck";
-import { actions as locationsActions } from "../../../../store/ducks/locations.duck";
+import { actions as builderActions } from "../../../../../_metronic/ducks/builder";
 import { actions as authActions } from "../../../../store/ducks/auth.duck";
 import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { actions as tariffsActions } from "../../../../store/ducks/tariffs.duck";
 import { actions as crops2Actions } from "../../../../store/ducks/crops2.duck";
 
 import useStyles from "../../styles";
-import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
-import { ILocationToRequest, ILocation } from "../../../../interfaces/locations";
-import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import { IAppState } from "../../../../store/rootDuck";
-import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { Skeleton, Autocomplete } from "@material-ui/lab";
 import { IUser } from "../../../../interfaces/users";
 import { ITariff } from "../../../../interfaces/tariffs";
 import { ICrop } from "../../../../interfaces/crops";
+import getMenuConfig from "../../../../router/MenuConfig";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   name: {
@@ -97,6 +91,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   fetchCrops,
   crops,
+
+  setMenuConfig,
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
@@ -129,15 +125,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   const [addingCrop, setAddingCrop] = useState(false);
 
-  const {
-    values,
-    handleChange,
-    resetForm,
-    handleSubmit,
-    errors,
-    touched,
-    setFieldValue,
-  } = useFormik({
+  const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
     initialValues: {
       tariff_id: realUser?.tariff.id,
       crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
@@ -153,8 +141,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         values.crop_ids.length > selectedTariff.max_crops_count
       ) {
         newCropIds.splice(selectedTariff.max_crops_count);
-        console.log("Много");
-        console.log("newCropIds:", newCropIds);
       }
       if (realUser && values.tariff_id) {
         edit({
@@ -203,6 +189,10 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     intl,
     userId,
   ]);
+
+  useEffect(() => {
+    if (me) setMenuConfig(getMenuConfig(me.crops, me));
+  }, [me, setMenuConfig]);
 
   useEffect(() => {
     fetchTariffs();
@@ -288,8 +278,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           </>
         ) : (
           <div className={innerClasses.crop}>
-            {!!realUser?.crops?.length &&
-            !!realUser?.tariff?.max_crops_count &&
+            {!!realUser?.crops &&
+            !!realUser?.tariff &&
             realUser?.crops?.length < realUser?.tariff?.max_crops_count ? (
               <div>{intl.formatMessage({ id: "TARIFFS.MORE_CROPS" })}</div>
             ) : (
@@ -297,8 +287,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             )}
           </div>
         )}
-        {!!realUser?.crops?.length &&
-          !!realUser?.tariff?.max_crops_count &&
+        {!!realUser?.crops &&
+          !!realUser?.tariff &&
           realUser?.crops?.length < realUser?.tariff?.max_crops_count && (
             <div className={classes.textFieldContainer}>
               {!addingCrop ? (
@@ -377,6 +367,8 @@ const connector = connect(
 
     clearEdit: usersActions.clearEdit,
     edit: usersActions.editRequest,
+
+    setMenuConfig: builderActions.setMenuConfig,
   }
 );
 

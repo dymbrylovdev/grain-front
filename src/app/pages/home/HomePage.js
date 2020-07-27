@@ -21,11 +21,9 @@ import Error404Page from "../../components/ErrorPage/Error404Page";
 import { TariffsEditPage } from "./tariffs";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
-  const { crops, user } = useSelector(
-    ({ crops: { crops }, auth }) => ({ crops: (crops && crops.data) || [], user: auth.user }),
-    shallowEqual
-  );
-  const [menuConfig] = useState(getMenuConfig(crops, user));
+  const { user } = useSelector(({ auth }) => ({ user: auth.user }), shallowEqual);
+
+  const [menuConfig] = useState(getMenuConfig(user.crops, user));
   const getCropsAction = () => {
     getCrops(user);
   };

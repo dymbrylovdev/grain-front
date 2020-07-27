@@ -1,5 +1,6 @@
 export default function getMenuConfig(crops = [], user) {
   if (user.is_admin) {
+    console.log("cropsMenuConfig:", crops);
     return getAdminMenu(crops);
   }
   if (user.is_vendor) {

@@ -110,7 +110,7 @@ function* getCropsSaga({ payload: { user } }) {
   try {
     const { data } = yield getCrops();
     if (data) {
-      const menuWithCrops = getMenuConfig(data.data, user);
+      const menuWithCrops = getMenuConfig(user.crops, user);
       yield put(builderActions.setMenuConfig(menuWithCrops));
       yield put(actions.cropsSuccess(data));
     }
