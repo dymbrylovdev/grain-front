@@ -7,9 +7,9 @@ import {
   Grid,
   DialogContent,
   IconButton,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -82,7 +82,7 @@ const FilterModal: React.FC<IProps> = ({
 
   const [expanded, setExpanded] = useState<string | false>(false);
 
-  const handleChangeExpansionPanel = (panel: string) => (
+  const handleChangeAccordion = (panel: string) => (
     event: React.ChangeEvent<{}>,
     isExpanded: boolean
   ) => {
@@ -110,12 +110,12 @@ const FilterModal: React.FC<IProps> = ({
           {!!crops &&
             !!allCropParams &&
             crops.map(item => (
-              <ExpansionPanel
+              <Accordion
                 key={item.id}
                 expanded={expanded === `panel${item.id}`}
-                onChange={handleChangeExpansionPanel(`panel${item.id}`)}
+                onChange={handleChangeAccordion(`panel${item.id}`)}
               >
-                <ExpansionPanelSummary
+                <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls={`panel${item.id}-content`}
                   id={`panel${item.id}-header`}
@@ -127,8 +127,8 @@ const FilterModal: React.FC<IProps> = ({
                   ) : (
                     item.name
                   )}
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                </AccordionSummary>
+                <AccordionDetails>
                   <FilterForm
                     intl={intl}
                     dealsFilters={dealsFilters}
@@ -137,8 +137,8 @@ const FilterModal: React.FC<IProps> = ({
                     editFilter={editFilter}
                     editFilterLoading={editFilterLoading}
                   />
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
+                </AccordionDetails>
+              </Accordion>
             ))}
         </div>
       </DialogContent>

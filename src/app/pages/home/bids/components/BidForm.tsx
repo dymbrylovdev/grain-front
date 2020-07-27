@@ -196,6 +196,7 @@ const BidForm: React.FC<IProps> = ({
   const currentCropId: number = !!bid ? bid.crop_id : !!cropId ? cropId : 0;
   const vendor_id =
     (!bid && +vendorId) || (bid && bid.vendor && bid.vendor.id) || (me?.id as number);
+  const vendor = me?.id === vendor_id ? me : user;
 
   const {
     values,
@@ -282,7 +283,8 @@ const BidForm: React.FC<IProps> = ({
     if (!!cropId) fetchCropParams(cropId);
   }, [bid, cropId, fetchCropParams]);
 
-  const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
+  const loading =
+    !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user) || !vendor;
 
   return (
     <div className={classes.form}>
@@ -662,12 +664,12 @@ const BidForm: React.FC<IProps> = ({
         </div>
       )}
 
-      {loading || !crops ? (
+      {loading ? (
         <Skeleton width="100%" height={70} animation="wave" />
       ) : (
         <Autocomplete
           id="crop_id"
-          options={crops}
+          options={vendor?.crops || []}
           getOptionLabel={option => option.name}
           noOptionsText={intl.formatMessage({
             id: "ALL.AUTOCOMPLIT.EMPTY",
