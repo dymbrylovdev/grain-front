@@ -19,6 +19,7 @@
   "ALL.PRICE_OF_TON": "Цена за тонну",
 
   "ALL.AUTOCOMPLIT.EMPTY": "Нет совпадений",
+  "ALL.AUTOCOMPLIT.LOADING_TEXT": "Загрузка...",
 
   "MENU.GRAIN": "Рынок зерна",
   "MENU.ANALITICS": "Аналитика",
@@ -401,6 +402,10 @@
   "TARIFFS.TITLE4": "Зерновые культуры",
   "TARIFFS.TEXT41": "Количество культур, с которыми можно работать в системе",
   "TARIFFS.GENERAL_TERMS": "Общие условия",
+  "TARIFFS.CROPS": "Выбранные культуры:",
+  "TARIFFS.NO_CROPS": "Не выбрано ни одной культуры.",
+  "TARIFFS.MORE_CROPS": "Вы можете добавить еще культуру.",
+  "TARIFFS.NO_MORE_CROPS": "Выбрано максимальное колличество культур.",
 
   "PROMPTER.STEPPER.STEP0": "Профиль",
   "PROMPTER.STEPPER.STEP1": "Выбор культуры",

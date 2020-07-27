@@ -222,7 +222,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
                   {...a11yProps(2)}
                 />
               )}
-              {editMode !== "create" && (
+              {(editMode === "edit" || editMode === "profile") && (
                 <Tab
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
                   {...a11yProps(3)}

@@ -22,13 +22,6 @@ import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { Skeleton } from "@material-ui/lab";
 
 const innerStyles = makeStyles((theme: Theme) => ({
-  group: {
-    marginBottom: theme.spacing(2),
-    padding: theme.spacing(2),
-    border: "1px solid",
-    borderColor: "#e0e0e0",
-    borderRadius: 4,
-  },
   name: {
     marginLeft: theme.spacing(1),
   },
@@ -214,7 +207,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       ) : (
         <>
           {locations.map(item => (
-            <div key={item.id} className={innerClasses.group}>
+            <div key={item.id} className={classes.box}>
               <div className={classes.textFieldContainer}>
                 {loadingMe || loadingUser ? (
                   <Skeleton width="70%" height={30} animation="wave" />
@@ -333,7 +326,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       )}
 
       {editMode !== "view" && (
-        <div className={innerClasses.group}>
+        <div className={classes.box}>
           <div className={classes.textFieldContainer}>
             {!creatingLocation ? (
               <Button
