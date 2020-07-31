@@ -79,6 +79,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </TopTableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
             <TableRow>
               <TableCell></TableCell>

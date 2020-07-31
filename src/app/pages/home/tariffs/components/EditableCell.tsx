@@ -82,6 +82,9 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
       if (realCell.field === "priority_places_bids_on_mailing_count" && +values.value > 5) {
         realValue = 5;
       }
+      if (+values.value > 1000) {
+        realValue = 1000;
+      }
       if (+values.value !== tariff[realCell.field]) {
         edit(realCell.id, { [realCell.field]: realValue });
       } else {
