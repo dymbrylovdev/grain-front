@@ -38,6 +38,7 @@ export interface IUserForRegister {
   email: string;
   roles: TRole[];
   login: string;
+  crop_ids?: number[];
 }
 
 export interface IUserForCreate {
@@ -51,6 +52,7 @@ export interface IUserForCreate {
   location?: ILocation;
   company_id?: number;
   use_vat?: boolean;
+  crop_ids?: number[];
 }
 
 export interface IUserForEdit {

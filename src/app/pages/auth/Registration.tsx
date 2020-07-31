@@ -74,6 +74,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 email: values.email,
                 roles: [values.role as TRole],
                 login: values.email,
+                crop_ids: [1],
               });
             }}
           >

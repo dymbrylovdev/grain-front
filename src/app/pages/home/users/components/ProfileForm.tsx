@@ -120,7 +120,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     onSubmit: values => {
       if (editMode === "profile" && !isEqual(oldValues, values))
         editMe({ data: setMeValues(values) });
-      if (editMode === "create") createUser(setCreateValues(values));
+
+      if (editMode === "create") createUser(setCreateValues({ ...values, crop_ids: [1] }));
       if (editMode === "edit" && user) {
         let params: IUserForEdit = setEditValues(values);
         params.funnel_state_id = values.funnel_state_id;
