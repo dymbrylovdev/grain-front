@@ -36,6 +36,7 @@ interface IProps {
   loading: boolean;
   addUrl?: string;
   salePurchaseMode?: "sale" | "purchase";
+  bestAllMyMode?: "best-bids" | "all-bids" | "my-bids";
 }
 
 const BidTable: React.FC<IProps> = ({
@@ -51,6 +52,7 @@ const BidTable: React.FC<IProps> = ({
   fetcher,
   addUrl,
   salePurchaseMode,
+  bestAllMyMode,
 }) => {
   const history = useHistory();
 
@@ -100,7 +102,16 @@ const BidTable: React.FC<IProps> = ({
           </TableHead>
           <TableBody>
             {bids.map(bid => (
-              <TableRow key={bid.id}>
+              <TableRow
+                key={bid.id}
+                style={{
+                  backgroundColor: `${
+                    bestAllMyMode === "best-bids" && bid.tariff.name !== "Стандартный"
+                      ? "rgba(10, 187, 135, 0.1)"
+                      : ""
+                  }`,
+                }}
+              >
                 <TableCell>{bid.id}</TableCell>
                 <TableCell>
                   {!!user &&

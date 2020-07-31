@@ -67,6 +67,10 @@ export interface IBid {
   price_with_delivery_with_vat: number | null;
   profit: number;
   vat: number | null;
+  tariff: {
+    id: number;
+    name: string;
+  };
 }
 
 export interface IBidToRequest {
