@@ -80,6 +80,12 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   editSuccess,
   editError,
 
+  clearEditMe,
+  editMe,
+  editMeLoading,
+  editMeSuccess,
+  editMeError,
+
   intl,
   editMode,
   userId,
@@ -143,10 +149,16 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         newCropIds.splice(selectedTariff.max_crops_count);
       }
       if (realUser && values.tariff_id) {
-        edit({
-          id: realUser?.id,
-          data: { tariff_id: values.tariff_id, crop_ids: newCropIds },
-        });
+        if (editMode === "profile") {
+          editMe({
+            data: { crop_ids: newCropIds },
+          });
+        } else {
+          edit({
+            id: realUser?.id,
+            data: { tariff_id: values.tariff_id, crop_ids: newCropIds },
+          });
+        }
       }
     },
   });
@@ -189,6 +201,24 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     intl,
     userId,
   ]);
+
+  useEffect(() => {
+    if (editMeSuccess || editMeError) {
+      enqueueSnackbar(
+        editMeSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_PROFILE" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editMeError}`,
+        {
+          variant: editMeSuccess ? "success" : "error",
+        }
+      );
+
+      clearEditMe();
+    }
+    if (editMeSuccess) {
+      fetchMe();
+    }
+  }, [clearEditMe, editError, editMeError, editMeSuccess, enqueueSnackbar, fetchMe, intl]);
 
   useEffect(() => {
     if (me) setMenuConfig(getMenuConfig(me.crops, me));
@@ -351,6 +381,10 @@ const connector = connect(
     editSuccess: state.users.editSuccess,
     editError: state.users.editError,
 
+    editMeLoading: state.auth.editLoading,
+    editMeSuccess: state.auth.editSuccess,
+    editMeError: state.auth.editError,
+
     prompterRunning: state.prompter.running,
     prompterStep: state.prompter.activeStep,
 
@@ -367,6 +401,8 @@ const connector = connect(
 
     clearEdit: usersActions.clearEdit,
     edit: usersActions.editRequest,
+    clearEditMe: authActions.clearEdit,
+    editMe: authActions.editRequest,
 
     setMenuConfig: builderActions.setMenuConfig,
   }
