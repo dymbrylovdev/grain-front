@@ -283,6 +283,8 @@ const BidForm: React.FC<IProps> = ({
     if (!!cropId) fetchCropParams(cropId);
   }, [bid, cropId, fetchCropParams]);
 
+  console.log("vendor?.crops:", vendor?.crops);
+
   const loading =
     !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user) || !vendor;
 

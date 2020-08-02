@@ -6,6 +6,7 @@ import { injectIntl, WrappedComponentProps } from "react-intl";
 import { useSnackbar } from "notistack";
 
 import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
 
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import useStyles from "../styles";
@@ -14,7 +15,16 @@ import { IAppState } from "../../../store/rootDuck";
 
 const MyFiltersMoneyPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
-  RouteComponentProps> = ({ match, intl, editSuccess, editError, clearEdit, fetch, me }) => {
+  RouteComponentProps> = ({
+  match,
+  intl,
+  editSuccess,
+  editError,
+  clearEdit,
+  fetch,
+  fetchMe,
+  me,
+}) => {
   const classes = useStyles();
   let salePurchaseMode: "sale" | "purchase" = "sale";
   if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
@@ -36,6 +46,10 @@ const MyFiltersMoneyPage: React.FC<TPropsFromRedux &
       if (editSuccess) fetch(salePurchaseMode);
     }
   }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, me, salePurchaseMode]);
+
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
 
   return (
     <Paper className={classes.container}>
@@ -61,6 +75,7 @@ const connector = connect(
   }),
   {
     fetch: myFiltersActions.fetchRequest,
+    fetchMe: authActions.fetchRequest,
     clearEdit: myFiltersActions.clearEdit,
   }
 );

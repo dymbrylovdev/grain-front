@@ -12,6 +12,7 @@ import { actions as bidsActions } from "../../../store/ducks/bids.duck";
 import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
 import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
 
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import useStyles from "../styles";
@@ -67,6 +68,7 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   intl,
 
+  fetchMe,
   me,
   activeStep,
   prompterRunning,
@@ -391,6 +393,10 @@ const BidsPage: React.FC<TPropsFromRedux &
     salePurchaseMode,
   ]);
 
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
+
   if (error) return <ErrorPage />;
 
   return (
@@ -652,6 +658,8 @@ const connector = connect(
     delError: state.bids.delError,
   }),
   {
+    fetchMe: authActions.fetchRequest,
+
     fetch: bidsActions.fetchRequest,
     fetchBestBids: bidsActions.fetchBestRequest,
     fetchMyBids: bidsActions.fetchMyRequest,

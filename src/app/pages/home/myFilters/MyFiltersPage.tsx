@@ -19,6 +19,7 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import { useSnackbar } from "notistack";
 
 import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
 
 import { IAppState } from "../../../store/rootDuck";
 import useStyles from "../styles";
@@ -33,6 +34,8 @@ import { declOfNum } from "../../../utils";
 const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps> = ({
   match,
   intl,
+
+  fetchMe,
   me,
   fetch,
   myFilters,
@@ -126,6 +129,10 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
   useEffect(() => {
     fetch(salePurchaseMode);
   }, [fetch, me, salePurchaseMode]);
+
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
 
   if (error) return <ErrorPage />;
 
@@ -288,6 +295,7 @@ const connector = connect(
   }),
   {
     fetch: myFiltersActions.fetchRequest,
+    fetchMe: authActions.fetchRequest,
     clearCreate: myFiltersActions.clearCreate,
     create: myFiltersActions.createRequest,
     clearDel: myFiltersActions.clearDel,

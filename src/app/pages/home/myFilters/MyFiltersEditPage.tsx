@@ -22,6 +22,8 @@ import * as Yup from "yup";
 
 import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
 import { actions as cropsActions } from "../../../store/ducks/crops2.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
+
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
 import CheckBoxParamGroup from "../bids/components/filter/CheckBoxParamGroup";
@@ -66,6 +68,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   match,
   intl,
 
+  fetchMe,
   me,
 
   fetchFilters,
@@ -225,6 +228,10 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
     };
   }, [crops, myFilters, id, fetchCropParams, clearCropParams]);
 
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
+  
   if (!myFilters || !crops) return <Preloader />;
 
   return (
@@ -587,6 +594,7 @@ const connector = connect(
     currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
   }),
   {
+    fetchMe: authActions.fetchRequest,
     fetchFilters: myFiltersActions.fetchRequest,
     fetchCrops: cropsActions.fetchRequest,
     clearCropParams: cropsActions.clearCropParams,

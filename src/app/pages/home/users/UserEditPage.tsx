@@ -39,6 +39,8 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
   match,
   intl,
+
+  fetchMe,
   me,
   loadingMe,
   errorMe,
@@ -78,7 +80,6 @@ const UserEditPage: React.FC<TPropsFromRedux &
   prompterRunning,
   prompterStep,
 
-  fetchMe,
   clearEditMe,
   editMe,
 
@@ -171,6 +172,10 @@ const UserEditPage: React.FC<TPropsFromRedux &
       clearUser();
     };
   }, [clearUser, editMode, fetchUser, id]);
+
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
 
   useEffect(() => {
     if (!prompterRunning && editMode === "profile") {

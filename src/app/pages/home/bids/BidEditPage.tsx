@@ -11,6 +11,7 @@ import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
 import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as yaLocationsActions } from "../../../store/ducks/yaLocations.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
 
 import { IAppState } from "../../../store/rootDuck";
 import { ErrorPage } from "../../../components/ErrorPage";
@@ -36,6 +37,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
 
   intl,
 
+  fetchMe,
   me,
 
   fetchUser,
@@ -170,6 +172,10 @@ const BidEditPage: React.FC<TPropsFromRedux &
     setActiveStep(4);
   }, [setActiveStep]);
 
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
+
   let title = null;
   if (editMode === "create" && !vendorId) title = intl.formatMessage({ id: "BID.TITLE.CREATE" });
   if (editMode === "create" && !!vendorId && !!user && user.id === +vendorId)
@@ -298,6 +304,8 @@ const connector = connect(
   }),
   {
     fetchUser: usersActions.fetchByIdRequest,
+
+    fetchMe: authActions.fetchRequest,
 
     fetch: bidsActions.fetchByIdRequest,
 

@@ -27,6 +27,7 @@ import { useSnackbar } from "notistack";
 
 import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as funnelStatesActions } from "../../../store/ducks/funnelStates.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
 
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
@@ -48,6 +49,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   users,
   loading,
   error,
+
+  fetchMe,
+  me,
 
   fetchFunnelStates,
   funnelStates,
@@ -132,6 +136,10 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     fetchFunnelStates();
   }, [fetchFunnelStates]);
+
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
 
   if (error || funnelStatesError) return <ErrorPage />;
 
@@ -434,6 +442,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
 const connector = connect(
   (state: IAppState) => ({
+    me: state.auth.user,
     page: state.users.page,
     perPage: state.users.per_page,
     total: state.users.total,
@@ -455,6 +464,7 @@ const connector = connect(
     delError: state.users.delError,
   }),
   {
+    fetchMe: authActions.fetchRequest,
     fetch: usersActions.fetchRequest,
     fetchFunnelStates: funnelStatesActions.fetchRequest,
     clearCreate: usersActions.clearCreate,

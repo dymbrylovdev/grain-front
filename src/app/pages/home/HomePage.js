@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { LayoutSplashScreen } from "../../../_metronic";
 import getMenuConfig from "../../router/MenuConfig";
@@ -23,15 +23,19 @@ import { TariffsEditPage } from "./tariffs";
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { user } = useSelector(({ auth }) => ({ user: auth.user }), shallowEqual);
 
-  const [menuConfig] = useState(getMenuConfig(user.crops, user));
   const getCropsAction = () => {
     getCrops(user);
   };
+
   useEffect(() => {
-    setMenuConfig(menuConfig);
     fetchStatuses();
     getCropsAction();
   }, []); // eslint-disable-line
+
+  useEffect(() => {
+    setMenuConfig(getMenuConfig(user.crops, user));
+  }, [setMenuConfig, user]);
+
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>
