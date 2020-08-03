@@ -315,13 +315,14 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               </div>
             </div>
           ))}
-          {loadingMe || loadingUser ? (
-            <p>
-              <Skeleton width="100%" height={19} animation="wave" />
-            </p>
-          ) : (
-            <p>{intl.formatMessage({ id: "LOCATIONS.MORE" })}</p>
-          )}
+          {editMode !== "view" &&
+            (loadingMe || loadingUser ? (
+              <p>
+                <Skeleton width="100%" height={19} animation="wave" />
+              </p>
+            ) : (
+              <p>{intl.formatMessage({ id: "LOCATIONS.MORE" })}</p>
+            ))}
         </>
       )}
 
