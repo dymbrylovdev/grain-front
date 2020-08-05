@@ -82,9 +82,9 @@ const BidTable: React.FC<IProps> = ({
       ) : bids.length > 0 ? (
         <Table aria-label="simple table" className={classes.table}>
           <TableHead>
-            <TableRow>
+            <TableRow className={classes.mobileHide}>
               {clientWidth > 1024 && (
-                <TopTableCell className={classes.mobileHide}>
+                <TopTableCell>
                   <FormattedMessage id="BIDSLIST.TABLE.ID" />
                 </TopTableCell>
               )}

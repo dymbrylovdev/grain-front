@@ -12,6 +12,13 @@ const TopTableCell = withStyles(theme => ({
     fontSize: 16,
     fontWeight: "bold",
   },
+  [theme.breakpoints.down("xs")]: {
+    head: {
+      fontSize: 8,
+      padding: 0,
+      paddingLeft: theme.spacing(2),
+    },
+  },
 }))(TableCell);
 
 export default TopTableCell;
