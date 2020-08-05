@@ -32,6 +32,7 @@ import { setMeValues, setCreateValues, setEditValues } from "../utils/submitValu
 import { IAppState } from "../../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
 import { IUserForEdit } from "../../../../interfaces/users";
+import NumberFormatPhone from "../../../../components/NumberFormatCustom/NumberFormatPhone";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   companyContainer: {
@@ -555,6 +556,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             helperText={touched.phone && errors.phone}
             error={Boolean(touched.phone && errors.phone)}
             disabled={editMode === "view"}
+            InputProps={{
+              inputComponent: NumberFormatPhone as any,
+            }}
             autoComplete="off"
           />
         )}

@@ -171,7 +171,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </TableCell>
             </TableRow>
 
-            <TableRow>
+            {/* <TableRow>
               <TableCell>
                 <b>{intl.formatMessage({ id: "TARIFFS.TITLE2" })}</b>
               </TableCell>
@@ -191,9 +191,9 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 align="center"
                 style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
               ></TableCell>
-            </TableRow>
+            </TableRow> */}
 
-            <TableRow>
+            {/* <TableRow>
               <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT21" })}</TableCell>
               <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}>
                 <EditableCell
@@ -227,7 +227,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   realCell={{ id: 3, field: "common_bids_count" }}
                 />
               </TableCell>
-            </TableRow>
+            </TableRow> */}
 
             <TableRow>
               <TableCell>
