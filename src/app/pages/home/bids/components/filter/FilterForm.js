@@ -1,16 +1,25 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { TextField, Divider, IconButton } from "@material-ui/core";
+import { TextField, Divider, IconButton, Collapse } from "@material-ui/core";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
-import CheckBoxParamGroup from "./CheckBoxParamGroup";
+import { Alert } from "@material-ui/lab";
 
+import CheckBoxParamGroup from "./CheckBoxParamGroup";
 import { declOfNum } from "../../../../../utils/index";
 import NumberParam from "./NumberParam";
 import NumberFormatCustom from "../../../../../components/ui/NumberFormatCustom";
 
-function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
+function FilterForm({
+  classes,
+  intl,
+  enumParams,
+  numberParams,
+  formik,
+  openInfoAlert,
+  setOpenInfoAlert,
+}) {
   const { me, myFilters } = useSelector(state => ({
     me: state.auth.user,
     myFilters: state.myFilters.myFilters,
@@ -18,6 +27,27 @@ function FilterForm({ classes, intl, enumParams, numberParams, formik }) {
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
+      <Collapse in={openInfoAlert}>
+        <Alert
+          className={classes.infoAlert}
+          severity="info"
+          color="info"
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setOpenInfoAlert(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+        >
+          {intl.formatMessage({ id: "FILTERS.INFO_TEXT" })}
+        </Alert>
+      </Collapse>
       <Row>
         {enumParams &&
           enumParams.map(param => (

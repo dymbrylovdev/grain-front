@@ -131,6 +131,9 @@ const FilterModal = ({
   editLoading,
   editSuccess,
   editError,
+
+  openInfoAlert,
+  setOpenInfoAlert,
 }) => {
   const innerClasses = useStyles();
   const [delFilterId, setDelFilterId] = useState(0);
@@ -356,6 +359,8 @@ const FilterModal = ({
             cropId={cropId}
             enumParams={enumParams}
             numberParams={numberParams}
+            openInfoAlert={openInfoAlert}
+            setOpenInfoAlert={setOpenInfoAlert}
             formik={formik}
           />
         </TabPanel>
@@ -492,6 +497,7 @@ export default compose(
       editLoading: state.myFilters.editLoading,
       editSuccess: state.myFilters.editSuccess,
       editError: state.myFilters.editError,
+      openInfoAlert: state.myFilters.openInfoAlert,
     }),
     {
       fetchFilters: myFiltersActions.fetchRequest,
@@ -502,6 +508,7 @@ export default compose(
       delFilter: myFiltersActions.delRequest,
       clearEditFilter: myFiltersActions.clearEdit,
       editFilter: myFiltersActions.editRequest,
+      setOpenInfoAlert: myFiltersActions.setOpenInfoAlert,
     }
   ),
   injectIntl

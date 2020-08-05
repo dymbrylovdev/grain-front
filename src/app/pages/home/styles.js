@@ -181,6 +181,13 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
     marginRight: theme.spacing(1),
   },
+
+  // alerts *********************************************************************************************************************
+
+  infoAlert: {
+    marginBottom: theme.spacing(2),
+    whiteSpace: "pre-wrap",
+  },
 }));
 
 export default useStyles;

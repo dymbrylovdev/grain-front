@@ -22,6 +22,7 @@ const FETCH_SUCCESS = "myFilters/FETCH_SUCCESS";
 const FETCH_FAIL = "myFilters/FETCH_FAIL";
 
 const SET_SELECTED_FILTER_ID = "myFilters/SET_SELECTED_FILTER_ID";
+const SET_OPEN_INFO_ALERT = "myFilters/SET_OPEN_INFO_ALERT";
 
 const SET_CURRENT_SALE_FILTER = "myFilters/SET_CURRENT_SALE_FILTER";
 const CLEAR_CURRENT_SALE_FILTER = "myFilters/CLEAR_CURRENT_SALE_FILTER";
@@ -45,6 +46,8 @@ const DEL_FAIL = "myFilters/DEL_FAIL";
 
 export interface IInitialState {
   selectedFilterId: number | undefined;
+  openInfoAlert: boolean;
+
   myFilters: IMyFilterItem[] | undefined;
   loading: boolean;
   success: boolean;
@@ -70,6 +73,8 @@ export interface IInitialState {
 
 const initialState: IInitialState = {
   selectedFilterId: 0,
+  openInfoAlert: true,
+
   myFilters: undefined,
   loading: false,
   success: false,
@@ -100,6 +105,13 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return {
           ...state,
           selectedFilterId: action.payload.id,
+        };
+      }
+
+      case SET_OPEN_INFO_ALERT: {
+        return {
+          ...state,
+          openInfoAlert: action.payload.openInfoAlert,
         };
       }
 
@@ -281,6 +293,8 @@ export const actions = {
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
   setSelectedFilterId: (id: number) => createAction(SET_SELECTED_FILTER_ID, { id }),
+  setOpenInfoAlert: (openInfoAlert: boolean) =>
+    createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
 
   setCurrentSaleFilter: (cropId: number, filter: { [x: string]: any } | undefined) =>
     createAction(SET_CURRENT_SALE_FILTER, { cropId, filter }),
