@@ -31,6 +31,12 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(2),
     overflowX: "auto",
   },
+  [theme.breakpoints.down("xs")]: {
+    tableContainer: {
+      marginLeft: -15,
+      marginRight: -15,
+    },
+  },
   textSelect: {
     width: "100%",
     marginBottom: theme.spacing(2),
