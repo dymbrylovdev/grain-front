@@ -214,6 +214,7 @@
   "BIDSLIST.TABLE.BUYER": "Покупатель",
   "BIDSLIST.TABLE.FINAL_PRICE": "Цена с учетом доставки",
   "BIDSLIST.TABLE.PROFIT": "Прибыль",
+  "BIDSLIST.TABLE.TIME": "Срок расчета",
   "BIDSLIST.TABLE.MY_POINT": "Мои точки отгрузки",
   "BIDSLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить объявление?",
   "BIDSLIST.DIALOGS.LOADING_TEXT": "Удаление объявление",

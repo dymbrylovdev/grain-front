@@ -188,6 +188,13 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(2),
     whiteSpace: "pre-wrap",
   },
+
+  // mobile *********************************************************************************************************************
+
+  modileHide: {
+    backgroundColor: "green",
+    // display: "none",
+  },
 }));
 
 export default useStyles;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
 import {
   Table,
@@ -56,6 +56,19 @@ const BidTable: React.FC<IProps> = ({
 }) => {
   const history = useHistory();
 
+  const [clientWidth, setClientWidth] = useState(document.body.clientWidth);
+
+  const updateWindowDimensions = () => {
+    setClientWidth(window.innerWidth);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", updateWindowDimensions);
+    return () => {
+      window.removeEventListener("resize", updateWindowDimensions);
+    };
+  }, []);
+
   return (
     <>
       <div className={classes.tableTitle}>{title || ""}</div>
@@ -70,16 +83,18 @@ const BidTable: React.FC<IProps> = ({
         <Table aria-label="simple table" className={classes.table}>
           <TableHead>
             <TableRow>
-              <TopTableCell>
-                <FormattedMessage id="BIDSLIST.TABLE.ID" />
-              </TopTableCell>
+              {clientWidth > 1024 && (
+                <TopTableCell className={classes.mobileHide}>
+                  <FormattedMessage id="BIDSLIST.TABLE.ID" />
+                </TopTableCell>
+              )}
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.COST" />
               </TopTableCell>
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
               </TopTableCell>
-              {salePurchaseMode === "sale" && (
+              {clientWidth > 1024 && salePurchaseMode === "sale" && (
                 <TopTableCell>
                   <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
                 </TopTableCell>
@@ -87,15 +102,20 @@ const BidTable: React.FC<IProps> = ({
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.VOLUME" />
               </TopTableCell>
-              <TopTableCell>
-                {salePurchaseMode === "sale" ? (
-                  <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
-                ) : (
-                  <FormattedMessage id="BIDSLIST.TABLE.BUYER" />
-                )}
-              </TopTableCell>
+              {clientWidth > 1024 && (
+                <TopTableCell>
+                  {salePurchaseMode === "sale" ? (
+                    <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
+                  ) : (
+                    <FormattedMessage id="BIDSLIST.TABLE.BUYER" />
+                  )}
+                </TopTableCell>
+              )}
               <TopTableCell>
                 <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
+              </TopTableCell>
+              <TopTableCell>
+                <FormattedMessage id="BIDSLIST.TABLE.TIME" />
               </TopTableCell>
               <TopTableCell></TopTableCell>
             </TableRow>
@@ -112,7 +132,7 @@ const BidTable: React.FC<IProps> = ({
                   }`,
                 }}
               >
-                <TableCell>{bid.id}</TableCell>
+                {clientWidth > 1024 && <TableCell>{bid.id}</TableCell>}
                 <TableCell>
                   {!!user &&
                   user.use_vat &&
@@ -151,7 +171,7 @@ const BidTable: React.FC<IProps> = ({
                       : Math.round(bid.price - bid.price_delivery)
                     : "-"}
                 </TableCell>
-                {salePurchaseMode === "sale" && (
+                {clientWidth > 1024 && salePurchaseMode === "sale" && (
                   <TableCell>
                     <Grid container direction="column" justify="center" alignItems="flex-start">
                       {bid.point_prices.map(
@@ -173,16 +193,20 @@ const BidTable: React.FC<IProps> = ({
                   </TableCell>
                 )}
                 <TableCell>{bid.volume}</TableCell>
-                <TableCell>
-                  <Grid container direction="column" justify="center" alignItems="flex-start">
-                    <div>{`${bid.vendor.fio || ""}`}</div>
-                    {bid.vendor.company && (
-                      <div style={{ marginTop: 10 }}>{`${bid.vendor.company.short_name ||
-                        ""}`}</div>
-                    )}
-                  </Grid>
-                </TableCell>
+                {clientWidth > 1024 && (
+                  <TableCell>
+                    <Grid container direction="column" justify="center" alignItems="flex-start">
+                      <div>{`${bid.vendor.fio || ""}`}</div>
+                      {bid.vendor.company && (
+                        <div style={{ marginTop: 10 }}>{`${bid.vendor.company.short_name ||
+                          ""}`}</div>
+                      )}
+                    </Grid>
+                  </TableCell>
+                )}
                 <TableCell>{bid.distance || "-"}</TableCell>
+
+                <TableCell>-</TableCell>
 
                 <TableCell align="right">
                   <IconButton
