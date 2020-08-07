@@ -146,7 +146,7 @@ function FilterForm({
         {intl.formatMessage(
           { id: "FILTER.FORM.LIMIT" },
           {
-            count: me.tariff.max_filters_count - myFilters?.length || "",
+            count: me.tariff.max_filters_count - myFilters?.length || "0",
             word: declOfNum(me.tariff.max_filters_count - myFilters?.length, [
               "фильтр",
               "фильтра",

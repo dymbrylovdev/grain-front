@@ -426,7 +426,7 @@ const FilterModal = ({
                 <Grid item>
                   <ButtonWithLoader
                     loading={createLoading}
-                    disabled={createLoading}
+                    disabled={createLoading || me.tariff.max_filters_count - myFilters?.length <= 0}
                     onPress={() => {
                       if (!!currentFilter && currentFilter.name === formik.values.name) {
                         const crop = crops.find(crop => crop.id === cropId);

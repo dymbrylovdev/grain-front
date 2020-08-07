@@ -35,16 +35,30 @@ class HeaderMobile extends React.Component {
 
         <div className="kt-header-mobile__toolbar">
           {asideDisplay && (
-            <button
-              // className="kt-header-mobile__toggler kt-header-mobile__toggler--left old_menu_item_text"
-              className={`kt-header-mobile__toggler kt-header-mobile__toggler--left ${running &&
-                activeStep === 1 &&
-                "old_menu_item_text"}`}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                color: "#ffffff",
+                fontSize: 14,
+                fontWeight: "bold",
+                cursor: "pointer",
+                padding: 4,
+                borderRadius: 4,
+              }}
+              className={`${running && activeStep === 1 && "old_menu_item_text"}`}
               id="kt_aside_mobile_toggler"
-              onClick={() => {}}
             >
-              <span />
-            </button>
+              <div>Меню</div>
+              <button
+                // className="kt-header-mobile__toggler kt-header-mobile__toggler--left old_menu_item_text"
+                className={`kt-header-mobile__toggler kt-header-mobile__toggler--left`}
+                onClick={() => {}}
+              >
+                <span />
+              </button>
+            </div>
           )}
 
           {/* {headerMenuSelfDisplay && (
