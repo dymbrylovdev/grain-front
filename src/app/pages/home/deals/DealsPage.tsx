@@ -164,21 +164,23 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </div>
             </div>
           </div>
-          <div>
-            {intl.formatMessage({ id: "DEALS.FILTER.NAME" })}
-            <IconButton
-              onClick={() => {
-                setFilterModalOpen(true);
-              }}
-            >
-              <CustomIcon
-                path={
-                  isDealsFilterEmpty(dealsFilters)
-                    ? "/media/filter/filter.svg"
-                    : "/media/filter/filter_full.svg"
-                }
-              />
-            </IconButton>
+          <div className={classes.flexRow} style={{ textAlign: "right", marginLeft: 16 }}>
+            <div>{intl.formatMessage({ id: "DEALS.FILTER.NAME" })}</div>
+            <div>
+              <IconButton
+                onClick={() => {
+                  setFilterModalOpen(true);
+                }}
+              >
+                <CustomIcon
+                  path={
+                    isDealsFilterEmpty(dealsFilters)
+                      ? "/media/filter/filter.svg"
+                      : "/media/filter/filter_full.svg"
+                  }
+                />
+              </IconButton>
+            </div>
           </div>
         </div>
       }
@@ -195,114 +197,116 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       ) : !deals?.length ? (
         <div>{intl.formatMessage({ id: "DEALS.EMPTY" })}</div>
       ) : (
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TopTableCell>
-                <FormattedMessage id="DEALS.TABLE.CROP" />
-              </TopTableCell>
-              <TopTableCell>
-                <FormattedMessage id="DEALS.TABLE.SALE" />
-              </TopTableCell>
-              <TopTableCell>
-                <FormattedMessage id="DEALS.TABLE.PURCHASE" />
-              </TopTableCell>
-              <TopTableCell>
-                <FormattedMessage id="DEALS.TABLE.PROFIT" />
-              </TopTableCell>
-              <TopTableCell>
-                <FormattedMessage id="DEALS.TABLE.DISTANCE" />
-              </TopTableCell>
-              <TopTableCell></TopTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {!!deals &&
-              deals.map((item, i) => (
-                <TableRow key={i}>
-                  <TableCell>
-                    {crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}
-                  </TableCell>
-                  <TableCell>
-                    <div className={classes.flexColumn}>
-                      <div>
-                        <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                        <strong>{item.sale_bid.price}</strong>
+        <div className={classes.table}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TopTableCell>
+                  <FormattedMessage id="DEALS.TABLE.CROP" />
+                </TopTableCell>
+                <TopTableCell>
+                  <FormattedMessage id="DEALS.TABLE.SALE" />
+                </TopTableCell>
+                <TopTableCell>
+                  <FormattedMessage id="DEALS.TABLE.PURCHASE" />
+                </TopTableCell>
+                <TopTableCell>
+                  <FormattedMessage id="DEALS.TABLE.PROFIT" />
+                </TopTableCell>
+                <TopTableCell>
+                  <FormattedMessage id="DEALS.TABLE.DISTANCE" />
+                </TopTableCell>
+                <TopTableCell></TopTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {!!deals &&
+                deals.map((item, i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      {crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}
+                    </TableCell>
+                    <TableCell>
+                      <div className={classes.flexColumn}>
+                        <div>
+                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                          <strong>{item.sale_bid.price}</strong>
+                        </div>
+                        <div>
+                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                          <strong>{item.sale_bid.volume}</strong>
+                        </div>
+                        <div>
+                          {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
+                          {item.sale_bid.location.text}
+                        </div>
+                        <div>
+                          {intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}
+                          {item.sale_bid &&
+                            item.sale_bid.vendor &&
+                            ((item.sale_bid.vendor.company &&
+                              item.sale_bid.vendor.company.short_name) ||
+                              item.sale_bid.vendor.fio ||
+                              item.sale_bid.vendor.login)}
+                        </div>
                       </div>
-                      <div>
-                        <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                        <strong>{item.sale_bid.volume}</strong>
+                    </TableCell>
+                    <TableCell>
+                      <div className={classes.flexColumn}>
+                        <div>
+                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                          <strong>{item.purchase_bid.price}</strong>
+                        </div>
+                        <div>
+                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                          <strong>{item.purchase_bid.volume}</strong>
+                        </div>
+                        <div>
+                          {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
+                          {item.purchase_bid.location.text}
+                        </div>
+                        <div>
+                          {intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}
+                          {item.purchase_bid &&
+                            item.purchase_bid.vendor &&
+                            ((item.purchase_bid.vendor.company &&
+                              item.purchase_bid.vendor.company.short_name) ||
+                              item.purchase_bid.vendor.fio ||
+                              item.purchase_bid.vendor.login)}
+                        </div>
                       </div>
-                      <div>
-                        {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
-                        {item.sale_bid.location.text}
-                      </div>
-                      <div>
-                        {intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}
-                        {item.sale_bid &&
-                          item.sale_bid.vendor &&
-                          ((item.sale_bid.vendor.company &&
-                            item.sale_bid.vendor.company.short_name) ||
-                            item.sale_bid.vendor.fio ||
-                            item.sale_bid.vendor.login)}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className={classes.flexColumn}>
-                      <div>
-                        <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                        <strong>{item.purchase_bid.price}</strong>
-                      </div>
-                      <div>
-                        <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                        <strong>{item.purchase_bid.volume}</strong>
-                      </div>
-                      <div>
-                        {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
-                        {item.purchase_bid.location.text}
-                      </div>
-                      <div>
-                        {intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}
-                        {item.purchase_bid &&
-                          item.purchase_bid.vendor &&
-                          ((item.purchase_bid.vendor.company &&
-                            item.purchase_bid.vendor.company.short_name) ||
-                            item.purchase_bid.vendor.fio ||
-                            item.purchase_bid.vendor.login)}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{Math.round(item.profit_with_delivery_price)}</TableCell>
-                  <TableCell>{item.distance}</TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      size="medium"
-                      color="primary"
-                      onClick={() =>
-                        history.push(
-                          `/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`
-                        )
-                      }
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePaginator
-                page={page}
-                realPerPage={deals.length}
-                perPage={perPage}
-                total={total}
-                fetchRows={(page, perPage) => fetch(page, perPage, weeks)}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
+                    </TableCell>
+                    <TableCell>{Math.round(item.profit_with_delivery_price)}</TableCell>
+                    <TableCell>{item.distance}</TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        size="medium"
+                        color="primary"
+                        onClick={() =>
+                          history.push(
+                            `/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`
+                          )
+                        }
+                      >
+                        <VisibilityIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePaginator
+                  page={page}
+                  realPerPage={deals.length}
+                  perPage={perPage}
+                  total={total}
+                  fetchRows={(page, perPage) => fetch(page, perPage, weeks)}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </div>
       )}
       <FilterModal
         intl={intl}

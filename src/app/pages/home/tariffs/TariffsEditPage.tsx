@@ -67,111 +67,112 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           <Skeleton width="100%" height={52} animation="wave" />
         </>
       ) : (
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TopTableCell></TopTableCell>
-              <TopTableCell colSpan={2} align="center">
-                {tariffs[0].name}
-              </TopTableCell>
-              <TopTableCell colSpan={2} align="center">
-                {tariffs[3].name}
-              </TopTableCell>
-            </TableRow>
-          </TableHead>
+        <div className={classes.table}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TopTableCell></TopTableCell>
+                <TopTableCell colSpan={2} align="center">
+                  {tariffs[0].name}
+                </TopTableCell>
+                <TopTableCell colSpan={2} align="center">
+                  {tariffs[3].name}
+                </TopTableCell>
+              </TableRow>
+            </TableHead>
 
-          <TableBody>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.2)" }}>
-                <b>{intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })}</b>
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.2)" }}>
-                <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-                <b>{intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })}</b>
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-                <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
-              </TableCell>
-            </TableRow>
+            <TableBody>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.2)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.2)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
+                </TableCell>
+              </TableRow>
 
-            <TableRow>
-              <TableCell>
-                <b>{intl.formatMessage({ id: "TARIFFS.TITLE1" })}</b>
-              </TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
-              ></TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
-              ></TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
-              ></TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
-              ></TableCell>
-            </TableRow>
+              <TableRow>
+                <TableCell>
+                  <b>{intl.formatMessage({ id: "TARIFFS.TITLE1" })}</b>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
+                ></TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
+                ></TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
+                ></TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
+                ></TableCell>
+              </TableRow>
 
-            <TableRow>
-              <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT11" })}</TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}>
-                {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1" }}>
-                {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 4) as ITariff}
-                  realCell={{ id: 4, field: "priority_places_bids_count" }}
-                />
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 3) as ITariff}
-                  realCell={{ id: 3, field: "priority_places_bids_count" }}
-                />
-              </TableCell>
-            </TableRow>
+              <TableRow>
+                <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT11" })}</TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}>
+                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1" }}>
+                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 4) as ITariff}
+                    realCell={{ id: 4, field: "priority_places_bids_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 3) as ITariff}
+                    realCell={{ id: 3, field: "priority_places_bids_count" }}
+                  />
+                </TableCell>
+              </TableRow>
 
-            <TableRow>
-              <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT12" })}</TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}>
-                {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1" }}>
-                {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 4) as ITariff}
-                  realCell={{ id: 4, field: "priority_places_bids_on_mailing_count" }}
-                />
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 3) as ITariff}
-                  realCell={{ id: 3, field: "priority_places_bids_on_mailing_count" }}
-                />
-              </TableCell>
-            </TableRow>
+              <TableRow>
+                <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT12" })}</TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}>
+                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1" }}>
+                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 4) as ITariff}
+                    realCell={{ id: 4, field: "priority_places_bids_on_mailing_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 3) as ITariff}
+                    realCell={{ id: 3, field: "priority_places_bids_on_mailing_count" }}
+                  />
+                </TableCell>
+              </TableRow>
 
-            {/* <TableRow>
+              {/* <TableRow>
               <TableCell>
                 <b>{intl.formatMessage({ id: "TARIFFS.TITLE2" })}</b>
               </TableCell>
@@ -193,7 +194,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               ></TableCell>
             </TableRow> */}
 
-            {/* <TableRow>
+              {/* <TableRow>
               <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT21" })}</TableCell>
               <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}>
                 <EditableCell
@@ -229,123 +230,124 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </TableCell>
             </TableRow> */}
 
-            <TableRow>
-              <TableCell>
-                <b>{intl.formatMessage({ id: "TARIFFS.TITLE3" })}</b>
-              </TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
-              ></TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
-              ></TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
-              ></TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
-              ></TableCell>
-            </TableRow>
+              <TableRow>
+                <TableCell>
+                  <b>{intl.formatMessage({ id: "TARIFFS.TITLE3" })}</b>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
+                ></TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
+                ></TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
+                ></TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
+                ></TableCell>
+              </TableRow>
 
-            <TableRow>
-              <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT31" })}</TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 1) as ITariff}
-                  realCell={{ id: 1, field: "max_filters_count" }}
-                />
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 2) as ITariff}
-                  realCell={{ id: 2, field: "max_filters_count" }}
-                />
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 4) as ITariff}
-                  realCell={{ id: 4, field: "max_filters_count" }}
-                />
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 3) as ITariff}
-                  realCell={{ id: 3, field: "max_filters_count" }}
-                />
-              </TableCell>
-            </TableRow>
+              <TableRow>
+                <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT31" })}</TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 1) as ITariff}
+                    realCell={{ id: 1, field: "max_filters_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 2) as ITariff}
+                    realCell={{ id: 2, field: "max_filters_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 4) as ITariff}
+                    realCell={{ id: 4, field: "max_filters_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 3) as ITariff}
+                    realCell={{ id: 3, field: "max_filters_count" }}
+                  />
+                </TableCell>
+              </TableRow>
 
-            <TableRow>
-              <TableCell>
-                <b>{intl.formatMessage({ id: "TARIFFS.TITLE4" })}</b>
-              </TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
-              ></TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
-              ></TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
-              ></TableCell>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
-              ></TableCell>
-            </TableRow>
+              <TableRow>
+                <TableCell>
+                  <b>{intl.formatMessage({ id: "TARIFFS.TITLE4" })}</b>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
+                ></TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}
+                ></TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
+                ></TableCell>
+                <TableCell
+                  align="center"
+                  style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}
+                ></TableCell>
+              </TableRow>
 
-            <TableRow>
-              <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT41" })}</TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 1) as ITariff}
-                  realCell={{ id: 1, field: "max_crops_count" }}
-                />
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 2) as ITariff}
-                  realCell={{ id: 2, field: "max_crops_count" }}
-                />
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 4) as ITariff}
-                  realCell={{ id: 4, field: "max_crops_count" }}
-                />
-              </TableCell>
-              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                <EditableCell
-                  cell={cell}
-                  setCell={setCell}
-                  tariff={tariffs.find(item => item.id === 3) as ITariff}
-                  realCell={{ id: 3, field: "max_crops_count" }}
-                />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+              <TableRow>
+                <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT41" })}</TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 1) as ITariff}
+                    realCell={{ id: 1, field: "max_crops_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(99, 99, 99, 0.1" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 2) as ITariff}
+                    realCell={{ id: 2, field: "max_crops_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 4) as ITariff}
+                    realCell={{ id: 4, field: "max_crops_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 3) as ITariff}
+                    realCell={{ id: 3, field: "max_crops_count" }}
+                  />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
       )}
     </Paper>
   );

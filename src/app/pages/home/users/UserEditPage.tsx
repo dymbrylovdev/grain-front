@@ -192,7 +192,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
     <>
       <ScrollToTop />
       <Prompter />
-      <Paper className={classes.container}>
+      <Paper className={classes.tableContainer}>
         <LayoutSubheader
           title={subTitle(editMode)}
           breadcrumb={undefined}

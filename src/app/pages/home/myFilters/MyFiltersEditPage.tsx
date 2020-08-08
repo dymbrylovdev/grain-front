@@ -231,11 +231,11 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   useEffect(() => {
     fetchMe();
   }, [fetchMe]);
-  
+
   if (!myFilters || !crops) return <Preloader />;
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.tableContainer}>
       <LayoutSubheader
         title={`${
           +id

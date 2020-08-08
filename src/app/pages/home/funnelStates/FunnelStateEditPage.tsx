@@ -152,7 +152,7 @@ const FunnelStateEditPage: React.FC<TPropsFromRedux &
   if (error) return <ErrorPage />;
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.tableContainer}>
       {!!funnelStates && (
         <LayoutSubheader
           title={`${

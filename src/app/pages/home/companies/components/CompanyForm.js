@@ -85,7 +85,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
   });
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.tableContainer}>
       <CompanySearchDialog
         classes={classes}
         companies={companies}

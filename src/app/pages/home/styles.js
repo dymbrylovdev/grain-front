@@ -29,13 +29,7 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-    overflowX: "auto",
-  },
-  [theme.breakpoints.down("xs")]: {
-    tableContainer: {
-      marginLeft: -15,
-      marginRight: -15,
-    },
+    overflowX: "hidden",
   },
   textSelect: {
     width: "100%",
@@ -45,7 +39,8 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
   },
   table: {
-    width: "100%",
+    flex: 1,
+    overflowX: "auto",
   },
   tableFooterText: {
     marginLeft: theme.spacing(1),
@@ -197,9 +192,15 @@ const useStyles = makeStyles(theme => ({
 
   // mobile *********************************************************************************************************************
 
-  modileHide: {
-    backgroundColor: "green",
-    // display: "none",
+  [theme.breakpoints.down("xs")]: {
+    tableContainer: {
+      marginLeft: -15,
+      marginRight: -15,
+    },
+    table: {
+      marginLeft: -theme.spacing(2),
+      marginRight: -theme.spacing(2),
+    },
   },
 }));
 

@@ -53,37 +53,39 @@ function CropsListPage({ setMenuConfig, getCrops, match }) {
           <FormattedMessage id="CROPSLIST.BUTTON.CREATE" />
         </Button>
       </div>
-      <Table aria-label="simple table" className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TopTableCell>
-              <FormattedMessage id="CROPSLIST.TABLE.ID" />
-            </TopTableCell>
-            <TopTableCell>
-              <FormattedMessage id="CROPSLIST.TABLE.NAME" />
-            </TopTableCell>
-            <TopTableCell>
-              <FormattedMessage id="CROPSLIST.TABLE.ACTIONS" />
-            </TopTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {crops &&
-            crops.map(crop => (
-              <TableRow key={crop.id}>
-                <TableCell>{crop.id}</TableCell>
-                <TableCell>{crop.name}</TableCell>
-                <TableCell>
-                  <Link to={`/crop/edit/${crop.id}`}>
-                    <IconButton size="medium" color="primary">
-                      <EditIcon />
-                    </IconButton>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+      <div className={classes.table}>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TopTableCell>
+                <FormattedMessage id="CROPSLIST.TABLE.ID" />
+              </TopTableCell>
+              <TopTableCell>
+                <FormattedMessage id="CROPSLIST.TABLE.NAME" />
+              </TopTableCell>
+              <TopTableCell>
+                <FormattedMessage id="CROPSLIST.TABLE.ACTIONS" />
+              </TopTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {crops &&
+              crops.map(crop => (
+                <TableRow key={crop.id}>
+                  <TableCell>{crop.id}</TableCell>
+                  <TableCell>{crop.name}</TableCell>
+                  <TableCell>
+                    <Link to={`/crop/edit/${crop.id}`}>
+                      <IconButton size="medium" color="primary">
+                        <EditIcon />
+                      </IconButton>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </div>
     </Paper>
   );
 }

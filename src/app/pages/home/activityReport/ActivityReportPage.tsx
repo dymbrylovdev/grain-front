@@ -43,7 +43,7 @@ const ActivityReportPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   if (error) return <ErrorPage />;
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.tableContainer}>
       <div className={classes.form2}>
         <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.ACTIVITY_REPORT" })} />
         <AppBar position="static" color="default" className={classes.appBar}>

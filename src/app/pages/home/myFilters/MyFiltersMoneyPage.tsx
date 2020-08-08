@@ -52,7 +52,7 @@ const MyFiltersMoneyPage: React.FC<TPropsFromRedux &
   }, [fetchMe]);
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.tableContainer}>
       <LayoutSubheader
         title={`${intl.formatMessage({ id: "SUBHEADER.PARTS.EDIT" })} ${intl.formatMessage({
           id: "SUBHEADER.PARTS.PRICE",

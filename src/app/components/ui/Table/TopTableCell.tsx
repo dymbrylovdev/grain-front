@@ -14,7 +14,7 @@ const TopTableCell = withStyles(theme => ({
   },
   [theme.breakpoints.down("xs")]: {
     head: {
-      fontSize: 8,
+      fontSize: 10,
       paddingRight: 0,
       // paddingLeft: theme.spacing(2),
     },

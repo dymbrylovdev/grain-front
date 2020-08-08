@@ -18,11 +18,11 @@ function CropForm({
     setCropParams([...cropParams, ...[{ id: null }]]);
   };
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.tableContainer}>
       <div className={classes.form}>
         <FormLabel className={classes.titleText}>
-            <FormattedMessage id="CROP.STATUS.ALARM"/>
-            </FormLabel>   
+          <FormattedMessage id="CROP.STATUS.ALARM" />
+        </FormLabel>
         <CropTitleForm
           crop={crop}
           classes={classes}
@@ -31,7 +31,6 @@ function CropForm({
         />
         {cropParams &&
           cropParams.map((cropParam, index) => (
-
             <CropParamForm
               key={`i${index}`}
               classes={classes}

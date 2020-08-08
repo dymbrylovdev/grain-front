@@ -192,62 +192,68 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
               )}
             </div>
           )}
-          <Table aria-label="simple table" className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TopTableCell>
-                  <FormattedMessage id="FILTERS.TABLE.HEADER.CROP" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="FILTERS.TABLE.HEADER.NAME" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="FILTERS.TABLE.HEADER.SUBSCRIPTION" />
-                </TopTableCell>
-                <TopTableCell align="right"></TopTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {myFilters
-                .sort((a, b) => a.crop.id - b.crop.id)
-                .map(item => (
-                  <TableRow key={item.id}>
-                    <TableCell>{item.crop.name}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>
-                      <StatusIndicator isActive={item.subscribed} />
-                    </TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        size="medium"
-                        color="primary"
-                        onClick={() => history.push(`/${salePurchaseMode}/filters/view/${item.id}`)}
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
-                      <IconButton
-                        size="medium"
-                        color="primary"
-                        onClick={() => history.push(`/${salePurchaseMode}/filters/edit/${item.id}`)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        size="medium"
-                        onClick={() => {
-                          setDeleteFilterCropId(item.crop.id);
-                          setDeleteFilterId(item.id || 0);
-                          setAlertOpen(true);
-                        }}
-                        color="secondary"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
+          <div className={classes.table}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TopTableCell>
+                    <FormattedMessage id="FILTERS.TABLE.HEADER.CROP" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="FILTERS.TABLE.HEADER.NAME" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="FILTERS.TABLE.HEADER.SUBSCRIPTION" />
+                  </TopTableCell>
+                  <TopTableCell align="right"></TopTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {myFilters
+                  .sort((a, b) => a.crop.id - b.crop.id)
+                  .map(item => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.crop.name}</TableCell>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>
+                        <StatusIndicator isActive={item.subscribed} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          size="medium"
+                          color="primary"
+                          onClick={() =>
+                            history.push(`/${salePurchaseMode}/filters/view/${item.id}`)
+                          }
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
+                        <IconButton
+                          size="medium"
+                          color="primary"
+                          onClick={() =>
+                            history.push(`/${salePurchaseMode}/filters/edit/${item.id}`)
+                          }
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          size="medium"
+                          onClick={() => {
+                            setDeleteFilterCropId(item.crop.id);
+                            setDeleteFilterId(item.id || 0);
+                            setAlertOpen(true);
+                          }}
+                          color="secondary"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </div>
         </>
       )}
       <AlertDialog
