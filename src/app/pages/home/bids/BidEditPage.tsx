@@ -215,7 +215,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
   return (
     <>
       <Prompter />
-      <Paper className={classes.container}>
+      <Paper className={classes.paperWithForm}>
         {title && <LayoutSubheader title={title} />}
         {isNoModerate ? (
           <div className={classes.titleText}>

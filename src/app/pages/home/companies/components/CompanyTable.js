@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import Footer from "../../../../components/ui/Table/TableFooter";
 import TopTableCell from "../../../../components/ui/Table/TopTableCell";
-import { PortletHeaderTitle } from "../../../../../app/partials/content/Portlet";
+// import { PortletHeaderTitle } from "../../../../../app/partials/content/Portlet";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 
 function CompanyTable({
@@ -30,7 +30,7 @@ function CompanyTable({
   };
   return (
     <>
-      {title && <PortletHeaderTitle className={classes.tableTitle}>{title}</PortletHeaderTitle>}
+      {/* {title && <PortletHeaderTitle className={classes.tableTitle}>{title}</PortletHeaderTitle>} */}
       {companies && companies.map && companies.length > 0 && (
         <div className={classes.table}>
           <Table aria-label="simple table">

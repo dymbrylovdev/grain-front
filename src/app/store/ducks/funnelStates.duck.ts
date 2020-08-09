@@ -111,7 +111,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_SUCCESS: {
-      // console.log("Fetch funnel states: ", action.payload);
+      // console.log("Fetch funnel states:", action.payload);
       return {
         ...state,
         funnelStates: action.payload.data,

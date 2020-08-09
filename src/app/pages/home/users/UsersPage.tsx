@@ -144,17 +144,19 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   if (error || funnelStatesError) return <ErrorPage />;
 
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithTable}>
       <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.USER.LIST" })} />
-      <Button
-        className={classes.topAndBottomMargin}
-        variant="contained"
-        color="primary"
-        onClick={() => history.push("/user/create")}
-        disabled={!users || !funnelStates}
-      >
-        {intl.formatMessage({ id: "USERLIST.BUTTON.ADD_USER" })}
-      </Button>
+      <div>
+        <Button
+          className={classes.topAndBottomMargin}
+          variant="contained"
+          color="primary"
+          onClick={() => history.push("/user/create")}
+          disabled={!users || !funnelStates}
+        >
+          {intl.formatMessage({ id: "USERLIST.BUTTON.ADD_USER" })}
+        </Button>
+      </div>
       {!users || !funnelStates ? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />

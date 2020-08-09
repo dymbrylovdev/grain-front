@@ -47,7 +47,7 @@ function CropsListPage({ setMenuConfig, getCrops, match }) {
 
   if (errors.crops) return <LoadError handleClick={() => getCropsAction()} />;
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithTable}>
       <div className={classes.buttonContainer}>
         <Button variant="contained" color="primary" onClick={() => history.push("/crop/create")}>
           <FormattedMessage id="CROPSLIST.BUTTON.CREATE" />

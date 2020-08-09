@@ -18,7 +18,7 @@ function CropForm({
     setCropParams([...cropParams, ...[{ id: null }]]);
   };
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithForm}>
       <div className={classes.form}>
         <FormLabel className={classes.titleText}>
           <FormattedMessage id="CROP.STATUS.ALARM" />

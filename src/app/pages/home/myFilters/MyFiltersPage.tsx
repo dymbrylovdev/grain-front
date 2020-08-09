@@ -137,7 +137,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
   if (error) return <ErrorPage />;
 
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithTable}>
       <LayoutSubheader
         title={
           salePurchaseMode === "sale"

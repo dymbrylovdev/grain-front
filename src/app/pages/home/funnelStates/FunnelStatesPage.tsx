@@ -83,7 +83,7 @@ const FunnelStatesPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   if (error) return <ErrorPage />;
 
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithForm}>
       <LayoutSubheader title={intl.formatMessage({ id: "FUNNEL_STATES.TITLE" })} />
       <AppBar position="static" color="default" className={classes.appBar}>
         <Tabs

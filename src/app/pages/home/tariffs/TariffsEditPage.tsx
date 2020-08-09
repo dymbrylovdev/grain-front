@@ -48,8 +48,8 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   if (error) return <ErrorPage />;
 
   return (
-    <Paper className={classes.tableContainer}>
-      <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.TARIFFS" })} />
+    <Paper className={classes.paperWithTable}>
+      <LayoutSubheader title={intl.formatMessage({ id: "TARIFFS.MAIN_TITLE" })} />
       <div className={classes.bottomMargin2}></div>
       {!tariffs ? (
         <>

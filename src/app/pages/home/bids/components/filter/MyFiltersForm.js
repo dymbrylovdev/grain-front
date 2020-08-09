@@ -21,7 +21,7 @@ import { fromApiToFilter } from "../../../myFilters/utils";
 import { filterForCreate } from "../../../myFilters/utils";
 import AlertDialog from "../../../../../components/ui/Dialogs/AlertDialog";
 import { OutlinedRedButton } from "../../../../../components/ui/Buttons/RedButtons";
-import NumberFormatCustom from "../../../../../components/ui/NumberFormatCustom";
+import NumberFormatCustom from "../../../../../components/NumberFormatCustom/NumberFormatCustom";
 
 const innerStyle = makeStyles(theme => ({
   buttonContainer: {

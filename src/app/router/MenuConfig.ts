@@ -1,4 +1,8 @@
-export default function getMenuConfig(crops = [], user) {
+import { ICrop } from "../interfaces/crops";
+import { IUser } from "../interfaces/users";
+
+export default function getMenuConfig(crops: ICrop[] = [], user: IUser) {
+  const role = user.roles[0];
   if (user.is_admin) {
     return getAdminMenu(crops);
   }
@@ -8,7 +12,9 @@ export default function getMenuConfig(crops = [], user) {
   return getBuyerMenu(crops);
 }
 
-const getAdminMenu = crops => ({
+// ***ADMIN******ADMIN******ADMIN******ADMIN******ADMIN******ADMIN******ADMIN******ADMIN******ADMIN******ADMIN***
+
+const getAdminMenu = (crops: ICrop[]) => ({
   header: {
     self: {},
     items: [],
@@ -198,15 +204,21 @@ const getAdminMenu = crops => ({
           },
           {
             title: "Тарифы",
-            page: "tariffs",
+            page: "",
             translate: "SUBMENU.TARIFFS",
+            submenu: [
+              {
+                title: "Ограничения",
+                page: "tariffs",
+                translate: "SUBMENU.TARIFFS.LIMITS",
+              },
+              {
+                title: "Пробный период",
+                page: "trial",
+                translate: "SUBMENU.TARIFFS.TRIAL",
+              },
+            ],
           },
-          // {
-          //   title: "Настройки системы",
-          //   root: true,
-          //   page: "",
-          //   translate: "SUBMENU.SYSTEM.SETTINGS",
-          // },
         ],
       },
       {
@@ -232,7 +244,9 @@ const getAdminMenu = crops => ({
   },
 });
 
-const getVendorMenu = crops => ({
+// ***SELLER******SELLER******SELLER******SELLER******SELLER******SELLER******SELLER******SELLER******SELLER***
+
+const getVendorMenu = (crops: ICrop[]) => ({
   header: {
     self: {},
     items: [],
@@ -296,7 +310,9 @@ const getVendorMenu = crops => ({
   },
 });
 
-const getBuyerMenu = crops => ({
+// ***BUYER******BUYER******BUYER******BUYER******BUYER******BUYER******BUYER******BUYER******BUYER******BUYER***
+
+const getBuyerMenu = (crops: ICrop[]) => ({
   header: {
     self: {},
     items: [],

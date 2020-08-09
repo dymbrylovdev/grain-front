@@ -1,13 +1,22 @@
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
-  container: {
+  paperWithTable: {
     display: "flex",
     flexDirection: "column",
-    background: "white",
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    overflowX: "hidden",
+  },
+  paperWithForm: {
+    display: "flex",
+    flexDirection: "column",
     alignItems: "center",
-    //justifyContent: "center",
-    boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .3)",
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    overflowX: "hidden",
   },
   form: {
     maxWidth: "800px",
@@ -17,19 +26,11 @@ const useStyles = makeStyles(theme => ({
   form2: {
     maxWidth: "800px",
     width: "100%",
-    paddingLeft: theme.spacing(2),
-    paddingRigth: theme.spacing(2),
     paddingBottom: theme.spacing(2),
   },
   buttonContainer: {
     paddingBottom: theme.spacing(2),
     paddingTop: theme.spacing(2),
-  },
-  tableContainer: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    overflowX: "hidden",
   },
   textSelect: {
     width: "100%",
@@ -193,9 +194,15 @@ const useStyles = makeStyles(theme => ({
   // mobile *********************************************************************************************************************
 
   [theme.breakpoints.down("xs")]: {
-    tableContainer: {
+    paperWithTable: {
       marginLeft: -15,
       marginRight: -15,
+    },
+    paperWithForm: {
+      marginLeft: -15,
+      marginRight: -15,
+      paddingLeft: 0,
+      paddingRight: 0,
     },
     table: {
       marginLeft: -theme.spacing(2),

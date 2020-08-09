@@ -97,7 +97,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
   if (error || filtersError || cropsError || cropParamsError) return <ErrorPage />;
 
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithTable}>
       {!!crops && (
         <LayoutSubheader
           title={intl.formatMessage(

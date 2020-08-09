@@ -132,7 +132,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   if (error || filtersError || cropsError || allCropParamsError) return <ErrorPage />;
 
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithTable}>
       {!!crops && <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />}
       {
         <div

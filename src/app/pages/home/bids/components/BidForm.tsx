@@ -19,7 +19,7 @@ import useStyles from "../../styles";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
 import { IParamValue } from "../../../../interfaces/filters";
-import NumberFormatCustom from "../../../../components/ui/NumberFormatCustom";
+import NumberFormatCustom from "../../../../components/NumberFormatCustom/NumberFormatCustom";
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {

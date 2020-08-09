@@ -38,7 +38,7 @@ import { OutlinedRedButton } from "../../../components/ui/Buttons/RedButtons";
 import { itemById } from "../../../utils/utils";
 import { Autocomplete } from "@material-ui/lab";
 import { ICrop } from "../../../interfaces/crops";
-import NumberFormatCustom from "../../../components/ui/NumberFormatCustom";
+import NumberFormatCustom from "../../../components/NumberFormatCustom/NumberFormatCustom";
 
 const useInnerStyles = makeStyles(theme => ({
   buttonContainer: {
@@ -235,7 +235,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   if (!myFilters || !crops) return <Preloader />;
 
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithForm}>
       <LayoutSubheader
         title={`${
           +id

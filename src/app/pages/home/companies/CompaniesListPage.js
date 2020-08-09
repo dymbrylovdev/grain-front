@@ -52,13 +52,14 @@ function CompaniesListPage({ intl, getCompanies }) {
   if (loading) return <Preloader />;
   if (errors.all) return <LoadError handleClick={() => getCompaniessAction(page)} />;
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithTable}>
       <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.COMPANY.LIST" })} />
       <div className={classes.topMargin}>
         <Button variant="contained" color="primary" onClick={() => history.push("/company/create")}>
           {intl.formatMessage({ id: "COMPANY.BUTTON.ADD" })}
         </Button>
       </div>
+      <div className={classes.topMargin} />
       <CompanyTable
         classes={classes}
         companies={companies}

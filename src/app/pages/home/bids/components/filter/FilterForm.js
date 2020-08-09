@@ -9,7 +9,7 @@ import { Alert } from "@material-ui/lab";
 import CheckBoxParamGroup from "./CheckBoxParamGroup";
 import { declOfNum } from "../../../../../utils/index";
 import NumberParam from "./NumberParam";
-import NumberFormatCustom from "../../../../../components/ui/NumberFormatCustom";
+import NumberFormatCustom from "../../../../../components/NumberFormatCustom/NumberFormatCustom";
 
 function FilterForm({
   classes,

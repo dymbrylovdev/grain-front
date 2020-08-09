@@ -19,6 +19,7 @@ import { BidsPage, BidEditPage } from "./bids";
 import { DealsPage, DealViewPage } from "./deals";
 import Error404Page from "../../components/ErrorPage/Error404Page";
 import { TariffsEditPage } from "./tariffs";
+import { TrialEditPage } from "./trial";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { user } = useSelector(({ auth }) => ({ user: auth.user }), shallowEqual);
@@ -112,6 +113,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/deals" component={DealsPage} />
 
         <Route path="/tariffs" component={TariffsEditPage} />
+        <Route path="/trial" component={TrialEditPage} />
 
         <Route path="/dash" component={Dashboard} />
 

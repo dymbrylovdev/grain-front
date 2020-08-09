@@ -403,7 +403,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     <>
       <Prompter />
       <LayoutSubheader title={pageTitle} />
-      <Paper className={classes.tableContainer}>
+      <Paper className={classes.paperWithTable}>
         <div className={innerClasses.topContainer}>
           <div className={innerClasses.leftButtonBlock}>
             {me && (

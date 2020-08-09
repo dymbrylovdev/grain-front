@@ -52,6 +52,8 @@
   "SUBMENU.FUNNEL_STATES": "Настройка воронки",
   "SUBMENU.ACTIVITY_REPORT": "Отчёт по активности",
   "SUBMENU.TARIFFS": "Тарифы",
+  "SUBMENU.TARIFFS.LIMITS": "Ограничения",
+  "SUBMENU.TARIFFS.TRIAL": "Пробный период",
 
   "SUBHEADER.PARTS.EDIT": "Редактирование",
   "SUBHEADER.PARTS.CREATE": "Добавление",
@@ -395,6 +397,7 @@
   "LOCATIONS.PRICES.MODAL_NAME": "Цены по точкам",
   "LOCATIONS.MORE": "Вы можете добавить еще одну точку.",
 
+  "TARIFFS.MAIN_TITLE": "Тарифы • Ограничения",
   "TARIFFS.TITLE1": "Публикация объявлений",
   "TARIFFS.TEXT11": "Отображение объявлений на портале, приоритетных мест, не более 10",
   "TARIFFS.TEXT12": "Отображение объявлений в рассылках, приоритетных мест, не более 5",
@@ -409,6 +412,11 @@
   "TARIFFS.NO_CROPS": "Не выбрано ни одной культуры.",
   "TARIFFS.MORE_CROPS": "Вы можете добавить еще культуру.",
   "TARIFFS.NO_MORE_CROPS": "Выбрано максимальное колличество культур.",
+
+  "TRIAL.TITLE": "Тарифы • Пробный период",
+  "TRIAL.FORM.TIME": "Срок пробного периода, дней",
+  "TRIAL.FORM.EMAIL": "Почта менеджера",
+  "TRIAL.FORM.PHONE": "Телефон менеджера",
 
   "PROMPTER.STEPPER.STEP0": "Профиль",
   "PROMPTER.STEPPER.STEP1": "Выбор культуры",

@@ -9,10 +9,12 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core";
-import NumberFormatCustom from "../../../../../components/ui/NumberFormatCustom";
+import NumberFormatCustom from "../../../../../components/NumberFormatCustom/NumberFormatCustom";
 
 const useStyles = makeStyles(theme => ({
   container: {
+    display: "flex",
+    flexDirection: "column",
     alignItems: "center",
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2),
