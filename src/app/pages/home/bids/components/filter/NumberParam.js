@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Radio,
-  FormControlLabel,
-  RadioGroup,
-  TextField,
-  IconButton,
-  Grid,
-} from "@material-ui/core";
+import { Radio, FormControlLabel, RadioGroup, TextField, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core";
 import NumberFormatCustom from "../../../../../components/NumberFormatCustom/NumberFormatCustom";
@@ -14,15 +7,33 @@ import NumberFormatCustom from "../../../../../components/NumberFormatCustom/Num
 const useStyles = makeStyles(theme => ({
   container: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2),
+    flexWrap: "wrap",
     width: "100%",
+  },
+  numContainer: {
+    marginLeft: theme.spacing(2),
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    flex: 1,
+  },
+  radioGroup: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "nowrap",
+    width: 100,
   },
   textField: {
     marginBottom: 0,
     marginTop: 0,
+    width: 190,
   },
 }));
 
@@ -31,60 +42,50 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
   const numberName = `number${param.id}`;
   const classes = useStyles();
   return (
-    <Grid
-      container
-      direction="row"
-      justify="space-between"
-      alignItems="center"
-      className={classes.container}
-    >
-      <Grid item>{param.name}</Grid>
-      <Grid item>
-        <Grid container direction="row" justify="space-between" alignItems="center" spacing={10}>
-          <Grid item>
-            <RadioGroup
-              name={composeName}
-              value={values[composeName] || "≤"}
-              onChange={handleChange}
-              row={true}
-            >
-              <FormControlLabel value="≤" control={<Radio />} label="≤" disabled={!isEditable} />
-              <FormControlLabel value="≥" control={<Radio />} label=" ≥" disabled={!isEditable} />
-            </RadioGroup>
-          </Grid>
-          <Grid item>
-            <TextField
-              className={classes.textField}
-              type="text"
-              margin="normal"
-              name={numberName}
-              value={values[numberName] || ""}
-              variant="outlined"
-              onChange={handleChange}
-              InputProps={
-                isEditable
-                  ? {
-                      inputComponent: NumberFormatCustom,
-                      endAdornment: (
-                        <IconButton
-                          onClick={() => {
-                            clearAction(composeName, "");
-                            clearAction(numberName, "");
-                          }}
-                        >
-                          <CloseIcon />
-                        </IconButton>
-                      ),
-                    }
-                  : undefined
-              }
-              disabled={!isEditable}
-              autoComplete="off"
-            />
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
+    <div className={classes.container}>
+      <div>{param.name}</div>
+      <div className={classes.numContainer}>
+        <RadioGroup
+          name={composeName}
+          value={values[composeName] || "≤"}
+          onChange={handleChange}
+          className={classes.radioGroup}
+          row={true}
+        >
+          <FormControlLabel value="≤" control={<Radio />} label="≤" disabled={!isEditable} />
+          <FormControlLabel value="≥" control={<Radio />} label=" ≥" disabled={!isEditable} />
+        </RadioGroup>
+
+        <TextField
+          className={classes.textField}
+          type="text"
+          margin="normal"
+          name={numberName}
+          value={values[numberName] || ""}
+          variant="outlined"
+          onChange={handleChange}
+          InputProps={
+            isEditable
+              ? {
+                  inputComponent: NumberFormatCustom,
+                  endAdornment: (
+                    <IconButton
+                      onClick={() => {
+                        clearAction(composeName, "");
+                        clearAction(numberName, "");
+                      }}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }
+              : undefined
+          }
+          disabled={!isEditable}
+          autoComplete="off"
+        />
+      </div>
+    </div>
   );
 }
 
