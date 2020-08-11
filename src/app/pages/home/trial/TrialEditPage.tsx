@@ -8,7 +8,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 
-import { actions as funnelStatesActions } from "../../../store/ducks/funnelStates.duck";
+import { actions as trialActions } from "../../../store/ducks/trial.duck";
 
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
@@ -20,6 +20,7 @@ import NumberFormatPhone from "../../../components/NumberFormatCustom/NumberForm
 
 const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
+  trial,
   fetch,
   loading,
   error,
@@ -34,14 +35,20 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const history = useHistory();
 
   const { values, handleSubmit, handleChange, handleBlur, resetForm, touched, errors } = useFormik({
-    initialValues: { time: "", email: "", phone: "" },
-    onSubmit: values => {},
+    initialValues: { trial_days: "", manager_email: "", manager_phone: "" },
+    onSubmit: values => {
+      edit({
+        trial_days: +values.trial_days,
+        manager_email: values.manager_email,
+        manager_phone: values.manager_phone,
+      });
+    },
     validationSchema: Yup.object().shape({
-      time: Yup.string().required(intl.formatMessage({ id: "YUP.REQUIRED" })),
-      email: Yup.string()
+      trial_days: Yup.string().required(intl.formatMessage({ id: "YUP.REQUIRED" })),
+      manager_email: Yup.string()
         .required(intl.formatMessage({ id: "YUP.REQUIRED" }))
         .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
-      phone: Yup.string().required(intl.formatMessage({ id: "YUP.REQUIRED" })),
+      manager_phone: Yup.string().required(intl.formatMessage({ id: "YUP.REQUIRED" })),
     }),
   });
 
@@ -59,9 +66,6 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       );
       clearEdit();
     }
-    if (editSuccess) {
-      history.push(`/funnel-states`);
-    }
   }, [clearEdit, editError, editSuccess, enqueueSnackbar, history, intl]);
 
   useEffect(() => {
@@ -69,8 +73,15 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetch]);
 
   useEffect(() => {
-    resetForm({ values: { time: "", email: "", phone: "" } });
-  }, [resetForm]);
+    if (trial)
+      resetForm({
+        values: {
+          trial_days: trial.trial_days.toString(),
+          manager_email: trial.manager_email,
+          manager_phone: trial.manager_phone,
+        },
+      });
+  }, [resetForm, trial]);
 
   if (error) return <ErrorPage />;
 
@@ -87,13 +98,13 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               label={intl.formatMessage({ id: "TRIAL.FORM.TIME" })}
               margin="normal"
               className={classes.textField}
-              name="time"
-              value={values.time}
+              name="trial_days"
+              value={values.trial_days}
               variant="outlined"
               onBlur={handleBlur}
               onChange={handleChange}
-              helperText={touched.time && errors.time}
-              error={Boolean(touched.time && errors.time)}
+              helperText={touched.trial_days && errors.trial_days}
+              error={Boolean(touched.trial_days && errors.trial_days)}
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
               }}
@@ -110,13 +121,13 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               label={intl.formatMessage({ id: "TRIAL.FORM.EMAIL" })}
               margin="normal"
               className={classes.textField}
-              name="email"
-              value={values.email}
+              name="manager_email"
+              value={values.manager_email}
               variant="outlined"
               onBlur={handleBlur}
               onChange={handleChange}
-              helperText={touched.email && errors.email}
-              error={Boolean(touched.email && errors.email)}
+              helperText={touched.manager_email && errors.manager_email}
+              error={Boolean(touched.manager_email && errors.manager_email)}
               autoComplete="off"
             />
           )}
@@ -131,13 +142,13 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               label={intl.formatMessage({ id: "TRIAL.FORM.PHONE" })}
               margin="normal"
               className={classes.textField}
-              name="phone"
-              value={values.phone}
+              name="manager_phone"
+              value={values.manager_phone}
               variant="outlined"
               onBlur={handleBlur}
               onChange={handleChange}
-              helperText={touched.phone && errors.phone}
-              error={Boolean(touched.phone && errors.phone)}
+              helperText={touched.manager_phone && errors.manager_phone}
+              error={Boolean(touched.manager_phone && errors.manager_phone)}
               InputProps={{
                 inputComponent: NumberFormatPhone as any,
               }}
@@ -150,8 +161,7 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           <div className={classes.button}>
             <ButtonWithLoader
               loading={editLoading}
-              disabled
-              // disabled={loading || createLoading || editLoading}
+              disabled={loading || editLoading}
               onPress={handleSubmit}
             >
               {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
@@ -165,17 +175,18 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
 const connector = connect(
   (state: IAppState) => ({
-    loading: state.funnelStates.loading,
-    error: state.funnelStates.error,
+    trial: state.trial.trial,
+    loading: state.trial.loading,
+    error: state.trial.error,
 
-    editLoading: state.funnelStates.editLoading,
-    editSuccess: state.funnelStates.editSuccess,
-    editError: state.funnelStates.editError,
+    editLoading: state.trial.editLoading,
+    editSuccess: state.trial.editSuccess,
+    editError: state.trial.editError,
   }),
   {
-    fetch: funnelStatesActions.fetchRequest,
-    clearEdit: funnelStatesActions.clearEdit,
-    edit: funnelStatesActions.editRequest,
+    fetch: trialActions.fetchRequest,
+    clearEdit: trialActions.clearEdit,
+    edit: trialActions.editRequest,
   }
 );
 

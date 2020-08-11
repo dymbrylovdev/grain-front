@@ -85,7 +85,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     case EDIT_SUCCESS: {
       return {
         ...state,
-        loading: true,
+        trial: action.payload.response.data,
         editLoading: false,
         editSuccess: true,
       };
@@ -107,7 +107,7 @@ export const actions = {
   fetchFail: (error: string) => createAction(FETCH_FAIL, { error }),
 
   clearEdit: () => createAction(CLEAR_EDIT),
-  editRequest: (id: number, data: ITrialToRequest) => createAction(EDIT_REQUEST, { id, data }),
+  editRequest: (data: ITrialToRequest) => createAction(EDIT_REQUEST, { data }),
   editSuccess: (response: IServerResponse<ITrial>) => createAction(EDIT_SUCCESS, { response }),
   editFail: (error: string) => createAction(EDIT_FAIL, { error }),
 };
@@ -123,11 +123,9 @@ function* fetchSaga() {
   }
 }
 
-function* editSaga({ payload }: { payload: { id: number; data: ITrialToRequest } }) {
+function* editSaga({ payload }: { payload: { data: ITrialToRequest } }) {
   try {
-    const { data }: { data: IServerResponse<ITrial> } = yield call(() =>
-      editTrial(payload.id, payload.data)
-    );
+    const { data }: { data: IServerResponse<ITrial> } = yield call(() => editTrial(payload.data));
     yield put(actions.editSuccess(data));
   } catch (e) {
     yield put(actions.editFail(e.response.data.message));

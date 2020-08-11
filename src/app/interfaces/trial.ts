@@ -1,5 +1,3 @@
-import { TRole } from "./users";
-
 export interface ITrial {
   manager_email: string;
   manager_phone: string;

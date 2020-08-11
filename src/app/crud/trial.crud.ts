@@ -7,6 +7,6 @@ export const getTrial = () => {
   return axios.get(`${TRIAL_URL}`);
 };
 
-export const editTrial = (id: number, data: ITrialToRequest) => {
+export const editTrial = (data: ITrialToRequest) => {
   return axios.post(`${TRIAL_URL}`, data);
 };

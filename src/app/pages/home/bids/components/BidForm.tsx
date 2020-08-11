@@ -474,6 +474,9 @@ const BidForm: React.FC<IProps> = ({
               variant="outlined"
               onBlur={handleBlur}
               onChange={handleChange}
+              InputProps={{
+                inputComponent: NumberFormatCustom as any,
+              }}
               autoComplete="off"
             />
             <div className={innerClasses.calcDescription}>

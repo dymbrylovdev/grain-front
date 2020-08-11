@@ -43,8 +43,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     };
   }, [clearFetch, fetch]);
 
-  // console.log("cell:", cell);
-
   if (error) return <ErrorPage />;
 
   return (
