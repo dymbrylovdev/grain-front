@@ -20,6 +20,7 @@ import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader
 import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
 import { IParamValue } from "../../../../interfaces/filters";
 import NumberFormatCustom from "../../../../components/NumberFormatCustom/NumberFormatCustom";
+import { accessByRoles } from "../../../../utils/utils";
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
@@ -342,8 +343,12 @@ const BidForm: React.FC<IProps> = ({
           onChange={handleChange}
           disabled={
             editMode !== "create" ||
-            (!!me && !me.is_admin) ||
-            (!!me && me.is_admin && !!vendorId && !!user && !user.is_admin)
+            (!!me && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])) ||
+            (!!me &&
+              accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+              !!vendorId &&
+              !!user &&
+              !accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]))
           }
         >
           <MenuItem value={"sale"}>{intl.formatMessage({ id: "BID.TYPE.SALE" })}</MenuItem>
@@ -449,6 +454,7 @@ const BidForm: React.FC<IProps> = ({
       )}
 
       {editMode === "view" &&
+        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
         me?.id !== bid?.vendor.id &&
         (loading ? (
           <Skeleton width="100%" height={225} animation="wave" />

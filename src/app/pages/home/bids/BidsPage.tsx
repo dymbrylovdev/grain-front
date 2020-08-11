@@ -27,6 +27,7 @@ import BidTable from "./components/BidTable";
 import { IUser } from "../../../interfaces/users";
 import { filterForBids } from "../myFilters/utils";
 import { LayoutSubheader } from "../../../../_metronic";
+import { accessByRoles } from "../../../utils/utils";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -221,8 +222,8 @@ const BidsPage: React.FC<TPropsFromRedux &
         : "/media/filter/filter_full.svg"
       : "";
 
-  const isHaveRules = (user: any, id: number) => {
-    return user.is_admin || user.id === id;
+  const isHaveRules = (user: IUser, id: number) => {
+    return accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id;
   };
 
   const { enqueueSnackbar } = useSnackbar();
@@ -413,7 +414,9 @@ const BidsPage: React.FC<TPropsFromRedux &
                 onClick={() =>
                   history.push(
                     `/bid/create/${
-                      (!!me && me.is_admin) || bestAllMyMode === "my-bids"
+                      (!!me &&
+                        ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) ||
+                      bestAllMyMode === "my-bids"
                         ? salePurchaseMode
                         : salePurchaseMode === "sale"
                         ? "purchase"
@@ -483,7 +486,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 {intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}
               </div>
             )}
-            {salePurchaseMode === "sale" && (
+            {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
               <LocationBlock
                 handleClickLocation={() => {
                   setLocationModalOpen(true);
@@ -492,6 +495,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                   setPricesModalOpen(true);
                 }}
                 locations={me && me.points}
+                salePurchaseMode={salePurchaseMode}
               />
             )}
           </>

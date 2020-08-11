@@ -22,6 +22,7 @@ import { ErrorPage } from "../../../components/ErrorPage";
 import Prompter from "../prompter/Prompter";
 import ScrollToTop from "../../../components/ui/ScrollToTop";
 import TariffForm from "./components/TariffForm";
+import { accessByRoles } from "../../../utils/utils";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -217,7 +218,13 @@ const UserEditPage: React.FC<TPropsFromRedux &
                       ? { root: innerClasses.pulseRoot }
                       : {}
                   }
-                  label={intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })}
+                  label={
+                    accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
+                      ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })
+                      : accessByRoles(me, ["ROLE_VENDOR"])
+                      ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.SALE" })
+                      : intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.PURCHASE" })
+                  }
                   {...a11yProps(1)}
                 />
               )}

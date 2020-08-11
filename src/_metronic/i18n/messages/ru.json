@@ -146,7 +146,9 @@
   "DEALS.WEEKS.BUTTON": "Показать",
 
   "PROFILE.INPUT.FIO": "ФИО",
-  "PROFILE.INPUT.LOCATION": "Точка отгрузки",
+  "PROFILE.INPUT.LOCATION.SALE": "Точка отгрузки",
+  "PROFILE.INPUT.LOCATION.PURCHASE": "Точка приемки",
+  "PROFILE.INPUT.LOCATION": "Точка отгрузки/приемки",
   "PROFILE.INPUT.EMAIL": "Email",
   "PROFILE.INPUT.LOGIN": "Логин",
   "PROFILE.INPUT.ROLE": "Роль",
@@ -192,14 +194,16 @@
 
   "USER.EDIT_FORM.PROFILE": "Профиль",
   "USER.EDIT_FORM.COMPANY": "Компания",
-  "USER.EDIT_FORM.LOCATIONS": "Точки отгрузки",
+  "USER.EDIT_FORM.LOCATIONS.SALE": "Точки отгрузки",
+  "USER.EDIT_FORM.LOCATIONS.PURCHASE": "Точки приемки",
+  "USER.EDIT_FORM.LOCATIONS": "Точки отгрузки/приемки",
   "USER.EDIT_FORM.TARIFFS": "Тариф",
   "USER.EDIT_FORM.USE_VAT": "Работаю с НДС.",
   "USER.EDIT_FORM.ATTENTION": "Внимание! Если вы работаете с НДС, поставьте галочку в это поле.",
 
   "LOCATION.STATUS.ERROR": "Ошибка сохранения локации",
 
-  "MONEY.INTRODUCTION": "Наша система позволяет сразу рассчитать прибыль от перепродажи зерна на точке отгрузки. Задайте цену перепродажи зерна по каждому фильтру для каждой точки отгрузки. Система автоматически подберёт для вас самые прибыльные сделки по всей стране.",
+  "MONEY.INTRODUCTION": "Наша система позволяет сразу рассчитать прибыль от перепродажи зерна на точке отгрузки/приемки. Задайте цену перепродажи зерна по каждому фильтру для каждой точки отгрузки/приемки. Система автоматически подберёт для вас самые прибыльные сделки по всей стране.",
   "MONEY.NO_FILTERS": "У Вас еще нет ни одного фильтра.",
 
   "BIDSLIST.TABLE.ID": "Id",
@@ -232,7 +236,8 @@
   "BIDLIST.NO_POINTS": "Нет сохраненных точек отгрузки.",
 
   "BID.BOTTOM.TEXT": "Цена в объявлениях указана за тонну.",
-  "BID.LOCATION.TEXT": "Цена в объявлениях указана с учётом доставки до указанных точек отгрузки:",
+  "BID.LOCATION.SALE.TEXT": "Цена в объявлениях указана с учётом доставки до указанных точек приемки:",
+  "BID.LOCATION.PURCHASE.TEXT": "Цена в объявлениях указана с учётом доставки от указанных точек отгрузки:",
   "BID.LOCATION.NO_TEXT": "Ваше местоположение не указано.",
   "BID.LOCATION.BUTTON": "Изменить точки",
   "BID.LOCATION.ABOUT": "Введите вручную или выберите из уже имеющихся точку отгрузки.",
@@ -388,12 +393,12 @@
   "COMPANY.DIALOGS.LOADING_TEXT": "Удаление компании",
 
   "LOCATIONS.FORM.NO_USER": "Чтобы добавить точки отгрузки, сначала заполните профиль пользователя и нажмите кнопку \"Добавить\".",
-  "LOCATIONS.FORM.NO_LOCATIONS": "Для этого пользователя еще не добавлены точки отгрузки.",
+  "LOCATIONS.FORM.NO_LOCATIONS": "Для этого пользователя точки еще не добавлены.",
   "LOCATIONS.FORM.ADD_LOCATIONS": "Добавить точку",
   "LOCATIONS.DIALOGS.DELETE_TEXT": "Вы действительно хотите удалить эту точку?",
   "LOCATIONS.INPUT.NAME": "Название точки",
   "LOCATIONS.INPUT.NAME.YUP": "Введите название точки",
-  "LOCATIONS.MODAL_NAME": "Точки отгрузки",
+  "LOCATIONS.MODAL_NAME": "Точки отгрузки/приемки",
   "LOCATIONS.PRICES.MODAL_NAME": "Цены по точкам",
   "LOCATIONS.MORE": "Вы можете добавить еще одну точку.",
 
@@ -471,9 +476,9 @@
   "NOTISTACK.USERS.SAVE_USER": "Пользователь сохранен",
   "NOTISTACK.USERS.SAVE_COMPANY": "Данные о компании изменены",
   "NOTISTACK.USERS.SAVE_CREATE": "Пользователь добавлен",
-  "NOTISTACK.POINTS.CREATE": "Точка отгрузки добавлена",
-  "NOTISTACK.POINTS.DEL": "Точка отгрузки удалена",
-  "NOTISTACK.POINTS.EDIT": "Точка отгрузки сохранена",
+  "NOTISTACK.POINTS.CREATE": "Точка добавлена",
+  "NOTISTACK.POINTS.DEL": "Точка удалена",
+  "NOTISTACK.POINTS.EDIT": "Точка сохранена",
   "NOTISTACK.FUNNEL_STATES.ADD": "Состояние добавлено",
   "NOTISTACK.FUNNEL_STATES.EDIT": "Состояние сохранено",
   "NOTISTACK.BIDS.DEL.OK": "Объявление удалено",

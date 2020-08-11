@@ -12,6 +12,7 @@ import * as builder from "../../ducks/builder";
 // import { ReactComponent as SortNum1Icon } from '../../../_metronic/layout/assets/layout-svg-icons/SortNum1.svg';
 import BreadCrumbs from "./components/BreadCrumbs";
 import { Button } from "@material-ui/core";
+import { roles } from "../../../app/pages/home/users/utils/profileForm";
 
 class SubHeader extends React.Component {
   render() {
@@ -56,9 +57,7 @@ class SubHeader extends React.Component {
           <div className="kt-subheader__toolbar">
             <div className="kt-subheader__wrapper" style={{ marginRight: 16 }}>
               <div>email: {me.login}</div>
-              <div>
-                роль: {me.is_admin ? "Администратор" : me.is_vendor ? "Продавец" : "Покупатель"}
-              </div>
+              <div>роль: {roles.find(item => item.id === me.roles[0]).value}</div>
               {/* <button type="button" className="btn kt-subheader__btn-primary">
                 Actions &nbsp;
                 <SortNum1Icon className="kt-svg-icon kt-svg-icon--sm" />

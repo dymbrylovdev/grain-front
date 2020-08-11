@@ -25,6 +25,7 @@ import { Skeleton } from "@material-ui/lab";
 import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
 import { UserActivity } from "../users/components";
+import { accessByRoles } from "../../../utils/utils";
 
 const DealViewPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -33,6 +34,9 @@ const DealViewPage: React.FC<TPropsFromRedux &
     params: { cropId, saleId, purchaseId },
   },
   intl,
+
+  me,
+
   page,
   perPage,
   total,
@@ -300,19 +304,21 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       <UserActivity intl={intl} user={deal.purchase_bid.vendor} />
                     </TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell></TableCell>
-                    <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                      <Link to={`/bid/edit/sale/${deal.sale_bid.id}`}>
-                        {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <Link to={`/bid/edit/purchase/${deal.purchase_bid.id}`}>
-                        {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
-                      </Link>
-                    </TableCell>
-                  </TableRow>
+                  {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+                    <TableRow>
+                      <TableCell></TableCell>
+                      <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                        <Link to={`/bid/edit/sale/${deal.sale_bid.id}`}>
+                          {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        <Link to={`/bid/edit/purchase/${deal.purchase_bid.id}`}>
+                          {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </div>
@@ -325,6 +331,8 @@ const DealViewPage: React.FC<TPropsFromRedux &
 
 const connector = connect(
   (state: IAppState) => ({
+    me: state.auth.user,
+
     page: state.deals.page,
     perPage: state.deals.per_page,
     total: state.deals.total,

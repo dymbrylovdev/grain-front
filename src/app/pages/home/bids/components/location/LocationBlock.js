@@ -16,7 +16,13 @@ const innerStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2),
   },
 }));
-function LocationBlock({ intl, handleClickLocation, handleClickPrices, locations }) {
+function LocationBlock({
+  intl,
+  handleClickLocation,
+  handleClickPrices,
+  locations,
+  salePurchaseMode,
+}) {
   const innerClasses = innerStyles();
   return (
     <div className={innerClasses.container}>
@@ -24,7 +30,11 @@ function LocationBlock({ intl, handleClickLocation, handleClickPrices, locations
         <div className={innerClasses.text}>
           {locations.length ? (
             <div>
-              <div>{intl.formatMessage({ id: "BID.LOCATION.TEXT" })}</div>
+              <div>
+                {salePurchaseMode === "sale"
+                  ? intl.formatMessage({ id: "BID.LOCATION.SALE.TEXT" })
+                  : intl.formatMessage({ id: "BID.LOCATION.PURCHASE.TEXT" })}
+              </div>
               {locations.map(item => (
                 <div key={item.id}>&bull; {item.name}</div>
               ))}

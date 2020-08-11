@@ -109,15 +109,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   let realTariffs: ITariff[] | undefined = undefined;
   if (tariffs && realUser) {
-    if (realUser.is_admin) {
-      realTariffs = tariffs.filter(item => item.role === "ROLE_ADMIN");
-    }
-    if (realUser.is_vendor) {
-      realTariffs = tariffs.filter(item => item.role === "ROLE_VENDOR");
-    }
-    if (realUser.is_buyer) {
-      realTariffs = tariffs.filter(item => item.role === "ROLE_BUYER");
-    }
+    realTariffs = tariffs.filter(item => item.role === realUser?.roles[0]);
   }
 
   let realCrops: ICrop[] = [];
@@ -235,7 +227,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   return (
     <>
       <div>
-        {loadingMe || loadingUser || !realTariffs || !realUser || editLoading ? (
+        {!me || loadingMe || loadingUser || !realTariffs || !realUser || editLoading ? (
           <Skeleton width="100%" height={68} animation="wave" />
         ) : (
           <TextField
@@ -255,7 +247,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             }}
             helperText={touched.tariff_id && errors.tariff_id}
             error={Boolean(touched.tariff_id && errors.tariff_id)}
-            disabled={!me?.is_admin || editMode === "profile"}
+            disabled={
+              ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) || editMode === "profile"
+            }
           >
             {realTariffs.map(item => (
               <MenuItem key={item.id} value={item.id}>

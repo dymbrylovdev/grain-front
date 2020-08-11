@@ -38,6 +38,8 @@ import { Skeleton } from "@material-ui/lab";
 import { ErrorPage } from "../../../components/ErrorPage";
 import InfoDialog from "../../../components/ui/Dialogs/InfoDialog";
 import { LayoutSubheader } from "../../../../_metronic";
+import { accessByRoles } from "../../../utils/utils";
+import { roles } from "./utils/profileForm";
 
 const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -223,37 +225,25 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           <MenuItem value={0} style={{ backgroundColor: "#f2f2f2" }}>
                             {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
                           </MenuItem>
-                          {item.is_buyer
-                            ? funnelStates
-                                .filter(fs => fs.role === "ROLE_BUYER")
-                                .map(option => (
-                                  <MenuItem
-                                    key={option.id}
-                                    value={option.id}
-                                    style={{ backgroundColor: `${option.color || "#ededed"}` }}
-                                  >
-                                    {`${option.engagement || "0"} • ${option.name}`}
-                                  </MenuItem>
-                                ))
-                            : funnelStates
-                                .filter(fs => fs.role === "ROLE_VENDOR")
-                                .map(option => (
-                                  <MenuItem
-                                    key={option.id}
-                                    value={option.id}
-                                    style={{ backgroundColor: `${option.color || "#ededed"}` }}
-                                  >
-                                    {`${option.engagement || "0"} • ${option.name}`}
-                                  </MenuItem>
-                                ))}
+                          {funnelStates
+                            .filter(fs => fs.role === item.roles[0])
+                            .map(option => (
+                              <MenuItem
+                                key={option.id}
+                                value={option.id}
+                                style={{ backgroundColor: `${option.color || "#ededed"}` }}
+                              >
+                                {`${option.engagement || "0"} • ${option.name}`}
+                              </MenuItem>
+                            ))}
                         </TextField>
-                      ) : item.is_admin ? (
+                      ) : accessByRoles(item, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) ? (
                         <div className={classes.flexRow}>
                           <div
                             className={classes.funnelStateName}
                             style={{ border: "1px solid rgba(10, 187, 135, 0.4)" }}
                           >
-                            {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.ADMIN" })}
+                            {roles.find(role => role.id === item.roles[0])?.value}
                           </div>
                           <IconButton
                             size="medium"

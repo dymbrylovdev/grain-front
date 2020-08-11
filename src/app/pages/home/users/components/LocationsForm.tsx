@@ -20,6 +20,7 @@ import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { IAppState } from "../../../../store/rootDuck";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { Skeleton } from "@material-ui/lab";
+import { accessByRoles } from "../../../../utils/utils";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   name: {
@@ -275,9 +276,13 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                         options={googleLocations || []}
                         loading={false}
                         inputValue={item}
-                        label={intl.formatMessage({
-                          id: "PROFILE.INPUT.LOCATION",
-                        })}
+                        label={
+                          accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
+                            ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION" })
+                            : accessByRoles(me, ["ROLE_VENDOR"])
+                            ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                            : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
+                        }
                         editable={!(item && item.text)}
                         inputClassName={classes.textField}
                         inputError={Boolean(errorGoogleLocations)}
@@ -344,9 +349,13 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   options={googleLocations || []}
                   loading={false}
                   inputValue={autoLocation}
-                  label={intl.formatMessage({
-                    id: "PROFILE.INPUT.LOCATION",
-                  })}
+                  label={
+                    accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
+                      ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION" })
+                      : accessByRoles(me, ["ROLE_VENDOR"])
+                      ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                      : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
+                  }
                   editable={true}
                   inputClassName={classes.textField}
                   inputError={Boolean(errorGoogleLocations)}

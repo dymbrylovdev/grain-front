@@ -18,6 +18,7 @@ import CompanyConfirmDialog from "./CompanyConfirmDialog";
 import { Skeleton } from "@material-ui/lab";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { IUser } from "../../../../interfaces/users";
+import { accessByRoles } from "../../../../utils/utils";
 
 const isNonConfirm = (values: {
   company_confirmed_by_email: any;
@@ -226,28 +227,34 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 ? editMe
                 : ({ data }: any) => editUser({ id: userId as number, data: data })
             }
-            disabled={editMode === "profile" || editMode === "view" || !me?.is_admin}
+            disabled={
+              editMode === "profile" ||
+              editMode === "view" ||
+              !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])
+            }
             loading={false}
             // loading={!currentUser || meLoading || userLoading || editLoading}
           />
-          {isNonConfirm(values) && !me?.is_admin && editMode !== "view" && (
-            <div className={classes.textFieldContainer}>
-              {!currentUser || meLoading || userLoading ? (
-                <Skeleton width={170} height={70} animation="wave" />
-              ) : (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    setCompanyConfirmId(values.company_id);
-                    setIsOpenCompanyConfirm(true);
-                  }}
-                >
-                  {intl.formatMessage({ id: "COMPANY.CONFIRM.BUTTON" })}
-                </Button>
-              )}
-            </div>
-          )}
+          {isNonConfirm(values) &&
+            !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+            editMode !== "view" && (
+              <div className={classes.textFieldContainer}>
+                {!currentUser || meLoading || userLoading ? (
+                  <Skeleton width={170} height={70} animation="wave" />
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      setCompanyConfirmId(values.company_id);
+                      setIsOpenCompanyConfirm(true);
+                    }}
+                  >
+                    {intl.formatMessage({ id: "COMPANY.CONFIRM.BUTTON" })}
+                  </Button>
+                )}
+              </div>
+            )}
         </>
       ) : !currentUser || meLoading || userLoading ? (
         <div className={classes.textFieldContainer}>
@@ -274,7 +281,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               ? editMe
               : ({ data }: any) => editUser({ id: userId as number, data: data })
           }
-          confirms={editMode === "profile" && me?.is_admin}
+          confirms={editMode === "profile" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
         />
       )}
       <CompanyConfirmDialog

@@ -33,6 +33,7 @@ import { IAppState } from "../../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
 import { IUserForEdit } from "../../../../interfaces/users";
 import NumberFormatPhone from "../../../../components/NumberFormatCustom/NumberFormatPhone";
+import { accessByRoles } from "../../../../utils/utils";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   companyContainer: {
@@ -143,9 +144,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         editMode === "create"
           ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
           : Yup.string(),
-      // login: Yup.string()
-      //   .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-      //   .trim(),
       // repeatPassword: Yup.string().test(
       //   "passwords-match",
       //   intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
@@ -301,7 +299,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   }, [editMode, me, resetForm, user]);
 
   useEffect(() => {
-    if (!!me && me.is_admin && !funnelStates) fetchFunnelStates();
+    if (accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !funnelStates) fetchFunnelStates();
   }, [editMode, fetchFunnelStates, funnelStates, me]);
 
   return (
@@ -360,9 +358,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
       {!!user &&
-        !user.is_admin &&
+        !accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
         !!me &&
-        me.is_admin &&
+        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
         (editMode === "edit" || editMode === "view") && (
           <>
             <div className={classes.textFieldContainer}>
@@ -429,29 +427,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             )}
           </>
         )}
-      {/* <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-          <Skeleton width="100%" height={70} animation="wave" />
-        ) : (
-          <TextField
-            type="text"
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.LOGIN",
-            })}
-            margin="normal"
-            className={classes.textField}
-            name="login"
-            value={values.login}
-            variant="outlined"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            helperText={touched.login && errors.login}
-            error={Boolean(touched.login && errors.login)}
-            autoComplete="off"
-            disabled={editMode === "view"}
-          />
-        )}
-      </div> */}
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (

@@ -32,9 +32,13 @@ import { LayoutSubheader } from "../../../../_metronic";
 import { FilterModal } from "./components";
 import { TablePaginator } from "./components/TablePaginator";
 import { isDealsFilterEmpty } from "./utils/utils";
+import { accessByRoles } from "../../../utils/utils";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
+
+  me,
+
   page,
   perPage,
   total,
@@ -164,24 +168,26 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </div>
             </div>
           </div>
-          <div className={classes.flexRow} style={{ textAlign: "right", marginLeft: 16 }}>
-            <div>{intl.formatMessage({ id: "DEALS.FILTER.NAME" })}</div>
-            <div>
-              <IconButton
-                onClick={() => {
-                  setFilterModalOpen(true);
-                }}
-              >
-                <CustomIcon
-                  path={
-                    isDealsFilterEmpty(dealsFilters)
-                      ? "/media/filter/filter.svg"
-                      : "/media/filter/filter_full.svg"
-                  }
-                />
-              </IconButton>
+          {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+            <div className={classes.flexRow} style={{ textAlign: "right", marginLeft: 16 }}>
+              <div>{intl.formatMessage({ id: "DEALS.FILTER.NAME" })}</div>
+              <div>
+                <IconButton
+                  onClick={() => {
+                    setFilterModalOpen(true);
+                  }}
+                >
+                  <CustomIcon
+                    path={
+                      isDealsFilterEmpty(dealsFilters)
+                        ? "/media/filter/filter.svg"
+                        : "/media/filter/filter_full.svg"
+                    }
+                  />
+                </IconButton>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       }
       {!deals || !crops || !dealsFilters || !allCropParams ? (
@@ -324,6 +330,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
 const connector = connect(
   (state: IAppState) => ({
+    me: state.auth.user,
     page: state.deals.page,
     perPage: state.deals.per_page,
     total: state.deals.total,

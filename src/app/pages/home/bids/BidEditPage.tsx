@@ -20,6 +20,7 @@ import BidForm from "./components/BidForm";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import Prompter from "../prompter/Prompter";
 import useStyles from "../styles";
+import { accessByRoles } from "../../../utils/utils";
 
 const BidEditPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -189,7 +190,13 @@ const BidEditPage: React.FC<TPropsFromRedux &
   if (editMode === "create" && me?.is_buyer && salePurchaseMode === "sale") return <ErrorPage />;
   if (editMode === "create" && me?.is_vendor && salePurchaseMode === "purchase")
     return <ErrorPage />;
-  if (editMode === "edit" && !me?.is_admin && !!bid && bid.vendor.id !== me?.id)
+  if (
+    editMode === "edit" &&
+    me &&
+    !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+    !!bid &&
+    bid.vendor.id !== me?.id
+  )
     return <ErrorPage />;
   if (
     !!user &&

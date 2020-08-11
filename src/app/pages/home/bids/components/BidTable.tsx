@@ -22,6 +22,7 @@ import { Skeleton } from "@material-ui/lab";
 import { IBid } from "../../../../interfaces/bids";
 import { IUser } from "../../../../interfaces/users";
 import { TablePaginator2 } from "../../../../components/ui/Table/TablePaginator2";
+import { accessByRoles } from "../../../../utils/utils";
 
 interface IProps {
   intl: any;
@@ -95,11 +96,12 @@ const BidTable: React.FC<IProps> = ({
                 <TopTableCell>
                   <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
                 </TopTableCell>
-                {clientWidth > 1024 && salePurchaseMode === "sale" && (
-                  <TopTableCell>
-                    <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
-                  </TopTableCell>
-                )}
+                {clientWidth > 1024 &&
+                  accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
+                    <TopTableCell>
+                      <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
+                    </TopTableCell>
+                  )}
                 <TopTableCell>
                   <FormattedMessage id="BIDSLIST.TABLE.VOLUME" />
                 </TopTableCell>
