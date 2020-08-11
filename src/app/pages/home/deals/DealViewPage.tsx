@@ -254,7 +254,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                   )}
                   <TableRow>
                     <TableCell>
-                      <strong>{intl.formatMessage({ id: "DEALS.DEAL.LOCATION" })}</strong>
+                      <strong>{intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })}</strong>
                     </TableCell>
                     <TableCell style={{ backgroundColor: "#eeeeee" }}>
                       {deal.sale_bid.location.text}

@@ -243,7 +243,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           <strong>{item.sale_bid.volume}</strong>
                         </div>
                         <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
+                          {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })}
+                          {": "}
                           {item.sale_bid.location.text}
                         </div>
                         <div>
@@ -268,7 +269,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           <strong>{item.purchase_bid.volume}</strong>
                         </div>
                         <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.LOCATION" })}
+                          {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })}
+                          {": "}
                           {item.purchase_bid.location.text}
                         </div>
                         <div>
