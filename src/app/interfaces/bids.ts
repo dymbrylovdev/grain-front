@@ -26,6 +26,9 @@ export interface IBid {
       short_name: string;
     };
     use_vat: boolean;
+    company_confirmed_by_email?: boolean;
+    company_confirmed_by_phone?: boolean;
+    company_confirmed_by_payment?: boolean;
   };
   location: {
     lat: number;

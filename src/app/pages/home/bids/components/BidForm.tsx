@@ -20,7 +20,7 @@ import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader
 import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
 import { IParamValue } from "../../../../interfaces/filters";
 import NumberFormatCustom from "../../../../components/NumberFormatCustom/NumberFormatCustom";
-import { accessByRoles } from "../../../../utils/utils";
+import { accessByRoles, getConfirmCompanyString } from "../../../../utils/utils";
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
@@ -308,21 +308,25 @@ const BidForm: React.FC<IProps> = ({
         <Skeleton width="100%" height={127} animation="wave" />
       ) : (
         bid?.vendor && (
-          <Link
-            to={
-              me?.id === (!!bid && bid.vendor && bid.vendor.id)
-                ? "/user/profile"
-                : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
-            }
-          >
-            <div className={innerClasses.authorText}>
-              {`${
-                bid.type === "sale"
-                  ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
-                  : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
-              }: ${bid.vendor.fio || bid.vendor.login}`}
-            </div>
-          </Link>
+          <div>
+            <Link
+              to={
+                me?.id === (!!bid && bid.vendor && bid.vendor.id)
+                  ? "/user/profile"
+                  : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
+              }
+            >
+              <div className={innerClasses.authorText}>
+                {`${
+                  bid.type === "sale"
+                    ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
+                    : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
+                }: ${bid.vendor.fio || bid.vendor.login}`}
+              </div>
+            </Link>
+            {!!bid.vendor.company && <div>{bid.vendor.company.short_name}</div>}
+            <p>{getConfirmCompanyString(bid.vendor as IUser, intl)}</p>
+          </div>
         )
       )}
 

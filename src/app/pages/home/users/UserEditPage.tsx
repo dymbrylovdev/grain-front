@@ -219,9 +219,13 @@ const UserEditPage: React.FC<TPropsFromRedux &
                       : {}
                   }
                   label={
-                    accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
+                    accessByRoles(editMode === "profile" ? me : user, [
+                      "ROLE_ADMIN",
+                      "ROLE_MANAGER",
+                      "ROLE_TRADER",
+                    ])
                       ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })
-                      : accessByRoles(me, ["ROLE_VENDOR"])
+                      : accessByRoles(editMode === "profile" ? me : user, ["ROLE_VENDOR"])
                       ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.SALE" })
                       : intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.PURCHASE" })
                   }

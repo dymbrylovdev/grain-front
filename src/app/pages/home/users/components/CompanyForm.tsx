@@ -221,6 +221,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             )} */}
           </div>
           <CompanyConfirmBlock
+            user={editMode === "profile" ? me : user}
             values={values}
             handleChange={
               editMode === "profile"

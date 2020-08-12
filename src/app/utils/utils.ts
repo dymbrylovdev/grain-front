@@ -1,4 +1,5 @@
 import { IUser, TRole } from "../interfaces/users";
+import { IntlShape } from "react-intl";
 
 export function itemById<T extends any>(items: T[], id: number): T | undefined {
   let newItem: T | undefined = undefined;
@@ -23,4 +24,33 @@ export const accessByRoles = (who: IUser | undefined, roles: TRole[]): boolean =
       return false;
     }
   }
+};
+
+export const getConfirmCompanyString = (user: IUser, intl: IntlShape): string => {
+  let confirmCompanyString = "";
+  if (!user.company) {
+    confirmCompanyString = intl.formatMessage({ id: "COMPANY.NO_COMPANY" });
+  } else {
+    if (
+      !user.company_confirmed_by_email &&
+      !user.company_confirmed_by_payment &&
+      !user.company_confirmed_by_phone
+    ) {
+      confirmCompanyString = intl.formatMessage({ id: "COMPANY.CONFIRM.NO_CONFIRM" });
+    } else {
+      let byEmailText =
+        intl.formatMessage({ id: "COMPANY.CONFIRM.BY_EMAIL" }) +
+        (!user.company_confirmed_by_payment && !user.company_confirmed_by_phone ? "." : ", ");
+      let byPhoneText =
+        intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PHONE" }) +
+        (!user.company_confirmed_by_payment ? "." : ", ");
+      let byPaymentText = intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PAY" }) + ".";
+      confirmCompanyString = `${intl.formatMessage({ id: "COMPANY.CONFIRM.TITLE" })} ${
+        user.company_confirmed_by_email ? byEmailText : ""
+      }${user.company_confirmed_by_phone ? byPhoneText : ""}${
+        user.company_confirmed_by_payment ? byPaymentText : ""
+      }`;
+    }
+  }
+  return confirmCompanyString;
 };
