@@ -816,7 +816,7 @@ const BidForm: React.FC<IProps> = ({
                 }}
               >
                 {editMode === "create"
-                  ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
+                  ? intl.formatMessage({ id: "ALL.BUTTONS.BID_CREATE" })
                   : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
               </ButtonWithLoader>
             </div>
