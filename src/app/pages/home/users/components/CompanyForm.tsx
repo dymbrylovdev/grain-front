@@ -129,10 +129,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       );
       clearEditUser();
     }
-    if (editSuccess) {
-      if (userId) fetchUser({ id: userId });
-    }
-  }, [clearEditUser, editError, editSuccess, enqueueSnackbar, fetchUser, intl, userId]);
+  }, [clearEditUser, editError, editSuccess, enqueueSnackbar, intl, userId]);
 
   useEffect(() => {
     if (editMeSuccess || editMeError) {
@@ -149,9 +146,6 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       setEditNoNoti(false);
       clearEditMe();
     }
-    if (editMeSuccess) {
-      fetchMe();
-    }
   }, [
     clearEditMe,
     editError,
@@ -159,7 +153,6 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     editMeNoNoti,
     editMeSuccess,
     enqueueSnackbar,
-    fetchMe,
     intl,
     setEditNoNoti,
   ]);
@@ -233,7 +226,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               editMode === "view" ||
               !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])
             }
-            loading={false}
+            loading={editMeLoading || editLoading}
             // loading={!currentUser || meLoading || userLoading || editLoading}
           />
           {isNonConfirm(values) &&

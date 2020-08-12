@@ -200,7 +200,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     case EDIT_SUCCESS: {
       return {
         ...state,
-        users: undefined,
+        user: action.payload.data,
         loading: true,
         editLoading: false,
         editSuccess: true,
@@ -251,7 +251,7 @@ export const actions = {
 
   clearEdit: () => createAction(CLEAR_EDIT),
   editRequest: (payload: { id: number; data: IUserForEdit }) => createAction(EDIT_REQUEST, payload),
-  editSuccess: () => createAction(EDIT_SUCCESS),
+  editSuccess: (payload: IServerResponse<IUser>) => createAction(EDIT_SUCCESS, payload),
   editFail: (payload: string) => createAction(EDIT_FAIL, payload),
 
   clearDel: () => createAction(CLEAR_DEL),
@@ -293,8 +293,10 @@ function* createSaga({ payload }: { payload: IUserForCreate }) {
 
 function* editSaga({ payload }: { payload: { id: number; data: IUserForEdit } }) {
   try {
-    yield call(() => editUser(payload.id, payload.data));
-    yield put(actions.editSuccess());
+    const { data }: { data: IServerResponse<IUser> } = yield call(() =>
+      editUser(payload.id, payload.data)
+    );
+    yield put(actions.editSuccess(data));
   } catch (e) {
     yield put(actions.editFail(e.response.data.message));
   }

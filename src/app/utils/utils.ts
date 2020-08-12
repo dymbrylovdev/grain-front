@@ -26,9 +26,9 @@ export const accessByRoles = (who: IUser | undefined, roles: TRole[]): boolean =
   }
 };
 
-export const getConfirmCompanyString = (user: IUser, intl: IntlShape): string => {
+export const getConfirmCompanyString = (user: IUser | undefined, intl: IntlShape): string => {
   let confirmCompanyString = "";
-  if (!user.company) {
+  if (!user?.company) {
     confirmCompanyString = intl.formatMessage({ id: "COMPANY.NO_COMPANY" });
   } else {
     if (
