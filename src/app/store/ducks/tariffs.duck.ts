@@ -61,7 +61,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_SUCCESS: {
-      // console.log("Fetch tariffs: ", action.payload.response.data);
+      console.log("Fetch tariffs: ", action.payload.response.data);
       return {
         ...state,
         tariffs: action.payload.response.data,

@@ -419,6 +419,8 @@
   "TARIFFS.NO_CROPS": "Не выбрано ни одной культуры.",
   "TARIFFS.MORE_CROPS": "Вы можете добавить еще культуру.",
   "TARIFFS.NO_MORE_CROPS": "Выбрано максимальное колличество культур.",
+  "TARIFFS.NAME.INSIDE": "Внутренний",
+  "TARIFFS.NAME.BUSINESS": "Бизнес",
 
   "TRIAL.TITLE": "Тарифы • Пробный период",
   "TRIAL.FORM.TIME": "Срок пробного периода, дней",
