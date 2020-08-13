@@ -8,8 +8,8 @@ stages:
   - deploy
 
 variables:
-  TEST_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME_DEV:$CI_BUILD_REF_NAME
-  RELEASE_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME_DEV:latest
+  TEST_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME:$CI_BUILD_REF_NAME
+  RELEASE_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME:latest
 
 before_script:
   - docker info
@@ -30,22 +30,22 @@ release-web:
   only:
     - "master"
 
-deploy:
-  stage: deploy
-  image: gitlab/dind:latest
-  only:
-    - "1.3"
-  environment: production
-  services:
-    - docker:dind
-  before_script:
-    - mkdir -p ~/.ssh
-    - echo "$DEPLOYMENT_SERVER_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEPLOYMENT_SERVER_IP >> ~/.ssh/known_hosts
-  script:
-    - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
-    - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
-    - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD $CONTAINER_NAME_DEV:latest;docker stop $CONTAINER_NAME_DEV;docker rm $CONTAINER_NAME_DEV --force;docker pull $RELEASE_IMAGE;docker run --rm -p 0.0.0.0:3084:3000 --name $CONTAINER_NAME_DEV --env-file web-environment.env -d $RELEASE_IMAGE"
+# deploy:
+#   stage: deploy
+#   image: gitlab/dind:latest
+#   only:
+#     - "1.3"
+#   environment: production
+#   services:
+#     - docker:dind
+#   before_script:
+#     - mkdir -p ~/.ssh
+#     - echo "$DEPLOYMENT_SERVER_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+#     - chmod 600 ~/.ssh/id_rsa
+#     - eval "$(ssh-agent -s)"
+#     - ssh-add ~/.ssh/id_rsa
+#     - ssh-keyscan -H $DEPLOYMENT_SERVER_IP >> ~/.ssh/known_hosts
+#   script:
+#     - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
+#     - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
+#     - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD $CONTAINER_NAME_DEV:latest;docker stop $CONTAINER_NAME_DEV;docker rm $CONTAINER_NAME_DEV --force;docker pull $RELEASE_IMAGE;docker run --rm -p 0.0.0.0:3084:3000 --name $CONTAINER_NAME_DEV --env-file web-environment.env -d $RELEASE_IMAGE"
