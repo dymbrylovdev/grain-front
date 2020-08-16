@@ -30,10 +30,14 @@ const useStyles = makeStyles(theme => ({
     flexWrap: "nowrap",
     width: 100,
   },
+  paramName: {
+    width: 200,
+  },
   textField: {
     marginBottom: 0,
     marginTop: 0,
-    width: 190,
+    minWidth: 20,
+    maxWidth: 200,
   },
 }));
 
@@ -43,7 +47,7 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
   const classes = useStyles();
   return (
     <div className={classes.container}>
-      <div>{param.name}</div>
+      <div className={classes.paramName}>{param.name}</div>
       <div className={classes.numContainer}>
         <RadioGroup
           name={composeName}

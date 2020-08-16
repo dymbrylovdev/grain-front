@@ -19,6 +19,7 @@ function FilterForm({
   formik,
   openInfoAlert,
   setOpenInfoAlert,
+  salePurchaseMode,
 }) {
   const { me, myFilters } = useSelector(state => ({
     me: state.auth.user,
@@ -60,6 +61,42 @@ function FilterForm({
             </Col>
           ))}
       </Row>
+
+      {salePurchaseMode === "purchase" && (
+        <div className={classes.textFieldContainer}>
+          <TextField
+            type="text"
+            label={intl.formatMessage({
+              id: "FILTER.FORM.MAX_PAYMENT_TERM",
+            })}
+            margin="normal"
+            name="max_payment_term"
+            value={formik.values.max_payment_term || ""}
+            variant="outlined"
+            onBlur={formik.handleBlur}
+            onChange={e => {
+              let newValue = e.target.value;
+              if (+newValue < 0) {
+                newValue = "0";
+              }
+              if (+newValue > 999) {
+                newValue = "999";
+              }
+              formik.setFieldValue("max_payment_term", newValue);
+            }}
+            InputProps={{
+              inputComponent: NumberFormatCustom,
+              endAdornment: (
+                <IconButton onClick={() => formik.setFieldValue("max_payment_term", "")}>
+                  <CloseIcon />
+                </IconButton>
+              ),
+            }}
+            autoComplete="off"
+          />
+        </div>
+      )}
+
       <div className={classes.textFieldContainer}>
         <TextField
           type="text"

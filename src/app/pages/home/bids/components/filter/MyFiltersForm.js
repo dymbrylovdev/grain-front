@@ -55,6 +55,7 @@ function MyFiltersForm({
   delLoading,
   editFilter,
   editLoading,
+  salePurchaseMode,
 }) {
   const innerClasses = innerStyle();
   const formRef = useRef();
@@ -105,6 +106,7 @@ function MyFiltersForm({
         isSubmitting,
         resetForm,
         initialValues,
+        setFieldValue,
       }) => (
         <Col>
           <div style={{ marginBottom: "16px" }}>
@@ -150,6 +152,42 @@ function MyFiltersForm({
                 </Col>
               ))}
           </Row>
+
+          {salePurchaseMode === "purchase" && (
+            <div className={classes.textFieldContainer}>
+              <TextField
+                type="text"
+                label={intl.formatMessage({
+                  id: "FILTER.FORM.MAX_PAYMENT_TERM",
+                })}
+                margin="normal"
+                name="max_payment_term"
+                value={values.max_payment_term || ""}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={e => {
+                  let newValue = e.target.value;
+                  if (+newValue < 0) {
+                    newValue = "0";
+                  }
+                  if (+newValue > 999) {
+                    newValue = "999";
+                  }
+                  setFieldValue("max_payment_term", newValue);
+                }}
+                InputProps={{
+                  inputComponent: NumberFormatCustom,
+                  endAdornment: (
+                    <IconButton onClick={() => setFieldValue("max_payment_term", "")}>
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }}
+                autoComplete="off"
+              />
+            </div>
+          )}
+
           <div className={classes.textFieldContainer}>
             <TextField
               type="text"

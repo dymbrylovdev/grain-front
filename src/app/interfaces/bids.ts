@@ -74,6 +74,7 @@ export interface IBid {
     id: number;
     name: string;
   };
+  payment_term: number;
 }
 
 export interface IBidToRequest {
@@ -98,6 +99,7 @@ export interface IBidToRequest {
     }
   ];
   vendor_id?: number;
+  payment_term?: number;
 }
 
 export interface IBestBids {

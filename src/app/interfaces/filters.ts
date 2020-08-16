@@ -33,6 +33,7 @@ export interface IMyFilterItem {
     id: number;
     name: string;
   };
+  max_payment_term: number;
   max_full_price: number;
   min_full_price: number;
   max_distance: number;
@@ -49,6 +50,7 @@ export interface IParamValue {
 export interface IFilterForCreate {
   name?: string;
   cropId?: number;
+  max_payment_term?: number;
   max_full_price?: number;
   min_full_price?: number;
   max_distance?: number;
@@ -68,6 +70,7 @@ export interface IFilterParam {
 export interface IFilterForBids {
   filter: {
     cropId?: number;
+    max_payment_term?: number;
     max_full_price?: number;
     min_full_price?: number;
     max_distance?: number;

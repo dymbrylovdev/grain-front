@@ -361,6 +361,7 @@ const FilterModal = ({
             numberParams={numberParams}
             openInfoAlert={openInfoAlert}
             setOpenInfoAlert={setOpenInfoAlert}
+            salePurchaseMode={salePurchaseMode}
             formik={formik}
           />
         </TabPanel>
@@ -389,6 +390,7 @@ const FilterModal = ({
             delLoading={delLoading}
             editFilter={editFilter}
             editLoading={editLoading}
+            salePurchaseMode={salePurchaseMode}
           />
         </TabPanel>
       </DialogContent>

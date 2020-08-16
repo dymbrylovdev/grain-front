@@ -37,11 +37,17 @@ export function filterForRequest(data, enumParams, numberParams) {
   const filter = {
     crop_id: data.crop_id,
   };
+  if (data.max_payment_term) {
+    filter.max_payment_term = +data.max_payment_term;
+  }
   if (data.max_full_price) {
-    filter.max_full_price = data.max_full_price;
+    filter.max_full_price = +data.max_full_price;
+  }
+  if (data.min_full_price) {
+    filter.min_full_price = +data.min_full_price;
   }
   if (data.max_destination) {
-    filter.max_distance = data.max_destination;
+    filter.max_distance = +data.max_destination;
   }
   const parameter_values = [];
   enumParams &&
@@ -69,7 +75,9 @@ export function isFilterEmpty(filter, enumParams, numberParams) {
   const requestFilter = filterForRequest(filter, enumParams, numberParams);
   if (
     requestFilter.parameter_values.length > 0 ||
+    (filter.max_payment_term && filter.max_payment_term !== "") ||
     (filter.max_full_price && filter.max_full_price !== "") ||
+    (filter.min_full_price && filter.min_full_price !== "") ||
     (filter.max_destination && filter.max_destination !== "")
   )
     return false;

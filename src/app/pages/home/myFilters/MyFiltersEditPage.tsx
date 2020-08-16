@@ -384,6 +384,48 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                         ))}
                     </Row>
 
+                    {salePurchaseMode === "purchase" && (
+                      <div className={classes.textFieldContainer}>
+                        <TextField
+                          type="text"
+                          label={intl.formatMessage({
+                            id: "FILTER.FORM.MAX_PAYMENT_TERM",
+                          })}
+                          margin="normal"
+                          name="max_payment_term"
+                          value={values.max_payment_term || ""}
+                          variant="outlined"
+                          onBlur={handleBlur}
+                          onChange={e => {
+                            let newValue = e.target.value;
+                            if (+newValue < 0) {
+                              newValue = "0";
+                            }
+                            if (+newValue > 999) {
+                              newValue = "999";
+                            }
+                            setFieldValue("max_payment_term", newValue);
+                          }}
+                          InputProps={
+                            isEditable
+                              ? {
+                                  inputComponent: NumberFormatCustom as any,
+                                  endAdornment: (
+                                    <IconButton
+                                      onClick={() => setFieldValue("max_payment_term", "")}
+                                    >
+                                      <CloseIcon />
+                                    </IconButton>
+                                  ),
+                                }
+                              : undefined
+                          }
+                          autoComplete="off"
+                          disabled={!isEditable}
+                        />
+                      </div>
+                    )}
+
                     <TextField
                       type="text"
                       label={intl.formatMessage({

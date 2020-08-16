@@ -41,6 +41,7 @@ const MyFilters = ({
   delLoading,
   editFilter,
   editLoading,
+  salePurchaseMode,
 }) => {
   const innerClasses = innerStyle();
 
@@ -96,6 +97,7 @@ const MyFilters = ({
                     delLoading={delLoading}
                     editFilter={editFilter}
                     editLoading={editLoading}
+                    salePurchaseMode={salePurchaseMode}
                   />
                 </AccordionDetails>
               </Accordion>

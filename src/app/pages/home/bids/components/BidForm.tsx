@@ -77,6 +77,7 @@ const getInitialValues = (
         : bid?.location || { text: "" },
     pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: !!bid ? bid.type : salePurchaseMode,
+    payment_term: bid?.payment_term || "",
   };
   if (bid && bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.forEach(item => {
@@ -231,6 +232,7 @@ const BidForm: React.FC<IProps> = ({
         vendor_id,
         price: +values.price,
         volume: +values.volume,
+        payment_term: +values.payment_term,
         parameter_values: paramValues,
       };
       const bidType = params.bid_type;
@@ -456,6 +458,49 @@ const BidForm: React.FC<IProps> = ({
           autoComplete="off"
         />
       )}
+
+      {salePurchaseMode === "purchase" &&
+        (loading ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            type="text"
+            label={intl.formatMessage({
+              id: "BIDSLIST.TABLE.PAYMENT_TERM",
+            })}
+            margin="normal"
+            name="payment_term"
+            value={values.payment_term}
+            variant="outlined"
+            onBlur={handleBlur}
+            onChange={e => {
+              let newValue = e.target.value;
+              if (+newValue < 0) {
+                newValue = "0";
+              }
+              if (+newValue > 999) {
+                newValue = "999";
+              }
+              setFieldValue("payment_term", newValue);
+            }}
+            helperText={touched.payment_term && errors.payment_term}
+            error={Boolean(touched.payment_term && errors.payment_term)}
+            InputProps={
+              editMode !== "view"
+                ? {
+                    inputComponent: NumberFormatCustom as any,
+                    endAdornment: (
+                      <IconButton onClick={() => setFieldValue("payment_term", "")}>
+                        <CloseIcon />
+                      </IconButton>
+                    ),
+                  }
+                : undefined
+            }
+            disabled={editMode === "view"}
+            autoComplete="off"
+          />
+        ))}
 
       {editMode === "view" &&
         accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&

@@ -117,9 +117,11 @@ const BidTable: React.FC<IProps> = ({
                 <TopTableCell>
                   <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
                 </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="BIDSLIST.TABLE.TIME" />
-                </TopTableCell>
+                {salePurchaseMode === "purchase" && (
+                  <TopTableCell>
+                    <FormattedMessage id="BIDSLIST.TABLE.TIME" />
+                  </TopTableCell>
+                )}
                 <TopTableCell></TopTableCell>
               </TableRow>
             </TableHead>
@@ -174,27 +176,28 @@ const BidTable: React.FC<IProps> = ({
                         : Math.round(bid.price - bid.price_delivery)
                       : "-"}
                   </TableCell>
-                  {clientWidth > 1024 && salePurchaseMode === "sale" && (
-                    <TableCell>
-                      <Grid container direction="column" justify="center" alignItems="flex-start">
-                        {bid.point_prices.map(
-                          (item, i) =>
-                            !!item.profit &&
-                            (i === 0 ? (
-                              <div key={i}>
-                                <strong>{Math.round(item.profit)}</strong>
-                                {` • ${item.point.name}`}
-                              </div>
-                            ) : (
-                              <div key={i}>
-                                {Math.round(item.profit)}
-                                {` • ${item.point.name}`}
-                              </div>
-                            ))
-                        )}
-                      </Grid>
-                    </TableCell>
-                  )}
+                  {clientWidth > 1024 &&
+                    accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
+                      <TableCell>
+                        <Grid container direction="column" justify="center" alignItems="flex-start">
+                          {bid.point_prices.map(
+                            (item, i) =>
+                              !!item.profit &&
+                              (i === 0 ? (
+                                <div key={i}>
+                                  <strong>{Math.round(item.profit)}</strong>
+                                  {` • ${item.point.name}`}
+                                </div>
+                              ) : (
+                                <div key={i}>
+                                  {Math.round(item.profit)}
+                                  {` • ${item.point.name}`}
+                                </div>
+                              ))
+                          )}
+                        </Grid>
+                      </TableCell>
+                    )}
                   <TableCell>{bid.volume}</TableCell>
                   {clientWidth > 1024 && (
                     <TableCell>
@@ -209,7 +212,9 @@ const BidTable: React.FC<IProps> = ({
                   )}
                   <TableCell>{bid.distance || "-"}</TableCell>
 
-                  <TableCell>-</TableCell>
+                  {salePurchaseMode === "purchase" && (
+                    <TableCell>{bid.payment_term || "-"}</TableCell>
+                  )}
 
                   <TableCell align="right">
                     <IconButton
