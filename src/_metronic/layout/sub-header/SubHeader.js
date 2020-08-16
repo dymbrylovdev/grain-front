@@ -57,7 +57,10 @@ class SubHeader extends React.Component {
           <div className="kt-subheader__toolbar">
             <div className="kt-subheader__wrapper" style={{ marginRight: 16 }}>
               <div>email: {me.login}</div>
-              <div>роль: {roles.find(item => item.id === me.roles[0]).value}</div>
+              <div>
+                роль:{" "}
+                {me?.roles?.length > 0 ? roles.find(item => item.id === me.roles[0])?.value : ""}
+              </div>
               {/* <button type="button" className="btn kt-subheader__btn-primary">
                 Actions &nbsp;
                 <SortNum1Icon className="kt-svg-icon kt-svg-icon--sm" />

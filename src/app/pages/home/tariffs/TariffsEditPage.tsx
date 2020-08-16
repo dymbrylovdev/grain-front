@@ -71,41 +71,41 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               <TableRow>
                 <TopTableCell></TopTableCell>
                 <TopTableCell colSpan={2} align="center">
-                  {intl.formatMessage({ id: "TARIFFS.NAME.INSIDE" })}
-                </TopTableCell>
-                <TopTableCell colSpan={2} align="center">
                   {tariffs[0].name}
                 </TopTableCell>
                 <TopTableCell colSpan={2} align="center">
                   {tariffs[3].name}
                 </TopTableCell>
                 <TopTableCell align="center">{tariffs[6].name.split("/")[0]}</TopTableCell>
+                <TopTableCell colSpan={2} align="center">
+                  {intl.formatMessage({ id: "TARIFFS.NAME.INSIDE" })}
+                </TopTableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
               <TableRow>
                 <TableCell></TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.4)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.4)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
+                  <b>{tariffs[6].name.split("/")[1]}</b>
+                </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.4)" }}>
                   <b>{tariffs[4].name}</b>
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.4)" }}>
                   <b>{tariffs[5].name}</b>
-                </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.4)" }}>
-                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })}</b>
-                </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.4)" }}>
-                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
-                </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
-                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })}</b>
-                </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
-                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
-                </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(253, 57, 122, 0.4)" }}>
-                  <b>{tariffs[6].name.split("/")[1]}</b>
                 </TableCell>
               </TableRow>
 
@@ -113,33 +113,17 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TableCell>
                   <b>{intl.formatMessage({ id: "TARIFFS.TITLE1" })}</b>
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
-                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
-                <TableCell style={{ backgroundColor: "rgba(253, 57, 122, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
               </TableRow>
 
               <TableRow>
                 <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT11" })}</TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                  <EditableCell
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 100) as ITariff}
-                    realCell={{ id: 100, field: "priority_places_bids_count" }}
-                  />
-                </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                  <EditableCell
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 101) as ITariff}
-                    realCell={{ id: 101, field: "priority_places_bids_count" }}
-                  />
-                </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
                 </TableCell>
@@ -162,7 +146,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realCell={{ id: 3, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(253, 57, 122, 0.2)" }}>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
                     cell={cell}
                     setCell={setCell}
@@ -170,16 +154,12 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realCell={{ id: 102, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
-              </TableRow>
-
-              <TableRow>
-                <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT12" })}</TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                   <EditableCell
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 100) as ITariff}
-                    realCell={{ id: 100, field: "priority_places_bids_on_mailing_count" }}
+                    realCell={{ id: 100, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
@@ -187,9 +167,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 101) as ITariff}
-                    realCell={{ id: 101, field: "priority_places_bids_on_mailing_count" }}
+                    realCell={{ id: 101, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT12" })}</TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
                 </TableCell>
@@ -212,12 +196,28 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realCell={{ id: 3, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(253, 57, 122, 0.2)" }}>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 102) as ITariff}
                     realCell={{ id: 102, field: "priority_places_bids_on_mailing_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 100) as ITariff}
+                    realCell={{ id: 100, field: "priority_places_bids_on_mailing_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 101) as ITariff}
+                    realCell={{ id: 101, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
               </TableRow>
@@ -226,33 +226,17 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TableCell>
                   <b>{intl.formatMessage({ id: "TARIFFS.TITLE1" })}</b>
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
-                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
-                <TableCell style={{ backgroundColor: "rgba(253, 57, 122, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
               </TableRow>
 
               <TableRow>
                 <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT31" })}</TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                  <EditableCell
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 100) as ITariff}
-                    realCell={{ id: 100, field: "max_filters_count" }}
-                  />
-                </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                  <EditableCell
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 101) as ITariff}
-                    realCell={{ id: 101, field: "max_filters_count" }}
-                  />
-                </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
                     cell={cell}
@@ -285,12 +269,28 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realCell={{ id: 3, field: "max_filters_count" }}
                   />
                 </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(253, 57, 122, 0.2)" }}>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 102) as ITariff}
                     realCell={{ id: 102, field: "max_filters_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 100) as ITariff}
+                    realCell={{ id: 100, field: "max_filters_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 101) as ITariff}
+                    realCell={{ id: 101, field: "max_filters_count" }}
                   />
                 </TableCell>
               </TableRow>
@@ -299,33 +299,17 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TableCell>
                   <b>{intl.formatMessage({ id: "TARIFFS.TITLE1" })}</b>
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
-                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
-                <TableCell style={{ backgroundColor: "rgba(253, 57, 122, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
               </TableRow>
 
               <TableRow>
                 <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT41" })}</TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                  <EditableCell
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 100) as ITariff}
-                    realCell={{ id: 100, field: "max_crops_count" }}
-                  />
-                </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                  <EditableCell
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 101) as ITariff}
-                    realCell={{ id: 101, field: "max_crops_count" }}
-                  />
-                </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
                     cell={cell}
@@ -358,12 +342,28 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realCell={{ id: 3, field: "max_crops_count" }}
                   />
                 </TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(253, 57, 122, 0.2)" }}>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 102) as ITariff}
                     realCell={{ id: 102, field: "max_crops_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 100) as ITariff}
+                    realCell={{ id: 100, field: "max_crops_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 101) as ITariff}
+                    realCell={{ id: 101, field: "max_crops_count" }}
                   />
                 </TableCell>
               </TableRow>
