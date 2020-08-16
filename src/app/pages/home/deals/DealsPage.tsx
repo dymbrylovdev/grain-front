@@ -33,6 +33,7 @@ import { FilterModal } from "./components";
 import { TablePaginator } from "./components/TablePaginator";
 import { isDealsFilterEmpty } from "./utils/utils";
 import { accessByRoles } from "../../../utils/utils";
+import NumberFormatCustom from "../../../components/NumberFormatCustom/NumberFormatCustom";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -44,6 +45,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   total,
   weeks,
   setWeeks,
+  term,
+  setTerm,
   fetch,
   deals,
   loading,
@@ -72,18 +75,15 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const history = useHistory();
   const [filterModalOpen, setFilterModalOpen] = useState(false);
 
-  const { values, handleSubmit, handleChange, touched, errors } = useFormik({
-    initialValues: { weeks },
+  const { values, handleSubmit, touched, errors, setFieldValue, resetForm } = useFormik({
+    initialValues: { weeks, term },
     onSubmit: values => {
-      setWeeks(values.weeks);
-      fetch(page, perPage, values.weeks);
+      setWeeks(values.weeks > 0 ? values.weeks : 1);
+      setTerm(values.term);
+      fetch(page, perPage, values.weeks > 0 ? values.weeks : 1, !values.term ? 999 : +values.term);
     },
     validationSchema: Yup.object().shape({
-      weeks: Yup.number()
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-        .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
-        .max(100, intl.formatMessage({ id: "YUP.NUMBERS.MAX" }, { max: 100 }))
-        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+      weeks: Yup.number().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
     }),
   });
 
@@ -101,7 +101,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEditFilter();
     }
     if (editFilterSuccess) {
-      fetch(1, perPage, weeks);
+      fetch(1, perPage, weeks, !term ? 999 : +term);
       fetchDealsFilters();
     }
   }, [
@@ -114,12 +114,13 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     intl,
     page,
     perPage,
+    term,
     weeks,
   ]);
 
   useEffect(() => {
-    if (!!dealsFilters) fetch(page, perPage, weeks);
-  }, [dealsFilters, fetch, page, perPage, weeks]);
+    if (!!dealsFilters) fetch(page, perPage, weeks, !term ? 999 : +term);
+  }, [dealsFilters, fetch, page, perPage, term, weeks]);
 
   useEffect(() => {
     fetchCrops();
@@ -133,6 +134,12 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetchDealsFilters();
   }, [fetchDealsFilters]);
 
+  useEffect(() => {
+    resetForm({
+      values: { weeks, term },
+    });
+  }, [resetForm, term, weeks]);
+
   if (error || filtersError || cropsError || allCropParamsError) return <ErrorPage />;
 
   return (
@@ -145,27 +152,61 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         >
           <div>
             <div>{intl.formatMessage({ id: "DEALS.WEEKS.TEXT" })}</div>
-            <div className={classes.flexRow}>
-              <div>
-                <TextField
-                  margin="normal"
-                  label={intl.formatMessage({
-                    id: "DEALS.WEEKS.WEEKS",
-                  })}
-                  value={values.weeks}
-                  onChange={handleChange}
-                  onBlur={() => handleSubmit()}
-                  name="weeks"
-                  variant="outlined"
-                  helperText={touched.weeks && errors.weeks}
-                  error={Boolean(touched.weeks && errors.weeks)}
-                />
-              </div>
-              <div style={{ marginLeft: "16px" }}>
-                <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
-                  {intl.formatMessage({ id: "DEALS.WEEKS.BUTTON" })}
-                </Button>
-              </div>
+            <div>
+              <TextField
+                margin="normal"
+                label={intl.formatMessage({
+                  id: "DEALS.WEEKS.WEEKS",
+                })}
+                value={values.weeks}
+                onChange={e => {
+                  let newValue = e.target.value;
+                  if (+newValue < 0) {
+                    newValue = "0";
+                  }
+                  if (+newValue > 100) {
+                    newValue = "100";
+                  }
+                  setFieldValue("weeks", newValue);
+                }}
+                InputProps={{ inputComponent: NumberFormatCustom as any }}
+                onBlur={() => handleSubmit()}
+                name="weeks"
+                variant="outlined"
+                helperText={touched.weeks && errors.weeks}
+                error={Boolean(touched.weeks && errors.weeks)}
+                autoComplete="off"
+              />
+            </div>
+            <div>{intl.formatMessage({ id: "FILTER.FORM.MAX_PAYMENT_TERM1" })}</div>
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "FILTER.FORM.MAX_PAYMENT_TERM2",
+              })}
+              margin="normal"
+              name="term"
+              value={values.term || ""}
+              variant="outlined"
+              onBlur={() => handleSubmit()}
+              onChange={e => {
+                let newValue = e.target.value;
+                if (+newValue < 0) {
+                  newValue = "0";
+                }
+                if (+newValue > 999) {
+                  newValue = "999";
+                }
+                setFieldValue("term", newValue);
+              }}
+              InputProps={{ inputComponent: NumberFormatCustom as any }}
+              autoComplete="off"
+            />
+
+            <div style={{ marginTop: 8, marginBottom: 8 }}>
+              <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
+                {intl.formatMessage({ id: "DEALS.WEEKS.BUTTON" })}
+              </Button>
             </div>
           </div>
           {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
@@ -309,7 +350,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   realPerPage={deals.length}
                   perPage={perPage}
                   total={total}
-                  fetchRows={(page, perPage) => fetch(page, perPage, weeks)}
+                  fetchRows={(page, perPage) => fetch(page, perPage, weeks, !term ? 999 : +term)}
                 />
               </TableRow>
             </TableFooter>
@@ -337,6 +378,7 @@ const connector = connect(
     perPage: state.deals.per_page,
     total: state.deals.total,
     weeks: state.deals.weeks,
+    term: state.deals.term,
     deals: state.deals.deals,
     loading: state.deals.loading,
     error: state.deals.error,
@@ -363,6 +405,7 @@ const connector = connect(
     clearEditFilter: dealsActions.clearEditFilter,
     editFilter: dealsActions.editFilterRequest,
     setWeeks: dealsActions.setWeeks,
+    setTerm: dealsActions.setTerm,
   }
 );
 
