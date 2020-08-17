@@ -18,7 +18,7 @@ export const accessByRoles = (who: IUser | undefined, roles: TRole[]): boolean =
   if (!who) {
     return false;
   } else {
-    if (roles.includes(who.roles[0])) {
+    if (roles && roles.length && who.roles.length && roles.includes(who.roles[0])) {
       return true;
     } else {
       return false;

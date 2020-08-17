@@ -601,9 +601,17 @@ const BidForm: React.FC<IProps> = ({
           style={!!values.location.text ? { borderColor: "#0abb87" } : {}}
         >
           {!values.location.text ? (
-            <p>{intl.formatMessage({ id: "BID.LOCATION.ABOUT" })}</p>
+            <p>
+              {values.bid_type === "sale"
+                ? intl.formatMessage({ id: "BID.LOCATION.ABOUT.SALE" })
+                : intl.formatMessage({ id: "BID.LOCATION.ABOUT.PURCHASE" })}
+            </p>
           ) : (
-            <p style={{ color: "#0abb87" }}>{intl.formatMessage({ id: "BID.LOCATION.DONE" })}</p>
+            <p style={{ color: "#0abb87" }}>
+              {values.bid_type === "sale"
+                ? intl.formatMessage({ id: "BID.LOCATION.DONE.SALE" })
+                : intl.formatMessage({ id: "BID.LOCATION.DONE.PURCHASE" })}
+            </p>
           )}
           {(editMode === "edit" && !!user && user.points.length > 0) ||
           (editMode !== "edit" && !vendorId && !!me && me.points.length > 0) ||
@@ -683,18 +691,18 @@ const BidForm: React.FC<IProps> = ({
               </TextField>
             )
           ) : (
-            <>
-              <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
-            </>
+            <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
           )}
           <AutocompleteLocations
             options={locations || []}
             loading={loadingLocations}
             inputValue={values.location}
             editable={editMode !== "view"}
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.LOCATION",
-            })}
+            label={
+              values.bid_type === "sale"
+                ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
+            }
             inputClassName={innerClasses.autoLoc}
             // @ts-ignore
             inputError={Boolean(touched.location && errors.location && errors.location.text)}

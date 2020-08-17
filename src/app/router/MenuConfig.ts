@@ -2,20 +2,22 @@ import { ICrop } from "../interfaces/crops";
 import { IUser } from "../interfaces/users";
 
 export default function getMenuConfig(crops: ICrop[] = [], user: IUser) {
-  const role = user.roles[0];
-  switch (role) {
-    case "ROLE_ADMIN":
-      return getAdminMenu(crops);
-    case "ROLE_MANAGER":
-      return getManagerMenu(crops);
-    case "ROLE_BUYER":
-      return getBuyerMenu(crops);
-    case "ROLE_VENDOR":
-      return getVendorMenu(crops);
-    case "ROLE_TRADER":
-      return getTraderMenu(crops);
-    default:
-      return {};
+  if (user?.roles?.length) {
+    const role = user.roles[0];
+    switch (role) {
+      case "ROLE_ADMIN":
+        return getAdminMenu(crops);
+      case "ROLE_MANAGER":
+        return getManagerMenu(crops);
+      case "ROLE_BUYER":
+        return getBuyerMenu(crops);
+      case "ROLE_VENDOR":
+        return getVendorMenu(crops);
+      case "ROLE_TRADER":
+        return getTraderMenu(crops);
+      default:
+        return {};
+    }
   }
 }
 

@@ -259,6 +259,18 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
         </div>
       )}
+      {!!currentUser?.company && (
+        <div className={classes.box}>
+          <p>
+            <b>{intl.formatMessage({ id: "COMPANY.FORM.COMPANY.CHECK" })}</b>
+          </p>
+          {!currentUser.company.colors?.length ? (
+            <div>{intl.formatMessage({ id: "COMPANY.FORM.COMPANY.CHECK.NO" })}</div>
+          ) : (
+            currentUser.company.colors.map(item => <div>item</div>)
+          )}
+        </div>
+      )}
       {editMode !== "view" && !!currentUser && !currentUser.company && (
         <CompanySearchForm
           classes={classes}
