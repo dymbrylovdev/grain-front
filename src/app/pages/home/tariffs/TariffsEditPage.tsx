@@ -276,7 +276,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
               <TableRow>
                 <TableCell>
-                  <b>{intl.formatMessage({ id: "TARIFFS.TITLE1" })}</b>
+                  <b>{intl.formatMessage({ id: "TARIFFS.TITLE3" })}</b>
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
@@ -358,7 +358,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
               <TableRow>
                 <TableCell>
-                  <b>{intl.formatMessage({ id: "TARIFFS.TITLE1" })}</b>
+                  <b>{intl.formatMessage({ id: "TARIFFS.TITLE4" })}</b>
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
