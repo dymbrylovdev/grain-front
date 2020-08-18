@@ -150,9 +150,16 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           className={classes.flexRow}
           style={{ justifyContent: "space-between", marginBottom: "8px", marginTop: "16px" }}
         >
-          <div>
-            <div>{intl.formatMessage({ id: "DEALS.WEEKS.TEXT" })}</div>
-            <div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              alignItems: "center",
+            }}
+          >
+            <div style={{ marginRight: "16px" }}>
+              <div>{intl.formatMessage({ id: "DEALS.WEEKS.TEXT" })}</div>
               <TextField
                 margin="normal"
                 label={intl.formatMessage({
@@ -178,30 +185,32 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 autoComplete="off"
               />
             </div>
-            <div>{intl.formatMessage({ id: "FILTER.FORM.MAX_PAYMENT_TERM1" })}</div>
-            <TextField
-              type="text"
-              label={intl.formatMessage({
-                id: "FILTER.FORM.MAX_PAYMENT_TERM2",
-              })}
-              margin="normal"
-              name="term"
-              value={values.term || ""}
-              variant="outlined"
-              onBlur={() => handleSubmit()}
-              onChange={e => {
-                let newValue = e.target.value;
-                if (+newValue < 0) {
-                  newValue = "0";
-                }
-                if (+newValue > 999) {
-                  newValue = "999";
-                }
-                setFieldValue("term", newValue);
-              }}
-              InputProps={{ inputComponent: NumberFormatCustom as any }}
-              autoComplete="off"
-            />
+            <div style={{ marginRight: "16px" }}>
+              <div>{intl.formatMessage({ id: "FILTER.FORM.MAX_PAYMENT_TERM1" })}</div>
+              <TextField
+                type="text"
+                label={intl.formatMessage({
+                  id: "FILTER.FORM.MAX_PAYMENT_TERM2",
+                })}
+                margin="normal"
+                name="term"
+                value={values.term || ""}
+                variant="outlined"
+                onBlur={() => handleSubmit()}
+                onChange={e => {
+                  let newValue = e.target.value;
+                  if (+newValue < 0) {
+                    newValue = "0";
+                  }
+                  if (+newValue > 999) {
+                    newValue = "999";
+                  }
+                  setFieldValue("term", newValue);
+                }}
+                InputProps={{ inputComponent: NumberFormatCustom as any }}
+                autoComplete="off"
+              />
+            </div>
 
             <div style={{ marginTop: 8, marginBottom: 8 }}>
               <Button variant="contained" color="primary" onClick={() => handleSubmit()}>

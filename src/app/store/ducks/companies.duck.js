@@ -59,6 +59,7 @@ export const reducer = persistReducer(
       }
       case actionTypes.CompaniesSuccess: {
         const { data } = action.payload;
+        console.log(data);
         return { ...state, companies: data };
       }
       case actionTypes.CompaniesFail: {
