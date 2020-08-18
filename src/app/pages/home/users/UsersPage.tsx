@@ -245,7 +245,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           >
                             {roles.find(role => role.id === item.roles[0])?.value}
                           </div>
-                          <IconButton
+                          {/* <IconButton
                             size="medium"
                             color="primary"
                             onClick={() => {
@@ -256,7 +256,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                             }}
                           >
                             <HelpOutlineIcon />
-                          </IconButton>
+                          </IconButton> */}
                         </div>
                       ) : !item.funnel_state ? (
                         <div className={classes.flexRow}>
