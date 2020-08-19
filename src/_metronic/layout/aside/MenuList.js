@@ -7,7 +7,7 @@ export default class MenuList extends React.Component {
   render() {
     const { currentUrl, menuConfig, layoutConfig } = this.props;
 
-    return menuConfig.aside.items.map((child, index) => {
+    return menuConfig?.aside?.items?.map((child, index) => {
       return (
         <React.Fragment key={`menuList${index}`}>
           {child.section && <MenuSection item={child} />}

@@ -19,6 +19,7 @@ import { Skeleton } from "@material-ui/lab";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { IUser } from "../../../../interfaces/users";
 import { accessByRoles } from "../../../../utils/utils";
+import ColorDot from "./ColorDot";
 
 const isNonConfirm = (values: {
   company_confirmed_by_email: any;
@@ -267,7 +268,12 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           {!currentUser.company.colors?.length ? (
             <div>{intl.formatMessage({ id: "COMPANY.FORM.COMPANY.CHECK.NO" })}</div>
           ) : (
-            currentUser.company.colors.map(item => <div>item</div>)
+            currentUser.company.colors.map((item, i) => (
+              <div className={classes.flexRow} key={i}>
+                <ColorDot color={item} />
+                <div>{intl.formatMessage({ id: `COMPANY.FORM.COMPANY.CHECK.${item}` })}</div>
+              </div>
+            ))
           )}
         </div>
       )}
