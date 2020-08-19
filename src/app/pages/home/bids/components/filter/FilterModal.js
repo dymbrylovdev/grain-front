@@ -85,7 +85,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
   },
   textField: {
-    width: 300,
+    width: "100%",
   },
   badge: {
     paddingRight: theme.spacing(2),
@@ -351,7 +351,7 @@ const FilterModal = ({
           </Grid>
         </Grid>
       </DialogTitle>
-      <DialogContent dividers>
+      <DialogContent dividers style={{ padding: 0 }}>
         <TabPanel value={valueTabs} index={0}>
           <FilterForm
             classes={classes}
@@ -397,7 +397,7 @@ const FilterModal = ({
       {valueTabs === 0 && (
         <DialogActions className={innerClasses.buttonContainer}>
           <Grid container direction="row" justify="space-between" alignItems="center" spacing={1}>
-            <Grid item>
+            <Grid item xs={12} sm={4}>
               <Grid container direction="row" justify="center" alignItems="center">
                 <TextField
                   autoComplete="off"

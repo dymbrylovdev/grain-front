@@ -160,56 +160,60 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           >
             <div style={{ marginRight: "16px" }}>
               <div>{intl.formatMessage({ id: "DEALS.WEEKS.TEXT" })}</div>
-              <TextField
-                margin="normal"
-                label={intl.formatMessage({
-                  id: "DEALS.WEEKS.WEEKS",
-                })}
-                value={values.weeks}
-                onChange={e => {
-                  let newValue = e.target.value;
-                  if (+newValue < 0) {
-                    newValue = "0";
-                  }
-                  if (+newValue > 100) {
-                    newValue = "100";
-                  }
-                  setFieldValue("weeks", newValue);
-                }}
-                InputProps={{ inputComponent: NumberFormatCustom as any }}
-                onBlur={() => handleSubmit()}
-                name="weeks"
-                variant="outlined"
-                helperText={touched.weeks && errors.weeks}
-                error={Boolean(touched.weeks && errors.weeks)}
-                autoComplete="off"
-              />
+              <div style={{ maxWidth: 180 }}>
+                <TextField
+                  margin="normal"
+                  label={intl.formatMessage({
+                    id: "DEALS.WEEKS.WEEKS",
+                  })}
+                  value={values.weeks}
+                  onChange={e => {
+                    let newValue = e.target.value;
+                    if (+newValue < 0) {
+                      newValue = "0";
+                    }
+                    if (+newValue > 100) {
+                      newValue = "100";
+                    }
+                    setFieldValue("weeks", newValue);
+                  }}
+                  InputProps={{ inputComponent: NumberFormatCustom as any }}
+                  onBlur={() => handleSubmit()}
+                  name="weeks"
+                  variant="outlined"
+                  helperText={touched.weeks && errors.weeks}
+                  error={Boolean(touched.weeks && errors.weeks)}
+                  autoComplete="off"
+                />
+              </div>
             </div>
             <div style={{ marginRight: "16px" }}>
               <div>{intl.formatMessage({ id: "FILTER.FORM.MAX_PAYMENT_TERM1" })}</div>
-              <TextField
-                type="text"
-                label={intl.formatMessage({
-                  id: "FILTER.FORM.MAX_PAYMENT_TERM2",
-                })}
-                margin="normal"
-                name="term"
-                value={values.term || ""}
-                variant="outlined"
-                onBlur={() => handleSubmit()}
-                onChange={e => {
-                  let newValue = e.target.value;
-                  if (+newValue < 0) {
-                    newValue = "0";
-                  }
-                  if (+newValue > 999) {
-                    newValue = "999";
-                  }
-                  setFieldValue("term", newValue);
-                }}
-                InputProps={{ inputComponent: NumberFormatCustom as any }}
-                autoComplete="off"
-              />
+              <div style={{ maxWidth: 180 }}>
+                <TextField
+                  type="text"
+                  label={intl.formatMessage({
+                    id: "FILTER.FORM.MAX_PAYMENT_TERM2",
+                  })}
+                  margin="normal"
+                  name="term"
+                  value={values.term || ""}
+                  variant="outlined"
+                  onBlur={() => handleSubmit()}
+                  onChange={e => {
+                    let newValue = e.target.value;
+                    if (+newValue < 0) {
+                      newValue = "0";
+                    }
+                    if (+newValue > 999) {
+                      newValue = "999";
+                    }
+                    setFieldValue("term", newValue);
+                  }}
+                  InputProps={{ inputComponent: NumberFormatCustom as any }}
+                  autoComplete="off"
+                />
+              </div>
             </div>
 
             <div style={{ marginTop: 8, marginBottom: 8 }}>
@@ -219,7 +223,10 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             </div>
           </div>
           {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-            <div className={classes.flexRow} style={{ textAlign: "right", marginLeft: 16 }}>
+            <div
+              className={classes.flexRow}
+              style={{ textAlign: "right", marginLeft: 16, alignSelf: "flex-start" }}
+            >
               <div>{intl.formatMessage({ id: "DEALS.FILTER.NAME" })}</div>
               <div>
                 <IconButton
