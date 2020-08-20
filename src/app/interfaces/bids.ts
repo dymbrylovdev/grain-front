@@ -13,6 +13,7 @@ export interface IBid {
     company: {
       id: number;
       short_name: string;
+      colors?: string[];
     };
     use_vat: boolean;
   };
@@ -24,6 +25,7 @@ export interface IBid {
     company: {
       id: number;
       short_name: string;
+      colors?: string[];
     };
     use_vat: boolean;
     company_confirmed_by_email?: boolean;

@@ -11,6 +11,7 @@ import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import { searchCompanies } from "../../../../crud/companies.crud";
 import CompanySearchDialog from "./CompanySearchDialog";
+import { TrafficLight } from "../../users/components";
 
 const getInitialValues = company => ({
   short_name: company.short_name || "",
@@ -198,6 +199,9 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 error={Boolean(touched.short_name && errors.short_name)}
                 disabled={searchStatus && searchStatus.loading}
               />
+
+              {!!company?.colors && <TrafficLight intl={intl} colors={company.colors} />}
+
               <TextField
                 type="text"
                 label={intl.formatMessage({

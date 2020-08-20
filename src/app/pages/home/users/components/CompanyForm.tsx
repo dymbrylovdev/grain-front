@@ -19,7 +19,7 @@ import { Skeleton } from "@material-ui/lab";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { IUser } from "../../../../interfaces/users";
 import { accessByRoles } from "../../../../utils/utils";
-import ColorDot from "./ColorDot";
+import { TrafficLight } from ".";
 
 const isNonConfirm = (values: {
   company_confirmed_by_email: any;
@@ -260,22 +260,8 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
         </div>
       )}
-      {!!currentUser?.company && (
-        <div className={classes.box}>
-          <p>
-            <b>{intl.formatMessage({ id: "COMPANY.FORM.COMPANY.CHECK" })}</b>
-          </p>
-          {!currentUser.company.colors?.length ? (
-            <div>{intl.formatMessage({ id: "COMPANY.FORM.COMPANY.CHECK.NO" })}</div>
-          ) : (
-            currentUser.company.colors.map((item, i) => (
-              <div className={classes.flexRow} key={i}>
-                <ColorDot color={item} />
-                <div>{intl.formatMessage({ id: `COMPANY.FORM.COMPANY.CHECK.${item}` })}</div>
-              </div>
-            ))
-          )}
-        </div>
+      {!!currentUser?.company?.colors && (
+        <TrafficLight intl={intl} colors={currentUser.company.colors} />
       )}
       {editMode !== "view" && !!currentUser && !currentUser.company && (
         <CompanySearchForm

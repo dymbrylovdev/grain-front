@@ -21,6 +21,7 @@ import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons"
 import { IParamValue } from "../../../../interfaces/filters";
 import NumberFormatCustom from "../../../../components/NumberFormatCustom/NumberFormatCustom";
 import { accessByRoles, getConfirmCompanyString } from "../../../../utils/utils";
+import { TrafficLight } from "../../users/components";
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
@@ -330,6 +331,10 @@ const BidForm: React.FC<IProps> = ({
             <p>{getConfirmCompanyString(bid.vendor as IUser, intl)}</p>
           </div>
         )
+      )}
+
+      {!!bid?.vendor?.company?.colors && (
+        <TrafficLight intl={intl} colors={bid.vendor.company.colors} />
       )}
 
       {loading ? (

@@ -12,6 +12,9 @@ const useStyles = makeStyles({
     borderRadius: 5,
     backgroundColor: (props: IProps) => `${props.color}`,
     marginRight: 8,
+    marginTop: 4,
+    flex: "none",
+    alignSelf: "flex-start",
   },
 });
 

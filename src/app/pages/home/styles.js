@@ -123,7 +123,6 @@ const useStyles = makeStyles(theme => ({
   box: {
     display: "flex",
     flexDirection: "column",
-    // alignItems: "flex-start",
     padding: theme.spacing(2),
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
