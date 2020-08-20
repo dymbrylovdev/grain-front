@@ -224,6 +224,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchCrops();
   }, [fetchCrops]);
 
+  console.log("tarif id:", values.tariff_id);
+
   return (
     <>
       <div>
@@ -248,7 +250,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             helperText={touched.tariff_id && errors.tariff_id}
             error={Boolean(touched.tariff_id && errors.tariff_id)}
             disabled={
-              ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) || editMode === "profile"
+              !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ||
+              ["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) ||
+              editMode === "profile"
             }
           >
             {realTariffs.map(item => (
