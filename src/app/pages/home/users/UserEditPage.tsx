@@ -204,10 +204,11 @@ const UserEditPage: React.FC<TPropsFromRedux &
             <Tabs
               value={valueTabs}
               onChange={handleTabsChange}
+              variant="scrollable"
               indicatorColor="primary"
               textColor="primary"
               aria-label="tabs"
-              centered
+              // centered
             >
               <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
 

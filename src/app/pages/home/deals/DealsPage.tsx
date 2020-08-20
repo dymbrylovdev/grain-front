@@ -160,7 +160,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           >
             <div style={{ marginRight: "16px" }}>
               <div>{intl.formatMessage({ id: "DEALS.WEEKS.TEXT" })}</div>
-              <div style={{ maxWidth: 180 }}>
+              <div style={{ maxWidth: 170 }}>
                 <TextField
                   margin="normal"
                   label={intl.formatMessage({
@@ -189,7 +189,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             </div>
             <div style={{ marginRight: "16px" }}>
               <div>{intl.formatMessage({ id: "FILTER.FORM.MAX_PAYMENT_TERM1" })}</div>
-              <div style={{ maxWidth: 180 }}>
+              <div style={{ maxWidth: 170 }}>
                 <TextField
                   type="text"
                   label={intl.formatMessage({
