@@ -213,6 +213,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       {deal.purchase_bid.volume}
                     </TableCell>
                   </TableRow>
+
                   <TableRow>
                     <TableCell>
                       <strong>{intl.formatMessage({ id: "DEALS.DEAL.WORK_WITH_VAT" })}</strong>
@@ -228,6 +229,15 @@ const DealViewPage: React.FC<TPropsFromRedux &
                         : intl.formatMessage({ id: "ALL.NO" })}
                     </TableCell>
                   </TableRow>
+
+                  <TableRow>
+                    <TableCell>
+                      <strong>{intl.formatMessage({ id: "BIDSLIST.TABLE.PAYMENT_TERM" })}</strong>
+                    </TableCell>
+                    <TableCell style={{ backgroundColor: "#eeeeee" }}>-</TableCell>
+                    <TableCell>{deal.purchase_bid.payment_term || "-"}</TableCell>
+                  </TableRow>
+
                   {cropParams.map(
                     item =>
                       (deal.sale_bid.parameter_values.find(

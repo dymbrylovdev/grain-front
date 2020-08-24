@@ -12,7 +12,6 @@ import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import { searchCompanies } from "../../../../crud/companies.crud";
 import CompanySearchDialog from "./CompanySearchDialog";
 import { TrafficLight } from "../../users/components";
-import { useHistory } from "react-router-dom";
 
 const getInitialValues = company => ({
   short_name: company.short_name || "",
@@ -36,34 +35,29 @@ const getInitialValues = company => ({
 });
 
 function CompanyForm({ intl, classes, company, submitAction, companyId }) {
-  const history = useHistory();
   const formRef = useRef();
   const [companies, setCompanies] = useState([]);
   const [currentCompany, setCurrentCompany] = useState(company);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [searchStatus, setSearchStatus] = useState({});
 
-  const searchAction = useCallback(
-    (values, successCallback, emptyCallback, failCallback) => {
-      searchCompanies(values)
-        .then(({ data }) => {
-          if (data && data.data) {
-            const searchCompanies = data.data;
-            setCompanies(searchCompanies);
-            if (searchCompanies.length > 0) {
-              history.push(`/company/edit/${data?.data[0]?.id}`);
-              successCallback(searchCompanies);
-            } else {
-              emptyCallback();
-            }
+  const searchAction = useCallback((values, successCallback, emptyCallback, failCallback) => {
+    searchCompanies(values)
+      .then(({ data }) => {
+        if (data && data.data) {
+          const searchCompanies = data.data;
+          setCompanies(searchCompanies);
+          if (searchCompanies.length > 0) {
+            successCallback(searchCompanies);
           } else {
-            failCallback();
+            emptyCallback();
           }
-        })
-        .catch(() => failCallback());
-    },
-    [history]
-  );
+        } else {
+          failCallback();
+        }
+      })
+      .catch(() => failCallback());
+  }, []);
 
   const closeDialog = useCallback(() => {
     setDialogOpen(false);

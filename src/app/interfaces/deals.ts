@@ -10,6 +10,7 @@ export interface IDeal {
     created_at: string;
     modified_at: string;
     vendor: IUser;
+    payment_term: number;
     location: {
       lat: number;
       lng: number;

@@ -279,6 +279,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.DISTANCE" />
                 </TopTableCell>
+                <TopTableCell>
+                  <FormattedMessage id="BIDSLIST.TABLE.TIME" />
+                </TopTableCell>
                 <TopTableCell></TopTableCell>
               </TableRow>
             </TableHead>
@@ -343,6 +346,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     </TableCell>
                     <TableCell>{Math.round(item.profit_with_delivery_price)}</TableCell>
                     <TableCell>{item.distance}</TableCell>
+                    <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
                     <TableCell align="right">
                       <IconButton
                         size="medium"
