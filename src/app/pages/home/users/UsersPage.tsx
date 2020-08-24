@@ -342,19 +342,21 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       )}
                     </TableCell>
                     <TableCell align="right">
-                      <Tooltip
-                        title={intl.formatMessage({
-                          id: "USERLIST.TOOLTIP.EDIT",
-                        })}
-                      >
-                        <IconButton
-                          size="medium"
-                          color="primary"
-                          onClick={() => history.push(`/user/edit/${item.id}`)}
+                      {!(item.is_admin && !me?.is_admin) && (
+                        <Tooltip
+                          title={intl.formatMessage({
+                            id: "USERLIST.TOOLTIP.EDIT",
+                          })}
                         >
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
+                          <IconButton
+                            size="medium"
+                            color="primary"
+                            onClick={() => history.push(`/user/edit/${item.id}`)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
 
                       <Tooltip
                         title={intl.formatMessage({
