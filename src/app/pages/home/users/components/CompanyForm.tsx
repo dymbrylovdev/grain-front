@@ -267,19 +267,22 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         <TrafficLight intl={intl} colors={currentUser.company.colors} />
       )}
 
-      {editMode !== "view" && !!currentUser && !!currentUser.company && (
-        <div className={classes.bottomButtonsContainer}>
-          <div className={classes.button}>
-            <ButtonWithLoader
-              loading={false}
-              disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
-              onPress={() => history.push(`/company/edit/${currentUser.company?.id}`)}
-            >
-              {intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })}
-            </ButtonWithLoader>
+      {editMode !== "view" &&
+        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+        !!currentUser &&
+        !!currentUser.company && (
+          <div className={classes.bottomButtonsContainer}>
+            <div className={classes.button}>
+              <ButtonWithLoader
+                loading={false}
+                disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
+                onPress={() => history.push(`/company/edit/${currentUser.company?.id}`)}
+              >
+                {intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })}
+              </ButtonWithLoader>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {editMode !== "view" && !!currentUser && !currentUser.company && (
         <CompanySearchForm

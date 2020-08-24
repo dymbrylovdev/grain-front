@@ -616,6 +616,20 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       {editMode !== "view" && (
         <div className={classes.bottomButtonsContainer}>
+          {editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+            <div className={classes.button}>
+              <ButtonWithLoader
+                disabled={!user}
+                onPress={() =>
+                  history.push(
+                    `/bid/create/${user?.is_buyer ? "purchase" : "sale"}/0/0/${user?.id}`
+                  )
+                }
+              >
+                {intl.formatMessage({ id: "ALL.BUTTONS.BID_CREATE" })}
+              </ButtonWithLoader>
+            </div>
+          )}
           {editMode !== "profile" && (
             <div className={classes.button}>
               <Button

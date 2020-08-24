@@ -215,10 +215,16 @@ const BidForm: React.FC<IProps> = ({
     }
   }, [goToRef]);
 
-  const currentCropId: number = !!bid ? bid.crop_id : !!cropId ? cropId : 0;
   const vendor_id =
     (!bid && +vendorId) || (bid && bid.vendor && bid.vendor.id) || (me?.id as number);
   const vendor = me?.id === vendor_id ? me : user;
+  const currentCropId: number = !!bid
+    ? bid.crop_id
+    : !!cropId
+    ? cropId
+    : vendor?.crops.length === 1
+    ? vendor.crops[0].id
+    : 0;
 
   const {
     values,
@@ -302,9 +308,8 @@ const BidForm: React.FC<IProps> = ({
   }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
 
   useEffect(() => {
-    if (!!bid && bid.crop_id) fetchCropParams(bid.crop_id);
-    if (!!cropId) fetchCropParams(cropId);
-  }, [bid, cropId, fetchCropParams]);
+    if (currentCropId) fetchCropParams(currentCropId);
+  }, [currentCropId, fetchCropParams]);
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
 
@@ -763,7 +768,7 @@ const BidForm: React.FC<IProps> = ({
           noOptionsText={intl.formatMessage({
             id: "ALL.AUTOCOMPLIT.EMPTY",
           })}
-          value={crops?.find(item => item.id === values.crop_id) || null}
+          value={vendor?.crops?.find(item => item.id === values.crop_id) || null}
           onChange={(e: any, val: ICrop | null) => {
             setFieldValue("crop_id", val?.id || "");
             !!val?.id ? fetchCropParams(val.id) : clearCropParams();
