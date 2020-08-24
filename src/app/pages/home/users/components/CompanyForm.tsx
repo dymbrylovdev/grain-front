@@ -20,6 +20,8 @@ import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { IUser } from "../../../../interfaces/users";
 import { accessByRoles } from "../../../../utils/utils";
 import { TrafficLight } from ".";
+import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
+import { useHistory } from "react-router-dom";
 
 const isNonConfirm = (values: {
   company_confirmed_by_email: any;
@@ -91,6 +93,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   userId,
 }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   const [isOpenCompanyConfirm, setIsOpenCompanyConfirm] = useState<boolean>(false);
   const [companyConfirmId, setCompanyConfirmId] = useState<number>(0);
@@ -263,6 +266,21 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       {!!currentUser?.company?.colors && (
         <TrafficLight intl={intl} colors={currentUser.company.colors} />
       )}
+
+      {editMode !== "view" && !!currentUser && !!currentUser.company && (
+        <div className={classes.bottomButtonsContainer}>
+          <div className={classes.button}>
+            <ButtonWithLoader
+              loading={false}
+              disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
+              onPress={() => history.push(`/company/edit/${currentUser.company?.id}`)}
+            >
+              {intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })}
+            </ButtonWithLoader>
+          </div>
+        </div>
+      )}
+
       {editMode !== "view" && !!currentUser && !currentUser.company && (
         <CompanySearchForm
           classes={classes}
