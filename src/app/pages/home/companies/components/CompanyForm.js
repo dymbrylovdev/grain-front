@@ -12,6 +12,7 @@ import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import { searchCompanies } from "../../../../crud/companies.crud";
 import CompanySearchDialog from "./CompanySearchDialog";
 import { TrafficLight } from "../../users/components";
+import { useHistory } from "react-router-dom";
 
 const getInitialValues = company => ({
   short_name: company.short_name || "",
@@ -35,29 +36,34 @@ const getInitialValues = company => ({
 });
 
 function CompanyForm({ intl, classes, company, submitAction, companyId }) {
+  const history = useHistory();
   const formRef = useRef();
   const [companies, setCompanies] = useState([]);
   const [currentCompany, setCurrentCompany] = useState(company);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [searchStatus, setSearchStatus] = useState({});
 
-  const searchAction = useCallback((values, successCallback, emptyCallback, failCallback) => {
-    searchCompanies(values)
-      .then(({ data }) => {
-        if (data && data.data) {
-          const searchCompanies = data.data;
-          setCompanies(searchCompanies);
-          if (searchCompanies.length > 0) {
-            successCallback(searchCompanies);
+  const searchAction = useCallback(
+    (values, successCallback, emptyCallback, failCallback) => {
+      searchCompanies(values)
+        .then(({ data }) => {
+          if (data && data.data) {
+            const searchCompanies = data.data;
+            setCompanies(searchCompanies);
+            if (searchCompanies.length > 0) {
+              history.push(`/company/edit/${data?.data[0]?.id}`);
+              successCallback(searchCompanies);
+            } else {
+              emptyCallback();
+            }
           } else {
-            emptyCallback();
+            failCallback();
           }
-        } else {
-          failCallback();
-        }
-      })
-      .catch(() => failCallback());
-  }, []);
+        })
+        .catch(() => failCallback());
+    },
+    [history]
+  );
 
   const closeDialog = useCallback(() => {
     setDialogOpen(false);
@@ -147,7 +153,8 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                   onPress={() => {
                     const inn = values.inn && values.inn.trim();
                     if (inn && inn !== "") {
-                      const params = { inn, add_from_kontur: 0 };
+                      // const params = { inn, add_from_kontur: 0 };
+                      const params = !companyId ? { inn } : { inn, add_from_kontur: 0 };
                       setSearchStatus({
                         loading: true,
                       });

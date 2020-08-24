@@ -224,8 +224,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchCrops();
   }, [fetchCrops]);
 
-  console.log("tarif id:", values.tariff_id);
-
   return (
     <>
       <div>

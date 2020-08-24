@@ -106,13 +106,19 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [isLocTabPulse, setLocTabPulse] = useState(false);
+  const [valueTabs, setValueTabs] = useState(0);
+
+  useEffect(() => {
+    if (match.url.indexOf("profile/crops") !== -1) {
+      setValueTabs(3);
+    }
+  }, [match.url]);
 
   useEffect(() => {
     if (!!me?.fio && !!me?.phone && me?.points.length === 0) setLocTabPulse(true);
     if (me?.points.length !== 0) setLocTabPulse(false);
   }, [me]);
 
-  const [valueTabs, setValueTabs] = useState(0);
   const handleTabsChange = (event: any, newValue: number) => {
     setValueTabs(newValue);
   };
