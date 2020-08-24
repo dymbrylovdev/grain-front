@@ -22,6 +22,7 @@ import { IParamValue } from "../../../../interfaces/filters";
 import NumberFormatCustom from "../../../../components/NumberFormatCustom/NumberFormatCustom";
 import { accessByRoles, getConfirmCompanyString } from "../../../../utils/utils";
 import { TrafficLight } from "../../users/components";
+import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
@@ -172,6 +173,9 @@ interface IProps {
       data: IBidToRequest;
     }
   >;
+  createSuccess: boolean;
+  createError: string | null;
+  clearCreate: () => Action<"bids/CLEAR_CREATE">;
 }
 
 const BidForm: React.FC<IProps> = ({
@@ -200,6 +204,10 @@ const BidForm: React.FC<IProps> = ({
 
   buttonLoading,
   setAlertOpen,
+
+  createSuccess,
+  createError,
+  clearCreate,
 }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -207,6 +215,7 @@ const BidForm: React.FC<IProps> = ({
 
   const inputEl = useRef<HTMLButtonElement>(null);
   const [goToRef, setGoToRef] = useState(false);
+  const [isMoreBidOpen, setMoreBidOpen] = useState(false);
 
   useEffect(() => {
     if (goToRef) {
@@ -300,6 +309,32 @@ const BidForm: React.FC<IProps> = ({
       setFormikErrored(false);
     }
   }, [enqueueSnackbar, formikErrored, intl]);
+
+  useEffect(() => {
+    if (createSuccess || createError) {
+      enqueueSnackbar(
+        createSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.BIDS.ADD" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${createError}`,
+        {
+          variant: createSuccess ? "success" : "error",
+        }
+      );
+      clearCreate();
+      if (createSuccess) {
+        setMoreBidOpen(true);
+      }
+    }
+  }, [
+    clearCreate,
+    createError,
+    createSuccess,
+    enqueueSnackbar,
+    history,
+    intl,
+    salePurchaseMode,
+    vendorId,
+  ]);
 
   useEffect(() => {
     resetForm({
@@ -920,6 +955,44 @@ const BidForm: React.FC<IProps> = ({
           </>
         )}
       </div>
+      <AlertDialog
+        isOpen={isMoreBidOpen}
+        text={intl.formatMessage({
+          id: "BIDLIST.MORE_BID.TEXT",
+        })}
+        okText={intl.formatMessage({
+          id: "BIDLIST.MORE_BID.AGREE_TEXT",
+        })}
+        cancelText={intl.formatMessage({
+          id: "BIDLIST.MORE_BID.CANCEL_TEXT",
+        })}
+        handleClose={() => {
+          if (!!+vendorId) {
+            history.push("/user-list");
+          } else {
+            history.push(`/${salePurchaseMode}/my-bids`);
+          }
+          setMoreBidOpen(false);
+        }}
+        handleAgree={() => {
+          resetForm({
+            values: getInitialValues(
+              bid,
+              currentCropId,
+              salePurchaseMode,
+              editMode,
+              vendorId,
+              user,
+              me
+            ),
+          });
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+          setMoreBidOpen(false);
+        }}
+      />
     </div>
   );
 };

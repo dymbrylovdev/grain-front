@@ -109,36 +109,6 @@ const BidEditPage: React.FC<TPropsFromRedux &
   }, [clearDel, delError, delSuccess, enqueueSnackbar, history, intl]);
 
   useEffect(() => {
-    if (createSuccess || createError) {
-      enqueueSnackbar(
-        createSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.BIDS.ADD" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${createError}`,
-        {
-          variant: createSuccess ? "success" : "error",
-        }
-      );
-      clearCreate();
-      if (createSuccess) {
-        if (!!+vendorId) {
-          history.push("/user-list");
-        } else {
-          history.push(`/${salePurchaseMode}/my-bids`);
-        }
-      }
-    }
-  }, [
-    clearCreate,
-    createError,
-    createSuccess,
-    enqueueSnackbar,
-    history,
-    intl,
-    salePurchaseMode,
-    vendorId,
-  ]);
-
-  useEffect(() => {
     if (editSuccess || editError) {
       enqueueSnackbar(
         editSuccess
@@ -250,6 +220,9 @@ const BidEditPage: React.FC<TPropsFromRedux &
             setAlertOpen={setAlertOpen}
             buttonLoading={createLoading || editLoading}
             create={create}
+            createSuccess={createSuccess}
+            createError={createError}
+            clearCreate={clearCreate}
             edit={edit}
           />
         )}
