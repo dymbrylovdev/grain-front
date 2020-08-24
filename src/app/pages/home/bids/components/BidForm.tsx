@@ -61,11 +61,30 @@ const getInitialValues = (
   user: IUser | undefined,
   me: IUser | undefined
 ) => {
+  let newCropId: number | string = "";
+  if (editMode === "view" || editMode === "edit") {
+    newCropId = bid?.crop_id || "";
+  }
+  if (editMode === "create") {
+    if (vendorId) {
+      if (user && user.crops.length === 1) {
+        newCropId = user.crops[0].id;
+      } else {
+        newCropId = "";
+      }
+    } else {
+      if (me && me.crops.length === 1) {
+        newCropId = me.crops[0].id;
+      } else {
+        newCropId = "";
+      }
+    }
+  }
   const values: { [x: string]: any } = {
     volume: bid?.volume || "",
     price: bid?.price || "",
     description: bid?.description || "",
-    crop_id: bid?.crop_id ? bid?.crop_id : cropId ? cropId : "",
+    crop_id: newCropId,
     location:
       editMode === "create"
         ? !!vendorId

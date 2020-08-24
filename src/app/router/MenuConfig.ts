@@ -21,12 +21,12 @@ export default function getMenuConfig(crops: ICrop[] = [], user: IUser) {
   }
 }
 
-const getCropsSubmenu = (crops: ICrop[]) => {
+const getCropsSubmenu = (crops: ICrop[], url: string) => {
   let cropsArray: any[] = [];
   crops.forEach((crop, i) => {
     cropsArray.push({
       title: crop.name,
-      page: `sale/best-bids/${crop.id}`,
+      page: `${url}/${crop.id}`,
     });
   });
   cropsArray.push({
@@ -63,7 +63,7 @@ const getAdminMenu = (crops: ICrop[]) => ({
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
-                submenu: getCropsSubmenu(crops),
+                submenu: getCropsSubmenu(crops, "sale/best-bids"),
               },
               {
                 title: "Мои объявления",
@@ -75,7 +75,7 @@ const getAdminMenu = (crops: ICrop[]) => ({
                 page: "",
                 translate: "SUBMENU.ALL_BIDS",
                 bullet: "dot",
-                submenu: getCropsSubmenu(crops),
+                submenu: getCropsSubmenu(crops, "sale/all-bids"),
               },
             ],
           },
@@ -89,7 +89,7 @@ const getAdminMenu = (crops: ICrop[]) => ({
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
-                submenu: getCropsSubmenu(crops),
+                submenu: getCropsSubmenu(crops, "purchase/best-bids"),
               },
               {
                 title: "Мои объявления",
@@ -101,7 +101,7 @@ const getAdminMenu = (crops: ICrop[]) => ({
                 page: "",
                 translate: "SUBMENU.ALL_BIDS",
                 bullet: "dot",
-                submenu: getCropsSubmenu(crops),
+                submenu: getCropsSubmenu(crops, "purchase/all-bids"),
               },
             ],
           },
@@ -271,7 +271,7 @@ const getManagerMenu = (crops: ICrop[]) => ({
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
-                submenu: getCropsSubmenu(crops),
+                submenu: getCropsSubmenu(crops, "sale/best-bids"),
               },
               {
                 title: "Мои объявления",
@@ -283,7 +283,7 @@ const getManagerMenu = (crops: ICrop[]) => ({
                 page: "",
                 translate: "SUBMENU.ALL_BIDS",
                 bullet: "dot",
-                submenu: getCropsSubmenu(crops),
+                submenu: getCropsSubmenu(crops, "sale/all-bids"),
               },
             ],
           },
@@ -297,7 +297,7 @@ const getManagerMenu = (crops: ICrop[]) => ({
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
-                submenu: getCropsSubmenu(crops),
+                submenu: getCropsSubmenu(crops, "purchase/best-bids"),
               },
               {
                 title: "Мои объявления",
@@ -309,7 +309,7 @@ const getManagerMenu = (crops: ICrop[]) => ({
                 page: "",
                 translate: "SUBMENU.ALL_BIDS",
                 bullet: "dot",
-                submenu: getCropsSubmenu(crops),
+                submenu: getCropsSubmenu(crops, "purchase/all-bids"),
               },
             ],
           },
@@ -422,7 +422,7 @@ const getVendorMenu = (crops: ICrop[]) => ({
             page: "",
             translate: "SUBMENU.BIDS.BEST",
             bullet: "dot",
-            submenu: getCropsSubmenu(crops),
+            submenu: getCropsSubmenu(crops, "sale/best-bids"),
           },
           {
             title: "Добавить объявление",
@@ -485,7 +485,7 @@ const getBuyerMenu = (crops: ICrop[]) => ({
             page: "",
             translate: "SUBMENU.BIDS.BEST",
             bullet: "dot",
-            submenu: getCropsSubmenu(crops),
+            submenu: getCropsSubmenu(crops, "purchase/best-bids"),
           },
           {
             title: "Добавить объявление",
@@ -553,7 +553,7 @@ const getTraderMenu = (crops: ICrop[]) => ({
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
-                submenu: getCropsSubmenu(crops),
+                submenu: getCropsSubmenu(crops, "sale/best-bids"),
               },
               {
                 title: "Мои объявления",
@@ -572,7 +572,7 @@ const getTraderMenu = (crops: ICrop[]) => ({
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
-                submenu: getCropsSubmenu(crops),
+                submenu: getCropsSubmenu(crops, "purchase/best-bids"),
               },
               {
                 title: "Мои объявления",
