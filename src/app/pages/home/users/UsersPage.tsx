@@ -375,23 +375,24 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           <AddIcon />
                         </IconButton>
                       </Tooltip>
-
-                      <Tooltip
-                        title={intl.formatMessage({
-                          id: "USERLIST.TOOLTIP.DELETE",
-                        })}
-                      >
-                        <IconButton
-                          size="medium"
-                          color="secondary"
-                          onClick={() => {
-                            setDeleteUserId(item.id);
-                            setAlertOpen(true);
-                          }}
+                      {!(item.is_admin && !me?.is_admin) && (
+                        <Tooltip
+                          title={intl.formatMessage({
+                            id: "USERLIST.TOOLTIP.DELETE",
+                          })}
                         >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
+                          <IconButton
+                            size="medium"
+                            color="secondary"
+                            onClick={() => {
+                              setDeleteUserId(item.id);
+                              setAlertOpen(true);
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
