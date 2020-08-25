@@ -148,6 +148,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         crops
       ) {
         newCropIds = Array.from(crops, x => x.id);
+        newCropIds.splice(selectedTariff.max_crops_count);
       }
       if (realUser && values.tariff_id) {
         if (editMode === "profile") {
