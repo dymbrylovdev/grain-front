@@ -10,11 +10,13 @@ import {
   Divider,
   Grid,
   TableFooter,
+  Tooltip,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 
 import TopTableCell from "../../../../components/ui/Table/TopTableCell";
 
@@ -23,6 +25,7 @@ import { IBid } from "../../../../interfaces/bids";
 import { IUser } from "../../../../interfaces/users";
 import { TablePaginator2 } from "../../../../components/ui/Table/TablePaginator2";
 import { accessByRoles } from "../../../../utils/utils";
+import MiniTrafficLight from "../../users/components/miniTrafficLight/MiniTrafficLight";
 
 interface IProps {
   intl: any;
@@ -184,17 +187,17 @@ const BidTable: React.FC<IProps> = ({
                             (item, i) =>
                               i === 0 &&
                               !!item.profit &&
-                                (i === 0 ? (
-                                  <div key={i}>
-                                    <strong>{Math.round(item.profit)}</strong>
-                                    {` • ${item.point.name}`}
-                                  </div>
-                                ) : (
-                                  <div key={i}>
-                                    {Math.round(item.profit)}
-                                    {` • ${item.point.name}`}
-                                  </div>
-                                ))
+                              (i === 0 ? (
+                                <div key={i}>
+                                  <strong>{Math.round(item.profit)}</strong>
+                                  {` • ${item.point.name}`}
+                                </div>
+                              ) : (
+                                <div key={i}>
+                                  {Math.round(item.profit)}
+                                  {` • ${item.point.name}`}
+                                </div>
+                              ))
                           )}
                         </Grid>
                       </TableCell>
@@ -203,10 +206,29 @@ const BidTable: React.FC<IProps> = ({
                   {clientWidth > 1024 && (
                     <TableCell>
                       <Grid container direction="column" justify="center" alignItems="flex-start">
-                        <div>{`${bid.vendor.fio || ""}`}</div>
+                        <div className={classes.flexRow}>
+                          {bid?.vendor?.company_confirmed_by_payment && (
+                            <Tooltip
+                              title={intl.formatMessage({
+                                id: "USERLIST.TOOLTIP.COMPANY",
+                              })}
+                            >
+                              <CheckCircleOutlineIcon
+                                color="secondary"
+                                style={{ marginRight: 4, width: 15, height: 15 }}
+                              />
+                            </Tooltip>
+                          )}
+                          <div>{`${bid.vendor.fio || ""}`}</div>
+                        </div>
                         {bid.vendor.company && (
-                          <div style={{ marginTop: 10 }}>{`${bid.vendor.company.short_name ||
-                            ""}`}</div>
+                          <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                            {!!bid?.vendor?.company?.colors &&
+                              bid.vendor.company.colors.length > 0 && (
+                                <MiniTrafficLight intl={intl} colors={bid.vendor.company.colors} />
+                              )}
+                            <div>{`${bid.vendor.company.short_name || ""}`}</div>
+                          </div>
                         )}
                       </Grid>
                     </TableCell>
