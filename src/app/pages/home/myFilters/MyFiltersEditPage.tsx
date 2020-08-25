@@ -301,6 +301,20 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
           //console.log(values);
           return (
             <div className={classes.form}>
+              <div className={classes.topButtonsContainer}>
+                <div className={classes.button}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      history.goBack();
+                    }}
+                    style={{ marginTop: "-16px" }}
+                  >
+                    {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                  </Button>
+                </div>
+              </div>
               <TextField
                 type="text"
                 label={intl.formatMessage({
