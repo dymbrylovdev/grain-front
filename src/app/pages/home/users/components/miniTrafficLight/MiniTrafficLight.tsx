@@ -2,7 +2,6 @@ import React from "react";
 import { IntlShape } from "react-intl";
 import { Tooltip } from "@material-ui/core";
 
-import useStyles from "../../../styles";
 import MiniColorDot from "./MiniColorDot";
 
 interface IProps {
@@ -11,8 +10,6 @@ interface IProps {
 }
 
 const MiniTrafficLight: React.FC<IProps> = ({ intl, colors }) => {
-  const classes = useStyles();
-
   return (
     <div>
       {!colors.length ? (

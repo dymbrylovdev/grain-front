@@ -140,6 +140,15 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       ) {
         newCropIds.splice(selectedTariff.max_crops_count);
       }
+      if (
+        selectedTariff?.id &&
+        realUser?.tariff?.id &&
+        [1, 2, 102].includes(realUser.tariff.id) &&
+        [3, 4, 5].includes(selectedTariff.id) &&
+        crops
+      ) {
+        newCropIds = Array.from(crops, x => x.id);
+      }
       if (realUser && values.tariff_id) {
         if (editMode === "profile") {
           editMe({
@@ -267,7 +276,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           <>
             <Skeleton width="100%" height={52.5} animation="wave" />
             <Skeleton width="100%" height={52.5} animation="wave" />
-            {/* <Skeleton width="100%" height={40} animation="wave" /> */}
           </>
         ) : realUser.crops.length ? (
           realUser.crops.map(item => (
@@ -298,24 +306,28 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             <Divider />
           </div>
         )}
-        {loadingMe || loadingUser || !realTariffs || !realUser || editLoading ? (
+        {loadingMe || loadingUser || !realTariffs || !realUser || editLoading || !crops ? (
           <>
             <Skeleton width="100%" height={51.5} animation="wave" />
           </>
         ) : (
           <div className={innerClasses.crop}>
-            {!!realUser?.crops &&
+            {!!crops &&
+            !!realUser?.crops &&
             !!realUser?.tariff &&
-            realUser?.crops?.length < realUser?.tariff?.max_crops_count ? (
+            realUser?.crops?.length < realUser?.tariff?.max_crops_count &&
+            realUser?.crops?.length < crops.length ? (
               <div>{intl.formatMessage({ id: "TARIFFS.MORE_CROPS" })}</div>
             ) : (
               <div>{intl.formatMessage({ id: "TARIFFS.NO_MORE_CROPS" })}</div>
             )}
           </div>
         )}
-        {!!realUser?.crops &&
+        {!!crops &&
+          !!realUser?.crops &&
           !!realUser?.tariff &&
-          realUser?.crops?.length < realUser?.tariff?.max_crops_count && (
+          realUser?.crops?.length < realUser?.tariff?.max_crops_count &&
+          realUser?.crops?.length < crops.length && (
             <div className={classes.textFieldContainer}>
               {!addingCrop ? (
                 <Button
