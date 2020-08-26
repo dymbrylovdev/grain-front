@@ -17,7 +17,7 @@
   "ALL.YES": "Да",
   "ALL.NO": "Нет",
 
-  "ALL.PRICE_OF_TON": "Цена за тонну",
+  "ALL.PRICE_OF_TON": "Цена с места",
 
   "ALL.AUTOCOMPLIT.EMPTY": "Нет совпадений",
   "ALL.AUTOCOMPLIT.LOADING_TEXT": "Загрузка...",
@@ -209,7 +209,7 @@
 
   "BIDSLIST.TABLE.ID": "Id",
   "BIDSLIST.TABLE.BID_TYPE": "Тип объявления",
-  "BIDSLIST.TABLE.COST": "Цена",
+  "BIDSLIST.TABLE.COST": "Цена с места",
   "BIDSLIST.TABLE.COST_WITH_VAT": "Цена + НДС {vat}%",
   "BIDSLIST.TABLE.COST_WITH_VAT.ABOUT": "Этот продавец не работает с НДС, поэтому при совершении сделки вы понесёте дополнительные расходы в виде отсутствия возврата НДС в размере {vat} руб.",
   "BIDSLIST.TABLE.VOLUME": "Объем, тонн",
