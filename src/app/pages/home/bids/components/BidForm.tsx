@@ -567,7 +567,13 @@ const BidForm: React.FC<IProps> = ({
         ))}
 
       {editMode === "view" &&
-        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+        accessByRoles(me, [
+          "ROLE_ADMIN",
+          "ROLE_MANAGER",
+          "ROLE_TRADER",
+          "ROLE_BUYER",
+          "ROLE_VENDOR",
+        ]) &&
         me?.id !== bid?.vendor.id &&
         (loading ? (
           <Skeleton width="100%" height={225} animation="wave" />

@@ -129,7 +129,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
 
   useEffect(() => {
     fetch(salePurchaseMode);
-  }, [fetch, me, salePurchaseMode]);
+  }, [fetch, salePurchaseMode]);
 
   useEffect(() => {
     fetchMe();

@@ -215,11 +215,11 @@ const BidTable: React.FC<IProps> = ({
                             >
                               <CheckCircleOutlineIcon
                                 color="secondary"
-                                style={{ marginRight: 4, width: 15, height: 15 }}
+                                style={{ marginRight: 4, width: 16, height: 16 }}
                               />
                             </Tooltip>
                           )}
-                          <div>{`${bid.vendor.fio || ""}`}</div>
+                          <div>{`${bid.vendor.fio || bid.vendor.login || ""}`}</div>
                         </div>
                         {bid.vendor.company && (
                           <div className={classes.flexRow} style={{ marginTop: 10 }}>
