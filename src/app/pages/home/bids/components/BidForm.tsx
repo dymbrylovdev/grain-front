@@ -391,26 +391,43 @@ const BidForm: React.FC<IProps> = ({
       {loading ? (
         <Skeleton width="100%" height={127} animation="wave" />
       ) : (
-        bid?.vendor && (
-          <div>
-            <Link
-              to={
-                me?.id === (!!bid && bid.vendor && bid.vendor.id)
-                  ? "/user/profile"
-                  : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
-              }
-            >
-              <div className={innerClasses.authorText}>
-                {`${
-                  bid.type === "sale"
-                    ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
-                    : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
-                }: ${bid.vendor.fio || bid.vendor.login}`}
+        bid?.vendor &&
+        bid?.author && (
+          <>
+            {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+              <div>
+                <Link
+                  to={
+                    me?.id === bid?.author?.id ? "/user/profile" : `/user/view/${bid?.author?.id}`
+                  }
+                >
+                  <div className={innerClasses.authorText}>
+                    {intl.formatMessage({ id: "BID.FORM.AUTHOR" })}{" "}
+                    {bid.author.fio || bid.author.login}
+                  </div>
+                </Link>
               </div>
-            </Link>
-            {!!bid.vendor.company && <div>{bid.vendor.company.short_name}</div>}
-            <p>{getConfirmCompanyString(bid.vendor as IUser, intl)}</p>
-          </div>
+            )}
+            <div>
+              <Link
+                to={
+                  me?.id === (!!bid && bid.vendor && bid.vendor.id)
+                    ? "/user/profile"
+                    : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
+                }
+              >
+                <div className={innerClasses.authorText}>
+                  {`${
+                    bid.type === "sale"
+                      ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
+                      : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
+                  }: ${bid.vendor.fio || bid.vendor.login}`}
+                </div>
+              </Link>
+              {!!bid.vendor.company && <div>{bid.vendor.company.short_name}</div>}
+              <p>{getConfirmCompanyString(bid.vendor as IUser, intl)}</p>
+            </div>
+          </>
         )
       )}
 

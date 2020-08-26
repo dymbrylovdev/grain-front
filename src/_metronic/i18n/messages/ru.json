@@ -262,7 +262,7 @@
   "BID.CALCULATOR.TITLE": "Калькулятор доставки:",
   "BID.CALCULATOR.FINAL_PRICE": "Цена за тонну с учётом доставки, руб.:",
   "BID.CALCULATOR.FINAL_PRICE_WITH_VAT": "Цена за тонну с учётом доставки с НДС {vat}%, руб.:",
-  "BID.FORM.AUTHOR": "Автор объявления: ",
+  "BID.FORM.AUTHOR": "Автор: ",
   "BID.TYPE.SALE": "Объявление на продажу",
   "BID.TYPE.PURCHASE": "Объявление на покупку",
 
