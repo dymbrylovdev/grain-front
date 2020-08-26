@@ -95,6 +95,11 @@ const theme = createMuiTheme(
           backgroundColor: "#fff",
         },
       },
+      MuiTooltip: {
+        tooltip: {
+          fontSize: 12,
+        },
+      },
     },
     props: {
       // Name of the component ⚛️
