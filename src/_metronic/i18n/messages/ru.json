@@ -382,6 +382,7 @@
   "COMPANY.STATUS.NO_FOUND": "По заданному ИНН компания не найдена",
   "COMPANY.CHOOSE.TITLE": "Выберите компанию",
   "COMPANY.CONFIRM.TITLE": "Связь с компанией подтверждена:",
+  "COMPANY.CONFIRM.TITLE2": "Связь с компанией подтверждена оплатой.",
   "COMPANY.CONFIRM.BY_EMAIL": "по email",
   "COMPANY.CONFIRM.BY_PHONE": "по телефону",
   "COMPANY.CONFIRM.BY_PAY": "оплатой",
