@@ -413,50 +413,33 @@ const getVendorMenu = (crops: ICrop[]) => ({
     items: [
       {
         title: "Рынок зерна",
-        icon: "flaticon2-architecture-and-city",
+        icon: "fas fa-seedling",
         page: "",
+        bullet: "dot",
         translate: "MENU.GRAIN",
-        submenu: [
-          {
-            title: "Лучшие объявления",
-            page: "",
-            translate: "SUBMENU.BIDS.BEST",
-            bullet: "dot",
-            submenu: getCropsSubmenu(crops, "purchase/best-bids"),
-          },
-          {
-            title: "Добавить объявление",
-            page: "bid/create/sale/0/0",
-            translate: "SUBMENU.GRAIN.CREATE_AD",
-          },
-          {
-            title: "Мои объявления",
-            page: "sale/my-bids",
-            translate: "SUBMENU.MY_BIDS",
-          },
-        ],
+        submenu: getCropsSubmenu(crops, "purchase/best-bids"),
       },
       {
-        title: "Настройки",
-        icon: "flaticon2-settings",
-        page: "builder",
-        translate: "MENU.SETTINGS",
-        submenu: [
-          {
-            title: "Мой профайл",
-            page: "user/profile",
-            translate: "SUBMENU.PROFILE",
-          },
-          {
-            title: "Мои фильтры",
-            page: "purchase/filters",
-            translate: "SUBMENU.MY_FILTERS",
-          },
-        ],
+        title: "Мои объявления",
+        icon: "far fa-file-alt",
+        page: "sale/my-bids",
+        translate: "SUBMENU.MY_BIDS",
+      },
+      {
+        title: "Мой профиль",
+        icon: "fas fa-user-circle",
+        page: "user/profile",
+        translate: "SUBMENU.PROFILE",
+      },
+      {
+        title: "Мои подписки",
+        icon: "far fa-bell",
+        page: "purchase/filters",
+        translate: "SUBMENU.MY_FILTERS",
       },
       {
         title: "Выход",
-        icon: "flaticon-logout",
+        icon: "far fa-share-square",
         page: "logout",
         translate: "MENU.LOGOUT",
       },
@@ -476,50 +459,33 @@ const getBuyerMenu = (crops: ICrop[]) => ({
     items: [
       {
         title: "Рынок зерна",
-        icon: "flaticon2-architecture-and-city",
+        icon: "fas fa-seedling",
         page: "",
+        bullet: "dot",
         translate: "MENU.GRAIN",
-        submenu: [
-          {
-            title: "Лучшие объявления",
-            page: "",
-            translate: "SUBMENU.BIDS.BEST",
-            bullet: "dot",
-            submenu: getCropsSubmenu(crops, "sale/best-bids"),
-          },
-          {
-            title: "Добавить объявление",
-            page: "bid/create/purchase/0/0",
-            translate: "SUBMENU.GRAIN.CREATE_AD",
-          },
-          {
-            title: "Мои объявления",
-            page: "purchase/my-bids",
-            translate: "SUBMENU.MY_BIDS",
-          },
-        ],
+        submenu: getCropsSubmenu(crops, "sale/best-bids"),
       },
       {
-        title: "Настройки",
-        icon: "flaticon2-settings",
-        page: "builder",
-        translate: "MENU.SETTINGS",
-        submenu: [
-          {
-            title: "Мой профайл",
-            page: "user/profile",
-            translate: "SUBMENU.PROFILE",
-          },
-          {
-            title: "Мои фильтры",
-            page: "sale/filters",
-            translate: "SUBMENU.MY_FILTERS",
-          },
-        ],
+        title: "Мои объявления",
+        icon: "far fa-file-alt",
+        page: "purchase/my-bids",
+        translate: "SUBMENU.MY_BIDS",
+      },
+      {
+        title: "Мой профиль",
+        icon: "fas fa-user-circle",
+        page: "user/profile",
+        translate: "SUBMENU.PROFILE",
+      },
+      {
+        title: "Мои подписки",
+        icon: "far fa-bell",
+        page: "sale/filters",
+        translate: "SUBMENU.MY_FILTERS",
       },
       {
         title: "Выход",
-        icon: "flaticon-logout",
+        icon: "far fa-share-square",
         page: "logout",
         translate: "MENU.LOGOUT",
       },
