@@ -315,33 +315,6 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                   </Button>
                 </div>
               </div>
-              <TextField
-                type="text"
-                label={intl.formatMessage({
-                  id: "FILTER.FORM.NAME.INPUT_NAME",
-                })}
-                margin="normal"
-                name="name"
-                value={values.name || ""}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                InputProps={
-                  isEditable
-                    ? {
-                        endAdornment: (
-                          <IconButton onClick={() => setFieldValue("name", "")}>
-                            <CloseIcon />
-                          </IconButton>
-                        ),
-                      }
-                    : undefined
-                }
-                helperText={touched.name && errors.name}
-                error={Boolean(touched.name && errors.name)}
-                disabled={!isEditable}
-                autoComplete="off"
-              />
 
               <Autocomplete
                 id="cropId"
@@ -352,6 +325,15 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                 })}
                 value={crops.find(item => item.id === values.cropId) || null}
                 onChange={(e: any, val: ICrop | null) => {
+                  const now = new Date();
+                  if (val) {
+                    setFieldValue(
+                      "name",
+                      `${val.name} ${now.toLocaleDateString()} - ${now
+                        .toLocaleTimeString()
+                        .slice(0, -3)}`
+                    );
+                  }
                   setFieldValue("cropId", val?.id || "");
                   !!val?.id ? fetchCropParams(val.id) : clearCropParams();
                 }}
@@ -535,6 +517,34 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                           <Divider />
                         </div>
                       ))}
+
+                    <TextField
+                      type="text"
+                      label={intl.formatMessage({
+                        id: "FILTER.FORM.NAME.INPUT_NAME",
+                      })}
+                      margin="normal"
+                      name="name"
+                      value={values.name || ""}
+                      variant="outlined"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      InputProps={
+                        isEditable
+                          ? {
+                              endAdornment: (
+                                <IconButton onClick={() => setFieldValue("name", "")}>
+                                  <CloseIcon />
+                                </IconButton>
+                              ),
+                            }
+                          : undefined
+                      }
+                      helperText={touched.name && errors.name}
+                      error={Boolean(touched.name && errors.name)}
+                      disabled={!isEditable}
+                      autoComplete="off"
+                    />
 
                     {!isNew && (
                       <FormControlLabel
