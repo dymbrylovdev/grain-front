@@ -49,6 +49,22 @@ function FilterForm({
           {intl.formatMessage({ id: "FILTERS.INFO_TEXT" })}
         </Alert>
       </Collapse>
+
+      <div className={classes.bottomMargin2} style={{ fontWeight: "bold" }}>
+        {intl.formatMessage(
+          { id: "FILTER.FORM.LIMIT" },
+          {
+            count: me.tariff.max_filters_count - myFilters?.length || "0",
+            word: declOfNum(me.tariff.max_filters_count - myFilters?.length, [
+              "фильтр",
+              "фильтра",
+              "фильтров",
+            ]),
+            fullCount: me.tariff.max_filters_count,
+          }
+        )}
+      </div>
+
       <Row>
         {enumParams &&
           enumParams.map(param => (
@@ -179,20 +195,6 @@ function FilterForm({
             <Divider />
           </div>
         ))}
-      <div className={classes.topMargin} style={{ fontWeight: "bold" }}>
-        {intl.formatMessage(
-          { id: "FILTER.FORM.LIMIT" },
-          {
-            count: me.tariff.max_filters_count - myFilters?.length || "0",
-            word: declOfNum(me.tariff.max_filters_count - myFilters?.length, [
-              "фильтр",
-              "фильтра",
-              "фильтров",
-            ]),
-            fullCount: me.tariff.max_filters_count,
-          }
-        )}
-      </div>
     </form>
   );
 }
