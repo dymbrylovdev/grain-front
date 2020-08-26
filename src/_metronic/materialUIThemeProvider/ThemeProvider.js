@@ -10,6 +10,7 @@ const theme = createMuiTheme(
     // direction: "rtl",
     typography: {
       fontFamily: ["Open Sans"].join(","),
+      fontSize: 16,
     },
 
     palette: {

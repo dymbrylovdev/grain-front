@@ -26,7 +26,7 @@ import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: theme.spacing(2),
   },
   calcDescriptionContainer: {
@@ -37,11 +37,11 @@ const useInnerStyles = makeStyles(theme => ({
     justifyContent: "center",
   },
   calcDescription: {
-    fontSize: 14,
+    fontSize: 16,
     paddingRight: theme.spacing(1),
   },
   calcFinalPrice: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "bold",
     flex: 1,
   },

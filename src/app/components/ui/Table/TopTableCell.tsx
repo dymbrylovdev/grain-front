@@ -5,16 +5,16 @@ const TopTableCell = withStyles(theme => ({
   head: {
     backgroundColor: "#1e1e2d",
     color: "white",
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "bold",
   },
   body: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
   },
   [theme.breakpoints.down("xs")]: {
     head: {
-      fontSize: 10,
+      fontSize: 12,
       paddingRight: 0,
       // paddingLeft: theme.spacing(2),
     },

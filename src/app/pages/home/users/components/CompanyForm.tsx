@@ -259,7 +259,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           <Skeleton width="100%" height={70} animation="wave" />
         </div>
       ) : (
-        <div className={classes.textFieldContainer} style={{ fontSize: 14 }}>
+        <div className={classes.textFieldContainer} style={{ fontSize: 16 }}>
           {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
         </div>
       )}
