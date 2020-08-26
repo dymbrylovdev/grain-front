@@ -351,18 +351,40 @@ const BidForm: React.FC<IProps> = ({
   return (
     <div className={classes.form}>
       <div className={classes.topButtonsContainer}>
-        <div className={classes.button}>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => {
-              history.goBack();
-            }}
-            style={{ marginTop: "-16px" }}
-            disabled={buttonLoading || loading}
-          >
-            {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-          </Button>
+        <div
+          className={classes.flexRow}
+          style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}
+        >
+          <div className={classes.button}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                history.goBack();
+              }}
+              disabled={buttonLoading || loading}
+            >
+              {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+            </Button>
+          </div>
+          {editMode !== "view" && !loading && (
+            <div className={classes.button}>
+              <ButtonWithLoader
+                loading={buttonLoading}
+                disabled={buttonLoading}
+                onPress={() => {
+                  !values.location.text || !values.volume || !values.price || !values.crop_id
+                    ? setFormikErrored(true)
+                    : setFormikErrored(false);
+                  handleSubmit();
+                }}
+              >
+                {editMode === "create"
+                  ? intl.formatMessage({ id: "ALL.BUTTONS.BID_CREATE" })
+                  : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+              </ButtonWithLoader>
+            </div>
+          )}
         </div>
       </div>
 
