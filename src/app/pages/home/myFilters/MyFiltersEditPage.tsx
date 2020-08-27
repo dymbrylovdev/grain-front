@@ -283,6 +283,12 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
           name: Yup.string()
             .required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" }))
             .trim(),
+          max_full_price: Yup.number()
+            .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+            .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+          min_full_price: Yup.number()
+            .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+            .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
         })}
       >
         {({
@@ -445,6 +451,8 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                             }
                           : undefined
                       }
+                      helperText={touched.max_full_price && errors.max_full_price}
+                      error={Boolean(touched.max_full_price && errors.max_full_price)}
                       disabled={!isEditable}
                       autoComplete="off"
                     />
@@ -472,6 +480,8 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                             }
                           : undefined
                       }
+                      helperText={touched.min_full_price && errors.min_full_price}
+                      error={Boolean(touched.min_full_price && errors.min_full_price)}
                       disabled={!isEditable}
                       autoComplete="off"
                     />

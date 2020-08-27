@@ -136,6 +136,8 @@ function FilterForm({
               </IconButton>
             ),
           }}
+          helperText={formik.touched.max_full_price && formik.errors.max_full_price}
+          error={Boolean(formik.touched.max_full_price && formik.errors.max_full_price)}
           autoComplete="off"
         />
       </div>
@@ -159,6 +161,8 @@ function FilterForm({
               </IconButton>
             ),
           }}
+          helperText={formik.touched.min_full_price && formik.errors.min_full_price}
+          error={Boolean(formik.touched.min_full_price && formik.errors.min_full_price)}
           autoComplete="off"
         />
       </div>

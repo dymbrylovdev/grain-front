@@ -174,6 +174,12 @@ const FilterModal = ({
       name: Yup.string()
         .required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" }))
         .trim(),
+      max_full_price: Yup.number()
+        .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+      min_full_price: Yup.number()
+        .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
     }),
   });
   const { resetForm, values, handleBlur } = formik;
