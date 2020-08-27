@@ -609,9 +609,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
-      <div className={classes.bottomButtonsContainer}>
+      <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
         {editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-          <div className={classes.button}>
+          <div className={classes.button} style={{ marginTop: 4, marginBottom: 4 }}>
             <ButtonWithLoader
               disabled={!user}
               onPress={() =>
@@ -622,48 +622,50 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             </ButtonWithLoader>
           </div>
         )}
-        <div className={classes.button}>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => history.goBack()}
-            disabled={meLoading || userLoading || funnelStatesLoading}
-          >
-            {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-          </Button>
-        </div>
-        {editMode !== "view" && (
+        <div className={classes.flexRow} style={{ marginTop: 4, marginBottom: 4 }}>
           <div className={classes.button}>
-            <ButtonWithLoader
-              loading={editMeLoading || createLoading || editLoading}
-              disabled={
-                editMeLoading ||
-                createLoading ||
-                editLoading ||
-                meLoading ||
-                userLoading ||
-                (editMode !== "profile" && funnelStatesLoading) ||
-                isEqual(oldValues, values)
-              }
-              onPress={handleSubmit}
-            >
-              {editMode === "create"
-                ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
-                : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
-            </ButtonWithLoader>
-          </div>
-        )}
-        {editMode === "edit" && me?.is_admin && (
-          <div className={classes.button}>
-            <OutlinedRedButton
+            <Button
               variant="outlined"
-              onClick={() => setAlertOpen(true)}
+              color="primary"
+              onClick={() => history.goBack()}
               disabled={meLoading || userLoading || funnelStatesLoading}
             >
-              {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
-            </OutlinedRedButton>
+              {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+            </Button>
           </div>
-        )}
+          {editMode !== "view" && (
+            <div className={classes.button}>
+              <ButtonWithLoader
+                loading={editMeLoading || createLoading || editLoading}
+                disabled={
+                  editMeLoading ||
+                  createLoading ||
+                  editLoading ||
+                  meLoading ||
+                  userLoading ||
+                  (editMode !== "profile" && funnelStatesLoading) ||
+                  isEqual(oldValues, values)
+                }
+                onPress={handleSubmit}
+              >
+                {editMode === "create"
+                  ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
+                  : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+              </ButtonWithLoader>
+            </div>
+          )}
+          {editMode === "edit" && me?.is_admin && (
+            <div className={classes.button}>
+              <OutlinedRedButton
+                variant="outlined"
+                onClick={() => setAlertOpen(true)}
+                disabled={meLoading || userLoading || funnelStatesLoading}
+              >
+                {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
+              </OutlinedRedButton>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
