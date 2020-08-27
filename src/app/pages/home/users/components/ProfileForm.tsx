@@ -324,11 +324,15 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             error={Boolean(touched.role && errors.role)}
             disabled={editMode !== "create"}
           >
-            {roles.map((item, i) => (
-              <MenuItem key={i} value={item.id}>
-                {item.value}
-              </MenuItem>
-            ))}
+            {roles.map((item, i) =>
+              [0, 1].includes(i) && accessByRoles(me, ["ROLE_MANAGER"]) ? (
+                ""
+              ) : (
+                <MenuItem key={i} value={item.id}>
+                  {item.value}
+                </MenuItem>
+              )
+            )}
           </TextField>
         )}
       </div>
@@ -649,7 +653,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             </ButtonWithLoader>
           </div>
         )}
-        {editMode === "edit" && (
+        {editMode === "edit" && me?.is_admin && (
           <div className={classes.button}>
             <OutlinedRedButton
               variant="outlined"

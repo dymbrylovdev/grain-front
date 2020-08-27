@@ -342,7 +342,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       )}
                     </TableCell>
                     <TableCell align="right">
-                      {!(item.is_admin && !me?.is_admin) && (
+                      {!(accessByRoles(item, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !me?.is_admin) && (
                         <Tooltip
                           title={intl.formatMessage({
                             id: "USERLIST.TOOLTIP.EDIT",
@@ -375,7 +375,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           <AddIcon />
                         </IconButton>
                       </Tooltip>
-                      {!(item.is_admin && !me?.is_admin) && (
+                      {me?.is_admin && (
                         <Tooltip
                           title={intl.formatMessage({
                             id: "USERLIST.TOOLTIP.DELETE",
