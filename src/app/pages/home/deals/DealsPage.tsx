@@ -12,9 +12,11 @@ import {
   TableFooter,
   TextField,
   Button,
+  Tooltip,
 } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import { useSnackbar } from "notistack";
 import { useFormik } from "formik";
@@ -34,6 +36,7 @@ import { TablePaginator } from "./components/TablePaginator";
 import { isDealsFilterEmpty } from "./utils/utils";
 import { accessByRoles } from "../../../utils/utils";
 import NumberFormatCustom from "../../../components/NumberFormatCustom/NumberFormatCustom";
+import MiniTrafficLight from "../users/components/miniTrafficLight/MiniTrafficLight";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -307,14 +310,37 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           {": "}
                           {item.sale_bid.location.text}
                         </div>
+                        <div>{intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}</div>
                         <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}
-                          {item.sale_bid &&
-                            item.sale_bid.vendor &&
-                            ((item.sale_bid.vendor.company &&
-                              item.sale_bid.vendor.company.short_name) ||
-                              item.sale_bid.vendor.fio ||
-                              item.sale_bid.vendor.login)}
+                          <div className={classes.flexRow}>
+                            {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
+                              <Tooltip
+                                title={intl.formatMessage({
+                                  id: "USERLIST.TOOLTIP.COMPANY",
+                                })}
+                              >
+                                <CheckCircleOutlineIcon
+                                  color="secondary"
+                                  style={{ marginRight: 4, width: 16, height: 16 }}
+                                />
+                              </Tooltip>
+                            )}
+                            <div>{`${item?.sale_bid.vendor.fio ||
+                              item?.sale_bid.vendor.login ||
+                              ""}`}</div>
+                          </div>
+                          {item?.sale_bid.vendor.company && (
+                            <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                              {!!item?.sale_bid?.vendor?.company?.colors &&
+                                item?.sale_bid.vendor.company.colors.length > 0 && (
+                                  <MiniTrafficLight
+                                    intl={intl}
+                                    colors={item?.sale_bid.vendor.company.colors}
+                                  />
+                                )}
+                              <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </TableCell>
@@ -333,14 +359,37 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           {": "}
                           {item.purchase_bid.location.text}
                         </div>
+                        <div>{intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}</div>
                         <div>
-                          {intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}
-                          {item.purchase_bid &&
-                            item.purchase_bid.vendor &&
-                            ((item.purchase_bid.vendor.company &&
-                              item.purchase_bid.vendor.company.short_name) ||
-                              item.purchase_bid.vendor.fio ||
-                              item.purchase_bid.vendor.login)}
+                          <div className={classes.flexRow}>
+                            {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
+                              <Tooltip
+                                title={intl.formatMessage({
+                                  id: "USERLIST.TOOLTIP.COMPANY",
+                                })}
+                              >
+                                <CheckCircleOutlineIcon
+                                  color="secondary"
+                                  style={{ marginRight: 4, width: 16, height: 16 }}
+                                />
+                              </Tooltip>
+                            )}
+                            <div>{`${item?.purchase_bid.vendor.fio ||
+                              item?.purchase_bid.vendor.login ||
+                              ""}`}</div>
+                          </div>
+                          {item?.purchase_bid.vendor.company && (
+                            <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                              {!!item?.purchase_bid?.vendor?.company?.colors &&
+                                item?.purchase_bid.vendor.company.colors.length > 0 && (
+                                  <MiniTrafficLight
+                                    intl={intl}
+                                    colors={item?.purchase_bid.vendor.company.colors}
+                                  />
+                                )}
+                              <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </TableCell>

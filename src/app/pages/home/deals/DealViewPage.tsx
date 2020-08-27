@@ -3,16 +3,9 @@ import { compose } from "redux";
 import { RouteComponentProps, Link, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  // TableFooter,
-} from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Button } from "@material-ui/core";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
@@ -20,12 +13,11 @@ import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
-// import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
 import { Skeleton } from "@material-ui/lab";
 import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
-import { UserActivity } from "../users/components";
-import { accessByRoles } from "../../../utils/utils";
+import { UserActivity, TrafficLight } from "../users/components";
+import { accessByRoles, getConfirmCompanyString } from "../../../utils/utils";
 
 const DealViewPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -304,6 +296,30 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </p>
                       <p>тел.: {deal.sale_bid.vendor.phone || "-"}</p>
                       <UserActivity intl={intl} user={deal.sale_bid.vendor} />
+                      <div className={classes.topMargin}>
+                        {!!deal.sale_bid.vendor.company && (
+                          <div>{deal.sale_bid.vendor.company.short_name}</div>
+                        )}
+                        <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
+                          {!!deal?.sale_bid?.vendor?.company && (
+                            <div className={classes.rightMargin1}>
+                              {!deal?.sale_bid?.vendor?.company_confirmed_by_payment ? (
+                                <ReportProblemIcon color="error" />
+                              ) : (
+                                <CheckCircleOutlineIcon color="secondary" />
+                              )}
+                            </div>
+                          )}
+                          <div>{getConfirmCompanyString(deal.sale_bid.vendor, intl)}</div>
+                        </div>
+                        {!!deal?.sale_bid?.vendor?.company?.colors &&
+                          !!deal?.sale_bid?.vendor?.company_confirmed_by_payment && (
+                            <TrafficLight
+                              intl={intl}
+                              colors={deal?.sale_bid?.vendor?.company?.colors}
+                            />
+                          )}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <p>
@@ -313,6 +329,31 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </p>
                       <p>тел.: {deal.purchase_bid.vendor.phone || "-"}</p>
                       <UserActivity intl={intl} user={deal.purchase_bid.vendor} />
+
+                      <div className={classes.topMargin}>
+                        {!!deal.purchase_bid.vendor.company && (
+                          <div>{deal.purchase_bid.vendor.company.short_name}</div>
+                        )}
+                        <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
+                          {!!deal?.purchase_bid?.vendor?.company && (
+                            <div className={classes.rightMargin1}>
+                              {!deal?.purchase_bid?.vendor?.company_confirmed_by_payment ? (
+                                <ReportProblemIcon color="error" />
+                              ) : (
+                                <CheckCircleOutlineIcon color="secondary" />
+                              )}
+                            </div>
+                          )}
+                          <div>{getConfirmCompanyString(deal.purchase_bid.vendor, intl)}</div>
+                        </div>
+                        {!!deal?.purchase_bid?.vendor?.company?.colors &&
+                          !!deal?.purchase_bid?.vendor?.company_confirmed_by_payment && (
+                            <TrafficLight
+                              intl={intl}
+                              colors={deal?.purchase_bid?.vendor?.company?.colors}
+                            />
+                          )}
+                      </div>
                     </TableCell>
                   </TableRow>
                   {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (

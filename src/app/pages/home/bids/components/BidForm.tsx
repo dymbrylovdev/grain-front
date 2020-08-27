@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState, useRef } from "react";
 import { IntlShape } from "react-intl";
 import { Link } from "react-router-dom";
@@ -8,6 +9,8 @@ import { Skeleton, Autocomplete } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import { IBid, TBidType, IBidToRequest } from "../../../../interfaces/bids";
@@ -425,13 +428,24 @@ const BidForm: React.FC<IProps> = ({
                 </div>
               </Link>
               {!!bid.vendor.company && <div>{bid.vendor.company.short_name}</div>}
-              <p>{getConfirmCompanyString(bid.vendor as IUser, intl)}</p>
+              <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
+                {!!bid?.vendor?.company && (
+                  <div className={classes.rightMargin1}>
+                    {!bid?.vendor?.company_confirmed_by_payment ? (
+                      <ReportProblemIcon color="error" />
+                    ) : (
+                      <CheckCircleOutlineIcon color="secondary" />
+                    )}
+                  </div>
+                )}
+                <div>{getConfirmCompanyString(bid.vendor as IUser, intl)}</div>
+              </div>
             </div>
           </>
         )
       )}
 
-      {!!bid?.vendor?.company?.colors && (
+      {!!bid?.vendor?.company?.colors && !!bid?.vendor?.company_confirmed_by_payment && (
         <TrafficLight intl={intl} colors={bid.vendor.company.colors} />
       )}
 

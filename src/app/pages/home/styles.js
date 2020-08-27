@@ -172,6 +172,12 @@ const useStyles = makeStyles(theme => ({
   leftMargin2: {
     marginLeft: theme.spacing(2),
   },
+  rightMargin1: {
+    marginRight: theme.spacing(1),
+  },
+  rightMargin2: {
+    marginRight: theme.spacing(2),
+  },
 
   // funnel state ***************************************************************************************************************
 
