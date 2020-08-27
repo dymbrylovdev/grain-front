@@ -600,48 +600,30 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
-      {/* <div className={classes.button}>
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={() => {
-            throw Error("Ошибка ошибка");
-            console.log(Error);
-          }}
-          disabled={meLoading || userLoading || funnelStatesLoading}
-        >
-          Error
-        </Button>
-      </div> */}
-
-      {editMode !== "view" && (
-        <div className={classes.bottomButtonsContainer}>
-          {editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-            <div className={classes.button}>
-              <ButtonWithLoader
-                disabled={!user}
-                onPress={() =>
-                  history.push(
-                    `/bid/create/${user?.is_buyer ? "purchase" : "sale"}/0/0/${user?.id}`
-                  )
-                }
-              >
-                {intl.formatMessage({ id: "ALL.BUTTONS.BID_CREATE" })}
-              </ButtonWithLoader>
-            </div>
-          )}
-          {editMode !== "profile" && (
-            <div className={classes.button}>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => history.push("/user-list")}
-                disabled={meLoading || userLoading || funnelStatesLoading}
-              >
-                {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-              </Button>
-            </div>
-          )}
+      <div className={classes.bottomButtonsContainer}>
+        {editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+          <div className={classes.button}>
+            <ButtonWithLoader
+              disabled={!user}
+              onPress={() =>
+                history.push(`/bid/create/${user?.is_buyer ? "purchase" : "sale"}/0/0/${user?.id}`)
+              }
+            >
+              {intl.formatMessage({ id: "ALL.BUTTONS.BID_CREATE" })}
+            </ButtonWithLoader>
+          </div>
+        )}
+        <div className={classes.button}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => history.goBack()}
+            disabled={meLoading || userLoading || funnelStatesLoading}
+          >
+            {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+          </Button>
+        </div>
+        {editMode !== "view" && (
           <div className={classes.button}>
             <ButtonWithLoader
               loading={editMeLoading || createLoading || editLoading}
@@ -661,19 +643,19 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
             </ButtonWithLoader>
           </div>
-          {editMode === "edit" && (
-            <div className={classes.button}>
-              <OutlinedRedButton
-                variant="outlined"
-                onClick={() => setAlertOpen(true)}
-                disabled={meLoading || userLoading || funnelStatesLoading}
-              >
-                {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
-              </OutlinedRedButton>
-            </div>
-          )}
-        </div>
-      )}
+        )}
+        {editMode === "edit" && (
+          <div className={classes.button}>
+            <OutlinedRedButton
+              variant="outlined"
+              onClick={() => setAlertOpen(true)}
+              disabled={meLoading || userLoading || funnelStatesLoading}
+            >
+              {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
+            </OutlinedRedButton>
+          </div>
+        )}
+      </div>
     </>
   );
 };
