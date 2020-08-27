@@ -26,6 +26,7 @@ import { IUser } from "../../../../interfaces/users";
 import { TablePaginator2 } from "../../../../components/ui/Table/TablePaginator2";
 import { accessByRoles } from "../../../../utils/utils";
 import MiniTrafficLight from "../../users/components/miniTrafficLight/MiniTrafficLight";
+import { ICrop } from "../../../../interfaces/crops";
 
 interface IProps {
   intl: any;
@@ -41,6 +42,7 @@ interface IProps {
   addUrl?: string;
   salePurchaseMode?: "sale" | "purchase";
   bestAllMyMode?: "best-bids" | "all-bids" | "my-bids";
+  crops: ICrop[] | undefined;
 }
 
 const BidTable: React.FC<IProps> = ({
@@ -57,6 +59,7 @@ const BidTable: React.FC<IProps> = ({
   addUrl,
   salePurchaseMode,
   bestAllMyMode,
+  crops,
 }) => {
   const history = useHistory();
 
@@ -93,13 +96,21 @@ const BidTable: React.FC<IProps> = ({
                     <FormattedMessage id="BIDSLIST.TABLE.ID" />
                   </TopTableCell>
                 )}
+                {bestAllMyMode === "my-bids" && (
+                  <TopTableCell>
+                    <FormattedMessage id="BIDSLIST.TABLE.CROP" />
+                  </TopTableCell>
+                )}
                 <TopTableCell>
                   <FormattedMessage id="BIDSLIST.TABLE.COST" />
                 </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
-                </TopTableCell>
+                {bestAllMyMode !== "my-bids" && (
+                  <TopTableCell>
+                    <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
+                  </TopTableCell>
+                )}
                 {clientWidth > 1024 &&
+                  bestAllMyMode !== "my-bids" &&
                   accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
                     <TopTableCell>
                       <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
@@ -108,7 +119,7 @@ const BidTable: React.FC<IProps> = ({
                 <TopTableCell>
                   <FormattedMessage id="BIDSLIST.TABLE.VOLUME" />
                 </TopTableCell>
-                {clientWidth > 1024 && (
+                {clientWidth > 1024 && bestAllMyMode !== "my-bids" && (
                   <TopTableCell>
                     {salePurchaseMode === "sale" ? (
                       <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
@@ -117,9 +128,20 @@ const BidTable: React.FC<IProps> = ({
                     )}
                   </TopTableCell>
                 )}
-                <TopTableCell>
-                  <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
-                </TopTableCell>
+                {bestAllMyMode === "my-bids" && (
+                  <TopTableCell>
+                    {salePurchaseMode === "sale" ? (
+                      <FormattedMessage id="PROFILE.INPUT.LOCATION.SALE" />
+                    ) : (
+                      <FormattedMessage id="PROFILE.INPUT.LOCATION.PURCHASE" />
+                    )}
+                  </TopTableCell>
+                )}
+                {bestAllMyMode !== "my-bids" && (
+                  <TopTableCell>
+                    <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
+                  </TopTableCell>
+                )}
                 {salePurchaseMode === "purchase" && (
                   <TopTableCell>
                     <FormattedMessage id="BIDSLIST.TABLE.TIME" />
@@ -141,6 +163,11 @@ const BidTable: React.FC<IProps> = ({
                   }}
                 >
                   {clientWidth > 1024 && <TableCell>{bid.id}</TableCell>}
+                  {bestAllMyMode === "my-bids" && (
+                    <TableCell>
+                      {crops?.find(crop => crop.id === bid.crop_id)?.name || ""}
+                    </TableCell>
+                  )}
                   <TableCell>
                     {!!user &&
                     user.use_vat &&
@@ -166,20 +193,25 @@ const BidTable: React.FC<IProps> = ({
                       "-"
                     )}
                   </TableCell>
-                  <TableCell>
-                    {!!user && user.use_vat && !!bid && !!bid.vat && !bid.vendor.use_vat
-                      ? !bid.price
-                        ? "-"
-                        : salePurchaseMode === "sale"
-                        ? !!bid && Math.round(bid.price * (bid.vat / 100 + 1) + bid.price_delivery)
-                        : !!bid && Math.round(bid.price * (bid.vat / 100 + 1) - bid.price_delivery)
-                      : bid.price
-                      ? salePurchaseMode === "sale"
-                        ? Math.round(bid.price + bid.price_delivery)
-                        : Math.round(bid.price - bid.price_delivery)
-                      : "-"}
-                  </TableCell>
+                  {bestAllMyMode !== "my-bids" && (
+                    <TableCell>
+                      {!!user && user.use_vat && !!bid && !!bid.vat && !bid.vendor.use_vat
+                        ? !bid.price
+                          ? "-"
+                          : salePurchaseMode === "sale"
+                          ? !!bid &&
+                            Math.round(bid.price * (bid.vat / 100 + 1) + bid.price_delivery)
+                          : !!bid &&
+                            Math.round(bid.price * (bid.vat / 100 + 1) - bid.price_delivery)
+                        : bid.price
+                        ? salePurchaseMode === "sale"
+                          ? Math.round(bid.price + bid.price_delivery)
+                          : Math.round(bid.price - bid.price_delivery)
+                        : "-"}
+                    </TableCell>
+                  )}
                   {clientWidth > 1024 &&
+                    bestAllMyMode !== "my-bids" &&
                     accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
                       <TableCell>
                         <Grid container direction="column" justify="center" alignItems="flex-start">
@@ -203,7 +235,7 @@ const BidTable: React.FC<IProps> = ({
                       </TableCell>
                     )}
                   <TableCell>{bid.volume}</TableCell>
-                  {clientWidth > 1024 && (
+                  {clientWidth > 1024 && bestAllMyMode !== "my-bids" && (
                     <TableCell>
                       <Grid container direction="column" justify="center" alignItems="flex-start">
                         <div className={classes.flexRow}>
@@ -233,7 +265,9 @@ const BidTable: React.FC<IProps> = ({
                       </Grid>
                     </TableCell>
                   )}
-                  <TableCell>{bid.distance || "-"}</TableCell>
+                  {bestAllMyMode !== "my-bids" && <TableCell>{bid.distance || "-"}</TableCell>}
+
+                  {salePurchaseMode === "purchase" && <TableCell>{bid?.location?.text}</TableCell>}
 
                   {salePurchaseMode === "purchase" && (
                     <TableCell>{bid.payment_term || "-"}</TableCell>

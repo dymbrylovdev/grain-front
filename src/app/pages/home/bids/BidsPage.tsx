@@ -464,6 +464,7 @@ const BidsPage: React.FC<TPropsFromRedux &
               loading={!bestBids || !cropParams}
               salePurchaseMode={salePurchaseMode}
               bestAllMyMode={bestAllMyMode}
+              crops={crops}
             />
             <div className={innerClasses.topSpaceContainer}>
               <BidTable
@@ -479,6 +480,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 loading={!bestBids || !cropParams}
                 salePurchaseMode={salePurchaseMode}
                 bestAllMyMode={bestAllMyMode}
+                crops={crops}
               />
             </div>
             {!!bestBids && (!!bestBids.equal.length || !!bestBids.inexact.length) && (
@@ -516,6 +518,7 @@ const BidsPage: React.FC<TPropsFromRedux &
               addUrl={"fromMy"}
               salePurchaseMode={salePurchaseMode}
               bestAllMyMode={bestAllMyMode}
+              crops={crops}
             />
             {!!myBids && !!myBids.length && (
               <div className={innerClasses.text}>
@@ -544,6 +547,7 @@ const BidsPage: React.FC<TPropsFromRedux &
               addUrl={"fromAdmin"}
               salePurchaseMode={salePurchaseMode}
               bestAllMyMode={bestAllMyMode}
+              crops={crops}
             />
             {!!bids && !!bids.length && (
               <div className={innerClasses.text}>
