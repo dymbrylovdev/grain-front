@@ -115,12 +115,13 @@ const DealViewPage: React.FC<TPropsFromRedux &
           </Button>
         </div>
       </div>
-      <div className={classes.tableTitle}>
-        {!!deals &&
-        !deals.find(item => item.sale_bid.id === +saleId && item.purchase_bid.id === +purchaseId)
-          ? intl.formatMessage({ id: "DEALS.EMPTY_DEAL" })
-          : ""}
-      </div>
+
+      {!!deals &&
+        !deals.find(
+          item => item.sale_bid.id === +saleId && item.purchase_bid.id === +purchaseId
+        ) && (
+          <div className={classes.tableTitle}>{intl.formatMessage({ id: "DEALS.EMPTY_DEAL" })}</div>
+        )}
       {!deals || !crops || !cropParams ? (
         <>
           <Skeleton width={340} height={33} animation="wave" />
@@ -137,30 +138,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
       ) : (
         !!deal && (
           <>
-            <p>
-              <strong>
-                {intl.formatMessage(
-                  { id: "DEALS.TABLE.PROFIT_WITHOUT_DELIVERY" },
-                  { price: Math.round(deal.profit_without_delivery_price) }
-                )}
-              </strong>
-            </p>
-            <p>
-              <strong>
-                {intl.formatMessage(
-                  { id: "DEALS.TABLE.PROFIT_WITH_DELIVERY" },
-                  { price: Math.round(deal.profit_with_delivery_price) }
-                )}
-              </strong>
-            </p>
-            <p>
-              <strong>
-                {intl.formatMessage(
-                  { id: "DEALS.UP_TABLE.DISTANCE" },
-                  { distance: Math.round(deal.distance) }
-                )}
-              </strong>
-            </p>
             {!deal.sale_bid.vendor.use_vat && deal.purchase_bid.vendor.use_vat && (
               <p>
                 {intl.formatMessage(
@@ -184,6 +161,49 @@ const DealViewPage: React.FC<TPropsFromRedux &
                 </TableHead>
                 <TableBody>
                   <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
+                      <strong>
+                        {intl.formatMessage({ id: "DEALS.TABLE.PROFIT_WITHOUT_DELIVERY" })}
+                      </strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {Math.round(deal.profit_without_delivery_price)}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
+                      <strong>
+                        {intl.formatMessage({ id: "DEALS.TABLE.PROFIT_WITH_DELIVERY" })}
+                      </strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {Math.round(deal.profit_with_delivery_price)}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
+                      <strong>{intl.formatMessage({ id: "DEALS.UP_TABLE.DISTANCE" })}</strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {Math.round(deal.distance)}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
                     <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
                       <strong>{intl.formatMessage({ id: "DEALS.PRICE" })}</strong>
                     </TableCell>
@@ -194,6 +214,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       {deal.purchase_bid.price}
                     </TableCell>
                   </TableRow>
+
                   <TableRow>
                     <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
                       <strong>{intl.formatMessage({ id: "DEALS.DEAL.VOLUME" })}</strong>
@@ -255,6 +276,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                         </TableRow>
                       )
                   )}
+
                   <TableRow>
                     <TableCell>
                       <strong>{intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })}</strong>
@@ -264,6 +286,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                     </TableCell>
                     <TableCell>{deal.purchase_bid.location.text}</TableCell>
                   </TableRow>
+
                   <TableRow>
                     <TableCell>
                       <strong>{intl.formatMessage({ id: "DEALS.DEAL.DATE" })}</strong>
@@ -284,6 +307,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       )}.${deal.purchase_bid.modified_at.slice(0, 4)}`}
                     </TableCell>
                   </TableRow>
+
                   <TableRow>
                     <TableCell>
                       <strong>{intl.formatMessage({ id: "DEALS.TABLE.AGENT" })}</strong>
@@ -294,7 +318,9 @@ const DealViewPage: React.FC<TPropsFromRedux &
                           {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
                         </Link>
                       </p>
-                      <p>тел.: {deal.sale_bid.vendor.phone || "-"}</p>
+                      {!!deal?.sale_bid?.vendor?.phone && (
+                        <p>тел.: +7 {deal.sale_bid.vendor.phone}</p>
+                      )}
                       <UserActivity intl={intl} user={deal.sale_bid.vendor} />
                       <div className={classes.topMargin}>
                         {!!deal.sale_bid.vendor.company && (
@@ -327,7 +353,9 @@ const DealViewPage: React.FC<TPropsFromRedux &
                           {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
                         </Link>
                       </p>
-                      <p>тел.: {deal.purchase_bid.vendor.phone || "-"}</p>
+                      {!!deal?.purchase_bid?.vendor?.phone && (
+                        <p>тел.: +7 {deal.purchase_bid.vendor.phone}</p>
+                      )}
                       <UserActivity intl={intl} user={deal.purchase_bid.vendor} />
 
                       <div className={classes.topMargin}>
@@ -356,6 +384,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </div>
                     </TableCell>
                   </TableRow>
+
                   {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
                     <TableRow>
                       <TableCell></TableCell>
@@ -367,6 +396,22 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       <TableCell>
                         <Link to={`/bid/edit/purchase/${deal.purchase_bid.id}`}>
                           {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  )}
+
+                  {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+                    <TableRow>
+                      <TableCell></TableCell>
+                      <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                        <Link to={`/bid/view/sale/${deal.sale_bid.id}`}>
+                          {intl.formatMessage({ id: "DEALS.TABLE.VIEW_TEXT" })}
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        <Link to={`/bid/view/purchase/${deal.purchase_bid.id}`}>
+                          {intl.formatMessage({ id: "DEALS.TABLE.VIEW_TEXT" })}
                         </Link>
                       </TableCell>
                     </TableRow>
