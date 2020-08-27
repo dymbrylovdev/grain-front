@@ -152,7 +152,12 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
           variant="contained"
           color="primary"
           onClick={() => history.push(`/${salePurchaseMode}/filters/edit/new`)}
-          disabled={!myFilters}
+          disabled={
+            !myFilters ||
+            (!!me?.tariff.max_filters_count &&
+              !!myFilters &&
+              me.tariff.max_filters_count - myFilters?.length <= 0)
+          }
         >
           {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
         </Button>
@@ -184,7 +189,10 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
               {intl.formatMessage(
                 { id: "FILTER.FORM.LIMIT" },
                 {
-                  count: me.tariff.max_filters_count - myFilters?.length || "0",
+                  count:
+                    me.tariff.max_filters_count - myFilters?.length <= 0
+                      ? "0"
+                      : me.tariff.max_filters_count - myFilters?.length,
                   word: declOfNum(me.tariff.max_filters_count - myFilters?.length, [
                     "фильтр",
                     "фильтра",
