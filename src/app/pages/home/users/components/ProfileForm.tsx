@@ -535,6 +535,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             helperText={touched.phone && errors.phone}
             error={Boolean(touched.phone && errors.phone)}
             disabled={editMode === "view"}
+            InputLabelProps={{ shrink: true }}
             InputProps={{
               inputComponent: NumberFormatPhone as any,
             }}

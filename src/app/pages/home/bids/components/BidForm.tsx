@@ -26,6 +26,7 @@ import NumberFormatCustom from "../../../../components/NumberFormatCustom/Number
 import { accessByRoles, getConfirmCompanyString } from "../../../../utils/utils";
 import { TrafficLight } from "../../users/components";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
+import { thousands } from "../../deals/utils/utils";
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
@@ -40,11 +41,11 @@ const useInnerStyles = makeStyles(theme => ({
     justifyContent: "center",
   },
   calcDescription: {
-    fontSize: 16,
+    fontSize: 14,
     paddingRight: theme.spacing(1),
   },
   calcFinalPrice: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
     flex: 1,
   },
@@ -126,6 +127,24 @@ const getFinalPrice = (
     return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * distance);
   } else {
     return Math.round(bid.price * (vat / 100 + 1) - pricePerKm * distance);
+  }
+};
+
+const getDeliveryPrice = (
+  bid: IBid,
+  i: number,
+  pricePerKm: number,
+  salePurchaseMode: string,
+  vat: number
+) => {
+  const distance =
+    !bid.point_prices[i].distance || bid.point_prices[i].distance < 100
+      ? 100
+      : bid.point_prices[i].distance;
+  if (salePurchaseMode === "sale") {
+    return Math.round(pricePerKm * distance);
+  } else {
+    return Math.round(pricePerKm * distance);
   }
 };
 
@@ -298,6 +317,10 @@ const BidForm: React.FC<IProps> = ({
       crop_id: Yup.string().required(
         intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
       ),
+      payment_term:
+        salePurchaseMode === "purchase"
+          ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+          : Yup.string(),
     }),
   });
 
@@ -376,7 +399,11 @@ const BidForm: React.FC<IProps> = ({
                 loading={buttonLoading}
                 disabled={buttonLoading}
                 onPress={() => {
-                  !values.location.text || !values.volume || !values.price || !values.crop_id
+                  !values.location.text ||
+                  !values.volume ||
+                  !values.price ||
+                  !values.crop_id ||
+                  (salePurchaseMode === "purchase" && !values.payment_term)
                     ? setFormikErrored(true)
                     : setFormikErrored(false);
                   handleSubmit();
@@ -449,35 +476,38 @@ const BidForm: React.FC<IProps> = ({
         <TrafficLight intl={intl} colors={bid.vendor.company.colors} />
       )}
 
-      {loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <TextField
-          select
-          type="text"
-          label={intl.formatMessage({
-            id: "BIDSLIST.TABLE.BID_TYPE",
-          })}
-          margin="normal"
-          name="bid_type"
-          value={values.bid_type}
-          variant="outlined"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          disabled={
-            editMode !== "create" ||
-            (!!me && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])) ||
-            (!!me &&
-              accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
-              !!vendorId &&
-              !!user &&
-              !accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]))
-          }
-        >
-          <MenuItem value={"sale"}>{intl.formatMessage({ id: "BID.TYPE.SALE" })}</MenuItem>
-          <MenuItem value={"purchase"}>{intl.formatMessage({ id: "BID.TYPE.PURCHASE" })}</MenuItem>
-        </TextField>
-      )}
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+        (loading ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            select
+            type="text"
+            label={intl.formatMessage({
+              id: "BIDSLIST.TABLE.BID_TYPE",
+            })}
+            margin="normal"
+            name="bid_type"
+            value={values.bid_type}
+            variant="outlined"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            disabled={
+              editMode !== "create" ||
+              (!!me && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])) ||
+              (!!me &&
+                accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+                !!vendorId &&
+                !!user &&
+                !accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]))
+            }
+          >
+            <MenuItem value={"sale"}>{intl.formatMessage({ id: "BID.TYPE.SALE" })}</MenuItem>
+            <MenuItem value={"purchase"}>
+              {intl.formatMessage({ id: "BID.TYPE.PURCHASE" })}
+            </MenuItem>
+          </TextField>
+        ))}
 
       {loading ? (
         <Skeleton width="100%" height={70} animation="wave" />
@@ -485,7 +515,7 @@ const BidForm: React.FC<IProps> = ({
         <TextField
           type="text"
           label={intl.formatMessage({
-            id: "ALL.PRICE_OF_TON",
+            id: "BIDSLIST.TABLE.JUST_COST",
           })}
           margin="normal"
           name="price"
@@ -673,12 +703,121 @@ const BidForm: React.FC<IProps> = ({
                       !!bid.vat &&
                       !bid.vendor.use_vat ? (
                         <b>
-                          {Math.round(
-                            getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
+                          {thousands(
+                            Math.round(
+                              getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
+                            ).toString()
                           )}
                         </b>
                       ) : (
-                        <b>{getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)}</b>
+                        <b>
+                          {thousands(
+                            Math.round(
+                              getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
+                            ).toString()
+                          )}
+                        </b>
+                      )}
+                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
+                    </div>
+                  ))
+                ) : (
+                  <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
+                ))}
+            </Grid>
+
+            <div style={{ height: 8 }}></div>
+
+            <div className={innerClasses.calcDescription}>
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+                ? intl.formatMessage(
+                    { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT_ALL" },
+                    { vat: bid.vat }
+                  )
+                : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_ALL" })}
+            </div>
+            <div style={{ height: 8 }}></div>
+            <Grid container direction="column" justify="center" alignItems="flex-start">
+              {bid &&
+                bid.point_prices &&
+                (bid.point_prices.length > 0 ? (
+                  bid.point_prices.map((item, i) => (
+                    <div key={i}>
+                      {!!me &&
+                      me.use_vat &&
+                      values.bid_type === "sale" &&
+                      !!bid &&
+                      !!bid.vat &&
+                      !bid.vendor.use_vat ? (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              values.volume *
+                                getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
+                            ).toString()
+                          )}
+                        </b>
+                      ) : (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              values.volume *
+                                getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
+                            ).toString()
+                          )}
+                        </b>
+                      )}
+                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
+                    </div>
+                  ))
+                ) : (
+                  <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
+                ))}
+            </Grid>
+
+            <div style={{ height: 8 }}></div>
+
+            <div className={innerClasses.calcDescription}>
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+                ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY_ALL" })
+                : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY_ALL" })}
+            </div>
+            <div style={{ height: 8 }}></div>
+            <Grid container direction="column" justify="center" alignItems="flex-start">
+              {bid &&
+                bid.point_prices &&
+                (bid.point_prices.length > 0 ? (
+                  bid.point_prices.map((item, i) => (
+                    <div key={i}>
+                      {!!me &&
+                      me.use_vat &&
+                      values.bid_type === "sale" &&
+                      !!bid &&
+                      !!bid.vat &&
+                      !bid.vendor.use_vat ? (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              values.volume *
+                                getDeliveryPrice(
+                                  bid,
+                                  i,
+                                  values.pricePerKm,
+                                  salePurchaseMode,
+                                  +bid.vat
+                                )
+                            ).toString()
+                          )}
+                        </b>
+                      ) : (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              values.volume *
+                                getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
+                            ).toString()
+                          )}
+                        </b>
                       )}
                       {` • ${Math.round(item.distance)} км • ${item.point.name}`}
                     </div>
@@ -971,6 +1110,19 @@ const BidForm: React.FC<IProps> = ({
         />
       )}
 
+      {!!bid &&
+        (loading ? (
+          <Skeleton width="100%" height={20} animation="wave" />
+        ) : (
+          <div>
+            {intl.formatMessage({ id: "DEALS.DEAL.DATE" })}:{" "}
+            {`${bid.modified_at.slice(8, 10)}.${bid.modified_at.slice(
+              5,
+              7
+            )}.${bid.modified_at.slice(0, 4)}`}
+          </div>
+        ))}
+
       <div className={classes.bottomButtonsContainer}>
         {/* <div className={classes.button}>
           <Button
@@ -989,7 +1141,11 @@ const BidForm: React.FC<IProps> = ({
                 loading={buttonLoading}
                 disabled={buttonLoading || loading}
                 onPress={() => {
-                  !values.location.text || !values.volume || !values.price || !values.crop_id
+                  !values.location.text ||
+                  !values.volume ||
+                  !values.price ||
+                  !values.crop_id ||
+                  (salePurchaseMode === "purchase" && !values.payment_term)
                     ? setFormikErrored(true)
                     : setFormikErrored(false);
                   handleSubmit();

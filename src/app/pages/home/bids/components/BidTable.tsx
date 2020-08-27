@@ -267,7 +267,7 @@ const BidTable: React.FC<IProps> = ({
                   )}
                   {bestAllMyMode !== "my-bids" && <TableCell>{bid.distance || "-"}</TableCell>}
 
-                  {salePurchaseMode === "purchase" && <TableCell>{bid?.location?.text}</TableCell>}
+                  {bestAllMyMode === "my-bids" && <TableCell>{bid?.location?.text}</TableCell>}
 
                   {salePurchaseMode === "purchase" && (
                     <TableCell>{bid.payment_term || "-"}</TableCell>

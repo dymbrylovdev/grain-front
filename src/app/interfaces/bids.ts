@@ -18,6 +18,8 @@ export interface IBid {
     use_vat: boolean;
   };
   createdAt: string;
+  created_at: string;
+  modified_at: string;
   vendor: {
     id: number;
     fio: string;

@@ -55,6 +55,13 @@ const theme = createMuiTheme(
      * @see https://material-ui.com/customization/globals/#default-props
      */
     overrides: {
+      MuiInputBase: {
+        root: {
+          "&$disabled": {
+            color: "rgba(0, 0, 0, 0.87)",
+          },
+        },
+      },
       MuiIconButton: {
         colorSecondary: {
           color: "#fd397a",
