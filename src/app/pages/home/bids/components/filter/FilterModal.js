@@ -18,6 +18,7 @@ import {
   TextField,
   Badge,
   Button,
+  Tooltip,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useFormik } from "formik";
@@ -426,23 +427,31 @@ const FilterModal = ({
             <Grid item>
               <Grid container direction="row" justify="center" alignItems="center" spacing={1}>
                 <Grid item>
-                  <ButtonWithLoader
-                    loading={createLoading}
-                    disabled={createLoading || me.tariff.max_filters_count - myFilters?.length <= 0}
-                    onPress={() => {
-                      if (!!currentFilter && currentFilter.name === formik.values.name) {
-                        const crop = crops.find(crop => crop.id === cropId);
-                        const now = new Date();
-                        const name = `${
-                          crop.name
-                        } ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
-                        formik.setFieldValue("name", name);
-                      }
-                      formik.handleSubmit();
-                    }}
-                  >
-                    {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })}
-                  </ButtonWithLoader>
+                  <Tooltip title={intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE.TOOLTIP" })}>
+                    <div>
+                      <ButtonWithLoader
+                        loading={createLoading}
+                        disabled={
+                          createLoading || me.tariff.max_filters_count - myFilters?.length <= 0
+                        }
+                        onPress={() => {
+                          if (!!currentFilter && currentFilter.name === formik.values.name) {
+                            const crop = crops.find(crop => crop.id === cropId);
+                            const now = new Date();
+                            const name = `${
+                              crop.name
+                            } ${now.toLocaleDateString()} - ${now
+                              .toLocaleTimeString()
+                              .slice(0, -3)}`;
+                            formik.setFieldValue("name", name);
+                          }
+                          formik.handleSubmit();
+                        }}
+                      >
+                        {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })}
+                      </ButtonWithLoader>
+                    </div>
+                  </Tooltip>
                 </Grid>
                 <Grid item>
                   <Button

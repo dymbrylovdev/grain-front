@@ -298,6 +298,7 @@
   "FILTER.FORM.MIN_PRICE": "Мин. цена с учётом доставки, руб.",
   "FILTER.FORM.MAX_DESTINATION": "Максимальное расстояние, км",
   "FILTER.FORM.BUTTON.SAVE": "Сохранить",
+  "FILTER.FORM.BUTTON.SAVE.TOOLTIP": "Сохранить и подписаться",
   "FILTER.FORM.BUTTON.SUBMIT": "Применить фильтр",
   "FILTER.FORM.BUTTON.RESET": "Отключить фильтр",
   "FILTER.BUTTON.CLOSE": "Закрыть",
