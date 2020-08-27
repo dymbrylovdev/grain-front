@@ -163,6 +163,7 @@
   "PROFILE.BUTTON.SAVE": "Сохранить",
   "PROFILE.VALIDATION.REQUIRED_FIELD": "Обязательное поле",
   "PROFILE.VALIDATION.SIMILAR_PASSWORD": "Пароли должны совпадать",
+  "PROFILE.VALIDATION.PHONE": "Введите последние 10 цифр телефона",
   "PROFILE.STATUS.ENTER_DATA": "",
   "PROFILE.STATUS.SUCCESS": "Пользователь успешно сохранен",
   "PROFILE.STATUS.ERROR": "Ошибка сохранения пользователя",
