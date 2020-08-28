@@ -1,16 +1,29 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import { injectIntl, FormattedMessage } from "react-intl";
-import { TextField } from "@material-ui/core";
+import { TextField, Button } from "@material-ui/core";
+import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
 
 const getInitialValues = crop => ({
   name: !!crop && crop.name ? crop.name : "",
   vat: !!crop && crop.vat ? crop.vat : 10,
 });
-function CropTitleForm({ crop, editCropAction, intl, classes }) {
+function CropTitleForm({
+  crop,
+  editCropAction,
+  intl,
+  classes,
+  delCrop,
+  delCropLoading,
+  isCropAlertOpen,
+  setCropAlertOpen,
+}) {
+  const history = useHistory();
+
   return (
     <Formik
       autoComplete="off"
@@ -39,6 +52,19 @@ function CropTitleForm({ crop, editCropAction, intl, classes }) {
       }) => (
         <div>
           <form noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
+            <div className={classes.topButtonsContainer}>
+              <div className={classes.button}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    history.push("/cropList");
+                  }}
+                >
+                  {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                </Button>
+              </div>
+            </div>
             <StatusAlert status={status} />
             <TextField
               type="text"
@@ -70,10 +96,27 @@ function CropTitleForm({ crop, editCropAction, intl, classes }) {
               error={Boolean(touched.vat && errors.vat)}
             />
 
-            <div className={classes.buttonContainer}>
-              <ButtonWithLoader loading={status && status.loading} onPress={handleSubmit}>
-                <FormattedMessage id="CROP.BUTTON.CROP_SAVE" />
-              </ButtonWithLoader>
+            <div className={`${classes.bottomButtonsContainer} ${classes.bottomMargin2}`}>
+              <div className={classes.button}>
+                <ButtonWithLoader
+                  loading={status && status.loading}
+                  disabled={status && status.loading}
+                  onPress={handleSubmit}
+                >
+                  <FormattedMessage id="CROP.BUTTON.CROP_SAVE" />
+                </ButtonWithLoader>
+              </div>
+              {!!crop && crop.id !== 1 && (
+                <div className={classes.button}>
+                  <OutlinedRedButton
+                    variant="outlined"
+                    onClick={() => setCropAlertOpen(true)}
+                    disabled={status && status.loading}
+                  >
+                    {intl.formatMessage({ id: "CROP.BUTTON.CROP_DEL" })}
+                  </OutlinedRedButton>
+                </div>
+              )}
             </div>
           </form>
         </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Paper, FormLabel } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
 import CropTitleForm from "./CropTitleForm";
 import CropParamForm from "./CropParamForm";
 import { FormattedMessage, injectIntl } from "react-intl";
@@ -13,6 +13,11 @@ function CropForm({
   cropParams,
   setCropParams,
   editCropParamAction,
+  delCrop,
+  isCropAlertOpen,
+  setCropAlertOpen,
+  setCropParamForDelId,
+  setCropParamAlertOpen,
 }) {
   const addEmptyCropParams = () => {
     setCropParams([...cropParams, ...[{ id: null }]]);
@@ -20,14 +25,14 @@ function CropForm({
   return (
     <Paper className={classes.paperWithForm}>
       <div className={classes.form}>
-        <FormLabel className={classes.titleText}>
-          <FormattedMessage id="CROP.STATUS.ALARM" />
-        </FormLabel>
         <CropTitleForm
           crop={crop}
           classes={classes}
           editCropAction={editCropAction}
           cropId={cropId}
+          delCrop={delCrop}
+          isCropAlertOpen={isCropAlertOpen}
+          setCropAlertOpen={setCropAlertOpen}
         />
         {cropParams &&
           cropParams.map((cropParam, index) => (
@@ -36,6 +41,8 @@ function CropForm({
               classes={classes}
               cropParam={cropParam}
               editCropParamAction={editCropParamAction}
+              setCropParamForDelId={setCropParamForDelId}
+              setCropParamAlertOpen={setCropParamAlertOpen}
             />
           ))}
         {cropId && (

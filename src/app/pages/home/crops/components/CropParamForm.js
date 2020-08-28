@@ -7,6 +7,7 @@ import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { TextField, RadioGroup, Radio, FormControlLabel, Box, IconButton } from "@material-ui/core";
+import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
 
 const getInitialValues = cropParam => {
   const params = {
@@ -22,8 +23,16 @@ const getInitialValues = cropParam => {
   }
   return params;
 };
-function CropParamForm({ intl, classes, cropParam, editCropParamAction }) {
+function CropParamForm({
+  intl,
+  classes,
+  cropParam,
+  editCropParamAction,
+  setCropParamForDelId,
+  setCropParamAlertOpen,
+}) {
   const formRef = useRef();
+
   const enumDefault = cropParam.enum && cropParam.enum.length > 0 ? cropParam.enum : [""];
   const [enumParams, setEnumParams] = useState(enumDefault);
   const addEmptyEnumParam = () => {
@@ -105,7 +114,7 @@ function CropParamForm({ intl, classes, cropParam, editCropParamAction }) {
                   label={intl.formatMessage({
                     id: "CROP.FORM.PARAM_NUMBER",
                   })}
-                  disabled={(status && status.id) || values.id}
+                  disabled={Boolean((status && status.id) || values.id)}
                 />
                 <FormControlLabel
                   value="enum"
@@ -113,7 +122,7 @@ function CropParamForm({ intl, classes, cropParam, editCropParamAction }) {
                   label={intl.formatMessage({
                     id: "CROP.FORM.PARAM_LIST",
                   })}
-                  disabled={(status && status.id) || values.id}
+                  disabled={Boolean((status && status.id) || values.id)}
                 />
               </RadioGroup>
               {values.type === "enum" && enumParams && (
@@ -151,10 +160,28 @@ function CropParamForm({ intl, classes, cropParam, editCropParamAction }) {
                   </IconButton>
                 </div>
               )}
-              <div className={classes.buttonContainer}>
-                <ButtonWithLoader loading={status && status.loading} onPress={handleSubmit}>
-                  <FormattedMessage id="CROP.FORM.PARAM_SAVE" />
-                </ButtonWithLoader>
+              <div className={classes.bottomButtonsContainer}>
+                <div className={classes.button}>
+                  <ButtonWithLoader
+                    loading={status && status.loading}
+                    disabled={status && status.loading}
+                    onPress={handleSubmit}
+                  >
+                    <FormattedMessage id="CROP.FORM.PARAM_SAVE" />
+                  </ButtonWithLoader>
+                </div>
+                <div className={classes.button}>
+                  <OutlinedRedButton
+                    variant="outlined"
+                    onClick={() => {
+                      setCropParamForDelId(cropParam.id);
+                      setCropParamAlertOpen(true);
+                    }}
+                    disabled={status && status.loading}
+                  >
+                    {intl.formatMessage({ id: "CROP.FORM.PARAM_DEL" })}
+                  </OutlinedRedButton>
+                </div>
               </div>
             </form>
           </div>

@@ -730,6 +730,56 @@ const BidForm: React.FC<IProps> = ({
 
             <div className={innerClasses.calcDescription}>
               {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+                ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })
+                : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })}
+            </div>
+            <div style={{ height: 8 }}></div>
+            <Grid container direction="column" justify="center" alignItems="flex-start">
+              {bid &&
+                bid.point_prices &&
+                (bid.point_prices.length > 0 ? (
+                  bid.point_prices.map((item, i) => (
+                    <div key={i}>
+                      {!!me &&
+                      me.use_vat &&
+                      values.bid_type === "sale" &&
+                      !!bid &&
+                      !!bid.vat &&
+                      !bid.vendor.use_vat ? (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              getDeliveryPrice(
+                                bid,
+                                i,
+                                values.pricePerKm,
+                                salePurchaseMode,
+                                +bid.vat
+                              )
+                            ).toString()
+                          )}
+                        </b>
+                      ) : (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
+                            ).toString()
+                          )}
+                        </b>
+                      )}
+                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
+                    </div>
+                  ))
+                ) : (
+                  <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
+                ))}
+            </Grid>
+
+            <div style={{ height: 8 }}></div>
+
+            <div className={innerClasses.calcDescription}>
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
                 ? intl.formatMessage(
                     { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT_ALL" },
                     { vat: bid.vat }
