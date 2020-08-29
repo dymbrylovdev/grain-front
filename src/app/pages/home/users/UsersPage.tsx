@@ -176,7 +176,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <FormattedMessage id="USERLIST.TABLE.ID" />
                 </TopTableCell>
                 <TopTableCell>
-                  <FormattedMessage id="USERLIST.TABLE.EMAIL" />
+                  <FormattedMessage id="USERLIST.TABLE.CONTANCTS" />
                 </TopTableCell>
                 <TopTableCell>
                   <FormattedMessage id="USERLIST.TABLE.NAME" />
@@ -192,15 +192,22 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 users.map(item => (
                   <TableRow key={item.id}>
                     <TableCell>{item.id}</TableCell>
-                    <TableCell>{item.email}</TableCell>
                     <TableCell>
-                      <Grid container direction="column" justify="center" alignItems="flex-start">
-                        <div>{`${item.fio || ""}`}</div>
+                      <div>
+                        <div className={classes.topAndBottomMargin1}>{item.email}</div>
+                        {!!item.phone && (
+                          <div className={classes.topAndBottomMargin1}>+7 {item.phone}</div>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div>
+                        <div className={classes.topAndBottomMargin1}>{`${item.fio || ""}`}</div>
                         {item.company && (
-                          <div style={!!item.fio ? { marginTop: 10 } : {}}>{`${item.company
+                          <div className={classes.topAndBottomMargin1}>{`${item.company
                             .short_name || ""}`}</div>
                         )}
-                      </Grid>
+                      </div>
                     </TableCell>
                     <TableCell>
                       {funnelStateEditId === item.id ? (
