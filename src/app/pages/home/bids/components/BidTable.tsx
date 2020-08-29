@@ -12,15 +12,15 @@ import {
   TableFooter,
   Tooltip,
 } from "@material-ui/core";
+import { Skeleton } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
+import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import TopTableCell from "../../../../components/ui/Table/TopTableCell";
-
-import { Skeleton } from "@material-ui/lab";
 import { IBid } from "../../../../interfaces/bids";
 import { IUser } from "../../../../interfaces/users";
 import { TablePaginator2 } from "../../../../components/ui/Table/TablePaginator2";
@@ -239,7 +239,7 @@ const BidTable: React.FC<IProps> = ({
                     <TableCell>
                       <Grid container direction="column" justify="center" alignItems="flex-start">
                         <div className={classes.flexRow}>
-                          {bid?.vendor?.company_confirmed_by_payment && (
+                          {bid?.vendor?.company_confirmed_by_payment ? (
                             <Tooltip
                               title={intl.formatMessage({
                                 id: "USERLIST.TOOLTIP.COMPANY",
@@ -250,15 +250,29 @@ const BidTable: React.FC<IProps> = ({
                                 style={{ marginRight: 4, width: 16, height: 16 }}
                               />
                             </Tooltip>
+                          ) : (
+                            <Tooltip
+                              title={intl.formatMessage({
+                                id: "USERLIST.TOOLTIP.NO_COMPANY",
+                              })}
+                            >
+                              <ReportProblemIcon
+                                color="error"
+                                style={{ marginRight: 4, width: 16, height: 16 }}
+                              />
+                            </Tooltip>
                           )}
                           <div>{`${bid.vendor.fio || bid.vendor.login || ""}`}</div>
                         </div>
                         {bid.vendor.company && (
                           <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                            {!!bid?.vendor?.company?.colors &&
-                              bid.vendor.company.colors.length > 0 && (
-                                <MiniTrafficLight intl={intl} colors={bid.vendor.company.colors} />
-                              )}
+                            {bid?.vendor?.company_confirmed_by_payment &&
+                            !!bid?.vendor?.company?.colors &&
+                            bid.vendor.company.colors.length > 0 ? (
+                              <MiniTrafficLight intl={intl} colors={bid.vendor.company.colors} />
+                            ) : (
+                              <div style={{ width: 20, flex: "none" }}></div>
+                            )}
                             <div>{`${bid.vendor.company.short_name || ""}`}</div>
                           </div>
                         )}

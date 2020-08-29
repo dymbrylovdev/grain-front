@@ -186,6 +186,7 @@
   "USERLIST.TOOLTIP.DELETE": "Удалить пользователя",
   "USERLIST.TOOLTIP.CREATE_BID": "Добавить объявление",
   "USERLIST.TOOLTIP.COMPANY": "Связь пользователя с компанией подтверждена оплатой",
+  "USERLIST.TOOLTIP.NO_COMPANY": "Связь пользователя с компанией не подтверждена",
   "USERLIST.PAGINATOR_TEXT": "Пользователей на странице:",
   "USERLIST.FUNNEL_STATE.ADMIN": "Администратор",
   "USERLIST.FUNNEL_STATE.NO_NAME": "Не установлена",
