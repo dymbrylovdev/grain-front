@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Paper } from "@material-ui/core";
 import CropTitleForm from "./CropTitleForm";
 import CropParamForm from "./CropParamForm";
@@ -22,10 +22,6 @@ function CropForm({
   const addEmptyCropParams = () => {
     setCropParams([...cropParams, ...[{ id: null }]]);
   };
-
-  useEffect(() => {
-    console.log(!crop?.is_deleted);
-  }, [crop]);
 
   const activeCropParams = [];
   if (cropParams) {

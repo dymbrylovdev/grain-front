@@ -97,44 +97,25 @@ function CropTitleForm({
             />
 
             <div className={`${classes.bottomButtonsContainer} ${classes.bottomMargin2}`}>
-              {crop.is_deleted ? (
-                <>
-                  <div style={{ alignSelf: "center" }}>
-                    <FormattedMessage id="CROP.STATUS.CROP_DELETED" />
-                  </div>
-                  <div className={classes.button}>
-                    <ButtonWithLoader
-                      loading={status && status.loading}
-                      disabled={true}
-                      onPress={handleSubmit}
-                    >
-                      <FormattedMessage id="CROP.BUTTON.CROP_RESTORE" />
-                    </ButtonWithLoader>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className={classes.button}>
-                    <ButtonWithLoader
-                      loading={status && status.loading}
-                      disabled={status && status.loading}
-                      onPress={handleSubmit}
-                    >
-                      <FormattedMessage id="CROP.BUTTON.CROP_SAVE" />
-                    </ButtonWithLoader>
-                  </div>
-                  {!!crop && crop.id !== 1 && (
-                    <div className={classes.button}>
-                      <OutlinedRedButton
-                        variant="outlined"
-                        onClick={() => setCropAlertOpen(true)}
-                        disabled={status && status.loading}
-                      >
-                        {intl.formatMessage({ id: "CROP.BUTTON.CROP_DEL" })}
-                      </OutlinedRedButton>
-                    </div>
-                  )}
-                </>
+              <div className={classes.button}>
+                <ButtonWithLoader
+                  loading={status && status.loading}
+                  disabled={status && status.loading}
+                  onPress={handleSubmit}
+                >
+                  <FormattedMessage id="CROP.BUTTON.CROP_SAVE" />
+                </ButtonWithLoader>
+              </div>
+              {!!crop && crop.id !== 1 && (
+                <div className={classes.button}>
+                  <OutlinedRedButton
+                    variant="outlined"
+                    onClick={() => setCropAlertOpen(true)}
+                    disabled={status && status.loading}
+                  >
+                    {intl.formatMessage({ id: "CROP.BUTTON.CROP_DEL" })}
+                  </OutlinedRedButton>
+                </div>
               )}
             </div>
           </form>
