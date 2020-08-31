@@ -195,18 +195,8 @@ const BidTable: React.FC<IProps> = ({
                   </TableCell>
                   {bestAllMyMode !== "my-bids" && (
                     <TableCell>
-                      {!!user && user.use_vat && !!bid && !!bid.vat && !bid.vendor.use_vat
-                        ? !bid.price
-                          ? "-"
-                          : salePurchaseMode === "sale"
-                          ? !!bid &&
-                            Math.round(bid.price * (bid.vat / 100 + 1) + bid.price_delivery)
-                          : !!bid &&
-                            Math.round(bid.price * (bid.vat / 100 + 1) - bid.price_delivery)
-                        : bid.price
-                        ? salePurchaseMode === "sale"
-                          ? Math.round(bid.price + bid.price_delivery)
-                          : Math.round(bid.price - bid.price_delivery)
+                      {bid?.price_with_delivery_with_vat
+                        ? Math.round(bid.price_with_delivery_with_vat)
                         : "-"}
                     </TableCell>
                   )}
