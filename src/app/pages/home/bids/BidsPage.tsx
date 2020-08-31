@@ -488,18 +488,17 @@ const BidsPage: React.FC<TPropsFromRedux &
                 {intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}
               </div>
             )}
-            {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-              <LocationBlock
-                handleClickLocation={() => {
-                  setLocationModalOpen(true);
-                }}
-                handleClickPrices={() => {
-                  setPricesModalOpen(true);
-                }}
-                locations={me && me.points}
-                salePurchaseMode={salePurchaseMode}
-              />
-            )}
+            <LocationBlock
+              handleClickLocation={() => {
+                setLocationModalOpen(true);
+              }}
+              handleClickPrices={() => {
+                setPricesModalOpen(true);
+              }}
+              locations={me && me.points}
+              me={me}
+              salePurchaseMode={salePurchaseMode}
+            />
           </>
         )}
 

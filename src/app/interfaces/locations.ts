@@ -9,6 +9,7 @@ export interface ILocation {
   street: string;
   text: string;
   house: string;
+  active: boolean;
 }
 
 export interface ILocationToRequest {
@@ -22,4 +23,5 @@ export interface ILocationToRequest {
   lat?: number;
   lng?: number;
   user_id?: number;
+  active?: boolean;
 }

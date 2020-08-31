@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { TextField, Theme, IconButton, Grid as div, Button } from "@material-ui/core";
+import {
+  TextField,
+  Theme,
+  IconButton,
+  Grid as div,
+  Button,
+  FormControlLabel,
+  Checkbox,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -318,12 +326,37 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   </>
                 )}
               </div>
+              {editMode !== "view" && (
+                <div>
+                  {loadingMe || loadingUser ? (
+                    <Skeleton width={135} height={41} animation="wave" />
+                  ) : (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={item.active}
+                          onChange={() => {
+                            edit({
+                              id: item.id,
+                              data: { active: !item.active, user_id: userId || me?.id },
+                            });
+                          }}
+                        />
+                      }
+                      label={intl.formatMessage({
+                        id: `USER.EDIT_FORM.LOCATIONS.${item.active ? "ACTIVE" : "INACTIVE"}`,
+                      })}
+                      name="active"
+                    />
+                  )}
+                </div>
+              )}
             </div>
           ))}
           {editMode !== "view" &&
             (loadingMe || loadingUser ? (
               <p>
-                <Skeleton width="100%" height={19} animation="wave" />
+                <Skeleton width="100%" height={22} animation="wave" />
               </p>
             ) : (
               <p>{intl.formatMessage({ id: "LOCATIONS.MORE" })}</p>

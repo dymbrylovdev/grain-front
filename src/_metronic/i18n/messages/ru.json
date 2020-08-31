@@ -202,6 +202,8 @@
   "USER.EDIT_FORM.LOCATIONS.SALE": "Точки отгрузки",
   "USER.EDIT_FORM.LOCATIONS.PURCHASE": "Точки приемки",
   "USER.EDIT_FORM.LOCATIONS": "Точки отгрузки/приемки",
+  "USER.EDIT_FORM.LOCATIONS.ACTIVE": "Учитывать при поиске объявлений",
+  "USER.EDIT_FORM.LOCATIONS.INACTIVE": "Не учитывать при поиске объявлений",
   "USER.EDIT_FORM.TARIFFS": "Тариф",
   "USER.EDIT_FORM.USE_VAT": "Работаю с НДС.",
   "USER.EDIT_FORM.ATTENTION": "Внимание! Если вы работаете с НДС, поставьте галочку в это поле.",

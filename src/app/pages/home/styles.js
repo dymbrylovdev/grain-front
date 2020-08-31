@@ -93,10 +93,9 @@ const useStyles = makeStyles(theme => ({
     fontWeight: "bold",
   },
   emptyTitle: {
-    fontSize: 16,
     marginTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-    marginLeft: theme.spacing(4),
+    marginLeft: theme.spacing(2),
   },
   switcher: {
     marginTop: theme.spacing(2),
