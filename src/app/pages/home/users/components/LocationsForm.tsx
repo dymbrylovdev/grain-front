@@ -329,7 +329,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               {editMode !== "view" && (
                 <div>
                   {loadingMe || loadingUser ? (
-                    <Skeleton width={135} height={41} animation="wave" />
+                    <Skeleton width={300} height={41} animation="wave" />
                   ) : (
                     <FormControlLabel
                       control={
@@ -344,7 +344,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                         />
                       }
                       label={intl.formatMessage({
-                        id: `USER.EDIT_FORM.LOCATIONS.${item.active ? "ACTIVE" : "INACTIVE"}`,
+                        id: "USER.EDIT_FORM.LOCATIONS.ACTIVE",
                       })}
                       name="active"
                     />
