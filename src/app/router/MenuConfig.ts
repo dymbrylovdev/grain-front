@@ -23,6 +23,7 @@ export default function getMenuConfig(crops: ICrop[] = [], user: IUser) {
 
 const getCropsSubmenu = (crops: ICrop[], url: string) => {
   let cropsArray: any[] = [];
+  if (crops.length === 0) return [];
   crops.forEach((crop, i) => {
     cropsArray.push({
       title: crop.name,
@@ -505,7 +506,7 @@ const getTraderMenu = (crops: ICrop[]) => ({
     items: [
       {
         title: "Рынок зерна",
-        icon: "flaticon2-architecture-and-city",
+        icon: "fas fa-seedling",
         page: "",
         translate: "MENU.GRAIN",
         submenu: [
@@ -555,38 +556,32 @@ const getTraderMenu = (crops: ICrop[]) => ({
         ],
       },
       {
-        title: "Настройки",
-        icon: "flaticon2-settings",
-        page: "builder",
-        translate: "MENU.SETTINGS",
+        title: "Мой профайл",
+        icon: "fas fa-user-circle",
+        page: "user/profile",
+        translate: "SUBMENU.PROFILE",
+      },
+      {
+        title: "Мои подписки",
+        icon: "far fa-bell",
+        page: "",
+        translate: "SUBMENU.MY_FILTERS",
         submenu: [
           {
-            title: "Мой профайл",
-            page: "user/profile",
-            translate: "SUBMENU.PROFILE",
+            title: "Подписки на продажу",
+            page: "sale/filters",
+            translate: "SUBMENU.BUYER_FILTERS",
           },
           {
-            title: "Мои фильтры",
-            page: "",
-            translate: "SUBMENU.MY_FILTERS",
-            submenu: [
-              {
-                title: "Фильтры на продажу",
-                page: "sale/filters",
-                translate: "SUBMENU.BUYER_FILTERS",
-              },
-              {
-                title: "Фильтры на покупку",
-                page: "purchase/filters",
-                translate: "SUBMENU.SELLER_FILTERS",
-              },
-            ],
+            title: "Подписки на покупку",
+            page: "purchase/filters",
+            translate: "SUBMENU.SELLER_FILTERS",
           },
         ],
       },
       {
         title: "Выход",
-        icon: "flaticon-logout",
+        icon: "far fa-share-square",
         page: "logout",
         translate: "MENU.LOGOUT",
       },
