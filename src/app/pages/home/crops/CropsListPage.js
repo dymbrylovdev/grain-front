@@ -43,6 +43,13 @@ function CropsListPage({ setMenuConfig, getCrops, match }) {
     getCropsAction();
   }, [getCropsAction]);
 
+  const activeCrops = [];
+  crops.forEach(item => {
+    if (!item.is_deleted) {
+      activeCrops.push(item);
+    }
+  });
+
   if (loading) return <Preloader />;
 
   if (errors.crops) return <LoadError handleClick={() => getCropsAction()} />;
@@ -63,18 +70,16 @@ function CropsListPage({ setMenuConfig, getCrops, match }) {
               <TopTableCell>
                 <FormattedMessage id="CROPSLIST.TABLE.NAME" />
               </TopTableCell>
-              <TopTableCell>
-                <FormattedMessage id="CROPSLIST.TABLE.ACTIONS" />
-              </TopTableCell>
+              <TopTableCell></TopTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {crops &&
-              crops.map(crop => (
+            {activeCrops &&
+              activeCrops.map(crop => (
                 <TableRow key={crop.id}>
                   <TableCell>{crop.id}</TableCell>
                   <TableCell>{crop.name}</TableCell>
-                  <TableCell>
+                  <TableCell align="right">
                     <Link to={`/crop/edit/${crop.id}`}>
                       <IconButton size="medium" color="primary">
                         <EditIcon />

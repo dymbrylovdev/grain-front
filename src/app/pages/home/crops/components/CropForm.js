@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Paper } from "@material-ui/core";
 import CropTitleForm from "./CropTitleForm";
 import CropParamForm from "./CropParamForm";
@@ -22,6 +22,20 @@ function CropForm({
   const addEmptyCropParams = () => {
     setCropParams([...cropParams, ...[{ id: null }]]);
   };
+
+  useEffect(() => {
+    console.log(!crop?.is_deleted);
+  }, [crop]);
+
+  const activeCropParams = [];
+  if (cropParams) {
+    cropParams.forEach(item => {
+      if (!item.is_deleted) {
+        activeCropParams.push(item);
+      }
+    });
+  }
+
   return (
     <Paper className={classes.paperWithForm}>
       <div className={classes.form}>
@@ -34,8 +48,10 @@ function CropForm({
           isCropAlertOpen={isCropAlertOpen}
           setCropAlertOpen={setCropAlertOpen}
         />
-        {cropParams &&
-          cropParams.map((cropParam, index) => (
+        {!!activeCropParams.length &&
+          !!cropId &&
+          !crop?.is_deleted &&
+          activeCropParams.map((cropParam, index) => (
             <CropParamForm
               key={`i${index}`}
               classes={classes}
@@ -45,7 +61,7 @@ function CropForm({
               setCropParamAlertOpen={setCropParamAlertOpen}
             />
           ))}
-        {cropId && (
+        {cropId && !crop?.is_deleted && (
           <div className={classes.buttonAddContainer}>
             <ButtonWithLoader onPress={addEmptyCropParams}>
               <FormattedMessage id="CROP.FORM.PARAM_ADD" />
