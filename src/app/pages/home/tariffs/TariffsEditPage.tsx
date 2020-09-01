@@ -71,10 +71,10 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               <TableRow>
                 <TopTableCell></TopTableCell>
                 <TopTableCell colSpan={3} align="center">
-                  {tariffs[0].name}
+                  {intl.formatMessage({ id: "TARIFFS.NAME.FREE" })}
                 </TopTableCell>
                 <TopTableCell colSpan={2} align="center">
-                  {tariffs[3].name}
+                  {intl.formatMessage({ id: "TARIFFS.NAME.PREMIUM" })}
                 </TopTableCell>
                 <TopTableCell align="center">{tariffs[4].name.split("/")[0]}</TopTableCell>
                 <TopTableCell colSpan={2} align="center">
@@ -93,7 +93,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.4)" }}>
-                  <b>{tariffs[4].name.split("/")[1]}</b>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.TRADER" })}</b>
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
                   <b>{intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })}</b>
@@ -102,7 +102,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
-                  <b>{tariffs[4].name.split("/")[1]}</b>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.TRADER" })}</b>
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.4)" }}>
                   <b>{tariffs[5].name}</b>

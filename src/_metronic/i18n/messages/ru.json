@@ -97,6 +97,7 @@
   "AUTH.REGISTER.ROLE_TITLE": "Ваша роль в системе:",
   "AUTH.REGISTER.VENDOR": "Продавец",
   "AUTH.REGISTER.BUYER": "Покупатель",
+  "AUTH.REGISTER.TRADER": "Трейдер",
   "AUTH.BUTTON.REGISTER": "Регистрация",
   "AUTH.VALIDATION.INVALID": "{name} неверно",
   "AUTH.VALIDATION.REQUIRED": "{name} требуется",
@@ -459,6 +460,8 @@
   "TARIFFS.NO_CROPS": "Не выбрано ни одной культуры.",
   "TARIFFS.MORE_CROPS": "Вы можете добавить еще культуру.",
   "TARIFFS.NO_MORE_CROPS": "Выбрано максимальное колличество культур.",
+  "TARIFFS.NAME.FREE": "Бесплатный",
+  "TARIFFS.NAME.PREMIUM": "Премиум",
   "TARIFFS.NAME.INSIDE": "Внутренний",
   "TARIFFS.NAME.BUSINESS": "Бизнес",
 
