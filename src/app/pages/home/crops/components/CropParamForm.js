@@ -58,9 +58,13 @@ function CropParamForm({
         autoComplete="off"
         initialValues={getInitialValues(cropParam)}
         validationSchema={Yup.object().shape({
-          name: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
+          name: Yup.string()
+            .required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
+            .trim(),
         })}
         onSubmit={(values, { setStatus, setSubmitting }) => {
+          values.name = values.name.trim();
+          console.log(values);
           if (values.type === "enum") {
             const enumArray = [];
             Object.keys(values).forEach(param => {

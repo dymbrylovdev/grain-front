@@ -205,22 +205,24 @@ const BidTable: React.FC<IProps> = ({
                     accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
                       <TableCell>
                         <Grid container direction="column" justify="center" alignItems="flex-start">
-                          {bid.point_prices.map(
-                            (item, i) =>
-                              i === 0 &&
-                              !!item.profit &&
-                              (i === 0 ? (
-                                <div key={i}>
-                                  <strong>{Math.round(item.profit)}</strong>
-                                  {` • ${item.point.name}`}
-                                </div>
-                              ) : (
-                                <div key={i}>
-                                  {Math.round(item.profit)}
-                                  {` • ${item.point.name}`}
-                                </div>
-                              ))
-                          )}
+                          {!!bid?.point_prices &&
+                            bid.point_prices.length &&
+                            bid.point_prices.map(
+                              (item, i) =>
+                                i === 0 &&
+                                !!item.profit &&
+                                (i === 0 ? (
+                                  <div key={i}>
+                                    <strong>{Math.round(item.profit)}</strong>
+                                    {` • ${item.point.name}`}
+                                  </div>
+                                ) : (
+                                  <div key={i}>
+                                    {Math.round(item.profit)}
+                                    {` • ${item.point.name}`}
+                                  </div>
+                                ))
+                            )}
                         </Grid>
                       </TableCell>
                     )}

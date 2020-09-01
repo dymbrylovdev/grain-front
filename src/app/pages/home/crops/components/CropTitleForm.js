@@ -29,7 +29,9 @@ function CropTitleForm({
       autoComplete="off"
       initialValues={getInitialValues(crop)}
       validationSchema={Yup.object().shape({
-        name: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
+        name: Yup.string()
+          .required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
+          .trim(),
         vat: Yup.number()
           .required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
           .min(0, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 0 }))
@@ -37,7 +39,7 @@ function CropTitleForm({
           .typeError(<FormattedMessage id="YUP.NUMBERS" />),
       })}
       onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-        editCropAction({ name: values.name, vat: +values.vat }, setStatus, setSubmitting);
+        editCropAction({ name: values.name.trim(), vat: +values.vat }, setStatus, setSubmitting);
       }}
     >
       {({

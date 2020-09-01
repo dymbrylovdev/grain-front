@@ -691,8 +691,7 @@ const BidForm: React.FC<IProps> = ({
             </div>
             <div style={{ height: 8 }}></div>
             <Grid container direction="column" justify="center" alignItems="flex-start">
-              {bid &&
-                bid.point_prices &&
+              {!!bid?.point_prices &&
                 (bid.point_prices.length > 0 ? (
                   bid.point_prices.map((item, i) => (
                     <div key={i}>
