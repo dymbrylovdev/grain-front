@@ -174,18 +174,20 @@ function CropParamForm({
                     <FormattedMessage id="CROP.FORM.PARAM_SAVE" />
                   </ButtonWithLoader>
                 </div>
-                <div className={classes.button}>
-                  <OutlinedRedButton
-                    variant="outlined"
-                    onClick={() => {
-                      setCropParamForDelId(cropParam.id);
-                      setCropParamAlertOpen(true);
-                    }}
-                    disabled={status && status.loading}
-                  >
-                    {intl.formatMessage({ id: "CROP.FORM.PARAM_DEL" })}
-                  </OutlinedRedButton>
-                </div>
+                {!!cropParam?.id && (
+                  <div className={classes.button}>
+                    <OutlinedRedButton
+                      variant="outlined"
+                      onClick={() => {
+                        setCropParamForDelId(cropParam.id);
+                        setCropParamAlertOpen(true);
+                      }}
+                      disabled={status && status.loading}
+                    >
+                      {intl.formatMessage({ id: "CROP.FORM.PARAM_DEL" })}
+                    </OutlinedRedButton>
+                  </div>
+                )}
               </div>
             </form>
           </div>
