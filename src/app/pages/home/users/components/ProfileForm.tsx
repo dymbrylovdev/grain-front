@@ -623,16 +623,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           </div>
         )}
         <div className={classes.flexRow} style={{ marginTop: 4, marginBottom: 4 }}>
-          <div className={classes.button}>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => history.goBack()}
-              disabled={meLoading || userLoading || funnelStatesLoading}
-            >
-              {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-            </Button>
-          </div>
           {editMode !== "view" && (
             <div className={classes.button}>
               <ButtonWithLoader

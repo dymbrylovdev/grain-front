@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Paper, AppBar, Tabs, Tab, Divider, makeStyles } from "@material-ui/core";
+import { Paper, AppBar, Tabs, Tab, Divider, makeStyles, Button } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 
 import { actions as usersActions } from "../../../store/ducks/users.duck";
@@ -206,6 +206,25 @@ const UserEditPage: React.FC<TPropsFromRedux &
           description={undefined}
         />
         <div className={classes.form}>
+          <div className={classes.topButtonsContainer}>
+            <div
+              className={classes.flexRow}
+              style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}
+            >
+              <div className={classes.button}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    history.goBack();
+                  }}
+                  disabled={loadingMe || loadingUser}
+                >
+                  {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                </Button>
+              </div>
+            </div>
+          </div>
           <AppBar position="static" color="default" className={classes.appBar}>
             <Tabs
               value={valueTabs}
