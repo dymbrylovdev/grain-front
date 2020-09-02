@@ -181,6 +181,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <FormattedMessage id="USERLIST.TABLE.NAME" />
                 </TopTableCell>
                 <TopTableCell>
+                  <FormattedMessage id="USERLIST.TABLE.ROLE" />
+                </TopTableCell>
+                <TopTableCell>
                   <FormattedMessage id="USERLIST.TABLE.ACTIVITY" />
                 </TopTableCell>
                 <TopTableCell></TopTableCell>
@@ -191,6 +194,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 users.map(item => (
                   <TableRow key={item.id}>
                     <TableCell>{item.id}</TableCell>
+
                     <TableCell>
                       <div>
                         <div className={classes.topAndBottomMargin1}>{item.email}</div>
@@ -199,6 +203,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         )}
                       </div>
                     </TableCell>
+
                     <TableCell>
                       <div>
                         <div className={classes.topAndBottomMargin1}>{`${item.fio || ""}`}</div>
@@ -208,6 +213,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         )}
                       </div>
                     </TableCell>
+
+                    <TableCell>{roles.find(role => role.id === item.roles[0])?.value}</TableCell>
+
                     <TableCell>
                       {funnelStateEditId === item.id ? (
                         <TextField

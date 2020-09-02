@@ -180,6 +180,7 @@
   "USERLIST.TABLE.CONTANCTS": "Контакты",
   "USERLIST.TABLE.NAME": "ФИО/Компания",
   "USERLIST.TABLE.COMPANY": "Компания",
+  "USERLIST.TABLE.ROLE": "Роль",
   "USERLIST.TABLE.ACTIVITY": "Активность",
   "USERLIST.TABLE.ACTIONS": "Действия",
   "USERLIST.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить пользователя? Все его объявления будут удалены вместе с ним.",
