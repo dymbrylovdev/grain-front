@@ -218,19 +218,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
 
                   <TableRow>
                     <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                      <strong>{intl.formatMessage({ id: "DEALS.UP_TABLE.DISTANCE" })}</strong>
-                    </TableCell>
-                    <TableCell
-                      style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      colSpan={2}
-                      align="center"
-                    >
-                      {thousands(Math.round(deal.distance).toString())}
-                    </TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
                       <strong>{intl.formatMessage({ id: "BIDSLIST.TABLE.PAYMENT_TERM" })}</strong>
                     </TableCell>
                     <TableCell
@@ -239,6 +226,19 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       align="center"
                     >
                       {deal.purchase_bid.payment_term || "-"}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                      <strong>{intl.formatMessage({ id: "DEALS.UP_TABLE.DISTANCE" })}</strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {thousands(Math.round(deal.distance).toString())}
                     </TableCell>
                   </TableRow>
 

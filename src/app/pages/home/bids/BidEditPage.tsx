@@ -136,7 +136,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
   }, [fetchUser, vendorId]);
 
   useEffect(() => {
-    if (editMode === "edit" && !!bid) fetchUser({ id: bid.vendor.id });
+    if (!!bid) fetchUser({ id: bid.vendor.id });
   }, [bid, editMode, fetchUser]);
 
   useEffect(() => {
