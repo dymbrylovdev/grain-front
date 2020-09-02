@@ -31,7 +31,7 @@ export const getConfirmCompanyString = (user: IUser | undefined, intl: IntlShape
   if (!user?.company) {
     confirmCompanyString = intl.formatMessage({ id: "COMPANY.NO_COMPANY" });
   } else {
-    if (!user.company_confirmed_by_payment) {
+    if (!user.company_confirmed_by_email && !user.company_confirmed_by_payment) {
       confirmCompanyString = intl.formatMessage({ id: "COMPANY.CONFIRM.NO_CONFIRM" });
     } else {
       confirmCompanyString = intl.formatMessage({ id: "COMPANY.CONFIRM.TITLE2" });

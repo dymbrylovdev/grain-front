@@ -67,7 +67,7 @@ function CompanyConfirmBlock({ intl, values, handleChange, disabled, loading, us
               />
             )}
           </div>
-          <div className={classes.text}>
+          {/* <div className={classes.text}>
             {loading ? (
               <Skeleton width={123} height={24} animation="wave" />
             ) : (
@@ -87,7 +87,7 @@ function CompanyConfirmBlock({ intl, values, handleChange, disabled, loading, us
                 name={"company_confirmed_by_phone"}
               />
             )}
-          </div>
+          </div> */}
           <div className={classes.text}>
             {loading ? (
               <Skeleton width={97} height={24} animation="wave" />

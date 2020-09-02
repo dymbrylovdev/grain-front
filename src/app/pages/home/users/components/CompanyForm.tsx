@@ -31,7 +31,7 @@ const isNonConfirm = (values: {
   company_id?: number;
 }) => {
   return (
-    // !values.company_confirmed_by_email ||
+    !values.company_confirmed_by_email ||
     // !values.company_confirmed_by_phone ||
     !values.company_confirmed_by_payment
   );
@@ -263,9 +263,10 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
         </div>
       )}
-      {!isNonConfirm(values) && !!currentUser?.company?.colors && (
-        <TrafficLight intl={intl} colors={currentUser.company.colors} />
-      )}
+      {(!!currentUser?.company_confirmed_by_email || !!currentUser?.company_confirmed_by_payment) &&
+        !!currentUser?.company?.colors && (
+          <TrafficLight intl={intl} colors={currentUser.company.colors} />
+        )}
 
       {editMode !== "view" &&
         accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&

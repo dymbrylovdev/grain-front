@@ -231,7 +231,9 @@ const BidTable: React.FC<IProps> = ({
                     <TableCell>
                       <Grid container direction="column" justify="center" alignItems="flex-start">
                         <div className={classes.flexRow}>
-                          {bid?.vendor?.company_confirmed_by_payment ? (
+                          {!!bid?.vendor &&
+                          (bid.vendor.company_confirmed_by_payment ||
+                            bid.vendor.company_confirmed_by_email) ? (
                             <Tooltip
                               title={intl.formatMessage({
                                 id: "USERLIST.TOOLTIP.COMPANY",

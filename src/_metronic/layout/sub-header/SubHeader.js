@@ -58,11 +58,11 @@ class SubHeader extends React.Component {
           </div>
 
           <div className="kt-subheader__toolbar">
-            {!!me && !me.company_confirmed_by_payment && (
+            {!!me && !me.company_confirmed_by_payment && !me.company_confirmed_by_email && (
               <div>
                 <Tooltip
                   title={intl.formatMessage({
-                    id: "USERLIST.TOOLTIP.NO_COMPANY",
+                    id: "COMPANY.CONFIRM.NO_CONFIRM",
                   })}
                 >
                   <ReportProblemIcon

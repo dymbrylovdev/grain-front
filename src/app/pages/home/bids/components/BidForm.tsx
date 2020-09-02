@@ -460,7 +460,8 @@ const BidForm: React.FC<IProps> = ({
               <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
                 {!!bid?.vendor?.company && (
                   <div className={classes.rightMargin1}>
-                    {!bid?.vendor?.company_confirmed_by_payment ? (
+                    {!bid?.vendor?.company_confirmed_by_payment &&
+                    !bid?.vendor?.company_confirmed_by_email ? (
                       <ReportProblemIcon color="error" />
                     ) : (
                       <CheckCircleOutlineIcon color="secondary" />
