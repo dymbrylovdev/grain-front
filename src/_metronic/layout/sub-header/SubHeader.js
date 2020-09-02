@@ -58,18 +58,20 @@ class SubHeader extends React.Component {
           </div>
 
           <div className="kt-subheader__toolbar">
-            <div>
-              <Tooltip
-                title={intl.formatMessage({
-                  id: "USERLIST.TOOLTIP.NO_COMPANY",
-                })}
-              >
-                <ReportProblemIcon
-                  color="error"
-                  style={{ marginRight: 16, width: 16, height: 16 }}
-                />
-              </Tooltip>
-            </div>
+            {!!me && !me.company_confirmed_by_payment && (
+              <div>
+                <Tooltip
+                  title={intl.formatMessage({
+                    id: "USERLIST.TOOLTIP.NO_COMPANY",
+                  })}
+                >
+                  <ReportProblemIcon
+                    color="error"
+                    style={{ marginRight: 16, width: 16, height: 16 }}
+                  />
+                </Tooltip>
+              </div>
+            )}
             <div className="kt-subheader__wrapper" style={{ marginRight: 16 }}>
               <div>email: {me.login}</div>
               <div>
