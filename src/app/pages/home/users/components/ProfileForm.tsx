@@ -305,6 +305,11 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     if (accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !funnelStates) fetchFunnelStates();
   }, [editMode, fetchFunnelStates, funnelStates, me]);
 
+  const newRoles = [...roles];
+  if (accessByRoles(me, ["ROLE_MANAGER"]) && editMode === "create") {
+    newRoles.splice(0, 2);
+  }
+
   return (
     <>
       <div className={classes.textFieldContainer}>
@@ -323,15 +328,11 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             error={Boolean(touched.role && errors.role)}
             disabled={editMode !== "create"}
           >
-            {roles.map((item, i) =>
-              [0, 1].includes(i) && accessByRoles(me, ["ROLE_MANAGER"]) ? (
-                ""
-              ) : (
-                <MenuItem key={i} value={item.id}>
-                  {item.value}
-                </MenuItem>
-              )
-            )}
+            {newRoles.map((item, i) => (
+              <MenuItem key={i} value={item.id}>
+                {item.value}
+              </MenuItem>
+            ))}
           </TextField>
         )}
       </div>

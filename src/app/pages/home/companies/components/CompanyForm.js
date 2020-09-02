@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import { injectIntl } from "react-intl";
 
-import { Paper, TextField } from "@material-ui/core";
+import { Paper, TextField, Button } from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 
@@ -12,6 +12,7 @@ import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import { searchCompanies } from "../../../../crud/companies.crud";
 import CompanySearchDialog from "./CompanySearchDialog";
 import { TrafficLight } from "../../users/components";
+import { useHistory } from "react-router-dom";
 
 const getInitialValues = company => ({
   short_name: company.short_name || "",
@@ -40,6 +41,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
   const [currentCompany, setCurrentCompany] = useState(company);
   const [isDialogOpen, setDialogOpen] = useState(false);
   const [searchStatus, setSearchStatus] = useState({});
+  const history = useHistory();
 
   const searchAction = useCallback((values, successCallback, emptyCallback, failCallback) => {
     searchCompanies(values)
@@ -116,6 +118,24 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
           isSubmitting,
         }) => (
           <div className={classes.form}>
+            <div className={classes.topButtonsContainer}>
+              <div
+                className={classes.flexRow}
+                style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}
+              >
+                <div className={classes.button}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      history.goBack();
+                    }}
+                  >
+                    {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                  </Button>
+                </div>
+              </div>
+            </div>
             <Form
               autoComplete="off"
               className="kt-form"
