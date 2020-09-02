@@ -621,6 +621,22 @@ const BidForm: React.FC<IProps> = ({
         />
       )}
 
+      {/* {editMode === "view" &&
+        !!bid?.point_prices &&
+        bid.point_prices.length &&
+        (loading ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            type="text"
+            label={intl.formatMessage({ id: "DEALS.TABLE.PROFIT_BY_TONN" })}
+            margin="normal"
+            value={bid.point_prices[0].profit}
+            variant="outlined"
+            disabled
+          />
+        ))} */}
+
       {salePurchaseMode === "purchase" &&
         (loading ? (
           <Skeleton width="100%" height={70} animation="wave" />

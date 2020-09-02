@@ -122,6 +122,7 @@
   "DEALS.TABLE.PURCHASE": "Покупка",
   "DEALS.TABLE.PROFIT": "Прибыль, руб.",
   "DEALS.TABLE.PROFIT_WITH_DELIVERY": "Прибыль на тонну с учетом доставки, руб.",
+  "DEALS.TABLE.PROFIT_BY_TONN": "Прибыль на тонну, руб.",
   "DEALS.TABLE.COST": "Стоимость сделки, руб.",
   "DEALS.TABLE.TOTAL_PROFIT": "Общая прибыль сделки, руб.",
   "DEALS.TABLE.DISTANCE": "Расстояние, км",
