@@ -18,6 +18,7 @@ import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
 import { UserActivity, TrafficLight } from "../users/components";
 import { accessByRoles, getConfirmCompanyString } from "../../../utils/utils";
+import { thousands } from "./utils/utils";
 
 const DealViewPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -163,21 +164,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
                   <TableRow>
                     <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
                       <strong>
-                        {intl.formatMessage({ id: "DEALS.TABLE.PROFIT_WITHOUT_DELIVERY" })}
-                      </strong>
-                    </TableCell>
-                    <TableCell
-                      style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
-                      colSpan={2}
-                      align="center"
-                    >
-                      {Math.round(deal.profit_without_delivery_price)}
-                    </TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
-                      <strong>
                         {intl.formatMessage({ id: "DEALS.TABLE.PROFIT_WITH_DELIVERY" })}
                       </strong>
                     </TableCell>
@@ -186,20 +172,73 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       colSpan={2}
                       align="center"
                     >
-                      {Math.round(deal.profit_with_delivery_price)}
+                      {thousands(Math.round(deal.profit_with_delivery_price).toString())}
                     </TableCell>
                   </TableRow>
 
                   <TableRow>
                     <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
-                      <strong>{intl.formatMessage({ id: "DEALS.UP_TABLE.DISTANCE" })}</strong>
+                      <strong>{intl.formatMessage({ id: "DEALS.TABLE.COST" })}</strong>
                     </TableCell>
                     <TableCell
                       style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
                       colSpan={2}
                       align="center"
                     >
-                      {Math.round(deal.distance)}
+                      {thousands(
+                        Math.round(
+                          deal.purchase_bid.price *
+                            (deal.purchase_bid.volume < deal.sale_bid.volume
+                              ? deal.purchase_bid.volume
+                              : deal.sale_bid.volume)
+                        ).toString()
+                      )}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
+                      <strong>{intl.formatMessage({ id: "DEALS.TABLE.TOTAL_PROFIT" })}</strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {thousands(
+                        Math.round(
+                          deal.profit_with_delivery_price *
+                            (deal.purchase_bid.volume < deal.sale_bid.volume
+                              ? deal.purchase_bid.volume
+                              : deal.sale_bid.volume)
+                        ).toString()
+                      )}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                      <strong>{intl.formatMessage({ id: "DEALS.UP_TABLE.DISTANCE" })}</strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {thousands(Math.round(deal.distance).toString())}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                      <strong>{intl.formatMessage({ id: "BIDSLIST.TABLE.PAYMENT_TERM" })}</strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {deal.purchase_bid.payment_term || "-"}
                     </TableCell>
                   </TableRow>
 
@@ -208,10 +247,10 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       <strong>{intl.formatMessage({ id: "DEALS.PRICE" })}</strong>
                     </TableCell>
                     <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-                      {deal.sale_bid.price}
+                      {thousands(deal.sale_bid.price.toString())}
                     </TableCell>
                     <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                      {deal.purchase_bid.price}
+                      {thousands(deal.purchase_bid.price.toString())}
                     </TableCell>
                   </TableRow>
 
@@ -241,14 +280,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
                         ? `${intl.formatMessage({ id: "ALL.YES" })}, ${deal.purchase_bid.vat}%`
                         : intl.formatMessage({ id: "ALL.NO" })}
                     </TableCell>
-                  </TableRow>
-
-                  <TableRow>
-                    <TableCell>
-                      <strong>{intl.formatMessage({ id: "BIDSLIST.TABLE.PAYMENT_TERM" })}</strong>
-                    </TableCell>
-                    <TableCell style={{ backgroundColor: "#eeeeee" }}>-</TableCell>
-                    <TableCell>{deal.purchase_bid.payment_term || "-"}</TableCell>
                   </TableRow>
 
                   {cropParams.map(
@@ -396,22 +427,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       <TableCell>
                         <Link to={`/bid/edit/purchase/${deal.purchase_bid.id}`}>
                           {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  )}
-
-                  {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                        <Link to={`/bid/view/sale/${deal.sale_bid.id}`}>
-                          {intl.formatMessage({ id: "DEALS.TABLE.VIEW_TEXT" })}
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        <Link to={`/bid/view/purchase/${deal.purchase_bid.id}`}>
-                          {intl.formatMessage({ id: "DEALS.TABLE.VIEW_TEXT" })}
                         </Link>
                       </TableCell>
                     </TableRow>
