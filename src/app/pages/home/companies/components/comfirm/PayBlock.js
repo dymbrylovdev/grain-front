@@ -3,6 +3,8 @@ import { injectIntl } from "react-intl";
 import StatusAlert from "../../../../../components/ui/Messages/StatusAlert";
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
+import ReportProblemIcon from "@material-ui/icons/ReportProblem";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 
 const innerStyles = makeStyles(theme => ({
   title: {
@@ -28,7 +30,15 @@ function PhoneBlock({ intl, company = {}, user = {}, classes }) {
         <>
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1" })}</div>
           <div>
-            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT2" })}</b>
+            <b>
+              {intl.formatMessage(
+                { id: "COMPANY.CONFIRM.PAY.TEXT2" },
+                {
+                  okk: <CheckCircleOutlineIcon color="secondary" />,
+                  err: <ReportProblemIcon color="error" />,
+                }
+              )}
+            </b>
           </div>
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT3" })}</div>
           <br />
