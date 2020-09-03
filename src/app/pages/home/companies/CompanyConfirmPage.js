@@ -7,7 +7,7 @@ import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LoadError } from "../../../components/ui/Errors";
 import useStyles from "../styles";
 import EmailBlock from "./components/comfirm/EmailBlock";
-import PhoneBlock from "./components/comfirm/PhoneBlock";
+// import PhoneBlock from "./components/comfirm/PhoneBlock";
 import PayBlock from "./components/comfirm/PayBlock";
 
 function CompanyConfirmPage({ intl, getCompanyById, companyId }) {
@@ -35,7 +35,7 @@ function CompanyConfirmPage({ intl, getCompanyById, companyId }) {
       ) : (
         <>
           <EmailBlock company={company} user={user} classes={classes} />
-          <PhoneBlock company={company} user={user} classes={classes} />
+          {/* <PhoneBlock company={company} user={user} classes={classes} /> */}
           <PayBlock company={company} user={user} classes={classes} />
         </>
       )}

@@ -25,12 +25,39 @@ function PhoneBlock({ intl, company = {}, user = {}, classes }) {
           }}
         />
       ) : (
-        <div>
-          {intl.formatMessage(
-            { id: "COMPANY.CONFIRM.PAY.TEXT" },
-            { name: company.short_name }
-          )}
-        </div>
+        <>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1" })}</div>
+          <div>
+            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT2" })}</b>
+          </div>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT3" })}</div>
+          <br />
+          <div>
+            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT4" })}</b>
+          </div>
+          <br />
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT5" })}</div>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT6" })}</div>
+          <br />
+          <div>
+            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT7" })}</b>
+          </div>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT8" })}</div>
+          <br />
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT9" })}</div>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT10" })}</div>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT11" })}</div>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT12" })}</div>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT13" })}</div>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT14" })}</div>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT15" })}</div>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT16" })}</div>
+          <br />
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT17" })}</div>
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT18" })}</div>
+          <br />
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT19" })}</div>
+        </>
       )}
     </div>
   );

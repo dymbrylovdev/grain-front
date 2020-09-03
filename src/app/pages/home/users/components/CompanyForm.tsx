@@ -23,19 +23,19 @@ import { TrafficLight } from ".";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import { useHistory } from "react-router-dom";
 
-const isNonConfirm = (values: {
-  company_confirmed_by_email: any;
-  company_confirmed_by_phone: any;
-  company_confirmed_by_payment: any;
-  company_name?: string;
-  company_id?: number;
-}) => {
-  return (
-    !values.company_confirmed_by_email ||
-    // !values.company_confirmed_by_phone ||
-    !values.company_confirmed_by_payment
-  );
-};
+// const isNonConfirm = (values: {
+//   company_confirmed_by_email: any;
+//   company_confirmed_by_phone: any;
+//   company_confirmed_by_payment: any;
+//   company_name?: string;
+//   company_id?: number;
+// }) => {
+//   return (
+//     !values.company_confirmed_by_email ||
+//     // !values.company_confirmed_by_phone ||
+//     !values.company_confirmed_by_payment
+//   );
+// };
 
 interface IProps {
   editMode: "profile" | "create" | "edit" | "view";
@@ -233,7 +233,8 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             loading={editMeLoading || editLoading}
             // loading={!currentUser || meLoading || userLoading || editLoading}
           />
-          {isNonConfirm(values) &&
+          {!values.company_confirmed_by_email &&
+            !values.company_confirmed_by_payment &&
             !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
             editMode !== "view" && (
               <div className={classes.textFieldContainer}>
