@@ -298,6 +298,7 @@ const BidTable: React.FC<IProps> = ({
                       onClick={() => {
                         let maxProfit = 0;
                         if (bid?.point_prices && bid?.point_prices.length) {
+                          maxProfit = bid?.point_prices[0]?.profit;
                           bid.point_prices.forEach(item => {
                             if (item.profit && item.profit > maxProfit) {
                               maxProfit = item.profit;

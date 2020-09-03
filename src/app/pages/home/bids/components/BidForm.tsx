@@ -626,7 +626,7 @@ const BidForm: React.FC<IProps> = ({
       )}
 
       {editMode === "view" &&
-        profit?.value > 0 &&
+        profit?.value !== 0 &&
         profit?.bid_id === bid?.id &&
         (loading ? (
           <Skeleton width="100%" height={70} animation="wave" />
@@ -642,7 +642,7 @@ const BidForm: React.FC<IProps> = ({
         ))}
 
       {editMode === "view" &&
-        profit?.value > 0 &&
+        profit?.value !== 0 &&
         profit?.bid_id === bid?.id &&
         (loading ? (
           <Skeleton width="100%" height={70} animation="wave" />
