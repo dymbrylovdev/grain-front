@@ -63,7 +63,7 @@ export const filterForBids = (
   let filter: IFilterForBids = {
     filter: {
       cropId: +data.cropId,
-      max_payment_term: +data.max_payment_term || 0,
+      max_payment_term: +data.max_payment_term || 999,
       max_full_price: +data.max_full_price || 0,
       min_full_price: +data.min_full_price || 0,
       max_distance: +data.max_destination || 0,

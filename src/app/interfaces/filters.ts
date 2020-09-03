@@ -33,6 +33,7 @@ export interface IMyFilterItem {
     id: number;
     name: string;
   };
+  bid_type: TBidType;
   max_payment_term: number;
   max_full_price: number;
   min_full_price: number;

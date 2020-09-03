@@ -209,38 +209,45 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 
       case EDIT_SUCCESS: {
         // console.log("EDIT_SUCCESS: ", action.payload.data);
-        for (let key in state.currentSaleFilters) {
-          if (
-            !!state.currentSaleFilters[key] &&
-            !!state.currentSaleFilters[key].id &&
-            state.currentSaleFilters[key].id === action.payload.data.data.id
-          ) {
-            return {
-              ...state,
-              currentSaleFilters: {
-                ...state.currentSaleFilters,
-                [action.payload.data.data.crop.id]: fromApiToFilter(action.payload.data.data),
-              },
-              myFilters: undefined,
-              editLoading: false,
-              editSuccess: true,
-            };
+        if (action.payload.data.data.bid_type === "sale") {
+          for (let key in state.currentSaleFilters) {
+            if (
+              !!state.currentSaleFilters[key] &&
+              !!state.currentSaleFilters[key].id &&
+              state.currentSaleFilters[key].id === action.payload.data.data.id
+            ) {
+              return {
+                ...state,
+                currentSaleFilters: {
+                  ...state.currentSaleFilters,
+                  [action.payload.data.data.crop.id]: fromApiToFilter(action.payload.data.data),
+                },
+                myFilters: undefined,
+                editLoading: false,
+                editSuccess: true,
+              };
+            }
           }
-          if (
-            !!state.currentPurchaseFilters[key] &&
-            !!state.currentPurchaseFilters[key].id &&
-            state.currentPurchaseFilters[key].id === action.payload.data.data.id
-          ) {
-            return {
-              ...state,
-              currentPurchaseFilters: {
-                ...state.currentPurchaseFilters,
-                [action.payload.data.data.crop.id]: fromApiToFilter(action.payload.data.data),
-              },
-              myFilters: undefined,
-              editLoading: false,
-              editSuccess: true,
-            };
+        }
+
+        if (action.payload.data.data.bid_type === "purchase") {
+          for (let key in state.currentPurchaseFilters) {
+            if (
+              !!state.currentPurchaseFilters[key] &&
+              !!state.currentPurchaseFilters[key].id &&
+              state.currentPurchaseFilters[key].id === action.payload.data.data.id
+            ) {
+              return {
+                ...state,
+                currentPurchaseFilters: {
+                  ...state.currentPurchaseFilters,
+                  [action.payload.data.data.crop.id]: fromApiToFilter(action.payload.data.data),
+                },
+                myFilters: undefined,
+                editLoading: false,
+                editSuccess: true,
+              };
+            }
           }
         }
 

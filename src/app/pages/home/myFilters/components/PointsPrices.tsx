@@ -34,15 +34,17 @@ const getValidationObject = (me: IUser | undefined, intl: any) => {
 
 const getFilterEditArray = (values: { [x: string]: any }) => {
   let filterEditArray: IPointPriceForEdit[] = [];
-  console.log("values:", values);
+  // console.log("values:", values);
   for (let key in values) {
     if (values[key]) filterEditArray.push({ point_id: +key.slice(5), price: +values[key] });
   }
+  // console.log("filterEditArray:", filterEditArray);
   return filterEditArray;
 };
 
 interface IProps {
   currentFilter: IMyFilterItem;
+  setFilterId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
@@ -72,6 +74,8 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
   editLoading,
   editSuccess,
   editError,
+
+  setFilterId,
 }) => {
   const classes = useStyles();
 

@@ -626,8 +626,9 @@ const BidForm: React.FC<IProps> = ({
       )}
 
       {editMode === "view" &&
-        profit?.value !== 0 &&
-        profit?.bid_id === bid?.id &&
+        !!bid &&
+        !!bid.point_prices &&
+        bid.point_prices.length > 0 &&
         (loading ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
@@ -635,15 +636,16 @@ const BidForm: React.FC<IProps> = ({
             type="text"
             label={intl.formatMessage({ id: "DEALS.TABLE.PROFIT_BY_TONN" })}
             margin="normal"
-            value={thousands(profit.value.toString())}
+            value={thousands(Math.round(bid.point_prices[0].profit).toString())}
             variant="outlined"
             disabled
           />
         ))}
 
       {editMode === "view" &&
-        profit?.value !== 0 &&
-        profit?.bid_id === bid?.id &&
+        !!bid &&
+        !!bid.point_prices &&
+        bid.point_prices.length > 0 &&
         (loading ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
@@ -651,7 +653,7 @@ const BidForm: React.FC<IProps> = ({
             type="text"
             label={intl.formatMessage({ id: "DEALS.TABLE.TOTAL_PROFIT" })}
             margin="normal"
-            value={thousands(Math.round(profit.value * values.volume).toString())}
+            value={thousands(Math.round(bid.point_prices[0].profit * values.volume).toString())}
             variant="outlined"
             disabled
           />

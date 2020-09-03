@@ -95,29 +95,27 @@ const BidEditPage: React.FC<TPropsFromRedux &
   const classes = useStyles();
   const history = useHistory();
   const [isAlertOpen, setAlertOpen] = useState(false);
+  const [pointPrices, setPointPrices] = useState<IPointPriceForGet[]>([]);
 
-  const currentFilters = salePurchaseMode === "sale" ? currentSaleFilters : currentPurchaseFilters;
-
-  let currentFilter: { [crop: string]: { [x: string]: any } } | undefined = undefined;
-  if (editMode === "view") {
-    for (let k in currentFilters) {
-      if (k === cropId) {
-        currentFilter = currentFilters[k];
+  useEffect(() => {
+    const currentFilters =
+      salePurchaseMode === "sale" ? currentSaleFilters : currentPurchaseFilters;
+    let currentFilter: { [crop: string]: { [x: string]: any } } | undefined = undefined;
+    if (editMode === "view") {
+      for (let k in currentFilters) {
+        if (k === cropId) {
+          currentFilter = currentFilters[k];
+        }
       }
     }
-  }
-
-  // console.log("currentFilter:", currentFilter);
-
-  const pointPrices: IPointPriceForGet[] = [];
-
-  if (currentFilter?.point_prices && currentFilter.point_prices.length) {
-    currentFilter.point_prices.forEach((item: any) => {
-      pointPrices.push(item);
-    });
-  }
-
-  // console.log("pointPrices:", pointPrices);
+    const pointPrices: IPointPriceForGet[] = [];
+    if (currentFilter?.point_prices && currentFilter.point_prices.length) {
+      currentFilter.point_prices.forEach((item: any) => {
+        pointPrices.push(item);
+      });
+    }
+    setPointPrices(pointPrices);
+  }, [salePurchaseMode, currentSaleFilters, currentPurchaseFilters, editMode, cropId]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -157,8 +155,8 @@ const BidEditPage: React.FC<TPropsFromRedux &
   }, [fetchCrops]);
 
   useEffect(() => {
-    if (+bidId) fetch(+bidId, { filter: { point_prices: [] } });
-  }, [bidId, fetch]);
+    if (+bidId) fetch(+bidId, { filter: { point_prices: pointPrices } });
+  }, [bidId, fetch, pointPrices]);
 
   useEffect(() => {
     if (!!vendorId) fetchUser({ id: +vendorId });
