@@ -115,3 +115,8 @@ export interface IProfit {
   bid_id: number;
   value: number;
 }
+
+export interface IPointPriceForGet {
+  point_id: number;
+  price: number;
+}

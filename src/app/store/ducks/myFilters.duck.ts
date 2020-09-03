@@ -53,8 +53,8 @@ export interface IInitialState {
   success: boolean;
   error: string | null;
 
-  currentSaleFilters: { [x: string]: { [x: string]: any } };
-  currentPurchaseFilters: { [x: string]: { [x: string]: any } };
+  currentSaleFilters: { [crop: string]: { [x: string]: any } };
+  currentPurchaseFilters: { [crop: string]: { [x: string]: any } };
 
   createdFilterId: number | undefined;
   createLoading: boolean;

@@ -167,7 +167,7 @@ const PricesEdit: React.FC<IProps &
             <PointsPrices currentFilter={itemById(myFilters, +values.filter_id) as IMyFilterItem} />
           )}
       {(!myFilters || !selectedFilterId) && (
-        <div className={classes.bottomMargin2}>
+        <div>
           <div className={classes.bottomButtonsContainer}>
             <Button className={classes.button} variant="contained" color="primary" disabled>
               {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}

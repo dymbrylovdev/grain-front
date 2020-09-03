@@ -34,6 +34,7 @@ const getValidationObject = (me: IUser | undefined, intl: any) => {
 
 const getFilterEditArray = (values: { [x: string]: any }) => {
   let filterEditArray: IPointPriceForEdit[] = [];
+  console.log("values:", values);
   for (let key in values) {
     if (values[key]) filterEditArray.push({ point_id: +key.slice(5), price: +values[key] });
   }
@@ -107,7 +108,7 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
   }, [currentFilter, me, myFilters, resetForm]);
 
   return (
-    <div className={classes.bottomMargin2}>
+    <div>
       {me?.points.map((item, index) => (
         <div key={index}>
           <div className={classes.textFieldContainer}>

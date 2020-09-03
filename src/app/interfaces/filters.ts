@@ -1,4 +1,4 @@
-import { TBidType } from "./bids";
+import { TBidType, IPointPriceForGet } from "./bids";
 
 export interface IPointPrice {
   point: {
@@ -76,5 +76,10 @@ export interface IFilterForBids {
     max_distance?: number;
     parameter_values?: IParamValue[];
     point_prices?: IPointPriceForEdit[];
+  };
+}
+export interface IFilterForBid {
+  filter: {
+    point_prices: IPointPriceForGet[];
   };
 }

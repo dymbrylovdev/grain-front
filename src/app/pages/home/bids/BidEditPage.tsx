@@ -21,6 +21,7 @@ import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import Prompter from "../prompter/Prompter";
 import useStyles from "../styles";
 import { accessByRoles } from "../../../utils/utils";
+import { IPointPriceForGet } from "../../../interfaces/bids";
 
 const BidEditPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -86,11 +87,37 @@ const BidEditPage: React.FC<TPropsFromRedux &
   loadingLocations,
 
   profit,
+
+  currentSaleFilters,
+  currentPurchaseFilters,
 }) => {
   const isNoModerate = !vendorId && !+bidId && me?.status === "На модерации";
   const classes = useStyles();
   const history = useHistory();
   const [isAlertOpen, setAlertOpen] = useState(false);
+
+  const currentFilters = salePurchaseMode === "sale" ? currentSaleFilters : currentPurchaseFilters;
+
+  let currentFilter: { [crop: string]: { [x: string]: any } } | undefined = undefined;
+  if (editMode === "view") {
+    for (let k in currentFilters) {
+      if (k === cropId) {
+        currentFilter = currentFilters[k];
+      }
+    }
+  }
+
+  // console.log("currentFilter:", currentFilter);
+
+  const pointPrices: IPointPriceForGet[] = [];
+
+  if (currentFilter?.point_prices && currentFilter.point_prices.length) {
+    currentFilter.point_prices.forEach((item: any) => {
+      pointPrices.push(item);
+    });
+  }
+
+  // console.log("pointPrices:", pointPrices);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -130,7 +157,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
   }, [fetchCrops]);
 
   useEffect(() => {
-    if (+bidId) fetch(+bidId);
+    if (+bidId) fetch(+bidId, { filter: { point_prices: [] } });
   }, [bidId, fetch]);
 
   useEffect(() => {
@@ -263,6 +290,9 @@ const connector = connect(
     error: state.bids.byIdError,
 
     profit: state.bids.profit,
+
+    currentSaleFilters: state.myFilters.currentSaleFilters,
+    currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
 
     crops: state.crops2.crops,
     cropsLoading: state.crops2.loading,

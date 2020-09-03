@@ -6,7 +6,7 @@ import storage from "redux-persist/lib/storage";
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
 import { IBid, IBestBids, IBidToRequest, TBidType, IProfit } from "../../interfaces/bids";
-import { IFilterForBids } from "../../interfaces/filters";
+import { IFilterForBids, IFilterForBid } from "../../interfaces/filters";
 import {
   getAllBids,
   getMyBids,
@@ -340,7 +340,8 @@ export const actions = {
   fetchBestFail: (payload: string) => createAction(FETCH_BEST_FAIL, payload),
 
   clearFetchById: () => createAction(CLEAR_FETCH_BY_ID),
-  fetchByIdRequest: (id: number) => createAction(FETCH_BY_ID_REQUEST, { id }),
+  fetchByIdRequest: (id: number, filter: IFilterForBid) =>
+    createAction(FETCH_BY_ID_REQUEST, { id, filter }),
   fetchByIdSuccess: (payload: IServerResponse<IBid>) => createAction(FETCH_BY_ID_SUCCESS, payload),
   fetchByIdFail: (payload: string) => createAction(FETCH_BY_ID_FAIL, payload),
 
@@ -402,9 +403,11 @@ function* fetchBestSaga({ payload }: { payload: { bidType: TBidType; filter: IFi
   }
 }
 
-function* fetchByIdSaga({ payload }: { payload: { id: number } }) {
+function* fetchByIdSaga({ payload }: { payload: { id: number; filter: IFilterForBid } }) {
   try {
-    const { data }: { data: IServerResponse<IBid> } = yield call(() => getBidById(payload.id));
+    const { data }: { data: IServerResponse<IBid> } = yield call(() =>
+      getBidById(payload.id, payload.filter)
+    );
     yield put(actions.fetchByIdSuccess(data));
   } catch (e) {
     yield put(actions.fetchByIdFail(e.response.data.message));
