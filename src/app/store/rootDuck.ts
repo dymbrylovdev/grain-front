@@ -49,7 +49,7 @@ export interface IAppState {
   yaLocations: yaLocations.IInitialState;
   docs: typeof docs.reducer;
   agreement: agreement.IInitialState;
-  bids: bids.IInitialState;
+  bids: bids.IInitialState & PersistPartial;
   myFilters: myFilters.IInitialState & PersistPartial;
   crops: typeof crops.reducer;
   crops2: crops2.IInitialState & PersistPartial;

@@ -84,6 +84,8 @@ const BidEditPage: React.FC<TPropsFromRedux &
   clearLocations,
   locations,
   loadingLocations,
+
+  profit,
 }) => {
   const isNoModerate = !vendorId && !+bidId && me?.status === "На модерации";
   const classes = useStyles();
@@ -224,6 +226,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
             createError={createError}
             clearCreate={clearCreate}
             edit={edit}
+            profit={profit}
           />
         )}
         <AlertDialog
@@ -258,6 +261,8 @@ const connector = connect(
     bid: state.bids.bid,
     loading: state.bids.byIdLoading,
     error: state.bids.byIdError,
+
+    profit: state.bids.profit,
 
     crops: state.crops2.crops,
     cropsLoading: state.crops2.loading,

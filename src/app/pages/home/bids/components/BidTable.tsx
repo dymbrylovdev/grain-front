@@ -21,12 +21,13 @@ import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import TopTableCell from "../../../../components/ui/Table/TopTableCell";
-import { IBid } from "../../../../interfaces/bids";
+import { IBid, IProfit } from "../../../../interfaces/bids";
 import { IUser } from "../../../../interfaces/users";
 import { TablePaginator2 } from "../../../../components/ui/Table/TablePaginator2";
 import { accessByRoles } from "../../../../utils/utils";
 import MiniTrafficLight from "../../users/components/miniTrafficLight/MiniTrafficLight";
 import { ICrop } from "../../../../interfaces/crops";
+import { ActionWithPayload } from "../../../../utils/action-helper";
 
 interface IProps {
   intl: any;
@@ -43,6 +44,14 @@ interface IProps {
   salePurchaseMode?: "sale" | "purchase";
   bestAllMyMode?: "best-bids" | "all-bids" | "my-bids";
   crops: ICrop[] | undefined;
+  setProfit: (
+    profit: IProfit
+  ) => ActionWithPayload<
+    "bids/SET_PROFIT",
+    {
+      profit: IProfit;
+    }
+  >;
 }
 
 const BidTable: React.FC<IProps> = ({
@@ -60,6 +69,7 @@ const BidTable: React.FC<IProps> = ({
   salePurchaseMode,
   bestAllMyMode,
   crops,
+  setProfit,
 }) => {
   const history = useHistory();
 
@@ -285,7 +295,22 @@ const BidTable: React.FC<IProps> = ({
                     <IconButton
                       size="medium"
                       color="primary"
-                      onClick={() => history.push(`/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`)}
+                      onClick={() => {
+                        let maxProfit = 0;
+                        if (bid?.point_prices && bid?.point_prices.length) {
+                          bid.point_prices.forEach(item => {
+                            if (item.profit && item.profit > maxProfit) {
+                              maxProfit = item.profit;
+                            }
+                          });
+                        }
+                        maxProfit = Math.round(maxProfit);
+                        setProfit({
+                          bid_id: bid.id,
+                          value: maxProfit || 0,
+                        });
+                        history.push(`/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`);
+                      }}
                     >
                       <VisibilityIcon />
                     </IconButton>

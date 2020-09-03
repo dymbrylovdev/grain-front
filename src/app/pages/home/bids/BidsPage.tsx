@@ -129,6 +129,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   editLoading,
   editSuccess,
   editError,
+  setProfit,
 }) => {
   let bestAllMyMode: "best-bids" | "all-bids" | "my-bids" = "best-bids";
   if (match.url.indexOf("best-bids") !== -1) bestAllMyMode = "best-bids";
@@ -465,6 +466,7 @@ const BidsPage: React.FC<TPropsFromRedux &
               salePurchaseMode={salePurchaseMode}
               bestAllMyMode={bestAllMyMode}
               crops={crops}
+              setProfit={setProfit}
             />
             <div className={innerClasses.topSpaceContainer}>
               <BidTable
@@ -481,6 +483,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 salePurchaseMode={salePurchaseMode}
                 bestAllMyMode={bestAllMyMode}
                 crops={crops}
+                setProfit={setProfit}
               />
             </div>
             {!!bestBids && (!!bestBids.equal.length || !!bestBids.inexact.length) && (
@@ -518,6 +521,7 @@ const BidsPage: React.FC<TPropsFromRedux &
               salePurchaseMode={salePurchaseMode}
               bestAllMyMode={bestAllMyMode}
               crops={crops}
+              setProfit={setProfit}
             />
             {!!myBids && !!myBids.length && (
               <div className={innerClasses.text}>
@@ -547,6 +551,7 @@ const BidsPage: React.FC<TPropsFromRedux &
               salePurchaseMode={salePurchaseMode}
               bestAllMyMode={bestAllMyMode}
               crops={crops}
+              setProfit={setProfit}
             />
             {!!bids && !!bids.length && (
               <div className={innerClasses.text}>
@@ -679,6 +684,8 @@ const connector = connect(
 
     clearDel: bidsActions.clearDel,
     del: bidsActions.delRequest,
+
+    setProfit: bidsActions.setProfit,
 
     setActiveStep: prompterActions.setActiveStep,
     setCurrentSaleFilter: myFiltersActions.setCurrentSaleFilter,

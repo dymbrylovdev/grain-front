@@ -13,7 +13,7 @@ import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
-import { IBid, TBidType, IBidToRequest } from "../../../../interfaces/bids";
+import { IBid, TBidType, IBidToRequest, IProfit } from "../../../../interfaces/bids";
 import { IUser } from "../../../../interfaces/users";
 import { ActionWithPayload, Action } from "../../../../utils/action-helper";
 import { ICropParam, ICrop } from "../../../../interfaces/crops";
@@ -198,6 +198,7 @@ interface IProps {
   createSuccess: boolean;
   createError: string | null;
   clearCreate: () => Action<"bids/CLEAR_CREATE">;
+  profit: IProfit;
 }
 
 const BidForm: React.FC<IProps> = ({
@@ -230,6 +231,8 @@ const BidForm: React.FC<IProps> = ({
   createSuccess,
   createError,
   clearCreate,
+
+  profit,
 }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -535,7 +538,7 @@ const BidForm: React.FC<IProps> = ({
           })}
           margin="normal"
           name="price"
-          value={values.price}
+          value={thousands(values.price.toString())}
           variant="outlined"
           onBlur={handleBlur}
           onChange={handleChange}
@@ -576,7 +579,7 @@ const BidForm: React.FC<IProps> = ({
               label={intl.formatMessage({ id: "BIDSLIST.TABLE.COST_WITH_VAT" }, { vat: bid.vat })}
               margin="normal"
               name="price"
-              value={Math.round(+values.price * (+bid.vat / 100 + 1))}
+              value={thousands(Math.round(+values.price * (+bid.vat / 100 + 1)).toString())}
               variant="outlined"
               disabled
             />
@@ -599,7 +602,7 @@ const BidForm: React.FC<IProps> = ({
           })}
           margin="normal"
           name="volume"
-          value={values.volume}
+          value={thousands(values.volume.toString())}
           variant="outlined"
           onBlur={handleBlur}
           onChange={handleChange}
@@ -622,9 +625,9 @@ const BidForm: React.FC<IProps> = ({
         />
       )}
 
-      {/* {editMode === "view" &&
-        !!bid?.point_prices &&
-        bid.point_prices.length &&
+      {editMode === "view" &&
+        profit?.value > 0 &&
+        profit?.bid_id === bid?.id &&
         (loading ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
@@ -632,11 +635,27 @@ const BidForm: React.FC<IProps> = ({
             type="text"
             label={intl.formatMessage({ id: "DEALS.TABLE.PROFIT_BY_TONN" })}
             margin="normal"
-            value={bid.point_prices[0].profit}
+            value={thousands(profit.value.toString())}
             variant="outlined"
             disabled
           />
-        ))} */}
+        ))}
+
+      {editMode === "view" &&
+        profit?.value > 0 &&
+        profit?.bid_id === bid?.id &&
+        (loading ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            type="text"
+            label={intl.formatMessage({ id: "DEALS.TABLE.TOTAL_PROFIT" })}
+            margin="normal"
+            value={thousands(Math.round(profit.value * values.volume).toString())}
+            variant="outlined"
+            disabled
+          />
+        ))}
 
       {salePurchaseMode === "purchase" &&
         (loading ? (

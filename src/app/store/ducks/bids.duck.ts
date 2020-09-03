@@ -1,10 +1,11 @@
 import { Reducer } from "redux";
 import { TAppActions } from "../rootDuck";
 import { put, takeLatest, call } from "redux-saga/effects";
+import storage from "redux-persist/lib/storage";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
-import { IBid, IBestBids, IBidToRequest, TBidType } from "../../interfaces/bids";
+import { IBid, IBestBids, IBidToRequest, TBidType, IProfit } from "../../interfaces/bids";
 import { IFilterForBids } from "../../interfaces/filters";
 import {
   getAllBids,
@@ -15,6 +16,7 @@ import {
   editBid,
   deleteBid,
 } from "../../crud/bids.crud";
+import persistReducer, { PersistPartial } from "redux-persist/es/persistReducer";
 
 const FETCH_REQUEST = "bids/FETCH_REQUEST";
 const FETCH_SUCCESS = "bids/FETCH_SUCCESS";
@@ -48,6 +50,8 @@ const CLEAR_DEL = "bids/CLEAR_DEL";
 const DEL_REQUEST = "bids/DEL_REQUEST";
 const DEL_SUCCESS = "bids/DEL_SUCCESS";
 const DEL_FAIL = "bids/DEL_FAIL";
+
+const SET_PROFIT = "bids/SET_PROFIT";
 
 export interface IInitialState {
   page: number;
@@ -84,6 +88,8 @@ export interface IInitialState {
   delLoading: boolean;
   delSuccess: boolean;
   delError: string | null;
+
+  profit: IProfit;
 }
 
 const initialState: IInitialState = {
@@ -121,191 +127,200 @@ const initialState: IInitialState = {
   delLoading: false,
   delSuccess: false,
   delError: null,
+
+  profit: { bid_id: 0, value: 0 },
 };
 
-export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
-  switch (action.type) {
-    case FETCH_REQUEST: {
-      return {
-        ...state,
-        bids: undefined,
-        loading: true,
-        success: false,
-        error: null,
-      };
-    }
+export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
+  { storage, key: "bids", whitelist: ["profit"] },
+  (state = initialState, action) => {
+    switch (action.type) {
+      case FETCH_REQUEST: {
+        return {
+          ...state,
+          bids: undefined,
+          loading: true,
+          success: false,
+          error: null,
+        };
+      }
 
-    case FETCH_SUCCESS: {
-      // console.log("FETCH: ", action.payload);
-      return {
-        ...state,
-        page: action.payload.page,
-        per_page: action.payload.per_page,
-        total: action.payload.total,
-        bids: action.payload.data,
-        loading: false,
-        success: true,
-      };
-    }
+      case FETCH_SUCCESS: {
+        // console.log("FETCH: ", action.payload);
+        return {
+          ...state,
+          page: action.payload.page,
+          per_page: action.payload.per_page,
+          total: action.payload.total,
+          bids: action.payload.data,
+          loading: false,
+          success: true,
+        };
+      }
 
-    case FETCH_FAIL: {
-      return { ...state, loading: false, error: action.payload };
-    }
+      case FETCH_FAIL: {
+        return { ...state, loading: false, error: action.payload };
+      }
 
-    case FETCH_MY_REQUEST: {
-      return {
-        ...state,
-        myBids: undefined,
-        myLoading: true,
-        mySuccess: false,
-        myError: null,
-      };
-    }
+      case FETCH_MY_REQUEST: {
+        return {
+          ...state,
+          myBids: undefined,
+          myLoading: true,
+          mySuccess: false,
+          myError: null,
+        };
+      }
 
-    case FETCH_MY_SUCCESS: {
-      // console.log("FETCH_MY: ", action.payload);
-      return {
-        ...state,
-        myBids: action.payload.data,
-        myLoading: false,
-        mySuccess: true,
-      };
-    }
+      case FETCH_MY_SUCCESS: {
+        // console.log("FETCH_MY: ", action.payload);
+        return {
+          ...state,
+          myBids: action.payload.data,
+          myLoading: false,
+          mySuccess: true,
+        };
+      }
 
-    case FETCH_MY_FAIL: {
-      return { ...state, myLoading: false, myError: action.payload };
-    }
+      case FETCH_MY_FAIL: {
+        return { ...state, myLoading: false, myError: action.payload };
+      }
 
-    case CLEAR_BEST_REQUEST: {
-      return {
-        ...state,
-        bestBids: undefined,
-        bestLoading: false,
-        bestSuccess: false,
-        bestError: null,
-      };
-    }
+      case CLEAR_BEST_REQUEST: {
+        return {
+          ...state,
+          bestBids: undefined,
+          bestLoading: false,
+          bestSuccess: false,
+          bestError: null,
+        };
+      }
 
-    case FETCH_BEST_REQUEST: {
-      return {
-        ...state,
-        bestBids: undefined,
-        bestLoading: true,
-        bestSuccess: false,
-        bestError: null,
-      };
-    }
+      case FETCH_BEST_REQUEST: {
+        return {
+          ...state,
+          bestBids: undefined,
+          bestLoading: true,
+          bestSuccess: false,
+          bestError: null,
+        };
+      }
 
-    case FETCH_BEST_SUCCESS: {
-      // console.log("FETCH_BEST: ", action.payload);
-      return {
-        ...state,
-        bestBids: action.payload.data,
-        bestLoading: false,
-        bestSuccess: true,
-      };
-    }
+      case FETCH_BEST_SUCCESS: {
+        // console.log("FETCH_BEST: ", action.payload);
+        return {
+          ...state,
+          bestBids: action.payload.data,
+          bestLoading: false,
+          bestSuccess: true,
+        };
+      }
 
-    case FETCH_BEST_FAIL: {
-      return { ...state, bestLoading: false, bestError: action.payload };
-    }
+      case FETCH_BEST_FAIL: {
+        return { ...state, bestLoading: false, bestError: action.payload };
+      }
 
-    case CLEAR_FETCH_BY_ID: {
-      //console.log("CLEAR_FETCH_BY_ID");
-      return {
-        ...state,
-        byIdLoading: false,
-        byIdSuccess: false,
-        byIdError: null,
-      };
-    }
+      case CLEAR_FETCH_BY_ID: {
+        //console.log("CLEAR_FETCH_BY_ID");
+        return {
+          ...state,
+          byIdLoading: false,
+          byIdSuccess: false,
+          byIdError: null,
+        };
+      }
 
-    case FETCH_BY_ID_REQUEST: {
-      //console.log("FETCH_BY_ID_REQUEST");
-      return {
-        ...state,
-        bid: undefined,
-        byIdLoading: true,
-        byIdSuccess: false,
-        byIdError: null,
-      };
-    }
+      case FETCH_BY_ID_REQUEST: {
+        //console.log("FETCH_BY_ID_REQUEST");
+        return {
+          ...state,
+          bid: undefined,
+          byIdLoading: true,
+          byIdSuccess: false,
+          byIdError: null,
+        };
+      }
 
-    case FETCH_BY_ID_SUCCESS: {
-      // console.log("Fetch Bid By Id: ", action.payload);
-      return {
-        ...state,
-        bid: action.payload.data,
-        byIdLoading: false,
-        byIdSuccess: true,
-      };
-    }
+      case FETCH_BY_ID_SUCCESS: {
+        // console.log("Fetch Bid By Id: ", action.payload);
+        return {
+          ...state,
+          bid: action.payload.data,
+          byIdLoading: false,
+          byIdSuccess: true,
+        };
+      }
 
-    case FETCH_BY_ID_FAIL: {
-      return { ...state, byIdLoading: false, byIdError: action.payload };
-    }
+      case FETCH_BY_ID_FAIL: {
+        return { ...state, byIdLoading: false, byIdError: action.payload };
+      }
 
-    case CLEAR_CREATE: {
-      return { ...state, createLoading: false, createSuccess: false, createError: null };
-    }
+      case CLEAR_CREATE: {
+        return { ...state, createLoading: false, createSuccess: false, createError: null };
+      }
 
-    case CREATE_REQUEST: {
-      return { ...state, createLoading: true, createSuccess: false, createError: null };
-    }
+      case CREATE_REQUEST: {
+        return { ...state, createLoading: true, createSuccess: false, createError: null };
+      }
 
-    case CREATE_SUCCESS: {
-      return {
-        ...state,
-        createLoading: false,
-        createSuccess: true,
-      };
-    }
+      case CREATE_SUCCESS: {
+        return {
+          ...state,
+          createLoading: false,
+          createSuccess: true,
+        };
+      }
 
-    case CREATE_FAIL: {
-      return { ...state, createLoading: false, createError: action.payload };
-    }
+      case CREATE_FAIL: {
+        return { ...state, createLoading: false, createError: action.payload };
+      }
 
-    case CLEAR_EDIT: {
-      return { ...state, editLoading: false, editSuccess: false, editError: null };
-    }
+      case CLEAR_EDIT: {
+        return { ...state, editLoading: false, editSuccess: false, editError: null };
+      }
 
-    case EDIT_REQUEST: {
-      return { ...state, editLoading: true, editSuccess: false, editError: null };
-    }
+      case EDIT_REQUEST: {
+        return { ...state, editLoading: true, editSuccess: false, editError: null };
+      }
 
-    case EDIT_SUCCESS: {
-      return {
-        ...state,
-        loading: true,
-        editLoading: false,
-        editSuccess: true,
-      };
-    }
+      case EDIT_SUCCESS: {
+        return {
+          ...state,
+          loading: true,
+          editLoading: false,
+          editSuccess: true,
+        };
+      }
 
-    case EDIT_FAIL: {
-      return { ...state, editLoading: false, editError: action.payload };
-    }
+      case EDIT_FAIL: {
+        return { ...state, editLoading: false, editError: action.payload };
+      }
 
-    case CLEAR_DEL: {
-      return { ...state, delLoading: false, delSuccess: false, delError: null };
-    }
+      case CLEAR_DEL: {
+        return { ...state, delLoading: false, delSuccess: false, delError: null };
+      }
 
-    case DEL_REQUEST: {
-      return { ...state, delLoading: true, delSuccess: false, delError: null };
-    }
+      case DEL_REQUEST: {
+        return { ...state, delLoading: true, delSuccess: false, delError: null };
+      }
 
-    case DEL_SUCCESS: {
-      return { ...state, delLoading: false, delSuccess: true };
-    }
+      case DEL_SUCCESS: {
+        return { ...state, delLoading: false, delSuccess: true };
+      }
 
-    case DEL_FAIL: {
-      return { ...state, delLoading: false, delError: action.payload };
-    }
+      case DEL_FAIL: {
+        return { ...state, delLoading: false, delError: action.payload };
+      }
 
-    default:
-      return state;
+      case SET_PROFIT: {
+        return { ...state, profit: action.payload.profit };
+      }
+
+      default:
+        return state;
+    }
   }
-};
+);
 
 export const actions = {
   fetchRequest: (cropId: number, bidType: TBidType, page: number, perPage: number) =>
@@ -344,6 +359,8 @@ export const actions = {
   delRequest: (id: number) => createAction(DEL_REQUEST, { id }),
   delSuccess: () => createAction(DEL_SUCCESS),
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
+
+  setProfit: (profit: IProfit) => createAction(SET_PROFIT, { profit }),
 };
 
 export type TActions = ActionsUnion<typeof actions>;

@@ -110,3 +110,8 @@ export interface IBestBids {
   equal: IBid[];
   inexact: IBid[];
 }
+
+export interface IProfit {
+  bid_id: number;
+  value: number;
+}
