@@ -55,15 +55,15 @@ function FilterForm({
           { id: "FILTER.FORM.LIMIT" },
           {
             count:
-              me.tariff.max_filters_count - myFilters?.length <= 0
+              !me?.tariff || (me?.tariff && me.tariff.max_filters_count - myFilters?.length <= 0)
                 ? "0"
-                : me.tariff.max_filters_count - myFilters?.length,
-            word: declOfNum(me.tariff.max_filters_count - myFilters?.length, [
+                : me?.tariff?.max_filters_count - myFilters?.length,
+            word: declOfNum(me?.tariff?.max_filters_count - myFilters?.length, [
               "фильтр",
               "фильтра",
               "фильтров",
             ]),
-            fullCount: me.tariff.max_filters_count,
+            fullCount: me?.tariff?.max_filters_count,
           }
         )}
       </div>

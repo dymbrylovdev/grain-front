@@ -438,7 +438,8 @@ const FilterModal = ({
                       <ButtonWithLoader
                         loading={createLoading}
                         disabled={
-                          createLoading || me.tariff.max_filters_count - myFilters?.length <= 0
+                          createLoading ||
+                          (me?.tariff && me.tariff.max_filters_count - myFilters?.length <= 0)
                         }
                         onPress={() => {
                           if (!!currentFilter && currentFilter.name === formik.values.name) {
