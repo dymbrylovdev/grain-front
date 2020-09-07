@@ -625,7 +625,8 @@ const BidForm: React.FC<IProps> = ({
         />
       )}
 
-      {editMode === "view" &&
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+        editMode === "view" &&
         !!bid &&
         !!bid.point_prices &&
         bid.point_prices.length > 0 &&
@@ -642,7 +643,8 @@ const BidForm: React.FC<IProps> = ({
           />
         ))}
 
-      {editMode === "view" &&
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+        editMode === "view" &&
         !!bid &&
         !!bid.point_prices &&
         bid.point_prices.length > 0 &&
