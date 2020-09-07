@@ -592,39 +592,6 @@ const BidForm: React.FC<IProps> = ({
           </>
         ))}
 
-      {loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <TextField
-          type="text"
-          label={intl.formatMessage({
-            id: "BIDSLIST.TABLE.VOLUME",
-          })}
-          margin="normal"
-          name="volume"
-          value={thousands(values.volume.toString())}
-          variant="outlined"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          helperText={touched.volume && errors.volume}
-          error={Boolean(touched.volume && errors.volume)}
-          InputProps={
-            editMode !== "view"
-              ? {
-                  inputComponent: NumberFormatCustom as any,
-                  endAdornment: (
-                    <IconButton onClick={() => setFieldValue("volume", "")}>
-                      <CloseIcon />
-                    </IconButton>
-                  ),
-                }
-              : undefined
-          }
-          disabled={editMode === "view"}
-          autoComplete="off"
-        />
-      )}
-
       {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
         editMode === "view" &&
         !!bid &&
@@ -932,6 +899,39 @@ const BidForm: React.FC<IProps> = ({
             </Grid>
           </div>
         ))}
+
+      {loading ? (
+        <Skeleton width="100%" height={70} animation="wave" />
+      ) : (
+        <TextField
+          type="text"
+          label={intl.formatMessage({
+            id: "BIDSLIST.TABLE.VOLUME",
+          })}
+          margin="normal"
+          name="volume"
+          value={thousands(values.volume.toString())}
+          variant="outlined"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          helperText={touched.volume && errors.volume}
+          error={Boolean(touched.volume && errors.volume)}
+          InputProps={
+            editMode !== "view"
+              ? {
+                  inputComponent: NumberFormatCustom as any,
+                  endAdornment: (
+                    <IconButton onClick={() => setFieldValue("volume", "")}>
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }
+              : undefined
+          }
+          disabled={editMode === "view"}
+          autoComplete="off"
+        />
+      )}
 
       {editMode === "view" ? (
         loading ? (
