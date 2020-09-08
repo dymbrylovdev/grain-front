@@ -34,7 +34,9 @@ function CompanyConfirmPage({ intl, getCompanyById, companyId }) {
         <LoadError handleClick={companyAction} />
       ) : (
         <>
-          <EmailBlock company={company} user={user} classes={classes} />
+          {(!!company?.email || !!company?.email2) && (
+            <EmailBlock company={company} user={user} classes={classes} />
+          )}
           {/* <PhoneBlock company={company} user={user} classes={classes} /> */}
           <PayBlock company={company} user={user} classes={classes} />
         </>

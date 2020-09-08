@@ -17,7 +17,9 @@ function PhoneBlock({ intl, company = {}, user = {}, classes }) {
   return (
     <div className={classes.form}>
       <h4 className={clsx("kt-portlet__head-title ", innerClasses.title)}>
-        {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TITLE" })}
+        {`${!!company?.email || !!company?.email2 ? "2. " : ""}${intl.formatMessage({
+          id: "COMPANY.CONFIRM.PAY.TITLE",
+        })}`}
       </h4>
       {user.company_confirmed_by_payment ? (
         <StatusAlert
