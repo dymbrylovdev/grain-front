@@ -30,17 +30,27 @@ function PhoneBlock({ intl, company = {}, user = {}, classes }) {
         />
       ) : (
         <>
-          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1" })}</div>
           <div>
-            <b>
-              {intl.formatMessage(
-                { id: "COMPANY.CONFIRM.PAY.TEXT2" },
-                {
-                  okk: <CheckCircleOutlineIcon color="secondary" />,
-                  err: <ReportProblemIcon color="error" />,
-                }
-              )}
-            </b>
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1" })}
+            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_1" })}</b>
+          </div>
+          <br />
+          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT2" })}</div>
+          <div>
+            {intl.formatMessage(
+              { id: "COMPANY.CONFIRM.PAY.TEXT2_1" },
+              {
+                okk: <CheckCircleOutlineIcon color="secondary" />,
+              }
+            )}
+          </div>
+          <div>
+            {intl.formatMessage(
+              { id: "COMPANY.CONFIRM.PAY.TEXT2_2" },
+              {
+                err: <ReportProblemIcon color="error" />,
+              }
+            )}
           </div>
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT3" })}</div>
           <br />
@@ -68,7 +78,6 @@ function PhoneBlock({ intl, company = {}, user = {}, classes }) {
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT17" })}</div>
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT18" })}</div>
           <br />
-          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT19" })}</div>
         </>
       )}
     </div>
