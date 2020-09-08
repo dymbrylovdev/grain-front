@@ -143,10 +143,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         editMode === "create"
           ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
           : Yup.string(),
-      phone: Yup.string().matches(
-        /^[0-9][0-9]{9}$/,
-        intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })
-      ),
+      phone: Yup.string()
+        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+        .matches(/^[0-9][0-9]{9}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
       // repeatPassword: Yup.string().test(
       //   "passwords-match",
       //   intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
