@@ -224,6 +224,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         //console.log("CLEAR_FETCH_BY_ID");
         return {
           ...state,
+          bid: undefined,
           byIdLoading: false,
           byIdSuccess: false,
           byIdError: null,
@@ -234,7 +235,6 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         //console.log("FETCH_BY_ID_REQUEST");
         return {
           ...state,
-          bid: undefined,
           byIdLoading: true,
           byIdSuccess: false,
           byIdError: null,

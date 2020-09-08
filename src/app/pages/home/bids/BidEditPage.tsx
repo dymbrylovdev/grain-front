@@ -49,6 +49,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
 
   setActiveStep,
 
+  clearFetch,
   fetch,
   bid,
   loading,
@@ -156,15 +157,21 @@ const BidEditPage: React.FC<TPropsFromRedux &
 
   useEffect(() => {
     if (+bidId) fetch(+bidId, { filter: { point_prices: pointPrices } });
-  }, [bidId, fetch, pointPrices]);
+    return () => {
+      clearFetch();
+    };
+  }, [bidId, clearFetch, fetch, pointPrices]);
 
   useEffect(() => {
-    if (!!vendorId) fetchUser({ id: +vendorId });
-  }, [fetchUser, vendorId]);
-
-  useEffect(() => {
-    if (!!bid) fetchUser({ id: bid.vendor.id });
-  }, [bid, editMode, fetchUser]);
+    if (!bid) {
+      if (vendorId) {
+        fetchUser({ id: +vendorId });
+      }
+    } else {
+      fetchUser({ id: bid.vendor.id });
+    }
+    console.log("bid", bid);
+  }, [bid, fetchUser, vendorId]);
 
   useEffect(() => {
     setActiveStep(4);
@@ -320,6 +327,7 @@ const connector = connect(
 
     fetchMe: authActions.fetchRequest,
 
+    clearFetch: bidsActions.clearFetchById,
     fetch: bidsActions.fetchByIdRequest,
 
     clearCreate: bidsActions.clearCreate,
