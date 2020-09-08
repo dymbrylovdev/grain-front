@@ -31,6 +31,7 @@ const useStyles = makeStyles(theme => ({
     width: 100,
   },
   paramName: {
+    fontSize: 15,
     width: 200,
   },
   textField: {
@@ -38,6 +39,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: 0,
     minWidth: 20,
     maxWidth: 200,
+    marginLeft: theme.spacing(2),
   },
 }));
 
