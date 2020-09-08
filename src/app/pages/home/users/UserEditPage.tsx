@@ -98,7 +98,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
   const innerClasses = innerStyles();
   const history = useHistory();
 
-  let editMode: "profile" | "create" | "edit" | "view" = "profile";
+  let editMode: "profile" | "create" | "edit" | "view" = "create";
   if (match.url.indexOf("profile") !== -1) editMode = "profile";
   if (match.url.indexOf("create") !== -1) editMode = "create";
   if (match.url.indexOf("edit") !== -1) editMode = "edit";
@@ -107,6 +107,10 @@ const UserEditPage: React.FC<TPropsFromRedux &
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [isLocTabPulse, setLocTabPulse] = useState(false);
   const [valueTabs, setValueTabs] = useState(0);
+
+  useEffect(() => {
+    if (editMode === "create") setValueTabs(0);
+  }, [editMode]);
 
   useEffect(() => {
     if (match.url.indexOf("profile/crops") !== -1) {

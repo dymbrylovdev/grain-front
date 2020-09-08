@@ -228,7 +228,7 @@ function* fetchSaga({
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -237,7 +237,7 @@ function* fetchFiltersSaga() {
     const { data }: { data: IServerResponse<IDealsFilter[]> } = yield call(() => getDealsFilters());
     yield put(actions.fetchFiltersSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFiltersFail(e.response.data.message));
+    yield put(actions.fetchFiltersFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -246,7 +246,7 @@ function* editFilterSaga({ payload }: { payload: { id: number; data: IDealsFilte
     yield call(() => editDealsFilter(payload.id, payload.data));
     yield put(actions.editFilterSuccess());
   } catch (e) {
-    yield put(actions.editFilterFail(e.response.data.message));
+    yield put(actions.editFilterFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 

@@ -101,8 +101,7 @@ export const getQueryString = (values = {}) => {
   return queryParams;
 };
 
-export const getResponseMessage = e =>
-  e && e.response && e.response.data && e.response.data.message;
+export const getResponseMessage = e => e?.response?.data?.message || "Ошибка соединения.";
 
 export const isEmptyObject = obj => {
   for (var i in obj) {

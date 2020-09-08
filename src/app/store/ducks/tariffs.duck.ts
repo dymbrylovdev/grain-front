@@ -133,7 +133,7 @@ function* fetchSaga() {
     const { data }: { data: IServerResponse<ITariff[]> } = yield call(() => getTariffs());
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -144,7 +144,7 @@ function* editSaga({ payload }: { payload: { id: number; data: ITariffToRequest 
     );
     yield put(actions.editSuccess(data));
   } catch (e) {
-    yield put(actions.editFail(e.response.data.message));
+    yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 

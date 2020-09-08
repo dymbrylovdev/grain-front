@@ -269,7 +269,7 @@ function* fetchSaga({ payload }: { payload: { page: number; perPage: number } })
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -278,7 +278,7 @@ function* fetchByIdSaga({ payload }: { payload: { id: number } }) {
     const { data }: { data: IServerResponse<IUser> } = yield call(() => getUserById(payload.id));
     yield put(actions.fetchByIdSuccess(data));
   } catch (e) {
-    yield put(actions.fetchByIdFail(e.response.data.message));
+    yield put(actions.fetchByIdFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -287,7 +287,7 @@ function* createSaga({ payload }: { payload: IUserForCreate }) {
     const { data }: { data: IServerResponse<IUser> } = yield call(() => createUser(payload));
     yield put(actions.createSuccess(data));
   } catch (e) {
-    yield put(actions.createFail(e.response.data.message));
+    yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -298,7 +298,7 @@ function* editSaga({ payload }: { payload: { id: number; data: IUserForEdit } })
     );
     yield put(actions.editSuccess(data));
   } catch (e) {
-    yield put(actions.editFail(e.response.data.message));
+    yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -307,7 +307,7 @@ function* delSaga({ payload }: { payload: { id: number } }) {
     yield call(() => deleteUser(payload.id));
     yield put(actions.delSuccess());
   } catch (e) {
-    yield put(actions.delFail(e.response.data.message));
+    yield put(actions.delFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 

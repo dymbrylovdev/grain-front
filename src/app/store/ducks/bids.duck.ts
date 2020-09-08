@@ -377,7 +377,7 @@ function* fetchSaga({
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -388,7 +388,7 @@ function* fetchMySaga({ payload }: { payload: { bidType: TBidType } }) {
     );
     yield put(actions.fetchMySuccess(data));
   } catch (e) {
-    yield put(actions.fetchMyFail(e.response.data.message));
+    yield put(actions.fetchMyFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -399,7 +399,7 @@ function* fetchBestSaga({ payload }: { payload: { bidType: TBidType; filter: IFi
     );
     yield put(actions.fetchBestSuccess(data));
   } catch (e) {
-    yield put(actions.fetchBestFail(e.response.data.message));
+    yield put(actions.fetchBestFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -410,7 +410,7 @@ function* fetchByIdSaga({ payload }: { payload: { id: number; filter: IFilterFor
     );
     yield put(actions.fetchByIdSuccess(data));
   } catch (e) {
-    yield put(actions.fetchByIdFail(e.response.data.message));
+    yield put(actions.fetchByIdFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -419,7 +419,7 @@ function* createSaga({ payload }: { payload: { type: TBidType; data: IBidToReque
     yield call(() => createBid(payload.type, payload.data));
     yield put(actions.createSuccess());
   } catch (e) {
-    yield put(actions.createFail(e.response.data.message));
+    yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -428,7 +428,7 @@ function* editSaga({ payload }: { payload: { id: number; data: IBidToRequest } }
     yield call(() => editBid(payload.id, payload.data));
     yield put(actions.editSuccess());
   } catch (e) {
-    yield put(actions.editFail(e.response.data.message));
+    yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -437,7 +437,7 @@ function* delSaga({ payload }: { payload: { id: number } }) {
     yield call(() => deleteBid(payload.id));
     yield put(actions.delSuccess());
   } catch (e) {
-    yield put(actions.delFail(e.response.data.message));
+    yield put(actions.delFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 

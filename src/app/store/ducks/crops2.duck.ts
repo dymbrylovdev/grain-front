@@ -264,7 +264,7 @@ function* fetchSaga() {
     const { data }: { data: IServerResponse<ICrop[]> } = yield call(() => getCrops());
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -275,7 +275,7 @@ function* fetchCropParamsSaga({ payload: { cropId } }: { payload: { cropId: numb
     );
     yield put(actions.cropParamsSuccess(data));
   } catch (e) {
-    yield put(actions.cropParamsFail(e.response.data.message));
+    yield put(actions.cropParamsFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -286,7 +286,7 @@ function* fetchAllCropParamsSaga({ payload }: { payload: { type: TAllCropRequest
     );
     yield put(actions.allCropParamsSuccess(data));
   } catch (e) {
-    yield put(actions.allCropParamsFail(e.response.data.message));
+    yield put(actions.allCropParamsFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -295,7 +295,7 @@ function* delSaga({ payload }: { payload: { id: number } }) {
     yield call(() => delCrop(payload.id));
     yield put(actions.delSuccess());
   } catch (e) {
-    yield put(actions.delFail(e.response.data.message));
+    yield put(actions.delFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -304,7 +304,7 @@ function* delCropParamSaga({ payload }: { payload: { id: number } }) {
     yield call(() => delCropParam(payload.id));
     yield put(actions.delCropParamSuccess());
   } catch (e) {
-    yield put(actions.delCropParamFail(e.response.data.message));
+    yield put(actions.delCropParamFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 

@@ -119,7 +119,7 @@ function* fetchSaga() {
     const { data }: { data: IServerResponse<ITrial> } = yield call(() => getTrial());
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -128,7 +128,7 @@ function* editSaga({ payload }: { payload: { data: ITrialToRequest } }) {
     const { data }: { data: IServerResponse<ITrial> } = yield call(() => editTrial(payload.data));
     yield put(actions.editSuccess(data));
   } catch (e) {
-    yield put(actions.editFail(e.response.data.message));
+    yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 

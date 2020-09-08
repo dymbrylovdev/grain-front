@@ -68,6 +68,8 @@ const FilterForm: React.FC<IProps> = ({
     onSubmit: values => {
       if (!!dealsFilters) {
         const id = dealsFilters.find(item => item.crop.id === crop.id)?.id;
+        console.log("adcdc", id);
+        console.log("dealsFilters", dealsFilters);
         if (!!id) editFilter(id, getValuesToRequest(values));
       }
     },

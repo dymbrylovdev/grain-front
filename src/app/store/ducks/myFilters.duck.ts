@@ -337,7 +337,7 @@ function* fetchSaga({ payload }: { payload: { type: TBidType } }) {
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -348,7 +348,7 @@ function* createSaga({ payload }: { payload: IFilterForCreate }) {
     );
     yield put(actions.createSuccess(data.data));
   } catch (e) {
-    yield put(actions.createFail(e.response.data.message));
+    yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -359,7 +359,7 @@ function* editSaga({ payload }: { payload: { id: number; data: IFilterForCreate 
     );
     yield put(actions.editSuccess(data));
   } catch (e) {
-    yield put(actions.editFail(e.response.data.message));
+    yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -370,7 +370,7 @@ function* delSaga({ payload }: { payload: number }) {
     );
     yield put(actions.delSuccess(data.data));
   } catch (e) {
-    yield put(actions.delFail(e.response.data.message));
+    yield put(actions.delFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 

@@ -237,7 +237,7 @@ function* fetchSaga() {
     const { data }: { data: IServerResponse<ILocation[]> } = yield call(() => getLocations());
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -248,7 +248,7 @@ function* fetchByIdSaga({ payload }: { payload: { id: number } }) {
     );
     yield put(actions.fetchByIdSuccess(data));
   } catch (e) {
-    yield put(actions.fetchByIdFail(e.response.data.message));
+    yield put(actions.fetchByIdFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -257,7 +257,7 @@ function* createSaga({ payload }: { payload: ILocationToRequest }) {
     yield call(() => createLocation(payload));
     yield put(actions.createSuccess());
   } catch (e) {
-    yield put(actions.createFail(e.response.data.message));
+    yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -266,7 +266,7 @@ function* editSaga({ payload }: { payload: { id: number; data: ILocationToReques
     yield call(() => editLocation(payload.id, payload.data));
     yield put(actions.editSuccess());
   } catch (e) {
-    yield put(actions.editFail(e.response.data.message));
+    yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -275,7 +275,7 @@ function* delSaga({ payload }: { payload: { id: number } }) {
     yield call(() => delLocation(payload.id));
     yield put(actions.delSuccess());
   } catch (e) {
-    yield put(actions.delFail(e.response.data.message));
+    yield put(actions.delFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 

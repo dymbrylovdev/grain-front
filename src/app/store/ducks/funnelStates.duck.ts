@@ -252,7 +252,7 @@ function* fetchSaga() {
     const { data }: { data: IServerResponse<IFunnelState[]> } = yield call(() => getFunnelStates());
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -263,7 +263,7 @@ function* fetchReportSaga() {
     );
     yield put(actions.fetchReportSuccess(data));
   } catch (e) {
-    yield put(actions.fetchReportFail(e.response.data.message));
+    yield put(actions.fetchReportFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -272,7 +272,7 @@ function* createSaga({ payload }: { payload: { data: IFunnelStateToRequest } }) 
     yield call(() => addFunnelState(payload.data));
     yield put(actions.createSuccess());
   } catch (e) {
-    yield put(actions.createFail(e.response.data.message));
+    yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -281,7 +281,7 @@ function* editSaga({ payload }: { payload: { id: number; data: IFunnelStateToReq
     yield call(() => editFunnelState(payload.id, payload.data));
     yield put(actions.editSuccess());
   } catch (e) {
-    yield put(actions.editFail(e.response.data.message));
+    yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -290,7 +290,7 @@ function* delSaga({ payload }: { payload: { id: number } }) {
     yield call(() => delFunnelState(payload.id));
     yield put(actions.delSuccess());
   } catch (e) {
-    yield put(actions.delFail(e.response.data.message));
+    yield put(actions.delFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
