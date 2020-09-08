@@ -152,13 +152,18 @@ const DealViewPage: React.FC<TPropsFromRedux &
             )}
             <div className={classes.table}>
               <Table aria-label="simple table">
+                <colgroup>
+                  <col style={{ width: "30%" }}></col>
+                  <col style={{ width: "35%" }}></col>
+                  <col style={{ width: "35%" }}></col>
+                </colgroup>
                 <TableHead>
                   <TableRow>
                     <TopTableCell></TopTableCell>
-                    <TopTableCell>
+                    <TopTableCell align="center">
                       <FormattedMessage id="DEALS.TABLE.SALE" />
                     </TopTableCell>
-                    <TopTableCell>
+                    <TopTableCell align="center">
                       <FormattedMessage id="DEALS.TABLE.PURCHASE" />
                     </TopTableCell>
                   </TableRow>
@@ -190,7 +195,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                     >
                       {thousands(
                         Math.round(
-                          deal.purchase_bid.price *
+                          deal.sale_bid.price *
                             (deal.purchase_bid.volume < deal.sale_bid.volume
                               ? deal.purchase_bid.volume
                               : deal.sale_bid.volume)
