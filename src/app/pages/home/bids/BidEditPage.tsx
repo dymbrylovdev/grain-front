@@ -170,7 +170,6 @@ const BidEditPage: React.FC<TPropsFromRedux &
     } else {
       fetchUser({ id: bid.vendor.id });
     }
-    console.log("bid", bid);
   }, [bid, fetchUser, vendorId]);
 
   useEffect(() => {
@@ -221,7 +220,11 @@ const BidEditPage: React.FC<TPropsFromRedux &
   )
     return <ErrorPage />;
 
-  if (error || userError || cropsError || cropParamsError) return <ErrorPage />;
+  if (error || userError || cropsError || cropParamsError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <>

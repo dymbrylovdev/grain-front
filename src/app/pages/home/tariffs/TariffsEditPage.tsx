@@ -9,7 +9,6 @@ import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
-import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
 import { TTariffField, ITariff } from "../../../interfaces/tariffs";
 import EditableCell from "./components/EditableCell";
@@ -43,7 +42,11 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     };
   }, [clearFetch, fetch]);
 
-  if (error) return <ErrorPage />;
+  if (error) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <Paper className={classes.paperWithTable}>

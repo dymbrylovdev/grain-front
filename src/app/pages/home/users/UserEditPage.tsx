@@ -18,7 +18,6 @@ import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
 import { ProfileForm, CompanyForm, LocationsForm } from "./components";
-import { ErrorPage } from "../../../components/ErrorPage";
 import Prompter from "../prompter/Prompter";
 import ScrollToTop from "../../../components/ui/ScrollToTop";
 import TariffForm from "./components/TariffForm";
@@ -197,7 +196,11 @@ const UserEditPage: React.FC<TPropsFromRedux &
     }
   }, [editMode, me, prompterRunning, runPrompter]);
 
-  if (errorMe || errorUser || funnelStatesError) return <ErrorPage />;
+  if (errorMe || errorUser || funnelStatesError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <>

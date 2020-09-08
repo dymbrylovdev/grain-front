@@ -70,19 +70,23 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
 
   fetchMe,
   me,
+  meError,
 
   fetchFilters,
   myFilters,
   myFiltersLoading,
+  myFiltersError,
 
   fetchCrops,
   crops,
   cropsLoading,
+  cropsError,
 
   clearCropParams,
   fetchCropParams,
   cropParams,
   cropParamsLoading,
+  cropParamsError,
 
   clearCreateFilter,
   createFilter,
@@ -233,6 +237,12 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   }, [fetchMe]);
 
   if (!myFilters || !crops) return <Preloader />;
+
+  if (meError || myFiltersError || cropsError || cropParamsError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <Paper className={classes.paperWithForm}>
@@ -650,12 +660,20 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
 const connector = connect(
   (state: IAppState) => ({
     me: state.auth.user,
+    meError: state.auth.error,
+
     myFilters: state.myFilters.myFilters,
     myFiltersLoading: state.myFilters.loading,
+    myFiltersError: state.myFilters.error,
+
     crops: state.crops2.crops,
     cropsLoading: state.crops2.loading,
+    cropsError: state.crops2.error,
+
     cropParams: state.crops2.cropParams,
     cropParamsLoading: state.crops2.cropParamsLoading,
+    cropParamsError: state.crops2.cropParamsError,
+
     createLoading: state.myFilters.createLoading,
     createSuccess: state.myFilters.createSuccess,
     createError: state.myFilters.createError,

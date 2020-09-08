@@ -14,7 +14,6 @@ import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
-import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
 import { UserActivity, TrafficLight } from "../users/components";
 import { accessByRoles, getConfirmCompanyString } from "../../../utils/utils";
@@ -92,7 +91,11 @@ const DealViewPage: React.FC<TPropsFromRedux &
     };
   }, [deals, purchaseId, saleId, setDeal]);
 
-  if (error || filtersError || cropsError || cropParamsError) return <ErrorPage />;
+  if (error || filtersError || cropsError || cropParamsError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <Paper className={classes.paperWithTable}>

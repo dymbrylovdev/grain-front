@@ -8,7 +8,6 @@ import * as companies from "../../../store/ducks/companies.duck";
 import useStyles from "../styles";
 import CompanyTable from "./components/CompanyTable";
 import Preloader from "../../../components/ui/Loaders/Preloader";
-import { LoadError } from "../../../components/ui/Errors";
 import { LayoutSubheader } from "../../../../_metronic";
 
 function CompaniesListPage({ intl, getCompanies }) {
@@ -50,7 +49,12 @@ function CompaniesListPage({ intl, getCompanies }) {
   };
 
   if (loading) return <Preloader />;
-  if (errors.all) return <LoadError handleClick={() => getCompaniessAction(page)} />;
+  if (errors.all) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
+
   return (
     <Paper className={classes.paperWithTable}>
       <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.COMPANY.LIST" })} />

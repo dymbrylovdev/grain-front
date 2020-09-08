@@ -17,7 +17,6 @@ import { a11yProps, TabPanel } from "../../../components/ui/Table/TabPanel";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic";
-import { ErrorPage } from "../../../components/ErrorPage";
 import ActivityReport from "./components/ActivityReport";
 
 const ActivityReportPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
@@ -40,7 +39,11 @@ const ActivityReportPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetch();
   }, [fetch]);
 
-  if (error) return <ErrorPage />;
+  if (error) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <Paper className={classes.paperWithForm}>

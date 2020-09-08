@@ -29,7 +29,6 @@ import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
-import { ErrorPage } from "../../../components/ErrorPage";
 import { LayoutSubheader } from "../../../../_metronic";
 import { FilterModal } from "./components";
 import { TablePaginator } from "./components/TablePaginator";
@@ -143,7 +142,11 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     });
   }, [resetForm, term, weeks]);
 
-  if (error || filtersError || cropsError || allCropParamsError) return <ErrorPage />;
+  if (error || filtersError || cropsError || allCropParamsError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <Paper className={classes.paperWithTable}>

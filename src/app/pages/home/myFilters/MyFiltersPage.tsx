@@ -26,7 +26,6 @@ import useStyles from "../styles";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import StatusIndicator from "../../../components/ui/Table/StatusIndicator";
-import { ErrorPage } from "../../../components/ErrorPage";
 import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
 import { declOfNum } from "../../../utils";
@@ -38,6 +37,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
 
   fetchMe,
   me,
+  meError,
   fetch,
   myFilters,
   loading,
@@ -135,7 +135,11 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
     fetchMe();
   }, [fetchMe]);
 
-  if (error) return <ErrorPage />;
+  if (error || meError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <Paper className={classes.paperWithTable}>
@@ -297,6 +301,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
 const connector = connect(
   (state: IAppState) => ({
     me: state.auth.user,
+    meError: state.auth.error,
     myFilters: state.myFilters.myFilters,
     loading: state.myFilters.loading,
     error: state.myFilters.error,

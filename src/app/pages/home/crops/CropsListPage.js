@@ -53,6 +53,7 @@ function CropsListPage({ setMenuConfig, getCrops, match }) {
   if (loading) return <Preloader />;
 
   if (errors.crops) return <LoadError handleClick={() => getCropsAction()} />;
+
   return (
     <Paper className={classes.paperWithTable}>
       <div className={classes.buttonContainer}>

@@ -13,7 +13,6 @@ import { actions as trialActions } from "../../../store/ducks/trial.duck";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
-import { ErrorPage } from "../../../components/ErrorPage";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
 import NumberFormatCustom from "../../../components/NumberFormatCustom/NumberFormatCustom";
 import NumberFormatPhone from "../../../components/NumberFormatCustom/NumberFormatPhone";
@@ -83,7 +82,11 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       });
   }, [resetForm, trial]);
 
-  if (error) return <ErrorPage />;
+  if (error) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <Paper className={classes.paperWithForm}>

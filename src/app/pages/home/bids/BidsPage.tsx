@@ -17,7 +17,6 @@ import { actions as authActions } from "../../../store/ducks/auth.duck";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
-import { ErrorPage } from "../../../components/ErrorPage";
 import FilterModal from "./components/filter/FilterModal";
 import LocationBlock from "./components/location/LocationBlock";
 import PricesDialog from "./components/prices/PricesDialog";
@@ -399,7 +398,11 @@ const BidsPage: React.FC<TPropsFromRedux &
     fetchMe();
   }, [fetchMe]);
 
-  if (error) return <ErrorPage />;
+  if (error || bestError || myError || cropsError || cropParamsError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <>

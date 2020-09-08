@@ -34,7 +34,6 @@ import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
 import { Skeleton } from "@material-ui/lab";
-import { ErrorPage } from "../../../components/ErrorPage";
 import InfoDialog from "../../../components/ui/Dialogs/InfoDialog";
 import { LayoutSubheader } from "../../../../_metronic";
 import { accessByRoles } from "../../../utils/utils";
@@ -53,6 +52,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   fetchMe,
   me,
+  meError,
 
   fetchFunnelStates,
   funnelStates,
@@ -142,7 +142,11 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetchMe();
   }, [fetchMe]);
 
-  if (error || funnelStatesError) return <ErrorPage />;
+  if (error || meError || funnelStatesError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <Paper className={classes.paperWithTable}>
@@ -456,6 +460,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 const connector = connect(
   (state: IAppState) => ({
     me: state.auth.user,
+    meError: state.auth.error,
     page: state.users.page,
     perPage: state.users.per_page,
     total: state.users.total,
@@ -463,15 +468,19 @@ const connector = connect(
     users: state.users.users,
     loading: state.users.loading,
     error: state.users.error,
+
     funnelStates: state.funnelStates.funnelStates,
     funnelStatesLoading: state.funnelStates.loading,
     funnelStatesError: state.funnelStates.error,
+
     createLoading: state.users.createLoading,
     createSuccess: state.users.createSuccess,
     createError: state.users.createError,
+
     editLoading: state.users.editLoading,
     editSuccess: state.users.editSuccess,
     editError: state.users.editError,
+
     delLoading: state.users.delLoading,
     delSuccess: state.users.delSuccess,
     delError: state.users.delError,
