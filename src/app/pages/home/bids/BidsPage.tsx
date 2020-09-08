@@ -27,6 +27,7 @@ import { IUser } from "../../../interfaces/users";
 import { filterForBids } from "../myFilters/utils";
 import { LayoutSubheader } from "../../../../_metronic";
 import { accessByRoles } from "../../../utils/utils";
+import { IBid } from "../../../interfaces/bids";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -225,6 +226,17 @@ const BidsPage: React.FC<TPropsFromRedux &
   const isHaveRules = (user: IUser, id: number) => {
     return accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id;
   };
+
+  const newInexactBid: IBid[] = [];
+  if (bestBids?.equal && bestBids.equal.length < 10) {
+    if (bestBids.inexact && bestBids.inexact.length > 0) {
+      for (let i = 0; i < 10 - bestBids.equal.length; i++) {
+        if (i < bestBids.inexact.length) {
+          newInexactBid.push(bestBids.inexact[i]);
+        }
+      }
+    }
+  }
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -455,33 +467,17 @@ const BidsPage: React.FC<TPropsFromRedux &
 
         {bestAllMyMode === "best-bids" && (
           <>
-            <BidTable
-              classes={classes}
-              bids={bestBids?.equal}
-              isHaveRules={isHaveRules}
-              handleDeleteDialiog={(id: number) => {
-                setDeleteBidId(id);
-                setAlertOpen(true);
-              }}
-              user={me as IUser}
-              title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
-              loading={!bestBids || !cropParams}
-              salePurchaseMode={salePurchaseMode}
-              bestAllMyMode={bestAllMyMode}
-              crops={crops}
-              setProfit={setProfit}
-            />
             <div className={innerClasses.topSpaceContainer}>
               <BidTable
                 classes={classes}
-                bids={bestBids?.inexact}
+                bids={bestBids?.equal}
                 isHaveRules={isHaveRules}
                 handleDeleteDialiog={(id: number) => {
                   setDeleteBidId(id);
                   setAlertOpen(true);
                 }}
                 user={me as IUser}
-                title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
+                title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
                 loading={!bestBids || !cropParams}
                 salePurchaseMode={salePurchaseMode}
                 bestAllMyMode={bestAllMyMode}
@@ -489,6 +485,26 @@ const BidsPage: React.FC<TPropsFromRedux &
                 setProfit={setProfit}
               />
             </div>
+            {newInexactBid.length > 0 && (
+              <div className={innerClasses.topSpaceContainer}>
+                <BidTable
+                  classes={classes}
+                  bids={newInexactBid}
+                  isHaveRules={isHaveRules}
+                  handleDeleteDialiog={(id: number) => {
+                    setDeleteBidId(id);
+                    setAlertOpen(true);
+                  }}
+                  user={me as IUser}
+                  title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
+                  loading={!bestBids || !cropParams}
+                  salePurchaseMode={salePurchaseMode}
+                  bestAllMyMode={bestAllMyMode}
+                  crops={crops}
+                  setProfit={setProfit}
+                />
+              </div>
+            )}
             {!!bestBids && (!!bestBids.equal.length || !!bestBids.inexact.length) && (
               <div className={innerClasses.text}>
                 {intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}
