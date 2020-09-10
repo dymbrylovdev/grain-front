@@ -6,6 +6,7 @@ export interface IBid {
   price: number;
   volume: number;
   description: string;
+  is_pro: boolean;
   author: {
     id: number;
     fio: string;

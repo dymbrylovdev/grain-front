@@ -166,9 +166,7 @@ const BidTable: React.FC<IProps> = ({
                   key={bid.id}
                   style={{
                     backgroundColor: `${
-                      bestAllMyMode === "best-bids" && bid.tariff.name !== "Стандартный"
-                        ? "rgba(10, 187, 135, 0.1)"
-                        : ""
+                      bestAllMyMode === "best-bids" && bid.is_pro ? "rgba(10, 187, 135, 0.1)" : ""
                     }`,
                   }}
                 >
