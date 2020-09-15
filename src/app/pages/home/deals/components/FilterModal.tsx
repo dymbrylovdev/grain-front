@@ -107,9 +107,9 @@ const FilterModal: React.FC<IProps> = ({
       </DialogTitle>
       <DialogContent>
         <div className={classes.topAndBottomMargin}>
-          {!!crops &&
+          {!!dealsFilters &&
             !!allCropParams &&
-            crops.map(item => (
+            dealsFilters.map(item => (
               <Accordion
                 key={item.id}
                 expanded={expanded === `panel${item.id}`}
@@ -121,18 +121,18 @@ const FilterModal: React.FC<IProps> = ({
                   id={`panel${item.id}-header`}
                 >
                   {!!dealsFilters?.find(
-                    df => df.crop.id === item.id && df.parameters.length > 0
+                    df => df.crop.id === item.crop.id && df.parameters.length > 0
                   ) ? (
-                    <b>{item.name}</b>
+                    <b>{item.crop.name}</b>
                   ) : (
-                    item.name
+                    item.crop.name
                   )}
                 </AccordionSummary>
                 <AccordionDetails>
                   <FilterForm
                     intl={intl}
                     dealsFilters={dealsFilters}
-                    crop={item}
+                    crop={item.crop}
                     allCropParams={allCropParams}
                     editFilter={editFilter}
                     editFilterLoading={editFilterLoading}
