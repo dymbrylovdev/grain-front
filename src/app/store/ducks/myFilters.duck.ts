@@ -13,7 +13,7 @@ import {
   deleteMyFilter,
   editMyFilter,
 } from "../../crud/myFilters.crud";
-import { IMyFilterItem, IFilterForCreate } from "../../interfaces/filters";
+import { IMyFilterItem, IFilterForCreate, IMyFilters } from "../../interfaces/filters";
 import { TBidType } from "../../interfaces/bids";
 import { fromApiToFilter } from "../../pages/home/myFilters/utils";
 
@@ -49,6 +49,7 @@ export interface IInitialState {
   openInfoAlert: boolean;
 
   myFilters: IMyFilterItem[] | undefined;
+  filterCount: number;
   loading: boolean;
   success: boolean;
   error: string | null;
@@ -76,6 +77,7 @@ const initialState: IInitialState = {
   openInfoAlert: true,
 
   myFilters: undefined,
+  filterCount: 0,
   loading: false,
   success: false,
   error: null,
@@ -164,7 +166,8 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         // console.log("Filters fetch: ", action.payload.data);
         return {
           ...state,
-          myFilters: action.payload.data,
+          myFilters: action.payload.data.filters,
+          filterCount: action.payload.data.filter_count,
           selectedFilterId: 0,
           loading: false,
           success: true,
@@ -296,7 +299,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 
 export const actions = {
   fetchRequest: (type: TBidType) => createAction(FETCH_REQUEST, { type }),
-  fetchSuccess: (payload: IServerResponse<IMyFilterItem[]>) => createAction(FETCH_SUCCESS, payload),
+  fetchSuccess: (payload: IServerResponse<IMyFilters>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
   setSelectedFilterId: (id: number) => createAction(SET_SELECTED_FILTER_ID, { id }),
@@ -332,7 +335,7 @@ export type TActions = ActionsUnion<typeof actions>;
 
 function* fetchSaga({ payload }: { payload: { type: TBidType } }) {
   try {
-    const { data }: { data: IServerResponse<IMyFilterItem[]> } = yield call(() =>
+    const { data }: { data: IServerResponse<IMyFilters> } = yield call(() =>
       getMyFilters(payload.type)
     );
     yield put(actions.fetchSuccess(data));

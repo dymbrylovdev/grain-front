@@ -43,6 +43,11 @@ export interface IMyFilterItem {
   subscribed: boolean;
 }
 
+export interface IMyFilters {
+  filters: IMyFilterItem[];
+  filter_count: number;
+}
+
 export interface IParamValue {
   parameter_id: number;
   value: string | string[];

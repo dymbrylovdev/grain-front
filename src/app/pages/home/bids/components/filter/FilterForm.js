@@ -21,9 +21,9 @@ function FilterForm({
   setOpenInfoAlert,
   salePurchaseMode,
 }) {
-  const { me, myFilters } = useSelector(state => ({
+  const { me, filterCount } = useSelector(state => ({
     me: state.auth.user,
-    myFilters: state.myFilters.myFilters,
+    filterCount: state.myFilters.filterCount,
   }));
 
   return (
@@ -55,10 +55,10 @@ function FilterForm({
           { id: "FILTER.FORM.LIMIT" },
           {
             count:
-              !me?.tariff || (me?.tariff && me.tariff.max_filters_count - myFilters?.length <= 0)
+              !me?.tariff || (me?.tariff && me.tariff.max_filters_count - filterCount <= 0)
                 ? "0"
-                : me?.tariff?.max_filters_count - myFilters?.length,
-            word: declOfNum(me?.tariff?.max_filters_count - myFilters?.length, [
+                : me?.tariff?.max_filters_count - filterCount,
+            word: declOfNum(me?.tariff?.max_filters_count - filterCount, [
               "фильтр",
               "фильтра",
               "фильтров",
