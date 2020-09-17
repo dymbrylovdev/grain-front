@@ -55,7 +55,7 @@ const initialState: IInitialState = {
   page: 1,
   per_page: 20,
   total: 0,
-  weeks: 2,
+  weeks: 1,
   term: undefined,
   deals: undefined,
   loading: false,

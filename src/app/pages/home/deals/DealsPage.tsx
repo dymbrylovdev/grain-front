@@ -415,7 +415,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   </TableRow>
                 ))}
             </TableBody>
-            <TableFooter>
+            {/* <TableFooter>
               <TableRow>
                 <TablePaginator
                   page={page}
@@ -425,7 +425,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   fetchRows={(page, perPage) => fetch(page, perPage, weeks, !term ? 999 : +term)}
                 />
               </TableRow>
-            </TableFooter>
+            </TableFooter> */}
           </Table>
         </div>
       )}
