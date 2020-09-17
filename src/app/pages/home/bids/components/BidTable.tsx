@@ -112,7 +112,13 @@ const BidTable: React.FC<IProps> = ({
                   </TopTableCell>
                 )}
                 <TopTableCell>
-                  <FormattedMessage id="BIDSLIST.TABLE.COST" />
+                  <FormattedMessage
+                    id={
+                      bestAllMyMode === "my-bids"
+                        ? "BIDSLIST.TABLE.COST"
+                        : "BIDSLIST.TABLE.COST." + salePurchaseMode
+                    }
+                  />
                 </TopTableCell>
                 {bestAllMyMode !== "my-bids" && (
                   <TopTableCell>

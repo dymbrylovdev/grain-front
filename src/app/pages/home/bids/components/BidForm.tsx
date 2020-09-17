@@ -534,7 +534,7 @@ const BidForm: React.FC<IProps> = ({
         <TextField
           type="text"
           label={intl.formatMessage({
-            id: "BIDSLIST.TABLE.JUST_COST",
+            id: `${"BIDSLIST.TABLE.COST." + values.bid_type}`,
           })}
           margin="normal"
           name="price"

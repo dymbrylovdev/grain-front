@@ -9,7 +9,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TableFooter,
   TextField,
   Button,
   Tooltip,
@@ -31,7 +30,6 @@ import { IAppState } from "../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
 import { FilterModal } from "./components";
-import { TablePaginator } from "./components/TablePaginator";
 import { isDealsFilterEmpty } from "./utils/utils";
 import { accessByRoles } from "../../../utils/utils";
 import NumberFormatCustom from "../../../components/NumberFormatCustom/NumberFormatCustom";
