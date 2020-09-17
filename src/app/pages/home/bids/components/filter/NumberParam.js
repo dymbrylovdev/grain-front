@@ -27,11 +27,10 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    flexWrap: "nowrap",
-    width: 100,
+    flexWrap: "wrap",
   },
   paramName: {
-    fontSize: 15,
+    fontSize: 16.5,
     width: 200,
   },
   textField: {
@@ -58,8 +57,20 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
           className={classes.radioGroup}
           row={true}
         >
-          <FormControlLabel value="≤" control={<Radio />} label="≤" disabled={!isEditable} />
-          <FormControlLabel value="≥" control={<Radio />} label=" ≥" disabled={!isEditable} />
+          <FormControlLabel
+            value="≤"
+            control={<Radio />}
+            label="≤&nbsp;Меньше"
+            disabled={!isEditable}
+            style={{ fontSize: 15 }}
+          />
+          <FormControlLabel
+            value="≥"
+            control={<Radio />}
+            label=" ≥&nbsp;Больше"
+            disabled={!isEditable}
+            style={{ fontSize: 15 }}
+          />
         </RadioGroup>
 
         <TextField
