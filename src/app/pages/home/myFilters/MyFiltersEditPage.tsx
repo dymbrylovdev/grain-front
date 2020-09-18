@@ -236,7 +236,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
     fetchMe();
   }, [fetchMe]);
 
-  if (!myFilters || !crops) return <Preloader />;
+  if (!me || !myFilters || !crops) return <Preloader />;
 
   if (meError || myFiltersError || cropsError || cropParamsError) {
     setTimeout(() => {
@@ -334,7 +334,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
 
               <Autocomplete
                 id="cropId"
-                options={crops}
+                options={me?.crops || []}
                 getOptionLabel={option => option.name}
                 noOptionsText={intl.formatMessage({
                   id: "ALL.AUTOCOMPLIT.EMPTY",
