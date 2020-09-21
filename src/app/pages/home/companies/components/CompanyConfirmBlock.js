@@ -1,37 +1,38 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { injectIntl } from "react-intl";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 import useStyles from "../../styles";
 import { Skeleton } from "@material-ui/lab";
+import { getConfirmCompanyString } from "../../../../utils/utils";
 
-function CompanyConfirmBlock({ intl, values, handleChange, disabled, loading }) {
+function CompanyConfirmBlock({ intl, values, handleChange, disabled, loading, user }) {
   const classes = useStyles();
-  const getTitleText = useCallback(
-    (disabled, values) => {
-      if (!disabled) return `${intl.formatMessage({ id: "COMPANY.CONFIRM.TITLE" })}`;
-      if (
-        !values.company_confirmed_by_email &&
-        !values.company_confirmed_by_phone &&
-        !values.company_confirmed_by_payment
-      ) {
-        return `${intl.formatMessage({ id: "COMPANY.CONFIRM.NO_CONFIRM" })}`;
-      }
-      return `${intl.formatMessage({ id: "COMPANY.CONFIRM.TITLE" })}${
-        values.company_confirmed_by_email
-          ? ` [${intl.formatMessage({ id: "COMPANY.CONFIRM.BY_EMAIL" })}]`
-          : ""
-      }${
-        values.company_confirmed_by_phone
-          ? ` [${intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PHONE" })}]`
-          : ""
-      }${
-        values.company_confirmed_by_payment
-          ? ` [${intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PAY" })}]`
-          : ""
-      }`;
-    },
-    [intl]
-  );
+  // const getTitleText = useCallback(
+  //   (disabled, values) => {
+  //     if (!disabled) return `${intl.formatMessage({ id: "COMPANY.CONFIRM.TITLE" })}`;
+  //     if (
+  //       !values.company_confirmed_by_email &&
+  //       !values.company_confirmed_by_phone &&
+  //       !values.company_confirmed_by_payment
+  //     ) {
+  //       return `${intl.formatMessage({ id: "COMPANY.CONFIRM.NO_CONFIRM" })}`;
+  //     }
+  //     return `${intl.formatMessage({ id: "COMPANY.CONFIRM.TITLE" })}${
+  //       values.company_confirmed_by_email
+  //         ? ` [${intl.formatMessage({ id: "COMPANY.CONFIRM.BY_EMAIL" })}]`
+  //         : ""
+  //     }${
+  //       values.company_confirmed_by_phone
+  //         ? ` [${intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PHONE" })}]`
+  //         : ""
+  //     }${
+  //       values.company_confirmed_by_payment
+  //         ? ` [${intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PAY" })}]`
+  //         : ""
+  //     }`;
+  //   },
+  //   [intl]
+  // );
 
   return (
     <>
@@ -39,7 +40,8 @@ function CompanyConfirmBlock({ intl, values, handleChange, disabled, loading }) 
         {loading ? (
           <Skeleton width="50%" height={24} animation="wave" />
         ) : (
-          getTitleText(disabled, values)
+          // getTitleText(disabled, values)
+          getConfirmCompanyString(user, intl)
         )}
       </div>
       {!disabled && (
@@ -65,7 +67,7 @@ function CompanyConfirmBlock({ intl, values, handleChange, disabled, loading }) 
               />
             )}
           </div>
-          <div className={classes.text}>
+          {/* <div className={classes.text}>
             {loading ? (
               <Skeleton width={123} height={24} animation="wave" />
             ) : (
@@ -85,7 +87,7 @@ function CompanyConfirmBlock({ intl, values, handleChange, disabled, loading }) 
                 name={"company_confirmed_by_phone"}
               />
             )}
-          </div>
+          </div> */}
           <div className={classes.text}>
             {loading ? (
               <Skeleton width={97} height={24} animation="wave" />

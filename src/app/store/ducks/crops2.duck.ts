@@ -7,7 +7,13 @@ import { put, takeLatest, call } from "redux-saga/effects";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
-import { getCropParams, getCrops, getAllCropParams } from "../../crud/crops.crud";
+import {
+  getCropParams,
+  getCrops,
+  getAllCropParams,
+  delCrop,
+  delCropParam,
+} from "../../crud/crops.crud";
 import { ICrop, ICropParam, TAllCropRequest } from "../../interfaces/crops";
 
 const FETCH_REQUEST = "crops2/FETCH_REQUEST";
@@ -24,6 +30,16 @@ const ALL_CROP_PARAMS_REQUEST = "crops2/ALL_CROP_PARAMS_REQUEST";
 const ALL_CROP_PARAMS_SUCCESS = "crops2/ALL_CROP_PARAMS_SUCCESS";
 const ALL_CROP_PARAMS_FAIL = "crops2/ALL_CROP_PARAMS_FAIL";
 
+const CLEAR_DEL = "crops2/CLEAR_DEL";
+const DEL_REQUEST = "crops2/DEL_REQUEST";
+const DEL_SUCCESS = "crops2/DEL_SUCCESS";
+const DEL_FAIL = "crops2/DEL_FAIL";
+
+const CLEAR_DEL_CROP_PARAM = "crops2/CLEAR_DEL_CROP_PARAM";
+const DEL_CROP_PARAM_REQUEST = "crops2/DEL_CROP_PARAM_REQUEST";
+const DEL_CROP_PARAM_SUCCESS = "crops2/DEL_CROP_PARAM_SUCCESS";
+const DEL_CROP_PARAM_FAIL = "crops2/DEL_CROP_PARAM_FAIL";
+
 export interface IInitialState {
   crops: ICrop[] | undefined;
   loading: boolean;
@@ -39,6 +55,14 @@ export interface IInitialState {
   allCropParamsLoading: boolean;
   allCropParamsSuccess: boolean;
   allCropParamsError: string | null;
+
+  delLoading: boolean;
+  delSuccess: boolean;
+  delError: string | null;
+
+  delCropParamLoading: boolean;
+  delCropParamSuccess: boolean;
+  delCropParamError: string | null;
 }
 
 const initialState: IInitialState = {
@@ -56,6 +80,14 @@ const initialState: IInitialState = {
   allCropParamsLoading: false,
   allCropParamsSuccess: false,
   allCropParamsError: null,
+
+  delLoading: false,
+  delSuccess: false,
+  delError: null,
+
+  delCropParamLoading: false,
+  delCropParamSuccess: false,
+  delCropParamError: null,
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
@@ -149,6 +181,48 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, allCropParamsLoading: false, allCropParamsError: action.payload };
       }
 
+      case CLEAR_DEL: {
+        return { ...state, delLoading: false, delSuccess: false, delError: null };
+      }
+
+      case DEL_REQUEST: {
+        return { ...state, delLoading: true, delSuccess: false, delError: null };
+      }
+
+      case DEL_SUCCESS: {
+        return { ...state, delLoading: false, delSuccess: true };
+      }
+
+      case DEL_FAIL: {
+        return { ...state, delLoading: false, delError: action.payload };
+      }
+
+      case CLEAR_DEL_CROP_PARAM: {
+        return {
+          ...state,
+          delCropParamLoading: false,
+          delCropParamSuccess: false,
+          delCropParamError: null,
+        };
+      }
+
+      case DEL_CROP_PARAM_REQUEST: {
+        return {
+          ...state,
+          delCropParamLoading: true,
+          delCropParamSuccess: false,
+          delCropParamError: null,
+        };
+      }
+
+      case DEL_CROP_PARAM_SUCCESS: {
+        return { ...state, delCropParamLoading: false, delCropParamSuccess: true };
+      }
+
+      case DEL_CROP_PARAM_FAIL: {
+        return { ...state, delCropParamLoading: false, delCropParamError: action.payload };
+      }
+
       default:
         return state;
     }
@@ -171,6 +245,16 @@ export const actions = {
   allCropParamsSuccess: (payload: IServerResponse<{ [key: string]: ICropParam[] }>) =>
     createAction(ALL_CROP_PARAMS_SUCCESS, payload),
   allCropParamsFail: (payload: string) => createAction(ALL_CROP_PARAMS_FAIL, payload),
+
+  clearDel: () => createAction(CLEAR_DEL),
+  delRequest: (id: number) => createAction(DEL_REQUEST, { id }),
+  delSuccess: () => createAction(DEL_SUCCESS),
+  delFail: (payload: string) => createAction(DEL_FAIL, payload),
+
+  clearDelCropParam: () => createAction(CLEAR_DEL_CROP_PARAM),
+  delCropParamRequest: (id: number) => createAction(DEL_CROP_PARAM_REQUEST, { id }),
+  delCropParamSuccess: () => createAction(DEL_CROP_PARAM_SUCCESS),
+  delCropParamFail: (payload: string) => createAction(DEL_CROP_PARAM_FAIL, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -180,7 +264,7 @@ function* fetchSaga() {
     const { data }: { data: IServerResponse<ICrop[]> } = yield call(() => getCrops());
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -191,7 +275,7 @@ function* fetchCropParamsSaga({ payload: { cropId } }: { payload: { cropId: numb
     );
     yield put(actions.cropParamsSuccess(data));
   } catch (e) {
-    yield put(actions.cropParamsFail(e.response.data.message));
+    yield put(actions.cropParamsFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -202,7 +286,25 @@ function* fetchAllCropParamsSaga({ payload }: { payload: { type: TAllCropRequest
     );
     yield put(actions.allCropParamsSuccess(data));
   } catch (e) {
-    yield put(actions.allCropParamsFail(e.response.data.message));
+    yield put(actions.allCropParamsFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
+function* delSaga({ payload }: { payload: { id: number } }) {
+  try {
+    yield call(() => delCrop(payload.id));
+    yield put(actions.delSuccess());
+  } catch (e) {
+    yield put(actions.delFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
+function* delCropParamSaga({ payload }: { payload: { id: number } }) {
+  try {
+    yield call(() => delCropParam(payload.id));
+    yield put(actions.delCropParamSuccess());
+  } catch (e) {
+    yield put(actions.delCropParamFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -215,5 +317,10 @@ export function* saga() {
   yield takeLatest<ReturnType<typeof actions.allCropParamsRequest>>(
     ALL_CROP_PARAMS_REQUEST,
     fetchAllCropParamsSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.delRequest>>(DEL_REQUEST, delSaga);
+  yield takeLatest<ReturnType<typeof actions.delCropParamRequest>>(
+    DEL_CROP_PARAM_REQUEST,
+    delCropParamSaga
   );
 }

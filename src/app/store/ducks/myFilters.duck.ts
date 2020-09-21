@@ -13,7 +13,7 @@ import {
   deleteMyFilter,
   editMyFilter,
 } from "../../crud/myFilters.crud";
-import { IMyFilterItem, IFilterForCreate } from "../../interfaces/filters";
+import { IMyFilterItem, IFilterForCreate, IMyFilters } from "../../interfaces/filters";
 import { TBidType } from "../../interfaces/bids";
 import { fromApiToFilter } from "../../pages/home/myFilters/utils";
 
@@ -22,6 +22,7 @@ const FETCH_SUCCESS = "myFilters/FETCH_SUCCESS";
 const FETCH_FAIL = "myFilters/FETCH_FAIL";
 
 const SET_SELECTED_FILTER_ID = "myFilters/SET_SELECTED_FILTER_ID";
+const SET_OPEN_INFO_ALERT = "myFilters/SET_OPEN_INFO_ALERT";
 
 const SET_CURRENT_SALE_FILTER = "myFilters/SET_CURRENT_SALE_FILTER";
 const CLEAR_CURRENT_SALE_FILTER = "myFilters/CLEAR_CURRENT_SALE_FILTER";
@@ -45,13 +46,16 @@ const DEL_FAIL = "myFilters/DEL_FAIL";
 
 export interface IInitialState {
   selectedFilterId: number | undefined;
+  openInfoAlert: boolean;
+
   myFilters: IMyFilterItem[] | undefined;
+  filterCount: number;
   loading: boolean;
   success: boolean;
   error: string | null;
 
-  currentSaleFilters: { [x: string]: { [x: string]: any } };
-  currentPurchaseFilters: { [x: string]: { [x: string]: any } };
+  currentSaleFilters: { [crop: string]: { [x: string]: any } };
+  currentPurchaseFilters: { [crop: string]: { [x: string]: any } };
 
   createdFilterId: number | undefined;
   createLoading: boolean;
@@ -70,7 +74,10 @@ export interface IInitialState {
 
 const initialState: IInitialState = {
   selectedFilterId: 0,
+  openInfoAlert: true,
+
   myFilters: undefined,
+  filterCount: 0,
   loading: false,
   success: false,
   error: null,
@@ -100,6 +107,13 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return {
           ...state,
           selectedFilterId: action.payload.id,
+        };
+      }
+
+      case SET_OPEN_INFO_ALERT: {
+        return {
+          ...state,
+          openInfoAlert: action.payload.openInfoAlert,
         };
       }
 
@@ -152,7 +166,8 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         // console.log("Filters fetch: ", action.payload.data);
         return {
           ...state,
-          myFilters: action.payload.data,
+          myFilters: action.payload.data.filters,
+          filterCount: action.payload.data.filter_count,
           selectedFilterId: 0,
           loading: false,
           success: true,
@@ -197,38 +212,45 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 
       case EDIT_SUCCESS: {
         // console.log("EDIT_SUCCESS: ", action.payload.data);
-        for (let key in state.currentSaleFilters) {
-          if (
-            !!state.currentSaleFilters[key] &&
-            !!state.currentSaleFilters[key].id &&
-            state.currentSaleFilters[key].id === action.payload.data.data.id
-          ) {
-            return {
-              ...state,
-              currentSaleFilters: {
-                ...state.currentSaleFilters,
-                [action.payload.data.data.crop.id]: fromApiToFilter(action.payload.data.data),
-              },
-              myFilters: undefined,
-              editLoading: false,
-              editSuccess: true,
-            };
+        if (action.payload.data.data.bid_type === "sale") {
+          for (let key in state.currentSaleFilters) {
+            if (
+              !!state.currentSaleFilters[key] &&
+              !!state.currentSaleFilters[key].id &&
+              state.currentSaleFilters[key].id === action.payload.data.data.id
+            ) {
+              return {
+                ...state,
+                currentSaleFilters: {
+                  ...state.currentSaleFilters,
+                  [action.payload.data.data.crop.id]: fromApiToFilter(action.payload.data.data),
+                },
+                myFilters: undefined,
+                editLoading: false,
+                editSuccess: true,
+              };
+            }
           }
-          if (
-            !!state.currentPurchaseFilters[key] &&
-            !!state.currentPurchaseFilters[key].id &&
-            state.currentPurchaseFilters[key].id === action.payload.data.data.id
-          ) {
-            return {
-              ...state,
-              currentPurchaseFilters: {
-                ...state.currentPurchaseFilters,
-                [action.payload.data.data.crop.id]: fromApiToFilter(action.payload.data.data),
-              },
-              myFilters: undefined,
-              editLoading: false,
-              editSuccess: true,
-            };
+        }
+
+        if (action.payload.data.data.bid_type === "purchase") {
+          for (let key in state.currentPurchaseFilters) {
+            if (
+              !!state.currentPurchaseFilters[key] &&
+              !!state.currentPurchaseFilters[key].id &&
+              state.currentPurchaseFilters[key].id === action.payload.data.data.id
+            ) {
+              return {
+                ...state,
+                currentPurchaseFilters: {
+                  ...state.currentPurchaseFilters,
+                  [action.payload.data.data.crop.id]: fromApiToFilter(action.payload.data.data),
+                },
+                myFilters: undefined,
+                editLoading: false,
+                editSuccess: true,
+              };
+            }
           }
         }
 
@@ -277,10 +299,12 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 
 export const actions = {
   fetchRequest: (type: TBidType) => createAction(FETCH_REQUEST, { type }),
-  fetchSuccess: (payload: IServerResponse<IMyFilterItem[]>) => createAction(FETCH_SUCCESS, payload),
+  fetchSuccess: (payload: IServerResponse<IMyFilters>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
   setSelectedFilterId: (id: number) => createAction(SET_SELECTED_FILTER_ID, { id }),
+  setOpenInfoAlert: (openInfoAlert: boolean) =>
+    createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
 
   setCurrentSaleFilter: (cropId: number, filter: { [x: string]: any } | undefined) =>
     createAction(SET_CURRENT_SALE_FILTER, { cropId, filter }),
@@ -311,12 +335,12 @@ export type TActions = ActionsUnion<typeof actions>;
 
 function* fetchSaga({ payload }: { payload: { type: TBidType } }) {
   try {
-    const { data }: { data: IServerResponse<IMyFilterItem[]> } = yield call(() =>
+    const { data }: { data: IServerResponse<IMyFilters> } = yield call(() =>
       getMyFilters(payload.type)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -327,7 +351,7 @@ function* createSaga({ payload }: { payload: IFilterForCreate }) {
     );
     yield put(actions.createSuccess(data.data));
   } catch (e) {
-    yield put(actions.createFail(e.response.data.message));
+    yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -338,7 +362,7 @@ function* editSaga({ payload }: { payload: { id: number; data: IFilterForCreate 
     );
     yield put(actions.editSuccess(data));
   } catch (e) {
-    yield put(actions.editFail(e.response.data.message));
+    yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -349,7 +373,7 @@ function* delSaga({ payload }: { payload: number }) {
     );
     yield put(actions.delSuccess(data.data));
   } catch (e) {
-    yield put(actions.delFail(e.response.data.message));
+    yield put(actions.delFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 

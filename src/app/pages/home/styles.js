@@ -1,13 +1,22 @@
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
-  container: {
+  paperWithTable: {
     display: "flex",
     flexDirection: "column",
-    background: "white",
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    overflowX: "hidden",
+  },
+  paperWithForm: {
+    display: "flex",
+    flexDirection: "column",
     alignItems: "center",
-    //justifyContent: "center",
-    boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .3)",
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    overflowX: "hidden",
   },
   form: {
     maxWidth: "800px",
@@ -17,19 +26,11 @@ const useStyles = makeStyles(theme => ({
   form2: {
     maxWidth: "800px",
     width: "100%",
-    paddingLeft: theme.spacing(2),
-    paddingRigth: theme.spacing(2),
     paddingBottom: theme.spacing(2),
   },
   buttonContainer: {
     paddingBottom: theme.spacing(2),
     paddingTop: theme.spacing(2),
-  },
-  tableContainer: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    overflowX: "auto",
   },
   textSelect: {
     width: "100%",
@@ -39,7 +40,8 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
   },
   table: {
-    width: "100%",
+    flex: 1,
+    overflowX: "auto",
   },
   tableFooterText: {
     marginLeft: theme.spacing(1),
@@ -74,7 +76,7 @@ const useStyles = makeStyles(theme => ({
   text: {
     display: "flex",
     minHeight: 40,
-    fontSize: 14,
+    fontSize: 16,
     alignItems: "center",
     //paddingTop: theme.spacing(1),
     //paddingBottom: theme.spacing(1),
@@ -87,14 +89,13 @@ const useStyles = makeStyles(theme => ({
   tableTitle: {
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(1),
-    fontSize: "14px",
+    fontSize: 16,
     fontWeight: "bold",
   },
   emptyTitle: {
-    fontSize: 12,
     marginTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-    marginLeft: theme.spacing(4),
+    marginLeft: theme.spacing(2),
   },
   switcher: {
     marginTop: theme.spacing(2),
@@ -121,7 +122,6 @@ const useStyles = makeStyles(theme => ({
   box: {
     display: "flex",
     flexDirection: "column",
-    // alignItems: "flex-start",
     padding: theme.spacing(2),
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
@@ -155,6 +155,10 @@ const useStyles = makeStyles(theme => ({
   topMargin: {
     marginTop: theme.spacing(2),
   },
+  topAndBottomMargin1: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
   topAndBottomMargin: {
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
@@ -171,6 +175,12 @@ const useStyles = makeStyles(theme => ({
   leftMargin2: {
     marginLeft: theme.spacing(2),
   },
+  rightMargin1: {
+    marginRight: theme.spacing(1),
+  },
+  rightMargin2: {
+    marginRight: theme.spacing(2),
+  },
 
   // funnel state ***************************************************************************************************************
 
@@ -180,6 +190,32 @@ const useStyles = makeStyles(theme => ({
     width: "max-content",
     padding: theme.spacing(1),
     marginRight: theme.spacing(1),
+  },
+
+  // alerts *********************************************************************************************************************
+
+  infoAlert: {
+    marginBottom: theme.spacing(2),
+    whiteSpace: "pre-wrap",
+  },
+
+  // mobile *********************************************************************************************************************
+
+  [theme.breakpoints.down("xs")]: {
+    paperWithTable: {
+      marginLeft: -15,
+      marginRight: -15,
+    },
+    paperWithForm: {
+      marginLeft: -15,
+      marginRight: -15,
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+    table: {
+      marginLeft: -theme.spacing(2),
+      marginRight: -theme.spacing(2),
+    },
   },
 }));
 

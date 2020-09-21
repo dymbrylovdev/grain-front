@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { TextField, Theme, IconButton, Grid as div, Button } from "@material-ui/core";
+import {
+  TextField,
+  Theme,
+  IconButton,
+  Grid as div,
+  Button,
+  FormControlLabel,
+  Checkbox,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -20,15 +28,9 @@ import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { IAppState } from "../../../../store/rootDuck";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { Skeleton } from "@material-ui/lab";
+import { accessByRoles } from "../../../../utils/utils";
 
 const innerStyles = makeStyles((theme: Theme) => ({
-  group: {
-    marginBottom: theme.spacing(2),
-    padding: theme.spacing(2),
-    border: "1px solid",
-    borderColor: "#e0e0e0",
-    borderRadius: 4,
-  },
   name: {
     marginLeft: theme.spacing(1),
   },
@@ -117,17 +119,17 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     }),
   });
 
-  useEffect(() => {
-    switch (editMode) {
-      case "profile":
-        fetchMe();
-        break;
-      case "edit":
-      case "view":
-        if (userId) fetchUser({ id: userId });
-        break;
-    }
-  }, [editMode, fetchMe, fetchUser, userId]);
+  // useEffect(() => {
+  //   switch (editMode) {
+  //     case "profile":
+  //       fetchMe();
+  //       break;
+  //     case "edit":
+  //     case "view":
+  //       if (userId) fetchUser({ id: userId });
+  //       break;
+  //   }
+  // }, [editMode, fetchMe, fetchUser, userId]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -214,7 +216,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       ) : (
         <>
           {locations.map(item => (
-            <div key={item.id} className={innerClasses.group}>
+            <div key={item.id} className={classes.box}>
               <div className={classes.textFieldContainer}>
                 {loadingMe || loadingUser ? (
                   <Skeleton width="70%" height={30} animation="wave" />
@@ -282,9 +284,13 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                         options={googleLocations || []}
                         loading={false}
                         inputValue={item}
-                        label={intl.formatMessage({
-                          id: "PROFILE.INPUT.LOCATION",
-                        })}
+                        label={
+                          accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
+                            ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION" })
+                            : accessByRoles(me, ["ROLE_VENDOR"])
+                            ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                            : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
+                        }
                         editable={!(item && item.text)}
                         inputClassName={classes.textField}
                         inputError={Boolean(errorGoogleLocations)}
@@ -320,20 +326,46 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   </>
                 )}
               </div>
+              {editMode !== "view" && (
+                <div>
+                  {loadingMe || loadingUser ? (
+                    <Skeleton width={300} height={41} animation="wave" />
+                  ) : (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={item.active}
+                          onChange={() => {
+                            edit({
+                              id: item.id,
+                              data: { active: !item.active, user_id: userId || me?.id },
+                            });
+                          }}
+                        />
+                      }
+                      label={intl.formatMessage({
+                        id: "USER.EDIT_FORM.LOCATIONS.ACTIVE",
+                      })}
+                      name="active"
+                    />
+                  )}
+                </div>
+              )}
             </div>
           ))}
-          {loadingMe || loadingUser ? (
-            <p>
-              <Skeleton width="100%" height={19} animation="wave" />
-            </p>
-          ) : (
-            <p>{intl.formatMessage({ id: "LOCATIONS.MORE" })}</p>
-          )}
+          {editMode !== "view" &&
+            (loadingMe || loadingUser ? (
+              <p>
+                <Skeleton width="100%" height={22} animation="wave" />
+              </p>
+            ) : (
+              <p>{intl.formatMessage({ id: "LOCATIONS.MORE" })}</p>
+            ))}
         </>
       )}
 
       {editMode !== "view" && (
-        <div className={innerClasses.group}>
+        <div className={classes.box}>
           <div className={classes.textFieldContainer}>
             {!creatingLocation ? (
               <Button
@@ -350,9 +382,13 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   options={googleLocations || []}
                   loading={false}
                   inputValue={autoLocation}
-                  label={intl.formatMessage({
-                    id: "PROFILE.INPUT.LOCATION",
-                  })}
+                  label={
+                    accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
+                      ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION" })
+                      : accessByRoles(me, ["ROLE_VENDOR"])
+                      ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                      : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
+                  }
                   editable={true}
                   inputClassName={classes.textField}
                   inputError={Boolean(errorGoogleLocations)}

@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import { TextField, Divider, MenuItem, Button } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { useFormik } from "formik";
 
 import { actions as myFiltersActions } from "../../../../store/ducks/myFilters.duck";
 import { IAppState } from "../../../../store/rootDuck";
@@ -55,25 +54,20 @@ const PricesEdit: React.FC<IProps &
   editError,
 }) => {
   const classes = useStyles();
+
+  const [filterId, setFilterId] = useState("");
+
   let salePurchaseMode: "sale" | "purchase" = "sale";
   if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
   if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
-
-  const { values, handleChange, resetForm } = useFormik({
-    initialValues: { filter_id: "" },
-    onSubmit: values => {
-      //console.log(values);
-      //handleSubmit(values, setStatus, setSubmitting);
-    },
-  });
 
   useEffect(() => {
     fetchFilters(salePurchaseMode);
   }, [fetchFilters, me, salePurchaseMode]);
 
   useEffect(() => {
-    if (selectedFilterId) resetForm({ values: { filter_id: selectedFilterId.toString() } });
-  }, [resetForm, selectedFilterId]);
+    if (selectedFilterId) setFilterId(selectedFilterId.toString());
+  }, [selectedFilterId]);
 
   useEffect(() => {
     if (!!myFilters) {
@@ -105,13 +99,20 @@ const PricesEdit: React.FC<IProps &
           }
         }
       } else {
-        if (!!myFilters[0] && myFilters[0].id) setSelectedFilterId(myFilters[0].id);
+        if (!!myFilters[0] && myFilters[0].id) {
+          if (+filterId) {
+            setSelectedFilterId(+filterId);
+          } else {
+            setSelectedFilterId(myFilters[0].id);
+          }
+        }
       }
     }
   }, [
     cropId,
     currentPurchaseFilters,
     currentSaleFilters,
+    filterId,
     myFilters,
     salePurchaseMode,
     setSelectedFilterId,
@@ -136,10 +137,10 @@ const PricesEdit: React.FC<IProps &
               id: "FILTER",
             })}
             margin="normal"
-            name="filter_id"
+            name="filterId"
             variant="outlined"
-            value={values.filter_id}
-            onChange={handleChange}
+            value={filterId}
+            onChange={e => setFilterId(e.target.value)}
             className={classes.textField}
           >
             {myFilters
@@ -163,11 +164,14 @@ const PricesEdit: React.FC<IProps &
           ))
         : !!myFilters.length &&
           !!selectedFilterId &&
-          !!+values.filter_id && (
-            <PointsPrices currentFilter={itemById(myFilters, +values.filter_id) as IMyFilterItem} />
+          !!+filterId && (
+            <PointsPrices
+              currentFilter={itemById(myFilters, +filterId) as IMyFilterItem}
+              setFilterId={setFilterId}
+            />
           )}
       {(!myFilters || !selectedFilterId) && (
-        <div className={classes.bottomMargin2}>
+        <div>
           <div className={classes.bottomButtonsContainer}>
             <Button className={classes.button} variant="contained" color="primary" disabled>
               {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}

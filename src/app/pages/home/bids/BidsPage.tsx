@@ -12,11 +12,11 @@ import { actions as bidsActions } from "../../../store/ducks/bids.duck";
 import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
 import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
 
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
-import { ErrorPage } from "../../../components/ErrorPage";
 import FilterModal from "./components/filter/FilterModal";
 import LocationBlock from "./components/location/LocationBlock";
 import PricesDialog from "./components/prices/PricesDialog";
@@ -26,6 +26,8 @@ import BidTable from "./components/BidTable";
 import { IUser } from "../../../interfaces/users";
 import { filterForBids } from "../myFilters/utils";
 import { LayoutSubheader } from "../../../../_metronic";
+import { accessByRoles } from "../../../utils/utils";
+import { IBid } from "../../../interfaces/bids";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -67,6 +69,7 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   intl,
 
+  fetchMe,
   me,
   activeStep,
   prompterRunning,
@@ -126,6 +129,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   editLoading,
   editSuccess,
   editError,
+  setProfit,
 }) => {
   let bestAllMyMode: "best-bids" | "all-bids" | "my-bids" = "best-bids";
   if (match.url.indexOf("best-bids") !== -1) bestAllMyMode = "best-bids";
@@ -219,9 +223,20 @@ const BidsPage: React.FC<TPropsFromRedux &
         : "/media/filter/filter_full.svg"
       : "";
 
-  const isHaveRules = (user: any, id: number) => {
-    return user.is_admin || user.id === id;
+  const isHaveRules = (user: IUser, id: number) => {
+    return accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id;
   };
+
+  const newInexactBid: IBid[] = [];
+  if (bestBids?.equal && bestBids.equal.length < 10) {
+    if (bestBids.inexact && bestBids.inexact.length > 0) {
+      for (let i = 0; i < 10 - bestBids.equal.length; i++) {
+        if (i < bestBids.inexact.length) {
+          newInexactBid.push(bestBids.inexact[i]);
+        }
+      }
+    }
+  }
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -391,13 +406,21 @@ const BidsPage: React.FC<TPropsFromRedux &
     salePurchaseMode,
   ]);
 
-  if (error) return <ErrorPage />;
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
+
+  if (error || bestError || myError || cropsError || cropParamsError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <>
       <Prompter />
       <LayoutSubheader title={pageTitle} />
-      <Paper className={classes.tableContainer}>
+      <Paper className={classes.paperWithTable}>
         <div className={innerClasses.topContainer}>
           <div className={innerClasses.leftButtonBlock}>
             {me && (
@@ -407,7 +430,9 @@ const BidsPage: React.FC<TPropsFromRedux &
                 onClick={() =>
                   history.push(
                     `/bid/create/${
-                      (!!me && me.is_admin) || bestAllMyMode === "my-bids"
+                      (!!me &&
+                        ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) ||
+                      bestAllMyMode === "my-bids"
                         ? salePurchaseMode
                         : salePurchaseMode === "sale"
                         ? "purchase"
@@ -442,50 +467,60 @@ const BidsPage: React.FC<TPropsFromRedux &
 
         {bestAllMyMode === "best-bids" && (
           <>
-            <BidTable
-              classes={classes}
-              bids={bestBids?.equal}
-              isHaveRules={isHaveRules}
-              handleDeleteDialiog={(id: number) => {
-                setDeleteBidId(id);
-                setAlertOpen(true);
-              }}
-              user={me as IUser}
-              title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
-              loading={!bestBids || !cropParams}
-              salePurchaseMode={salePurchaseMode}
-            />
             <div className={innerClasses.topSpaceContainer}>
               <BidTable
                 classes={classes}
-                bids={bestBids?.inexact}
+                bids={bestBids?.equal}
                 isHaveRules={isHaveRules}
                 handleDeleteDialiog={(id: number) => {
                   setDeleteBidId(id);
                   setAlertOpen(true);
                 }}
                 user={me as IUser}
-                title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
+                title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
                 loading={!bestBids || !cropParams}
                 salePurchaseMode={salePurchaseMode}
+                bestAllMyMode={bestAllMyMode}
+                crops={crops}
+                setProfit={setProfit}
               />
             </div>
+            {newInexactBid.length > 0 && (
+              <div className={innerClasses.topSpaceContainer}>
+                <BidTable
+                  classes={classes}
+                  bids={newInexactBid}
+                  isHaveRules={isHaveRules}
+                  handleDeleteDialiog={(id: number) => {
+                    setDeleteBidId(id);
+                    setAlertOpen(true);
+                  }}
+                  user={me as IUser}
+                  title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
+                  loading={!bestBids || !cropParams}
+                  salePurchaseMode={salePurchaseMode}
+                  bestAllMyMode={bestAllMyMode}
+                  crops={crops}
+                  setProfit={setProfit}
+                />
+              </div>
+            )}
             {!!bestBids && (!!bestBids.equal.length || !!bestBids.inexact.length) && (
               <div className={innerClasses.text}>
                 {intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}
               </div>
             )}
-            {salePurchaseMode === "sale" && (
-              <LocationBlock
-                handleClickLocation={() => {
-                  setLocationModalOpen(true);
-                }}
-                handleClickPrices={() => {
-                  setPricesModalOpen(true);
-                }}
-                locations={me && me.points}
-              />
-            )}
+            <LocationBlock
+              handleClickLocation={() => {
+                setLocationModalOpen(true);
+              }}
+              handleClickPrices={() => {
+                setPricesModalOpen(true);
+              }}
+              locations={me && me.points}
+              me={me}
+              salePurchaseMode={salePurchaseMode}
+            />
           </>
         )}
 
@@ -503,6 +538,9 @@ const BidsPage: React.FC<TPropsFromRedux &
               loading={!myBids}
               addUrl={"fromMy"}
               salePurchaseMode={salePurchaseMode}
+              bestAllMyMode={bestAllMyMode}
+              crops={crops}
+              setProfit={setProfit}
             />
             {!!myBids && !!myBids.length && (
               <div className={innerClasses.text}>
@@ -530,6 +568,9 @@ const BidsPage: React.FC<TPropsFromRedux &
               }
               addUrl={"fromAdmin"}
               salePurchaseMode={salePurchaseMode}
+              bestAllMyMode={bestAllMyMode}
+              crops={crops}
+              setProfit={setProfit}
             />
             {!!bids && !!bids.length && (
               <div className={innerClasses.text}>
@@ -648,6 +689,8 @@ const connector = connect(
     delError: state.bids.delError,
   }),
   {
+    fetchMe: authActions.fetchRequest,
+
     fetch: bidsActions.fetchRequest,
     fetchBestBids: bidsActions.fetchBestRequest,
     fetchMyBids: bidsActions.fetchMyRequest,
@@ -660,6 +703,8 @@ const connector = connect(
 
     clearDel: bidsActions.clearDel,
     del: bidsActions.delRequest,
+
+    setProfit: bidsActions.setProfit,
 
     setActiveStep: prompterActions.setActiveStep,
     setCurrentSaleFilter: myFiltersActions.setCurrentSaleFilter,

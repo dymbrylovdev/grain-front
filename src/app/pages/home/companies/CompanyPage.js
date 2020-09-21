@@ -96,6 +96,13 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
   const title = companyId
     ? intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })
     : intl.formatMessage({ id: "COMPANY.CREATE.TITLE" });
+
+  if (errors !== {}) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
+
   if (isRedirect) return <Redirect to="/companyList" />;
   if (loading) return <Preloader />;
   return (

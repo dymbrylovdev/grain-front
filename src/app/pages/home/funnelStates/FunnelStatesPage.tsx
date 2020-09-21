@@ -19,7 +19,6 @@ import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic";
-import { ErrorPage } from "../../../components/ErrorPage";
 import FunnelStatesTable from "./components/FunnelStatesTable";
 
 const FunnelStatesPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
@@ -80,10 +79,14 @@ const FunnelStatesPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetch();
   }, [fetch]);
 
-  if (error) return <ErrorPage />;
+  if (error) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithTable}>
       <LayoutSubheader title={intl.formatMessage({ id: "FUNNEL_STATES.TITLE" })} />
       <AppBar position="static" color="default" className={classes.appBar}>
         <Tabs

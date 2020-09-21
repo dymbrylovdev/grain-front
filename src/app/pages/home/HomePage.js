@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { LayoutSplashScreen } from "../../../_metronic";
 import getMenuConfig from "../../router/MenuConfig";
@@ -18,21 +18,25 @@ import { ActivityReportPage } from "./activityReport";
 import { BidsPage, BidEditPage } from "./bids";
 import { DealsPage, DealViewPage } from "./deals";
 import Error404Page from "../../components/ErrorPage/Error404Page";
+import { TariffsEditPage } from "./tariffs";
+import { TrialEditPage } from "./trial";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
-  const { crops, user } = useSelector(
-    ({ crops: { crops }, auth }) => ({ crops: (crops && crops.data) || [], user: auth.user }),
-    shallowEqual
-  );
-  const [menuConfig] = useState(getMenuConfig(crops, user));
+  const { user } = useSelector(({ auth }) => ({ user: auth.user }), shallowEqual);
+
   const getCropsAction = () => {
     getCrops(user);
   };
+
   useEffect(() => {
-    setMenuConfig(menuConfig);
     fetchStatuses();
     getCropsAction();
   }, []); // eslint-disable-line
+
+  useEffect(() => {
+    setMenuConfig(getMenuConfig(user.crops, user));
+  }, [setMenuConfig, user]);
+
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>
@@ -52,7 +56,8 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         }
         <Route path="/userDocs/legacy" component={UserDocPage} />
         <Route path="/user/view/:id" exact component={UserEditPage} />
-        <Route path="/user/profile" exact component={UserEditPage} />
+        <Route path="/user/profile/crops" component={UserEditPage} />
+        <Route path="/user/profile" component={UserEditPage} />
         <Route path="/user-list" component={UsersPage} />
         <Route path="/user/create" component={UserEditPage} />
         <Route path="/user/edit/:id" component={UserEditPage} />
@@ -107,6 +112,9 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
 
         <Route path="/deals/view/:cropId/:saleId/:purchaseId" component={DealViewPage} />
         <Route path="/deals" component={DealsPage} />
+
+        <Route path="/tariffs" component={TariffsEditPage} />
+        <Route path="/trial" component={TrialEditPage} />
 
         <Route path="/dash" component={Dashboard} />
 

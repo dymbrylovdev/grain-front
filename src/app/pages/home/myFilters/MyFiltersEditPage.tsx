@@ -22,6 +22,8 @@ import * as Yup from "yup";
 
 import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
 import { actions as cropsActions } from "../../../store/ducks/crops2.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
+
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
 import CheckBoxParamGroup from "../bids/components/filter/CheckBoxParamGroup";
@@ -36,7 +38,7 @@ import { OutlinedRedButton } from "../../../components/ui/Buttons/RedButtons";
 import { itemById } from "../../../utils/utils";
 import { Autocomplete } from "@material-ui/lab";
 import { ICrop } from "../../../interfaces/crops";
-import NumberFormatCustom from "../../../components/ui/NumberFormatCustom";
+import NumberFormatCustom from "../../../components/NumberFormatCustom/NumberFormatCustom";
 
 const useInnerStyles = makeStyles(theme => ({
   buttonContainer: {
@@ -66,20 +68,25 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   match,
   intl,
 
+  fetchMe,
   me,
+  meError,
 
   fetchFilters,
   myFilters,
   myFiltersLoading,
+  myFiltersError,
 
   fetchCrops,
   crops,
   cropsLoading,
+  cropsError,
 
   clearCropParams,
   fetchCropParams,
   cropParams,
   cropParamsLoading,
+  cropParamsError,
 
   clearCreateFilter,
   createFilter,
@@ -225,10 +232,20 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
     };
   }, [crops, myFilters, id, fetchCropParams, clearCropParams]);
 
-  if (!myFilters || !crops) return <Preloader />;
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
+
+  if (!me || !myFilters || !crops) return <Preloader />;
+
+  if (meError || myFiltersError || cropsError || cropParamsError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.paperWithForm}>
       <LayoutSubheader
         title={`${
           +id
@@ -276,6 +293,12 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
           name: Yup.string()
             .required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" }))
             .trim(),
+          max_full_price: Yup.number()
+            .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+            .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+          min_full_price: Yup.number()
+            .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+            .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
         })}
       >
         {({
@@ -294,43 +317,39 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
           //console.log(values);
           return (
             <div className={classes.form}>
-              <TextField
-                type="text"
-                label={intl.formatMessage({
-                  id: "FILTER.FORM.NAME.INPUT_NAME",
-                })}
-                margin="normal"
-                name="name"
-                value={values.name || ""}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                InputProps={
-                  isEditable
-                    ? {
-                        endAdornment: (
-                          <IconButton onClick={() => setFieldValue("name", "")}>
-                            <CloseIcon />
-                          </IconButton>
-                        ),
-                      }
-                    : undefined
-                }
-                helperText={touched.name && errors.name}
-                error={Boolean(touched.name && errors.name)}
-                disabled={!isEditable}
-                autoComplete="off"
-              />
+              <div className={classes.topButtonsContainer}>
+                <div className={classes.button}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      history.goBack();
+                    }}
+                    style={{ marginTop: "-16px" }}
+                  >
+                    {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                  </Button>
+                </div>
+              </div>
 
               <Autocomplete
                 id="cropId"
-                options={crops}
+                options={me?.crops || []}
                 getOptionLabel={option => option.name}
                 noOptionsText={intl.formatMessage({
                   id: "ALL.AUTOCOMPLIT.EMPTY",
                 })}
                 value={crops.find(item => item.id === values.cropId) || null}
                 onChange={(e: any, val: ICrop | null) => {
+                  const now = new Date();
+                  if (val) {
+                    setFieldValue(
+                      "name",
+                      `${val.name} ${now.toLocaleDateString()} - ${now
+                        .toLocaleTimeString()
+                        .slice(0, -3)}`
+                    );
+                  }
                   setFieldValue("cropId", val?.id || "");
                   !!val?.id ? fetchCropParams(val.id) : clearCropParams();
                 }}
@@ -377,6 +396,48 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                         ))}
                     </Row>
 
+                    {salePurchaseMode === "purchase" && (
+                      <div className={classes.textFieldContainer}>
+                        <TextField
+                          type="text"
+                          label={intl.formatMessage({
+                            id: "FILTER.FORM.MAX_PAYMENT_TERM",
+                          })}
+                          margin="normal"
+                          name="max_payment_term"
+                          value={values.max_payment_term || ""}
+                          variant="outlined"
+                          onBlur={handleBlur}
+                          onChange={e => {
+                            let newValue = e.target.value;
+                            if (+newValue < 0) {
+                              newValue = "0";
+                            }
+                            if (+newValue > 999) {
+                              newValue = "999";
+                            }
+                            setFieldValue("max_payment_term", newValue);
+                          }}
+                          InputProps={
+                            isEditable
+                              ? {
+                                  inputComponent: NumberFormatCustom as any,
+                                  endAdornment: (
+                                    <IconButton
+                                      onClick={() => setFieldValue("max_payment_term", "")}
+                                    >
+                                      <CloseIcon />
+                                    </IconButton>
+                                  ),
+                                }
+                              : undefined
+                          }
+                          autoComplete="off"
+                          disabled={!isEditable}
+                        />
+                      </div>
+                    )}
+
                     <TextField
                       type="text"
                       label={intl.formatMessage({
@@ -400,6 +461,8 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                             }
                           : undefined
                       }
+                      helperText={touched.max_full_price && errors.max_full_price}
+                      error={Boolean(touched.max_full_price && errors.max_full_price)}
                       disabled={!isEditable}
                       autoComplete="off"
                     />
@@ -427,6 +490,8 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                             }
                           : undefined
                       }
+                      helperText={touched.min_full_price && errors.min_full_price}
+                      error={Boolean(touched.min_full_price && errors.min_full_price)}
                       disabled={!isEditable}
                       autoComplete="off"
                     />
@@ -472,6 +537,34 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                           <Divider />
                         </div>
                       ))}
+
+                    <TextField
+                      type="text"
+                      label={intl.formatMessage({
+                        id: "FILTER.FORM.NAME.INPUT_NAME",
+                      })}
+                      margin="normal"
+                      name="name"
+                      value={values.name || ""}
+                      variant="outlined"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      InputProps={
+                        isEditable
+                          ? {
+                              endAdornment: (
+                                <IconButton onClick={() => setFieldValue("name", "")}>
+                                  <CloseIcon />
+                                </IconButton>
+                              ),
+                            }
+                          : undefined
+                      }
+                      helperText={touched.name && errors.name}
+                      error={Boolean(touched.name && errors.name)}
+                      disabled={!isEditable}
+                      autoComplete="off"
+                    />
 
                     {!isNew && (
                       <FormControlLabel
@@ -567,12 +660,20 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
 const connector = connect(
   (state: IAppState) => ({
     me: state.auth.user,
+    meError: state.auth.error,
+
     myFilters: state.myFilters.myFilters,
     myFiltersLoading: state.myFilters.loading,
+    myFiltersError: state.myFilters.error,
+
     crops: state.crops2.crops,
     cropsLoading: state.crops2.loading,
+    cropsError: state.crops2.error,
+
     cropParams: state.crops2.cropParams,
     cropParamsLoading: state.crops2.cropParamsLoading,
+    cropParamsError: state.crops2.cropParamsError,
+
     createLoading: state.myFilters.createLoading,
     createSuccess: state.myFilters.createSuccess,
     createError: state.myFilters.createError,
@@ -587,6 +688,7 @@ const connector = connect(
     currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
   }),
   {
+    fetchMe: authActions.fetchRequest,
     fetchFilters: myFiltersActions.fetchRequest,
     fetchCrops: cropsActions.fetchRequest,
     clearCropParams: cropsActions.clearCropParams,

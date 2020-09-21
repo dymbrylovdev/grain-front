@@ -20,6 +20,7 @@ import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
 import TermDialog from "./components/TermDialog";
 import { IAppState } from "../../store/rootDuck";
 import { TRole } from "../../interfaces/users";
+import { roles } from "../home/users/utils/profileForm";
 
 const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -74,6 +75,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 email: values.email,
                 roles: [values.role as TRole],
                 login: values.email,
+                crop_ids: [1],
               });
             }}
           >
@@ -86,17 +88,18 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <FormControlLabel
                     value="ROLE_BUYER"
                     control={<Radio />}
-                    label={intl.formatMessage({
-                      id: "AUTH.REGISTER.BUYER",
-                    })}
+                    label={roles.find(role => role.id === "ROLE_BUYER")?.value}
                   />
                   <FormControlLabel
                     value="ROLE_VENDOR"
                     control={<Radio />}
-                    label={intl.formatMessage({
-                      id: "AUTH.REGISTER.VENDOR",
-                    })}
+                    label={roles.find(role => role.id === "ROLE_VENDOR")?.value}
                   />
+                  {/* <FormControlLabel
+                    value="ROLE_TRADER"
+                    control={<Radio />}
+                    label={roles.find(role => role.id === "ROLE_TRADER")?.value}
+                  /> */}
                 </RadioGroup>
 
                 <div className="form-group mb-0">

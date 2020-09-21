@@ -95,73 +95,81 @@ const FunnelStatesTable: React.FC<IProps> = ({
           <Skeleton width="100%" height={77} animation="wave" />
         </>
       ) : (
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TopTableCell>{intl.formatMessage({ id: "FUNNEL_STATES.TABLE.NAME" })}</TopTableCell>
-              <TopTableCell>
-                {intl.formatMessage({ id: "FUNNEL_STATES.TABLE.ENGAGEMENT" })}
-              </TopTableCell>
-              <TopTableCell>{intl.formatMessage({ id: "FUNNEL_STATES.TABLE.AUTO" })}</TopTableCell>
-              <TopTableCell>{intl.formatMessage({ id: "FUNNEL_STATES.TABLE.HINT" })}</TopTableCell>
-              <TopTableCell></TopTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {funnelStates.map(item => (
-              <TableRow key={item.id}>
-                <TableCell>
-                  <p
-                    className={classes.funnelStateName}
-                    style={{ backgroundColor: `${item.color || "#ededed"}` }}
-                  >
-                    {item.name}
-                  </p>
-                </TableCell>
-                <TableCell>{item.engagement}</TableCell>
-                <TableCell>
-                  <SpellcheckIcon
-                    color={item.auto ? "secondary" : "disabled"}
-                    className={classes.leftMargin1}
-                  />
-                </TableCell>
-                <TableCell>
-                  <div className={innerClasses.container}>
-                    <div className={innerClasses.wrapper}>
-                      <div
-                        className={innerClasses.text}
-                        dangerouslySetInnerHTML={{ __html: item.hint }}
-                      ></div>
-                      <div className={innerClasses.helper}></div>
-                      <div className={innerClasses.fader}></div>
+        <div className={classes.table}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TopTableCell>
+                  {intl.formatMessage({ id: "FUNNEL_STATES.TABLE.NAME" })}
+                </TopTableCell>
+                <TopTableCell>
+                  {intl.formatMessage({ id: "FUNNEL_STATES.TABLE.ENGAGEMENT" })}
+                </TopTableCell>
+                <TopTableCell>
+                  {intl.formatMessage({ id: "FUNNEL_STATES.TABLE.AUTO" })}
+                </TopTableCell>
+                <TopTableCell>
+                  {intl.formatMessage({ id: "FUNNEL_STATES.TABLE.HINT" })}
+                </TopTableCell>
+                <TopTableCell></TopTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {funnelStates.map(item => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    <p
+                      className={classes.funnelStateName}
+                      style={{ backgroundColor: `${item.color || "#ededed"}` }}
+                    >
+                      {item.name}
+                    </p>
+                  </TableCell>
+                  <TableCell>{item.engagement}</TableCell>
+                  <TableCell>
+                    <SpellcheckIcon
+                      color={item.auto ? "secondary" : "disabled"}
+                      className={classes.leftMargin1}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <div className={innerClasses.container}>
+                      <div className={innerClasses.wrapper}>
+                        <div
+                          className={innerClasses.text}
+                          dangerouslySetInnerHTML={{ __html: item.hint }}
+                        ></div>
+                        <div className={innerClasses.helper}></div>
+                        <div className={innerClasses.fader}></div>
+                      </div>
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell align="right" style={{ width: 150 }}>
-                  <IconButton
-                    size="medium"
-                    color="primary"
-                    onClick={() => history.push(`/funnel-states/edit/${item.id}`)}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  {!item.auto && (
+                  </TableCell>
+                  <TableCell align="right" style={{ width: 150 }}>
                     <IconButton
                       size="medium"
-                      color="secondary"
-                      onClick={() => {
-                        setDeleteUserId(item.id);
-                        setAlertOpen(true);
-                      }}
+                      color="primary"
+                      onClick={() => history.push(`/funnel-states/edit/${item.id}`)}
                     >
-                      <DeleteIcon />
+                      <EditIcon />
                     </IconButton>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                    {!item.auto && (
+                      <IconButton
+                        size="medium"
+                        color="secondary"
+                        onClick={() => {
+                          setDeleteUserId(item.id);
+                          setAlertOpen(true);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       )}
     </>
   );

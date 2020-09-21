@@ -11,6 +11,7 @@ import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
 import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as yaLocationsActions } from "../../../store/ducks/yaLocations.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
 
 import { IAppState } from "../../../store/rootDuck";
 import { ErrorPage } from "../../../components/ErrorPage";
@@ -19,6 +20,8 @@ import BidForm from "./components/BidForm";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import Prompter from "../prompter/Prompter";
 import useStyles from "../styles";
+import { accessByRoles } from "../../../utils/utils";
+import { IPointPriceForGet } from "../../../interfaces/bids";
 
 const BidEditPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -36,6 +39,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
 
   intl,
 
+  fetchMe,
   me,
 
   fetchUser,
@@ -45,6 +49,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
 
   setActiveStep,
 
+  clearFetch,
   fetch,
   bid,
   loading,
@@ -81,11 +86,37 @@ const BidEditPage: React.FC<TPropsFromRedux &
   clearLocations,
   locations,
   loadingLocations,
+
+  profit,
+
+  currentSaleFilters,
+  currentPurchaseFilters,
 }) => {
   const isNoModerate = !vendorId && !+bidId && me?.status === "На модерации";
   const classes = useStyles();
   const history = useHistory();
   const [isAlertOpen, setAlertOpen] = useState(false);
+  const [pointPrices, setPointPrices] = useState<IPointPriceForGet[]>([]);
+
+  useEffect(() => {
+    const currentFilters =
+      salePurchaseMode === "sale" ? currentSaleFilters : currentPurchaseFilters;
+    let currentFilter: { [crop: string]: { [x: string]: any } } | undefined = undefined;
+    if (editMode === "view") {
+      for (let k in currentFilters) {
+        if (k === cropId) {
+          currentFilter = currentFilters[k];
+        }
+      }
+    }
+    const pointPrices: IPointPriceForGet[] = [];
+    if (currentFilter?.point_prices && currentFilter.point_prices.length) {
+      currentFilter.point_prices.forEach((item: any) => {
+        pointPrices.push(item);
+      });
+    }
+    setPointPrices(pointPrices);
+  }, [salePurchaseMode, currentSaleFilters, currentPurchaseFilters, editMode, cropId]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -104,36 +135,6 @@ const BidEditPage: React.FC<TPropsFromRedux &
       if (delSuccess) history.goBack();
     }
   }, [clearDel, delError, delSuccess, enqueueSnackbar, history, intl]);
-
-  useEffect(() => {
-    if (createSuccess || createError) {
-      enqueueSnackbar(
-        createSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.BIDS.ADD" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${createError}`,
-        {
-          variant: createSuccess ? "success" : "error",
-        }
-      );
-      clearCreate();
-      if (createSuccess) {
-        if (!!+vendorId) {
-          history.push("/user-list");
-        } else {
-          history.push(`/${salePurchaseMode}/my-bids`);
-        }
-      }
-    }
-  }, [
-    clearCreate,
-    createError,
-    createSuccess,
-    enqueueSnackbar,
-    history,
-    intl,
-    salePurchaseMode,
-    vendorId,
-  ]);
 
   useEffect(() => {
     if (editSuccess || editError) {
@@ -155,20 +156,29 @@ const BidEditPage: React.FC<TPropsFromRedux &
   }, [fetchCrops]);
 
   useEffect(() => {
-    if (+bidId) fetch(+bidId);
-  }, [bidId, fetch]);
+    if (+bidId) fetch(+bidId, { filter: { point_prices: pointPrices } });
+    return () => {
+      clearFetch();
+    };
+  }, [bidId, clearFetch, fetch, pointPrices]);
 
   useEffect(() => {
-    if (!!vendorId) fetchUser({ id: +vendorId });
-  }, [fetchUser, vendorId]);
-
-  useEffect(() => {
-    if (editMode === "edit" && !!bid) fetchUser({ id: bid.vendor.id });
-  }, [bid, editMode, fetchUser]);
+    if (!bid) {
+      if (vendorId) {
+        fetchUser({ id: +vendorId });
+      }
+    } else {
+      fetchUser({ id: bid.vendor.id });
+    }
+  }, [bid, fetchUser, vendorId]);
 
   useEffect(() => {
     setActiveStep(4);
   }, [setActiveStep]);
+
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
 
   let title = null;
   if (editMode === "create" && !vendorId) title = intl.formatMessage({ id: "BID.TITLE.CREATE" });
@@ -183,7 +193,13 @@ const BidEditPage: React.FC<TPropsFromRedux &
   if (editMode === "create" && me?.is_buyer && salePurchaseMode === "sale") return <ErrorPage />;
   if (editMode === "create" && me?.is_vendor && salePurchaseMode === "purchase")
     return <ErrorPage />;
-  if (editMode === "edit" && !me?.is_admin && !!bid && bid.vendor.id !== me?.id)
+  if (
+    editMode === "edit" &&
+    me &&
+    !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+    !!bid &&
+    bid.vendor.id !== me?.id
+  )
     return <ErrorPage />;
   if (
     !!user &&
@@ -204,12 +220,16 @@ const BidEditPage: React.FC<TPropsFromRedux &
   )
     return <ErrorPage />;
 
-  if (error || userError || cropsError || cropParamsError) return <ErrorPage />;
+  if (error || userError || cropsError || cropParamsError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <>
       <Prompter />
-      <Paper className={classes.container}>
+      <Paper className={classes.paperWithForm}>
         {title && <LayoutSubheader title={title} />}
         {isNoModerate ? (
           <div className={classes.titleText}>
@@ -237,7 +257,11 @@ const BidEditPage: React.FC<TPropsFromRedux &
             setAlertOpen={setAlertOpen}
             buttonLoading={createLoading || editLoading}
             create={create}
+            createSuccess={createSuccess}
+            createError={createError}
+            clearCreate={clearCreate}
             edit={edit}
+            profit={profit}
           />
         )}
         <AlertDialog
@@ -273,6 +297,11 @@ const connector = connect(
     loading: state.bids.byIdLoading,
     error: state.bids.byIdError,
 
+    profit: state.bids.profit,
+
+    currentSaleFilters: state.myFilters.currentSaleFilters,
+    currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
+
     crops: state.crops2.crops,
     cropsLoading: state.crops2.loading,
     cropsError: state.crops2.error,
@@ -299,6 +328,9 @@ const connector = connect(
   {
     fetchUser: usersActions.fetchByIdRequest,
 
+    fetchMe: authActions.fetchRequest,
+
+    clearFetch: bidsActions.clearFetchById,
     fetch: bidsActions.fetchByIdRequest,
 
     clearCreate: bidsActions.clearCreate,

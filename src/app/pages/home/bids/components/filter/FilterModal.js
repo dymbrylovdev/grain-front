@@ -18,6 +18,7 @@ import {
   TextField,
   Badge,
   Button,
+  Tooltip,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useFormik } from "formik";
@@ -85,7 +86,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
   },
   textField: {
-    width: 300,
+    width: "100%",
   },
   badge: {
     paddingRight: theme.spacing(2),
@@ -131,6 +132,9 @@ const FilterModal = ({
   editLoading,
   editSuccess,
   editError,
+
+  openInfoAlert,
+  setOpenInfoAlert,
 }) => {
   const innerClasses = useStyles();
   const [delFilterId, setDelFilterId] = useState(0);
@@ -170,6 +174,12 @@ const FilterModal = ({
       name: Yup.string()
         .required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" }))
         .trim(),
+      max_full_price: Yup.number()
+        .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+      min_full_price: Yup.number()
+        .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
     }),
   });
   const { resetForm, values, handleBlur } = formik;
@@ -348,7 +358,7 @@ const FilterModal = ({
           </Grid>
         </Grid>
       </DialogTitle>
-      <DialogContent dividers>
+      <DialogContent dividers style={{ padding: 0 }}>
         <TabPanel value={valueTabs} index={0}>
           <FilterForm
             classes={classes}
@@ -356,6 +366,9 @@ const FilterModal = ({
             cropId={cropId}
             enumParams={enumParams}
             numberParams={numberParams}
+            openInfoAlert={openInfoAlert}
+            setOpenInfoAlert={setOpenInfoAlert}
+            salePurchaseMode={salePurchaseMode}
             formik={formik}
           />
         </TabPanel>
@@ -384,13 +397,14 @@ const FilterModal = ({
             delLoading={delLoading}
             editFilter={editFilter}
             editLoading={editLoading}
+            salePurchaseMode={salePurchaseMode}
           />
         </TabPanel>
       </DialogContent>
       {valueTabs === 0 && (
         <DialogActions className={innerClasses.buttonContainer}>
           <Grid container direction="row" justify="space-between" alignItems="center" spacing={1}>
-            <Grid item>
+            <Grid item xs={12} sm={4}>
               <Grid container direction="row" justify="center" alignItems="center">
                 <TextField
                   autoComplete="off"
@@ -419,23 +433,32 @@ const FilterModal = ({
             <Grid item>
               <Grid container direction="row" justify="center" alignItems="center" spacing={1}>
                 <Grid item>
-                  <ButtonWithLoader
-                    loading={createLoading}
-                    disabled={createLoading}
-                    onPress={() => {
-                      if (!!currentFilter && currentFilter.name === formik.values.name) {
-                        const crop = crops.find(crop => crop.id === cropId);
-                        const now = new Date();
-                        const name = `${
-                          crop.name
-                        } ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
-                        formik.setFieldValue("name", name);
-                      }
-                      formik.handleSubmit();
-                    }}
-                  >
-                    {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })}
-                  </ButtonWithLoader>
+                  <Tooltip title={intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE.TOOLTIP" })}>
+                    <div>
+                      <ButtonWithLoader
+                        loading={createLoading}
+                        disabled={
+                          createLoading ||
+                          (me?.tariff && me.tariff.max_filters_count - myFilters?.length <= 0)
+                        }
+                        onPress={() => {
+                          if (!!currentFilter && currentFilter.name === formik.values.name) {
+                            const crop = crops.find(crop => crop.id === cropId);
+                            const now = new Date();
+                            const name = `${
+                              crop.name
+                            } ${now.toLocaleDateString()} - ${now
+                              .toLocaleTimeString()
+                              .slice(0, -3)}`;
+                            formik.setFieldValue("name", name);
+                          }
+                          formik.handleSubmit();
+                        }}
+                      >
+                        {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })}
+                      </ButtonWithLoader>
+                    </div>
+                  </Tooltip>
                 </Grid>
                 <Grid item>
                   <Button
@@ -492,6 +515,7 @@ export default compose(
       editLoading: state.myFilters.editLoading,
       editSuccess: state.myFilters.editSuccess,
       editError: state.myFilters.editError,
+      openInfoAlert: state.myFilters.openInfoAlert,
     }),
     {
       fetchFilters: myFiltersActions.fetchRequest,
@@ -502,6 +526,7 @@ export default compose(
       delFilter: myFiltersActions.delRequest,
       clearEditFilter: myFiltersActions.clearEdit,
       editFilter: myFiltersActions.editRequest,
+      setOpenInfoAlert: myFiltersActions.setOpenInfoAlert,
     }
   ),
   injectIntl

@@ -43,47 +43,55 @@ function CropsListPage({ setMenuConfig, getCrops, match }) {
     getCropsAction();
   }, [getCropsAction]);
 
+  const activeCrops = [];
+  crops.forEach(item => {
+    if (!item.is_deleted) {
+      activeCrops.push(item);
+    }
+  });
+
   if (loading) return <Preloader />;
 
   if (errors.crops) return <LoadError handleClick={() => getCropsAction()} />;
+
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithTable}>
       <div className={classes.buttonContainer}>
         <Button variant="contained" color="primary" onClick={() => history.push("/crop/create")}>
           <FormattedMessage id="CROPSLIST.BUTTON.CREATE" />
         </Button>
       </div>
-      <Table aria-label="simple table" className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TopTableCell>
-              <FormattedMessage id="CROPSLIST.TABLE.ID" />
-            </TopTableCell>
-            <TopTableCell>
-              <FormattedMessage id="CROPSLIST.TABLE.NAME" />
-            </TopTableCell>
-            <TopTableCell>
-              <FormattedMessage id="CROPSLIST.TABLE.ACTIONS" />
-            </TopTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {crops &&
-            crops.map(crop => (
-              <TableRow key={crop.id}>
-                <TableCell>{crop.id}</TableCell>
-                <TableCell>{crop.name}</TableCell>
-                <TableCell>
-                  <Link to={`/crop/edit/${crop.id}`}>
-                    <IconButton size="medium" color="primary">
-                      <EditIcon />
-                    </IconButton>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
+      <div className={classes.table}>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TopTableCell>
+                <FormattedMessage id="CROPSLIST.TABLE.ID" />
+              </TopTableCell>
+              <TopTableCell>
+                <FormattedMessage id="CROPSLIST.TABLE.NAME" />
+              </TopTableCell>
+              <TopTableCell></TopTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {activeCrops &&
+              activeCrops.map(crop => (
+                <TableRow key={crop.id}>
+                  <TableCell>{crop.id}</TableCell>
+                  <TableCell>{crop.name}</TableCell>
+                  <TableCell align="right">
+                    <Link to={`/crop/edit/${crop.id}`}>
+                      <IconButton size="medium" color="primary">
+                        <EditIcon />
+                      </IconButton>
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </div>
     </Paper>
   );
 }

@@ -14,7 +14,6 @@ import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
-import { ErrorPage } from "../../../components/ErrorPage";
 import { initFunnelState, getFunnelStateToRequest } from "./utils";
 import DraftEditor from "../../../components/DraftEditor";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
@@ -149,10 +148,14 @@ const FunnelStateEditPage: React.FC<TPropsFromRedux &
     }
   }, [funnelStates, id, resetForm]);
 
-  if (error) return <ErrorPage />;
+  if (error) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={classes.paperWithForm}>
       {!!funnelStates && (
         <LayoutSubheader
           title={`${

@@ -18,4 +18,5 @@ export interface ICompany {
   email2?: string;
   mobile_phone?: string;
   telephone?: string;
+  colors?: string[];
 }

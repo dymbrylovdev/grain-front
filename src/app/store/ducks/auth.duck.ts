@@ -165,7 +165,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case EDIT_SUCCESS: {
-        return { ...state, editLoading: false, editSuccess: true };
+        return { ...state, user: action.payload.data, editLoading: false, editSuccess: true };
       }
 
       case EDIT_FAIL: {
@@ -329,7 +329,7 @@ export const actions = {
   setEditNoNoti: (payload: boolean) => createAction(SET_EDIT_NO_NOTI, payload),
   clearEdit: () => createAction(CLEAR_EDIT),
   editRequest: (payload: { data: IUserForEdit }) => createAction(EDIT_REQUEST, payload),
-  editSuccess: () => createAction(EDIT_SUCCESS),
+  editSuccess: (payload: IServerResponse<IUser>) => createAction(EDIT_SUCCESS, payload),
   editFail: (payload: string) => createAction(EDIT_FAIL, payload),
 
   clearReg: () => createAction(CLEAR_REG),
@@ -370,16 +370,16 @@ function* fetchSaga() {
     const { data }: { data: IServerResponse<IUser> } = yield call(() => getMe());
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
 function* editSaga({ payload }: { payload: { data: IUserForEdit } }) {
   try {
-    yield call(() => editMe(payload.data));
-    yield put(actions.editSuccess());
+    const { data }: { data: IServerResponse<IUser> } = yield call(() => editMe(payload.data));
+    yield put(actions.editSuccess(data));
   } catch (e) {
-    yield put(actions.editFail(e.response.data.message));
+    yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -390,7 +390,7 @@ function* regSaga({ payload }: { payload: IUserForRegister }) {
     );
     yield put(actions.regSuccess(data));
   } catch (e) {
-    yield put(actions.regFail(e.response.data.message));
+    yield put(actions.regFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -401,7 +401,7 @@ function* loginSaga({ payload }: { payload: { login: string; password: string } 
     );
     yield put(actions.loginSuccess(data));
   } catch (e) {
-    yield put(actions.loginFail(e.response.data.message));
+    yield put(actions.loginFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -412,7 +412,7 @@ function* recoveryPasswordSaga({ payload }: { payload: { email: string } }) {
     );
     yield put(actions.recoveryPasswordSuccess(data));
   } catch (e) {
-    yield put(actions.recoveryPasswordFail(e.response.data.message));
+    yield put(actions.recoveryPasswordFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -427,7 +427,7 @@ function* newPasswordSaga({
     );
     yield put(actions.newPasswordSuccess(data));
   } catch (e) {
-    yield put(actions.newPasswordFail(e.response.data.message));
+    yield put(actions.newPasswordFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 

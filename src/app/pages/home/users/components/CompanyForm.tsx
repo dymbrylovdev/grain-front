@@ -18,20 +18,24 @@ import CompanyConfirmDialog from "./CompanyConfirmDialog";
 import { Skeleton } from "@material-ui/lab";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { IUser } from "../../../../interfaces/users";
+import { accessByRoles } from "../../../../utils/utils";
+import { TrafficLight } from ".";
+import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
+import { useHistory } from "react-router-dom";
 
-const isNonConfirm = (values: {
-  company_confirmed_by_email: any;
-  company_confirmed_by_phone: any;
-  company_confirmed_by_payment: any;
-  company_name?: string;
-  company_id?: number;
-}) => {
-  return (
-    !values.company_confirmed_by_email ||
-    !values.company_confirmed_by_phone ||
-    !values.company_confirmed_by_payment
-  );
-};
+// const isNonConfirm = (values: {
+//   company_confirmed_by_email: any;
+//   company_confirmed_by_phone: any;
+//   company_confirmed_by_payment: any;
+//   company_name?: string;
+//   company_id?: number;
+// }) => {
+//   return (
+//     !values.company_confirmed_by_email ||
+//     // !values.company_confirmed_by_phone ||
+//     !values.company_confirmed_by_payment
+//   );
+// };
 
 interface IProps {
   editMode: "profile" | "create" | "edit" | "view";
@@ -89,23 +93,24 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   userId,
 }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   const [isOpenCompanyConfirm, setIsOpenCompanyConfirm] = useState<boolean>(false);
   const [companyConfirmId, setCompanyConfirmId] = useState<number>(0);
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<IUser>();
 
-  useEffect(() => {
-    switch (editMode) {
-      case "profile":
-        fetchMe();
-        break;
-      case "edit":
-      case "view":
-        if (userId) fetchUser({ id: userId });
-        break;
-    }
-  }, [editMode, fetchMe, fetchUser, userId]);
+  // useEffect(() => {
+  //   switch (editMode) {
+  //     case "profile":
+  //       fetchMe();
+  //       break;
+  //     case "edit":
+  //     case "view":
+  //       if (userId) fetchUser({ id: userId });
+  //       break;
+  //   }
+  // }, [editMode, fetchMe, fetchUser, userId]);
 
   // useEffect(() => {
   //   if (meSuccess) {
@@ -128,10 +133,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       );
       clearEditUser();
     }
-    if (editSuccess) {
-      if (userId) fetchUser({ id: userId });
-    }
-  }, [clearEditUser, editError, editSuccess, enqueueSnackbar, fetchUser, intl, userId]);
+  }, [clearEditUser, editError, editSuccess, enqueueSnackbar, intl, userId]);
 
   useEffect(() => {
     if (editMeSuccess || editMeError) {
@@ -148,9 +150,6 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       setEditNoNoti(false);
       clearEditMe();
     }
-    if (editMeSuccess) {
-      fetchMe();
-    }
   }, [
     clearEditMe,
     editError,
@@ -158,7 +157,6 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     editMeNoNoti,
     editMeSuccess,
     enqueueSnackbar,
-    fetchMe,
     intl,
     setEditNoNoti,
   ]);
@@ -220,44 +218,74 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             )} */}
           </div>
           <CompanyConfirmBlock
+            user={editMode === "profile" ? me : user}
             values={values}
             handleChange={
               editMode === "profile"
                 ? editMe
                 : ({ data }: any) => editUser({ id: userId as number, data: data })
             }
-            disabled={editMode === "profile" || editMode === "view" || !me?.is_admin}
-            loading={false}
+            disabled={
+              editMode === "profile" ||
+              editMode === "view" ||
+              !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])
+            }
+            loading={editMeLoading || editLoading}
             // loading={!currentUser || meLoading || userLoading || editLoading}
           />
-          {isNonConfirm(values) && !me?.is_admin && editMode !== "view" && (
-            <div className={classes.textFieldContainer}>
-              {!currentUser || meLoading || userLoading ? (
-                <Skeleton width={170} height={70} animation="wave" />
-              ) : (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    setCompanyConfirmId(values.company_id);
-                    setIsOpenCompanyConfirm(true);
-                  }}
-                >
-                  {intl.formatMessage({ id: "COMPANY.CONFIRM.BUTTON" })}
-                </Button>
-              )}
-            </div>
-          )}
+          {!values.company_confirmed_by_email &&
+            !values.company_confirmed_by_payment &&
+            !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+            editMode !== "view" && (
+              <div className={classes.textFieldContainer}>
+                {!currentUser || meLoading || userLoading ? (
+                  <Skeleton width={170} height={70} animation="wave" />
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      setCompanyConfirmId(values.company_id);
+                      setIsOpenCompanyConfirm(true);
+                    }}
+                  >
+                    {intl.formatMessage({ id: "COMPANY.CONFIRM.BUTTON" })}
+                  </Button>
+                )}
+              </div>
+            )}
         </>
       ) : !currentUser || meLoading || userLoading ? (
         <div className={classes.textFieldContainer}>
           <Skeleton width="100%" height={70} animation="wave" />
         </div>
       ) : (
-        <div className={classes.textFieldContainer} style={{ fontSize: 14 }}>
+        <div className={classes.textFieldContainer} style={{ fontSize: 16 }}>
           {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
         </div>
       )}
+      {(!!currentUser?.company_confirmed_by_email || !!currentUser?.company_confirmed_by_payment) &&
+        !!currentUser?.company?.colors && (
+          <TrafficLight intl={intl} colors={currentUser.company.colors} />
+        )}
+
+      {editMode !== "view" &&
+        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+        !!currentUser &&
+        !!currentUser.company && (
+          <div className={classes.bottomButtonsContainer}>
+            <div className={classes.button}>
+              <ButtonWithLoader
+                loading={false}
+                disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
+                onPress={() => history.push(`/company/edit/${currentUser.company?.id}`)}
+              >
+                {intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })}
+              </ButtonWithLoader>
+            </div>
+          </div>
+        )}
+
       {editMode !== "view" && !!currentUser && !currentUser.company && (
         <CompanySearchForm
           classes={classes}
@@ -274,7 +302,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               ? editMe
               : ({ data }: any) => editUser({ id: userId as number, data: data })
           }
-          confirms={editMode === "profile" && me?.is_admin}
+          confirms={editMode === "profile" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
         />
       )}
       <CompanyConfirmDialog

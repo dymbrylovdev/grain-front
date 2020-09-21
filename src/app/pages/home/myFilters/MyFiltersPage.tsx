@@ -19,22 +19,28 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import { useSnackbar } from "notistack";
 
 import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
 
 import { IAppState } from "../../../store/rootDuck";
 import useStyles from "../styles";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import StatusIndicator from "../../../components/ui/Table/StatusIndicator";
-import { ErrorPage } from "../../../components/ErrorPage";
 import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
+import { declOfNum } from "../../../utils";
+import { accessByRoles } from "../../../utils/utils";
 
 const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps> = ({
   match,
   intl,
+
+  fetchMe,
   me,
+  meError,
   fetch,
   myFilters,
+  filterCount,
   loading,
   error,
   clearCreate,
@@ -84,8 +90,6 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
       clearDel();
       if (delSuccess) {
         if (salePurchaseMode === "sale") {
-          // console.log("deleteFilterId: ", deleteFilterId);
-          // console.log("currentFilter: ", currentSaleFilters[deleteFilterCropId]);
           if (
             !!deleteFilterId &&
             currentSaleFilters[deleteFilterCropId] &&
@@ -95,8 +99,6 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
           }
         }
         if (salePurchaseMode === "purchase") {
-          // console.log("deleteFilterId: ", deleteFilterId);
-          // console.log("currentFilter: ", currentPurchaseFilters[deleteFilterCropId]);
           if (
             !!deleteFilterId &&
             currentPurchaseFilters[deleteFilterCropId] &&
@@ -128,12 +130,20 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
 
   useEffect(() => {
     fetch(salePurchaseMode);
-  }, [fetch, me, salePurchaseMode]);
+  }, [fetch, salePurchaseMode]);
 
-  if (error) return <ErrorPage />;
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
+
+  if (error || meError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
-    <Paper className={classes.tableContainer}>
+    <Paper className={classes.paperWithTable}>
       <LayoutSubheader
         title={
           salePurchaseMode === "sale"
@@ -147,19 +157,26 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
           variant="contained"
           color="primary"
           onClick={() => history.push(`/${salePurchaseMode}/filters/edit/new`)}
-          disabled={!myFilters}
+          disabled={
+            !myFilters ||
+            (!!me?.tariff.max_filters_count &&
+              !!myFilters &&
+              me.tariff.max_filters_count - myFilters?.length <= 0)
+          }
         >
           {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
         </Button>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="primary"
-          onClick={() => history.push(`/${salePurchaseMode}/filters/prices`)}
-          disabled={!myFilters}
-        >
-          {intl.formatMessage({ id: "FILTER.FORM.TABS.EDIT_PRICES" })}
-        </Button>
+        {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
+          <Button
+            className={classes.button}
+            variant="contained"
+            color="primary"
+            onClick={() => history.push(`/${salePurchaseMode}/filters/prices`)}
+            disabled={!myFilters}
+          >
+            {intl.formatMessage({ id: "BID.PRICES.BUTTON" })}
+          </Button>
+        )}
       </div>
       {!myFilters ? (
         <>
@@ -170,67 +187,92 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
           <Skeleton width="100%" height={77} animation="wave" />
           <Skeleton width="100%" height={77} animation="wave" />
         </>
-      ) : !myFilters.length ? (
-        <div>
-          <FormattedMessage id="FILTERS.TABLE.EMPTY" />
-        </div>
       ) : (
-        <Table aria-label="simple table" className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TopTableCell>
-                <FormattedMessage id="FILTERS.TABLE.HEADER.CROP" />
-              </TopTableCell>
-              <TopTableCell>
-                <FormattedMessage id="FILTERS.TABLE.HEADER.NAME" />
-              </TopTableCell>
-              <TopTableCell>
-                <FormattedMessage id="FILTERS.TABLE.HEADER.SUBSCRIPTION" />
-              </TopTableCell>
-              <TopTableCell align="right"></TopTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {myFilters
-              .sort((a, b) => a.crop.id - b.crop.id)
-              .map(item => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.crop.name}</TableCell>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>
-                    <StatusIndicator isActive={item.subscribed} />
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      size="medium"
-                      color="primary"
-                      onClick={() => history.push(`/${salePurchaseMode}/filters/view/${item.id}`)}
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                    <IconButton
-                      size="medium"
-                      color="primary"
-                      onClick={() => history.push(`/${salePurchaseMode}/filters/edit/${item.id}`)}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      size="medium"
-                      onClick={() => {
-                        setDeleteFilterCropId(item.crop.id);
-                        setDeleteFilterId(item.id || 0);
-                        setAlertOpen(true);
-                      }}
-                      color="secondary"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+        <>
+          {!!me && !!myFilters && (
+            <div className={classes.bottomMargin1} style={{ fontWeight: "bold" }}>
+              {intl.formatMessage(
+                { id: "FILTER.FORM.LIMIT" },
+                {
+                  count:
+                    !me?.tariff || (!!me?.tariff && me.tariff.max_filters_count - filterCount <= 0)
+                      ? "0"
+                      : me?.tariff?.max_filters_count - filterCount,
+                  word: declOfNum(me?.tariff?.max_filters_count - filterCount, [
+                    "фильтр",
+                    "фильтра",
+                    "фильтров",
+                  ]),
+                  fullCount: me?.tariff?.max_filters_count,
+                }
+              )}
+            </div>
+          )}
+          {myFilters.length > 0 && (
+            <div className={classes.table}>
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TopTableCell>
+                      <FormattedMessage id="FILTERS.TABLE.HEADER.CROP" />
+                    </TopTableCell>
+                    <TopTableCell>
+                      <FormattedMessage id="FILTERS.TABLE.HEADER.NAME" />
+                    </TopTableCell>
+                    <TopTableCell>
+                      <FormattedMessage id="FILTERS.TABLE.HEADER.SUBSCRIPTION" />
+                    </TopTableCell>
+                    <TopTableCell align="right"></TopTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {myFilters
+                    .sort((a, b) => a.crop.id - b.crop.id)
+                    .map(item => (
+                      <TableRow key={item.id}>
+                        <TableCell>{item.crop.name}</TableCell>
+                        <TableCell>{item.name}</TableCell>
+                        <TableCell>
+                          <StatusIndicator isActive={item.subscribed} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <IconButton
+                            size="medium"
+                            color="primary"
+                            onClick={() =>
+                              history.push(`/${salePurchaseMode}/filters/view/${item.id}`)
+                            }
+                          >
+                            <VisibilityIcon />
+                          </IconButton>
+                          <IconButton
+                            size="medium"
+                            color="primary"
+                            onClick={() =>
+                              history.push(`/${salePurchaseMode}/filters/edit/${item.id}`)
+                            }
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            size="medium"
+                            onClick={() => {
+                              setDeleteFilterCropId(item.crop.id);
+                              setDeleteFilterId(item.id || 0);
+                              setAlertOpen(true);
+                            }}
+                            color="secondary"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </>
       )}
       <AlertDialog
         isOpen={isAlertOpen}
@@ -259,7 +301,9 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
 const connector = connect(
   (state: IAppState) => ({
     me: state.auth.user,
+    meError: state.auth.error,
     myFilters: state.myFilters.myFilters,
+    filterCount: state.myFilters.filterCount,
     loading: state.myFilters.loading,
     error: state.myFilters.error,
     createLoading: state.myFilters.createLoading,
@@ -277,6 +321,7 @@ const connector = connect(
   }),
   {
     fetch: myFiltersActions.fetchRequest,
+    fetchMe: authActions.fetchRequest,
     clearCreate: myFiltersActions.clearCreate,
     create: myFiltersActions.createRequest,
     clearDel: myFiltersActions.clearDel,

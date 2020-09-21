@@ -5,7 +5,6 @@ import {
   TextField,
   MenuItem,
   Theme,
-  Button,
   FormControlLabel,
   Checkbox,
   IconButton,
@@ -32,6 +31,8 @@ import { setMeValues, setCreateValues, setEditValues } from "../utils/submitValu
 import { IAppState } from "../../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
 import { IUserForEdit } from "../../../../interfaces/users";
+import NumberFormatPhone from "../../../../components/NumberFormatCustom/NumberFormatPhone";
+import { accessByRoles } from "../../../../utils/utils";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   companyContainer: {
@@ -120,7 +121,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     onSubmit: values => {
       if (editMode === "profile" && !isEqual(oldValues, values))
         editMe({ data: setMeValues(values) });
-      if (editMode === "create") createUser(setCreateValues(values));
+
+      if (editMode === "create") createUser(setCreateValues({ ...values, crop_ids: [1] }));
       if (editMode === "edit" && user) {
         let params: IUserForEdit = setEditValues(values);
         params.funnel_state_id = values.funnel_state_id;
@@ -141,9 +143,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         editMode === "create"
           ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
           : Yup.string(),
-      // login: Yup.string()
-      //   .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-      //   .trim(),
+      phone: Yup.string()
+        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+        .matches(/^[0-9][0-9]{9}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
       // repeatPassword: Yup.string().test(
       //   "passwords-match",
       //   intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
@@ -299,8 +301,13 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   }, [editMode, me, resetForm, user]);
 
   useEffect(() => {
-    if (!!me && me.is_admin) fetchFunnelStates();
-  }, [editMode, fetchFunnelStates, me]);
+    if (accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !funnelStates) fetchFunnelStates();
+  }, [editMode, fetchFunnelStates, funnelStates, me]);
+
+  const newRoles = [...roles];
+  if (accessByRoles(me, ["ROLE_MANAGER"]) && editMode === "create") {
+    newRoles.splice(0, 2);
+  }
 
   return (
     <>
@@ -320,7 +327,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             error={Boolean(touched.role && errors.role)}
             disabled={editMode !== "create"}
           >
-            {roles.map((item, i) => (
+            {newRoles.map((item, i) => (
               <MenuItem key={i} value={item.id}>
                 {item.value}
               </MenuItem>
@@ -358,9 +365,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
       {!!user &&
-        !user.is_admin &&
+        !accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
         !!me &&
-        me.is_admin &&
+        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
         (editMode === "edit" || editMode === "view") && (
           <>
             <div className={classes.textFieldContainer}>
@@ -427,29 +434,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             )}
           </>
         )}
-      {/* <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-          <Skeleton width="100%" height={70} animation="wave" />
-        ) : (
-          <TextField
-            type="text"
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.LOGIN",
-            })}
-            margin="normal"
-            className={classes.textField}
-            name="login"
-            value={values.login}
-            variant="outlined"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            helperText={touched.login && errors.login}
-            error={Boolean(touched.login && errors.login)}
-            autoComplete="off"
-            disabled={editMode === "view"}
-          />
-        )}
-      </div> */}
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
@@ -554,6 +538,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             helperText={touched.phone && errors.phone}
             error={Boolean(touched.phone && errors.phone)}
             disabled={editMode === "view"}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              inputComponent: NumberFormatPhone as any,
+            }}
             autoComplete="off"
           />
         )}
@@ -620,54 +608,42 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
-      {/* <div className={classes.button}>
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={() => {
-            throw Error("Ошибка ошибка");
-            console.log(Error);
-          }}
-          disabled={meLoading || userLoading || funnelStatesLoading}
-        >
-          Error
-        </Button>
-      </div> */}
-
-      {editMode !== "view" && (
-        <div className={classes.bottomButtonsContainer}>
-          {editMode !== "profile" && (
-            <div className={classes.button}>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={() => history.push("/user-list")}
-                disabled={meLoading || userLoading || funnelStatesLoading}
-              >
-                {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-              </Button>
-            </div>
-          )}
-          <div className={classes.button}>
+      <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
+        {editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+          <div className={classes.button} style={{ marginTop: 4, marginBottom: 4 }}>
             <ButtonWithLoader
-              loading={editMeLoading || createLoading || editLoading}
-              disabled={
-                editMeLoading ||
-                createLoading ||
-                editLoading ||
-                meLoading ||
-                userLoading ||
-                (editMode !== "profile" && funnelStatesLoading) ||
-                isEqual(oldValues, values)
+              disabled={!user}
+              onPress={() =>
+                history.push(`/bid/create/${user?.is_buyer ? "purchase" : "sale"}/0/0/${user?.id}`)
               }
-              onPress={handleSubmit}
             >
-              {editMode === "create"
-                ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
-                : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+              {intl.formatMessage({ id: "ALL.BUTTONS.BID_CREATE" })}
             </ButtonWithLoader>
           </div>
-          {editMode === "edit" && (
+        )}
+        <div className={classes.flexRow} style={{ marginTop: 4, marginBottom: 4 }}>
+          {editMode !== "view" && (
+            <div className={classes.button}>
+              <ButtonWithLoader
+                loading={editMeLoading || createLoading || editLoading}
+                disabled={
+                  editMeLoading ||
+                  createLoading ||
+                  editLoading ||
+                  meLoading ||
+                  userLoading ||
+                  (editMode !== "profile" && funnelStatesLoading) ||
+                  isEqual(oldValues, values)
+                }
+                onPress={handleSubmit}
+              >
+                {editMode === "create"
+                  ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
+                  : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+              </ButtonWithLoader>
+            </div>
+          )}
+          {editMode === "edit" && me?.is_admin && (
             <div className={classes.button}>
               <OutlinedRedButton
                 variant="outlined"
@@ -679,7 +655,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             </div>
           )}
         </div>
-      )}
+      </div>
     </>
   );
 };

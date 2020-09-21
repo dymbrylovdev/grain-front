@@ -10,6 +10,7 @@ const theme = createMuiTheme(
     // direction: "rtl",
     typography: {
       fontFamily: ["Open Sans"].join(","),
+      fontSize: 18,
     },
 
     palette: {
@@ -41,12 +42,26 @@ const theme = createMuiTheme(
         // contrastText: will be calculated to contrast with palette.primary.main
         contrastText: "#fff",
       },
+      info: {
+        // light: will be calculated from palette.primary.main,
+        main: "#5d78ff",
+        // dark: will be calculated from palette.primary.main,
+        // contrastText: will be calculated to contrast with palette.primary.main
+        contrastText: "#fff",
+      },
     },
 
     /**
      * @see https://material-ui.com/customization/globals/#default-props
      */
     overrides: {
+      MuiInputBase: {
+        root: {
+          "&$disabled": {
+            color: "rgba(0, 0, 0, 0.87)",
+          },
+        },
+      },
       MuiIconButton: {
         colorSecondary: {
           color: "#fd397a",
@@ -86,6 +101,11 @@ const theme = createMuiTheme(
       MuiAppBar: {
         colorDefault: {
           backgroundColor: "#fff",
+        },
+      },
+      MuiTooltip: {
+        tooltip: {
+          fontSize: 12,
         },
       },
     },

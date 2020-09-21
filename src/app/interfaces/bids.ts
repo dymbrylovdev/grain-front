@@ -6,6 +6,7 @@ export interface IBid {
   price: number;
   volume: number;
   description: string;
+  is_pro: boolean;
   author: {
     id: number;
     fio: string;
@@ -13,10 +14,13 @@ export interface IBid {
     company: {
       id: number;
       short_name: string;
+      colors?: string[];
     };
     use_vat: boolean;
   };
   createdAt: string;
+  created_at: string;
+  modified_at: string;
   vendor: {
     id: number;
     fio: string;
@@ -24,8 +28,12 @@ export interface IBid {
     company: {
       id: number;
       short_name: string;
+      colors?: string[];
     };
     use_vat: boolean;
+    company_confirmed_by_email?: boolean;
+    company_confirmed_by_phone?: boolean;
+    company_confirmed_by_payment?: boolean;
   };
   location: {
     lat: number;
@@ -67,6 +75,11 @@ export interface IBid {
   price_with_delivery_with_vat: number | null;
   profit: number;
   vat: number | null;
+  tariff: {
+    id: number;
+    name: string;
+  };
+  payment_term: number;
 }
 
 export interface IBidToRequest {
@@ -91,9 +104,20 @@ export interface IBidToRequest {
     }
   ];
   vendor_id?: number;
+  payment_term?: number;
 }
 
 export interface IBestBids {
   equal: IBid[];
   inexact: IBid[];
+}
+
+export interface IProfit {
+  bid_id: number;
+  value: number;
+}
+
+export interface IPointPriceForGet {
+  point_id: number;
+  price: number;
 }

@@ -7,6 +7,7 @@ import { IServerResponse } from "../../interfaces/server";
 import { getUsers, getUserById, deleteUser, createUser, editUser } from "../../crud/users.crud";
 import { IUser, IUserForCreate, IUserForEdit } from "../../interfaces/users";
 
+const CLEAR_FETCH = "users/CLEAR_FETCH";
 const FETCH_REQUEST = "users/FETCH_REQUEST";
 const FETCH_SUCCESS = "users/FETCH_SUCCESS";
 const FETCH_FAIL = "users/FETCH_FAIL";
@@ -91,6 +92,17 @@ const initialState: IInitialState = {
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
   switch (action.type) {
+    case CLEAR_FETCH: {
+      //console.log("CLEAR_FETCH");
+      return {
+        ...state,
+        users: undefined,
+        loading: true,
+        success: false,
+        error: null,
+      };
+    }
+
     case FETCH_REQUEST: {
       return {
         ...state,
@@ -123,6 +135,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       //console.log("CLEAR_FETCH_BY_ID");
       return {
         ...state,
+        user: undefined,
         byIdLoading: false,
         byIdSuccess: false,
         byIdError: null,
@@ -133,6 +146,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       //console.log("FETCH_BY_ID_REQUEST");
       return {
         ...state,
+        user: undefined,
         byIdLoading: true,
         byIdSuccess: false,
         byIdError: null,
@@ -186,7 +200,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     case EDIT_SUCCESS: {
       return {
         ...state,
-        users: undefined,
+        user: action.payload.data,
         loading: true,
         editLoading: false,
         editSuccess: true,
@@ -219,6 +233,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 };
 
 export const actions = {
+  clearFetch: () => createAction(CLEAR_FETCH),
   fetchRequest: (payload: { page: number; perPage: number }) =>
     createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
@@ -236,7 +251,7 @@ export const actions = {
 
   clearEdit: () => createAction(CLEAR_EDIT),
   editRequest: (payload: { id: number; data: IUserForEdit }) => createAction(EDIT_REQUEST, payload),
-  editSuccess: () => createAction(EDIT_SUCCESS),
+  editSuccess: (payload: IServerResponse<IUser>) => createAction(EDIT_SUCCESS, payload),
   editFail: (payload: string) => createAction(EDIT_FAIL, payload),
 
   clearDel: () => createAction(CLEAR_DEL),
@@ -254,7 +269,7 @@ function* fetchSaga({ payload }: { payload: { page: number; perPage: number } })
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
-    yield put(actions.fetchFail(e.response.data.message));
+    yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -263,7 +278,7 @@ function* fetchByIdSaga({ payload }: { payload: { id: number } }) {
     const { data }: { data: IServerResponse<IUser> } = yield call(() => getUserById(payload.id));
     yield put(actions.fetchByIdSuccess(data));
   } catch (e) {
-    yield put(actions.fetchByIdFail(e.response.data.message));
+    yield put(actions.fetchByIdFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -272,16 +287,18 @@ function* createSaga({ payload }: { payload: IUserForCreate }) {
     const { data }: { data: IServerResponse<IUser> } = yield call(() => createUser(payload));
     yield put(actions.createSuccess(data));
   } catch (e) {
-    yield put(actions.createFail(e.response.data.message));
+    yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
 function* editSaga({ payload }: { payload: { id: number; data: IUserForEdit } }) {
   try {
-    yield call(() => editUser(payload.id, payload.data));
-    yield put(actions.editSuccess());
+    const { data }: { data: IServerResponse<IUser> } = yield call(() =>
+      editUser(payload.id, payload.data)
+    );
+    yield put(actions.editSuccess(data));
   } catch (e) {
-    yield put(actions.editFail(e.response.data.message));
+    yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -290,7 +307,7 @@ function* delSaga({ payload }: { payload: { id: number } }) {
     yield call(() => deleteUser(payload.id));
     yield put(actions.delSuccess());
   } catch (e) {
-    yield put(actions.delFail(e.response.data.message));
+    yield put(actions.delFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 

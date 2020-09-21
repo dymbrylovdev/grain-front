@@ -17,6 +17,7 @@ export const filterForCreate = (
   const filter: IFilterForCreate = {
     name: data.name,
     cropId: +data.cropId,
+    max_payment_term: +data.max_payment_term || 0,
     max_full_price: +data.max_full_price || 0,
     min_full_price: +data.min_full_price || 0,
     max_distance: +data.max_destination || 0,
@@ -62,9 +63,10 @@ export const filterForBids = (
   let filter: IFilterForBids = {
     filter: {
       cropId: +data.cropId,
-      max_full_price: data.max_full_price || 0,
-      min_full_price: data.min_full_price || 0,
-      max_distance: data.max_destination || 0,
+      max_payment_term: +data.max_payment_term || 999,
+      max_full_price: +data.max_full_price || 0,
+      min_full_price: +data.min_full_price || 0,
+      max_distance: +data.max_destination || 0,
       point_prices: data.point_prices,
     },
   };
@@ -100,13 +102,14 @@ export const filterForBids = (
 // fromApiToFilter из фильтра формата API делает формат понимаемый формой
 export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
   let newFilter: { [x: string]: any } = {};
-  if (data && data.id) newFilter["id"] = data.id;
-  if (data && data.name) newFilter["name"] = data.name;
-  if (data && data.crop && data.crop.id) newFilter["cropId"] = +data.crop.id;
-  if (data && data.max_full_price) newFilter["max_full_price"] = data.max_full_price;
-  if (data && data.min_full_price) newFilter["min_full_price"] = data.min_full_price;
-  if (data && data.max_distance) newFilter["max_destination"] = data.max_distance;
-  if (data && data.parameter_values && data.parameter_values.length) {
+  if (data?.id) newFilter["id"] = data.id;
+  if (data?.name) newFilter["name"] = data.name;
+  if (data?.crop && data.crop.id) newFilter["cropId"] = +data.crop.id;
+  if (data?.max_payment_term) newFilter["max_payment_term"] = data.max_payment_term;
+  if (data?.max_full_price) newFilter["max_full_price"] = data.max_full_price;
+  if (data?.min_full_price) newFilter["min_full_price"] = data.min_full_price;
+  if (data?.max_distance) newFilter["max_destination"] = data.max_distance;
+  if (data?.parameter_values && data.parameter_values.length) {
     data.parameter_values.forEach(item => {
       if (item.parameter.type === "enum") {
         let values = item.value as string[];

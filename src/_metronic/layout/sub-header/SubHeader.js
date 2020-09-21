@@ -5,13 +5,16 @@ import objectPath from "object-path";
 import { withRouter } from "react-router-dom";
 //import SaveIcon from "@material-ui/icons/Save";
 //import IconButton from "@material-ui/core/IconButton";
+import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import { LayoutContextConsumer } from "../LayoutContext";
 import * as builder from "../../ducks/builder";
 // import { QuickActions } from './components/QuickActions';
 // import { ReactComponent as SortNum1Icon } from '../../../_metronic/layout/assets/layout-svg-icons/SortNum1.svg';
 import BreadCrumbs from "./components/BreadCrumbs";
-import { Button } from "@material-ui/core";
+import { Button, Tooltip } from "@material-ui/core";
+import { roles } from "../../../app/pages/home/users/utils/profileForm";
+import { injectIntl } from "react-intl";
 
 class SubHeader extends React.Component {
   render() {
@@ -21,6 +24,7 @@ class SubHeader extends React.Component {
       subheaderMobileToggle,
       me,
       history,
+      intl,
     } = this.props;
     return (
       <div id="kt_subheader" className={`kt-subheader ${subheaderCssClasses} kt-grid__item`}>
@@ -54,10 +58,25 @@ class SubHeader extends React.Component {
           </div>
 
           <div className="kt-subheader__toolbar">
+            {!!me && !me.company_confirmed_by_payment && !me.company_confirmed_by_email && (
+              <div>
+                <Tooltip
+                  title={intl.formatMessage({
+                    id: "COMPANY.CONFIRM.NO_CONFIRM",
+                  })}
+                >
+                  <ReportProblemIcon
+                    color="error"
+                    style={{ marginRight: 16, width: 16, height: 16 }}
+                  />
+                </Tooltip>
+              </div>
+            )}
             <div className="kt-subheader__wrapper" style={{ marginRight: 16 }}>
               <div>email: {me.login}</div>
               <div>
-                роль: {me.is_admin ? "Администратор" : me.is_vendor ? "Продавец" : "Покупатель"}
+                роль:{" "}
+                {me?.roles?.length > 0 ? roles.find(item => item.id === me.roles[0])?.value : ""}
               </div>
               {/* <button type="button" className="btn kt-subheader__btn-primary">
                 Actions &nbsp;
@@ -99,4 +118,4 @@ const mapStateToProps = store => ({
   me: store.auth.user,
 });
 
-export default withRouter(connect(mapStateToProps)(SubHeader));
+export default injectIntl(withRouter(connect(mapStateToProps)(SubHeader)));

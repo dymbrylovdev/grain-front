@@ -12,7 +12,7 @@ import CompanySearchDialog from "./CompanySearchDialog";
 
 const innerStyles = makeStyles(theme => ({
   title: {
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: theme.spacing(2),
   },
   companyContainer: {

@@ -7,9 +7,9 @@ import {
   Grid,
   DialogContent,
   IconButton,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -82,7 +82,7 @@ const FilterModal: React.FC<IProps> = ({
 
   const [expanded, setExpanded] = useState<string | false>(false);
 
-  const handleChangeExpansionPanel = (panel: string) => (
+  const handleChangeAccordion = (panel: string) => (
     event: React.ChangeEvent<{}>,
     isExpanded: boolean
   ) => {
@@ -107,38 +107,38 @@ const FilterModal: React.FC<IProps> = ({
       </DialogTitle>
       <DialogContent>
         <div className={classes.topAndBottomMargin}>
-          {!!crops &&
+          {!!dealsFilters &&
             !!allCropParams &&
-            crops.map(item => (
-              <ExpansionPanel
+            dealsFilters.map(item => (
+              <Accordion
                 key={item.id}
                 expanded={expanded === `panel${item.id}`}
-                onChange={handleChangeExpansionPanel(`panel${item.id}`)}
+                onChange={handleChangeAccordion(`panel${item.id}`)}
               >
-                <ExpansionPanelSummary
+                <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls={`panel${item.id}-content`}
                   id={`panel${item.id}-header`}
                 >
                   {!!dealsFilters?.find(
-                    df => df.crop.id === item.id && df.parameters.length > 0
+                    df => df.crop.id === item.crop.id && df.parameters.length > 0
                   ) ? (
-                    <b>{item.name}</b>
+                    <b>{item.crop.name}</b>
                   ) : (
-                    item.name
+                    item.crop.name
                   )}
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                </AccordionSummary>
+                <AccordionDetails>
                   <FilterForm
                     intl={intl}
                     dealsFilters={dealsFilters}
-                    crop={item}
+                    crop={item.crop}
                     allCropParams={allCropParams}
                     editFilter={editFilter}
                     editFilterLoading={editFilterLoading}
                   />
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
+                </AccordionDetails>
+              </Accordion>
             ))}
         </div>
       </DialogContent>

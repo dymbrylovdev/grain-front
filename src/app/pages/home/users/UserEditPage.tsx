@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Paper, AppBar, Tabs, Tab, Divider, makeStyles } from "@material-ui/core";
+import { Paper, AppBar, Tabs, Tab, Divider, makeStyles, Button } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 
 import { actions as usersActions } from "../../../store/ducks/users.duck";
@@ -18,9 +18,10 @@ import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
 import { ProfileForm, CompanyForm, LocationsForm } from "./components";
-import { ErrorPage } from "../../../components/ErrorPage";
 import Prompter from "../prompter/Prompter";
 import ScrollToTop from "../../../components/ui/ScrollToTop";
+import TariffForm from "./components/TariffForm";
+import { accessByRoles } from "../../../utils/utils";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -38,6 +39,8 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
   match,
   intl,
+
+  fetchMe,
   me,
   loadingMe,
   errorMe,
@@ -77,7 +80,6 @@ const UserEditPage: React.FC<TPropsFromRedux &
   prompterRunning,
   prompterStep,
 
-  fetchMe,
   clearEditMe,
   editMe,
 
@@ -95,7 +97,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
   const innerClasses = innerStyles();
   const history = useHistory();
 
-  let editMode: "profile" | "create" | "edit" | "view" = "profile";
+  let editMode: "profile" | "create" | "edit" | "view" = "create";
   if (match.url.indexOf("profile") !== -1) editMode = "profile";
   if (match.url.indexOf("create") !== -1) editMode = "create";
   if (match.url.indexOf("edit") !== -1) editMode = "edit";
@@ -103,13 +105,23 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [isLocTabPulse, setLocTabPulse] = useState(false);
+  const [valueTabs, setValueTabs] = useState(0);
+
+  useEffect(() => {
+    if (editMode === "create") setValueTabs(0);
+  }, [editMode]);
+
+  useEffect(() => {
+    if (match.url.indexOf("profile/crops") !== -1) {
+      setValueTabs(3);
+    }
+  }, [match.url]);
 
   useEffect(() => {
     if (!!me?.fio && !!me?.phone && me?.points.length === 0) setLocTabPulse(true);
     if (me?.points.length !== 0) setLocTabPulse(false);
   }, [me]);
 
-  const [valueTabs, setValueTabs] = useState(0);
   const handleTabsChange = (event: any, newValue: number) => {
     setValueTabs(newValue);
   };
@@ -161,15 +173,19 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
   useEffect(() => {
     switch (editMode) {
-      case "profile":
-        if (!me && !loadingMe) fetchMe();
-        break;
       case "edit":
       case "view":
-        if (!user && !loadingUser) fetchUser({ id: +id });
+        fetchUser({ id: +id });
         break;
     }
-  }, [editMode, fetchMe, fetchUser, id, loadingMe, loadingUser, me, user]);
+    return () => {
+      clearUser();
+    };
+  }, [clearUser, editMode, fetchUser, id]);
+
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
 
   useEffect(() => {
     if (!prompterRunning && editMode === "profile") {
@@ -180,27 +196,51 @@ const UserEditPage: React.FC<TPropsFromRedux &
     }
   }, [editMode, me, prompterRunning, runPrompter]);
 
-  if (errorMe || errorUser || funnelStatesError) return <ErrorPage />;
+  if (errorMe || errorUser || funnelStatesError) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000);
+  }
 
   return (
     <>
       <ScrollToTop />
       <Prompter />
-      <Paper className={classes.container}>
+      <Paper className={classes.paperWithForm}>
         <LayoutSubheader
           title={subTitle(editMode)}
           breadcrumb={undefined}
           description={undefined}
         />
         <div className={classes.form}>
+          <div className={classes.topButtonsContainer}>
+            <div
+              className={classes.flexRow}
+              style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}
+            >
+              <div className={classes.button}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    history.goBack();
+                  }}
+                  disabled={loadingMe || loadingUser}
+                >
+                  {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                </Button>
+              </div>
+            </div>
+          </div>
           <AppBar position="static" color="default" className={classes.appBar}>
             <Tabs
               value={valueTabs}
               onChange={handleTabsChange}
+              variant="scrollable"
               indicatorColor="primary"
               textColor="primary"
               aria-label="tabs"
-              centered
+              // centered
             >
               <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
 
@@ -211,7 +251,17 @@ const UserEditPage: React.FC<TPropsFromRedux &
                       ? { root: innerClasses.pulseRoot }
                       : {}
                   }
-                  label={intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })}
+                  label={
+                    accessByRoles(editMode === "profile" ? me : user, [
+                      "ROLE_ADMIN",
+                      "ROLE_MANAGER",
+                      "ROLE_TRADER",
+                    ])
+                      ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })
+                      : accessByRoles(editMode === "profile" ? me : user, ["ROLE_VENDOR"])
+                      ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.SALE" })
+                      : intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.PURCHASE" })
+                  }
                   {...a11yProps(1)}
                 />
               )}
@@ -219,6 +269,12 @@ const UserEditPage: React.FC<TPropsFromRedux &
                 <Tab
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })}
                   {...a11yProps(2)}
+                />
+              )}
+              {(editMode === "edit" || editMode === "profile") && (
+                <Tab
+                  label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
+                  {...a11yProps(3)}
                 />
               )}
             </Tabs>
@@ -245,6 +301,9 @@ const UserEditPage: React.FC<TPropsFromRedux &
             ) : (
               <CompanyForm userId={+id || undefined} editMode={editMode} />
             )}
+          </TabPanel>
+          <TabPanel value={valueTabs} index={3}>
+            <TariffForm editMode={editMode} userId={+id || undefined} />
           </TabPanel>
         </div>
         <AlertDialog

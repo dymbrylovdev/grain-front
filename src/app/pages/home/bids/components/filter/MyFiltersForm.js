@@ -21,7 +21,7 @@ import { fromApiToFilter } from "../../../myFilters/utils";
 import { filterForCreate } from "../../../myFilters/utils";
 import AlertDialog from "../../../../../components/ui/Dialogs/AlertDialog";
 import { OutlinedRedButton } from "../../../../../components/ui/Buttons/RedButtons";
-import NumberFormatCustom from "../../../../../components/ui/NumberFormatCustom";
+import NumberFormatCustom from "../../../../../components/NumberFormatCustom/NumberFormatCustom";
 
 const innerStyle = makeStyles(theme => ({
   buttonContainer: {
@@ -55,6 +55,7 @@ function MyFiltersForm({
   delLoading,
   editFilter,
   editLoading,
+  salePurchaseMode,
 }) {
   const innerClasses = innerStyle();
   const formRef = useRef();
@@ -91,6 +92,12 @@ function MyFiltersForm({
         name: Yup.string()
           .required(intl.formatMessage({ id: "FILTER.FORM.NAME.REQUIRED" }))
           .trim(),
+        max_full_price: Yup.number()
+          .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+          .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+        min_full_price: Yup.number()
+          .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+          .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       })}
       innerRef={formRef}
     >
@@ -105,6 +112,7 @@ function MyFiltersForm({
         isSubmitting,
         resetForm,
         initialValues,
+        setFieldValue,
       }) => (
         <Col>
           <div style={{ marginBottom: "16px" }}>
@@ -150,6 +158,42 @@ function MyFiltersForm({
                 </Col>
               ))}
           </Row>
+
+          {salePurchaseMode === "purchase" && (
+            <div className={classes.textFieldContainer}>
+              <TextField
+                type="text"
+                label={intl.formatMessage({
+                  id: "FILTER.FORM.MAX_PAYMENT_TERM",
+                })}
+                margin="normal"
+                name="max_payment_term"
+                value={values.max_payment_term || ""}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={e => {
+                  let newValue = e.target.value;
+                  if (+newValue < 0) {
+                    newValue = "0";
+                  }
+                  if (+newValue > 999) {
+                    newValue = "999";
+                  }
+                  setFieldValue("max_payment_term", newValue);
+                }}
+                InputProps={{
+                  inputComponent: NumberFormatCustom,
+                  endAdornment: (
+                    <IconButton onClick={() => setFieldValue("max_payment_term", "")}>
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }}
+                autoComplete="off"
+              />
+            </div>
+          )}
+
           <div className={classes.textFieldContainer}>
             <TextField
               type="text"
@@ -170,6 +214,8 @@ function MyFiltersForm({
                   </IconButton>
                 ),
               }}
+              helperText={touched.max_full_price && errors.max_full_price}
+              error={Boolean(touched.max_full_price && errors.max_full_price)}
               autoComplete="off"
             />
           </div>
@@ -193,6 +239,8 @@ function MyFiltersForm({
                   </IconButton>
                 ),
               }}
+              helperText={touched.min_full_price && errors.min_full_price}
+              error={Boolean(touched.min_full_price && errors.min_full_price)}
               autoComplete="off"
             />
           </div>

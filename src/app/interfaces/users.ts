@@ -1,7 +1,9 @@
 import { ICompany } from "./companies";
 import { ILocation } from "./locations";
+import { ICrop } from "./crops";
+import { ITariff } from "./tariffs";
 
-export type TRole = "ROLE_ADMIN" | "ROLE_VENDOR" | "ROLE_BUYER";
+export type TRole = "ROLE_ADMIN" | "ROLE_VENDOR" | "ROLE_BUYER" | "ROLE_MANAGER" | "ROLE_TRADER";
 
 export interface IUser {
   id: number;
@@ -10,6 +12,7 @@ export interface IUser {
   phone?: string;
   login: string;
   status?: string;
+  roles: TRole[];
   is_buyer?: boolean;
   is_admin?: boolean;
   is_vendor?: boolean;
@@ -28,12 +31,15 @@ export interface IUser {
   } | null;
   is_funnel_state_automate?: boolean;
   use_vat: boolean;
+  tariff: ITariff;
+  crops: ICrop[];
 }
 
 export interface IUserForRegister {
   email: string;
   roles: TRole[];
   login: string;
+  crop_ids?: number[];
 }
 
 export interface IUserForCreate {
@@ -47,6 +53,7 @@ export interface IUserForCreate {
   location?: ILocation;
   company_id?: number;
   use_vat?: boolean;
+  crop_ids?: number[];
 }
 
 export interface IUserForEdit {
@@ -64,6 +71,8 @@ export interface IUserForEdit {
   funnel_state_id?: number;
   is_funnel_state_automate?: boolean;
   use_vat?: boolean;
+  tariff_id?: number;
+  crop_ids?: number[];
 }
 
 export interface IChangePasswordData {

@@ -3,6 +3,8 @@ import { IntlShape } from "react-intl";
 
 import useStyles from "../../styles";
 import { IUser } from "../../../../interfaces/users";
+import { accessByRoles } from "../../../../utils/utils";
+import { roles } from "../utils/profileForm";
 
 interface IProps {
   intl: IntlShape;
@@ -14,12 +16,12 @@ const UserActivity: React.FC<IProps> = ({ intl, user }) => {
 
   return (
     <>
-      {user.is_admin ? (
+      {accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) ? (
         <div
           className={classes.funnelStateName}
           style={{ border: "1px solid rgba(10, 187, 135, 0.4)" }}
         >
-          {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.ADMIN" })}
+          {roles.find(item => item.id === user.roles[0])?.value}
         </div>
       ) : !user.funnel_state ? (
         <div className={classes.funnelStateName} style={{ backgroundColor: "#f2f2f2" }}>

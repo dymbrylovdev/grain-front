@@ -16,12 +16,20 @@ export const editCrop = (id, params) => {
   return axios.put(`${CROP_URL}/${id}`, params);
 };
 
+export const delCrop = id => {
+  return axios.delete(`${CROP_URL}/${id}`);
+};
+
 export const createCropParam = (params, id) => {
   return axios.post(`${CROP_URL}/${id}/parameter`, params);
 };
 
 export const editCropParam = (params, id) => {
   return axios.put(`${CROP_PARAMETER_URL}${id}`, params);
+};
+
+export const delCropParam = id => {
+  return axios.delete(`${CROP_PARAMETER_URL}${id}`);
 };
 
 export const getCropParams = id => {

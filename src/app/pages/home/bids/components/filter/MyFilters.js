@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  makeStyles,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
-  Grid,
-} from "@material-ui/core";
+import { makeStyles, Accordion, AccordionSummary, AccordionDetails, Grid } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl } from "react-intl";
@@ -47,12 +41,13 @@ const MyFilters = ({
   delLoading,
   editFilter,
   editLoading,
+  salePurchaseMode,
 }) => {
   const innerClasses = innerStyle();
 
   const [expanded, setExpanded] = React.useState(false);
 
-  const handleChangeExpansionPanel = panel => (event, isExpanded) => {
+  const handleChangeAccordion = panel => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
@@ -68,12 +63,12 @@ const MyFilters = ({
         ) : (
           <>
             {filters.map(item => (
-              <ExpansionPanel
+              <Accordion
                 key={item.id}
                 expanded={expanded === `panel${item.id}`}
-                onChange={handleChangeExpansionPanel(`panel${item.id}`)}
+                onChange={handleChangeAccordion(`panel${item.id}`)}
               >
-                <ExpansionPanelSummary
+                <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls={`panel${item.id}-content`}
                   id={`panel${item.id}-header`}
@@ -86,8 +81,8 @@ const MyFilters = ({
                         : ""}
                     </Grid>
                   </Grid>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                </AccordionSummary>
+                <AccordionDetails>
                   <MyFiltersForm
                     classes={classes}
                     handleSubmitFilter={handleSubmit}
@@ -102,9 +97,10 @@ const MyFilters = ({
                     delLoading={delLoading}
                     editFilter={editFilter}
                     editLoading={editLoading}
+                    salePurchaseMode={salePurchaseMode}
                   />
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
+                </AccordionDetails>
+              </Accordion>
             ))}
           </>
         )}
