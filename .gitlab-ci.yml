@@ -29,14 +29,14 @@ release-web:
     - docker push $RELEASE_IMAGE
   only:
     - "master"
-    - "1.4"
+    - "1.5"
 
 deploy:
   stage: deploy
   image: gitlab/dind:latest
   only:
     - "master"
-    - "1.4"
+    - "1.5"
   environment: production
   services:
     - docker:dind
