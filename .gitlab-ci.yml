@@ -29,14 +29,14 @@ release-web:
     - docker push $RELEASE_IMAGE
   only:
     - "master"
-    - "1.4"
+    - "1.5"
 
 deploy:
   stage: deploy
   image: gitlab/dind:latest
   only:
     - "master"
-    - "1.4"
+    - "1.5"
   environment: production
   services:
     - docker:dind
@@ -48,6 +48,6 @@ deploy:
     - ssh-add ~/.ssh/id_rsa
     - ssh-keyscan -H $DEPLOYMENT_SERVER_IP >> ~/.ssh/known_hosts
   script:
-    - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
+    - printf "NODE_PATH=src/\nREACT_APP_API_DOMAIN=${REACT_APP_API_DOMAIN}\n" > web-environment.env #envariment varibles
     - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
     - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD $CONTAINER_NAME_DEV:latest;docker stop $CONTAINER_NAME_DEV;docker rm $CONTAINER_NAME_DEV --force;docker pull $RELEASE_IMAGE;docker run --rm -p 0.0.0.0:$DEPLOYMENT_PORT_DEV:3000 --name $CONTAINER_NAME_DEV --env-file web-environment.env -d $RELEASE_IMAGE"
