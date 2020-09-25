@@ -482,13 +482,13 @@ const BidForm: React.FC<IProps> = ({
         (loading ? (
           <Skeleton width="100%" height={20} animation="wave" />
         ) : (
-          <div>
+          <p>
             {intl.formatMessage({ id: "DEALS.DEAL.DATE" })}:{" "}
             {`${bid.modified_at.slice(8, 10)}.${bid.modified_at.slice(
               5,
               7
             )}.${bid.modified_at.slice(0, 4)}`}
-          </div>
+          </p>
         ))}
 
       {!!bid?.vendor?.company?.colors && !!bid?.vendor?.company_confirmed_by_payment && (

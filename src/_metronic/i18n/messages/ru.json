@@ -22,12 +22,14 @@
   "ALL.AUTOCOMPLIT.EMPTY": "Нет совпадений",
   "ALL.AUTOCOMPLIT.LOADING_TEXT": "Загрузка...",
 
+  "MENU": "Меню",
   "MENU.GRAIN": "Рынок зерна",
   "MENU.ANALITICS": "Аналитика",
   "MENU.USERS": "Пользователи",
   "MENU.SETTINGS": "Настройки",
   "MENU.DOCS": "Документы",
   "MENU.LOGOUT": "Выход",
+  "MENU.PROFILE": "Профиль",
   "MENU.DASHBOARD": "DASHBOARD",
 
   "SUBMENU.BIDS.BEST": "Лучшие объявления",
