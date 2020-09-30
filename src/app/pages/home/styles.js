@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core";
 const useStyles = makeStyles(theme => ({
   paperWithTable: {
     display: "flex",
+    flex: 1,
     flexDirection: "column",
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
@@ -11,6 +12,7 @@ const useStyles = makeStyles(theme => ({
   },
   paperWithForm: {
     display: "flex",
+    flex: 1,
     flexDirection: "column",
     alignItems: "center",
     paddingLeft: theme.spacing(2),
@@ -112,6 +114,11 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+  },
+  menuFlexRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "start",
   },
   flexColumn: {
     display: "flex",

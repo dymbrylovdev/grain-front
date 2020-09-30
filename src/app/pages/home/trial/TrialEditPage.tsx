@@ -16,9 +16,11 @@ import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
 import NumberFormatCustom from "../../../components/NumberFormatCustom/NumberFormatCustom";
 import NumberFormatPhone from "../../../components/NumberFormatCustom/NumberFormatPhone";
+import { GrainMenu } from "../../../components/Menu";
 
 const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
+  me,
   trial,
   fetch,
   loading,
@@ -89,95 +91,99 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }
 
   return (
-    <Paper className={classes.paperWithForm}>
-      <LayoutSubheader title={intl.formatMessage({ id: "TRIAL.TITLE" })} />
-      <div className={classes.form}>
-        <div className={classes.textFieldContainer}>
-          {loading ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <TextField
-              type="text"
-              label={intl.formatMessage({ id: "TRIAL.FORM.TIME" })}
-              margin="normal"
-              className={classes.textField}
-              name="trial_days"
-              value={values.trial_days}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={touched.trial_days && errors.trial_days}
-              error={Boolean(touched.trial_days && errors.trial_days)}
-              InputProps={{
-                inputComponent: NumberFormatCustom as any,
-              }}
-              autoComplete="off"
-            />
-          )}
-        </div>
-        <div className={classes.textFieldContainer}>
-          {loading ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <TextField
-              type="text"
-              label={intl.formatMessage({ id: "TRIAL.FORM.EMAIL" })}
-              margin="normal"
-              className={classes.textField}
-              name="manager_email"
-              value={values.manager_email}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={touched.manager_email && errors.manager_email}
-              error={Boolean(touched.manager_email && errors.manager_email)}
-              autoComplete="off"
-            />
-          )}
-        </div>
+    <div className={classes.menuFlexRow}>
+      <GrainMenu />
+      <Paper className={classes.paperWithForm}>
+        <LayoutSubheader title={intl.formatMessage({ id: "TRIAL.TITLE" })} />
+        <div className={classes.form}>
+          <div className={classes.textFieldContainer}>
+            {loading ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <TextField
+                type="text"
+                label={intl.formatMessage({ id: "TRIAL.FORM.TIME" })}
+                margin="normal"
+                className={classes.textField}
+                name="trial_days"
+                value={values.trial_days}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.trial_days && errors.trial_days}
+                error={Boolean(touched.trial_days && errors.trial_days)}
+                InputProps={{
+                  inputComponent: NumberFormatCustom as any,
+                }}
+                autoComplete="off"
+              />
+            )}
+          </div>
+          <div className={classes.textFieldContainer}>
+            {loading ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <TextField
+                type="text"
+                label={intl.formatMessage({ id: "TRIAL.FORM.EMAIL" })}
+                margin="normal"
+                className={classes.textField}
+                name="manager_email"
+                value={values.manager_email}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.manager_email && errors.manager_email}
+                error={Boolean(touched.manager_email && errors.manager_email)}
+                autoComplete="off"
+              />
+            )}
+          </div>
 
-        <div className={classes.textFieldContainer}>
-          {loading ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <TextField
-              type="text"
-              label={intl.formatMessage({ id: "TRIAL.FORM.PHONE" })}
-              margin="normal"
-              className={classes.textField}
-              name="manager_phone"
-              value={values.manager_phone}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={touched.manager_phone && errors.manager_phone}
-              error={Boolean(touched.manager_phone && errors.manager_phone)}
-              InputProps={{
-                inputComponent: NumberFormatPhone as any,
-              }}
-              autoComplete="off"
-            />
-          )}
-        </div>
+          <div className={classes.textFieldContainer}>
+            {loading ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <TextField
+                type="text"
+                label={intl.formatMessage({ id: "TRIAL.FORM.PHONE" })}
+                margin="normal"
+                className={classes.textField}
+                name="manager_phone"
+                value={values.manager_phone}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.manager_phone && errors.manager_phone}
+                error={Boolean(touched.manager_phone && errors.manager_phone)}
+                InputProps={{
+                  inputComponent: NumberFormatPhone as any,
+                }}
+                autoComplete="off"
+              />
+            )}
+          </div>
 
-        <div className={classes.bottomButtonsContainer}>
-          <div className={classes.button}>
-            <ButtonWithLoader
-              loading={editLoading}
-              disabled={loading || editLoading}
-              onPress={handleSubmit}
-            >
-              {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
-            </ButtonWithLoader>
+          <div className={classes.bottomButtonsContainer}>
+            <div className={classes.button}>
+              <ButtonWithLoader
+                loading={editLoading}
+                disabled={loading || editLoading}
+                onPress={handleSubmit}
+              >
+                {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+              </ButtonWithLoader>
+            </div>
           </div>
         </div>
-      </div>
-    </Paper>
+      </Paper>
+    </div>
   );
 };
 
 const connector = connect(
   (state: IAppState) => ({
+    me: state.auth.user,
     trial: state.trial.trial,
     loading: state.trial.loading,
     error: state.trial.error,

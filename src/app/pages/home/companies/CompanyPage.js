@@ -9,6 +9,7 @@ import { LoadError } from "../../../components/ui/Errors";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import CompanyForm from "./components/CompanyForm";
 import useStyles from "../styles";
+import { GrainMenu } from "../../../components/Menu";
 
 function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, editCompany }) {
   const classes = useStyles();
@@ -100,7 +101,8 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
   if (isRedirect) return <Redirect to="/companyList" />;
   if (loading) return <Preloader />;
   return (
-    <>
+    <div className={classes.menuFlexRow}>
+      <GrainMenu />
       {title && <LayoutSubheader title={title} />}
       {errors && errors.get ? (
         <LoadError handleClick={companyAction} />
@@ -112,7 +114,7 @@ function CompanyPage({ intl, match: { params }, getCompanyById, createCompany, e
           companyId={companyId}
         />
       )}
-    </>
+    </div>
   );
 }
 

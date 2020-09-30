@@ -20,6 +20,7 @@ import * as funnelStates from "./ducks/funnelStates.duck";
 import * as deals from "./ducks/deals.duck";
 import * as tariffs from "./ducks/tariffs.duck";
 import * as trial from "./ducks/trial.duck";
+import * as leftMenu from "./ducks/leftMenu.duck";
 
 import * as prompter from "./ducks/prompter.duck";
 
@@ -37,7 +38,8 @@ export type TAppActions =
   | funnelStates.TActions
   | deals.TActions
   | tariffs.TActions
-  | trial.TActions;
+  | trial.TActions
+  | leftMenu.TActions;
 
 export interface IAppState {
   i18n: typeof metronic.i18n.reducer;
@@ -59,6 +61,7 @@ export interface IAppState {
   deals: deals.IInitialState & PersistPartial;
   tariffs: tariffs.IInitialState;
   trial: trial.IInitialState;
+  leftMenu: leftMenu.TInitialState;
 }
 
 export const rootReducer: Reducer<IAppState, TAppActions> = combineReducers<IAppState, TAppActions>(
@@ -82,6 +85,7 @@ export const rootReducer: Reducer<IAppState, TAppActions> = combineReducers<IApp
     deals: deals.reducer,
     tariffs: tariffs.reducer,
     trial: trial.reducer,
+    leftMenu: leftMenu.reducer,
   }
 );
 

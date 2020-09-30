@@ -34,6 +34,7 @@ import { isDealsFilterEmpty } from "./utils/utils";
 import { accessByRoles } from "../../../utils/utils";
 import NumberFormatCustom from "../../../components/NumberFormatCustom/NumberFormatCustom";
 import MiniTrafficLight from "../users/components/miniTrafficLight/MiniTrafficLight";
+import { GrainMenu } from "../../../components/Menu";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -147,273 +148,275 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }
 
   return (
-    <Paper className={classes.paperWithTable}>
-      {!!crops && <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />}
-      {
-        <div
-          className={classes.flexRow}
-          style={{ justifyContent: "space-between", marginBottom: "8px", marginTop: "16px" }}
-        >
+    <div className={classes.menuFlexRow}>
+      <GrainMenu bestAllMyDealsMode="deals" />
+      <Paper className={classes.paperWithTable}>
+        {!!crops && <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />}
+        {
           <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
-              alignItems: "center",
-            }}
+            className={classes.flexRow}
+            style={{ justifyContent: "space-between", marginBottom: "8px", marginTop: "16px" }}
           >
-            <div style={{ marginRight: "16px" }}>
-              <div>{intl.formatMessage({ id: "DEALS.WEEKS.TEXT" })}</div>
-              <div style={{ width: 200 }}>
-                <TextField
-                  margin="normal"
-                  label={intl.formatMessage({
-                    id: "DEALS.WEEKS.WEEKS",
-                  })}
-                  value={values.weeks}
-                  onChange={e => {
-                    let newValue = e.target.value;
-                    if (+newValue < 0) {
-                      newValue = "0";
-                    }
-                    if (+newValue > 100) {
-                      newValue = "100";
-                    }
-                    setFieldValue("weeks", newValue);
-                  }}
-                  InputProps={{ inputComponent: NumberFormatCustom as any }}
-                  onBlur={() => handleSubmit()}
-                  name="weeks"
-                  variant="outlined"
-                  helperText={touched.weeks && errors.weeks}
-                  error={Boolean(touched.weeks && errors.weeks)}
-                  autoComplete="off"
-                />
-              </div>
-            </div>
-            <div style={{ marginRight: "16px" }}>
-              <div>{intl.formatMessage({ id: "FILTER.FORM.MAX_PAYMENT_TERM1" })}</div>
-              <div style={{ width: 200 }}>
-                <TextField
-                  type="text"
-                  label={intl.formatMessage({
-                    id: "FILTER.FORM.MAX_PAYMENT_TERM2",
-                  })}
-                  margin="normal"
-                  name="term"
-                  value={values.term || ""}
-                  variant="outlined"
-                  onBlur={() => handleSubmit()}
-                  onChange={e => {
-                    let newValue = e.target.value;
-                    if (+newValue < 0) {
-                      newValue = "0";
-                    }
-                    if (+newValue > 999) {
-                      newValue = "999";
-                    }
-                    setFieldValue("term", newValue);
-                  }}
-                  InputProps={{ inputComponent: NumberFormatCustom as any }}
-                  autoComplete="off"
-                />
-              </div>
-            </div>
-
-            <div style={{ marginTop: 8, marginBottom: 8 }}>
-              <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
-                {intl.formatMessage({ id: "DEALS.WEEKS.BUTTON" })}
-              </Button>
-            </div>
-          </div>
-          {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
             <div
-              className={classes.flexRow}
-              style={{ textAlign: "right", marginLeft: 16, alignSelf: "flex-start" }}
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                alignItems: "center",
+              }}
             >
-              <div>{intl.formatMessage({ id: "DEALS.FILTER.NAME" })}</div>
-              <div>
-                <IconButton
-                  onClick={() => {
-                    setFilterModalOpen(true);
-                  }}
-                >
-                  <CustomIcon
-                    path={
-                      isDealsFilterEmpty(dealsFilters)
-                        ? "/media/filter/filter.svg"
-                        : "/media/filter/filter_full.svg"
-                    }
+              <div style={{ marginRight: "16px" }}>
+                <div>{intl.formatMessage({ id: "DEALS.WEEKS.TEXT" })}</div>
+                <div style={{ width: 200 }}>
+                  <TextField
+                    margin="normal"
+                    label={intl.formatMessage({
+                      id: "DEALS.WEEKS.WEEKS",
+                    })}
+                    value={values.weeks}
+                    onChange={e => {
+                      let newValue = e.target.value;
+                      if (+newValue < 0) {
+                        newValue = "0";
+                      }
+                      if (+newValue > 100) {
+                        newValue = "100";
+                      }
+                      setFieldValue("weeks", newValue);
+                    }}
+                    InputProps={{ inputComponent: NumberFormatCustom as any }}
+                    onBlur={() => handleSubmit()}
+                    name="weeks"
+                    variant="outlined"
+                    helperText={touched.weeks && errors.weeks}
+                    error={Boolean(touched.weeks && errors.weeks)}
+                    autoComplete="off"
                   />
-                </IconButton>
+                </div>
+              </div>
+              <div style={{ marginRight: "16px" }}>
+                <div>{intl.formatMessage({ id: "FILTER.FORM.MAX_PAYMENT_TERM1" })}</div>
+                <div style={{ width: 200 }}>
+                  <TextField
+                    type="text"
+                    label={intl.formatMessage({
+                      id: "FILTER.FORM.MAX_PAYMENT_TERM2",
+                    })}
+                    margin="normal"
+                    name="term"
+                    value={values.term || ""}
+                    variant="outlined"
+                    onBlur={() => handleSubmit()}
+                    onChange={e => {
+                      let newValue = e.target.value;
+                      if (+newValue < 0) {
+                        newValue = "0";
+                      }
+                      if (+newValue > 999) {
+                        newValue = "999";
+                      }
+                      setFieldValue("term", newValue);
+                    }}
+                    InputProps={{ inputComponent: NumberFormatCustom as any }}
+                    autoComplete="off"
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginTop: 8, marginBottom: 8 }}>
+                <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
+                  {intl.formatMessage({ id: "DEALS.WEEKS.BUTTON" })}
+                </Button>
               </div>
             </div>
-          )}
-        </div>
-      }
-      {!deals || !crops || !dealsFilters || !allCropParams ? (
-        <>
-          <Skeleton width="100%" height={52} animation="wave" />
-          <Skeleton width="100%" height={77} animation="wave" />
-          <Skeleton width="100%" height={77} animation="wave" />
-          <Skeleton width="100%" height={77} animation="wave" />
-          <Skeleton width="100%" height={77} animation="wave" />
-          <Skeleton width="100%" height={77} animation="wave" />
-          <Skeleton width="100%" height={53} animation="wave" />
-        </>
-      ) : !deals?.length ? (
-        <div>{intl.formatMessage({ id: "DEALS.EMPTY" })}</div>
-      ) : (
-        <div className={classes.table}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.CROP" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.SALE" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.PURCHASE" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.PROFIT" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.DISTANCE" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="BIDSLIST.TABLE.TIME" />
-                </TopTableCell>
-                <TopTableCell></TopTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {!!deals &&
-                deals.map((item, i) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      {crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}
-                    </TableCell>
-                    <TableCell>
-                      <div className={classes.flexColumn}>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                          <strong>{item.sale_bid.price}</strong>
-                        </div>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                          <strong>{item.sale_bid.volume}</strong>
-                        </div>
-                        <div>
-                          {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })}
-                          {": "}
-                          {item.sale_bid.location.text}
-                        </div>
-                        <div>{intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}</div>
-                        <div>
-                          <div className={classes.flexRow}>
-                            {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
-                              <Tooltip
-                                title={intl.formatMessage({
-                                  id: "USERLIST.TOOLTIP.COMPANY",
-                                })}
-                              >
-                                <CheckCircleOutlineIcon
-                                  color="secondary"
-                                  style={{ marginRight: 4, width: 16, height: 16 }}
-                                />
-                              </Tooltip>
-                            )}
-                            <div>{`${item?.sale_bid.vendor.fio ||
-                              item?.sale_bid.vendor.login ||
-                              ""}`}</div>
+            {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+              <div
+                className={classes.flexRow}
+                style={{ textAlign: "right", marginLeft: 16, alignSelf: "flex-start" }}
+              >
+                <div>{intl.formatMessage({ id: "DEALS.FILTER.NAME" })}</div>
+                <div>
+                  <IconButton
+                    onClick={() => {
+                      setFilterModalOpen(true);
+                    }}
+                  >
+                    <CustomIcon
+                      path={
+                        isDealsFilterEmpty(dealsFilters)
+                          ? "/media/filter/filter.svg"
+                          : "/media/filter/filter_full.svg"
+                      }
+                    />
+                  </IconButton>
+                </div>
+              </div>
+            )}
+          </div>
+        }
+        {!deals || !crops || !dealsFilters || !allCropParams ? (
+          <>
+            <Skeleton width="100%" height={52} animation="wave" />
+            <Skeleton width="100%" height={77} animation="wave" />
+            <Skeleton width="100%" height={77} animation="wave" />
+            <Skeleton width="100%" height={77} animation="wave" />
+            <Skeleton width="100%" height={77} animation="wave" />
+            <Skeleton width="100%" height={77} animation="wave" />
+            <Skeleton width="100%" height={53} animation="wave" />
+          </>
+        ) : !deals?.length ? (
+          <div>{intl.formatMessage({ id: "DEALS.EMPTY" })}</div>
+        ) : (
+          <div className={classes.table}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.CROP" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.SALE" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.PURCHASE" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.PROFIT" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.DISTANCE" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="BIDSLIST.TABLE.TIME" />
+                  </TopTableCell>
+                  <TopTableCell></TopTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {!!deals &&
+                  deals.map((item, i) => (
+                    <TableRow key={i}>
+                      <TableCell>
+                        {crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}
+                      </TableCell>
+                      <TableCell>
+                        <div className={classes.flexColumn}>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                            <strong>{item.sale_bid.price}</strong>
                           </div>
-                          {item?.sale_bid.vendor.company && (
-                            <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                              {!!item?.sale_bid?.vendor?.company?.colors &&
-                                item?.sale_bid.vendor.company.colors.length > 0 && (
-                                  <MiniTrafficLight
-                                    intl={intl}
-                                    colors={item?.sale_bid.vendor.company.colors}
-                                  />
-                                )}
-                              <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className={classes.flexColumn}>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                          <strong>{item.purchase_bid.price}</strong>
-                        </div>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                          <strong>{item.purchase_bid.volume}</strong>
-                        </div>
-                        <div>
-                          {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })}
-                          {": "}
-                          {item.purchase_bid.location.text}
-                        </div>
-                        <div>{intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}</div>
-                        <div>
-                          <div className={classes.flexRow}>
-                            {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
-                              <Tooltip
-                                title={intl.formatMessage({
-                                  id: "USERLIST.TOOLTIP.COMPANY",
-                                })}
-                              >
-                                <CheckCircleOutlineIcon
-                                  color="secondary"
-                                  style={{ marginRight: 4, width: 16, height: 16 }}
-                                />
-                              </Tooltip>
-                            )}
-                            <div>{`${item?.purchase_bid.vendor.fio ||
-                              item?.purchase_bid.vendor.login ||
-                              ""}`}</div>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                            <strong>{item.sale_bid.volume}</strong>
                           </div>
-                          {item?.purchase_bid.vendor.company && (
-                            <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                              {!!item?.purchase_bid?.vendor?.company?.colors &&
-                                item?.purchase_bid.vendor.company.colors.length > 0 && (
-                                  <MiniTrafficLight
-                                    intl={intl}
-                                    colors={item?.purchase_bid.vendor.company.colors}
+                          <div>
+                            {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })}
+                            {": "}
+                            {item.sale_bid.location.text}
+                          </div>
+                          <div>{intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}</div>
+                          <div>
+                            <div className={classes.flexRow}>
+                              {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
+                                <Tooltip
+                                  title={intl.formatMessage({
+                                    id: "USERLIST.TOOLTIP.COMPANY",
+                                  })}
+                                >
+                                  <CheckCircleOutlineIcon
+                                    color="secondary"
+                                    style={{ marginRight: 4, width: 16, height: 16 }}
                                   />
-                                )}
-                              <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
+                                </Tooltip>
+                              )}
+                              <div>{`${item?.sale_bid.vendor.fio ||
+                                item?.sale_bid.vendor.login ||
+                                ""}`}</div>
                             </div>
-                          )}
+                            {item?.sale_bid.vendor.company && (
+                              <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                                {!!item?.sale_bid?.vendor?.company?.colors &&
+                                  item?.sale_bid.vendor.company.colors.length > 0 && (
+                                    <MiniTrafficLight
+                                      intl={intl}
+                                      colors={item?.sale_bid.vendor.company.colors}
+                                    />
+                                  )}
+                                <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{Math.round(item.profit_with_delivery_price)}</TableCell>
-                    <TableCell>{item.distance}</TableCell>
-                    <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        size="medium"
-                        color="primary"
-                        onClick={() =>
-                          history.push(
-                            `/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`
-                          )
-                        }
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-            {/* <TableFooter>
+                      </TableCell>
+                      <TableCell>
+                        <div className={classes.flexColumn}>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                            <strong>{item.purchase_bid.price}</strong>
+                          </div>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                            <strong>{item.purchase_bid.volume}</strong>
+                          </div>
+                          <div>
+                            {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })}
+                            {": "}
+                            {item.purchase_bid.location.text}
+                          </div>
+                          <div>{intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}</div>
+                          <div>
+                            <div className={classes.flexRow}>
+                              {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
+                                <Tooltip
+                                  title={intl.formatMessage({
+                                    id: "USERLIST.TOOLTIP.COMPANY",
+                                  })}
+                                >
+                                  <CheckCircleOutlineIcon
+                                    color="secondary"
+                                    style={{ marginRight: 4, width: 16, height: 16 }}
+                                  />
+                                </Tooltip>
+                              )}
+                              <div>{`${item?.purchase_bid.vendor.fio ||
+                                item?.purchase_bid.vendor.login ||
+                                ""}`}</div>
+                            </div>
+                            {item?.purchase_bid.vendor.company && (
+                              <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                                {!!item?.purchase_bid?.vendor?.company?.colors &&
+                                  item?.purchase_bid.vendor.company.colors.length > 0 && (
+                                    <MiniTrafficLight
+                                      intl={intl}
+                                      colors={item?.purchase_bid.vendor.company.colors}
+                                    />
+                                  )}
+                                <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{Math.round(item.profit_with_delivery_price)}</TableCell>
+                      <TableCell>{item.distance}</TableCell>
+                      <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          size="medium"
+                          color="primary"
+                          onClick={() =>
+                            history.push(
+                              `/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`
+                            )
+                          }
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+              {/* <TableFooter>
               <TableRow>
                 <TablePaginator
                   page={page}
@@ -424,20 +427,21 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 />
               </TableRow>
             </TableFooter> */}
-          </Table>
-        </div>
-      )}
-      <FilterModal
-        intl={intl}
-        isOpen={filterModalOpen}
-        handleClose={() => setFilterModalOpen(false)}
-        dealsFilters={dealsFilters}
-        crops={crops}
-        allCropParams={allCropParams}
-        editFilter={editFilter}
-        editFilterLoading={editFilterLoading}
-      />
-    </Paper>
+            </Table>
+          </div>
+        )}
+        <FilterModal
+          intl={intl}
+          isOpen={filterModalOpen}
+          handleClose={() => setFilterModalOpen(false)}
+          dealsFilters={dealsFilters}
+          crops={crops}
+          allCropParams={allCropParams}
+          editFilter={editFilter}
+          editFilterLoading={editFilterLoading}
+        />
+      </Paper>
+    </div>
   );
 };
 

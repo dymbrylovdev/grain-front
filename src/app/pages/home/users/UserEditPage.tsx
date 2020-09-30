@@ -22,6 +22,7 @@ import Prompter from "../prompter/Prompter";
 import ScrollToTop from "../../../components/ui/ScrollToTop";
 import TariffForm from "./components/TariffForm";
 import { accessByRoles } from "../../../utils/utils";
+import { GrainMenu } from "../../../components/Menu";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -206,125 +207,131 @@ const UserEditPage: React.FC<TPropsFromRedux &
     <>
       <ScrollToTop />
       <Prompter />
-      <Paper className={classes.paperWithForm}>
-        <LayoutSubheader
-          title={subTitle(editMode)}
-          breadcrumb={undefined}
-          description={undefined}
-        />
-        <div className={classes.form}>
-          <div className={classes.topButtonsContainer}>
-            <div
-              className={classes.flexRow}
-              style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}
-            >
-              <div className={classes.button}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => {
-                    history.goBack();
-                  }}
-                  disabled={loadingMe || loadingUser}
-                >
-                  {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-                </Button>
+      <div className={classes.menuFlexRow}>
+        <GrainMenu />
+        <Paper className={classes.paperWithForm}>
+          <LayoutSubheader
+            title={subTitle(editMode)}
+            breadcrumb={undefined}
+            description={undefined}
+          />
+          <div className={classes.form}>
+            <div className={classes.topButtonsContainer}>
+              <div
+                className={classes.flexRow}
+                style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}
+              >
+                <div className={classes.button}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      history.goBack();
+                    }}
+                    disabled={loadingMe || loadingUser}
+                  >
+                    {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-          <AppBar position="static" color="default" className={classes.appBar}>
-            <Tabs
-              value={valueTabs}
-              onChange={handleTabsChange}
-              variant="scrollable"
-              indicatorColor="primary"
-              textColor="primary"
-              aria-label="tabs"
-              // centered
-            >
-              <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
+            <AppBar position="static" color="default" className={classes.appBar}>
+              <Tabs
+                value={valueTabs}
+                onChange={handleTabsChange}
+                variant="scrollable"
+                indicatorColor="primary"
+                textColor="primary"
+                aria-label="tabs"
+                // centered
+              >
+                <Tab
+                  label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })}
+                  {...a11yProps(0)}
+                />
 
-              {editMode !== "create" && (
-                <Tab
-                  classes={
-                    prompterRunning && prompterStep === 0 && isLocTabPulse
-                      ? { root: innerClasses.pulseRoot }
-                      : {}
-                  }
-                  label={
-                    accessByRoles(editMode === "profile" ? me : user, [
-                      "ROLE_ADMIN",
-                      "ROLE_MANAGER",
-                      "ROLE_TRADER",
-                    ])
-                      ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })
-                      : accessByRoles(editMode === "profile" ? me : user, ["ROLE_VENDOR"])
-                      ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.SALE" })
-                      : intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.PURCHASE" })
-                  }
-                  {...a11yProps(1)}
-                />
+                {editMode !== "create" && (
+                  <Tab
+                    classes={
+                      prompterRunning && prompterStep === 0 && isLocTabPulse
+                        ? { root: innerClasses.pulseRoot }
+                        : {}
+                    }
+                    label={
+                      accessByRoles(editMode === "profile" ? me : user, [
+                        "ROLE_ADMIN",
+                        "ROLE_MANAGER",
+                        "ROLE_TRADER",
+                      ])
+                        ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })
+                        : accessByRoles(editMode === "profile" ? me : user, ["ROLE_VENDOR"])
+                        ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.SALE" })
+                        : intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.PURCHASE" })
+                    }
+                    {...a11yProps(1)}
+                  />
+                )}
+                {editMode !== "create" && (
+                  <Tab
+                    label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })}
+                    {...a11yProps(2)}
+                  />
+                )}
+                {(editMode === "edit" || editMode === "profile") && (
+                  <Tab
+                    label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
+                    {...a11yProps(3)}
+                  />
+                )}
+              </Tabs>
+            </AppBar>
+            <Divider />
+            <TabPanel value={valueTabs} index={0}>
+              <ProfileForm
+                userId={+id || undefined}
+                editMode={editMode}
+                setAlertOpen={setAlertOpen}
+                setLocTabPulse={setLocTabPulse}
+              />
+            </TabPanel>
+            <TabPanel value={valueTabs} index={1}>
+              {editMode === "create" ? (
+                <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
+              ) : (
+                <LocationsForm editMode={editMode} userId={+id || undefined} />
               )}
-              {editMode !== "create" && (
-                <Tab
-                  label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })}
-                  {...a11yProps(2)}
-                />
+            </TabPanel>
+            <TabPanel value={valueTabs} index={2}>
+              {editMode === "create" ? (
+                <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
+              ) : (
+                <CompanyForm userId={+id || undefined} editMode={editMode} />
               )}
-              {(editMode === "edit" || editMode === "profile") && (
-                <Tab
-                  label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
-                  {...a11yProps(3)}
-                />
-              )}
-            </Tabs>
-          </AppBar>
-          <Divider />
-          <TabPanel value={valueTabs} index={0}>
-            <ProfileForm
-              userId={+id || undefined}
-              editMode={editMode}
-              setAlertOpen={setAlertOpen}
-              setLocTabPulse={setLocTabPulse}
-            />
-          </TabPanel>
-          <TabPanel value={valueTabs} index={1}>
-            {editMode === "create" ? (
-              <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
-            ) : (
-              <LocationsForm editMode={editMode} userId={+id || undefined} />
-            )}
-          </TabPanel>
-          <TabPanel value={valueTabs} index={2}>
-            {editMode === "create" ? (
-              <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
-            ) : (
-              <CompanyForm userId={+id || undefined} editMode={editMode} />
-            )}
-          </TabPanel>
-          <TabPanel value={valueTabs} index={3}>
-            <TariffForm editMode={editMode} userId={+id || undefined} />
-          </TabPanel>
-        </div>
-        <AlertDialog
-          isOpen={isAlertOpen}
-          text={intl.formatMessage({
-            id: "USERLIST.DIALOGS.DELETE_TEXT",
-          })}
-          okText={intl.formatMessage({
-            id: "USERLIST.DIALOGS.AGREE_TEXT",
-          })}
-          cancelText={intl.formatMessage({
-            id: "USERLIST.DIALOGS.CANCEL_TEXT",
-          })}
-          handleClose={() => setAlertOpen(false)}
-          handleAgree={() => delUser({ id: +id })}
-          loadingText={intl.formatMessage({
-            id: "USERLIST.DIALOGS.LOADING_TEXT",
-          })}
-          isLoading={delLoading}
-        />
-      </Paper>
+            </TabPanel>
+            <TabPanel value={valueTabs} index={3}>
+              <TariffForm editMode={editMode} userId={+id || undefined} />
+            </TabPanel>
+          </div>
+          <AlertDialog
+            isOpen={isAlertOpen}
+            text={intl.formatMessage({
+              id: "USERLIST.DIALOGS.DELETE_TEXT",
+            })}
+            okText={intl.formatMessage({
+              id: "USERLIST.DIALOGS.AGREE_TEXT",
+            })}
+            cancelText={intl.formatMessage({
+              id: "USERLIST.DIALOGS.CANCEL_TEXT",
+            })}
+            handleClose={() => setAlertOpen(false)}
+            handleAgree={() => delUser({ id: +id })}
+            loadingText={intl.formatMessage({
+              id: "USERLIST.DIALOGS.LOADING_TEXT",
+            })}
+            isLoading={delLoading}
+          />
+        </Paper>
+      </div>
     </>
   );
 };

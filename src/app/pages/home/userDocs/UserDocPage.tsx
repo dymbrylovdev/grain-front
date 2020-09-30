@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
-import { injectIntl, FormattedMessage } from "react-intl";
+import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
 import { Formik, Form } from "formik";
 import { EditorState } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
@@ -10,12 +10,18 @@ import { getDoc, createDoc, editDoc } from "../../../crud/docs.crud";
 
 import { RichEditor } from "../../../components";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
+import { GrainMenu } from "../../../components/Menu";
 
 const useStyles = makeStyles(theme => ({
   buttonContainer: {
     alignItems: "center",
     justifyContent: "center",
     marginTop: theme.spacing(3),
+  },
+  menuFlexRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "start",
   },
 }));
 
@@ -27,7 +33,7 @@ interface IUserAgreement {
 }
 
 // TODO: make user_agreement from router
-function UserDocPage() {
+const UserDocPage: React.FC<WrappedComponentProps> = ({ intl }) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [userAgreement, setUserAgreement] = useState<IUserAgreement | null>(null);
@@ -71,7 +77,8 @@ function UserDocPage() {
   };
 
   return (
-    <>
+    <div className={classes.menuFlexRow}>
+      <GrainMenu />
       <Formik initialValues={{}} onSubmit={handleSubmit}>
         {() => (
           <Form>
@@ -91,8 +98,8 @@ function UserDocPage() {
           </Form>
         )}
       </Formik>
-    </>
+    </div>
   );
-}
+};
 
 export default injectIntl(UserDocPage);

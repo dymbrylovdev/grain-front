@@ -20,8 +20,9 @@ import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import useStyles from "../styles";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LoadError } from "../../../components/ui/Errors";
+import { GrainMenu } from "../../../components/Menu";
 
-function CropsListPage({ setMenuConfig, getCrops, match }) {
+function CropsListPage({ intl, setMenuConfig, getCrops, match }) {
   const history = useHistory();
 
   const { crops, user, loading, errors } = useSelector(
@@ -55,44 +56,47 @@ function CropsListPage({ setMenuConfig, getCrops, match }) {
   if (errors.crops) return <LoadError handleClick={() => getCropsAction()} />;
 
   return (
-    <Paper className={classes.paperWithTable}>
-      <div className={classes.buttonContainer}>
-        <Button variant="contained" color="primary" onClick={() => history.push("/crop/create")}>
-          <FormattedMessage id="CROPSLIST.BUTTON.CREATE" />
-        </Button>
-      </div>
-      <div className={classes.table}>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TopTableCell>
-                <FormattedMessage id="CROPSLIST.TABLE.ID" />
-              </TopTableCell>
-              <TopTableCell>
-                <FormattedMessage id="CROPSLIST.TABLE.NAME" />
-              </TopTableCell>
-              <TopTableCell></TopTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {activeCrops &&
-              activeCrops.map(crop => (
-                <TableRow key={crop.id}>
-                  <TableCell>{crop.id}</TableCell>
-                  <TableCell>{crop.name}</TableCell>
-                  <TableCell align="right">
-                    <Link to={`/crop/edit/${crop.id}`}>
-                      <IconButton size="medium" color="primary">
-                        <EditIcon />
-                      </IconButton>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </div>
-    </Paper>
+    <div className={classes.menuFlexRow}>
+      <GrainMenu />
+      <Paper className={classes.paperWithTable}>
+        <div className={classes.buttonContainer}>
+          <Button variant="contained" color="primary" onClick={() => history.push("/crop/create")}>
+            <FormattedMessage id="CROPSLIST.BUTTON.CREATE" />
+          </Button>
+        </div>
+        <div className={classes.table}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TopTableCell>
+                  <FormattedMessage id="CROPSLIST.TABLE.ID" />
+                </TopTableCell>
+                <TopTableCell>
+                  <FormattedMessage id="CROPSLIST.TABLE.NAME" />
+                </TopTableCell>
+                <TopTableCell></TopTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {activeCrops &&
+                activeCrops.map(crop => (
+                  <TableRow key={crop.id}>
+                    <TableCell>{crop.id}</TableCell>
+                    <TableCell>{crop.name}</TableCell>
+                    <TableCell align="right">
+                      <Link to={`/crop/edit/${crop.id}`}>
+                        <IconButton size="medium" color="primary">
+                          <EditIcon />
+                        </IconButton>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </div>
+      </Paper>
+    </div>
   );
 }
 

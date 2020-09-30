@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { Collapse, Divider, makeStyles, Menu, MenuItem, Tooltip } from "@material-ui/core";
+import {
+  Collapse,
+  Divider,
+  makeStyles,
+  Menu,
+  MenuItem,
+  Tooltip,
+  useMediaQuery,
+} from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import MenuIcon from "@material-ui/icons/Menu";
 import TuneIcon from "@material-ui/icons/Tune";
@@ -9,6 +17,8 @@ import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 import PersonPinOutlinedIcon from "@material-ui/icons/PersonPinOutlined";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
+
+import { leftMenuActions } from "../../app/store/ducks/leftMenu.duck";
 
 import { IAppState } from "../../app/store/rootDuck";
 import { accessByRoles } from "../../app/utils/utils";
@@ -69,7 +79,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({ intl, me }) => {
+const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
+  intl,
+  me,
+  leftMenuOpen,
+  setLeftMenuOpen,
+}) => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -89,14 +104,20 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({ intl, me
     setAnchorEl(null);
   };
 
+  const mediaQuerymatches = useMediaQuery("(min-width:1025px)");
+
   return (
     <div className={classes.root}>
       <div className="kt-container kt-container--fluid">
         <div className={classes.btns}>
-          <div className={classes.btn}>
-            <MenuIcon />
-            <div className={classes.menu_btn_text}>{intl.formatMessage({ id: "MENU" })}</div>
-          </div>
+          {!mediaQuerymatches ? (
+            <div className={classes.btn} onClick={() => setLeftMenuOpen(!leftMenuOpen)}>
+              <MenuIcon />
+              <div className={classes.menu_btn_text}>{intl.formatMessage({ id: "MENU" })}</div>
+            </div>
+          ) : (
+            <div></div>
+          )}
           <div
             className={classes.btn}
             onClick={(event: React.MouseEvent<HTMLDivElement>) => {
@@ -377,8 +398,9 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({ intl, me
 const connector = connect(
   (state: IAppState) => ({
     me: state.auth.user,
+    leftMenuOpen: state.leftMenu.leftMenuOpen,
   }),
-  {}
+  { ...leftMenuActions }
 );
 
 type TPropsFromRedux = ConnectedProps<typeof connector>;

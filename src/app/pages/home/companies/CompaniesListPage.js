@@ -9,6 +9,7 @@ import useStyles from "../styles";
 import CompanyTable from "./components/CompanyTable";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LayoutSubheader } from "../../../../_metronic";
+import { GrainMenu } from "../../../components/Menu";
 
 function CompaniesListPage({ intl, getCompanies }) {
   const classes = useStyles();
@@ -56,21 +57,28 @@ function CompaniesListPage({ intl, getCompanies }) {
   }
 
   return (
-    <Paper className={classes.paperWithTable}>
-      <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.COMPANY.LIST" })} />
-      <div className={classes.topMargin}>
-        <Button variant="contained" color="primary" onClick={() => history.push("/company/create")}>
-          {intl.formatMessage({ id: "COMPANY.BUTTON.ADD" })}
-        </Button>
-      </div>
-      <div className={classes.topMargin} />
-      <CompanyTable
-        classes={classes}
-        companies={companies}
-        paginationData={paginationData}
-        title={intl.formatMessage({ id: "COMPANY.TABLE.TITLE" })}
-      />
-    </Paper>
+    <div className={classes.menuFlexRow}>
+      <GrainMenu />
+      <Paper className={classes.paperWithTable}>
+        <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.COMPANY.LIST" })} />
+        <div className={classes.topMargin}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => history.push("/company/create")}
+          >
+            {intl.formatMessage({ id: "COMPANY.BUTTON.ADD" })}
+          </Button>
+        </div>
+        <div className={classes.topMargin} />
+        <CompanyTable
+          classes={classes}
+          companies={companies}
+          paginationData={paginationData}
+          title={intl.formatMessage({ id: "COMPANY.TABLE.TITLE" })}
+        />
+      </Paper>
+    </div>
   );
 }
 
