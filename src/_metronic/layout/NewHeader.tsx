@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation, useParams, useRouteMatch } from "react-router-dom";
 import {
   Collapse,
   Divider,
@@ -87,6 +87,9 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 }) => {
   const classes = useStyles();
   const history = useHistory();
+  // const location = useLocation();
+
+  // console.log(location);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
