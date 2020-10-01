@@ -125,8 +125,7 @@ const BidTable: React.FC<IProps> = ({
                     <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
                   </TopTableCell>
                 )}
-                {clientWidth > 1024 &&
-                  bestAllMyMode !== "my-bids" &&
+                {bestAllMyMode !== "my-bids" &&
                   accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
                     <TopTableCell>
                       <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
@@ -153,11 +152,14 @@ const BidTable: React.FC<IProps> = ({
                     )}
                   </TopTableCell>
                 )}
-                {bestAllMyMode !== "my-bids" && (
-                  <TopTableCell>
-                    <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
-                  </TopTableCell>
-                )}
+                {bestAllMyMode !== "my-bids" &&
+                  (clientWidth > 1024 ||
+                    (clientWidth <= 1024 &&
+                      accessByRoles(user, ["ROLE_BUYER", "ROLE_VENDOR"]))) && (
+                    <TopTableCell>
+                      <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
+                    </TopTableCell>
+                  )}
                 {salePurchaseMode === "purchase" && (
                   <TopTableCell>
                     <FormattedMessage id="BIDSLIST.TABLE.TIME" />
@@ -214,8 +216,7 @@ const BidTable: React.FC<IProps> = ({
                         : "-"}
                     </TableCell>
                   )}
-                  {clientWidth > 1024 &&
-                    bestAllMyMode !== "my-bids" &&
+                  {bestAllMyMode !== "my-bids" &&
                     accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
                       <TableCell>
                         <Grid container direction="column" justify="center" alignItems="flex-start">
@@ -286,7 +287,12 @@ const BidTable: React.FC<IProps> = ({
                       </Grid>
                     </TableCell>
                   )}
-                  {bestAllMyMode !== "my-bids" && <TableCell>{bid.distance || "-"}</TableCell>}
+                  {bestAllMyMode !== "my-bids" &&
+                    (clientWidth > 1024 ||
+                      (clientWidth <= 1024 &&
+                        accessByRoles(user, ["ROLE_BUYER", "ROLE_VENDOR"]))) && (
+                      <TableCell>{bid.distance || "-"}</TableCell>
+                    )}
 
                   {bestAllMyMode === "my-bids" && <TableCell>{bid?.location?.text}</TableCell>}
 
