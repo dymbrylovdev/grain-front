@@ -92,6 +92,9 @@ const theme = createMuiTheme(
         root: {
           marginBottom: 0,
         },
+        label: {
+          fontSize: 14,
+        },
       },
       MuiSkeleton: {
         root: {

@@ -18,7 +18,6 @@ import { LayoutSubheader } from "../../../../_metronic";
 import { UserActivity, TrafficLight } from "../users/components";
 import { accessByRoles, getConfirmCompanyString } from "../../../utils/utils";
 import { thousands } from "./utils/utils";
-import { GrainMenu } from "../../../components/Menu";
 
 const DealViewPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -99,362 +98,354 @@ const DealViewPage: React.FC<TPropsFromRedux &
   }
 
   return (
-    <div className={classes.menuFlexRow}>
-      <GrainMenu />
-      <Paper className={classes.paperWithTable}>
-        {!!crops && (
-          <LayoutSubheader
-            title={intl.formatMessage(
-              { id: "DEALS.VIEW.TITLE" },
-              { name: crops?.find(item => item.id === +cropId)?.name }
-            )}
-          />
-        )}
-        <div className={classes.topButtonsContainer}>
-          <div className={classes.button}>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => history.goBack()}
-              disabled={!deals || !crops || !cropParams}
-            >
-              {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-            </Button>
-          </div>
-        </div>
-
-        {!!deals &&
-          !deals.find(
-            item => item.sale_bid.id === +saleId && item.purchase_bid.id === +purchaseId
-          ) && (
-            <div className={classes.tableTitle}>
-              {intl.formatMessage({ id: "DEALS.EMPTY_DEAL" })}
-            </div>
+    <Paper className={classes.paperWithTable}>
+      {!!crops && (
+        <LayoutSubheader
+          title={intl.formatMessage(
+            { id: "DEALS.VIEW.TITLE" },
+            { name: crops?.find(item => item.id === +cropId)?.name }
           )}
-        {!deals || !crops || !cropParams ? (
-          <>
-            <Skeleton width={340} height={33} animation="wave" />
-            <Skeleton width={340} height={33} animation="wave" />
-            <Skeleton width={140} height={33} animation="wave" />
-            <Skeleton width="100%" height={52} animation="wave" />
-            <Skeleton width="100%" height={77} animation="wave" />
-            <Skeleton width="100%" height={77} animation="wave" />
-            <Skeleton width="100%" height={77} animation="wave" />
-            <Skeleton width="100%" height={77} animation="wave" />
-            <Skeleton width="100%" height={120} animation="wave" />
-            <Skeleton width="100%" height={53} animation="wave" />
-          </>
-        ) : (
-          !!deal && (
-            <>
-              {!deal.sale_bid.vendor.use_vat && deal.purchase_bid.vendor.use_vat && (
-                <p>
-                  {intl.formatMessage(
-                    { id: "DEALS.TABLE.ABOUT_VAT" },
-                    { vat: deal.purchase_bid.vat }
-                  )}
-                </p>
-              )}
-              <div className={classes.table}>
-                <Table aria-label="simple table">
-                  <colgroup>
-                    <col style={{ width: "30%" }}></col>
-                    <col style={{ width: "35%" }}></col>
-                    <col style={{ width: "35%" }}></col>
-                  </colgroup>
-                  <TableHead>
-                    <TableRow>
-                      <TopTableCell></TopTableCell>
-                      <TopTableCell align="center">
-                        <FormattedMessage id="DEALS.TABLE.SALE" />
-                      </TopTableCell>
-                      <TopTableCell align="center">
-                        <FormattedMessage id="DEALS.TABLE.PURCHASE" />
-                      </TopTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
-                        <strong>
-                          {intl.formatMessage({ id: "DEALS.TABLE.PROFIT_WITH_DELIVERY" })}
-                        </strong>
-                      </TableCell>
-                      <TableCell
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
-                        colSpan={2}
-                        align="center"
-                      >
-                        {thousands(Math.round(deal.profit_with_delivery_price).toString())}
-                      </TableCell>
-                    </TableRow>
+        />
+      )}
+      <div className={classes.topButtonsContainer}>
+        <div className={classes.button}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => history.goBack()}
+            disabled={!deals || !crops || !cropParams}
+          >
+            {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+          </Button>
+        </div>
+      </div>
 
-                    <TableRow>
-                      <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
-                        <strong>{intl.formatMessage({ id: "DEALS.TABLE.COST" })}</strong>
-                      </TableCell>
-                      <TableCell
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
-                        colSpan={2}
-                        align="center"
-                      >
-                        {thousands(
-                          Math.round(
-                            deal.sale_bid.price *
-                              (deal.purchase_bid.volume < deal.sale_bid.volume
-                                ? deal.purchase_bid.volume
-                                : deal.sale_bid.volume)
-                          ).toString()
-                        )}
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
-                        <strong>{intl.formatMessage({ id: "DEALS.TABLE.TOTAL_PROFIT" })}</strong>
-                      </TableCell>
-                      <TableCell
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
-                        colSpan={2}
-                        align="center"
-                      >
-                        {thousands(
-                          Math.round(
-                            deal.profit_with_delivery_price *
-                              (deal.purchase_bid.volume < deal.sale_bid.volume
-                                ? deal.purchase_bid.volume
-                                : deal.sale_bid.volume)
-                          ).toString()
-                        )}
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                        <strong>{intl.formatMessage({ id: "BIDSLIST.TABLE.PAYMENT_TERM" })}</strong>
-                      </TableCell>
-                      <TableCell
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                        colSpan={2}
-                        align="center"
-                      >
-                        {deal.purchase_bid.payment_term || "-"}
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                        <strong>{intl.formatMessage({ id: "DEALS.UP_TABLE.DISTANCE" })}</strong>
-                      </TableCell>
-                      <TableCell
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                        colSpan={2}
-                        align="center"
-                      >
-                        {thousands(Math.round(deal.distance).toString())}
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                        <strong>{intl.formatMessage({ id: "DEALS.PRICE" })}</strong>
-                      </TableCell>
-                      <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-                        {thousands(deal.sale_bid.price.toString())}
-                      </TableCell>
-                      <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                        {thousands(deal.purchase_bid.price.toString())}
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                        <strong>{intl.formatMessage({ id: "DEALS.DEAL.VOLUME" })}</strong>
-                      </TableCell>
-                      <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-                        {deal.sale_bid.volume}
-                      </TableCell>
-                      <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                        {deal.purchase_bid.volume}
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>
-                        <strong>{intl.formatMessage({ id: "DEALS.DEAL.WORK_WITH_VAT" })}</strong>
-                      </TableCell>
-                      <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                        {deal.sale_bid.vendor.use_vat
-                          ? `${intl.formatMessage({ id: "ALL.YES" })}, ${deal.sale_bid.vat}%`
-                          : intl.formatMessage({ id: "ALL.NO" })}
-                      </TableCell>
-                      <TableCell>
-                        {deal.purchase_bid.vendor.use_vat
-                          ? `${intl.formatMessage({ id: "ALL.YES" })}, ${deal.purchase_bid.vat}%`
-                          : intl.formatMessage({ id: "ALL.NO" })}
-                      </TableCell>
-                    </TableRow>
-
-                    {cropParams.map(
-                      item =>
-                        (deal.sale_bid.parameter_values.find(
-                          param => param.parameter_id === item.id
-                        ) ||
-                          deal.purchase_bid.parameter_values.find(
-                            param => param.parameter_id === item.id
-                          )) && (
-                          <TableRow key={item.id}>
-                            <TableCell>
-                              <strong>{item.name}</strong>
-                            </TableCell>
-                            <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                              {deal.sale_bid.parameter_values.find(
-                                param => param.parameter_id === item.id
-                              )?.value || "-"}
-                            </TableCell>
-                            <TableCell>
-                              {deal.purchase_bid.parameter_values.find(
-                                param => param.parameter_id === item.id
-                              )?.value || "-"}
-                            </TableCell>
-                          </TableRow>
-                        )
-                    )}
-
-                    <TableRow>
-                      <TableCell>
-                        <strong>{intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })}</strong>
-                      </TableCell>
-                      <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                        {deal.sale_bid.location.text}
-                      </TableCell>
-                      <TableCell>{deal.purchase_bid.location.text}</TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>
-                        <strong>{intl.formatMessage({ id: "DEALS.DEAL.DATE" })}</strong>
-                      </TableCell>
-                      <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                        {`${deal.sale_bid.modified_at.slice(
-                          8,
-                          10
-                        )}.${deal.sale_bid.modified_at.slice(
-                          5,
-                          7
-                        )}.${deal.sale_bid.modified_at.slice(0, 4)}`}
-                      </TableCell>
-                      <TableCell>
-                        {`${deal.purchase_bid.modified_at.slice(
-                          8,
-                          10
-                        )}.${deal.purchase_bid.modified_at.slice(
-                          5,
-                          7
-                        )}.${deal.purchase_bid.modified_at.slice(0, 4)}`}
-                      </TableCell>
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>
-                        <strong>{intl.formatMessage({ id: "DEALS.TABLE.AGENT" })}</strong>
-                      </TableCell>
-                      <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                        <p>
-                          <Link to={`/user/view/${deal.sale_bid.vendor.id}`}>
-                            {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
-                          </Link>
-                        </p>
-                        {!!deal?.sale_bid?.vendor?.phone && (
-                          <p>тел.: +7 {deal.sale_bid.vendor.phone}</p>
-                        )}
-                        <UserActivity intl={intl} user={deal.sale_bid.vendor} />
-                        <div className={classes.topMargin}>
-                          {!!deal.sale_bid.vendor.company && (
-                            <div>{deal.sale_bid.vendor.company.short_name}</div>
-                          )}
-                          <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
-                            {!!deal?.sale_bid?.vendor?.company && (
-                              <div className={classes.rightMargin1}>
-                                {!deal?.sale_bid?.vendor?.company_confirmed_by_payment ? (
-                                  <ReportProblemIcon color="error" />
-                                ) : (
-                                  <CheckCircleOutlineIcon color="secondary" />
-                                )}
-                              </div>
-                            )}
-                            <div>{getConfirmCompanyString(deal.sale_bid.vendor, intl)}</div>
-                          </div>
-                          {!!deal?.sale_bid?.vendor?.company?.colors &&
-                            !!deal?.sale_bid?.vendor?.company_confirmed_by_payment && (
-                              <TrafficLight
-                                intl={intl}
-                                colors={deal?.sale_bid?.vendor?.company?.colors}
-                              />
-                            )}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <p>
-                          <Link to={`/user/view/${deal.purchase_bid.vendor.id}`}>
-                            {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
-                          </Link>
-                        </p>
-                        {!!deal?.purchase_bid?.vendor?.phone && (
-                          <p>тел.: +7 {deal.purchase_bid.vendor.phone}</p>
-                        )}
-                        <UserActivity intl={intl} user={deal.purchase_bid.vendor} />
-
-                        <div className={classes.topMargin}>
-                          {!!deal.purchase_bid.vendor.company && (
-                            <div>{deal.purchase_bid.vendor.company.short_name}</div>
-                          )}
-                          <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
-                            {!!deal?.purchase_bid?.vendor?.company && (
-                              <div className={classes.rightMargin1}>
-                                {!deal?.purchase_bid?.vendor?.company_confirmed_by_payment ? (
-                                  <ReportProblemIcon color="error" />
-                                ) : (
-                                  <CheckCircleOutlineIcon color="secondary" />
-                                )}
-                              </div>
-                            )}
-                            <div>{getConfirmCompanyString(deal.purchase_bid.vendor, intl)}</div>
-                          </div>
-                          {!!deal?.purchase_bid?.vendor?.company?.colors &&
-                            !!deal?.purchase_bid?.vendor?.company_confirmed_by_payment && (
-                              <TrafficLight
-                                intl={intl}
-                                colors={deal?.purchase_bid?.vendor?.company?.colors}
-                              />
-                            )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-
-                    {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-                      <TableRow>
-                        <TableCell></TableCell>
-                        <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                          <Link to={`/bid/edit/sale/${deal.sale_bid.id}`}>
-                            {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
-                          </Link>
-                        </TableCell>
-                        <TableCell>
-                          <Link to={`/bid/edit/purchase/${deal.purchase_bid.id}`}>
-                            {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
-                          </Link>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </>
-          )
+      {!!deals &&
+        !deals.find(
+          item => item.sale_bid.id === +saleId && item.purchase_bid.id === +purchaseId
+        ) && (
+          <div className={classes.tableTitle}>{intl.formatMessage({ id: "DEALS.EMPTY_DEAL" })}</div>
         )}
-      </Paper>
-    </div>
+      {!deals || !crops || !cropParams ? (
+        <>
+          <Skeleton width={340} height={33} animation="wave" />
+          <Skeleton width={340} height={33} animation="wave" />
+          <Skeleton width={140} height={33} animation="wave" />
+          <Skeleton width="100%" height={52} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={120} animation="wave" />
+          <Skeleton width="100%" height={53} animation="wave" />
+        </>
+      ) : (
+        !!deal && (
+          <>
+            {!deal.sale_bid.vendor.use_vat && deal.purchase_bid.vendor.use_vat && (
+              <p>
+                {intl.formatMessage(
+                  { id: "DEALS.TABLE.ABOUT_VAT" },
+                  { vat: deal.purchase_bid.vat }
+                )}
+              </p>
+            )}
+            <div className={classes.table}>
+              <Table aria-label="simple table">
+                <colgroup>
+                  <col style={{ width: "30%" }}></col>
+                  <col style={{ width: "35%" }}></col>
+                  <col style={{ width: "35%" }}></col>
+                </colgroup>
+                <TableHead>
+                  <TableRow>
+                    <TopTableCell></TopTableCell>
+                    <TopTableCell align="center">
+                      <FormattedMessage id="DEALS.TABLE.SALE" />
+                    </TopTableCell>
+                    <TopTableCell align="center">
+                      <FormattedMessage id="DEALS.TABLE.PURCHASE" />
+                    </TopTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
+                      <strong>
+                        {intl.formatMessage({ id: "DEALS.TABLE.PROFIT_WITH_DELIVERY" })}
+                      </strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {thousands(Math.round(deal.profit_with_delivery_price).toString())}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
+                      <strong>{intl.formatMessage({ id: "DEALS.TABLE.COST" })}</strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {thousands(
+                        Math.round(
+                          deal.sale_bid.price *
+                            (deal.purchase_bid.volume < deal.sale_bid.volume
+                              ? deal.purchase_bid.volume
+                              : deal.sale_bid.volume)
+                        ).toString()
+                      )}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.3)" }}>
+                      <strong>{intl.formatMessage({ id: "DEALS.TABLE.TOTAL_PROFIT" })}</strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {thousands(
+                        Math.round(
+                          deal.profit_with_delivery_price *
+                            (deal.purchase_bid.volume < deal.sale_bid.volume
+                              ? deal.purchase_bid.volume
+                              : deal.sale_bid.volume)
+                        ).toString()
+                      )}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                      <strong>{intl.formatMessage({ id: "BIDSLIST.TABLE.PAYMENT_TERM" })}</strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {deal.purchase_bid.payment_term || "-"}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                      <strong>{intl.formatMessage({ id: "DEALS.UP_TABLE.DISTANCE" })}</strong>
+                    </TableCell>
+                    <TableCell
+                      style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
+                      colSpan={2}
+                      align="center"
+                    >
+                      {thousands(Math.round(deal.distance).toString())}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                      <strong>{intl.formatMessage({ id: "DEALS.PRICE" })}</strong>
+                    </TableCell>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                      {thousands(deal.sale_bid.price.toString())}
+                    </TableCell>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                      {thousands(deal.purchase_bid.price.toString())}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                      <strong>{intl.formatMessage({ id: "DEALS.DEAL.VOLUME" })}</strong>
+                    </TableCell>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                      {deal.sale_bid.volume}
+                    </TableCell>
+                    <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
+                      {deal.purchase_bid.volume}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell>
+                      <strong>{intl.formatMessage({ id: "DEALS.DEAL.WORK_WITH_VAT" })}</strong>
+                    </TableCell>
+                    <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                      {deal.sale_bid.vendor.use_vat
+                        ? `${intl.formatMessage({ id: "ALL.YES" })}, ${deal.sale_bid.vat}%`
+                        : intl.formatMessage({ id: "ALL.NO" })}
+                    </TableCell>
+                    <TableCell>
+                      {deal.purchase_bid.vendor.use_vat
+                        ? `${intl.formatMessage({ id: "ALL.YES" })}, ${deal.purchase_bid.vat}%`
+                        : intl.formatMessage({ id: "ALL.NO" })}
+                    </TableCell>
+                  </TableRow>
+
+                  {cropParams.map(
+                    item =>
+                      (deal.sale_bid.parameter_values.find(
+                        param => param.parameter_id === item.id
+                      ) ||
+                        deal.purchase_bid.parameter_values.find(
+                          param => param.parameter_id === item.id
+                        )) && (
+                        <TableRow key={item.id}>
+                          <TableCell>
+                            <strong>{item.name}</strong>
+                          </TableCell>
+                          <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                            {deal.sale_bid.parameter_values.find(
+                              param => param.parameter_id === item.id
+                            )?.value || "-"}
+                          </TableCell>
+                          <TableCell>
+                            {deal.purchase_bid.parameter_values.find(
+                              param => param.parameter_id === item.id
+                            )?.value || "-"}
+                          </TableCell>
+                        </TableRow>
+                      )
+                  )}
+
+                  <TableRow>
+                    <TableCell>
+                      <strong>{intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })}</strong>
+                    </TableCell>
+                    <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                      {deal.sale_bid.location.text}
+                    </TableCell>
+                    <TableCell>{deal.purchase_bid.location.text}</TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell>
+                      <strong>{intl.formatMessage({ id: "DEALS.DEAL.DATE" })}</strong>
+                    </TableCell>
+                    <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                      {`${deal.sale_bid.modified_at.slice(8, 10)}.${deal.sale_bid.modified_at.slice(
+                        5,
+                        7
+                      )}.${deal.sale_bid.modified_at.slice(0, 4)}`}
+                    </TableCell>
+                    <TableCell>
+                      {`${deal.purchase_bid.modified_at.slice(
+                        8,
+                        10
+                      )}.${deal.purchase_bid.modified_at.slice(
+                        5,
+                        7
+                      )}.${deal.purchase_bid.modified_at.slice(0, 4)}`}
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell>
+                      <strong>{intl.formatMessage({ id: "DEALS.TABLE.AGENT" })}</strong>
+                    </TableCell>
+                    <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                      <p>
+                        <Link to={`/user/view/${deal.sale_bid.vendor.id}`}>
+                          {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
+                        </Link>
+                      </p>
+                      {!!deal?.sale_bid?.vendor?.phone && (
+                        <p>тел.: +7 {deal.sale_bid.vendor.phone}</p>
+                      )}
+                      <UserActivity intl={intl} user={deal.sale_bid.vendor} />
+                      <div className={classes.topMargin}>
+                        {!!deal.sale_bid.vendor.company && (
+                          <div>{deal.sale_bid.vendor.company.short_name}</div>
+                        )}
+                        <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
+                          {!!deal?.sale_bid?.vendor?.company && (
+                            <div className={classes.rightMargin1}>
+                              {!deal?.sale_bid?.vendor?.company_confirmed_by_payment ? (
+                                <ReportProblemIcon color="error" />
+                              ) : (
+                                <CheckCircleOutlineIcon color="secondary" />
+                              )}
+                            </div>
+                          )}
+                          <div>{getConfirmCompanyString(deal.sale_bid.vendor, intl)}</div>
+                        </div>
+                        {!!deal?.sale_bid?.vendor?.company?.colors &&
+                          !!deal?.sale_bid?.vendor?.company_confirmed_by_payment && (
+                            <TrafficLight
+                              intl={intl}
+                              colors={deal?.sale_bid?.vendor?.company?.colors}
+                            />
+                          )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <p>
+                        <Link to={`/user/view/${deal.purchase_bid.vendor.id}`}>
+                          {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
+                        </Link>
+                      </p>
+                      {!!deal?.purchase_bid?.vendor?.phone && (
+                        <p>тел.: +7 {deal.purchase_bid.vendor.phone}</p>
+                      )}
+                      <UserActivity intl={intl} user={deal.purchase_bid.vendor} />
+
+                      <div className={classes.topMargin}>
+                        {!!deal.purchase_bid.vendor.company && (
+                          <div>{deal.purchase_bid.vendor.company.short_name}</div>
+                        )}
+                        <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
+                          {!!deal?.purchase_bid?.vendor?.company && (
+                            <div className={classes.rightMargin1}>
+                              {!deal?.purchase_bid?.vendor?.company_confirmed_by_payment ? (
+                                <ReportProblemIcon color="error" />
+                              ) : (
+                                <CheckCircleOutlineIcon color="secondary" />
+                              )}
+                            </div>
+                          )}
+                          <div>{getConfirmCompanyString(deal.purchase_bid.vendor, intl)}</div>
+                        </div>
+                        {!!deal?.purchase_bid?.vendor?.company?.colors &&
+                          !!deal?.purchase_bid?.vendor?.company_confirmed_by_payment && (
+                            <TrafficLight
+                              intl={intl}
+                              colors={deal?.purchase_bid?.vendor?.company?.colors}
+                            />
+                          )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+
+                  {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+                    <TableRow>
+                      <TableCell></TableCell>
+                      <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                        <Link to={`/bid/edit/sale/${deal.sale_bid.id}`}>
+                          {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        <Link to={`/bid/edit/purchase/${deal.purchase_bid.id}`}>
+                          {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </>
+        )
+      )}
+    </Paper>
   );
 };
 

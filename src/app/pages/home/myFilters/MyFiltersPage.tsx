@@ -30,7 +30,6 @@ import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
 import { declOfNum } from "../../../utils";
 import { accessByRoles } from "../../../utils/utils";
-import { GrainMenu } from "../../../components/Menu";
 
 const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps> = ({
   match,
@@ -144,162 +143,158 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
   }
 
   return (
-    <div className={classes.menuFlexRow}>
-      <GrainMenu />
-      <Paper className={classes.paperWithTable}>
-        <LayoutSubheader
-          title={
-            salePurchaseMode === "sale"
-              ? intl.formatMessage({ id: "FILTERS.MY.SALE" })
-              : intl.formatMessage({ id: "FILTERS.MY.PURCHASE" })
+    <Paper className={classes.paperWithTable}>
+      <LayoutSubheader
+        title={
+          salePurchaseMode === "sale"
+            ? intl.formatMessage({ id: "FILTERS.MY.SALE" })
+            : intl.formatMessage({ id: "FILTERS.MY.PURCHASE" })
+        }
+      />
+      <div className={classes.topButtonsContainer}>
+        <Button
+          className={classes.button}
+          variant="contained"
+          color="primary"
+          onClick={() => history.push(`/${salePurchaseMode}/filters/edit/new`)}
+          disabled={
+            !myFilters ||
+            (!!me?.tariff.max_filters_count &&
+              !!myFilters &&
+              me.tariff.max_filters_count - myFilters?.length <= 0)
           }
-        />
-        <div className={classes.topButtonsContainer}>
+        >
+          {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
+        </Button>
+        {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
           <Button
             className={classes.button}
             variant="contained"
             color="primary"
-            onClick={() => history.push(`/${salePurchaseMode}/filters/edit/new`)}
-            disabled={
-              !myFilters ||
-              (!!me?.tariff.max_filters_count &&
-                !!myFilters &&
-                me.tariff.max_filters_count - myFilters?.length <= 0)
-            }
+            onClick={() => history.push(`/${salePurchaseMode}/filters/prices`)}
+            disabled={!myFilters}
           >
-            {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
+            {intl.formatMessage({ id: "BID.PRICES.BUTTON" })}
           </Button>
-          {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-            <Button
-              className={classes.button}
-              variant="contained"
-              color="primary"
-              onClick={() => history.push(`/${salePurchaseMode}/filters/prices`)}
-              disabled={!myFilters}
-            >
-              {intl.formatMessage({ id: "BID.PRICES.BUTTON" })}
-            </Button>
-          )}
-        </div>
-        {!myFilters ? (
-          <>
-            <Skeleton width="100%" height={52} animation="wave" />
-            <Skeleton width="100%" height={77} animation="wave" />
-            <Skeleton width="100%" height={77} animation="wave" />
-            <Skeleton width="100%" height={77} animation="wave" />
-            <Skeleton width="100%" height={77} animation="wave" />
-            <Skeleton width="100%" height={77} animation="wave" />
-          </>
-        ) : (
-          <>
-            {!!me && !!myFilters && (
-              <div className={classes.bottomMargin1} style={{ fontWeight: "bold" }}>
-                {intl.formatMessage(
-                  { id: "FILTER.FORM.LIMIT" },
-                  {
-                    count:
-                      !me?.tariff ||
-                      (!!me?.tariff && me.tariff.max_filters_count - filterCount <= 0)
-                        ? "0"
-                        : me?.tariff?.max_filters_count - filterCount,
-                    word: declOfNum(me?.tariff?.max_filters_count - filterCount, [
-                      "фильтр",
-                      "фильтра",
-                      "фильтров",
-                    ]),
-                    fullCount: me?.tariff?.max_filters_count,
-                  }
-                )}
-              </div>
-            )}
-            {myFilters.length > 0 && (
-              <div className={classes.table}>
-                <Table aria-label="simple table">
-                  <TableHead>
-                    <TableRow>
-                      <TopTableCell>
-                        <FormattedMessage id="FILTERS.TABLE.HEADER.CROP" />
-                      </TopTableCell>
-                      <TopTableCell>
-                        <FormattedMessage id="FILTERS.TABLE.HEADER.NAME" />
-                      </TopTableCell>
-                      <TopTableCell>
-                        <FormattedMessage id="FILTERS.TABLE.HEADER.SUBSCRIPTION" />
-                      </TopTableCell>
-                      <TopTableCell align="right"></TopTableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {myFilters
-                      .sort((a, b) => a.crop.id - b.crop.id)
-                      .map(item => (
-                        <TableRow key={item.id}>
-                          <TableCell>{item.crop.name}</TableCell>
-                          <TableCell>{item.name}</TableCell>
-                          <TableCell>
-                            <StatusIndicator isActive={item.subscribed} />
-                          </TableCell>
-                          <TableCell align="right">
-                            <IconButton
-                              size="medium"
-                              color="primary"
-                              onClick={() =>
-                                history.push(`/${salePurchaseMode}/filters/view/${item.id}`)
-                              }
-                            >
-                              <VisibilityIcon />
-                            </IconButton>
-                            <IconButton
-                              size="medium"
-                              color="primary"
-                              onClick={() =>
-                                history.push(`/${salePurchaseMode}/filters/edit/${item.id}`)
-                              }
-                            >
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton
-                              size="medium"
-                              onClick={() => {
-                                setDeleteFilterCropId(item.crop.id);
-                                setDeleteFilterId(item.id || 0);
-                                setAlertOpen(true);
-                              }}
-                              color="secondary"
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </>
         )}
-        <AlertDialog
-          isOpen={isAlertOpen}
-          text={intl.formatMessage({
-            id: "FILTER.DIALOGS.DELETE_TEXT",
-          })}
-          okText={intl.formatMessage({
-            id: "FILTER.DIALOGS.AGREE_TEXT",
-          })}
-          cancelText={intl.formatMessage({
-            id: "FILTER.DIALOGS.CANCEL_TEXT",
-          })}
-          handleClose={() => setAlertOpen(false)}
-          handleAgree={() => {
-            del(deleteFilterId);
-          }}
-          loadingText={intl.formatMessage({
-            id: "FILTER.DIALOGS.LOADING_TEXT",
-          })}
-          isLoading={delLoading}
-        />
-      </Paper>
-    </div>
+      </div>
+      {!myFilters ? (
+        <>
+          <Skeleton width="100%" height={52} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+          <Skeleton width="100%" height={77} animation="wave" />
+        </>
+      ) : (
+        <>
+          {!!me && !!myFilters && (
+            <div className={classes.bottomMargin1} style={{ fontWeight: "bold" }}>
+              {intl.formatMessage(
+                { id: "FILTER.FORM.LIMIT" },
+                {
+                  count:
+                    !me?.tariff || (!!me?.tariff && me.tariff.max_filters_count - filterCount <= 0)
+                      ? "0"
+                      : me?.tariff?.max_filters_count - filterCount,
+                  word: declOfNum(me?.tariff?.max_filters_count - filterCount, [
+                    "фильтр",
+                    "фильтра",
+                    "фильтров",
+                  ]),
+                  fullCount: me?.tariff?.max_filters_count,
+                }
+              )}
+            </div>
+          )}
+          {myFilters.length > 0 && (
+            <div className={classes.table}>
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TopTableCell>
+                      <FormattedMessage id="FILTERS.TABLE.HEADER.CROP" />
+                    </TopTableCell>
+                    <TopTableCell>
+                      <FormattedMessage id="FILTERS.TABLE.HEADER.NAME" />
+                    </TopTableCell>
+                    <TopTableCell>
+                      <FormattedMessage id="FILTERS.TABLE.HEADER.SUBSCRIPTION" />
+                    </TopTableCell>
+                    <TopTableCell align="right"></TopTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {myFilters
+                    .sort((a, b) => a.crop.id - b.crop.id)
+                    .map(item => (
+                      <TableRow key={item.id}>
+                        <TableCell>{item.crop.name}</TableCell>
+                        <TableCell>{item.name}</TableCell>
+                        <TableCell>
+                          <StatusIndicator isActive={item.subscribed} />
+                        </TableCell>
+                        <TableCell align="right">
+                          <IconButton
+                            size="medium"
+                            color="primary"
+                            onClick={() =>
+                              history.push(`/${salePurchaseMode}/filters/view/${item.id}`)
+                            }
+                          >
+                            <VisibilityIcon />
+                          </IconButton>
+                          <IconButton
+                            size="medium"
+                            color="primary"
+                            onClick={() =>
+                              history.push(`/${salePurchaseMode}/filters/edit/${item.id}`)
+                            }
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            size="medium"
+                            onClick={() => {
+                              setDeleteFilterCropId(item.crop.id);
+                              setDeleteFilterId(item.id || 0);
+                              setAlertOpen(true);
+                            }}
+                            color="secondary"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </>
+      )}
+      <AlertDialog
+        isOpen={isAlertOpen}
+        text={intl.formatMessage({
+          id: "FILTER.DIALOGS.DELETE_TEXT",
+        })}
+        okText={intl.formatMessage({
+          id: "FILTER.DIALOGS.AGREE_TEXT",
+        })}
+        cancelText={intl.formatMessage({
+          id: "FILTER.DIALOGS.CANCEL_TEXT",
+        })}
+        handleClose={() => setAlertOpen(false)}
+        handleAgree={() => {
+          del(deleteFilterId);
+        }}
+        loadingText={intl.formatMessage({
+          id: "FILTER.DIALOGS.LOADING_TEXT",
+        })}
+        isLoading={delLoading}
+      />
+    </Paper>
   );
 };
 

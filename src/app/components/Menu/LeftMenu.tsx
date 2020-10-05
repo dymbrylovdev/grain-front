@@ -9,6 +9,8 @@ import { IUser } from "../../interfaces/users";
 import { accessByRoles } from "../../utils/utils";
 import { salePurchaseModeForMyBids } from "./utils";
 import { ActionWithPayload } from "../../utils/action-helper";
+import DealsFilterForAll from "./components/DealsFilterForAll";
+import DealsFilterForAdm from "./components/DealsFilterForAdm";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -78,11 +80,11 @@ interface IProps {
   cropId?: string;
   salePurchaseMode: "sale" | "purchase" | undefined;
   setSalePurchaseMode: (
-    salePurchaseMode: "sale" | "purchase"
+    salePurchaseMode: "sale" | "purchase" | undefined
   ) => ActionWithPayload<
     "leftMenu/SET_SALE_PURCHASE_MODE",
     {
-      salePurchaseMode: "sale" | "purchase";
+      salePurchaseMode: "sale" | "purchase" | undefined;
     }
   >;
   setLeftMenuOpen: (
@@ -273,8 +275,8 @@ const LeftMenu: React.FC<IProps> = ({
         <MenuItem
           className={bestAllMyDealsMode === "deals" ? classes.selected : ""}
           onClick={() => {
-            // setBestOpen(false);
-            // setAllOpen(false);
+            setBestOpen(false);
+            setAllOpen(false);
             handleClick("/deals");
           }}
         >
@@ -285,6 +287,11 @@ const LeftMenu: React.FC<IProps> = ({
       {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
         <Divider style={{ margin: "6px 0" }} />
       )}
+
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+        bestAllMyDealsMode === "deals" && <DealsFilterForAll />}
+
+      {accessByRoles(me, ["ROLE_ADMIN"]) && bestAllMyDealsMode === "deals" && <DealsFilterForAdm />}
     </div>
   );
 };

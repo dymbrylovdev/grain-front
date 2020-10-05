@@ -8,7 +8,6 @@ import * as crops2 from "../../../store/ducks/crops2.duck";
 import CropForm from "./components/CropForm";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import { useHistory } from "react-router-dom";
-import { GrainMenu } from "../../../components/Menu";
 
 function CropPage({
   match,
@@ -200,8 +199,7 @@ function CropPage({
   console.log(user);
 
   return (
-    <div className={classes.menuFlexRow}>
-      <GrainMenu />
+    <>
       <CropForm
         classes={classes}
         crop={!!cropId ? crop : undefined}
@@ -254,7 +252,7 @@ function CropPage({
         })}
         isLoading={delLoading}
       />
-    </div>
+    </>
   );
 }
 

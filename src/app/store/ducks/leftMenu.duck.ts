@@ -36,7 +36,7 @@ export const reducer: Reducer<TInitialState, TAppActions> = (state = initialStat
 
 export const leftMenuActions = {
   setLeftMenuOpen: (leftMenuOpen: boolean) => createAction(SET_LEFT_MENU_OPEN, { leftMenuOpen }),
-  setSalePurchaseMode: (salePurchaseMode: "sale" | "purchase") =>
+  setSalePurchaseMode: (salePurchaseMode: "sale" | "purchase" | undefined) =>
     createAction(SET_SALE_PURCHASE_MODE, { salePurchaseMode }),
 };
 

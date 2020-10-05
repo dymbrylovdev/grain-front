@@ -146,6 +146,7 @@
   "DEALS.TABLE.EDIT_TEXT": "Редактировать объявление",
   "DEALS.TABLE.VIEW_TEXT": "Просмотреть объявление",
   "DEALS.FILTER.NAME": "Фильтр по параметрам",
+  "DEALS.FILTER2.NAME": "Фильтр",
   "DEALS.FILTER.EMPTY": "По этой культуре нет параметров для фильтрации.",
   "DEALS.WEEKS.TEXT": "Лучшие сделки за последние",
   "DEALS.WEEKS.WEEKS": "Недели",
@@ -323,7 +324,7 @@
   "CROP.PARAM.DIALOGS.LOADING_TEXT": "Удаление параметра",
 
   "FILTER.FORM.MAX_PAYMENT_TERM": "Макс. срок расчета, календарных дней",
-  "FILTER.FORM.MAX_PAYMENT_TERM1": "с максимальным сроком расчета:",
+  "FILTER.FORM.MAX_PAYMENT_TERM1": "С максимальным сроком расчета:",
   "FILTER.FORM.MAX_PAYMENT_TERM2": "Календарных дней",
   "FILTER.FORM.MAX_PRICE": "Макс. цена с доставкой, руб.",
   "FILTER.FORM.MIN_PRICE": "Мин. цена с доставкой, руб.",

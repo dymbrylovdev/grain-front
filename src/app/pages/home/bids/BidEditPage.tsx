@@ -22,7 +22,6 @@ import Prompter from "../prompter/Prompter";
 import useStyles from "../styles";
 import { accessByRoles } from "../../../utils/utils";
 import { IPointPriceForGet } from "../../../interfaces/bids";
-import { GrainMenu } from "../../../components/Menu";
 
 const BidEditPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -230,61 +229,58 @@ const BidEditPage: React.FC<TPropsFromRedux &
   return (
     <>
       <Prompter />
-      <div className={classes.menuFlexRow}>
-        <GrainMenu />
-        <Paper className={classes.paperWithForm}>
-          {title && <LayoutSubheader title={title} />}
-          {isNoModerate ? (
-            <div className={classes.titleText}>
-              {intl.formatMessage({ id: "BID.STATUS.NO_MODERATE" })}
-            </div>
-          ) : (
-            <BidForm
-              intl={intl}
-              vendorId={+vendorId}
-              user={user}
-              editMode={editMode}
-              salePurchaseMode={salePurchaseMode}
-              cropId={+cropId}
-              crops={crops}
-              bid={editMode === "create" ? undefined : bid}
-              me={me}
-              fetchLocations={fetchLocations}
-              locations={locations}
-              loadingLocations={loadingLocations}
-              clearLocations={clearLocations}
-              clearCropParams={clearCropParams}
-              fetchCropParams={fetchCropParams}
-              cropParams={cropParams}
-              cropParamsLoading={cropParamsLoading}
-              setAlertOpen={setAlertOpen}
-              buttonLoading={createLoading || editLoading}
-              create={create}
-              createSuccess={createSuccess}
-              createError={createError}
-              clearCreate={clearCreate}
-              edit={edit}
-              profit={profit}
-            />
-          )}
-          <AlertDialog
-            isOpen={isAlertOpen}
-            text={intl.formatMessage({ id: "BIDSLIST.DIALOGS.DELETE_TEXT" })}
-            okText={intl.formatMessage({
-              id: "USERLIST.DIALOGS.AGREE_TEXT",
-            })}
-            cancelText={intl.formatMessage({
-              id: "USERLIST.DIALOGS.CANCEL_TEXT",
-            })}
-            handleClose={() => setAlertOpen(false)}
-            handleAgree={() => del(+bidId)}
-            loadingText={intl.formatMessage({
-              id: "BIDSLIST.DIALOGS.LOADING_TEXT",
-            })}
-            isLoading={delLoading}
+      <Paper className={classes.paperWithForm}>
+        {title && <LayoutSubheader title={title} />}
+        {isNoModerate ? (
+          <div className={classes.titleText}>
+            {intl.formatMessage({ id: "BID.STATUS.NO_MODERATE" })}
+          </div>
+        ) : (
+          <BidForm
+            intl={intl}
+            vendorId={+vendorId}
+            user={user}
+            editMode={editMode}
+            salePurchaseMode={salePurchaseMode}
+            cropId={+cropId}
+            crops={crops}
+            bid={editMode === "create" ? undefined : bid}
+            me={me}
+            fetchLocations={fetchLocations}
+            locations={locations}
+            loadingLocations={loadingLocations}
+            clearLocations={clearLocations}
+            clearCropParams={clearCropParams}
+            fetchCropParams={fetchCropParams}
+            cropParams={cropParams}
+            cropParamsLoading={cropParamsLoading}
+            setAlertOpen={setAlertOpen}
+            buttonLoading={createLoading || editLoading}
+            create={create}
+            createSuccess={createSuccess}
+            createError={createError}
+            clearCreate={clearCreate}
+            edit={edit}
+            profit={profit}
           />
-        </Paper>
-      </div>
+        )}
+        <AlertDialog
+          isOpen={isAlertOpen}
+          text={intl.formatMessage({ id: "BIDSLIST.DIALOGS.DELETE_TEXT" })}
+          okText={intl.formatMessage({
+            id: "USERLIST.DIALOGS.AGREE_TEXT",
+          })}
+          cancelText={intl.formatMessage({
+            id: "USERLIST.DIALOGS.CANCEL_TEXT",
+          })}
+          handleClose={() => setAlertOpen(false)}
+          handleAgree={() => del(+bidId)}
+          loadingText={intl.formatMessage({
+            id: "BIDSLIST.DIALOGS.LOADING_TEXT",
+          })}
+          isLoading={delLoading}
+        />
+      </Paper>
     </>
   );
 };

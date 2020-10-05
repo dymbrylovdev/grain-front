@@ -8,10 +8,9 @@ function KtContent({ children, contentContainerClasses }) {
   const animationEndClass = "kt-grid--animateContent-finished";
   const [cssClassesState, setCssClassesState] = useState([
     "kt-grid--animateContent",
-    "kt-container",
     contentContainerClasses.split(" "),
     "kt-grid__item kt-grid__item--fluid",
-    animationEndClass
+    animationEndClass,
   ]);
 
   useEffect(() => {
@@ -30,14 +29,18 @@ function KtContent({ children, contentContainerClasses }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [match.url]);
 
-  return <div className={cssClassesState.join(" ")}>{children}</div>;
+  return (
+    <div className={cssClassesState.join(" ")} style={{ width: "100%" }}>
+      {children}
+    </div>
+  );
 }
 
 const mapStateToProps = store => ({
   contentContainerClasses: builder.selectors.getClasses(store, {
     path: "content_container",
-    toString: true
-  })
+    toString: true,
+  }),
 });
 
 export default connect(mapStateToProps)(KtContent);

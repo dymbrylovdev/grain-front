@@ -7,6 +7,7 @@ import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
 
 import { IAppState } from "../../store/rootDuck";
 import { LeftMenu } from ".";
+import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,16 +26,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface IProps {
-  bestAllMyDealsMode?: "deals" | "best-bids" | "all-bids" | "my-bids";
-  cropId?: string;
-}
-
-const GrainMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProps> = ({
+const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   intl,
-  bestAllMyDealsMode,
-  cropId,
-
   setLeftMenuOpen,
   setSalePurchaseMode,
 }) => {
@@ -51,6 +44,26 @@ const GrainMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProps> = ({
 
   const matches = useMediaQuery("(min-width:1025px)");
 
+  const location = useLocation();
+
+  let bestAllMyDealsMode: "deals" | "best-bids" | "all-bids" | "my-bids" | undefined = undefined;
+  let cropId: string | undefined = undefined;
+
+  if (location.pathname === "/deals") {
+    bestAllMyDealsMode = "deals";
+  }
+  if (location.pathname.split("/")?.[2]) {
+    if (location.pathname.split("/")?.[2] === "best-bids") bestAllMyDealsMode = "best-bids";
+    cropId = location.pathname.split("/")?.[3];
+  }
+  if (location.pathname.split("/")?.[2]) {
+    if (location.pathname.split("/")?.[2] === "my-bids") bestAllMyDealsMode = "my-bids";
+  }
+  if (location.pathname.split("/")?.[2]) {
+    if (location.pathname.split("/")?.[2] === "all-bids") bestAllMyDealsMode = "all-bids";
+    cropId = location.pathname.split("/")?.[3];
+  }
+
   return (
     <>
       {!!matches && !!me && (
@@ -66,7 +79,7 @@ const GrainMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProps> = ({
           />
         </Paper>
       )}
-      {!!me && (
+      {!matches && !!me && (
         <Drawer anchor="left" open={leftMenuOpen} onClose={() => setLeftMenuOpen(false)}>
           <div className={classes.left_menu}>
             <LeftMenu

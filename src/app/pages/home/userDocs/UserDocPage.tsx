@@ -10,7 +10,6 @@ import { getDoc, createDoc, editDoc } from "../../../crud/docs.crud";
 
 import { RichEditor } from "../../../components";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
-import { GrainMenu } from "../../../components/Menu";
 
 const useStyles = makeStyles(theme => ({
   buttonContainer: {
@@ -77,28 +76,25 @@ const UserDocPage: React.FC<WrappedComponentProps> = ({ intl }) => {
   };
 
   return (
-    <div className={classes.menuFlexRow}>
-      <GrainMenu />
-      <Formik initialValues={{}} onSubmit={handleSubmit}>
-        {() => (
-          <Form>
-            <RichEditor
-              editorState={editorState}
-              setEditorState={setEditorState}
-              placeholder={userAgreement ? userAgreement.text : ""}
-            />
+    <Formik initialValues={{}} onSubmit={handleSubmit}>
+      {() => (
+        <Form>
+          <RichEditor
+            editorState={editorState}
+            setEditorState={setEditorState}
+            placeholder={userAgreement ? userAgreement.text : ""}
+          />
 
-            <div className={classes.buttonContainer}>
-              <ButtonWithLoader onPress={handleSubmit} loading={loading}>
-                <FormattedMessage
-                  id={userAgreement ? "USERDOC.BUTTON.SAVE" : "USERDOC.BUTTON.CREATE"}
-                />
-              </ButtonWithLoader>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </div>
+          <div className={classes.buttonContainer}>
+            <ButtonWithLoader onPress={handleSubmit} loading={loading}>
+              <FormattedMessage
+                id={userAgreement ? "USERDOC.BUTTON.SAVE" : "USERDOC.BUTTON.CREATE"}
+              />
+            </ButtonWithLoader>
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

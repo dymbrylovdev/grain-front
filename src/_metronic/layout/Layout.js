@@ -19,6 +19,7 @@ import KtContent from "./KtContent";
 import "./assets/Base.scss";
 import { useMediaQuery } from "@material-ui/core";
 import NewHeader from "./NewHeader";
+import { GrainMenu } from "../../app/components/Menu";
 
 const htmlClassService = new HTMLClassService();
 function Layout({
@@ -83,7 +84,13 @@ function Layout({
 
               {/* <!-- begin:: Content Body --> */}
               {/* TODO: add class to animate  kt-grid--animateContent-finished */}
-              <KtContent>{children}</KtContent>
+              <div
+                className="kt-container"
+                style={{ display: "flex", flexDirection: "row", alignItems: "flex-start" }}
+              >
+                <GrainMenu />
+                <KtContent>{children}</KtContent>
+              </div>
               {/*<!-- end:: Content Body -->*/}
             </div>
             {/* <!-- end:: Content --> */}

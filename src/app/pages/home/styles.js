@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core";
 const useStyles = makeStyles(theme => ({
   paperWithTable: {
     display: "flex",
-    flex: 1,
+    flex: "auto",
     flexDirection: "column",
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
