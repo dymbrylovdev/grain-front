@@ -57,6 +57,7 @@ export interface IDeal {
     price_with_delivery: number;
     profit: number;
     vat: number;
+    vendor_use_vat: boolean;
   };
   sale_bid: {
     id: number;
@@ -113,6 +114,7 @@ export interface IDeal {
     price_with_delivery: number;
     profit: number;
     vat: number;
+    vendor_use_vat: boolean;
   };
   distance: number;
   profit_without_delivery_price: number;

@@ -190,7 +190,7 @@ const BidTable: React.FC<IProps> = ({
                     salePurchaseMode === "sale" &&
                     !!bid &&
                     !!bid.vat &&
-                    !bid.vendor.use_vat ? (
+                    !bid.vendor_use_vat ? (
                       !bid.price ? (
                         "-"
                       ) : (
