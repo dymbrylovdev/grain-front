@@ -12,5 +12,5 @@ export const isDealsFilterEmpty = (filters: IDealsFilter[] | undefined): boolean
   return isEmpty;
 };
 
-export const thousands = (inData: string) =>
-  inData.replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, `$1${"\u00A0"}`);
+export const thousands = (inData: string | number) =>
+  inData.toString().replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, `$1${"\u00A0"}`);
