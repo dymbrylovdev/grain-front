@@ -86,7 +86,12 @@ function Layout({
               {/* TODO: add class to animate  kt-grid--animateContent-finished */}
               <div
                 className="kt-container"
-                style={{ display: "flex", flexDirection: "row", alignItems: "flex-start" }}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "flex-start",
+                  width: "100%",
+                }}
               >
                 <GrainMenu />
                 <KtContent>{children}</KtContent>
