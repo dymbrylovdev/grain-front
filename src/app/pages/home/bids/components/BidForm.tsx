@@ -597,6 +597,12 @@ const BidForm: React.FC<IProps> = ({
           InputProps={
             editMode !== "view"
               ? {
+                  style:
+                    editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
+                      ? {
+                          color: "#fd397a",
+                        }
+                      : {},
                   inputComponent: NumberFormatCustom as any,
                   endAdornment: (
                     <IconButton onClick={() => setFieldValue("price", "")}>
