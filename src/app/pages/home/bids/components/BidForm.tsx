@@ -760,7 +760,7 @@ const BidForm: React.FC<IProps> = ({
               autoComplete="off"
             />
             <div className={innerClasses.calcDescription}>
-              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
                 ? intl.formatMessage(
                     { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" },
                     { vat: bid.vat }
@@ -778,7 +778,7 @@ const BidForm: React.FC<IProps> = ({
                       values.bid_type === "sale" &&
                       !!bid &&
                       !!bid.vat &&
-                      !bid.vendor.use_vat ? (
+                      !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(
@@ -806,7 +806,7 @@ const BidForm: React.FC<IProps> = ({
             <div style={{ height: 8 }}></div>
 
             <div className={innerClasses.calcDescription}>
-              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
                 ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })
                 : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })}
             </div>
@@ -822,7 +822,7 @@ const BidForm: React.FC<IProps> = ({
                       values.bid_type === "sale" &&
                       !!bid &&
                       !!bid.vat &&
-                      !bid.vendor.use_vat ? (
+                      !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(
@@ -856,7 +856,7 @@ const BidForm: React.FC<IProps> = ({
             <div style={{ height: 8 }}></div>
 
             <div className={innerClasses.calcDescription}>
-              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
                 ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY_ALL" })
                 : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY_ALL" })}
             </div>
@@ -872,7 +872,7 @@ const BidForm: React.FC<IProps> = ({
                       values.bid_type === "sale" &&
                       !!bid &&
                       !!bid.vat &&
-                      !bid.vendor.use_vat ? (
+                      !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(
@@ -908,7 +908,7 @@ const BidForm: React.FC<IProps> = ({
             <div style={{ height: 8 }}></div>
 
             <div className={innerClasses.calcDescription}>
-              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
                 ? intl.formatMessage(
                     { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT_ALL" },
                     { vat: bid.vat }
@@ -927,7 +927,7 @@ const BidForm: React.FC<IProps> = ({
                       values.bid_type === "sale" &&
                       !!bid &&
                       !!bid.vat &&
-                      !bid.vendor.use_vat ? (
+                      !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(
