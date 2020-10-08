@@ -8,8 +8,10 @@ import {
   FormControlLabel,
   Checkbox,
   IconButton,
+  Collapse,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { Alert, Skeleton } from "@material-ui/lab";
+import { Link, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -18,6 +20,7 @@ import isEqual from "lodash.isequal";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
+import CloseIcon from "@material-ui/icons/Close";
 
 import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { actions as authActions } from "../../../../store/ducks/auth.duck";
@@ -29,7 +32,6 @@ import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons"
 import { getInitialValues, roles } from "../utils/profileForm";
 import { setMeValues, setCreateValues, setEditValues } from "../utils/submitValues";
 import { IAppState } from "../../../../store/rootDuck";
-import { Skeleton } from "@material-ui/lab";
 import { IUserForEdit } from "../../../../interfaces/users";
 import NumberFormatPhone from "../../../../components/NumberFormatCustom/NumberFormatPhone";
 import { accessByRoles } from "../../../../utils/utils";
@@ -108,6 +110,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   setAlertOpen,
   userId,
   setLocTabPulse,
+
+  openInfoAlert,
+  setOpenInfoAlert,
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
@@ -500,6 +505,33 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           />
         )}
       </div>
+      {!(meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading)) &&
+        editMode === "profile" && (
+          <Collapse in={openInfoAlert}>
+            <Alert
+              className={classes.infoAlert}
+              severity="info"
+              color="info"
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setOpenInfoAlert(false);
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              <div>{intl.formatMessage({ id: "PROFILE.VAT.INFO" })}</div>
+              <Link to={accessByRoles(me, ["ROLE_BUYER"]) ? "/purchase/my-bids" : "/sale/my-bids"}>
+                {intl.formatMessage({ id: "PROFILE.VAT.INFO.LINK" })}
+              </Link>
+            </Alert>
+          </Collapse>
+        )}
 
       {prompterRunning && prompterStep === 0 && !values.use_vat && (
         <div>
@@ -692,6 +724,8 @@ const connector = connect(
     statuses: state.statuses.statuses,
     prompterRunning: state.prompter.running,
     prompterStep: state.prompter.activeStep,
+
+    openInfoAlert: state.users.openInfoAlert,
   }),
   {
     fetchFunnelStates: funnelStatesActions.fetchRequest,
@@ -710,6 +744,7 @@ const connector = connect(
     editUser: usersActions.editRequest,
 
     setEditNoNoti: authActions.setEditNoNoti,
+    setOpenInfoAlert: usersActions.setOpenInfoAlert,
   }
 );
 

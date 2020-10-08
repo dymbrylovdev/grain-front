@@ -185,29 +185,43 @@ const BidTable: React.FC<IProps> = ({
                     </TableCell>
                   )}
                   <TableCell>
-                    {!!user &&
-                    user.use_vat &&
-                    salePurchaseMode === "sale" &&
-                    !!bid &&
-                    !!bid.vat &&
-                    !bid.vendor_use_vat ? (
-                      !bid.price ? (
-                        "-"
+                    <div style={{ display: "flex", flexDirection: "row", flexWrap: "nowrap" }}>
+                      {bestAllMyMode === "my-bids" && bid?.vendor_use_vat !== bid?.vendor?.use_vat && (
+                        <Tooltip
+                          title={intl.formatMessage({
+                            id: "BID.PRICE.ERROR",
+                          })}
+                        >
+                          <ReportProblemIcon
+                            color="error"
+                            style={{ marginRight: 4, width: 16, height: 16, alignSelf: "center" }}
+                          />
+                        </Tooltip>
+                      )}
+                      {!!user &&
+                      user.use_vat &&
+                      salePurchaseMode === "sale" &&
+                      !!bid &&
+                      !!bid.vat &&
+                      !bid.vendor_use_vat ? (
+                        !bid.price ? (
+                          "-"
+                        ) : (
+                          <div>
+                            <p style={{ marginBottom: "1px" }}>
+                              {!!bid && Math.round(bid.price * (bid.vat / 100 + 1))}
+                            </p>
+                            <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
+                              {`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}
+                            </p>
+                          </div>
+                        )
+                      ) : bid.price ? (
+                        Math.round(bid.price)
                       ) : (
-                        <>
-                          <p style={{ marginBottom: "1px" }}>
-                            {!!bid && Math.round(bid.price * (bid.vat / 100 + 1))}
-                          </p>
-                          <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
-                            {`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}
-                          </p>
-                        </>
-                      )
-                    ) : bid.price ? (
-                      Math.round(bid.price)
-                    ) : (
-                      "-"
-                    )}
+                        "-"
+                      )}
+                    </div>
                   </TableCell>
                   {bestAllMyMode !== "my-bids" && (
                     <TableCell>
