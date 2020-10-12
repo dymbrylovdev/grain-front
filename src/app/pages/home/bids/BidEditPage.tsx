@@ -91,6 +91,9 @@ const BidEditPage: React.FC<TPropsFromRedux &
 
   currentSaleFilters,
   currentPurchaseFilters,
+
+  openInfoAlert,
+  setOpenInfoAlert,
 }) => {
   const isNoModerate = !vendorId && !+bidId && me?.status === "На модерации";
   const classes = useStyles();
@@ -262,6 +265,8 @@ const BidEditPage: React.FC<TPropsFromRedux &
             clearCreate={clearCreate}
             edit={edit}
             profit={profit}
+            openInfoAlert={openInfoAlert}
+            setOpenInfoAlert={setOpenInfoAlert}
           />
         )}
         <AlertDialog
@@ -324,6 +329,8 @@ const connector = connect(
 
     locations: state.yaLocations.yaLocations,
     loadingLocations: state.yaLocations.loading,
+
+    openInfoAlert: state.bids.openInfoAlert,
   }),
   {
     fetchUser: usersActions.fetchByIdRequest,
@@ -349,6 +356,8 @@ const connector = connect(
 
     fetchLocations: yaLocationsActions.fetchRequest,
     clearLocations: yaLocationsActions.clear,
+
+    setOpenInfoAlert: bidsActions.setOpenInfoAlert,
   }
 );
 

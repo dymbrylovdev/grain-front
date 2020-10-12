@@ -80,6 +80,7 @@ export interface IBid {
     name: string;
   };
   payment_term: number;
+  vendor_use_vat: boolean;
 }
 
 export interface IBidToRequest {

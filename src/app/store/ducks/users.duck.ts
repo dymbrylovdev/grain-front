@@ -32,6 +32,8 @@ const DEL_REQUEST = "users/DEL_REQUEST";
 const DEL_SUCCESS = "users/DEL_SUCCESS";
 const DEL_FAIL = "users/DEL_FAIL";
 
+const SET_OPEN_INFO_ALERT = "users/SET_OPEN_INFO_ALERT";
+
 export interface IInitialState {
   page: number;
   per_page: number;
@@ -59,6 +61,8 @@ export interface IInitialState {
   delLoading: boolean;
   delSuccess: boolean;
   delError: string | null;
+
+  openInfoAlert: boolean;
 }
 
 const initialState: IInitialState = {
@@ -88,6 +92,8 @@ const initialState: IInitialState = {
   delLoading: false,
   delSuccess: false,
   delError: null,
+
+  openInfoAlert: true,
 };
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
@@ -227,6 +233,13 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return { ...state, delLoading: false, delError: action.payload };
     }
 
+    case SET_OPEN_INFO_ALERT: {
+      return {
+        ...state,
+        openInfoAlert: action.payload.openInfoAlert,
+      };
+    }
+
     default:
       return state;
   }
@@ -258,6 +271,9 @@ export const actions = {
   delRequest: (payload: { id: number }) => createAction(DEL_REQUEST, payload),
   delSuccess: () => createAction(DEL_SUCCESS),
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
+
+  setOpenInfoAlert: (openInfoAlert: boolean) =>
+    createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
 };
 
 export type TActions = ActionsUnion<typeof actions>;

@@ -2,10 +2,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import { IntlShape } from "react-intl";
 import { Link } from "react-router-dom";
-import { TextField, MenuItem, Grid, makeStyles, Button, IconButton } from "@material-ui/core";
+import {
+  TextField,
+  MenuItem,
+  Grid,
+  makeStyles,
+  Button,
+  IconButton,
+  Collapse,
+} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
-import { Skeleton, Autocomplete } from "@material-ui/lab";
+import { Skeleton, Autocomplete, Alert } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
@@ -199,6 +207,15 @@ interface IProps {
   createError: string | null;
   clearCreate: () => Action<"bids/CLEAR_CREATE">;
   profit: IProfit;
+  setOpenInfoAlert: (
+    openInfoAlert: boolean
+  ) => ActionWithPayload<
+    "bids/SET_OPEN_INFO_ALERT",
+    {
+      openInfoAlert: boolean;
+    }
+  >;
+  openInfoAlert: boolean;
 }
 
 const BidForm: React.FC<IProps> = ({
@@ -233,6 +250,8 @@ const BidForm: React.FC<IProps> = ({
   clearCreate,
 
   profit,
+  openInfoAlert,
+  setOpenInfoAlert,
 }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -374,6 +393,8 @@ const BidForm: React.FC<IProps> = ({
   useEffect(() => {
     if (currentCropId) fetchCropParams(currentCropId);
   }, [currentCropId, fetchCropParams]);
+
+  const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
 
@@ -528,6 +549,35 @@ const BidForm: React.FC<IProps> = ({
           </TextField>
         ))}
 
+      {editMode === "edit" &&
+        bid?.vendor_use_vat !== bid?.vendor?.use_vat &&
+        (loading ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <Collapse in={openInfoAlert}>
+            <Alert
+              className={classes.infoAlert}
+              severity="warning"
+              color="error"
+              style={{ marginTop: 8, marginBottom: 8 }}
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setOpenInfoAlert(false);
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              {intl.formatMessage({ id: "BID.PRICE.WARNING" })}
+            </Alert>
+          </Collapse>
+        ))}
+
       {loading ? (
         <Skeleton width="100%" height={70} animation="wave" />
       ) : (
@@ -547,6 +597,12 @@ const BidForm: React.FC<IProps> = ({
           InputProps={
             editMode !== "view"
               ? {
+                  style:
+                    editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
+                      ? {
+                          color: "#fd397a",
+                        }
+                      : {},
                   inputComponent: NumberFormatCustom as any,
                   endAdornment: (
                     <IconButton onClick={() => setFieldValue("price", "")}>
@@ -566,7 +622,7 @@ const BidForm: React.FC<IProps> = ({
         values.bid_type === "sale" &&
         !!bid &&
         !!bid.vat &&
-        !bid.vendor.use_vat &&
+        !vendorUseVat &&
         (loading ? (
           <>
             <Skeleton width="100%" height={70} animation="wave" />
@@ -704,7 +760,7 @@ const BidForm: React.FC<IProps> = ({
               autoComplete="off"
             />
             <div className={innerClasses.calcDescription}>
-              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
                 ? intl.formatMessage(
                     { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" },
                     { vat: bid.vat }
@@ -722,7 +778,7 @@ const BidForm: React.FC<IProps> = ({
                       values.bid_type === "sale" &&
                       !!bid &&
                       !!bid.vat &&
-                      !bid.vendor.use_vat ? (
+                      !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(
@@ -750,7 +806,7 @@ const BidForm: React.FC<IProps> = ({
             <div style={{ height: 8 }}></div>
 
             <div className={innerClasses.calcDescription}>
-              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
                 ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })
                 : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })}
             </div>
@@ -766,7 +822,7 @@ const BidForm: React.FC<IProps> = ({
                       values.bid_type === "sale" &&
                       !!bid &&
                       !!bid.vat &&
-                      !bid.vendor.use_vat ? (
+                      !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(
@@ -800,7 +856,7 @@ const BidForm: React.FC<IProps> = ({
             <div style={{ height: 8 }}></div>
 
             <div className={innerClasses.calcDescription}>
-              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
                 ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY_ALL" })
                 : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY_ALL" })}
             </div>
@@ -816,7 +872,7 @@ const BidForm: React.FC<IProps> = ({
                       values.bid_type === "sale" &&
                       !!bid &&
                       !!bid.vat &&
-                      !bid.vendor.use_vat ? (
+                      !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(
@@ -852,7 +908,7 @@ const BidForm: React.FC<IProps> = ({
             <div style={{ height: 8 }}></div>
 
             <div className={innerClasses.calcDescription}>
-              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
                 ? intl.formatMessage(
                     { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT_ALL" },
                     { vat: bid.vat }
@@ -871,7 +927,7 @@ const BidForm: React.FC<IProps> = ({
                       values.bid_type === "sale" &&
                       !!bid &&
                       !!bid.vat &&
-                      !bid.vendor.use_vat ? (
+                      !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(

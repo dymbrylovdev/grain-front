@@ -125,8 +125,7 @@ const BidTable: React.FC<IProps> = ({
                     <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
                   </TopTableCell>
                 )}
-                {clientWidth > 1024 &&
-                  bestAllMyMode !== "my-bids" &&
+                {bestAllMyMode !== "my-bids" &&
                   accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
                     <TopTableCell>
                       <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
@@ -153,11 +152,14 @@ const BidTable: React.FC<IProps> = ({
                     )}
                   </TopTableCell>
                 )}
-                {bestAllMyMode !== "my-bids" && (
-                  <TopTableCell>
-                    <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
-                  </TopTableCell>
-                )}
+                {bestAllMyMode !== "my-bids" &&
+                  (clientWidth > 1024 ||
+                    (clientWidth <= 1024 &&
+                      accessByRoles(user, ["ROLE_BUYER", "ROLE_VENDOR"]))) && (
+                    <TopTableCell>
+                      <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
+                    </TopTableCell>
+                  )}
                 {salePurchaseMode === "purchase" && (
                   <TopTableCell>
                     <FormattedMessage id="BIDSLIST.TABLE.TIME" />
@@ -183,29 +185,43 @@ const BidTable: React.FC<IProps> = ({
                     </TableCell>
                   )}
                   <TableCell>
-                    {!!user &&
-                    user.use_vat &&
-                    salePurchaseMode === "sale" &&
-                    !!bid &&
-                    !!bid.vat &&
-                    !bid.vendor.use_vat ? (
-                      !bid.price ? (
-                        "-"
+                    <div style={{ display: "flex", flexDirection: "row", flexWrap: "nowrap" }}>
+                      {bestAllMyMode === "my-bids" && bid?.vendor_use_vat !== bid?.vendor?.use_vat && (
+                        <Tooltip
+                          title={intl.formatMessage({
+                            id: "BID.PRICE.ERROR",
+                          })}
+                        >
+                          <ReportProblemIcon
+                            color="error"
+                            style={{ marginRight: 4, width: 16, height: 16, alignSelf: "center" }}
+                          />
+                        </Tooltip>
+                      )}
+                      {!!user &&
+                      user.use_vat &&
+                      salePurchaseMode === "sale" &&
+                      !!bid &&
+                      !!bid.vat &&
+                      !bid.vendor_use_vat ? (
+                        !bid.price ? (
+                          "-"
+                        ) : (
+                          <div>
+                            <p style={{ marginBottom: "1px" }}>
+                              {!!bid && Math.round(bid.price * (bid.vat / 100 + 1))}
+                            </p>
+                            <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
+                              {`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}
+                            </p>
+                          </div>
+                        )
+                      ) : bid.price ? (
+                        Math.round(bid.price)
                       ) : (
-                        <>
-                          <p style={{ marginBottom: "1px" }}>
-                            {!!bid && Math.round(bid.price * (bid.vat / 100 + 1))}
-                          </p>
-                          <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
-                            {`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}
-                          </p>
-                        </>
-                      )
-                    ) : bid.price ? (
-                      Math.round(bid.price)
-                    ) : (
-                      "-"
-                    )}
+                        "-"
+                      )}
+                    </div>
                   </TableCell>
                   {bestAllMyMode !== "my-bids" && (
                     <TableCell>
@@ -214,8 +230,7 @@ const BidTable: React.FC<IProps> = ({
                         : "-"}
                     </TableCell>
                   )}
-                  {clientWidth > 1024 &&
-                    bestAllMyMode !== "my-bids" &&
+                  {bestAllMyMode !== "my-bids" &&
                     accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
                       <TableCell>
                         <Grid container direction="column" justify="center" alignItems="flex-start">
@@ -286,7 +301,12 @@ const BidTable: React.FC<IProps> = ({
                       </Grid>
                     </TableCell>
                   )}
-                  {bestAllMyMode !== "my-bids" && <TableCell>{bid.distance || "-"}</TableCell>}
+                  {bestAllMyMode !== "my-bids" &&
+                    (clientWidth > 1024 ||
+                      (clientWidth <= 1024 &&
+                        accessByRoles(user, ["ROLE_BUYER", "ROLE_VENDOR"]))) && (
+                      <TableCell>{bid.distance || "-"}</TableCell>
+                    )}
 
                   {bestAllMyMode === "my-bids" && <TableCell>{bid?.location?.text}</TableCell>}
 

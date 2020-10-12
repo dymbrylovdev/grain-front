@@ -52,6 +52,7 @@ const DEL_SUCCESS = "bids/DEL_SUCCESS";
 const DEL_FAIL = "bids/DEL_FAIL";
 
 const SET_PROFIT = "bids/SET_PROFIT";
+const SET_OPEN_INFO_ALERT = "bids/SET_OPEN_INFO_ALERT";
 
 export interface IInitialState {
   page: number;
@@ -90,6 +91,7 @@ export interface IInitialState {
   delError: string | null;
 
   profit: IProfit;
+  openInfoAlert: boolean;
 }
 
 const initialState: IInitialState = {
@@ -129,6 +131,7 @@ const initialState: IInitialState = {
   delError: null,
 
   profit: { bid_id: 0, value: 0 },
+  openInfoAlert: true,
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
@@ -316,6 +319,13 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, profit: action.payload.profit };
       }
 
+      case SET_OPEN_INFO_ALERT: {
+        return {
+          ...state,
+          openInfoAlert: action.payload.openInfoAlert,
+        };
+      }
+
       default:
         return state;
     }
@@ -362,6 +372,8 @@ export const actions = {
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
 
   setProfit: (profit: IProfit) => createAction(SET_PROFIT, { profit }),
+  setOpenInfoAlert: (openInfoAlert: boolean) =>
+    createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
