@@ -30,7 +30,7 @@ function KtContent({ children, contentContainerClasses }) {
   }, [match.url]);
 
   return (
-    <div className={cssClassesState.join(" ")} style={{ width: "100%" }}>
+    <div className={cssClassesState.join(" ")} style={{ flex: 1 }}>
       {children}
     </div>
   );

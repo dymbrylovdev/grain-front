@@ -118,8 +118,8 @@ const UserEditPage: React.FC<TPropsFromRedux &
   }, [match.url]);
 
   useEffect(() => {
-    if (!!me?.fio && !!me?.phone && me?.points.length === 0) setLocTabPulse(true);
-    if (me?.points.length !== 0) setLocTabPulse(false);
+    if (!!me?.fio && !!me?.phone && me?.points?.length === 0) setLocTabPulse(true);
+    if (me?.points?.length !== 0) setLocTabPulse(false);
   }, [me]);
 
   const handleTabsChange = (event: any, newValue: number) => {

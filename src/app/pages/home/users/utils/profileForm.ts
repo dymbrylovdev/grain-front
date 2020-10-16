@@ -28,7 +28,7 @@ export const getInitialValues = (user: IUser | undefined) => ({
   email: user?.email || "",
   password: "",
   repeatPassword: "",
-  role: user?.roles[0] || "",
+  role: user?.roles?.length ? user.roles[0] : "",
   status: user?.status || "",
   funnel_state_id: user?.funnel_state?.id || 0,
   is_funnel_state_automate: user?.is_funnel_state_automate || false,

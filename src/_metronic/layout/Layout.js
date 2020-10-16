@@ -94,7 +94,9 @@ function Layout({
                 }}
               >
                 <GrainMenu />
-                <KtContent>{children}</KtContent>
+                <div style={{flex: 1, overflowY:"hidden"}}>
+                  <KtContent>{children}</KtContent>
+                </div>
               </div>
               {/*<!-- end:: Content Body -->*/}
             </div>

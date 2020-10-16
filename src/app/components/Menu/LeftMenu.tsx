@@ -199,7 +199,7 @@ const LeftMenu: React.FC<IProps> = ({
         )}
       </MenuItem>
       <Collapse in={bestOpen} timeout="auto" unmountOnExit>
-        {me.crops.map(crop => (
+        {me?.crops?.map(crop => (
           <MenuItem
             key={crop.id}
             onClick={() => handleClick(`/${salePurchaseMode}/best-bids/${crop.id}`)}
