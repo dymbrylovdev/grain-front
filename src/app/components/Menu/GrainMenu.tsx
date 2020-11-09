@@ -2,12 +2,12 @@ import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Paper, useMediaQuery, makeStyles, Drawer } from "@material-ui/core";
+import { useLocation } from "react-router-dom";
+
+import LeftMenu from "./LeftMenu";
 
 import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
-
 import { IAppState } from "../../store/rootDuck";
-import { LeftMenu } from ".";
-import { useLocation } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,6 +26,20 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const Wrapper: React.FC<{
+  isMinWidthQuery: boolean;
+  className: string;
+  setCloseDrawer: () => {} | void;
+  isMenuOpen: boolean;
+}> = ({ isMinWidthQuery, children, className, setCloseDrawer, isMenuOpen }) =>
+  isMinWidthQuery ? (
+    <Paper className={className}>{children}</Paper>
+  ) : (
+    <Drawer anchor="left" open={isMenuOpen} onClose={setCloseDrawer}>
+      <div className={className}>{children}</div>
+    </Drawer>
+  );
+
 const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   intl,
   setLeftMenuOpen,
@@ -35,7 +49,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   salePurchaseMode,
 }) => {
   const classes = useStyles();
-  const matches = useMediaQuery("(min-width:1025px)");
+  const isMinWidthQuery = useMediaQuery("(min-width:1025px)");
   const location = useLocation();
 
   let bestAllMyDealsMode: "deals" | "best-bids" | "all-bids" | "my-bids" | undefined = undefined;
@@ -49,37 +63,25 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     if (route === "all-bids") bestAllMyDealsMode = "all-bids";
   }
 
+  if (!me) return null;
+
   return (
-    <>
-      {!!matches && !!me && (
-        <Paper className={classes.root}>
-          <LeftMenu
-            intl={intl}
-            me={me}
-            bestAllMyDealsMode={bestAllMyDealsMode}
-            cropId={cropId}
-            salePurchaseMode={salePurchaseMode}
-            setSalePurchaseMode={setSalePurchaseMode}
-            setLeftMenuOpen={setLeftMenuOpen}
-          />
-        </Paper>
-      )}
-      {!matches && !!me && (
-        <Drawer anchor="left" open={leftMenuOpen} onClose={() => setLeftMenuOpen(false)}>
-          <div className={classes.left_menu}>
-            <LeftMenu
-              intl={intl}
-              me={me}
-              bestAllMyDealsMode={bestAllMyDealsMode}
-              cropId={cropId}
-              salePurchaseMode={salePurchaseMode}
-              setSalePurchaseMode={setSalePurchaseMode}
-              setLeftMenuOpen={setLeftMenuOpen}
-            />
-          </div>
-        </Drawer>
-      )}
-    </>
+    <Wrapper
+      isMinWidthQuery={isMinWidthQuery}
+      className={isMinWidthQuery ? classes.root : classes.left_menu}
+      isMenuOpen={leftMenuOpen}
+      setCloseDrawer={() => setLeftMenuOpen(false)}
+    >
+      <LeftMenu
+        intl={intl}
+        me={me}
+        bestAllMyDealsMode={bestAllMyDealsMode}
+        cropId={cropId}
+        salePurchaseMode={salePurchaseMode}
+        setSalePurchaseMode={setSalePurchaseMode}
+        setLeftMenuOpen={setLeftMenuOpen}
+      />
+    </Wrapper>
   );
 };
 
