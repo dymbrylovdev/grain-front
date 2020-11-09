@@ -6,11 +6,14 @@ import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import SpaIcon from "@material-ui/icons/Spa";
 import { IUser } from "../../interfaces/users";
+import { ICropParam } from "../../interfaces/crops"; // ! imported
 import { accessByRoles } from "../../utils/utils";
 import { salePurchaseModeForMyBids } from "./utils";
 import { ActionWithPayload } from "../../utils/action-helper";
 import DealsFilterForAll from "./components/DealsFilterForAll";
 import DealsFilterForAdm from "./components/DealsFilterForAdm";
+
+import FilterBids from "./components/FilterBids";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -110,6 +113,7 @@ const LeftMenu: React.FC<IProps> = ({
   const history = useHistory();
 
   const [bestOpen, setBestOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false); // ! Changed
   const [allOpen, setAllOpen] = useState(false);
 
   useEffect(() => {
@@ -271,12 +275,41 @@ const LeftMenu: React.FC<IProps> = ({
         <Divider style={{ margin: "6px 0" }} />
       )}
 
+      {/* // ! Changed */}
+
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+        bestAllMyDealsMode === "best-bids" && (
+          <MenuItem
+            onClick={() => {
+              setBestOpen(false);
+              setAllOpen(false);
+              setFiltersOpen(!filtersOpen);
+            }}
+            className={`${classes.nester}`}
+          >
+            {intl.formatMessage({ id: "SUBMENU.FILTERS" })}
+          </MenuItem>
+        )}
+      <Collapse in={filtersOpen} timeout="auto" unmountOnExit>
+        <FilterBids
+          cropId={cropId}
+          intl={intl}
+          classes={classes}
+        />
+      </Collapse>
+
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+        bestAllMyDealsMode === "best-bids" && <Divider style={{ margin: "6px 0" }} />}
+
+      {/* // ! Changed */}
+
       {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
         <MenuItem
           className={bestAllMyDealsMode === "deals" ? classes.selected : ""}
           onClick={() => {
             setBestOpen(false);
             setAllOpen(false);
+            setFiltersOpen(false);
             handleClick("/deals");
           }}
         >

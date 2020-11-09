@@ -579,7 +579,7 @@ const BidsPage: React.FC<TPropsFromRedux &
             )}
           </>
         )}
-
+        {/* // ! Here */}
         <FilterModal
           isOpen={filterModalOpen}
           handleClose={() => setFilterModalOpen(false)}

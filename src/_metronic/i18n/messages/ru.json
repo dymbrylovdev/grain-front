@@ -9,6 +9,7 @@
   "ALL.BUTTONS.BID_CREATE": "Опубликовать объявление",
   "ALL.BUTTONS.CLEAR": "Очистить",
   "ALL.BUTTONS.SUBMIT": "Применить",
+  "ALL.BUTTONS.CREATE_FILTER": "Создать фильтр",
 
   "ALL.DIALOGS.DEL_TEXT": "Удаление...",
 
@@ -37,6 +38,7 @@
   "SUBMENU.BIDS.PURCHASE": "Объявления покупателей",
   "SUBMENU.BIDS.DEALS": "Сделки",
   "SUBMENU.MY_BIDS": "Мои объявления",
+  "SUBMENU.FILTERS": "Фильтры",
   "SUBMENU.ALL_BIDS": "Все объявления",
   "SUBMENU.GRAIN.CREATE_AD": "Добавить объявление",
   "SUBMENU.USER.LIST": "Список пользователей",

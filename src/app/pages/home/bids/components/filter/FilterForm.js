@@ -49,6 +49,8 @@ function FilterForm({
           {intl.formatMessage({ id: "FILTERS.INFO_TEXT" })}
         </Alert>
       </Collapse>
+      
+      {/* // * Информация о фильтрах в рамках данного тарифа */}
 
       <div className={classes.bottomMargin2} style={{ fontWeight: "bold" }}>
         {intl.formatMessage(
@@ -202,6 +204,7 @@ function FilterForm({
             <Divider />
           </div>
         ))}
+      
     </form>
   );
 }

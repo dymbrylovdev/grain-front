@@ -12,6 +12,7 @@ import {
   getMyFilters,
   deleteMyFilter,
   editMyFilter,
+  createMyFilterFromBid
 } from "../../crud/myFilters.crud";
 import { IMyFilterItem, IFilterForCreate, IMyFilters } from "../../interfaces/filters";
 import { TBidType } from "../../interfaces/bids";

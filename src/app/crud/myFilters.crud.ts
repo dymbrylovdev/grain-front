@@ -19,3 +19,7 @@ export const editMyFilter = (id: number, data: IFilterForCreate) => {
 export const deleteMyFilter = (id: number) => {
   return axios.delete(`${MY_FILTERS_URL}/${id}`);
 };
+
+export const createMyFilterFromBid = (id: number) => {
+  return axios.post(`${MY_FILTERS_URL}/by_id/${id}`);
+}

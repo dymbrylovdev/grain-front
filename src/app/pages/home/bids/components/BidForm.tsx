@@ -1290,6 +1290,17 @@ const BidForm: React.FC<IProps> = ({
         </div> */}
         {editMode !== "view" && (
           <>
+          {/* // ! Changed */}
+
+            <div className={classes.button}>
+              <ButtonWithLoader
+                color="secondary"
+              >
+                {intl.formatMessage({ id: "ALL.BUTTONS.CREATE_FILTER" })}
+              </ButtonWithLoader>
+            </div>
+
+          {/*  */}
             <div className={classes.button}>
               <ButtonWithLoader
                 loading={buttonLoading}

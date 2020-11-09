@@ -7,7 +7,8 @@ import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
 
 import { IAppState } from "../../store/rootDuck";
 import { LeftMenu } from ".";
-import { useLocation } from "react-router-dom";
+import { RouteComponentProps, useLocation } from "react-router-dom";
+import MyFilters from "../../pages/home/bids/components/filter/MyFilters";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -75,7 +76,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             cropId={cropId}
             salePurchaseMode={salePurchaseMode}
             setSalePurchaseMode={setSalePurchaseMode}
-            setLeftMenuOpen={setLeftMenuOpen}
+            setLeftMenuOpen={setLeftMenuOpen}         
           />
         </Paper>
       )}
@@ -98,7 +99,9 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   );
 };
 
-const connector = connect(null, { ...leftMenuActions });
+const connector = connect(null, {
+  ...leftMenuActions,
+});
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 export default injectIntl(connector(GrainMenu));
