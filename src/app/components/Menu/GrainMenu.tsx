@@ -1,5 +1,5 @@
 import React from "react";
-import { connect, ConnectedProps, shallowEqual, useSelector } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Paper, useMediaQuery, makeStyles, Drawer } from "@material-ui/core";
 
@@ -30,20 +30,12 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   intl,
   setLeftMenuOpen,
   setSalePurchaseMode,
+  me,
+  leftMenuOpen,
+  salePurchaseMode,
 }) => {
-  const { me, leftMenuOpen, salePurchaseMode } = useSelector(
-    ({ auth, leftMenu }: IAppState) => ({
-      me: auth.user,
-      leftMenuOpen: leftMenu.leftMenuOpen,
-      salePurchaseMode: leftMenu.salePurchaseMode,
-    }),
-    shallowEqual
-  );
-
   const classes = useStyles();
-
   const matches = useMediaQuery("(min-width:1025px)");
-
   const location = useLocation();
 
   let bestAllMyDealsMode: "deals" | "best-bids" | "all-bids" | "my-bids" | undefined = undefined;
@@ -98,7 +90,14 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   );
 };
 
-const connector = connect(null, { ...leftMenuActions });
+const connector = connect(
+  (state: IAppState) => ({
+    me: state.auth.user,
+    leftMenuOpen: state.leftMenu.leftMenuOpen,
+    salePurchaseMode: state.leftMenu.salePurchaseMode,
+  }),
+  { ...leftMenuActions }
+);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 export default injectIntl(connector(GrainMenu));
