@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper } from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, makeStyles, createStyles } from "@material-ui/core";
 
 import { actions as tariffsActions } from "../../../store/ducks/tariffs.duck";
 
@@ -12,6 +12,28 @@ import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
 import { TTariffField, ITariff } from "../../../interfaces/tariffs";
 import EditableCell from "./components/EditableCell";
+
+const useInnerStyles = makeStyles(theme =>
+  createStyles({
+    tabCell: {
+      height: 53,
+      minWidth: 63,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    tabCellText: {
+      cursor: "pointer",
+      width: "max-content",
+      padding: 10,
+    },
+    textField: {
+      margin: 0,
+      width: 63,
+      height: 53,
+    },
+  })
+);
 
 const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -48,8 +70,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       window.location.reload();
     }, 10000);
   }
-
-  console.log(tariffs);
 
   return (
     <Paper className={classes.paperWithTable}>
@@ -139,6 +159,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 1) as ITariff}
@@ -150,6 +171,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 2) as ITariff}
@@ -158,6 +180,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 102) as ITariff}
@@ -166,6 +189,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 4) as ITariff}
@@ -174,6 +198,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 3) as ITariff}
@@ -182,6 +207,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 5) as ITariff}
@@ -190,6 +216,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 100) as ITariff}
@@ -198,6 +225,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 101) as ITariff}
@@ -213,6 +241,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 1) as ITariff}
@@ -224,6 +253,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 2) as ITariff}
@@ -232,6 +262,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 102) as ITariff}
@@ -240,6 +271,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 4) as ITariff}
@@ -248,6 +280,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 3) as ITariff}
@@ -256,6 +289,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 5) as ITariff}
@@ -264,6 +298,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 100) as ITariff}
@@ -272,6 +307,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 101) as ITariff}
@@ -298,6 +334,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT31" })}</TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 1) as ITariff}
@@ -306,6 +343,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 2) as ITariff}
@@ -314,6 +352,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 102) as ITariff}
@@ -322,6 +361,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 4) as ITariff}
@@ -330,6 +370,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 3) as ITariff}
@@ -338,6 +379,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 5) as ITariff}
@@ -346,6 +388,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 100) as ITariff}
@@ -354,6 +397,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 101) as ITariff}
@@ -380,6 +424,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT41" })}</TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 1) as ITariff}
@@ -388,6 +433,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 2) as ITariff}
@@ -396,6 +442,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 102) as ITariff}
@@ -404,6 +451,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 4) as ITariff}
@@ -412,6 +460,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 3) as ITariff}
@@ -420,6 +469,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 5) as ITariff}
@@ -428,6 +478,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 100) as ITariff}
@@ -436,6 +487,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                   <EditableCell
+                    useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 101) as ITariff}
@@ -444,7 +496,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
               </TableRow>
 
-                {/* // * grain-439 | Tarrifs prices */}
+              {/* // * grain-439 | Tarrifs prices */}
 
               <TableRow>
                 <TableCell>
@@ -461,15 +513,17 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </TableRow>
 
               <TableRow>
-                <TableCell>{intl.formatMessage({ id: "TARIFFS.COST" })}</TableCell>
-                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-                  <EditableCell
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 3) as ITariff}
-                    realCell={{ id: 3, field: "my_test_field" }}
-                  />
+                <TableCell>
+                  
                 </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
               </TableRow>
 
             </TableBody>

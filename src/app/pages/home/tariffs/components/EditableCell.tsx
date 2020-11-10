@@ -11,29 +11,8 @@ import { IAppState } from "../../../../store/rootDuck";
 import { TTariffField, ITariff } from "../../../../interfaces/tariffs";
 import NumberFormatInt from "../../../../components/NumberFormatCustom/NumberFormatInt";
 
-const useInnerStyles = makeStyles(theme =>
-  createStyles({
-    tabCell: {
-      height: 53,
-      minWidth: 63,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    tabCellText: {
-      cursor: "pointer",
-      width: "max-content",
-      padding: 10,
-    },
-    textField: {
-      margin: 0,
-      width: 63,
-      height: 53,
-    },
-  })
-);
-
 type TProps = {
+  useInnerStyles: any,
   realCell: {
     id: number;
     field: TTariffField;
@@ -53,6 +32,7 @@ type TProps = {
 
 const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> = ({
   intl,
+  useInnerStyles,
   realCell,
   cell,
   setCell,
@@ -69,10 +49,13 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
 }) => {
   const innerClasses = useInnerStyles();
 
+  console.log(tariff);
+
   const { values, handleSubmit, handleChange, resetForm } = useFormik({
     initialValues: { value: tariff[realCell.field] },
     onSubmit: values => {
       let realValue = +values.value;
+      console.log(+values.value);
       if (+values.value <= 0) {
         realValue = 0;
       }
@@ -86,15 +69,12 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
         realValue = 1000;
       }
       if (+values.value !== tariff[realCell.field]) {
-        //@ts-ignore
         edit(realCell.id, { [realCell.field]: realValue });
       } else {
         setCell({ id: 0, field: undefined });
       }
     },
   });
-
-  console.log(values);
 
   useEffect(() => {
     resetForm({ values: { value: tariff[realCell.field] } });

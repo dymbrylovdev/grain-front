@@ -56,7 +56,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   let bestAllMyDealsMode: "deals" | "best-bids" | "all-bids" | "my-bids" | undefined = undefined;
 
-  const [, route, cropId] = location.pathname.split("/");
+  const [, , route, cropId] = location.pathname.split("/");
   if (location.pathname === "/deals") {
     bestAllMyDealsMode = "deals";
   } else if (route) {
