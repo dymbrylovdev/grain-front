@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { IntlShape } from "react-intl";
 import { Link } from "react-router-dom";
 import {
@@ -10,6 +11,8 @@ import {
   Button,
   IconButton,
   Collapse,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
@@ -35,6 +38,8 @@ import { accessByRoles, getConfirmCompanyString } from "../../../../utils/utils"
 import { TrafficLight } from "../../users/components";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { thousands } from "../../deals/utils/utils";
+
+import { actions } from "../../../../store/ducks/myFilters.duck";
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
@@ -72,7 +77,8 @@ const getInitialValues = (
   editMode: string,
   vendorId: number,
   user: IUser | undefined,
-  me: IUser | undefined
+  me: IUser | undefined,
+  isFilterCreated: boolean | undefined,
 ) => {
   let newCropId: number | string = "";
   if (editMode === "view" || editMode === "edit") {
@@ -261,6 +267,15 @@ const BidForm: React.FC<IProps> = ({
   const [goToRef, setGoToRef] = useState(false);
   const [isMoreBidOpen, setMoreBidOpen] = useState(false);
 
+  // // ! TEST
+  // const dispatch = useDispatch();
+
+  // const createFilterFromBid = (bid: number | IBid | undefined) => {
+  //   //@ts-ignore
+  //   const bidId = bid.id;
+  //   dispatch(actions.postFilter(bidId));
+  // };
+
   useEffect(() => {
     if (goToRef) {
       inputEl.current?.focus();
@@ -279,6 +294,14 @@ const BidForm: React.FC<IProps> = ({
     ? vendor.crops[0].id
     : 0;
 
+      // ! Test is_filter_created
+
+  const [isFilterCreated, setFilterCreated] = useState(false);
+
+  const onCheckboxChange = () => {
+    setFilterCreated(!isFilterCreated);
+  };
+
   const {
     values,
     errors,
@@ -296,7 +319,8 @@ const BidForm: React.FC<IProps> = ({
       editMode,
       vendorId,
       user,
-      me
+      me,
+      isFilterCreated,
     ),
     onSubmit: values => {
       const paramValues: IParamValue[] = [];
@@ -313,6 +337,7 @@ const BidForm: React.FC<IProps> = ({
         volume: +values.volume,
         payment_term: +values.payment_term,
         parameter_values: paramValues,
+        is_filter_created: isFilterCreated ? 1 : 0
       };
       const bidType = params.bid_type;
       delete params.bid_type;
@@ -321,6 +346,8 @@ const BidForm: React.FC<IProps> = ({
         delete params.vendor_id;
         edit(bid.id, params);
       }
+
+      console.log(params);
     },
     validationSchema: Yup.object().shape({
       volume: Yup.number()
@@ -386,7 +413,7 @@ const BidForm: React.FC<IProps> = ({
 
   useEffect(() => {
     resetForm({
-      values: getInitialValues(bid, currentCropId, salePurchaseMode, editMode, vendorId, user, me),
+      values: getInitialValues(bid, currentCropId, salePurchaseMode, editMode, vendorId, user, me, isFilterCreated),
     });
   }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
 
@@ -1290,17 +1317,23 @@ const BidForm: React.FC<IProps> = ({
         </div> */}
         {editMode !== "view" && (
           <>
-          {/* // ! Changed */}
+            {/* // ! Changed */}
 
-            <div className={classes.button}>
-              <ButtonWithLoader
-                color="secondary"
-              >
-                {intl.formatMessage({ id: "ALL.BUTTONS.CREATE_FILTER" })}
-              </ButtonWithLoader>
-            </div>
+            {editMode === "edit" ? (
+              // <div className={classes.button}>
+              //   <ButtonWithLoader onPress={() => createFilterFromBid(bid)}>
+              //     {intl.formatMessage({ id: "ALL.BUTTONS.CREATE_FILTER" })}
+              //   </ButtonWithLoader>
+              // </div>
+              null
+            ) : (
+              <FormControlLabel
+                control={<Checkbox checked={isFilterCreated} onChange={() => onCheckboxChange()} />}
+                label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
+              />
+            )}
 
-          {/*  */}
+            {/*  */}
             <div className={classes.button}>
               <ButtonWithLoader
                 loading={buttonLoading}
@@ -1363,7 +1396,8 @@ const BidForm: React.FC<IProps> = ({
               editMode,
               vendorId,
               user,
-              me
+              me,
+              isFilterCreated
             ),
           });
           window.scrollTo({

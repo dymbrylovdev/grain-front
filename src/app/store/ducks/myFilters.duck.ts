@@ -1,3 +1,4 @@
+import { IMyFilterItem } from './../../interfaces/filters';
 import { persistReducer } from "redux-persist";
 import { Reducer } from "redux";
 import { PersistPartial } from "redux-persist/es/persistReducer";
@@ -12,11 +13,12 @@ import {
   getMyFilters,
   deleteMyFilter,
   editMyFilter,
-  createMyFilterFromBid
+  postMyFilter,
 } from "../../crud/myFilters.crud";
-import { IMyFilterItem, IFilterForCreate, IMyFilters } from "../../interfaces/filters";
+import { IFilterForCreate, IMyFilters } from "../../interfaces/filters";
 import { TBidType } from "../../interfaces/bids";
 import { fromApiToFilter } from "../../pages/home/myFilters/utils";
+import { PhotoSizeSelectLargeSharp } from "@material-ui/icons";
 
 const FETCH_REQUEST = "myFilters/FETCH_REQUEST";
 const FETCH_SUCCESS = "myFilters/FETCH_SUCCESS";
@@ -45,6 +47,12 @@ const DEL_REQUEST = "myFilters/DEL_REQUEST";
 const DEL_SUCCESS = "myFilters/DEL_SUCCESS";
 const DEL_FAIL = "myFilters/DEL_FAIL";
 
+// ! Added
+
+const POST_FILTER = "myFilters/POST_FILTER";
+const POST_SUCCESS = "myFilters/POST_SUCCESS";
+const POST_ERROR = "myFilters/POST_ERROR";
+
 export interface IInitialState {
   selectedFilterId: number | undefined;
   openInfoAlert: boolean;
@@ -71,6 +79,13 @@ export interface IInitialState {
   delLoading: boolean;
   delSuccess: boolean;
   delError: string | null;
+
+  // * Added
+
+  postFilterId: number | undefined;
+  postLoading: boolean;
+  postSuccess: boolean;
+  postError: string | null;
 }
 
 const initialState: IInitialState = {
@@ -99,6 +114,13 @@ const initialState: IInitialState = {
   delLoading: false,
   delSuccess: false,
   delError: null,
+
+  // * Added initialState for post method
+
+  postFilterId: undefined,
+  postLoading: false,
+  postSuccess: false,
+  postError: null,
 };
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
   { storage, key: "filters", whitelist: ["currentSaleFilters", "currentPurchaseFilters"] },
@@ -292,6 +314,23 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, delLoading: false, delError: action.payload };
       }
 
+      case POST_FILTER: {
+        return { ...state, postLoading: true, postSuccess: false, postError: null };
+      }
+
+      case POST_SUCCESS: {
+        return {
+          ...state,
+          postFilterId: action.payload.id,
+          postLoading: false,
+          postSuccess: true,
+        };
+      }
+
+      case POST_ERROR: {
+        return { ...state, postLoading: false, postError: action.payload };
+      }
+
       default:
         return state;
     }
@@ -330,6 +369,10 @@ export const actions = {
   delRequest: (payload: number) => createAction(DEL_REQUEST, payload),
   delSuccess: (payload: IMyFilterItem) => createAction(DEL_SUCCESS, payload),
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
+
+  postFilter: (payload: number) => createAction(POST_FILTER, payload),
+  postSucces: (payload: IMyFilterItem) => createAction(POST_SUCCESS, payload),
+  postFail: (payload: string) => createAction(POST_ERROR, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -378,9 +421,22 @@ function* delSaga({ payload }: { payload: number }) {
   }
 }
 
+function* postSaga({ payload }: { payload: number }) {
+  try {
+    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() => 
+      postMyFilter(payload)
+    );
+    //@ts-ignore
+    yield put(actions.postSucces(data));
+  } catch (e) {
+    yield put(actions.postFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.createRequest>>(CREATE_REQUEST, createSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
   yield takeLatest<ReturnType<typeof actions.delRequest>>(DEL_REQUEST, delSaga);
+  yield takeLatest<ReturnType<typeof actions.postFilter>>(POST_FILTER, postSaga);
 }

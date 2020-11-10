@@ -49,6 +49,8 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     }, 10000);
   }
 
+  console.log(tariffs);
+
   return (
     <Paper className={classes.paperWithTable}>
       <LayoutSubheader title={intl.formatMessage({ id: "TARIFFS.MAIN_TITLE" })} />
@@ -441,6 +443,35 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   />
                 </TableCell>
               </TableRow>
+
+                {/* // * grain-439 | Tarrifs prices */}
+
+              <TableRow>
+                <TableCell>
+                  <b>{intl.formatMessage({ id: "TARIFFS.COST" })}</b>
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>{intl.formatMessage({ id: "TARIFFS.COST" })}</TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 3) as ITariff}
+                    realCell={{ id: 3, field: "my_test_field" }}
+                  />
+                </TableCell>
+              </TableRow>
+
             </TableBody>
           </Table>
         </div>

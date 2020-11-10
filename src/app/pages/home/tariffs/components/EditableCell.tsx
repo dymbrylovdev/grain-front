@@ -86,12 +86,15 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
         realValue = 1000;
       }
       if (+values.value !== tariff[realCell.field]) {
+        //@ts-ignore
         edit(realCell.id, { [realCell.field]: realValue });
       } else {
         setCell({ id: 0, field: undefined });
       }
     },
   });
+
+  console.log(values);
 
   useEffect(() => {
     resetForm({ values: { value: tariff[realCell.field] } });

@@ -357,6 +357,7 @@
   "FILTER.DIALOGS.AGREE_TEXT": "Да",
   "FILTER.DIALOGS.CANCEL_TEXT": "Отмена",
   "FILTER.DIALOGS.LOADING_TEXT": "Удаление фильтра",
+  "FILTER.SOMETHING.CHECKBOX": "Создать фильтр",
 
   "FILTERS.TABLE.HEADER.CROP": "Культура",
   "FILTERS.TABLE.HEADER.NAME": "Название фильтра",
@@ -499,6 +500,7 @@
   "TARIFFS.NAME.PREMIUM": "Премиум",
   "TARIFFS.NAME.INSIDE": "Внутренний",
   "TARIFFS.NAME.BUSINESS": "Бизнес",
+  "TARIFFS.COST": "Стоимость тарифа",
 
   "TRIAL.TITLE": "Тарифы • Пробный период",
   "TRIAL.FORM.TIME": "Срок пробного периода, дней",
