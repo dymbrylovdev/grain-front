@@ -1,10 +1,20 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
+import { TextField, CircularProgress } from "@material-ui/core";
 
+import { ITariff } from "../../../../interfaces/tariffs";
 import { IAppState } from "../../../../store/rootDuck";
 import { actions as tariffsActions } from "../../../../store/ducks/tariffs.duck";
 
-const EditableTariffParams: React.FC<TPropsFromRedux> = ({
+type TProps = {
+  useInnerStyles: any,
+  tariff: ITariff,
+}
+
+const EditableTariffParams: React.FC<TPropsFromRedux & TProps> = ({
+  useInnerStyles,
+
+  tariff,
   loading,
   error,
 
@@ -15,6 +25,11 @@ const EditableTariffParams: React.FC<TPropsFromRedux> = ({
   clearEdit,
   edit,
 }) => {
+  const innerClasses = useInnerStyles();
+
+  const test = tariff.tariff_parameters;
+  console.log(test);
+
   return (
     <div>
       

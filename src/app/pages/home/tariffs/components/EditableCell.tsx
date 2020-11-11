@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { makeStyles, createStyles, TextField, CircularProgress } from "@material-ui/core";
+import { TextField, CircularProgress } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { connect, ConnectedProps } from "react-redux";
 import { useFormik } from "formik";
@@ -49,13 +49,10 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
 }) => {
   const innerClasses = useInnerStyles();
 
-  console.log(tariff);
-
   const { values, handleSubmit, handleChange, resetForm } = useFormik({
     initialValues: { value: tariff[realCell.field] },
     onSubmit: values => {
       let realValue = +values.value;
-      console.log(+values.value);
       if (+values.value <= 0) {
         realValue = 0;
       }

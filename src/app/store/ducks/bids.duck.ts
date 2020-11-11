@@ -358,7 +358,7 @@ export const actions = {
   clearCreate: () => createAction(CLEAR_CREATE),
   createRequest: (type: TBidType, data: IBidToRequest) =>
     createAction(CREATE_REQUEST, { type, data }),
-  createSuccess: () => createAction(CREATE_SUCCESS),
+  createSuccess: () => createAction(CREATE_SUCCESS), 
   createFail: (payload: string) => createAction(CREATE_FAIL, payload),
 
   clearEdit: () => createAction(CLEAR_EDIT),

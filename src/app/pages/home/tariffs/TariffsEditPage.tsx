@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, makeStyles, createStyles } from "@material-ui/core";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  makeStyles,
+  createStyles,
+} from "@material-ui/core";
 
 import { actions as tariffsActions } from "../../../store/ducks/tariffs.duck";
 
@@ -12,6 +21,7 @@ import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
 import { TTariffField, ITariff } from "../../../interfaces/tariffs";
 import EditableCell from "./components/EditableCell";
+import EditableTariffParams from "./components/EditableTariffParams";
 
 const useInnerStyles = makeStyles(theme =>
   createStyles({
@@ -512,20 +522,247 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
               </TableRow>
 
+              {/* // * Tariff Cost */}
+
               <TableRow>
-                <TableCell>
-                  
+                <TableCell>3 дня</TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 1)?.tariff_parameters.find(param => param.price === 0) as ITariff}
+                    realCell={{ id: 1, field: "price" }}
+                  />
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
-                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
-                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
-                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 2)?.tariff_parameters[0] as ITariff}
+                    realCell={{ id: 2, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 102)?.tariff_parameters[0] as ITariff}
+                    realCell={{ id: 102, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 3)?.tariff_parameters[0] as ITariff}
+                    realCell={{ id: 3, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 4)?.tariff_parameters[0] as ITariff}
+                    realCell={{ id: 4, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 5)?.tariff_parameters[0] as ITariff}
+                    realCell={{ id: 5, field: "price" }}
+                  />
+                </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
               </TableRow>
 
+              <TableRow>
+                <TableCell>30 Дней</TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 1)?.tariff_parameters[1] as ITariff}
+                    realCell={{ id: 1, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 2)?.tariff_parameters[1] as ITariff}
+                    realCell={{ id: 2, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 102)?.tariff_parameters[1] as ITariff}
+                    realCell={{ id: 102, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 3)?.tariff_parameters[1] as ITariff}
+                    realCell={{ id: 3, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 4)?.tariff_parameters[1] as ITariff}
+                    realCell={{ id: 4, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 5)?.tariff_parameters[1] as ITariff}
+                    realCell={{ id: 5, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+              </TableRow>
+
+              {/* <TableRow>
+                <TableCell>90 Дней</TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 1)?.tariff_parameters[2] as ITariff}
+                    realCell={{ id: 1, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 2)?.tariff_parameters[2] as ITariff}
+                    realCell={{ id: 2, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 102)?.tariff_parameters[2] as ITariff}
+                    realCell={{ id: 102, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 3)?.tariff_parameters[2] as ITariff}
+                    realCell={{ id: 3, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 4)?.tariff_parameters[2] as ITariff}
+                    realCell={{ id: 4, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 5)?.tariff_parameters[2] as ITariff}
+                    realCell={{ id: 5, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>180 Дней</TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 1)?.tariff_parameters[3] as ITariff}
+                    realCell={{ id: 1, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 2)?.tariff_parameters[3] as ITariff}
+                    realCell={{ id: 2, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 102)?.tariff_parameters[3] as ITariff}
+                    realCell={{ id: 102, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 3)?.tariff_parameters[3] as ITariff}
+                    realCell={{ id: 3, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 4)?.tariff_parameters[3] as ITariff}
+                    realCell={{ id: 4, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 5)?.tariff_parameters[3] as ITariff}
+                    realCell={{ id: 5, field: "price" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+              </TableRow> */}
             </TableBody>
           </Table>
         </div>

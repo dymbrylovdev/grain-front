@@ -8,6 +8,9 @@ export interface ITariff {
   common_bids_count: number;
   max_filters_count: number;
   max_crops_count: number;
+  tariff_parameters: any[];
+  price: number;
+  period: number;
 }
 
 export interface ITariffToRequest {
@@ -16,6 +19,9 @@ export interface ITariffToRequest {
   common_bids_count?: number;
   max_filters_count?: number;
   max_crops_count?: number;
+  tariff_parameters?: any[];
+  price?: number;
+  period?: number;
 }
 
 export type TTariffField =
@@ -23,5 +29,8 @@ export type TTariffField =
   | "priority_places_bids_on_mailing_count"
   | "common_bids_count"
   | "max_filters_count"
-  | "max_crops_count";
+  | "max_crops_count"
+  | "tariff_parameters"
+  | "price"
+  | "period";
   

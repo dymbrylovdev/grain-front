@@ -78,7 +78,7 @@ const getInitialValues = (
   vendorId: number,
   user: IUser | undefined,
   me: IUser | undefined,
-  isFilterCreated: boolean | undefined,
+  isFilterCreated: boolean,
 ) => {
   let newCropId: number | string = "";
   if (editMode === "view" || editMode === "edit") {
@@ -104,6 +104,7 @@ const getInitialValues = (
     price: bid?.price || "",
     description: bid?.description || "",
     crop_id: newCropId,
+    is_filter_created: isFilterCreated,
     location:
       editMode === "create"
         ? !!vendorId
@@ -294,7 +295,7 @@ const BidForm: React.FC<IProps> = ({
     ? vendor.crops[0].id
     : 0;
 
-      // ! Test is_filter_created
+      // ! is_filter_created
 
   const [isFilterCreated, setFilterCreated] = useState(false);
 
@@ -346,8 +347,6 @@ const BidForm: React.FC<IProps> = ({
         delete params.vendor_id;
         edit(bid.id, params);
       }
-
-      console.log(params);
     },
     validationSchema: Yup.object().shape({
       volume: Yup.number()
