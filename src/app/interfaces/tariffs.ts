@@ -32,5 +32,6 @@ export type TTariffField =
   | "max_crops_count"
   | "tariff_parameters"
   | "price"
+  | "price"
   | "period";
   

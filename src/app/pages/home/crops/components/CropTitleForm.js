@@ -11,6 +11,7 @@ import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons"
 const getInitialValues = crop => ({
   name: !!crop && crop.name ? crop.name : "",
   vat: !!crop && crop.vat ? crop.vat : 10,
+  delivery_price_coefficient: !!crop && crop.delivery_price_coefficient ? crop.delivery_price_coefficient : 1,
 });
 function CropTitleForm({
   crop,
@@ -37,9 +38,14 @@ function CropTitleForm({
           .min(0, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 0 }))
           .max(100, intl.formatMessage({ id: "YUP.NUMBERS.MAX" }, { max: 100 }))
           .typeError(<FormattedMessage id="YUP.NUMBERS" />),
+        delivery_price_coefficient: Yup.number()
+          .required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
+          .min(0, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
+          .max(100, intl.formatMessage({ id: "YUP.NUMBERS.MAX" }, { max: 100 }))
+          .typeError(<FormattedMessage id="YUP.NUMBERS" />),
       })}
       onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-        editCropAction({ name: values.name.trim(), vat: +values.vat }, setStatus, setSubmitting);
+        editCropAction({ name: values.name.trim(), vat: +values.vat, delivery_price_coefficient: +values.delivery_price_coefficient }, setStatus, setSubmitting);
       }}
     >
       {({
@@ -96,6 +102,21 @@ function CropTitleForm({
               onChange={handleChange}
               helperText={touched.vat && errors.vat}
               error={Boolean(touched.vat && errors.vat)}
+            />
+
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "CROP.FORM.COEFFICIENT.DELIVERY",
+              })}
+              margin="normal"
+              name="delivery"
+              value={values.delivery_price_coefficient}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={touched.delivery_price_coefficient && errors.delivery_price_coefficient}
+              error={Boolean(touched.delivery_price_coefficient && errors.delivery_price_coefficient)}
             />
 
             <div className={`${classes.bottomButtonsContainer} ${classes.bottomMargin2}`}>

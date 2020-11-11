@@ -81,6 +81,8 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     }, 10000);
   }
 
+  console.log(tariffs);
+
   return (
     <Paper className={classes.paperWithTable}>
       <LayoutSubheader title={intl.formatMessage({ id: "TARIFFS.MAIN_TITLE" })} />
@@ -525,13 +527,15 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {/* // * Tariff Cost */}
 
               <TableRow>
-                <TableCell>3 дня</TableCell>
+                <TableCell>
+                  3 дня
+                </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 1)?.tariff_parameters.find(param => param.price === 0) as ITariff}
+                    tariff={tariffs.find(item => item.id === 1)?.tariff_parameters[0] as ITariff}
                     realCell={{ id: 1, field: "price" }}
                   />
                 </TableCell>
@@ -584,7 +588,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
               </TableRow>
 
-              <TableRow>
+              {/* <TableRow>
                 <TableCell>30 Дней</TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
@@ -592,7 +596,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 1)?.tariff_parameters[1] as ITariff}
-                    realCell={{ id: 1, field: "price" }}
+                    realCell={{ id: 1, field: "" }}
                   />
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
@@ -601,7 +605,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 2)?.tariff_parameters[1] as ITariff}
-                    realCell={{ id: 2, field: "price" }}
+                    realCell={{ id: 2, field: "" }}
                   />
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
@@ -610,7 +614,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 102)?.tariff_parameters[1] as ITariff}
-                    realCell={{ id: 102, field: "price" }}
+                    realCell={{ id: 102, field: "" }}
                   />
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
@@ -619,7 +623,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 3)?.tariff_parameters[1] as ITariff}
-                    realCell={{ id: 3, field: "price" }}
+                    realCell={{ id: 3, field: "" }}
                   />
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
@@ -628,7 +632,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 4)?.tariff_parameters[1] as ITariff}
-                    realCell={{ id: 4, field: "price" }}
+                    realCell={{ id: 4, field: "" }}
                   />
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
@@ -637,12 +641,12 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     cell={cell}
                     setCell={setCell}
                     tariff={tariffs.find(item => item.id === 5)?.tariff_parameters[1] as ITariff}
-                    realCell={{ id: 5, field: "price" }}
+                    realCell={{ id: 5, field: "" }}
                   />
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
-              </TableRow>
+              </TableRow> */}
 
               {/* <TableRow>
                 <TableCell>90 Дней</TableCell>

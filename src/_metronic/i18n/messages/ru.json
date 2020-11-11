@@ -310,6 +310,7 @@
   "CROP.STATUS.CROP_DELETED": "Культура удалена",
   "CROP.FORM.NAME": "Название культуры",
   "CROP.FORM.VAT": "Размер НДС, %",
+  "CROP.FORM.COEFFICIENT.DELIVERY": "Коэффициент стоимости доставки",
   "CROP.FORM.PARAM_NAME": "Название параметра",
   "CROP.FORM.PARAM_NAME_NUMBER": "Значение параметра",
   "CROP.FORM.PARAM_NUMBER": "Значение",
