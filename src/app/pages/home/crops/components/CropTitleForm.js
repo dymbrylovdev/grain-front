@@ -40,7 +40,7 @@ function CropTitleForm({
           .typeError(<FormattedMessage id="YUP.NUMBERS" />),
         delivery_price_coefficient: Yup.number()
           .required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />)
-          .min(0, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
+          .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
           .max(100, intl.formatMessage({ id: "YUP.NUMBERS.MAX" }, { max: 100 }))
           .typeError(<FormattedMessage id="YUP.NUMBERS" />),
       })}
@@ -110,7 +110,7 @@ function CropTitleForm({
                 id: "CROP.FORM.COEFFICIENT.DELIVERY",
               })}
               margin="normal"
-              name="delivery"
+              name="delivery_price_coefficient"
               value={values.delivery_price_coefficient}
               variant="outlined"
               onBlur={handleBlur}

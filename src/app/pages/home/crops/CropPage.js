@@ -196,8 +196,6 @@ function CropPage({
     setCropParams(cropParams2);
   }, [cropParams2]);
 
-  console.log(user);
-
   return (
     <>
       <CropForm
