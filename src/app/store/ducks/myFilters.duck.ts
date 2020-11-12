@@ -49,6 +49,7 @@ const DEL_FAIL = "myFilters/DEL_FAIL";
 
 // ! Added
 
+const CLEAR_POST = "myFilters/CLEAR_POST";
 const POST_FILTER = "myFilters/POST_FILTER";
 const POST_SUCCESS = "myFilters/POST_SUCCESS";
 const POST_ERROR = "myFilters/POST_ERROR";
@@ -314,6 +315,16 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, delLoading: false, delError: action.payload };
       }
 
+      case CLEAR_POST: {
+        return {
+          ...state,
+          postFilterId: undefined,
+          postLoading: false,
+          postSuccess: false,
+          postError: null
+        };
+      }
+
       case POST_FILTER: {
         return { ...state, postLoading: true, postSuccess: false, postError: null };
       }
@@ -370,6 +381,7 @@ export const actions = {
   delSuccess: (payload: IMyFilterItem) => createAction(DEL_SUCCESS, payload),
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
 
+  clearPost: () => createAction(CLEAR_POST),
   postFilter: (payload: number) => createAction(POST_FILTER, payload),
   postSucces: (payload: IMyFilterItem) => createAction(POST_SUCCESS, payload),
   postFail: (payload: string) => createAction(POST_ERROR, payload),
@@ -426,8 +438,7 @@ function* postSaga({ payload }: { payload: number }) {
     const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() => 
       postMyFilter(payload)
     );
-    //@ts-ignore
-    yield put(actions.postSucces(data));
+    yield put(actions.postSucces(data.data));
   } catch (e) {
     yield put(actions.postFail(e?.response?.data?.message || "Ошибка соединения."));
   }

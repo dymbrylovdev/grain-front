@@ -500,6 +500,9 @@
   "TARIFFS.NAME.FREE": "Бесплатный",
   "TARIFFS.NAME.PREMIUM": "Премиум",
   "TARIFFS.NAME.INSIDE": "Внутренний",
+  "TARIFFS.DURATION": "Время длительности тарифа",
+  "TARIFFS.DATE.PICKER": "Выберете дату начала тарифа",
+  "TARIFFS.SAVE": "Сохранить тариф",
   "TARIFFS.NAME.BUSINESS": "Бизнес",
   "TARIFFS.COST": "Стоимость тарифа",
 

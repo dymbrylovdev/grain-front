@@ -10,6 +10,7 @@ import {
   MenuItem,
   Divider,
 } from "@material-ui/core";
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -28,6 +29,7 @@ import { IUser } from "../../../../interfaces/users";
 import { ITariff } from "../../../../interfaces/tariffs";
 import { ICrop } from "../../../../interfaces/crops";
 import getMenuConfig from "../../../../router/MenuConfig";
+import DateFnsUtils from "@date-io/date-fns";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   name: {
@@ -55,6 +57,19 @@ const innerStyles = makeStyles((theme: Theme) => ({
     height: 43.5,
     marginTop: theme.spacing(0.5),
     marginBottom: theme.spacing(0.5),
+  },
+  calendarContain: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  calendarBlock: {
+    maxWidth: 220,
+  },
+  buttonsBottomContain: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -122,15 +137,23 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   }
 
   const [addingCrop, setAddingCrop] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const handleDateChange = (date: any) => {
+    setSelectedDate(date);
+  };
 
   const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
     initialValues: {
       tariff_id: realUser?.tariff.id,
+      // tariff_params: realUser?.tariff.tariff_parameters,
       crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
+      tariff_expired_at: new Date(),
     },
     onSubmit: () => {
       let newCropIds = [...values.crop_ids];
       let selectedTariff = tariffs?.find(tariff => tariff.id === values.tariff_id);
+      let newTariffExpiredDate = selectedDate;
       if (
         values.crop_ids &&
         values.tariff_id &&
@@ -158,7 +181,11 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         } else {
           edit({
             id: realUser?.id,
-            data: { tariff_id: values.tariff_id, crop_ids: newCropIds },
+            data: {
+              tariff_id: values.tariff_id,
+              crop_ids: newCropIds,
+              tariff_expired_at: newTariffExpiredDate,
+            },
           });
         }
       }
@@ -171,6 +198,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         values: {
           tariff_id: realUser?.tariff.id,
           crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
+          tariff_expired_at: selectedDate,
         },
       });
     }
@@ -234,41 +262,88 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchCrops();
   }, [fetchCrops]);
 
+  console.log(realUser);
+
   return (
     <>
       <div>
         {!me || loadingMe || loadingUser || !realTariffs || !realUser || editLoading ? (
           <Skeleton width="100%" height={68} animation="wave" />
         ) : (
-          <TextField
-            select
-            type="text"
-            label={intl.formatMessage({
-              id: "USER.EDIT_FORM.TARIFFS",
-            })}
-            margin="normal"
-            className={classes.textField}
-            value={values.tariff_id}
-            name="tariff_id"
-            variant="outlined"
-            onChange={e => {
-              setFieldValue("tariff_id", e.target.value);
-              handleSubmit();
-            }}
-            helperText={touched.tariff_id && errors.tariff_id}
-            error={Boolean(touched.tariff_id && errors.tariff_id)}
-            disabled={
-              !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ||
-              ["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) ||
-              editMode === "profile"
-            }
-          >
-            {realTariffs.map(item => (
-              <MenuItem key={item.id} value={item.id}>
-                {item.name}
-              </MenuItem>
-            ))}
-          </TextField>
+          <>
+            <div className={innerClasses.calendarContain}>
+              <h6>Тут запишем сколько у данного пользователя осталось дней до окончания тарифа</h6>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <div className={innerClasses.calendarBlock}>
+                  <KeyboardDatePicker
+                    variant="dialog"
+                    format="dd/MM/yyyy"
+                    margin="normal"
+                    id="data-picker-dialog"
+                    label={intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })}
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                  ></KeyboardDatePicker>
+                </div>
+              </MuiPickersUtilsProvider>
+            </div>
+
+            <TextField
+              select
+              type="text"
+              label={intl.formatMessage({
+                id: "USER.EDIT_FORM.TARIFFS",
+              })}
+              margin="normal"
+              className={classes.textField}
+              value={values.tariff_id}
+              name="tariff_id"
+              variant="outlined"
+              onChange={e => {
+                setFieldValue("tariff_id", e.target.value);
+              }}
+              helperText={touched.tariff_id && errors.tariff_id}
+              error={Boolean(touched.tariff_id && errors.tariff_id)}
+              disabled={
+                !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ||
+                ["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) ||
+                editMode === "profile"
+              }
+            >
+              {realTariffs.map(item => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.name}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            <TextField
+              select
+              type="text"
+              label={intl.formatMessage({ id: "TARIFFS.DURATION" })}
+              margin="normal"
+              className={classes.textField}
+              value={values.tariff_id}
+              name="tariff_params"
+              variant="outlined"
+              onChange={e => {
+                setFieldValue("tariff_params", e.target.value);
+              }}
+              helperText={touched.tariff_id && errors.tariff_id}
+              error={Boolean(touched.tariff_id && errors.tariff_id)}
+              disabled={
+                !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ||
+                ["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) ||
+                editMode === "profile"
+              }
+            >
+              {realTariffs.map(item => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </>
         )}
       </div>
       <div className={classes.box}>
@@ -371,6 +446,11 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               )}
             </div>
           )}
+      </div>
+      <div className={innerClasses.buttonsBottomContain}>
+        <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
+          {intl.formatMessage({ id: "TARIFFS.SAVE" })}
+        </Button>
       </div>
     </>
   );

@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState, useRef } from "react";
-import { useDispatch } from "react-redux";
 import { IntlShape } from "react-intl";
 import { Link } from "react-router-dom";
 import {
@@ -213,6 +212,13 @@ interface IProps {
   createSuccess: boolean;
   createError: string | null;
   clearCreate: () => Action<"bids/CLEAR_CREATE">;
+  post: (id: number) => ActionWithPayload<
+    "myFilters/POST_FILTER",
+    number
+  >;
+  postSuccess: boolean;
+  postError: string | null;
+  clearPost: () => Action<"myFilters/CLEAR_POST">;
   profit: IProfit;
   setOpenInfoAlert: (
     openInfoAlert: boolean
@@ -238,6 +244,7 @@ const BidForm: React.FC<IProps> = ({
 
   create,
   edit,
+  post,
 
   fetchLocations,
   locations,
@@ -256,6 +263,10 @@ const BidForm: React.FC<IProps> = ({
   createError,
   clearCreate,
 
+  postSuccess,
+  postError,
+  clearPost,
+
   profit,
   openInfoAlert,
   setOpenInfoAlert,
@@ -268,14 +279,9 @@ const BidForm: React.FC<IProps> = ({
   const [goToRef, setGoToRef] = useState(false);
   const [isMoreBidOpen, setMoreBidOpen] = useState(false);
 
-  // // ! TEST
-  // const dispatch = useDispatch();
-
-  // const createFilterFromBid = (bid: number | IBid | undefined) => {
-  //   //@ts-ignore
-  //   const bidId = bid.id;
-  //   dispatch(actions.postFilter(bidId));
-  // };
+  const createFilter = (id: number) => {
+    if (editMode === "edit") post(id);
+  }
 
   useEffect(() => {
     if (goToRef) {
@@ -284,6 +290,7 @@ const BidForm: React.FC<IProps> = ({
     }
   }, [goToRef]);
 
+  const bidId: number = !!bid ? bid.id : 0;
   const vendor_id =
     (!bid && +vendorId) || (bid && bid.vendor && bid.vendor.id) || (me?.id as number);
   const vendor = me?.id === vendor_id ? me : user;
@@ -294,8 +301,6 @@ const BidForm: React.FC<IProps> = ({
     : vendor?.crops.length === 1
     ? vendor.crops[0].id
     : 0;
-
-      // ! is_filter_created
 
   const [isFilterCreated, setFilterCreated] = useState(false);
 
@@ -408,6 +413,28 @@ const BidForm: React.FC<IProps> = ({
     intl,
     salePurchaseMode,
     vendorId,
+  ]);
+
+  useEffect(() => {
+    if (postSuccess || postError) {
+      enqueueSnackbar(
+        postSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.SAVE_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${postError}`,
+        {
+          variant: postSuccess ? "success" : "error",
+        }
+      );
+      clearPost();
+    }
+  }, [
+    clearPost,
+    postError,
+    postSuccess,
+    enqueueSnackbar,
+    history,
+    intl,
+    salePurchaseMode
   ]);
 
   useEffect(() => {
@@ -1319,12 +1346,11 @@ const BidForm: React.FC<IProps> = ({
             {/* // ! Changed */}
 
             {editMode === "edit" ? (
-              // <div className={classes.button}>
-              //   <ButtonWithLoader onPress={() => createFilterFromBid(bid)}>
-              //     {intl.formatMessage({ id: "ALL.BUTTONS.CREATE_FILTER" })}
-              //   </ButtonWithLoader>
-              // </div>
-              null
+              <div className={classes.button}>
+                <ButtonWithLoader onPress={() => createFilter(bidId)}>
+                  {intl.formatMessage({ id: "ALL.BUTTONS.CREATE_FILTER" })}
+                </ButtonWithLoader>
+              </div>
             ) : (
               <FormControlLabel
                 control={<Checkbox checked={isFilterCreated} onChange={() => onCheckboxChange()} />}
