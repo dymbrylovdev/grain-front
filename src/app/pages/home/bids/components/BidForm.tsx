@@ -31,7 +31,7 @@ import { ILocation } from "../../../../interfaces/locations";
 import useStyles from "../../styles";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
-import { IParamValue } from "../../../../interfaces/filters";
+import { IMyFilterItem, IParamValue } from "../../../../interfaces/filters";
 import NumberFormatCustom from "../../../../components/NumberFormatCustom/NumberFormatCustom";
 import { accessByRoles, getConfirmCompanyString } from "../../../../utils/utils";
 import { TrafficLight } from "../../users/components";
@@ -39,6 +39,7 @@ import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { thousands } from "../../deals/utils/utils";
 
 import { actions } from "../../../../store/ducks/myFilters.duck";
+import MyFilters from "./filter/MyFilters";
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {

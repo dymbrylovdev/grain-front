@@ -5,7 +5,7 @@ import { put, takeLatest, call } from "redux-saga/effects";
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
 import { ITariff, ITariffToRequest } from "../../interfaces/tariffs";
-import { getTariffs, editTariff } from "../../crud/tariffs.crud";
+import { getTariffs, editTariff, editTariffPeriod } from "../../crud/tariffs.crud";
 
 const CLEAR_FETCH = "tariffs/CLEAR_FETCH";
 const FETCH_REQUEST = "tariffs/FETCH_REQUEST";
@@ -17,6 +17,10 @@ const EDIT_REQUEST = "tariffs/EDIT_REQUEST";
 const EDIT_SUCCESS = "tariffs/EDIT_SUCCESS";
 const EDIT_FAIL = "tariffs/EDIT_FAIL";
 
+const CLEAR_EDIT_PERIOD = "tariffs/CLEAR_EDIT_PERIOD";
+const EDIT_PERIOD_REQUEST = "tariffs/EDIT_PERIOD_REQUEST";
+const EDIT_PERIOD_SUCCESS = "tariffs/EDIT_PERIOD_SUCCESS";
+const EDIT_PERIOD_FAIL = "tariffs/EDIT_PERIOD_FAIL";
 export interface IInitialState {
   tariffs: ITariff[] | undefined;
   loading: boolean;
@@ -26,6 +30,10 @@ export interface IInitialState {
   editLoading: boolean;
   editSuccess: boolean;
   editError: string | null;
+
+  editPeriodLoading: boolean;
+  editPeriodSuccess: boolean;
+  editPeriodError: string | null;
 }
 
 const initialState: IInitialState = {
@@ -37,6 +45,10 @@ const initialState: IInitialState = {
   editLoading: false,
   editSuccess: false,
   editError: null,
+
+  editPeriodLoading: false,
+  editPeriodSuccess: false,
+  editPeriodError: null,
 };
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
@@ -109,6 +121,42 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return { ...state, editLoading: false, editError: action.payload.error };
     }
 
+    case CLEAR_EDIT_PERIOD: {
+      return {
+        ...state,
+        editPeriodLoading: false,
+        editPeriodSuccess: false,
+        editPeriodError: null,
+      };
+    }
+
+    case EDIT_PERIOD_REQUEST: {
+      return {
+        ...state,
+        editPeriodLoading: true,
+        editPeriodSuccess: false,
+        editPeriodError: null,
+      };
+    }
+
+    case EDIT_PERIOD_SUCCESS: {
+      return {
+        ...state,
+        editPeriodLoading: false,
+        editPeriodSuccess: true,
+        editPeriodError: null,
+      };
+    }
+
+    case EDIT_PERIOD_FAIL: {
+      return {
+        ...state,
+        editPeriodLoading: false,
+        editPeriodSuccess: false,
+        editPeriodError: action.payload.error
+      };
+    }
+
     default:
       return state;
   }
@@ -124,6 +172,11 @@ export const actions = {
   editRequest: (id: number, data: ITariffToRequest) => createAction(EDIT_REQUEST, { id, data }),
   editSuccess: (response: IServerResponse<ITariff>) => createAction(EDIT_SUCCESS, { response }),
   editFail: (error: string) => createAction(EDIT_FAIL, { error }),
+
+  clearEditPeriod: () => createAction(CLEAR_EDIT_PERIOD),
+  editPeriodRequest: (id: number, data: ITariffToRequest) => createAction(EDIT_PERIOD_REQUEST, { id, data }),
+  editPeriodSuccess: (response: IServerResponse<ITariff>) => createAction(EDIT_PERIOD_SUCCESS, { response }),
+  editPeriodFail: (error: string) => createAction(EDIT_PERIOD_FAIL, { error }),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -148,7 +201,19 @@ function* editSaga({ payload }: { payload: { id: number; data: ITariffToRequest 
   }
 }
 
+function* editPeriodSaga({ payload }: { payload: { id: number, data: ITariffToRequest } }) {
+  try {
+    const { data }: { data: IServerResponse<ITariff> } = yield call(() =>
+      editTariffPeriod(payload.id, payload.data)
+    );
+    yield put(actions.editPeriodSuccess(data));
+  } catch (e) {
+    yield put(actions.editPeriodFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
+  yield takeLatest<ReturnType<typeof actions.editPeriodRequest>>(EDIT_PERIOD_REQUEST, editPeriodSaga);
 }

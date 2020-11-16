@@ -10,9 +10,10 @@ import { actions as tariffsActions } from "../../../../store/ducks/tariffs.duck"
 import { IAppState } from "../../../../store/rootDuck";
 import { TTariffField, ITariff } from "../../../../interfaces/tariffs";
 import NumberFormatInt from "../../../../components/NumberFormatCustom/NumberFormatInt";
+import { id } from "date-fns/esm/locale";
 
 type TProps = {
-  useInnerStyles: any,
+  useInnerStyles: any;
   realCell: {
     id: number;
     field: TTariffField;
@@ -46,6 +47,12 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
   editLoading,
   editSuccess,
   editError,
+
+  clearEditPeriod,
+  editPeriod,
+  editPeriodLoading,
+  editPeriodSuccess,
+  editPeriodError,
 }) => {
   const innerClasses = useInnerStyles();
 
@@ -66,7 +73,9 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
         realValue = 1000;
       }
       if (+values.value !== tariff[realCell.field]) {
-        edit(realCell.id, { [realCell.field]: realValue });
+        realCell.field === "period"
+          ? editPeriod(tariff.id, { tariff_period: { id: realCell.id, [realCell.field]: realValue } })
+          : edit(realCell.id, { [realCell.field]: realValue });
       } else {
         setCell({ id: 0, field: undefined });
       }
@@ -93,12 +102,39 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
         clearEdit();
         setCell({ id: 0, field: undefined });
       }
+      if (editPeriodSuccess || editPeriodError) {
+        enqueueSnackbar(
+          editPeriodSuccess
+            ? intl.formatMessage({ id: "NOTISTACK.TARIFF.EDIT" })
+            : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editPeriodError}`,
+          {
+            variant: editPeriodSuccess ? "success" : "error",
+          }
+        );
+        clearEditPeriod();
+        setCell({ id: 0, field: undefined });
+      }
     }
-  }, [cell, clearEdit, editError, editSuccess, enqueueSnackbar, intl, realCell, setCell]);
+  }, [
+    cell,
+    clearEdit,
+    editError,
+    editSuccess,
+    clearEditPeriod,
+    editPeriodError,
+    editPeriodSuccess,
+    enqueueSnackbar,
+    intl,
+    realCell,
+    setCell,
+  ]);
 
   return (
     <div className={innerClasses.tabCell}>
-      {editLoading && cell.id === realCell.id && cell.field === realCell.field ? (
+      {editLoading &&
+      editPeriodLoading &&
+      cell.id === realCell.id &&
+      cell.field === realCell.field ? (
         <CircularProgress color="inherit" size={30} />
       ) : cell.id === realCell.id && cell.field === realCell.field ? (
         <TextField
@@ -142,10 +178,16 @@ const connector = connect(
     editLoading: state.tariffs.editLoading,
     editSuccess: state.tariffs.editSuccess,
     editError: state.tariffs.editError,
+
+    editPeriodLoading: state.tariffs.editPeriodLoading,
+    editPeriodSuccess: state.tariffs.editPeriodSuccess,
+    editPeriodError: state.tariffs.editPeriodError,
   }),
   {
     clearEdit: tariffsActions.clearEdit,
     edit: tariffsActions.editRequest,
+    clearEditPeriod: tariffsActions.clearEditPeriod,
+    editPeriod: tariffsActions.editPeriodRequest,
   }
 );
 

@@ -124,7 +124,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   let realTariffs: ITariff[] | undefined = undefined;
   if (tariffs && realUser) {
-    realTariffs = tariffs.filter(item => item.role === realUser?.roles[0]);
+    realTariffs = tariffs.filter(item => item.role.name === realUser?.roles[0]);
   }
 
   let realCrops: ICrop[] = [];
@@ -145,7 +145,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
     initialValues: {
-      tariff_id: realUser?.tariff.id,
+      tariff_id: realUser?.tariff_matrix.id,
       // tariff_params: realUser?.tariff.tariff_parameters,
       crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
       tariff_expired_at: new Date(),
@@ -165,8 +165,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       }
       if (
         selectedTariff?.id &&
-        realUser?.tariff?.id &&
-        [1, 2, 102].includes(realUser.tariff.id) &&
+        realUser?.tariff_matrix?.id &&
+        [1, 2, 102].includes(realUser.tariff_matrix.id) &&
         [3, 4, 5].includes(selectedTariff.id) &&
         crops
       ) {
@@ -196,7 +196,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     if (realUser) {
       resetForm({
         values: {
-          tariff_id: realUser?.tariff.id,
+          tariff_id: realUser?.tariff_matrix.id,
           crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
           tariff_expired_at: selectedDate,
         },
@@ -263,6 +263,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   }, [fetchCrops]);
 
   console.log(realUser);
+  console.log(realTariffs);
 
   return (
     <>
@@ -272,7 +273,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         ) : (
           <>
             <div className={innerClasses.calendarContain}>
-              <h6>Тут запишем сколько у данного пользователя осталось дней до окончания тарифа</h6>
+              <h6>Тариф осталось</h6>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <div className={innerClasses.calendarBlock}>
                   <KeyboardDatePicker
@@ -287,7 +288,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 </div>
               </MuiPickersUtilsProvider>
             </div>
-
+          
             <TextField
               select
               type="text"
@@ -312,12 +313,12 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             >
               {realTariffs.map(item => (
                 <MenuItem key={item.id} value={item.id}>
-                  {item.name}
+                  {item.tariff.name}
                 </MenuItem>
               ))}
             </TextField>
 
-            <TextField
+            {/* <TextField
               select
               type="text"
               label={intl.formatMessage({ id: "TARIFFS.DURATION" })}
@@ -338,14 +339,17 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               }
             >
               {realTariffs.map(item => (
-                <MenuItem key={item.id} value={item.id}>
-                  {item.name}
-                </MenuItem>
+                // <MenuItem key={item.id} value={item.id}>
+                //   {item.name}
+                // </MenuItem>
+                null
               ))}
-            </TextField>
+            </TextField> */}
           </>
         )}
+        
       </div>
+      {/* 
       <div className={classes.box}>
         <div className={innerClasses.title}>{intl.formatMessage({ id: "TARIFFS.CROPS" })}</div>
         {loadingMe || loadingUser || !realTariffs || !realUser || editLoading ? (
@@ -451,7 +455,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
           {intl.formatMessage({ id: "TARIFFS.SAVE" })}
         </Button>
-      </div>
+      </div> */}
     </>
   );
 };

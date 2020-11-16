@@ -31,8 +31,8 @@ export interface IUser {
   } | null;
   is_funnel_state_automate?: boolean;
   use_vat: boolean;
-  tariff: ITariff;
-  tariff_params?: number[];
+  tariff_matrix: ITariff;
+  tariff_price?: number[];
   tariff_expired_at?: Date;
   crops: ICrop[];
 }
