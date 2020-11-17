@@ -163,7 +163,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     },
     onSubmit: () => {
       let newCropIds = [...values.crop_ids];
-      let selectedTariff = tariffs?.find(tariff => tariff.tariff.id === values.tariff_type_id);
+      let selectedTariff = tariffs?.find(tariff => tariff.tariff.id === values.tariff_type_id && tariff.tariff_period.id === values.tariff_period_id);
+      console.log(selectedTariff);
       let newTariffExpiredDate = selectedDate;
       if (
         values.crop_ids &&
@@ -195,9 +196,10 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           edit({
             id: realUser?.id,
             data: {
-              tariff_id: values.tariff_id,
-              tariff_type_id: values.tariff_type_id,
-              tariff_period_id: values.tariff_period_id,
+              // tariff_id: values.tariff_id,
+              // tariff_type_id: values.tariff_type_id,
+              // tariff_period_id: values.tariff_period_id,
+              tariff_matrix_id: selectedTariff?.id,
               crop_ids: newCropIds,
               tariff_expired_at: newTariffExpiredDate,
             },
@@ -278,6 +280,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   useEffect(() => {
     fetchCrops();
   }, [fetchCrops]);
+
+  console.log(realUser);
 
   return (
     <>
@@ -373,7 +377,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         loadingUser ||
         !realTariffs ||
         !groupedTariffsType ||
-        // !groupedTariffsPeriod ||
+        !groupedTariffsPeriod ||
         !realUser ||
         editLoading ? (
           <>
