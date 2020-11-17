@@ -69,9 +69,9 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
       if (realCell.field === "priority_places_bids_on_mailing_count" && +values.value > 5) {
         realValue = 5;
       }
-      if (+values.value > 1000) {
-        realValue = 1000;
-      }
+      // if (+values.value > 1000) {
+      //   realValue = 1000;
+      // }
       if (+values.value !== tariff[realCell.field]) {
         realCell.field === "period"
           ? editPeriod(tariff.id, { tariff_period: { id: realCell.id, [realCell.field]: realValue } })

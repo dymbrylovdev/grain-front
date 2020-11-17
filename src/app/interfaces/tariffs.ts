@@ -6,14 +6,19 @@ export interface ITariff {
   common_bids_count: number;
   max_filters_count: number;
   max_crops_count: number;
-  tariff_period: ITest;
+  tariff_period: ITariffPeriod;
   price: number;
   period: number;
   role: any;
-  tariff: any;
+  tariff: ITariffType;
 }
 
-interface ITest {
+export interface ITariffType {
+  id: number;
+  name: string;
+}
+
+export interface ITariffPeriod {
   id: number;
   period: number;
 }
@@ -23,7 +28,7 @@ export interface ITariffToRequest {
   common_bids_count?: number;
   max_filters_count?: number;
   max_crops_count?: number;
-  tariff_period?: ITest;
+  tariff_period?: ITariffPeriod;
   price?: number;
   period?: number;
 }
