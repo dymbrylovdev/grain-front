@@ -9,6 +9,10 @@ import {
   Button,
   MenuItem,
   Divider,
+  Dialog,
+  DialogTitle,
+  List,
+  ListItem,
 } from "@material-ui/core";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import { makeStyles } from "@material-ui/styles";
@@ -66,7 +70,7 @@ const innerStyles = makeStyles((theme: Theme) => ({
     alignItems: "center",
   },
   calendarBlock: {
-    maxWidth: 220,
+    maxWidth: 250,
   },
   buttonsBottomContain: {
     display: "flex",
@@ -134,7 +138,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
     let b = realTariffs.map(item => item.tariff_period);
     //@ts-ignore
-    b.includes(null) ? groupedTariffsPeriod = b : groupedTariffsPeriod = uniqBy(b, n => n.period);
+    b.includes(null)
+      ? (groupedTariffsPeriod = b)
+      : (groupedTariffsPeriod = uniqBy(b, n => n.period));
   }
 
   let realCrops: ICrop[] = [];
@@ -148,6 +154,11 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   const [addingCrop, setAddingCrop] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [openModal, setOpenModal] = useState(false);
+
+  const onToggleModal = () => {
+    setOpenModal(!openModal);
+  };
 
   const handleDateChange = (date: any) => {
     setSelectedDate(date);
@@ -157,14 +168,19 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     initialValues: {
       tariff_id: realUser?.tariff_matrix.id,
       tariff_type_id: realUser?.tariff_matrix.tariff.id,
-      tariff_period_id: realUser?.tariff_matrix.tariff_period ? realUser?.tariff_matrix.tariff_period.id : undefined,
+      tariff_period_id: realUser?.tariff_matrix.tariff_period
+        ? realUser?.tariff_matrix.tariff_period.id
+        : undefined,
       crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
       tariff_expired_at: new Date(),
     },
     onSubmit: () => {
       let newCropIds = [...values.crop_ids];
-      let selectedTariff = tariffs?.find(tariff => tariff.tariff.id === values.tariff_type_id && tariff.tariff_period.id === values.tariff_period_id);
-      console.log(selectedTariff);
+      let selectedTariff = tariffs?.find(
+        tariff =>
+          tariff.tariff.id === values.tariff_type_id &&
+          tariff.tariff_period.id === values.tariff_period_id
+      );
       let newTariffExpiredDate = selectedDate;
       if (
         values.crop_ids &&
@@ -196,9 +212,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           edit({
             id: realUser?.id,
             data: {
-              // tariff_id: values.tariff_id,
-              // tariff_type_id: values.tariff_type_id,
-              // tariff_period_id: values.tariff_period_id,
               tariff_matrix_id: selectedTariff?.id,
               crop_ids: newCropIds,
               tariff_expired_at: newTariffExpiredDate,
@@ -215,7 +228,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         values: {
           tariff_id: realUser?.tariff_matrix.id,
           tariff_type_id: realUser?.tariff_matrix.tariff.id,
-          tariff_period_id: realUser?.tariff_matrix.tariff_period ? realUser?.tariff_matrix.tariff_period.id : undefined,
+          tariff_period_id: realUser?.tariff_matrix.tariff_period
+            ? realUser?.tariff_matrix.tariff_period.id
+            : undefined,
           crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
           tariff_expired_at: selectedDate,
         },
@@ -281,7 +296,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchCrops();
   }, [fetchCrops]);
 
-  console.log(realUser);
+  console.log(me);
 
   return (
     <>
@@ -297,55 +312,57 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           <Skeleton width="100%" height={68} animation="wave" />
         ) : (
           <>
-            {editMode === "edit" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
-              <div className={innerClasses.calendarContain}>
-                <h6>Дата окончания тарифа: {realUser?.tariff_expired_at}</h6>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <div className={innerClasses.calendarBlock}>
-                    <KeyboardDatePicker
-                      variant="dialog"
-                      format="dd/MM/yyyy"
-                      margin="normal"
-                      id="data-picker-dialog"
-                      label={intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })}
-                      value={selectedDate}
-                      onChange={handleDateChange}
-                    ></KeyboardDatePicker>
-                  </div>
-                </MuiPickersUtilsProvider>
-              </div>
-            )}
+            {
+              !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
+               (
+                <div className={innerClasses.calendarContain}>
+                  <h6>{realUser?.tariff_expired_at}</h6>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <div className={innerClasses.calendarBlock}>
+                      <KeyboardDatePicker
+                        variant="dialog"
+                        format="dd/MM/yyyy"
+                        margin="normal"
+                        id="data-picker-dialog"
+                        label={intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })}
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                      ></KeyboardDatePicker>
+                    </div>
+                  </MuiPickersUtilsProvider>
+                </div>
+              )}
 
-              <TextField
-                select
-                type="text"
-                label={intl.formatMessage({
-                  id: "USER.EDIT_FORM.TARIFFS",
-                })}
-                margin="normal"
-                className={classes.textField}
-                value={values.tariff_type_id}
-                name="tariff_type_id"
-                variant="outlined"
-                onChange={e => {
-                  setFieldValue("tariff_type_id", e.target.value);
-                }}
-                helperText={touched.tariff_type_id && errors.tariff_type_id}
-                error={Boolean(touched.tariff_type_id && errors.tariff_type_id)}
-                disabled={
-                  !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ||
-                  ["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) ||
-                  editMode === "profile"
-                }
-              >
-                {groupedTariffsType.map(item => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.name}
-                  </MenuItem>
-                ))}
-              </TextField>
+            <TextField
+              select
+              type="text"
+              label={intl.formatMessage({
+                id: "USER.EDIT_FORM.TARIFFS",
+              })}
+              margin="normal"
+              className={classes.textField}
+              value={values.tariff_type_id}
+              name="tariff_type_id"
+              variant="outlined"
+              onChange={e => {
+                setFieldValue("tariff_type_id", e.target.value);
+              }}
+              helperText={touched.tariff_type_id && errors.tariff_type_id}
+              error={Boolean(touched.tariff_type_id && errors.tariff_type_id)}
+              disabled={
+                // !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ||
+                ["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0])
+                // editMode === "profile"
+              }
+            >
+              {groupedTariffsType.map(item => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.name}
+                </MenuItem>
+              ))}
+            </TextField>
 
-            {editMode === "edit" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
+            {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
               <TextField
                 select
                 type="text"
@@ -478,11 +495,56 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             </div>
           )}
       </div>
-      <div className={innerClasses.buttonsBottomContain}>
-        <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
-          {intl.formatMessage({ id: "TARIFFS.SAVE" })}
-        </Button>
-      </div>
+      {realUser && (
+        <div className={innerClasses.buttonsBottomContain}>
+          {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) ? (
+            <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
+              {intl.formatMessage({ id: "TARIFFS.SAVE" })}
+            </Button>
+          ) : (
+            <Button variant="contained" color="primary" onClick={() => onToggleModal()}>
+              {intl.formatMessage({ id: "TARIFFS.PAYMENT" })}
+            </Button>
+          )}
+        </div>
+      )}
+
+      {realUser && me && groupedTariffsType && tariffs && (
+        <Dialog open={openModal} onClose={onToggleModal}>
+          <div style={{ padding: 10 }}>
+            <h5>{intl.formatMessage({ id: "TARIFFS.PAYMENT.FORM.TITLE" })}</h5>
+            <div>
+              <h6>
+                <b>Сумма платежа:</b> [стоимость тарифа]
+              </h6>
+              <br />
+              <h6>
+                <b>Назначение платежа:</b>
+              </h6>
+              <br />
+              <h6>
+                <b>Реквизиты для оплаты</b>
+              </h6>
+              <h6>Полное наименование: ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ "АМБАР"</h6>
+              <br />
+              <h6>Директор: Егиазарова Кристина Суреновна</h6>
+              <h6>ОГРН: 1202300046915</h6>
+              <h6>ИНН: 2312294751</h6>
+              <h6>КПП: 231201001</h6>
+              <h6>Наименование банка: Сбербанк(ПАО) , г. Москва</h6>
+              <h6>Корреспондентский счет: 30101810400000000225</h6>
+              <h6>БИК: 044525225</h6>
+              <h6>Расчетный счет: 40702810038000142636</h6>
+              <br />
+              <h6>Адрес для корреспонденции: 350080 г. Краснодар</h6>
+              <h6>
+                Юридический адрес: КРАЙ КРАСНОДАРСКИЙ, г. КРАСНОДАР, УЛИЦА ИМ. ТЮЛЯЕВА, ДОМ 2 КОРПУС
+                2
+              </h6>
+            </div>
+          </div>
+        </Dialog>
+      )}
     </>
   );
 };
