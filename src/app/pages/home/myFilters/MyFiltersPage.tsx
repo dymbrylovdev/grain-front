@@ -30,6 +30,7 @@ import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
 import { declOfNum } from "../../../utils";
 import { accessByRoles } from "../../../utils/utils";
+import MyFilters from "../bids/components/filter/MyFilters";
 
 const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps> = ({
   match,
@@ -141,6 +142,8 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
       window.location.reload();
     }, 10000);
   }
+
+  console.log(MyFilters);
 
   return (
     <Paper className={classes.paperWithTable}>

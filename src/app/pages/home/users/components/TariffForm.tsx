@@ -296,6 +296,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchCrops();
   }, [fetchCrops]);
 
+  console.log(realUser);
+
   return (
     <>
       <div>
@@ -513,7 +515,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             <h5>{intl.formatMessage({ id: "TARIFFS.PAYMENT.FORM.TITLE" })}</h5>
             <div>
               <h6>
-                <b>Сумма платежа:</b> [стоимость тарифа]
+                <b>Сумма платежа:</b> 
               </h6>
               <br />
               <h6>
