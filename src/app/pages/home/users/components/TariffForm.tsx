@@ -296,8 +296,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchCrops();
   }, [fetchCrops]);
 
-  console.log(me);
-
   return (
     <>
       <div>

@@ -192,12 +192,15 @@ interface IProps {
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
   create: (
     type: TBidType,
-    data: IBidToRequest
+    data: IBidToRequest,
+    is_filter_created: number,
+    
   ) => ActionWithPayload<
     "bids/CREATE_REQUEST",
     {
       type: TBidType;
       data: IBidToRequest;
+      is_filter_created: number;
     }
   >;
   edit: (
@@ -330,6 +333,7 @@ const BidForm: React.FC<IProps> = ({
       isFilterCreated,
     ),
     onSubmit: values => {
+      const is_filter_created = isFilterCreated ? 1 : 0;
       const paramValues: IParamValue[] = [];
       cropParams?.forEach(param => {
         const id = param.id;
@@ -344,11 +348,11 @@ const BidForm: React.FC<IProps> = ({
         volume: +values.volume,
         payment_term: +values.payment_term,
         parameter_values: paramValues,
-        is_filter_created: isFilterCreated ? 1 : 0
+        // is_filter_created: isFilterCreated ? 1 : 0
       };
       const bidType = params.bid_type;
       delete params.bid_type;
-      if (editMode === "create") create(bidType, params);
+      if (editMode === "create") create(bidType, params, is_filter_created);
       if (editMode === "edit" && !!bid) {
         delete params.vendor_id;
         edit(bid.id, params);

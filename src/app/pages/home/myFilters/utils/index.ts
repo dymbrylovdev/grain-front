@@ -119,11 +119,11 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
           ] = true;
         });
       }
-      if (item.parameter.type === "number") {
-        let value = item.value as string;
-        newFilter[`number${item.parameter.id}`] = value.substr(1);
-        newFilter[`compose${item.parameter.id}`] = value.substr(0, 1);
-      }
+      // if (item.parameter.type === "number") {
+      //   let value = item.value as string;
+      //   newFilter[`number${item.parameter.id}`] = value.substr(1);
+      //   newFilter[`compose${item.parameter.id}`] = value.substr(0, 1);
+      // }
     });
   }
   if (data) newFilter["subscribed"] = data.subscribed;

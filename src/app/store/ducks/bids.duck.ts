@@ -356,8 +356,8 @@ export const actions = {
   fetchByIdFail: (payload: string) => createAction(FETCH_BY_ID_FAIL, payload),
 
   clearCreate: () => createAction(CLEAR_CREATE),
-  createRequest: (type: TBidType, data: IBidToRequest) =>
-    createAction(CREATE_REQUEST, { type, data }),
+  createRequest: (type: TBidType, data: IBidToRequest, is_filter_created: number) =>
+    createAction(CREATE_REQUEST, { type, data, is_filter_created }),
   createSuccess: () => createAction(CREATE_SUCCESS), 
   createFail: (payload: string) => createAction(CREATE_FAIL, payload),
 
@@ -426,9 +426,9 @@ function* fetchByIdSaga({ payload }: { payload: { id: number; filter: IFilterFor
   }
 }
 
-function* createSaga({ payload }: { payload: { type: TBidType; data: IBidToRequest } }) {
+function* createSaga({ payload }: { payload: { type: TBidType; data: IBidToRequest; is_filter_created: number;} }) {
   try {
-    yield call(() => createBid(payload.type, payload.data));
+    yield call(() => createBid(payload.type, payload.data, payload.is_filter_created));
     yield put(actions.createSuccess());
   } catch (e) {
     yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));

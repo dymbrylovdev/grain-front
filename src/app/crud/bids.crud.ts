@@ -20,8 +20,8 @@ export const getBidById = (id: number, filter: IFilterForBid) => {
   return axios.post(`${AD_URL}/get/${id}`, filter);
 };
 
-export const createBid = (type: TBidType, data: IBidToRequest) => {
-  return axios.post(`${AD_URL}/${type}`, data);
+export const createBid = (type: TBidType, data: IBidToRequest | any, is_filter_created: number) => {
+  return axios.post(`${AD_URL}/${type}`, data, { params: { 'is_filter_created': is_filter_created } } );
 };
 
 export const editBid = (id: number, data: IBidToRequest) => {
