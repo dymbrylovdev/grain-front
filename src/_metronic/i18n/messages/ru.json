@@ -501,7 +501,7 @@
   "TARIFFS.NAME.PREMIUM": "Премиум",
   "TARIFFS.NAME.INSIDE": "Внутренний",
   "TARIFFS.DURATION": "Время длительности тарифа",
-  "TARIFFS.DATE.PICKER": "Выберете дату начала тарифа",
+  "TARIFFS.DATE.PICKER": "Начало действия тарифа",
   "TARIFFS.SAVE": "Сохранить тариф",
   "TARIFFS.PAYMENT": "Перейти к оплате",
   "TARIFFS.PAYMENT.FORM.TITLE": "Для оплаты проверьте все поля и выберите удобный для вас способ оплаты",
