@@ -102,6 +102,7 @@ export const filterForBids = (
 // fromApiToFilter из фильтра формата API делает формат понимаемый формой
 export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
   let newFilter: { [x: string]: any } = {};
+
   if (data?.id) newFilter["id"] = data.id;
   if (data?.name) newFilter["name"] = data.name;
   if (data?.crop && data.crop.id) newFilter["cropId"] = +data.crop.id;
@@ -120,8 +121,11 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
         });
       }
       if (item.parameter.type === "number") {
-        newFilter[`number${item.parameter.id}`] = item.value;
-        // newFilter[`compose${item.parameter.id}`] = value.substr(0, 1);
+        const value = item.value;
+        if (typeof value === "string") {
+          newFilter[`number${item.parameter.id}`] = value.substr(1);
+          newFilter[`compose${item.parameter.id}`] = value.substr(0, 1);
+        }
       }
     });
   }
