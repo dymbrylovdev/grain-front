@@ -102,6 +102,7 @@ export const filterForBids = (
 // fromApiToFilter из фильтра формата API делает формат понимаемый формой
 export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
   let newFilter: { [x: string]: any } = {};
+
   if (data?.id) newFilter["id"] = data.id;
   if (data?.name) newFilter["name"] = data.name;
   if (data?.crop && data.crop.id) newFilter["cropId"] = +data.crop.id;
@@ -112,16 +113,19 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
   if (data?.parameter_values && data.parameter_values.length) {
     data.parameter_values.forEach(item => {
       if (item.parameter.type === "enum") {
-        let values = item.value as string[];
+        let values = item.parameter.enum as string[];
         values.forEach(value => {
-          // newFilter[
-          //   `parameter${item.parameter.id}enum${item.parameter.enum.indexOf(value)}`
-          // ] = true;
-          newFilter[`number${item.parameter.id}`] = item.value;
+          newFilter[
+            `parameter${item.parameter.id}enum${item.parameter.enum.indexOf(value)}`
+          ] = true;
         });
       }
       if (item.parameter.type === "number") {
-        newFilter[`number${item.parameter.id}`] = item.value;
+        const value = item.value;
+        if (typeof value === "string") {
+          newFilter[`number${item.parameter.id}`] = value.substr(1);
+          newFilter[`compose${item.parameter.id}`] = value.substr(0, 1);
+        }
       }
     });
   }
