@@ -102,38 +102,37 @@ export const filterForBids = (
 // fromApiToFilter из фильтра формата API делает формат понимаемый формой
 export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
   let newFilter: { [x: string]: any } = {};
-  // if (data?.id) newFilter["id"] = data.id;
-  // if (data?.name) newFilter["name"] = data.name;
-  // if (data?.crop && data.crop.id) newFilter["cropId"] = +data.crop.id;
-  // if (data?.max_payment_term) newFilter["max_payment_term"] = data.max_payment_term;
-  // if (data?.max_full_price) newFilter["max_full_price"] = data.max_full_price;
-  // if (data?.min_full_price) newFilter["min_full_price"] = data.min_full_price;
-  // if (data?.max_distance) newFilter["max_destination"] = data.max_distance;
-  // if (data?.parameter_values && data.parameter_values.length) {
-  //   data.parameter_values.forEach(item => {
-  //     if (item.parameter.type === "enum") {
-  //       let values = item.value as string[];
-  //       values.forEach(value => {
-  //         newFilter[
-  //           `parameter${item.parameter.id}enum${item.parameter.enum.indexOf(value)}`
-  //         ] = true;
-  //       });
-  //     }
-  //     if (item.parameter.type === "number") {
-  //       let value = item.value as string;
-  //       newFilter[`number${item.parameter.id}`] = value.substr(1);
-  //       newFilter[`compose${item.parameter.id}`] = value.substr(0, 1);
-  //     }
-  //   });
-  // }
-  // if (data) newFilter["subscribed"] = data.subscribed;
-  // if (data && data.point_prices && data.point_prices.length) {
-  //   let pointPrices: IPointPriceForEdit[] = [];
-  //   data.point_prices.forEach(item => {
-  //     pointPrices.push({ point_id: item.point.id, price: item.price });
-  //   });
-  //   newFilter["point_prices"] = pointPrices;
-  // }
+  if (data?.id) newFilter["id"] = data.id;
+  if (data?.name) newFilter["name"] = data.name;
+  if (data?.crop && data.crop.id) newFilter["cropId"] = +data.crop.id;
+  if (data?.max_payment_term) newFilter["max_payment_term"] = data.max_payment_term;
+  if (data?.max_full_price) newFilter["max_full_price"] = data.max_full_price;
+  if (data?.min_full_price) newFilter["min_full_price"] = data.min_full_price;
+  if (data?.max_distance) newFilter["max_destination"] = data.max_distance;
+  if (data?.parameter_values && data.parameter_values.length) {
+    data.parameter_values.forEach(item => {
+      if (item.parameter.type === "enum") {
+        let values = item.parameter.enum as string[];
+        values.forEach(value => {
+          newFilter[
+            `parameter${item.parameter.id}enum${item.parameter.enum.indexOf(value)}`
+          ] = true;
+        });
+      }
+      if (item.parameter.type === "number") {
+        newFilter[`number${item.parameter.id}`] = item.value;
+        // newFilter[`compose${item.parameter.id}`] = value.substr(0, 1);
+      }
+    });
+  }
+  if (data) newFilter["subscribed"] = data.subscribed;
+  if (data && data.point_prices && data.point_prices.length) {
+    let pointPrices: IPointPriceForEdit[] = [];
+    data.point_prices.forEach(item => {
+      pointPrices.push({ point_id: item.point.id, price: item.price });
+    });
+    newFilter["point_prices"] = pointPrices;
+  }
   return newFilter;
 };
 
