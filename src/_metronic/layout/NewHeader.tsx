@@ -173,6 +173,11 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           <Divider style={{ margin: "6px 16px" }} />
 
           {accessByRoles(me, ["ROLE_BUYER"]) && (
+            <MenuItem onClick={() => handleClick("/user/profile/crops")}>
+              {intl.formatMessage({ id: "SUBMENU.TARIFFS.PREMIUM" })}
+            </MenuItem>
+          )}
+          {accessByRoles(me, ["ROLE_BUYER"]) && (
             <MenuItem onClick={() => handleClick("/user/profile")}>
               {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
             </MenuItem>
@@ -184,6 +189,11 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           )}
 
           {accessByRoles(me, ["ROLE_VENDOR"]) && (
+            <MenuItem onClick={() => handleClick("/user/profile/crops")}>
+              {intl.formatMessage({ id: "SUBMENU.TARIFFS.PREMIUM" })}
+            </MenuItem>
+          )}
+          {accessByRoles(me, ["ROLE_VENDOR"]) && (
             <MenuItem onClick={() => handleClick("/user/profile")}>
               {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
             </MenuItem>
@@ -194,6 +204,11 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             </MenuItem>
           )}
 
+          {accessByRoles(me, ["ROLE_TRADER"]) && (
+            <MenuItem onClick={() => handleClick("/user/profile/crops")}>
+              {intl.formatMessage({ id: "SUBMENU.TARIFFS.BUSINESS" })}
+            </MenuItem>
+          )}
           {accessByRoles(me, ["ROLE_TRADER"]) && (
             <MenuItem onClick={() => handleClick("/user/profile")}>
               {intl.formatMessage({ id: "SUBMENU.PROFILE" })}

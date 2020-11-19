@@ -59,6 +59,8 @@
   "SUBMENU.TARIFFS": "Тарифы",
   "SUBMENU.TARIFFS.LIMITS": "Ограничения",
   "SUBMENU.TARIFFS.TRIAL": "Пробный период",
+  "SUBMENU.TARIFFS.PREMIUM": "Перейти на премиум",
+  "SUBMENU.TARIFFS.BUSINESS": "Перейти на бизнес",
   "SUBMENU.PROFILE.CROPS": "Изменить культуры",
 
   "SUBHEADER.PARTS.EDIT": "Редактирование",
