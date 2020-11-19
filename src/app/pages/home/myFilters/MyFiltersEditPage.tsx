@@ -243,6 +243,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
       window.location.reload();
     }, 10000);
   }
+  
 
   return (
     <Paper className={classes.paperWithForm}>

@@ -74,7 +74,9 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
       // }
       if (+values.value !== tariff[realCell.field]) {
         realCell.field === "period"
-          ? editPeriod(tariff.id, { tariff_period: { id: realCell.id, [realCell.field]: realValue } })
+          ? editPeriod(tariff.id, {
+              tariff_period: { id: realCell.id, [realCell.field]: realValue },
+            })
           : edit(realCell.id, { [realCell.field]: realValue });
       } else {
         setCell({ id: 0, field: undefined });
