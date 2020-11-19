@@ -112,9 +112,8 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
   if (data?.max_distance) newFilter["max_destination"] = data.max_distance;
   if (data?.parameter_values && data.parameter_values.length) {
     data.parameter_values.forEach(item => {
-      if (item.parameter.type === "enum") {
-
-        let values = item.parameter.enum as string[];
+      if (item.parameter.type === "enum" && item.value?.length) {
+        let values = item.value as string[];
         values.forEach(value => {
           newFilter[
             `parameter${item.parameter.id}enum${item.parameter.enum.indexOf(value)}`
