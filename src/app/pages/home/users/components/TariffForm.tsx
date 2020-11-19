@@ -165,6 +165,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
     initialValues: {
+      // tariff_price: realUser?.tariff_matrix.
       tariff_id: realUser?.tariff_matrix.id,
       tariff_type_id: realUser?.tariff_matrix.tariff.id,
       tariff_period_id: realUser?.tariff_matrix.tariff_period
@@ -518,8 +519,11 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 </h6>
                 <br />
                 <h6>
-                  <b>Назначение платежа:</b> {realUser.id} {realUser.email}{" "}
-                  {realUser.tariff_matrix.tariff.name} {realUser.tariff_matrix.tariff_period ? realUser.tariff_matrix.tariff_period.period : 0}
+                  <b>Назначение платежа:</b> Тариф "{realUser.tariff_matrix.tariff.name}{" "}
+                  {realUser.tariff_matrix.tariff_period
+                    ? realUser.tariff_matrix.tariff_period.period
+                    : 0}
+                  " для {realUser.email}, id = {realUser.id}
                 </h6>
                 <br />
                 <h6>

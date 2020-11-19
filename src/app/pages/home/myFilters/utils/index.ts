@@ -113,6 +113,7 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
   if (data?.parameter_values && data.parameter_values.length) {
     data.parameter_values.forEach(item => {
       if (item.parameter.type === "enum") {
+
         let values = item.parameter.enum as string[];
         values.forEach(value => {
           newFilter[

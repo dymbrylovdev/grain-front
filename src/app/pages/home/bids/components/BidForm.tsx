@@ -78,7 +78,7 @@ const getInitialValues = (
   vendorId: number,
   user: IUser | undefined,
   me: IUser | undefined,
-  isFilterCreated: boolean,
+  isFilterCreated: boolean
 ) => {
   let newCropId: number | string = "";
   if (editMode === "view" || editMode === "edit") {
@@ -193,8 +193,7 @@ interface IProps {
   create: (
     type: TBidType,
     data: IBidToRequest,
-    is_filter_created: number,
-    
+    is_filter_created: number
   ) => ActionWithPayload<
     "bids/CREATE_REQUEST",
     {
@@ -216,10 +215,7 @@ interface IProps {
   createSuccess: boolean;
   createError: string | null;
   clearCreate: () => Action<"bids/CLEAR_CREATE">;
-  post: (id: number) => ActionWithPayload<
-    "myFilters/POST_FILTER",
-    number
-  >;
+  post: (id: number) => ActionWithPayload<"myFilters/POST_FILTER", number>;
   postSuccess: boolean;
   postError: string | null;
   clearPost: () => Action<"myFilters/CLEAR_POST">;
@@ -285,7 +281,7 @@ const BidForm: React.FC<IProps> = ({
 
   const createFilter = (id: number) => {
     if (editMode === "edit") post(id);
-  }
+  };
 
   useEffect(() => {
     if (goToRef) {
@@ -330,7 +326,7 @@ const BidForm: React.FC<IProps> = ({
       vendorId,
       user,
       me,
-      isFilterCreated,
+      isFilterCreated
     ),
     onSubmit: values => {
       const is_filter_created = isFilterCreated ? 1 : 0;
@@ -432,19 +428,20 @@ const BidForm: React.FC<IProps> = ({
       );
       clearPost();
     }
-  }, [
-    clearPost,
-    postError,
-    postSuccess,
-    enqueueSnackbar,
-    history,
-    intl,
-    salePurchaseMode
-  ]);
+  }, [clearPost, postError, postSuccess, enqueueSnackbar, history, intl, salePurchaseMode]);
 
   useEffect(() => {
     resetForm({
-      values: getInitialValues(bid, currentCropId, salePurchaseMode, editMode, vendorId, user, me, isFilterCreated),
+      values: getInitialValues(
+        bid,
+        currentCropId,
+        salePurchaseMode,
+        editMode,
+        vendorId,
+        user,
+        me,
+        isFilterCreated
+      ),
     });
   }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
 
@@ -1357,10 +1354,14 @@ const BidForm: React.FC<IProps> = ({
                 </ButtonWithLoader>
               </div>
             ) : (
-              <FormControlLabel
-                control={<Checkbox checked={isFilterCreated} onChange={() => onCheckboxChange()} />}
-                label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
-              />
+              <div className={classes.button}>
+                <FormControlLabel
+                  control={
+                    <Checkbox checked={isFilterCreated} onChange={() => onCheckboxChange()} />
+                  }
+                  label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
+                />
+              </div>
             )}
 
             {/*  */}
