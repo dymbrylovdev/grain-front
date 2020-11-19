@@ -113,7 +113,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TopTableCell colSpan={2} align="center">
                   {intl.formatMessage({ id: "TARIFFS.NAME.PREMIUM" })}
                 </TopTableCell>
-                {/* <TopTableCell align="center">{tariffs[19].tariff.name.split("/")[0]}</TopTableCell> */}
+                <TopTableCell align="center">{tariffs[19].tariff.name.split("/")[0]}</TopTableCell>
                 <TopTableCell colSpan={2} align="center">
                   {intl.formatMessage({ id: "TARIFFS.NAME.INSIDE" })}
                 </TopTableCell>
