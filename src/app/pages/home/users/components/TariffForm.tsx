@@ -364,7 +364,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 label={intl.formatMessage({ id: "TARIFFS.DURATION" })}
                 margin="normal"
                 className={classes.textField}
-                value={values.tariff_period_id}
+                value={values.tariff_period_id ? values.tariff_period_id : 0}
                 name="tariff_period_id"
                 variant="outlined"
                 onChange={e => {
@@ -519,7 +519,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 <br />
                 <h6>
                   <b>Назначение платежа:</b> {realUser.id} {realUser.email}{" "}
-                  {realUser.tariff_matrix.tariff.name} {realUser.tariff_matrix.tariff_period.period}
+                  {realUser.tariff_matrix.tariff.name} {realUser.tariff_matrix.tariff_period ? realUser.tariff_matrix.tariff_period.period : 0}
                 </h6>
                 <br />
                 <h6>
