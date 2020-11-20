@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import {
+  Typography,
   TextField,
   Theme,
   IconButton,
@@ -74,6 +75,14 @@ const innerStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     justifyContent: "flex-end",
     marginTop: theme.spacing(2),
+  },
+  tariffPriceBlock: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(2),
   },
 }));
 
@@ -165,7 +174,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
     initialValues: {
-      // tariff_price: realUser?.tariff_matrix.
       tariff_id: realUser?.tariff_matrix.id,
       tariff_type_id: realUser?.tariff_matrix.tariff.id,
       tariff_period_id: realUser?.tariff_matrix.tariff_period
@@ -176,11 +184,11 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     },
     onSubmit: () => {
       let newCropIds = [...values.crop_ids];
-      let selectedTariff = tariffs?.find(
-        tariff =>
-          tariff.tariff.id === values.tariff_type_id &&
-          tariff.tariff_period.id === values.tariff_period_id
-      );
+      // let selectedTariff = tariffs?.find(
+      //   tariff =>
+      //     tariff.tariff.id === values.tariff_type_id &&
+      //     tariff.tariff_period.id === values.tariff_period_id
+      // );
       let newTariffExpiredDate = selectedDate;
       if (
         values.crop_ids &&
@@ -188,20 +196,20 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         values.tariff_type_id &&
         values.tariff_period_id &&
         tariffs &&
-        selectedTariff &&
-        values.crop_ids.length > selectedTariff.max_crops_count
+        realSelectedTariff &&
+        values.crop_ids.length > realSelectedTariff.max_crops_count
       ) {
-        newCropIds.splice(selectedTariff.max_crops_count);
+        newCropIds.splice(realSelectedTariff.max_crops_count);
       }
       if (
-        selectedTariff?.id &&
+        realSelectedTariff?.id &&
         realUser?.tariff_matrix?.id &&
         [1, 2, 102].includes(realUser.tariff_matrix.id) &&
-        [3, 4, 5].includes(selectedTariff.id) &&
+        [3, 4, 5].includes(realSelectedTariff.id) &&
         crops
       ) {
         newCropIds = Array.from(crops, x => x.id);
-        newCropIds.splice(selectedTariff.max_crops_count);
+        newCropIds.splice(realSelectedTariff.max_crops_count);
       }
       if (realUser && values.tariff_id) {
         if (editMode === "profile") {
@@ -212,7 +220,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           edit({
             id: realUser?.id,
             data: {
-              tariff_matrix_id: selectedTariff?.id,
+              tariff_matrix_id: realSelectedTariff?.id,
               crop_ids: newCropIds,
               tariff_expired_at: newTariffExpiredDate,
             },
@@ -221,6 +229,15 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       }
     },
   });
+
+  let realSelectedTariff: ITariff | undefined = undefined;
+  if (tariffs && realUser) {
+    realSelectedTariff = tariffs?.find(
+      tariff =>
+        tariff.tariff.id === values.tariff_type_id &&
+        tariff.tariff_period.id === values.tariff_period_id
+    );
+  }
 
   useEffect(() => {
     if (realUser) {
@@ -303,6 +320,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         loadingMe ||
         loadingUser ||
         !realTariffs ||
+        !realSelectedTariff ||
         !groupedTariffsType ||
         !groupedTariffsPeriod ||
         !realUser ||
@@ -380,6 +398,19 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   </MenuItem>
                 ))}
               </TextField>
+            )}
+
+            {editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
+              <div className={innerClasses.tariffPriceBlock}>
+                {realSelectedTariff.id !== realUser.tariff_matrix.id ? (
+                  <Typography variant="h6">
+                    Стоимость тарифа: <b>{realSelectedTariff.price}</b>
+                  </Typography>
+                ) : (
+                  // <Typography variant="h6">У вас уже установлен этот тариф</Typography>
+                  null
+                )}
+              </div>
             )}
           </>
         )}
@@ -491,16 +522,20 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             </div>
           )}
       </div>
-      {realUser && (
+      {realUser && realSelectedTariff && (
         <div className={innerClasses.buttonsBottomContain}>
-          {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) ? (
+          {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
             <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
               {intl.formatMessage({ id: "TARIFFS.SAVE" })}
             </Button>
-          ) : (
+          )}
+          {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
+          realSelectedTariff.id !== realUser.tariff_matrix.id ? (
             <Button variant="contained" color="primary" onClick={() => onToggleModal()}>
               {intl.formatMessage({ id: "TARIFFS.PAYMENT" })}
             </Button>
+          ) : (
+            null
           )}
         </div>
       )}

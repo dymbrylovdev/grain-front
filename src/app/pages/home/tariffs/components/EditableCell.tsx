@@ -74,9 +74,7 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
       // }
       if (+values.value !== tariff[realCell.field]) {
         realCell.field === "period"
-          ? editPeriod(tariff.id, {
-              tariff_period: { id: realCell.id, [realCell.field]: realValue },
-            })
+          ? editPeriod(realCell.id, { [realCell.field]: realValue })
           : edit(realCell.id, { [realCell.field]: realValue });
       } else {
         setCell({ id: 0, field: undefined });
@@ -92,18 +90,6 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
 
   useEffect(() => {
     if (cell.id === realCell.id && cell.field === realCell.field) {
-      if (editSuccess || editError) {
-        enqueueSnackbar(
-          editSuccess
-            ? intl.formatMessage({ id: "NOTISTACK.TARIFF.EDIT" })
-            : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editError}`,
-          {
-            variant: editSuccess ? "success" : "error",
-          }
-        );
-        clearEdit();
-        setCell({ id: 0, field: undefined });
-      }
       if (editPeriodSuccess || editPeriodError) {
         enqueueSnackbar(
           editPeriodSuccess
@@ -119,12 +105,35 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
     }
   }, [
     cell,
-    clearEdit,
-    editError,
-    editSuccess,
     clearEditPeriod,
     editPeriodError,
     editPeriodSuccess,
+    enqueueSnackbar,
+    intl,
+    realCell,
+    setCell,
+  ]);
+
+  useEffect(() => {
+    if (cell.id === realCell.id && cell.field === realCell.field) {
+      if (editSuccess || editError) {
+        enqueueSnackbar(
+          editSuccess
+            ? intl.formatMessage({ id: "NOTISTACK.TARIFF.EDIT" })
+            : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editError}`,
+          {
+            variant: editSuccess ? "success" : "error",
+          }
+        );
+        clearEdit();
+        setCell({ id: 0, field: undefined });
+      }
+    }
+  }, [
+    cell,
+    clearEdit,
+    editError,
+    editSuccess,
     enqueueSnackbar,
     intl,
     realCell,

@@ -2,7 +2,8 @@ import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/styles';
 import { Tooltip } from '@material-ui/core';
-import Button, { ButtonProps } from '@material-ui/core/Button';
+// import Button, { ButtonProps } from '@material-ui/core/Button';
+import { Button, ButtonProps } from '@material-ui/core';
 
 import { fade } from '@material-ui/core/styles/colorManipulator';
 

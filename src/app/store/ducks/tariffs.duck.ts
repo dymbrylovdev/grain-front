@@ -124,6 +124,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     case CLEAR_EDIT_PERIOD: {
       return {
         ...state,
+        tariff: undefined,
         editPeriodLoading: false,
         editPeriodSuccess: false,
         editPeriodError: null,
@@ -140,11 +141,25 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case EDIT_PERIOD_SUCCESS: {
+      let newTariffs: ITariff[] = [];
+      state.tariffs?.forEach(item => {
+        if (
+          item.tariff_period
+            ? item.tariff_period.id === action.payload.response.data.id
+            : item.tariff_period === null
+        ) {
+          let newItem = Object.assign({}, item);
+          newItem.tariff_period = action.payload.response.data;
+          newTariffs.push(newItem);
+        } else {
+          newTariffs.push(item);
+        }
+      });
       return {
         ...state,
+        tariffs: newTariffs,
         editPeriodLoading: false,
         editPeriodSuccess: true,
-        editPeriodError: null,
       };
     }
 
@@ -152,8 +167,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return {
         ...state,
         editPeriodLoading: false,
-        editPeriodSuccess: false,
-        editPeriodError: action.payload.error
+        editPeriodError: action.payload.error,
       };
     }
 
@@ -174,8 +188,10 @@ export const actions = {
   editFail: (error: string) => createAction(EDIT_FAIL, { error }),
 
   clearEditPeriod: () => createAction(CLEAR_EDIT_PERIOD),
-  editPeriodRequest: (id: number, data: ITariffToRequest) => createAction(EDIT_PERIOD_REQUEST, { id, data }),
-  editPeriodSuccess: (response: IServerResponse<ITariff>) => createAction(EDIT_PERIOD_SUCCESS, { response }),
+  editPeriodRequest: (id: number, data: ITariffToRequest) =>
+    createAction(EDIT_PERIOD_REQUEST, { id, data }),
+  editPeriodSuccess: (response: IServerResponse<ITariff>) =>
+    createAction(EDIT_PERIOD_SUCCESS, { response }),
   editPeriodFail: (error: string) => createAction(EDIT_PERIOD_FAIL, { error }),
 };
 
@@ -201,7 +217,7 @@ function* editSaga({ payload }: { payload: { id: number; data: ITariffToRequest 
   }
 }
 
-function* editPeriodSaga({ payload }: { payload: { id: number, data: ITariffToRequest } }) {
+function* editPeriodSaga({ payload }: { payload: { id: number; data: ITariffToRequest } }) {
   try {
     const { data }: { data: IServerResponse<ITariff> } = yield call(() =>
       editTariffPeriod(payload.id, payload.data)
@@ -215,5 +231,8 @@ function* editPeriodSaga({ payload }: { payload: { id: number, data: ITariffToRe
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
-  yield takeLatest<ReturnType<typeof actions.editPeriodRequest>>(EDIT_PERIOD_REQUEST, editPeriodSaga);
+  yield takeLatest<ReturnType<typeof actions.editPeriodRequest>>(
+    EDIT_PERIOD_REQUEST,
+    editPeriodSaga
+  );
 }
