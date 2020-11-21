@@ -231,13 +231,18 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   });
 
   let realSelectedTariff: ITariff | undefined = undefined;
-  if (tariffs && realUser) {
-    realSelectedTariff = tariffs?.find(
-      tariff =>
-        tariff.tariff.id === values.tariff_type_id &&
-        tariff.tariff_period.id === values.tariff_period_id
-    );
+  if (realTariffs && realUser) {
+    if (!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0])) {
+      realSelectedTariff = realTariffs?.find(
+        tariff =>
+          tariff.tariff.id === values.tariff_type_id &&
+          tariff.tariff_period.id === values.tariff_period_id
+      );
+    } else {
+      realSelectedTariff = realUser.tariff_matrix;
+    }
   }
+
 
   useEffect(() => {
     if (realUser) {
@@ -328,7 +333,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           <Skeleton width="100%" height={68} animation="wave" />
         ) : (
           <>
-            {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
+            {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
+            realSelectedTariff.tariff.name === "Премиум" && (
               <div className={innerClasses.calendarContain}>
                 <h6>{realUser?.tariff_expired_at}</h6>
                 <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
@@ -376,39 +382,37 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               ))}
             </TextField>
 
-            {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
-              <TextField
-                select
-                type="text"
-                label={intl.formatMessage({ id: "TARIFFS.DURATION" })}
-                margin="normal"
-                className={classes.textField}
-                value={values.tariff_period_id ? values.tariff_period_id : 0}
-                name="tariff_period_id"
-                variant="outlined"
-                onChange={e => {
-                  setFieldValue("tariff_period_id", e.target.value);
-                }}
-                helperText={touched.tariff_period_id && errors.tariff_period_id}
-                error={Boolean(touched.tariff_period_id && errors.tariff_period_id)}
-              >
-                {groupedTariffsPeriod.map(item => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.period}
-                  </MenuItem>
-                ))}
-              </TextField>
-            )}
+            {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
+              realSelectedTariff.tariff.name === "Премиум" && (
+                <TextField
+                  select
+                  type="text"
+                  label={intl.formatMessage({ id: "TARIFFS.DURATION" })}
+                  margin="normal"
+                  className={classes.textField}
+                  value={values.tariff_period_id ? values.tariff_period_id : 0}
+                  name="tariff_period_id"
+                  variant="outlined"
+                  onChange={e => {
+                    setFieldValue("tariff_period_id", e.target.value);
+                  }}
+                  helperText={touched.tariff_period_id && errors.tariff_period_id}
+                  error={Boolean(touched.tariff_period_id && errors.tariff_period_id)}
+                >
+                  {groupedTariffsPeriod.map(item => (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.period}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
 
             {editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
               <div className={innerClasses.tariffPriceBlock}>
-                {realSelectedTariff.id !== realUser.tariff_matrix.id ? (
-                  <Typography variant="h6">
+                {realSelectedTariff.tariff.name === "Премиум" && (
+                  <Typography variant="h6"> 
                     Стоимость тарифа: <b>{realSelectedTariff.price}</b>
                   </Typography>
-                ) : (
-                  // <Typography variant="h6">У вас уже установлен этот тариф</Typography>
-                  null
                 )}
               </div>
             )}
@@ -529,18 +533,16 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               {intl.formatMessage({ id: "TARIFFS.SAVE" })}
             </Button>
           )}
-          {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
-          realSelectedTariff.id !== realUser.tariff_matrix.id ? (
+          {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
             <Button variant="contained" color="primary" onClick={() => onToggleModal()}>
               {intl.formatMessage({ id: "TARIFFS.PAYMENT" })}
             </Button>
-          ) : (
-            null
           )}
         </div>
       )}
 
       {realUser &&
+        realSelectedTariff &&
         me &&
         groupedTariffsType &&
         tariffs &&
@@ -550,13 +552,13 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               <h5>{intl.formatMessage({ id: "TARIFFS.PAYMENT.FORM.TITLE" })}</h5>
               <div>
                 <h6>
-                  <b>Сумма платежа:</b> {realUser.tariff_price}
+                  <b>Сумма платежа:</b> {realSelectedTariff.price}
                 </h6>
                 <br />
                 <h6>
-                  <b>Назначение платежа:</b> Тариф "{realUser.tariff_matrix.tariff.name}{" "}
-                  {realUser.tariff_matrix.tariff_period
-                    ? realUser.tariff_matrix.tariff_period.period
+                  <b>Назначение платежа:</b> Тариф "{realSelectedTariff.tariff.name}{" "}
+                  {realSelectedTariff.tariff_period
+                    ? realSelectedTariff.tariff_period.period
                     : 0}
                   " для {realUser.email}, id = {realUser.id}
                 </h6>
