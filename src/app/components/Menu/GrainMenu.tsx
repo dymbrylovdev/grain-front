@@ -49,6 +49,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   me,
   leftMenuOpen,
   salePurchaseMode,
+  cropParams,
 }) => {
   const classes = useStyles();
   const isMinWidthQuery = useMediaQuery("(min-width:1025px)");
@@ -82,6 +83,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         salePurchaseMode={salePurchaseMode}
         setSalePurchaseMode={setSalePurchaseMode}
         setLeftMenuOpen={setLeftMenuOpen}
+        enumParams={cropParams && cropParams.filter(item => item.type === "enum")}
       />
     </Wrapper>
   );
@@ -92,6 +94,7 @@ const connector = connect(
     me: state.auth.user,
     leftMenuOpen: state.leftMenu.leftMenuOpen,
     salePurchaseMode: state.leftMenu.salePurchaseMode,
+    cropParams: state.crops2.cropParams,
   }),
   { ...leftMenuActions }
 );

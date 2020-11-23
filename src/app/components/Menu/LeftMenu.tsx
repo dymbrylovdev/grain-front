@@ -98,6 +98,7 @@ interface IProps {
       leftMenuOpen: boolean;
     }
   >;
+  enumParams: any;
 }
 
 const LeftMenu: React.FC<IProps> = ({
@@ -108,6 +109,7 @@ const LeftMenu: React.FC<IProps> = ({
   salePurchaseMode,
   setSalePurchaseMode,
   setLeftMenuOpen,
+  enumParams,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -141,7 +143,7 @@ const LeftMenu: React.FC<IProps> = ({
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
-      
+
       {!!bestAllMyDealsMode &&
         bestAllMyDealsMode !== "deals" &&
         accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
@@ -277,7 +279,7 @@ const LeftMenu: React.FC<IProps> = ({
 
       {/* // ! Changed */}
 
-      {/* {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
         bestAllMyDealsMode === "best-bids" && (
           <MenuItem
             onClick={() => {
@@ -288,18 +290,19 @@ const LeftMenu: React.FC<IProps> = ({
             className={`${classes.nester}`}
           >
             {intl.formatMessage({ id: "SUBMENU.FILTERS" })}
+            {filtersOpen ? (
+              <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
+            ) : (
+              <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
+            )}
           </MenuItem>
         )}
       <Collapse in={filtersOpen} timeout="auto" unmountOnExit>
-        <FilterBids
-          cropId={cropId}
-          intl={intl}
-          classes={classes}
-        />
+        <FilterBids />
       </Collapse>
 
       {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
-        bestAllMyDealsMode === "best-bids" && <Divider style={{ margin: "6px 0" }} />} */}
+        bestAllMyDealsMode === "best-bids" && <Divider style={{ margin: "6px 0" }} />}
 
       {/* // ! Changed */}
 

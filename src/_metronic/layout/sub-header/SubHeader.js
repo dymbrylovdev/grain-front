@@ -15,6 +15,7 @@ import BreadCrumbs from "./components/BreadCrumbs";
 import { Button } from "@material-ui/core";
 // import { roles } from "../../../app/pages/home/users/utils/profileForm";
 import { injectIntl } from "react-intl";
+import { accessByRoles } from "../../../app/utils/utils";
 
 class SubHeader extends React.Component {
   render() {
@@ -98,6 +99,17 @@ class SubHeader extends React.Component {
                 <SaveIcon className="kt-svg-icon kt-svg-icon--primary kt-svg-icon--md" />
               </IconButton> */}
             </div>
+            {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+              <Button
+                style={{marginRight: 15}}
+                variant="contained"
+                color="primary"
+                onClick={() => history.push('/user/create')}
+              >
+                Добавить пользователя
+              </Button>
+            )}
+
             {me && (
               <Button
                 variant="contained"

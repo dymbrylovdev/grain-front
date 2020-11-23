@@ -190,7 +190,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
     fetchMe();
   }, [fetchMe]);
 
-  let title = null;
+  let title = "string";
   if (editMode === "create" && !vendorId) title = intl.formatMessage({ id: "BID.TITLE.CREATE" });
   if (editMode === "create" && !!vendorId && !!user && user.id === +vendorId)
     title = `${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [ ${user.login} ]`;
