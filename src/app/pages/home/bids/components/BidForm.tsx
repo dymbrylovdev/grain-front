@@ -556,9 +556,9 @@ const BidForm: React.FC<IProps> = ({
                 </div>
 
                 {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
-                  <Typography>
+                  <div className={innerClasses.authorText}>
                     Сегодня вам доступен просмотр {me?.contact_view_count} контактов
-                  </Typography>
+                  </div>
                 )}
               </div>
 
