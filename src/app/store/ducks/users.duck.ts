@@ -4,7 +4,7 @@ import { put, takeLatest, call } from "redux-saga/effects";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
-import { getUsers, getUserById, deleteUser, createUser, editUser } from "../../crud/users.crud";
+import { getUsers, getUserById, deleteUser, createUser, editUser, editContactViewContact } from "../../crud/users.crud";
 import { IUser, IUserForCreate, IUserForEdit } from "../../interfaces/users";
 
 const CLEAR_FETCH = "users/CLEAR_FETCH";
@@ -31,6 +31,11 @@ const CLEAR_DEL = "users/CLEAR_DEL";
 const DEL_REQUEST = "users/DEL_REQUEST";
 const DEL_SUCCESS = "users/DEL_SUCCESS";
 const DEL_FAIL = "users/DEL_FAIL";
+
+const CLEAR_CONTACT_VIEW_COUNT = "users/CLEAR_CONTACT_VIEW_COUNT";
+const CONTACT_VIEW_COUNT_REQUEST = "users/CONTACT_VIEW_COUNT_REQUEST";
+const CONTACT_VIEW_COUNT_SUCCESS = "users/CONTACT_VIEW_COUNT_SUCCESS";
+const CONTACT_VIEW_COUNT_FAIL = "users/CONTACT_VIEW_COUNT_FAIL";
 
 const SET_OPEN_INFO_ALERT = "users/SET_OPEN_INFO_ALERT";
 
@@ -62,6 +67,10 @@ export interface IInitialState {
   delSuccess: boolean;
   delError: string | null;
 
+  contactViewCountLoading: boolean;
+  contactViewCountSuccess: boolean;
+  contactViewCountError: string | null;
+
   openInfoAlert: boolean;
 }
 
@@ -92,6 +101,10 @@ const initialState: IInitialState = {
   delLoading: false,
   delSuccess: false,
   delError: null,
+
+  contactViewCountLoading: false,
+  contactViewCountSuccess: false,
+  contactViewCountError: null,
 
   openInfoAlert: true,
 };
@@ -233,6 +246,22 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return { ...state, delLoading: false, delError: action.payload };
     }
 
+    case CLEAR_CONTACT_VIEW_COUNT: {
+      return { ...state, contactViewCountLoading: false, contactViewCountSuccess: false, contactViewCountError: null }
+    }
+
+    case CONTACT_VIEW_COUNT_REQUEST: {
+      return { ...state, contactViewCountLoading: true, contactViewCountSuccess: false, contactViewCountError: null }
+    }
+
+    case CONTACT_VIEW_COUNT_SUCCESS: {
+      return { ...state, contactViewCountLoading: false, contactViewCountSuccess: true }
+    }
+
+    case CONTACT_VIEW_COUNT_FAIL: {
+      return { ...state, contactViewCountLoading: false, contactViewCountError: action.payload }
+    }
+
     case SET_OPEN_INFO_ALERT: {
       return {
         ...state,
@@ -271,6 +300,11 @@ export const actions = {
   delRequest: (payload: { id: number }) => createAction(DEL_REQUEST, payload),
   delSuccess: () => createAction(DEL_SUCCESS),
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
+
+  clearContactViewCount: () => createAction(CLEAR_CONTACT_VIEW_COUNT),
+  contactViewCountRequest: (payload: { data: number }) => createAction(CONTACT_VIEW_COUNT_REQUEST, payload),
+  contactViewCountSuccess: () => createAction(CONTACT_VIEW_COUNT_SUCCESS),
+  contactViewCountError: (payload: string) => createAction(CONTACT_VIEW_COUNT_FAIL, payload),
 
   setOpenInfoAlert: (openInfoAlert: boolean) =>
     createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
@@ -327,10 +361,22 @@ function* delSaga({ payload }: { payload: { id: number } }) {
   }
 }
 
+function* contactViewCountSaga({ payload }: { payload: { data: number } }) {
+  try {
+    yield call(() => 
+      editContactViewContact(payload.data)
+    );
+    yield put(actions.contactViewCountSuccess());
+  } catch (e) {
+    yield put(actions.contactViewCountError(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.fetchByIdRequest>>(FETCH_BY_ID_REQUEST, fetchByIdSaga);
   yield takeLatest<ReturnType<typeof actions.createRequest>>(CREATE_REQUEST, createSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
   yield takeLatest<ReturnType<typeof actions.delRequest>>(DEL_REQUEST, delSaga);
+  yield takeLatest<ReturnType<typeof actions.contactViewCountRequest>>(CONTACT_VIEW_COUNT_REQUEST, contactViewCountSaga);
 }

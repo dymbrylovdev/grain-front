@@ -279,7 +279,7 @@ const LeftMenu: React.FC<IProps> = ({
 
       {/* // ! Changed */}
 
-      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+      {/* {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
         bestAllMyDealsMode === "best-bids" && (
           <MenuItem
             onClick={() => {
@@ -302,7 +302,7 @@ const LeftMenu: React.FC<IProps> = ({
       </Collapse>
 
       {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
-        bestAllMyDealsMode === "best-bids" && <Divider style={{ margin: "6px 0" }} />}
+        bestAllMyDealsMode === "best-bids" && <Divider style={{ margin: "6px 0" }} />} */}
 
       {/* // ! Changed */}
 

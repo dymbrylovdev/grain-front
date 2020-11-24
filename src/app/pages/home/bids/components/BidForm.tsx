@@ -12,6 +12,7 @@ import {
   Collapse,
   FormControlLabel,
   Checkbox,
+  Typography,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
@@ -162,7 +163,6 @@ const getDeliveryPrice = (
     return Math.round(pricePerKm * distance);
   }
 };
-
 interface IProps {
   intl: IntlShape;
   vendorId: number;
@@ -220,6 +220,7 @@ interface IProps {
   postError: string | null;
   clearPost: () => Action<"myFilters/CLEAR_POST">;
   profit: IProfit;
+  editContactViewCount: any;
   setOpenInfoAlert: (
     openInfoAlert: boolean
   ) => ActionWithPayload<
@@ -245,6 +246,7 @@ const BidForm: React.FC<IProps> = ({
   create,
   edit,
   post,
+  editContactViewCount,
 
   fetchLocations,
   locations,
@@ -303,9 +305,29 @@ const BidForm: React.FC<IProps> = ({
     : 0;
 
   const [isFilterCreated, setFilterCreated] = useState(false);
+  const [isContactAlertOpen, setContactAlertOpen] = useState(false);
 
   const onCheckboxChange = () => {
     setFilterCreated(!isFilterCreated);
+  };
+
+  // TODO: Возможно стоит зарефакторить
+
+  const linkToContact = () => {
+    let contactViewCount = me?.contact_view_count;
+    //@ts-ignore
+    if (contactViewCount > 0) {
+      history.push(
+        me?.id === (!!bid && bid.vendor && bid.vendor.id)
+          ? "/user/profile"
+          : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
+      );
+      //@ts-ignore
+      editContactViewCount({ data: { contact_view_count: contactViewCount - 1 } });
+    } else {
+      setContactAlertOpen(!isContactAlertOpen);
+      setTimeout(() => setContactAlertOpen(false), 5000);
+    }
   };
 
   const {
@@ -518,21 +540,51 @@ const BidForm: React.FC<IProps> = ({
               </div>
             )}
             <div>
-              <Link
-                to={
-                  me?.id === (!!bid && bid.vendor && bid.vendor.id)
-                    ? "/user/profile"
-                    : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
-                }
+              <div
+                style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}
               >
-                <div className={innerClasses.authorText}>
+                <div
+                  className={innerClasses.authorText}
+                  style={{ cursor: "pointer", color: "blue" }}
+                  onClick={linkToContact}
+                >
                   {`${
                     bid.type === "sale"
                       ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
                       : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
                   }: ${bid.vendor.fio || bid.vendor.login}`}
                 </div>
-              </Link>
+
+                {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
+                  <Typography>
+                    Сегодня вам доступен просмотр {me?.contact_view_count} контактов
+                  </Typography>
+                )}
+              </div>
+
+              {isContactAlertOpen && (
+                <Alert
+                  className={classes.infoAlert}
+                  severity="warning"
+                  color="error"
+                  style={{ marginTop: 8, marginBottom: 8 }}
+                  action={
+                    <IconButton
+                      aria-label="close"
+                      color="inherit"
+                      size="small"
+                      onClick={() => {
+                        setContactAlertOpen(false);
+                      }}
+                    >
+                      <CloseIcon fontSize="inherit" />
+                    </IconButton>
+                  }
+                >
+                  {intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}
+                </Alert>
+              )}
+
               {!!bid.vendor.company && (
                 <div className={classes.bottomMargin1}>{bid.vendor.company.short_name}</div>
               )}

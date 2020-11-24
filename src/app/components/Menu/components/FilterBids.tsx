@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { MenuItem, Collapse, Button } from "@material-ui/core";
 import { Col } from "react-bootstrap";
 import { connect, ConnectedProps, shallowEqual, useSelector } from "react-redux";
@@ -59,11 +59,13 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const enumParams: any = cropParams && cropParams.filter(item => item.type === "enum");
   const numberParams: any = cropParams && cropParams.filter(item => item.type === "number");
 
+  const setCurrentFilter =
+    salePurchaseMode === "sale" ? setCurrentSaleFilter : setCurrentPurchaseFilter;
+
   const currentFilter =
     salePurchaseMode === "sale" ? currentSaleFilters[cropId] : currentPurchaseFilters[cropId];
 
-  const setCurrentFilter =
-    salePurchaseMode === "sale" ? setCurrentSaleFilter : setCurrentPurchaseFilter;
+  console.log(currentFilter);
 
   const getInitialValues = useCallback(
     filter => {
@@ -104,11 +106,14 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const newCropName = (): any => {
     const crop = crops ? crops.find(crop => crop.id === +cropId) : undefined;
     const now = new Date();
-    const name = crop && `${crop.name} ${now.toLocaleDateString()} - ${now
-      .toLocaleTimeString()
-      .slice(0, -3)}`;
+    const name =
+      crop && `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
     return name;
   };
+
+  useEffect(() => {
+    resetForm({ values: getInitialValues(currentFilter) });
+  }, [cropId, currentFilter, getInitialValues, resetForm]);
 
   return (
     <>
@@ -131,7 +136,10 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           let params = { ...values };
           params.name = values.name.trim();
           params.cropId = cropId;
-          setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
+          setCurrentFilter(
+            +cropId, 
+            filterForSubmit(currentFilter, params, newCropName())
+          );
           clearBids();
           // handleClose();
         }}

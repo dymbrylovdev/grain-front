@@ -89,6 +89,8 @@ const BidEditPage: React.FC<TPropsFromRedux &
   postSuccess,
   postError,
 
+  editContactViewCount,
+
   fetchLocations,
   clearLocations,
   locations,
@@ -278,6 +280,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
             profit={profit}
             openInfoAlert={openInfoAlert}
             setOpenInfoAlert={setOpenInfoAlert}
+            editContactViewCount={editContactViewCount}
           />
         )}
         <AlertDialog
@@ -342,6 +345,10 @@ const connector = connect(
     postSuccess: state.myFilters.postSuccess,
     postError: state.myFilters.postError,
 
+    contactViewCountLoading: state.users.contactViewCountLoading,
+    contactViewCountSuccess: state.users.contactViewCountSuccess,
+    contactViewCountError: state.users.contactViewCountError,
+
     locations: state.yaLocations.yaLocations,
     loadingLocations: state.yaLocations.loading,
 
@@ -349,6 +356,8 @@ const connector = connect(
   }),
   {
     fetchUser: usersActions.fetchByIdRequest,
+
+    editContactViewCount: usersActions.contactViewCountRequest,
 
     fetchMe: authActions.fetchRequest,
 

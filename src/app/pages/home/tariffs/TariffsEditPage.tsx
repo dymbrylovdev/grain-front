@@ -504,11 +504,87 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 </TableCell>
               </TableRow>
 
+              {/* // * grain-467 | Tariffs contact view count */}
+
+              <TableRow>
+                <TableCell>
+                  <b>{intl.formatMessage({ id: "TARIFFS.TITLE6" })}</b>
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+              </TableRow>
+
+              <TableRow>
+                <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT61" })}</TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 2) as ITariff}
+                    realCell={{ id: 2, field: "contact_view_limit" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 6) as ITariff}
+                    realCell={{ id: 6, field: "contact_view_limit" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 22) as ITariff}
+                    realCell={{ id: 22, field: "contact_view_limit" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 10) as ITariff}
+                    realCell={{ id: 10, field: "contact_view_limit" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 14) as ITariff}
+                    realCell={{ id: 14, field: "contact_view_limit" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 18) as ITariff}
+                    realCell={{ id: 18, field: "contact_view_limit" }}
+                  />
+                </TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+                <TableCell style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}></TableCell>
+              </TableRow>
+
               {/* // * grain-439 | Tarrifs prices */}
 
               <TableRow>
                 <TableCell>
-                  <b>{intl.formatMessage({ id: "TARIFFS.COST" })}</b>
+                  <b>{intl.formatMessage({ id: "TARIFFS.TITLE5" })}</b>
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
                 <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}></TableCell>
@@ -523,7 +599,9 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {/* // * Tariff Cost */}
 
               <TableRow>
-                <TableCell style={{display: "flex", justifyContent: "flex-start", alignItems: "center"}}>
+                <TableCell
+                  style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}
+                >
                   Количество дней:
                   <EditableCell
                     useInnerStyles={useInnerStyles}
@@ -535,7 +613,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realCell={{ id: 1, field: "period" }}
                   />
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -545,7 +629,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   /> */}
                   0
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -555,7 +645,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   /> */}
                   0
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -597,7 +693,9 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </TableRow>
 
               <TableRow>
-                <TableCell style={{display: "flex", justifyContent: "flex-start", alignItems: "center"}}>
+                <TableCell
+                  style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}
+                >
                   Количество дней:
                   <EditableCell
                     useInnerStyles={useInnerStyles}
@@ -609,7 +707,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realCell={{ id: 2, field: "period" }}
                   />
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -619,7 +723,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   /> */}
                   0
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -629,7 +739,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   /> */}
                   0
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -671,7 +787,9 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </TableRow>
 
               <TableRow>
-                <TableCell style={{display: "flex", justifyContent: "flex-start", alignItems: "center"}}>
+                <TableCell
+                  style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}
+                >
                   Количество дней:
                   <EditableCell
                     useInnerStyles={useInnerStyles}
@@ -683,7 +801,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realCell={{ id: 3, field: "period" }}
                   />
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -693,7 +817,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   /> */}
                   0
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -703,7 +833,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   /> */}
                   0
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -745,7 +881,9 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </TableRow>
 
               <TableRow>
-                <TableCell style={{display: "flex", justifyContent: "flex-start", alignItems: "center"}}>
+                <TableCell
+                  style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}
+                >
                   Количество дней:
                   <EditableCell
                     useInnerStyles={useInnerStyles}
@@ -757,7 +895,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realCell={{ id: 4, field: "period" }}
                   />
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -767,7 +911,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   /> */}
                   0
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -777,7 +927,13 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   /> */}
                   0
                 </TableCell>
-                <TableCell style={{ backgroundColor: "rgba(150, 150, 150, 0.2)", textAlign: "center", fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    backgroundColor: "rgba(150, 150, 150, 0.2)",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
                   {/* <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}

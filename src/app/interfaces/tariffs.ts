@@ -39,6 +39,7 @@ export type TTariffField =
   | "common_bids_count"
   | "max_filters_count"
   | "max_crops_count"
+  | "contact_view_limit"
   | "price"
   | "period";
   

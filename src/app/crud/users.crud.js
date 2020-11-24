@@ -13,6 +13,10 @@ export function editUser(id, data) {
   return axios.put(`${USER_URL}${id}/edit`, data);
 }
 
+export function editContactViewContact(data) {
+  return axios.put(`${USER_URL}me`, data);
+}
+
 export function deleteUser(id) {
   return axios.delete(`${USER_URL}${id}`);
 }

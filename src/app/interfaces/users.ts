@@ -21,6 +21,7 @@ export interface IUser {
   company_confirmed_by_email?: boolean;
   company_confirmed_by_phone?: boolean;
   company_confirmed_by_payment?: boolean;
+  contact_view_count?: number;
   points: ILocation[];
   funnel_state: {
     id: number;
