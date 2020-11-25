@@ -9,10 +9,12 @@ import {
   Checkbox,
   IconButton,
   Collapse,
+  Button,
 } from "@material-ui/core";
 import { Alert, Skeleton } from "@material-ui/lab";
 import { Link, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
@@ -32,9 +34,14 @@ import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons"
 import { getInitialValues, roles } from "../utils/profileForm";
 import { setMeValues, setCreateValues, setEditValues } from "../utils/submitValues";
 import { IAppState } from "../../../../store/rootDuck";
-import { IUserForEdit } from "../../../../interfaces/users";
+import { IUser, IUserForEdit } from "../../../../interfaces/users";
 import NumberFormatPhone from "../../../../components/NumberFormatCustom/NumberFormatPhone";
 import { accessByRoles } from "../../../../utils/utils";
+import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
+import { TrafficLight } from ".";
+import CompanyConfirmBlock from "../../companies/components/CompanyConfirmBlock";
+import CompanySearchForm from "../../companies/components/CompanySearchForm";
+import CompanyConfirmDialog from "./CompanyConfirmDialog";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   companyContainer: {
@@ -120,8 +127,21 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   const [oldValues, setOldValues] = useState<any | undefined>(undefined);
   const [visiblePass, setVisiblePass] = useState(true);
+  const [isOpenCompanyConfirm, setIsOpenCompanyConfirm] = useState<boolean>(false);
+  const [companyConfirmId, setCompanyConfirmId] = useState<number>(0);
+  const [currentUser, setCurrentUser] = useState<IUser>();
+  const [isAlertOpen, setAlertDialogOpen] = useState(false);
 
-  const { values, handleSubmit, handleChange, handleBlur, resetForm, touched, errors } = useFormik({
+  const {
+    values,
+    handleSubmit,
+    handleChange,
+    handleBlur,
+    resetForm,
+    setFieldValue,
+    touched,
+    errors,
+  } = useFormik({
     initialValues: getInitialValues(undefined),
     onSubmit: values => {
       if (editMode === "profile" && !isEqual(oldValues, values))
@@ -294,16 +314,18 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     switch (editMode) {
       case "profile":
         resetForm({ values: getInitialValues(me) });
+        setCurrentUser(me);
         break;
       case "edit":
       case "view":
         resetForm({ values: getInitialValues(user) });
+        setCurrentUser(user);
         break;
       case "create":
         resetForm({ values: getInitialValues(undefined) });
         break;
     }
-  }, [editMode, me, resetForm, user]);
+  }, [editMode, me, resetForm, user, setCurrentUser]);
 
   useEffect(() => {
     if (accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !funnelStates) fetchFunnelStates();
@@ -639,6 +661,160 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           )} */}
         </div>
       )}
+
+      <div>
+        {currentUser && currentUser.company ? (
+          <>
+            <div className={classes.textFieldContainer}>
+              {/* {meLoading || userLoading || editLoading ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <> */}
+              <TextField
+                type="text"
+                label={intl.formatMessage({
+                  id: "PROFILE.INPUT.COMPANY",
+                })}
+                margin="normal"
+                name="company_name"
+                value={values.company_name}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                disabled={true}
+                className={classes.textField}
+              />
+              {editMode !== "view" && (
+                <IconButton size={"medium"} color="secondary" onClick={() => setAlertOpen(true)}>
+                  <DeleteIcon />
+                </IconButton>
+              )}
+              {/* </>
+            )} */}
+            </div>
+            <CompanyConfirmBlock
+              user={editMode === "profile" ? me : user}
+              values={values}
+              handleChange={
+                editMode === "profile"
+                  ? editMe
+                  : ({ data }: any) => editUser({ id: userId as number, data: data })
+              }
+              disabled={
+                editMode === "profile" ||
+                editMode === "view" ||
+                !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])
+              }
+              loading={editMeLoading || editLoading}
+              // loading={!currentUser || meLoading || userLoading || editLoading}
+            />
+            {!values.company_confirmed_by_email &&
+              !values.company_confirmed_by_payment &&
+              !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+              editMode !== "view" && (
+                <div className={classes.textFieldContainer}>
+                  {!currentUser || meLoading || userLoading ? (
+                    <Skeleton width={170} height={70} animation="wave" />
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => {
+                        setCompanyConfirmId(values.company_id);
+                        setIsOpenCompanyConfirm(true);
+                      }}
+                    >
+                      {intl.formatMessage({ id: "COMPANY.CONFIRM.BUTTON" })}
+                    </Button>
+                  )}
+                </div>
+              )}
+          </>
+        ) : !currentUser || meLoading || userLoading ? (
+          <div className={classes.textFieldContainer}>
+            <Skeleton width="100%" height={70} animation="wave" />
+          </div>
+        ) : (
+          <div className={classes.textFieldContainer} style={{ fontSize: 16 }}>
+            {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
+          </div>
+        )}
+        {(!!currentUser?.company_confirmed_by_email ||
+          !!currentUser?.company_confirmed_by_payment) &&
+          !!currentUser?.company?.colors && (
+            <TrafficLight intl={intl} colors={currentUser.company.colors} />
+          )}
+
+        {editMode !== "view" &&
+          accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+          !!currentUser &&
+          !!currentUser.company && (
+            <div className={classes.bottomButtonsContainer}>
+              <div className={classes.button}>
+                <ButtonWithLoader
+                  loading={false}
+                  disabled={
+                    editMeLoading || createLoading || editLoading || meLoading || userLoading
+                  }
+                  onPress={() => history.push(`/company/edit/${currentUser.company?.id}`)}
+                >
+                  {intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })}
+                </ButtonWithLoader>
+              </div>
+            </div>
+          )}
+
+        {editMode !== "view" && !!currentUser && !currentUser.company && (
+          <CompanySearchForm
+            classes={classes}
+            company={currentUser && currentUser.company}
+            setCompanyAction={(company: any) => {
+              setFieldValue("company_id", company && company.id);
+              setFieldValue("company_name", company && company.short_name);
+              setFieldValue("company_confirmed_by_email", false);
+              setFieldValue("company_confirmed_by_phone", false);
+              setFieldValue("company_confirmed_by_payment", false);
+            }}
+            editAction={
+              editMode === "profile"
+                ? editMe
+                : ({ data }: any) => editUser({ id: userId as number, data: data })
+            }
+            confirms={editMode === "profile" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
+          />
+        )}
+        <CompanyConfirmDialog
+          id={companyConfirmId}
+          intl={intl}
+          isOpen={isOpenCompanyConfirm}
+          handleClose={() => setIsOpenCompanyConfirm(false)}
+        />
+        <AlertDialog
+          isOpen={isAlertOpen}
+          text={intl.formatMessage({
+            id: "COMPANY.DIALOGS.DELETE_TEXT",
+          })}
+          okText={intl.formatMessage({
+            id: "COMPANY.DIALOGS.AGREE_TEXT",
+          })}
+          cancelText={intl.formatMessage({
+            id: "COMPANY.DIALOGS.CANCEL_TEXT",
+          })}
+          handleClose={() => setAlertDialogOpen(false)}
+          handleAgree={() => {
+            setFieldValue("company_id", 0);
+            setFieldValue("company_confirmed_by_email", false);
+            setFieldValue("company_confirmed_by_phone", false);
+            setFieldValue("company_confirmed_by_payment", false);
+            handleSubmit();
+            setAlertDialogOpen(false);
+          }}
+          loadingText={intl.formatMessage({
+            id: "COMPANY.DIALOGS.LOADING_TEXT",
+          })}
+          isLoading={editMeLoading || editLoading}
+        />
+      </div>
 
       <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
         {editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (

@@ -11,7 +11,8 @@ import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons"
 const getInitialValues = crop => ({
   name: !!crop && crop.name ? crop.name : "",
   vat: !!crop && crop.vat ? crop.vat : 10,
-  delivery_price_coefficient: !!crop && crop.delivery_price_coefficient ? crop.delivery_price_coefficient : 1,
+  delivery_price_coefficient:
+    !!crop && crop.delivery_price_coefficient ? crop.delivery_price_coefficient : 1,
 });
 function CropTitleForm({
   crop,
@@ -45,7 +46,15 @@ function CropTitleForm({
           .typeError(<FormattedMessage id="YUP.NUMBERS" />),
       })}
       onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
-        editCropAction({ name: values.name.trim(), vat: +values.vat, delivery_price_coefficient: +values.delivery_price_coefficient }, setStatus, setSubmitting);
+        editCropAction(
+          {
+            name: values.name.trim(),
+            vat: +values.vat,
+            delivery_price_coefficient: +values.delivery_price_coefficient,
+          },
+          setStatus,
+          setSubmitting
+        );
       }}
     >
       {({
@@ -116,8 +125,15 @@ function CropTitleForm({
               onBlur={handleBlur}
               onChange={handleChange}
               helperText={touched.delivery_price_coefficient && errors.delivery_price_coefficient}
-              error={Boolean(touched.delivery_price_coefficient && errors.delivery_price_coefficient)}
+              error={Boolean(
+                touched.delivery_price_coefficient && errors.delivery_price_coefficient
+              )}
             />
+
+            <div className={classes.helperText}>
+              Стоимость доставки 1 тонны = (4 руб. за км) x (коэффициент доставки культуры) x
+              (расстояние в км)
+            </div>
 
             <div className={`${classes.bottomButtonsContainer} ${classes.bottomMargin2}`}>
               <div className={classes.button}>

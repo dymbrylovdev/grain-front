@@ -18,6 +18,8 @@ import PersonPinOutlinedIcon from "@material-ui/icons/PersonPinOutlined";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 
+import logoPng from "../_assets/images/logo.png";
+
 import { leftMenuActions } from "../../app/store/ducks/leftMenu.duck";
 
 import { IAppState } from "../../app/store/rootDuck";
@@ -77,6 +79,25 @@ const useStyles = makeStyles(theme => ({
   nested_nested: {
     paddingLeft: theme.spacing(8),
   },
+  logo_contain: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    cursor: "pointer",
+  },
+  logo: {
+    width: 35,
+    height: 35,
+  },
+  contain: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  contacts: {
+    marginRight: 20,
+    color: "#FFFFFF",
+  },
 }));
 
 const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
@@ -110,6 +131,9 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     <div className={classes.root}>
       <div className="kt-container kt-container--fluid">
         <div className={classes.btns}>
+          <div className={classes.logo_contain} onClick={() => handleClick("/user/profile")}>
+            <img className={classes.logo} src={logoPng} alt="logo" />
+          </div>
           {!mediaQuerymatches ? (
             <div className={classes.btn} onClick={() => setLeftMenuOpen(!leftMenuOpen)}>
               <MenuIcon />
@@ -118,16 +142,23 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           ) : (
             <div></div>
           )}
-          <div
-            className={classes.btn}
-            onClick={(event: React.MouseEvent<HTMLDivElement>) => {
-              setAnchorEl(event.currentTarget);
-            }}
-          >
-            <div className={classes.profile_btn_text}>
-              {intl.formatMessage({ id: "MENU.SETTINGS" })}
+          <div className={classes.contain}>
+            <div className={classes.contacts}>
+              <div>8 800 333-86-33</div>
+              <a href="mailto:info@kupit-zerno.com">mailto:info@kupit-zerno.com</a>
             </div>
-            <TuneIcon />
+
+            <div
+              className={classes.btn}
+              onClick={(event: React.MouseEvent<HTMLDivElement>) => {
+                setAnchorEl(event.currentTarget);
+              }}
+            >
+              <div className={classes.profile_btn_text}>
+                {intl.formatMessage({ id: "MENU.SETTINGS" })}
+              </div>
+              <TuneIcon />
+            </div>
           </div>
         </div>
       </div>
@@ -173,11 +204,6 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           <Divider style={{ margin: "6px 16px" }} />
 
           {accessByRoles(me, ["ROLE_BUYER"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile/crops")}>
-              {intl.formatMessage({ id: "SUBMENU.TARIFFS.PREMIUM" })}
-            </MenuItem>
-          )}
-          {accessByRoles(me, ["ROLE_BUYER"]) && (
             <MenuItem onClick={() => handleClick("/user/profile")}>
               {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
             </MenuItem>
@@ -187,12 +213,17 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {intl.formatMessage({ id: "SUBMENU.MY_FILTERS" })}
             </MenuItem>
           )}
-
-          {accessByRoles(me, ["ROLE_VENDOR"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile/crops")}>
-              {intl.formatMessage({ id: "SUBMENU.TARIFFS.PREMIUM" })}
+          {accessByRoles(me, ["ROLE_BUYER"]) && (
+            <MenuItem onClick={() => handleClick("/user/profile/points")}>
+              {intl.formatMessage({ id: "SUBMENU.POINTS" })}
             </MenuItem>
           )}
+          {accessByRoles(me, ["ROLE_BUYER"]) && (
+            <MenuItem onClick={() => handleClick("/user/profile/tariffs")}>
+              {intl.formatMessage({ id: "SUBMENU.TARIFFS" })}
+            </MenuItem>
+          )}
+
           {accessByRoles(me, ["ROLE_VENDOR"]) && (
             <MenuItem onClick={() => handleClick("/user/profile")}>
               {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
@@ -203,15 +234,30 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {intl.formatMessage({ id: "SUBMENU.MY_FILTERS" })}
             </MenuItem>
           )}
+          {accessByRoles(me, ["ROLE_VENDOR"]) && (
+            <MenuItem onClick={() => handleClick("/user/profile/points")}>
+              {intl.formatMessage({ id: "SUBMENU.POINTS" })}
+            </MenuItem>
+          )}
+          {accessByRoles(me, ["ROLE_VENDOR"]) && (
+            <MenuItem onClick={() => handleClick("/user/profile/tariffs")}>
+              {intl.formatMessage({ id: "SUBMENU.TARIFFS" })}
+            </MenuItem>
+          )}
 
           {accessByRoles(me, ["ROLE_TRADER"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile/crops")}>
+            <MenuItem onClick={() => handleClick("/user/profile")}>
+              {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
+            </MenuItem>
+          )}
+          {accessByRoles(me, ["ROLE_TRADER"]) && (
+            <MenuItem onClick={() => handleClick("/user/profile/tariffs")}>
               {intl.formatMessage({ id: "SUBMENU.TARIFFS.BUSINESS" })}
             </MenuItem>
           )}
           {accessByRoles(me, ["ROLE_TRADER"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile")}>
-              {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
+            <MenuItem onClick={() => handleClick("/user/profile/points")}>
+              {intl.formatMessage({ id: "SUBMENU.POINTS" })}
             </MenuItem>
           )}
           {accessByRoles(me, ["ROLE_TRADER"]) && (

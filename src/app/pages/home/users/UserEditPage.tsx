@@ -17,7 +17,7 @@ import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
-import { ProfileForm, CompanyForm, LocationsForm } from "./components";
+import { ProfileForm, CropsForm, LocationsForm } from "./components";
 import Prompter from "../prompter/Prompter";
 import ScrollToTop from "../../../components/ui/ScrollToTop";
 import TariffForm from "./components/TariffForm";
@@ -112,7 +112,16 @@ const UserEditPage: React.FC<TPropsFromRedux &
   }, [editMode]);
 
   useEffect(() => {
+    if (match.url.indexOf("profile") !== -1) {
+      setValueTabs(0);
+    }
+    if (match.url.indexOf("profile/points") !== -1) {
+      setValueTabs(1);
+    }
     if (match.url.indexOf("profile/crops") !== -1) {
+      setValueTabs(2);
+    }
+    if (match.url.indexOf("profile/tariffs") !== -1) {
       setValueTabs(3);
     }
   }, [match.url]);
@@ -202,6 +211,10 @@ const UserEditPage: React.FC<TPropsFromRedux &
     }, 10000);
   }
 
+  console.log(match.url);
+  console.log(valueTabs);
+  console.log(history);
+
   return (
     <>
       <ScrollToTop />
@@ -242,7 +255,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
               aria-label="tabs"
               // centered
             >
-              <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
+              <Tab onClick={() => history.push("/user/profile")} label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
 
               {editMode !== "create" && (
                 <Tab
@@ -251,6 +264,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
                       ? { root: innerClasses.pulseRoot }
                       : {}
                   }
+                  onClick={() => history.push("/user/profile/points")}
                   label={
                     accessByRoles(editMode === "profile" ? me : user, [
                       "ROLE_ADMIN",
@@ -267,12 +281,14 @@ const UserEditPage: React.FC<TPropsFromRedux &
               )}
               {editMode !== "create" && (
                 <Tab
-                  label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })}
+                  onClick={() => history.push("/user/profile/crops")}
+                  label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })}
                   {...a11yProps(2)}
                 />
               )}
               {(editMode === "edit" || editMode === "profile") && (
                 <Tab
+                  onClick={() => history.push("/user/profile/tariffs")}
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
                   {...a11yProps(3)}
                 />
@@ -299,7 +315,8 @@ const UserEditPage: React.FC<TPropsFromRedux &
             {editMode === "create" ? (
               <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
             ) : (
-              <CompanyForm userId={+id || undefined} editMode={editMode} />
+              // ! Changed CompanyForm to CropsForm
+              <CropsForm userId={+id || undefined} editMode={editMode} />
             )}
           </TabPanel>
           <TabPanel value={valueTabs} index={3}>

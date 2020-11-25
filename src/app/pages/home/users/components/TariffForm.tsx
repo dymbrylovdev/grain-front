@@ -5,17 +5,14 @@ import {
   Typography,
   TextField,
   Theme,
-  IconButton,
   Grid as div,
   Button,
   MenuItem,
-  Divider,
   Dialog,
 } from "@material-ui/core";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
-import DeleteIcon from "@material-ui/icons/Delete";
 import { useSnackbar } from "notistack";
 
 import { actions as builderActions } from "../../../../../_metronic/ducks/builder";
@@ -26,7 +23,7 @@ import { actions as crops2Actions } from "../../../../store/ducks/crops2.duck";
 
 import useStyles from "../../styles";
 import { IAppState } from "../../../../store/rootDuck";
-import { Skeleton, Autocomplete } from "@material-ui/lab";
+import { Skeleton } from "@material-ui/lab";
 import { IUser } from "../../../../interfaces/users";
 import { ITariff, ITariffType, ITariffPeriod } from "../../../../interfaces/tariffs";
 import { ICrop } from "../../../../interfaces/crops";
@@ -50,19 +47,6 @@ const innerStyles = makeStyles((theme: Theme) => ({
     },
   },
 
-  title: {
-    fontWeight: "bold",
-    marginBottom: theme.spacing(1),
-  },
-  crop: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    height: 43.5,
-    marginTop: theme.spacing(0.5),
-    marginBottom: theme.spacing(0.5),
-  },
   calendarContain: {
     display: "flex",
     justifyContent: "space-between",
@@ -160,7 +144,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     });
   }
 
-  const [addingCrop, setAddingCrop] = useState(false);
+  // const [addingCrop, setAddingCrop] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [openModal, setOpenModal] = useState(false);
 
@@ -242,7 +226,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       realSelectedTariff = realUser.tariff_matrix;
     }
   }
-
 
   useEffect(() => {
     if (realUser) {
@@ -334,24 +317,26 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         ) : (
           <>
             {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
-            realSelectedTariff.tariff.name === "Премиум" && (
-              <div className={innerClasses.calendarContain}>
-                <h6>{realUser?.tariff_expired_at}</h6>
-                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
-                  <div className={innerClasses.calendarBlock}>
-                    <KeyboardDatePicker
-                      variant="dialog"
-                      format="dd/MM/yyyy"
-                      margin="normal"
-                      id="data-picker-dialog"
-                      label={intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })}
-                      value={selectedDate}
-                      onChange={handleDateChange}
-                    ></KeyboardDatePicker>
-                  </div>
-                </MuiPickersUtilsProvider>
-              </div>
-            )}
+              realSelectedTariff.tariff.name === "Премиум" && (
+                <div className={innerClasses.calendarContain}>
+                  <h6>{`Начало действия тарифа: ${intl.formatDate(
+                    realUser?.tariff_expired_at
+                  )}`}</h6>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
+                    <div className={innerClasses.calendarBlock}>
+                      <KeyboardDatePicker
+                        variant="dialog"
+                        format="dd/MM/yyyy"
+                        margin="normal"
+                        id="data-picker-dialog"
+                        label={intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })}
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                      ></KeyboardDatePicker>
+                    </div>
+                  </MuiPickersUtilsProvider>
+                </div>
+              )}
 
             <TextField
               select
@@ -410,7 +395,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             {editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
               <div className={innerClasses.tariffPriceBlock}>
                 {realSelectedTariff.tariff.name === "Премиум" && (
-                  <Typography variant="h6"> 
+                  <Typography variant="h6">
                     Стоимость тарифа: <b>{realSelectedTariff.price}</b>
                   </Typography>
                 )}
@@ -418,113 +403,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             )}
           </>
         )}
-      </div>
-      <div className={classes.box}>
-        <div className={innerClasses.title}>{intl.formatMessage({ id: "TARIFFS.CROPS" })}</div>
-        {loadingMe ||
-        loadingUser ||
-        !realTariffs ||
-        !groupedTariffsType ||
-        !groupedTariffsPeriod ||
-        !realUser ||
-        editLoading ? (
-          <>
-            <Skeleton width="100%" height={52.5} animation="wave" />
-            <Skeleton width="100%" height={52.5} animation="wave" />
-          </>
-        ) : realUser.crops.length ? (
-          realUser.crops.map(item => (
-            <div key={item.id}>
-              <div className={innerClasses.crop}>
-                <div>{item.name}</div>
-                <IconButton
-                  size={"medium"}
-                  onClick={() => {
-                    let newCropIds = [...values.crop_ids];
-                    newCropIds.splice(newCropIds.indexOf(item.id), 1);
-                    setFieldValue("crop_ids", newCropIds);
-                    handleSubmit();
-                  }}
-                  color="secondary"
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </div>
-              <Divider />
-            </div>
-          ))
-        ) : (
-          <div>
-            <div className={innerClasses.crop}>
-              {intl.formatMessage({ id: "TARIFFS.NO_CROPS" })}
-            </div>
-            <Divider />
-          </div>
-        )}
-        {loadingMe || loadingUser || !realTariffs || !realUser || editLoading || !crops ? (
-          <>
-            <Skeleton width="100%" height={51.5} animation="wave" />
-          </>
-        ) : (
-          <div className={innerClasses.crop}>
-            {!!crops &&
-            !!realUser?.crops &&
-            !!realUser?.tariff_matrix &&
-            realUser?.crops?.length < realUser?.tariff_matrix?.max_crops_count &&
-            realUser?.crops?.length < crops.length ? (
-              <div>{intl.formatMessage({ id: "TARIFFS.MORE_CROPS" })}</div>
-            ) : (
-              <div>{intl.formatMessage({ id: "TARIFFS.NO_MORE_CROPS" })}</div>
-            )}
-          </div>
-        )}
-        {!!crops &&
-          !!realUser?.crops &&
-          !!realUser?.tariff_matrix &&
-          realUser?.crops?.length < realUser?.tariff_matrix?.max_crops_count &&
-          realUser?.crops?.length < crops.length && (
-            <div className={classes.textFieldContainer}>
-              {!addingCrop ? (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => setAddingCrop(true)}
-                  disabled={loadingMe || loadingUser || editLoading}
-                >
-                  {intl.formatMessage({ id: "CROPSLIST.BUTTON.CREATE" })}
-                </Button>
-              ) : (
-                <div className={classes.textField}>
-                  <Autocomplete
-                    id="crops"
-                    options={realCrops}
-                    getOptionLabel={option => option.name}
-                    loadingText={intl.formatMessage({ id: "ALL.AUTOCOMPLIT.EMPTY" })}
-                    noOptionsText={intl.formatMessage({ id: "ALL.AUTOCOMPLIT.EMPTY" })}
-                    onChange={(e: any, val: any) => {
-                      let newCropIds = [...values.crop_ids];
-                      newCropIds.push(val.id);
-                      setFieldValue("crop_ids", newCropIds);
-                      handleSubmit();
-                      setAddingCrop(false);
-                    }}
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        margin="normal"
-                        label={intl.formatMessage({ id: "BIDSLIST.TABLE.CROP" })}
-                        variant="outlined"
-                        onBlur={() => {
-                          setAddingCrop(false);
-                        }}
-                        autoFocus
-                      />
-                    )}
-                  />
-                </div>
-              )}
-            </div>
-          )}
       </div>
       {realUser && realSelectedTariff && (
         <div className={innerClasses.buttonsBottomContain}>
@@ -557,10 +435,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 <br />
                 <h6>
                   <b>Назначение платежа:</b> Тариф "{realSelectedTariff.tariff.name}{" "}
-                  {realSelectedTariff.tariff_period
-                    ? realSelectedTariff.tariff_period.period
-                    : 0}
-                  " для {realUser.email}, id = {realUser.id}
+                  {realSelectedTariff.tariff_period ? realSelectedTariff.tariff_period.period : 0}"
+                  для {realUser.email}, id = {realUser.id}{" "}
+                  {`Начало действия тарифа: ${intl.formatDate(realUser?.tariff_expired_at)}`}
                 </h6>
                 <br />
                 <h6>

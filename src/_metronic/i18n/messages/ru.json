@@ -57,6 +57,7 @@
   "SUBMENU.FUNNEL_STATES": "Настройка воронки",
   "SUBMENU.ACTIVITY_REPORT": "Отчёт по активности",
   "SUBMENU.TARIFFS": "Тарифы",
+  "SUBMENU.POINTS": "Точки отгрузки",
   "SUBMENU.TARIFFS.LIMITS": "Ограничения",
   "SUBMENU.TARIFFS.TRIAL": "Пробный период",
   "SUBMENU.TARIFFS.PREMIUM": "Перейти на премиум",
@@ -219,6 +220,7 @@
   "USER.EDIT_FORM.LOCATIONS.ACTIVE": "Учитывать при поиске объявлений",
   "USER.EDIT_FORM.LOCATIONS.INACTIVE": "Не учитывать при поиске объявлений",
   "USER.EDIT_FORM.TARIFFS": "Тариф",
+  "USER.EDIT_FORM.CROPS": "Культуры",
   "USER.EDIT_FORM.USE_VAT": "Работаю с НДС.",
   "USER.EDIT_FORM.ATTENTION": "Внимание! Если вы работаете с НДС, поставьте галочку в это поле.",
 

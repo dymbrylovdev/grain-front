@@ -583,6 +583,34 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {/* // * grain-439 | Tarrifs prices */}
 
               <TableRow>
+                <TableCell></TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.4)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.4)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.4)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.TRADER" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
+                  <b>{intl.formatMessage({ id: "AUTH.REGISTER.TRADER" })}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.4)" }}>
+                  <b>{tariffs[23].tariff.name}</b>
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.4)" }}>
+                  <b>{tariffs[24].tariff.name}</b>
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
                 <TableCell>
                   <b>{intl.formatMessage({ id: "TARIFFS.TITLE5" })}</b>
                 </TableCell>
