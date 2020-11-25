@@ -203,6 +203,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     }
   }, [clearDel, delError, delSuccess, editMode, enqueueSnackbar, fetchMe, fetchUser, intl, userId]);
 
+  console.log(locations);
+
   return (
     <div>
       {!locations.length ? (
@@ -255,7 +257,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   </>
                 ) : (
                   <>
-                    <div className={innerClasses.name}>{item.text}</div>
+                    <div className={innerClasses.name}>{item.name}</div>
                     {editMode !== "view" && (
                       <div>
                         <IconButton
@@ -299,7 +301,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                         clearLocations={clearGoogleLocations}
                         setSelectedLocation={(location: ILocationToRequest) => {
                           if (location.text !== "") {
-                            delete location.name;
+                            // delete location.name;
                             location.user_id = userId || me?.id;
                             edit({ id: item.id, data: location });
                           }
