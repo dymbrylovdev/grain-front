@@ -211,10 +211,6 @@ const UserEditPage: React.FC<TPropsFromRedux &
     }, 10000);
   }
 
-  console.log(match.url);
-  console.log(valueTabs);
-  console.log(history);
-
   return (
     <>
       <ScrollToTop />

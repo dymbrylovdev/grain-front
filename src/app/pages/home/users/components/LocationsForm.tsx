@@ -255,7 +255,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   </>
                 ) : (
                   <>
-                    <div className={innerClasses.name}>{item.name}</div>
+                    <div className={innerClasses.name}>{item.text}</div>
                     {editMode !== "view" && (
                       <div>
                         <IconButton

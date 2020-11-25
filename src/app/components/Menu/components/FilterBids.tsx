@@ -65,8 +65,6 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const currentFilter =
     salePurchaseMode === "sale" ? currentSaleFilters[cropId] : currentPurchaseFilters[cropId];
 
-  console.log(currentFilter);
-
   const getInitialValues = useCallback(
     filter => {
       const crop = crops ? crops.find(crop => crop.id === +cropId) : undefined;
