@@ -22,6 +22,7 @@ import Prompter from "../prompter/Prompter";
 import ScrollToTop from "../../../components/ui/ScrollToTop";
 import TariffForm from "./components/TariffForm";
 import { accessByRoles } from "../../../utils/utils";
+import { access } from "fs";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -232,7 +233,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
   return (
     <>
       <ScrollToTop />
-      <Prompter />
+      {/* <Prompter /> */}
       <Paper className={classes.paperWithForm}>
         <LayoutSubheader
           title={subTitle(editMode)}
@@ -300,7 +301,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
                   {...a11yProps(2)}
                 />
               )}
-              {(editMode === "edit" || editMode === "profile") && (
+              {(editMode === "edit" || editMode === "profile") && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
                 <Tab
                   
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}

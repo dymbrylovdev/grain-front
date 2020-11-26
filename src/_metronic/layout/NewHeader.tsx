@@ -174,14 +174,14 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           keepMounted
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
-          // anchorOrigin={{
-          //   vertical: 'bottom',
-          //   horizontal: 'center',
-          // }}
-          // transformOrigin={{
-          //   vertical: 'bottom',
-          //   horizontal: 'center',
-          // }}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
           {...{disableScrollLock: true}}
         >
           <MenuItem onClick={() => handleClick("/user/profile")}>
