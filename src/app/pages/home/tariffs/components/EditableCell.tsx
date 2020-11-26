@@ -140,6 +140,8 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
     setCell,
   ]);
 
+  console.log(tariff);
+
   return (
     <div className={innerClasses.tabCell}>
       {editLoading &&

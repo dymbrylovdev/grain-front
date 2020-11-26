@@ -92,7 +92,7 @@ const useStyles = makeStyles(theme => ({
   contain: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center"
+    alignItems: "center",
   },
   contacts: {
     marginRight: 20,
@@ -126,14 +126,19 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   };
 
   const mediaQuerymatches = useMediaQuery("(min-width:1025px)");
+  const mediaQuerymatchesMobile = useMediaQuery("(min-width:480px)");
 
   return (
     <div className={classes.root}>
       <div className="kt-container kt-container--fluid">
         <div className={classes.btns}>
-          <div className={classes.logo_contain} onClick={() => handleClick("/user/profile")}>
-            <img className={classes.logo} src={logoPng} alt="logo" />
-          </div>
+          {mediaQuerymatchesMobile ? (
+            <div className={classes.logo_contain} onClick={() => handleClick("/user/profile")}>
+              <img className={classes.logo} src={logoPng} alt="logo" />
+            </div>
+          ) : (
+            <div></div>
+          )}
           {!mediaQuerymatches ? (
             <div className={classes.btn} onClick={() => setLeftMenuOpen(!leftMenuOpen)}>
               <MenuIcon />
@@ -142,11 +147,11 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           ) : (
             <div></div>
           )}
-          <div className={classes.contain}>
+          {/* <div className={classes.contain}>
             <div className={classes.contacts}>
               <div>8 800 333-86-33</div>
-              <a href="mailto:info@kupit-zerno.com">mailto:info@kupit-zerno.com</a>
-            </div>
+              <a style={{color: "#e1e9ff"}} href="mailto:info@kupit-zerno.com">info@kupit-zerno.com</a>
+            </div> */}
 
             <div
               className={classes.btn}
@@ -159,7 +164,8 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </div>
               <TuneIcon />
             </div>
-          </div>
+          {/* </div> */}
+
         </div>
       </div>
       {!!me && (
@@ -168,6 +174,15 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           keepMounted
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
+          // anchorOrigin={{
+          //   vertical: 'bottom',
+          //   horizontal: 'center',
+          // }}
+          // transformOrigin={{
+          //   vertical: 'bottom',
+          //   horizontal: 'center',
+          // }}
+          {...{disableScrollLock: true}}
         >
           <MenuItem onClick={() => handleClick("/user/profile")}>
             <div className={classes.info}>

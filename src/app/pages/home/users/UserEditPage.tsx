@@ -112,19 +112,21 @@ const UserEditPage: React.FC<TPropsFromRedux &
   }, [editMode]);
 
   useEffect(() => {
-    if (match.url.indexOf("profile") !== -1) {
-      setValueTabs(0);
+    if (editMode === "profile") {
+      if (match.url.indexOf("profile") !== -1) {
+        setValueTabs(0);
+      }
+      if (match.url.indexOf("profile/points") !== -1) {
+        setValueTabs(1);
+      }
+      if (match.url.indexOf("profile/crops") !== -1) {
+        setValueTabs(2);
+      }
+      if (match.url.indexOf("profile/tariffs") !== -1) {
+        setValueTabs(3);
+      }
     }
-    if (match.url.indexOf("profile/points") !== -1) {
-      setValueTabs(1);
-    }
-    if (match.url.indexOf("profile/crops") !== -1) {
-      setValueTabs(2);
-    }
-    if (match.url.indexOf("profile/tariffs") !== -1) {
-      setValueTabs(3);
-    }
-  }, [match.url]);
+  }, [match.url, editMode]);
 
   useEffect(() => {
     if (!!me?.fio && !!me?.phone && me?.points?.length === 0) setLocTabPulse(true);
@@ -133,7 +135,23 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
   const handleTabsChange = (event: any, newValue: number) => {
     setValueTabs(newValue);
+
+    if (editMode === "profile") {
+      if (newValue === 0) history.push("/user/profile");
+      if (newValue === 1) history.push("/user/profile/points");
+      if (newValue === 2) history.push("/user/profile/crops");
+      if (newValue === 3) history.push("/user/profile/tariffs");
+    }
   };
+
+  // const testFunc = () => {
+  //   if (editMode === "profile") {
+  //     if (valueTabs === 0) history.push("/user/profile");
+  //     if (valueTabs === 1) history.push("/user/profile/points");
+  //     if (valueTabs === 2) history.push("/user/profile/crops");
+  //     if (valueTabs === 3) history.push("/user/profile/tariffs");
+  //   }
+  // }
 
   const subTitle = (editMode: "profile" | "create" | "edit" | "view"): string => {
     switch (editMode) {
@@ -251,7 +269,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
               aria-label="tabs"
               // centered
             >
-              <Tab onClick={() => history.push("/user/profile")} label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
+              <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
 
               {editMode !== "create" && (
                 <Tab
@@ -260,7 +278,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
                       ? { root: innerClasses.pulseRoot }
                       : {}
                   }
-                  onClick={() => history.push("/user/profile/points")}
+                  
                   label={
                     accessByRoles(editMode === "profile" ? me : user, [
                       "ROLE_ADMIN",
@@ -277,14 +295,14 @@ const UserEditPage: React.FC<TPropsFromRedux &
               )}
               {editMode !== "create" && (
                 <Tab
-                  onClick={() => history.push("/user/profile/crops")}
+                  
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })}
                   {...a11yProps(2)}
                 />
               )}
               {(editMode === "edit" || editMode === "profile") && (
                 <Tab
-                  onClick={() => history.push("/user/profile/tariffs")}
+                  
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
                   {...a11yProps(3)}
                 />
