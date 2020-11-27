@@ -279,7 +279,6 @@ const UserEditPage: React.FC<TPropsFromRedux &
                       ? { root: innerClasses.pulseRoot }
                       : {}
                   }
-                  
                   label={
                     accessByRoles(editMode === "profile" ? me : user, [
                       "ROLE_ADMIN",
@@ -295,15 +294,15 @@ const UserEditPage: React.FC<TPropsFromRedux &
                 />
               )}
               {editMode !== "create" && (
-                <Tab
-                  
-                  label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })}
-                  {...a11yProps(2)}
-                />
+                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />
               )}
-              {(editMode === "edit" || editMode === "profile") && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+              {((me &&
+                editMode === "profile" &&
+                !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+                (user &&
+                  editMode === "edit" &&
+                  ["ROLE_BUYER", "ROLE_VENDOR"].includes(user.roles[0]))) && (
                 <Tab
-                  
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
                   {...a11yProps(3)}
                 />

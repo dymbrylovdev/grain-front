@@ -10,17 +10,18 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    // marginBottom: theme.spacing(0),
+    // marginTop: theme.spacing(1),
     flexWrap: "wrap",
     width: "100%",
   },
   numContainer: {
-    marginLeft: theme.spacing(2),
+    marginBottom: theme.spacing(0),
+    marginTop: theme.spacing(0),
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     flex: 1,
   },
   radioGroup: {
@@ -34,11 +35,11 @@ const useStyles = makeStyles(theme => ({
     width: 200,
   },
   textField: {
-    marginBottom: 0,
-    marginTop: 0,
-    minWidth: 20,
-    maxWidth: 200,
-    marginLeft: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(0),
+    // minWidth: 20,
+    // maxWidth: 200,
+    // marginLeft: theme.spacing(2),
   },
 }));
 
@@ -48,34 +49,12 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
   const classes = useStyles();
   return (
     <div className={classes.container}>
-      <div className={classes.paramName}>{param.name}</div>
+      {/* <div className={classes.paramName}>{param.name}</div> */}
       <div className={classes.numContainer}>
-        <RadioGroup
-          name={composeName}
-          value={values[composeName] || "≤"}
-          onChange={handleChange}
-          className={classes.radioGroup}
-          row={true}
-        >
-          <FormControlLabel
-            value="≤"
-            control={<Radio />}
-            label="≤&nbsp;Меньше"
-            disabled={!isEditable}
-            style={{ fontSize: 15 }}
-          />
-          <FormControlLabel
-            value="≥"
-            control={<Radio />}
-            label=" ≥&nbsp;Больше"
-            disabled={!isEditable}
-            style={{ fontSize: 15 }}
-          />
-        </RadioGroup>
-
         <TextField
           className={classes.textField}
           type="text"
+          label={param.name}
           margin="normal"
           name={numberName}
           value={values[numberName] || ""}
@@ -101,6 +80,29 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
           disabled={!isEditable}
           autoComplete="off"
         />
+
+        <RadioGroup
+          name={composeName}
+          value={values[composeName] || "≤"}
+          onChange={handleChange}
+          className={classes.radioGroup}
+          row={true}
+        >
+          <FormControlLabel
+            value="≤"
+            control={<Radio />}
+            label="≤&nbsp;Меньше"
+            disabled={!isEditable}
+            style={{ fontSize: 15 }}
+          />
+          <FormControlLabel
+            value="≥"
+            control={<Radio />}
+            label=" ≥&nbsp;Больше"
+            disabled={!isEditable}
+            style={{ fontSize: 15 }}
+          />
+        </RadioGroup>
       </div>
     </div>
   );

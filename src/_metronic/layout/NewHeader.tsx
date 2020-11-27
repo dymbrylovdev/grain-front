@@ -147,11 +147,11 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           ) : (
             <div></div>
           )}
-          {/* <div className={classes.contain}>
+          <div className={classes.contain}>
             <div className={classes.contacts}>
               <div>8 800 333-86-33</div>
               <a style={{color: "#e1e9ff"}} href="mailto:info@kupit-zerno.com">info@kupit-zerno.com</a>
-            </div> */}
+            </div>
 
             <div
               className={classes.btn}
@@ -164,7 +164,7 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </div>
               <TuneIcon />
             </div>
-          {/* </div> */}
+          </div>
 
         </div>
       </div>
