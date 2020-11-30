@@ -446,7 +446,7 @@ const BidsPage: React.FC<TPropsFromRedux &
             )}
           </div>
 
-          {bestAllMyMode === "best-bids" && (
+          {/* {bestAllMyMode === "best-bids" && (
             <>
               <div className={innerClasses.filterText}>
                 {filterTitle}
@@ -462,7 +462,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 <CustomIcon path={filterIconPath} />
               </IconButton>
             </>
-          )}
+          )} */}
         </div>
 
         {bestAllMyMode === "best-bids" && (
@@ -580,7 +580,7 @@ const BidsPage: React.FC<TPropsFromRedux &
           </>
         )}
         {/* // ! Here */}
-        <FilterModal
+        {/* <FilterModal
           isOpen={filterModalOpen}
           handleClose={() => setFilterModalOpen(false)}
           classes={classes}
@@ -634,7 +634,7 @@ const BidsPage: React.FC<TPropsFromRedux &
             id: "BIDSLIST.DIALOGS.LOADING_TEXT",
           })}
           isLoading={delLoading}
-        />
+        /> */}
       </Paper>
     </>
   );

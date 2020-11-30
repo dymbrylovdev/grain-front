@@ -63,14 +63,25 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   const [, , route, cropId] = location.pathname.split("/");
 
+  const newCropName = (): any => {
+    const crop = crops ? crops.find(crop => crop.id === +cropId) : undefined;
+    const now = new Date();
+    const name =
+      crop && `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
+    return name;
+  };
+
   const enumParams: any = cropParams && cropParams.filter(item => item.type === "enum");
   const numberParams: any = cropParams && cropParams.filter(item => item.type === "number");
 
-  const setCurrentFilter =
-    salePurchaseMode === "sale" ? setCurrentSaleFilter : setCurrentPurchaseFilter;
-
   const currentFilter =
     salePurchaseMode === "sale" ? currentSaleFilters[cropId] : currentPurchaseFilters[cropId];
+
+  const setCurrentFilter = (cropId: number, filter: { [x: string]: any }) => {
+    salePurchaseMode === "sale"
+      ? setCurrentSaleFilter(cropId, filter)
+      : setCurrentPurchaseFilter(cropId, filter);
+  };
 
   const getInitialValues = useCallback(
     filter => {
@@ -124,6 +135,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   //       if (createdFilterId) {
   //         handleSubmit({ ...values, id: createdFilterId });
   //       }
+  //       //@ts-ignore
   //       fetchFilters(salePurchaseMode);
   //     }
   //   }
@@ -140,13 +152,14 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   //   values,
   // ]);
 
-  const newCropName = (): any => {
-    const crop = crops ? crops.find(crop => crop.id === +cropId) : undefined;
-    const now = new Date();
-    const name =
-      crop && `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
-    return name;
-  };
+  // const handleSubmitFilter = (): any => {
+  //   let params = { ...values };
+  //   params.name = values.name.trim();
+  //   params.cropId = cropId;
+  //   // console.log(values);
+  //   setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
+  //   clearBids();
+  // };
 
   useEffect(() => {
     resetForm({ values: getInitialValues(currentFilter) });
@@ -292,7 +305,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           </div>
         ))}
 
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 10, marginBottom: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", marginTop: 10, marginBottom: 10 }}>
         <ButtonWithLoader
           loading={createLoading}
           disabled={
@@ -316,11 +329,27 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           {/* {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })} */}
           Сохранить фильтр
         </ButtonWithLoader>
+
+        <Button
+          style={{marginTop: 15}}
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            let params = { ...values };
+            params.name = values.name.trim();
+            params.cropId = cropId;
+            // console.log(values);
+            setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
+            clearBids();
+          }}
+        >
+          {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
+        </Button>
       </div>
 
-      <div className={classes.textFieldContainer}>
+      <div className={classes.textFieldContainer} style={{ paddingBottom: 20 }}>
         <TextField
-          style={{width: 500, marginTop: 10, marginBottom: 10}}
+          style={{ width: 500, marginTop: 10, marginBottom: 10 }}
           autoComplete="off"
           type="text"
           label={intl.formatMessage({
@@ -377,8 +406,6 @@ const connector = connect(
     salePurchaseMode: state.leftMenu.salePurchaseMode,
     currentSaleFilters: state.myFilters.currentSaleFilters,
     currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
-    setCurrentSaleFilter: myFiltersActions.setCurrentSaleFilter,
-    setCurrentPurchaseFilter: myFiltersActions.setCurrentPurchaseFilter,
 
     createdFilterId: state.myFilters.createdFilterId,
     createLoading: state.myFilters.createLoading,
@@ -405,6 +432,8 @@ const connector = connect(
     clearEditFilter: myFiltersActions.clearEdit,
     editFilter: myFiltersActions.editRequest,
     setOpenInfoAlert: myFiltersActions.setOpenInfoAlert,
+    setCurrentSaleFilter: myFiltersActions.setCurrentSaleFilter,
+    setCurrentPurchaseFilter: myFiltersActions.setCurrentPurchaseFilter,
   }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;

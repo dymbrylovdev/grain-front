@@ -641,7 +641,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             />
           )}
 
-          {/* {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
             <Skeleton width="100%" height={70} animation="wave" />
           ) : (
             <TextField
@@ -658,18 +658,19 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               helperText={touched.repeatPassword && errors.repeatPassword}
               error={Boolean(touched.repeatPassword && errors.repeatPassword)}
             />
-          )} */}
+          )}
         </div>
       )}
 
+      {editMode !== "create" && (
       <div>
         {currentUser && currentUser.company ? (
           <>
             <div className={classes.textFieldContainer}>
-              {/* {meLoading || userLoading || editLoading ? (
+              {meLoading || userLoading || editLoading ? (
               <Skeleton width="100%" height={70} animation="wave" />
             ) : (
-              <> */}
+              <>
               <TextField
                 type="text"
                 label={intl.formatMessage({
@@ -689,8 +690,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                   <DeleteIcon />
                 </IconButton>
               )}
-              {/* </>
-            )} */}
+               </>
+            )}
             </div>
             <CompanyConfirmBlock
               user={editMode === "profile" ? me : user}
@@ -815,6 +816,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           isLoading={editMeLoading || editLoading}
         />
       </div>
+      )}
 
       <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
         {editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
