@@ -605,7 +605,7 @@ const BidsPage: React.FC<TPropsFromRedux &
             salePurchaseMode === "sale" ? setCurrentSaleFilter : setCurrentPurchaseFilter
           }
           salePurchaseMode={salePurchaseMode}
-        />
+        /> */}
         <LocationDialog
           isOpen={locationModalOpen}
           handleClose={() => setLocationModalOpen(false)}
@@ -634,7 +634,7 @@ const BidsPage: React.FC<TPropsFromRedux &
             id: "BIDSLIST.DIALOGS.LOADING_TEXT",
           })}
           isLoading={delLoading}
-        /> */}
+        />
       </Paper>
     </>
   );

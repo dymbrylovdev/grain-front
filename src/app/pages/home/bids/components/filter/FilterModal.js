@@ -468,8 +468,6 @@ const FilterModal = ({
                       let params = { ...values };
                       params.name = values.name.trim();
                       params.cropId = cropId;
-                      console.log(params);
-                      // console.log(values);
                       setCurrentFilter(
                         cropId,
                         filterForSubmit(currentFilter, params, newCropName())

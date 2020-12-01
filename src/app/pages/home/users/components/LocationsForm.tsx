@@ -203,8 +203,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     }
   }, [clearDel, delError, delSuccess, editMode, enqueueSnackbar, fetchMe, fetchUser, intl, userId]);
 
-  console.log(locations);
-
   return (
     <div>
       {!locations.length ? (

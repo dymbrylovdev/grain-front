@@ -228,6 +228,7 @@ const LeftMenu: React.FC<IProps> = ({
         onClick={() => {
           setBestOpen(false);
           setAllOpen(false);
+          setFiltersOpen(false);
           handleClick(`/${salePurchaseModeForMyBids(me, salePurchaseMode)}/my-bids`);
         }}
       >
@@ -238,6 +239,7 @@ const LeftMenu: React.FC<IProps> = ({
         <MenuItem
           onClick={() => {
             setBestOpen(false);
+            setFiltersOpen(false);
             setAllOpen(!allOpen);
           }}
           className={`${classes.nester} ${
@@ -279,30 +281,28 @@ const LeftMenu: React.FC<IProps> = ({
 
       {/* // ! Changed */}
 
-      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
-        bestAllMyDealsMode === "best-bids" && (
-          <MenuItem
-            onClick={() => {
-              setBestOpen(false);
-              setAllOpen(false);
-              setFiltersOpen(!filtersOpen);
-            }}
-            className={`${classes.nester}`}
-          >
-            {intl.formatMessage({ id: "SUBMENU.FILTERS" })}
-            {filtersOpen ? (
-              <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
-            ) : (
-              <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
-            )}
-          </MenuItem>
-        )}
+      {bestAllMyDealsMode === "best-bids" && (
+        <MenuItem
+          onClick={() => {
+            setBestOpen(false);
+            setAllOpen(false);
+            setFiltersOpen(!filtersOpen);
+          }}
+          className={`${classes.nester}`}
+        >
+          {intl.formatMessage({ id: "SUBMENU.FILTERS" })}
+          {filtersOpen ? (
+            <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
+          ) : (
+            <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
+          )}
+        </MenuItem>
+      )}
       <Collapse in={filtersOpen} timeout="auto" unmountOnExit>
         <FilterBids />
       </Collapse>
 
-      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
-        bestAllMyDealsMode === "best-bids" && <Divider style={{ margin: "6px 0" }} />}
+      {bestAllMyDealsMode === "best-bids" && <Divider style={{ margin: "6px 0" }} />}
 
       {/* // ! Changed */}
 

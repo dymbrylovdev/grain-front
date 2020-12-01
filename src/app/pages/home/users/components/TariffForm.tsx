@@ -370,7 +370,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       <b>{intl.formatMessage({ id: "TARIFFS.NAME.PREMIUM" })}</b>
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.4)" }}
@@ -396,7 +396,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       Неограниченно
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -420,7 +420,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       Неограниченно
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -444,7 +444,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       Неограниченно
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -468,7 +468,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       14 дней
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -492,7 +492,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       2 раза в неделю (понедельник и среда)
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -516,7 +516,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       6:00 (по Москве)
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -536,7 +536,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       align="center"
                       style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
                     ></TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -558,7 +558,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       Приоритетное размещение
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -582,7 +582,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       10
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -606,7 +606,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       5
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -630,7 +630,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       5
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -654,7 +654,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       50
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -678,7 +678,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     >
                       Обращения обрабатываются в течение 24 часов
                     </TableCell>
-                    {!accessByRoles(me, ["ROLE_VENDOR", "ROLE_TRADER"]) && (
+                    {!accessByRoles(me, ["ROLE_VENDOR"]) && (
                       <TableCell
                         align="center"
                         style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
@@ -691,7 +691,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               </Table>
             </div>
 
-            {/* {true && (
+            {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
               <div style={{ marginTop: 30, marginBottom: 10 }}>
                 <h6 className={innerClasses.title}>
                   Ваш текущий тариф: {realUser?.tariff_matrix.tariff.name}
@@ -703,7 +703,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   Срок действия тарифа: {realUser?.tariff_matrix.tariff_period.period}
                 </h6>
               </div>
-            )} */}
+            )}
 
             <div>
               {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
