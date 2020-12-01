@@ -52,9 +52,17 @@ const innerStyles = makeStyles((theme: Theme) => ({
     },
   },
 
+  title: {
+    paddingTop: 3,
+    paddingBottom: 3,
+    fontSize: 16,
+    fontWeight: 400,
+    color: "#000000",
+    opacity: 0.87,
+  },
   calendarContain: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
   },
   calendarBlock: {
@@ -125,11 +133,18 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   if ((editMode === "edit" || editMode === "view") && user) realUser = user;
 
   let realTariffs: ITariff[] | undefined = undefined;
+  let realBuyerTariffs: ITariff[] | undefined = undefined;
   let groupedTariffsType: ITariffType[] | undefined = undefined;
   let groupedTariffsPeriod: ITariffPeriod[] | undefined = undefined;
+  let groupedForBuyer: ITariffType[] | undefined = undefined;
   let tariffsForUsers: ITariffType[] | undefined = undefined;
+  let tariffsForBuyers: ITariffType[] | undefined = undefined;
   if (tariffs && realUser) {
     realTariffs = tariffs.filter(item => item.role.name === realUser?.roles[0]);
+
+    realBuyerTariffs = tariffs.filter(
+      item => item.role.name === "ROLE_BUYER" || item.role.name === "ROLE_TRADER"
+    );
 
     let a = realTariffs.map(item => item.tariff);
     groupedTariffsType = uniqBy(a, n => n.name);
@@ -140,7 +155,11 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       ? (groupedTariffsPeriod = b)
       : (groupedTariffsPeriod = uniqBy(b, n => n.period));
 
-    tariffsForUsers = groupedTariffsType.filter(item => item.name === "Премиум");
+    let c = realBuyerTariffs.map(item => item.tariff);
+    groupedForBuyer = uniqBy(c, n => n.name);
+
+    tariffsForUsers = groupedTariffsType.filter(item => item.name !== "Бесплатный");
+    tariffsForBuyers = groupedForBuyer.filter(item => item.name !== "Бесплатный");
   }
 
   let realCrops: ICrop[] = [];
@@ -225,11 +244,17 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   let realSelectedTariff: ITariff | undefined = undefined;
   if (realTariffs && realUser) {
     if (!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0])) {
-      realSelectedTariff = realTariffs?.find(
-        tariff =>
-          tariff.tariff.id === values.tariff_type_id &&
-          tariff.tariff_period.id === values.tariff_period_id
-      );
+      ["ROLE_BUYER"].includes(realUser.roles[0])
+        ? (realSelectedTariff = realBuyerTariffs?.find(
+            tariff =>
+              tariff.tariff.id === values.tariff_type_id &&
+              tariff.tariff_period.id === values.tariff_period_id
+          ))
+        : (realSelectedTariff = realTariffs?.find(
+            tariff =>
+              tariff.tariff.id === values.tariff_type_id &&
+              tariff.tariff_period.id === values.tariff_period_id
+          ));
     } else {
       realSelectedTariff = realUser.tariff_matrix;
     }
@@ -316,10 +341,13 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         loadingMe ||
         loadingUser ||
         !realTariffs ||
+        !realBuyerTariffs ||
         !realSelectedTariff ||
         !groupedTariffsType ||
         !groupedTariffsPeriod ||
+        !tariffsForBuyers ||
         !tariffsForUsers ||
+        !groupedForBuyer ||
         !realUser ||
         editLoading ? (
           <Skeleton width="100%" height={68} animation="wave" />
@@ -663,97 +691,123 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               </Table>
             </div>
 
-            {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
-              realSelectedTariff.tariff.name === "Премиум" && (
-                <div className={innerClasses.calendarContain}>
-                  <h6>{`Начало действия тарифа: ${intl.formatDate(
-                    realUser?.tariff_expired_at
-                  )}`}</h6>
-                  <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
-                    <div className={innerClasses.calendarBlock}>
-                      <KeyboardDatePicker
-                        variant="dialog"
-                        format="dd/MM/yyyy"
-                        margin="normal"
-                        id="data-picker-dialog"
-                        label={intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })}
-                        value={selectedDate}
-                        onChange={handleDateChange}
-                      ></KeyboardDatePicker>
-                    </div>
-                  </MuiPickersUtilsProvider>
-                </div>
-              )}
-
-            <TextField
-              select
-              type="text"
-              label={intl.formatMessage({
-                id: "USER.EDIT_FORM.TARIFFS",
-              })}
-              margin="normal"
-              className={classes.textField}
-              value={values.tariff_type_id}
-              name="tariff_type_id"
-              variant="outlined"
-              onChange={e => {
-                setFieldValue("tariff_type_id", e.target.value);
-              }}
-              helperText={touched.tariff_type_id && errors.tariff_type_id}
-              error={Boolean(touched.tariff_type_id && errors.tariff_type_id)}
-              disabled={
-                // !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ||
-                ["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0])
-                // editMode === "profile"
-              }
-            >
-              {editMode === "profile"
-                ? tariffsForUsers.map(item => (
-                    <MenuItem key={item.id} value={item.id}>
-                      {item.name}
-                    </MenuItem>
-                  ))
-                : groupedTariffsType.map(item => (
-                    <MenuItem key={item.id} value={item.id}>
-                      {item.name}
-                    </MenuItem>
-                  ))}
-            </TextField>
-
-            {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
-              realSelectedTariff.tariff.name === "Премиум" && (
-                <TextField
-                  select
-                  type="text"
-                  label={intl.formatMessage({ id: "TARIFFS.DURATION" })}
-                  margin="normal"
-                  className={classes.textField}
-                  value={values.tariff_period_id ? values.tariff_period_id : 0}
-                  name="tariff_period_id"
-                  variant="outlined"
-                  onChange={e => {
-                    setFieldValue("tariff_period_id", e.target.value);
-                  }}
-                  helperText={touched.tariff_period_id && errors.tariff_period_id}
-                  error={Boolean(touched.tariff_period_id && errors.tariff_period_id)}
-                >
-                  {groupedTariffsPeriod.map(item => (
-                    <MenuItem key={item.id} value={item.id}>
-                      {item.period}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-
-            {editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
-              <div className={innerClasses.tariffPriceBlock}>
-                {realSelectedTariff.tariff.name === "Премиум" && (
-                  <Typography variant="h6">
-                    Стоимость тарифа: <b>{realSelectedTariff.price}</b>
-                  </Typography>
-                )}
+            {/* {true && (
+              <div style={{ marginTop: 30, marginBottom: 10 }}>
+                <h6 className={innerClasses.title}>
+                  Ваш текущий тариф: {realUser?.tariff_matrix.tariff.name}
+                </h6>
+                <h6 className={innerClasses.title}>{`Начало действия тарифа: ${intl.formatDate(
+                  realUser?.tariff_expired_at
+                )}`}</h6>
+                <h6 className={innerClasses.title}>
+                  Срок действия тарифа: {realUser?.tariff_matrix.tariff_period.period}
+                </h6>
               </div>
-            )}
+            )} */}
+
+            <div>
+              {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
+                realSelectedTariff.tariff.name !== "Бесплатный" && (
+                  <div className={innerClasses.calendarContain}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
+                      <div className={innerClasses.calendarBlock}>
+                        <KeyboardDatePicker
+                          variant="dialog"
+                          format="dd/MM/yyyy"
+                          margin="normal"
+                          id="data-picker-dialog"
+                          label={intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })}
+                          value={selectedDate}
+                          onChange={handleDateChange}
+                        ></KeyboardDatePicker>
+                      </div>
+                    </MuiPickersUtilsProvider>
+                  </div>
+                )}
+
+              <TextField
+                select
+                type="text"
+                label={intl.formatMessage({
+                  id: "USER.EDIT_FORM.TARIFFS",
+                })}
+                margin="normal"
+                className={classes.textField}
+                value={values.tariff_type_id}
+                name="tariff_type_id"
+                variant="outlined"
+                onChange={e => {
+                  setFieldValue("tariff_type_id", e.target.value);
+                }}
+                helperText={touched.tariff_type_id && errors.tariff_type_id}
+                error={Boolean(touched.tariff_type_id && errors.tariff_type_id)}
+                // disabled={
+                // !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ||
+                // ["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0])
+                // editMode === "profile"
+                // }
+              >
+                {editMode === "profile"
+                  ? !["ROLE_BUYER"].includes(realUser.roles[0])
+                    ? tariffsForUsers.map(item => (
+                        <MenuItem key={item.id} value={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      ))
+                    : tariffsForBuyers.map(item => (
+                        <MenuItem key={item.id} value={item.id}>
+                          {item.name}
+                        </MenuItem>
+                      ))
+                  : !["ROLE_BUYER"].includes(realUser.roles[0])
+                  ? groupedTariffsType.map(item => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))
+                  : groupedForBuyer.map(item => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+              </TextField>
+
+              {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
+                realSelectedTariff.tariff.name !== "Бесплатный" && (
+                  <TextField
+                    select
+                    type="text"
+                    label={intl.formatMessage({ id: "TARIFFS.DURATION" })}
+                    margin="normal"
+                    className={classes.textField}
+                    value={values.tariff_period_id ? values.tariff_period_id : 0}
+                    name="tariff_period_id"
+                    variant="outlined"
+                    onChange={e => {
+                      setFieldValue("tariff_period_id", e.target.value);
+                    }}
+                    helperText={touched.tariff_period_id && errors.tariff_period_id}
+                    error={Boolean(touched.tariff_period_id && errors.tariff_period_id)}
+                  >
+                    {groupedTariffsPeriod.map(item => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.period}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+
+              {editMode === "profile" &&
+                !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
+                  <div className={innerClasses.tariffPriceBlock}>
+                    {realSelectedTariff.tariff.name !== "Бесплатный" && (
+                      <Typography variant="h6">
+                        Стоимость тарифа: <b>{realSelectedTariff.price}</b>
+                      </Typography>
+                    )}
+                  </div>
+                )}
+            </div>
           </>
         )}
       </div>
