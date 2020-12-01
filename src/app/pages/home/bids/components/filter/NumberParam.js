@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
   },
   numContainer: {
-    marginBottom: theme.spacing(0),
+    marginBottom: theme.spacing(2),
     marginTop: theme.spacing(0),
     display: "flex",
     flexDirection: "column",
@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     width: 200,
   },
   textField: {
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(0),
     marginTop: theme.spacing(0),
     // minWidth: 20,
     // maxWidth: 200,
