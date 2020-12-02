@@ -119,54 +119,53 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   });
   const { resetForm, values, handleBlur } = formik;
 
-  // const { enqueueSnackbar } = useSnackbar();
-  // useEffect(() => {
-  //   if (createSuccess || createError) {
-  //     enqueueSnackbar(
-  //       createSuccess
-  //         ? intl.formatMessage({ id: "NOTISTACK.ERRORS.CREATE_FILTER" })
-  //         : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${createError}`,
-  //       {
-  //         variant: createSuccess ? "success" : "error",
-  //       }
-  //     );
-  //     clearCreateFilter();
-  //     if (createSuccess) {
-  //       if (createdFilterId) {
-  //         handleSubmit({ ...values, id: createdFilterId });
-  //       }
-  //       //@ts-ignore
-  //       fetchFilters(salePurchaseMode);
-  //     }
-  //   }
-  // }, [
-  //   clearCreateFilter,
-  //   createError,
-  //   createSuccess,
-  //   createdFilterId,
-  //   enqueueSnackbar,
-  //   fetchFilters,
-  //   handleSubmit,
-  //   intl,
-  //   salePurchaseMode,
-  //   values,
-  // ]);
+  const handleSubmit = useCallback((values: any) => {
+    let params = { ...values };
+    params.name = values.name.trim();
+    if (salePurchaseMode === "sale") setCurrentSaleFilter(+cropId, { ...params, cropId: +cropId });
+    if (salePurchaseMode === "purchase")
+      setCurrentPurchaseFilter(+cropId, { ...params, cropId: +cropId });
+  }, [cropId, salePurchaseMode, setCurrentPurchaseFilter, setCurrentSaleFilter]);
 
-  // const handleSubmitFilter = (): any => {
-  //   let params = { ...values };
-  //   params.name = values.name.trim();
-  //   params.cropId = cropId;
-  //   // console.log(values);
-  //   setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
-  //   clearBids();
-  // };
+  const { enqueueSnackbar } = useSnackbar();
+  useEffect(() => {
+    if (createSuccess || createError) {
+      enqueueSnackbar(
+        createSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.CREATE_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${createError}`,
+        {
+          variant: createSuccess ? "success" : "error",
+        }
+      );
+      clearCreateFilter();
+      if (createSuccess) {
+        if (createdFilterId) {
+          handleSubmit({ ...values, id: createdFilterId });
+        }
+        //@ts-ignore
+        fetchFilters(salePurchaseMode);
+      }
+    }
+  }, [
+    clearCreateFilter,
+    createError,
+    createSuccess,
+    createdFilterId,
+    enqueueSnackbar,
+    fetchFilters,
+    handleSubmit,
+    intl,
+    salePurchaseMode,
+    values,
+  ]);
 
   useEffect(() => {
     resetForm({ values: getInitialValues(currentFilter) });
   }, [cropId, currentFilter, getInitialValues, resetForm]);
 
   return (
-    <form onSubmit={formik.handleSubmit} autoComplete="off">
+    <form onSubmit={handleSubmit} autoComplete="off">
       {enumParams &&
         //@ts-ignore
         enumParams.map(param => (
@@ -175,6 +174,13 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               param={param}
               values={formik.values}
               handleChange={formik.handleChange}
+              handleSubmit={() => {
+                let params = { ...values };
+                params.name = values.name.trim();
+                params.cropId = cropId;
+                setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
+                clearBids();
+              }}
             />
           </MenuItem>
         ))}
@@ -305,7 +311,15 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           </div>
         ))}
 
-      <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", marginTop: 10, marginBottom: 10 }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          flexDirection: "column",
+          marginTop: 10,
+          marginBottom: 10,
+        }}
+      >
         <ButtonWithLoader
           loading={createLoading}
           disabled={
@@ -331,14 +345,13 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         </ButtonWithLoader>
 
         <Button
-          style={{marginTop: 15}}
+          style={{ marginTop: 15 }}
           variant="contained"
           color="primary"
           onClick={() => {
             let params = { ...values };
             params.name = values.name.trim();
             params.cropId = cropId;
-            // console.log(values);
             setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
             clearBids();
           }}

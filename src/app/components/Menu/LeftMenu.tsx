@@ -228,7 +228,6 @@ const LeftMenu: React.FC<IProps> = ({
         onClick={() => {
           setBestOpen(false);
           setAllOpen(false);
-          setFiltersOpen(false);
           handleClick(`/${salePurchaseModeForMyBids(me, salePurchaseMode)}/my-bids`);
         }}
       >
@@ -239,7 +238,6 @@ const LeftMenu: React.FC<IProps> = ({
         <MenuItem
           onClick={() => {
             setBestOpen(false);
-            setFiltersOpen(false);
             setAllOpen(!allOpen);
           }}
           className={`${classes.nester} ${
@@ -282,25 +280,10 @@ const LeftMenu: React.FC<IProps> = ({
       {/* // ! Changed */}
 
       {bestAllMyDealsMode === "best-bids" && (
-        <MenuItem
-          onClick={() => {
-            setBestOpen(false);
-            setAllOpen(false);
-            setFiltersOpen(!filtersOpen);
-          }}
-          className={`${classes.nester}`}
-        >
-          {intl.formatMessage({ id: "SUBMENU.FILTERS" })}
-          {filtersOpen ? (
-            <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
-          ) : (
-            <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
-          )}
-        </MenuItem>
+        <div>
+          <FilterBids />
+        </div>
       )}
-      <Collapse in={filtersOpen} timeout="auto" unmountOnExit>
-        <FilterBids />
-      </Collapse>
 
       {bestAllMyDealsMode === "best-bids" && <Divider style={{ margin: "6px 0" }} />}
 
@@ -312,7 +295,6 @@ const LeftMenu: React.FC<IProps> = ({
           onClick={() => {
             setBestOpen(false);
             setAllOpen(false);
-            setFiltersOpen(false);
             handleClick("/deals");
           }}
         >
