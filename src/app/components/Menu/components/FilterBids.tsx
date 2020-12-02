@@ -63,25 +63,28 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   const [, , route, cropId] = location.pathname.split("/");
 
-  const newCropName = (): any => {
-    const crop = crops ? crops.find(crop => crop.id === +cropId) : undefined;
-    const now = new Date();
-    const name =
-      crop && `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
-    return name;
-  };
-
   const enumParams: any = cropParams && cropParams.filter(item => item.type === "enum");
   const numberParams: any = cropParams && cropParams.filter(item => item.type === "number");
 
   const currentFilter =
     salePurchaseMode === "sale" ? currentSaleFilters[cropId] : currentPurchaseFilters[cropId];
 
-  const setCurrentFilter = (cropId: number, filter: { [x: string]: any }) => {
-    salePurchaseMode === "sale"
-      ? setCurrentSaleFilter(cropId, filter)
-      : setCurrentPurchaseFilter(cropId, filter);
-  };
+  const setCurrentFilter = useCallback(
+    (cropId: number, filter: { [x: string]: any }) => {
+      salePurchaseMode === "sale"
+        ? setCurrentSaleFilter(cropId, filter)
+        : setCurrentPurchaseFilter(cropId, filter);
+    },
+    [salePurchaseMode, setCurrentPurchaseFilter, setCurrentSaleFilter]
+  );
+
+  const newCropName = useCallback((): any => {
+    const crop = crops ? crops.find(crop => crop.id === +cropId) : undefined;
+    const now = new Date();
+    const name =
+      crop && `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
+    return name;
+  }, [cropId, crops]);
 
   const getInitialValues = useCallback(
     filter => {
@@ -119,13 +122,25 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   });
   const { resetForm, values, handleBlur } = formik;
 
-  const handleSubmit = useCallback((values: any) => {
+  console.log("VALUES===>", values);
+
+  const filterSubmit = useCallback(() => {
     let params = { ...values };
     params.name = values.name.trim();
-    if (salePurchaseMode === "sale") setCurrentSaleFilter(+cropId, { ...params, cropId: +cropId });
-    if (salePurchaseMode === "purchase")
-      setCurrentPurchaseFilter(+cropId, { ...params, cropId: +cropId });
-  }, [cropId, salePurchaseMode, setCurrentPurchaseFilter, setCurrentSaleFilter]);
+    params.cropId = cropId;
+    console.log("PARAMS===>", params);
+    // setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
+    // clearBids();
+  }, [cropId, values]);
+
+  const handleSubmit = useCallback(
+    (values: any) => {
+      let params = { ...values };
+      params.name = values.name.trim();
+      setCurrentFilter(+cropId, { ...params, cropId: +cropId });
+    },
+    [cropId, setCurrentFilter]
+  );
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -160,12 +175,14 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     values,
   ]);
 
-  useEffect(() => {
-    resetForm({ values: getInitialValues(currentFilter) });
-  }, [cropId, currentFilter, getInitialValues, resetForm]);
+  // useEffect(() => {
+  //   resetForm({ values: getInitialValues(currentFilter) });
+  // }, [currentFilter, getInitialValues, resetForm]);
+
+  console.log();
 
   return (
-    <form onSubmit={handleSubmit} autoComplete="off">
+    <form onSubmit={formik.handleSubmit} autoComplete="off">
       {enumParams &&
         //@ts-ignore
         enumParams.map(param => (
@@ -174,13 +191,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               param={param}
               values={formik.values}
               handleChange={formik.handleChange}
-              handleSubmit={() => {
-                let params = { ...values };
-                params.name = values.name.trim();
-                params.cropId = cropId;
-                setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
-                clearBids();
-              }}
+              handleSubmit={filterSubmit}
             />
           </MenuItem>
         ))}
@@ -305,6 +316,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               values={formik.values}
               handleChange={formik.handleChange}
               clearAction={formik.setFieldValue}
+              handleSubmit={filterSubmit}
             />
             {/* {index !== numberParams.length - 1 && <Divider />} */}
             {/* <Divider /> */}
@@ -316,8 +328,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           display: "flex",
           justifyContent: "space-between",
           flexDirection: "column",
-          marginTop: 10,
-          marginBottom: 10,
+          marginBottom: 15,
         }}
       >
         <ButtonWithLoader
@@ -344,7 +355,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           Сохранить фильтр
         </ButtonWithLoader>
 
-        <Button
+        {/* <Button
           style={{ marginTop: 15 }}
           variant="contained"
           color="primary"
@@ -357,10 +368,10 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           }}
         >
           {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
-        </Button>
+        </Button> */}
       </div>
 
-      <div className={classes.textFieldContainer} style={{ paddingBottom: 20 }}>
+      <div className={classes.textFieldContainer} style={{ paddingBottom: 10 }}>
         <TextField
           style={{ width: 500, marginTop: 10, marginBottom: 10 }}
           autoComplete="off"

@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
   },
   numContainer: {
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(2),
     marginTop: theme.spacing(0),
     display: "flex",
     flexDirection: "column",
@@ -43,10 +43,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function NumberParam({ values, param, handleChange, clearAction, isEditable = true }) {
+function NumberParam({ values, param, handleChange, clearAction, isEditable = true, handleSubmit = null }) {
   const composeName = `compose${param.id}`;
   const numberName = `number${param.id}`;
   const classes = useStyles();
+
+  const onSubmit = () => {
+    if (handleSubmit) {
+      handleSubmit();
+    }
+  }
+
   return (
     <div className={classes.container}>
       {/* <div className={classes.paramName}>{param.name}</div> */}
@@ -59,7 +66,10 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
           name={numberName}
           value={values[numberName] || ""}
           variant="outlined"
-          onChange={handleChange}
+          onChange={(e) => {
+            handleChange(e);
+            onSubmit();
+          }}
           InputProps={
             isEditable
               ? {
