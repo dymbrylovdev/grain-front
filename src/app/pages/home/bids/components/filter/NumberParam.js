@@ -66,11 +66,8 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
           name={numberName}
           value={values[numberName] || ""}
           variant="outlined"
-          onChange={(e) => {
-            onSubmit();
-            handleChange(e);
-          }}
-          // onBlur={onSubmit}
+          onChange={handleChange}
+          onBlur={onSubmit}
           InputProps={
             isEditable
               ? {
@@ -96,6 +93,7 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
           name={composeName}
           value={values[composeName] || "≤"}
           onChange={handleChange}
+          onBlur={onSubmit}
           className={classes.radioGroup}
           row={true}
         >

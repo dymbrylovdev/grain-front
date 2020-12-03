@@ -380,7 +380,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           name="name"
           value={values.name || ""}
           variant="outlined"
-          onBlur={e => handleBlur(e)}
+          onBlur={filterSubmit}
           onChange={formik.handleChange}
           helperText={formik.touched.name && formik.errors.name}
           error={Boolean(formik.touched.name && formik.errors.name)}

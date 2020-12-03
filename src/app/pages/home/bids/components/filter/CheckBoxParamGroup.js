@@ -27,10 +27,8 @@ const CheckBoxParamGroup = ({
                 control={
                   <Checkbox
                     checked={values[valueName] || false}
-                    onChange={(e) => {
-                      handleChange(e);
-                      onSubmit();
-                    }}
+                    onChange={handleChange}
+                    onBlur={onSubmit}
                   />
                 }
                 label={item}
