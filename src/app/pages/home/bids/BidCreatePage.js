@@ -197,7 +197,7 @@ function BidCreatePage({
 
   return (
     <>
-      <Prompter />
+      {/* <Prompter /> */}
       <LocationDialog
         isOpen={locationModalOpen}
         handleClose={() => setLocationModalOpen(false)}
