@@ -418,7 +418,7 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   return (
     <>
-      <Prompter />
+      {/* <Prompter /> */}
       <LayoutSubheader title={pageTitle} />
       <Paper className={classes.paperWithTable}>
         <div className={innerClasses.topContainer}>
