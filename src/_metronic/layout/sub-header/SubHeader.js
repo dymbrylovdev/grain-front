@@ -99,9 +99,8 @@ class SubHeader extends React.Component {
                 <SaveIcon className="kt-svg-icon kt-svg-icon--primary kt-svg-icon--md" />
               </IconButton> */}
             </div>
-            {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+            {me && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
               <Button
-                style={{marginRight: 15}}
                 variant="contained"
                 color="primary"
                 onClick={() => history.push('/user/create')}
@@ -110,8 +109,9 @@ class SubHeader extends React.Component {
               </Button>
             )}
 
-            {me && (
+            {me && !accessByRoles(me, ["ROLE_MANAGER"]) && (
               <Button
+                style={{marginLeft: 15}}
                 variant="contained"
                 color="primary"
                 onClick={() => history.push(`/bid/create/${me.is_buyer ? "purchase" : "sale"}/0`)}

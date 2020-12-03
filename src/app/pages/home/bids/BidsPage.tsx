@@ -416,6 +416,8 @@ const BidsPage: React.FC<TPropsFromRedux &
     }, 10000);
   }
 
+  console.log(myBids);
+
   return (
     <>
       {/* <Prompter /> */}

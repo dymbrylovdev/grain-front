@@ -126,7 +126,6 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     let params = { ...values };
     params.name = values.name.trim();
     params.cropId = cropId;
-    console.log("PARAMS===>", params);
     setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
     clearBids();
   };
@@ -176,8 +175,6 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     resetForm({ values: getInitialValues(currentFilter) });
   }, [currentFilter, getInitialValues, resetForm]);
-
-  console.log("VALUES===>", values);
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
