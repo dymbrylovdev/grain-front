@@ -465,7 +465,7 @@ const BidForm: React.FC<IProps> = ({
         isFilterCreated
       ),
     });
-  }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
+  }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId, isFilterCreated]);
 
   useEffect(() => {
     if (currentCropId) fetchCropParams(currentCropId);

@@ -129,9 +129,9 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     params.name = values.name.trim();
     params.cropId = cropId;
     console.log("PARAMS===>", params);
-    // setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
-    // clearBids();
-  }, [cropId, values]);
+    setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
+    clearBids();
+  }, [cropId, values, clearBids, currentFilter, newCropName, setCurrentFilter]);
 
   const handleSubmit = useCallback(
     (values: any) => {
@@ -175,9 +175,9 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     values,
   ]);
 
-  // useEffect(() => {
-  //   resetForm({ values: getInitialValues(currentFilter) });
-  // }, [currentFilter, getInitialValues, resetForm]);
+  useEffect(() => {
+    resetForm({ values: getInitialValues(currentFilter) });
+  }, [currentFilter, getInitialValues, resetForm]);
 
   console.log();
 
