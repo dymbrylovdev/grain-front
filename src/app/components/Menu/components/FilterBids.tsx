@@ -122,16 +122,14 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   });
   const { resetForm, values, handleBlur } = formik;
 
-  console.log("VALUES===>", values);
-
-  const filterSubmit = useCallback(() => {
+  const filterSubmit = () => {
     let params = { ...values };
     params.name = values.name.trim();
     params.cropId = cropId;
     console.log("PARAMS===>", params);
     setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
     clearBids();
-  }, [cropId, values, clearBids, currentFilter, newCropName, setCurrentFilter]);
+  };
 
   const handleSubmit = useCallback(
     (values: any) => {
@@ -179,7 +177,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     resetForm({ values: getInitialValues(currentFilter) });
   }, [currentFilter, getInitialValues, resetForm]);
 
-  console.log();
+  console.log("VALUES===>", values);
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
@@ -205,7 +203,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             name="max_payment_term"
             value={formik.values.max_payment_term || ""}
             variant="outlined"
-            onBlur={formik.handleBlur}
+            onBlur={filterSubmit}
             onChange={e => {
               let newValue = e.target.value;
               if (+newValue < 0) {
@@ -239,7 +237,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           name="max_full_price"
           value={formik.values.max_full_price || ""}
           variant="outlined"
-          onBlur={formik.handleBlur}
+          onBlur={filterSubmit}
           //@ts-ignore
           onChange={formik.handleChange("max_full_price")}
           InputProps={{
@@ -265,7 +263,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           name="min_full_price"
           value={formik.values.min_full_price || ""}
           variant="outlined"
-          onBlur={formik.handleBlur}
+          onBlur={filterSubmit}
           //@ts-ignore
           onChange={formik.handleChange("min_full_price")}
           InputProps={{
@@ -291,7 +289,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           name="max_destination"
           value={formik.values.max_destination || ""}
           variant="outlined"
-          onBlur={formik.handleBlur}
+          onBlur={filterSubmit}
           //@ts-ignore
           onChange={formik.handleChange("max_destination")}
           InputProps={{

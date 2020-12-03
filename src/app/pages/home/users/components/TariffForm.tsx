@@ -815,6 +815,15 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       </div>
       {realUser && realSelectedTariff && (
         <div className={innerClasses.buttonsBottomContain}>
+          <Button style={{ marginRight: 15 }} variant="contained" color="primary">
+            <a
+              style={{ color: "#FFF" }}
+              href="https://drive.google.com/drive/folders/1fajBzWbprZShBTjoDp2JN-Xw4K6VHwKL"
+              target="blank"
+            >
+              Скачать договор
+            </a>
+          </Button>
           {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
             <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
               {intl.formatMessage({ id: "TARIFFS.SAVE" })}
@@ -858,10 +867,10 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 <h6>ОГРН: 1202300046915</h6>
                 <h6>ИНН: 2312294751</h6>
                 <h6>КПП: 231201001</h6>
-                <h6>Наименование банка: Сбербанк(ПАО) , г. Москва</h6>
-                <h6>Корреспондентский счет: 30101810400000000225</h6>
-                <h6>БИК: 044525225</h6>
-                <h6>Расчетный счет: 40702810038000142636</h6>
+                <h6>Наименование банка: АО "Альфа БАНК"</h6>
+                <h6>Корреспондентский счет: 30101810200000000593</h6>
+                <h6>БИК: 044525593</h6>
+                <h6>Расчетный счет: 40702810001100023020</h6>
                 <br />
                 <h6>Адрес для корреспонденции: 350080 г. Краснодар</h6>
                 <h6>

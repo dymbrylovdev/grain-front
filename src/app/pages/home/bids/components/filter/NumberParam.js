@@ -67,9 +67,10 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
           value={values[numberName] || ""}
           variant="outlined"
           onChange={(e) => {
-            handleChange(e);
             onSubmit();
+            handleChange(e);
           }}
+          // onBlur={onSubmit}
           InputProps={
             isEditable
               ? {

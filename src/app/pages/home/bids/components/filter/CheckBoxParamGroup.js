@@ -11,7 +11,7 @@ const CheckBoxParamGroup = ({
 }) => {
   const onSubmit = () => {
     if (handleSubmit) {
-      handleSubmit();
+      handleSubmit()
     }
   };
 

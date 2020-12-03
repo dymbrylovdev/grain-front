@@ -315,7 +315,6 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
           initialValues,
           setFieldValue,
         }) => {
-          //console.log(values);
           return (
             <div className={classes.form}>
               <div className={classes.topButtonsContainer}>
