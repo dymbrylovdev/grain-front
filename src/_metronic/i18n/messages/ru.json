@@ -348,7 +348,7 @@
   "FILTER.FORM.BUTTON.RESET": "Отключить фильтр",
   "FILTER.BUTTON.CLOSE": "Закрыть",
   "FILTER.BUTTON.CREATE": "Добавить фильтр",
-  "FILTER.FORM.NAME.INPUT_NAME": "Название фильтра",
+  "FILTER.FORM.NAME.INPUT_NAME": "Название подписки",
   "FILTER.FORM.NAME.CROP": "Культура",
   "FILTER.FORM.NAME.REQUIRED": "Введите название фильтра",
   "FILTER.FORM.TABS.CREATE_FILTER": "Добавить фильтр",
@@ -362,7 +362,7 @@
   "FILTER.DIALOGS.AGREE_TEXT": "Да",
   "FILTER.DIALOGS.CANCEL_TEXT": "Отмена",
   "FILTER.DIALOGS.LOADING_TEXT": "Удаление фильтра",
-  "FILTER.SOMETHING.CHECKBOX": "Создать фильтр",
+  "FILTER.SOMETHING.CHECKBOX": "Подписаться на предложения",
 
   "FILTERS.TABLE.HEADER.CROP": "Культура",
   "FILTERS.TABLE.HEADER.NAME": "Название фильтра",

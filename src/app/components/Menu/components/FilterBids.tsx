@@ -347,23 +347,8 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           }}
         >
           {/* {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })} */}
-          Сохранить фильтр
+          Добавить подписку
         </ButtonWithLoader>
-
-        {/* <Button
-          style={{ marginTop: 15 }}
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            let params = { ...values };
-            params.name = values.name.trim();
-            params.cropId = cropId;
-            setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
-            clearBids();
-          }}
-        >
-          {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
-        </Button> */}
       </div>
 
       <div className={classes.textFieldContainer} style={{ paddingBottom: 10 }}>
@@ -390,24 +375,6 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           }}
         />
       </div>
-
-      {/* <Button
-        variant="contained"
-        color="primary"
-        onClick={() => {
-          let params = { ...values };
-          params.name = values.name.trim();
-          params.cropId = cropId;
-          setCurrentFilter(
-            +cropId, 
-            filterForSubmit(currentFilter, params, newCropName())
-          );
-          clearBids();
-          // handleClose();
-        }}
-      >
-        {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SUBMIT" })}
-      </Button> */}
     </form>
   );
 };

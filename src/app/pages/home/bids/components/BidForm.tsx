@@ -12,7 +12,6 @@ import {
   Collapse,
   FormControlLabel,
   Checkbox,
-  Typography,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
@@ -105,7 +104,7 @@ const getInitialValues = (
     price: bid?.price || "",
     description: bid?.description || "",
     crop_id: newCropId,
-    is_filter_created: isFilterCreated,
+    is_filter_created: isFilterCreated ? 1 : 0,
     location:
       editMode === "create"
         ? !!vendorId
@@ -280,6 +279,8 @@ const BidForm: React.FC<IProps> = ({
   const inputEl = useRef<HTMLButtonElement>(null);
   const [goToRef, setGoToRef] = useState(false);
   const [isMoreBidOpen, setMoreBidOpen] = useState(false);
+  const [isFilterCreated, setFilterCreated] = useState(true);
+  const [isContactAlertOpen, setContactAlertOpen] = useState(false);
 
   const createFilter = (id: number) => {
     if (editMode === "edit") post(id);
@@ -304,14 +305,9 @@ const BidForm: React.FC<IProps> = ({
     ? vendor.crops[0].id
     : 0;
 
-  const [isFilterCreated, setFilterCreated] = useState(false);
-  const [isContactAlertOpen, setContactAlertOpen] = useState(false);
-
   const onCheckboxChange = () => {
     setFilterCreated(!isFilterCreated);
   };
-
-  // TODO: Возможно стоит зарефакторить
 
   const linkToContact = () => {
     let contactViewCount = me?.contact_view_count;
@@ -366,7 +362,6 @@ const BidForm: React.FC<IProps> = ({
         volume: +values.volume,
         payment_term: +values.payment_term,
         parameter_values: paramValues,
-        // is_filter_created: isFilterCreated ? 1 : 0
       };
       const bidType = params.bid_type;
       delete params.bid_type;
@@ -453,6 +448,7 @@ const BidForm: React.FC<IProps> = ({
   }, [clearPost, postError, postSuccess, enqueueSnackbar, history, intl, salePurchaseMode]);
 
   useEffect(() => {
+    console.log("TUT RESET");
     resetForm({
       values: getInitialValues(
         bid,
@@ -465,7 +461,17 @@ const BidForm: React.FC<IProps> = ({
         isFilterCreated
       ),
     });
-  }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId, isFilterCreated]);
+  }, [
+    bid,
+    currentCropId,
+    editMode,
+    me,
+    resetForm,
+    salePurchaseMode,
+    user,
+    vendorId,
+    // isFilterCreated,
+  ]);
 
   useEffect(() => {
     if (currentCropId) fetchCropParams(currentCropId);
@@ -541,7 +547,11 @@ const BidForm: React.FC<IProps> = ({
             )}
             <div>
               <div
-                style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                }}
               >
                 <div
                   className={innerClasses.authorText}
@@ -1385,20 +1395,8 @@ const BidForm: React.FC<IProps> = ({
         ))}
 
       <div className={classes.bottomButtonsContainer}>
-        {/* <div className={classes.button}>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => history.goBack()}
-            disabled={buttonLoading || loading}
-          >
-            {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-          </Button>
-        </div> */}
         {editMode !== "view" && (
           <>
-            {/* // ! Changed */}
-
             {editMode === "edit" ? (
               <div className={classes.button}>
                 <ButtonWithLoader onPress={() => createFilter(bidId)}>
@@ -1409,14 +1407,13 @@ const BidForm: React.FC<IProps> = ({
               <div className={classes.button}>
                 <FormControlLabel
                   control={
-                    <Checkbox checked={isFilterCreated} onChange={() => onCheckboxChange()} />
+                    <Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />
                   }
                   label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
                 />
               </div>
             )}
 
-            {/*  */}
             <div className={classes.button}>
               <ButtonWithLoader
                 loading={buttonLoading}
