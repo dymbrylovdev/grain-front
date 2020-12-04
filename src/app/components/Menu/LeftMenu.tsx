@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Collapse, Divider, makeStyles, MenuItem } from "@material-ui/core";
+import { Collapse, Divider, makeStyles, MenuItem, Button } from "@material-ui/core";
 import { IntlShape } from "react-intl";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import SpaIcon from "@material-ui/icons/Spa";
+
 import { IUser } from "../../interfaces/users";
-import { ICropParam } from "../../interfaces/crops"; // ! imported
 import { accessByRoles } from "../../utils/utils";
 import { salePurchaseModeForMyBids } from "./utils";
 import { ActionWithPayload } from "../../utils/action-helper";
+
 import DealsFilterForAll from "./components/DealsFilterForAll";
 import DealsFilterForAdm from "./components/DealsFilterForAdm";
-
 import FilterBids from "./components/FilterBids";
+import LocationBlockMenu from "./components/LocationBlockMenu";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -115,8 +116,12 @@ const LeftMenu: React.FC<IProps> = ({
   const history = useHistory();
 
   const [bestOpen, setBestOpen] = useState(false);
-  const [filtersOpen, setFiltersOpen] = useState(false); // ! Changed
   const [allOpen, setAllOpen] = useState(false);
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
+
+  const toggleLocationsModal = () => {
+    setLocationModalOpen(!locationModalOpen);
+  };
 
   useEffect(() => {
     if (!salePurchaseMode) {
@@ -135,6 +140,8 @@ const LeftMenu: React.FC<IProps> = ({
     setLeftMenuOpen(false);
   };
 
+  console.log(me);
+
   return (
     <div>
       <div className={classes.title}>
@@ -143,6 +150,8 @@ const LeftMenu: React.FC<IProps> = ({
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
+  
+      <LocationBlockMenu me={me} classes={classes} />
 
       {!!bestAllMyDealsMode &&
         bestAllMyDealsMode !== "deals" &&
@@ -208,7 +217,7 @@ const LeftMenu: React.FC<IProps> = ({
         {me?.crops?.map(crop => (
           <MenuItem
             key={crop.id}
-            onClick={() => handleClick(`/${salePurchaseMode}/best-bids/${crop.id}`)}
+            onClick={() => {handleClick(`/${salePurchaseMode}/best-bids/${crop.id}`); setBestOpen(false)}}
             className={`${classes.nested} ${
               bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id
                 ? classes.selected

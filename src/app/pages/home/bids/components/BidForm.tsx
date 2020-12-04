@@ -448,7 +448,6 @@ const BidForm: React.FC<IProps> = ({
   }, [clearPost, postError, postSuccess, enqueueSnackbar, history, intl, salePurchaseMode]);
 
   useEffect(() => {
-    console.log("TUT RESET");
     resetForm({
       values: getInitialValues(
         bid,

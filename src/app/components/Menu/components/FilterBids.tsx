@@ -1,9 +1,8 @@
 import React, { useEffect, useCallback } from "react";
-import { MenuItem, Collapse, Button, TextField, IconButton, Divider } from "@material-ui/core";
+import { MenuItem, TextField, IconButton, Divider } from "@material-ui/core";
 import useStyles from "../../../pages/home/styles";
 import CloseIcon from "@material-ui/icons/Close";
-import { Col } from "react-bootstrap";
-import { connect, ConnectedProps, shallowEqual, useSelector } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { useFormik } from "formik";
@@ -15,7 +14,6 @@ import { actions as bidsActions } from "../../../store/ducks/bids.duck";
 
 import CheckBoxParamGroup from "../../../pages/home/bids/components/filter/CheckBoxParamGroup";
 import { filterForCreate, filterForSubmit } from "../../../pages/home/myFilters/utils";
-import NumberFormatCustom from "../../NumberFormatCustom/NumberFormatCustom";
 import { useSnackbar } from "notistack";
 import NumberParam from "../../../pages/home/bids/components/filter/NumberParam";
 import ButtonWithLoader from "../../ui/Buttons/ButtonWithLoader";
