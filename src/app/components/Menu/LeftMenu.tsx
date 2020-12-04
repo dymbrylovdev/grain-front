@@ -264,7 +264,7 @@ const LeftMenu: React.FC<IProps> = ({
           {me.crops.map(crop => (
             <MenuItem
               key={crop.id}
-              onClick={() => handleClick(`/${salePurchaseMode}/all-bids/${crop.id}`)}
+              onClick={() => {handleClick(`/${salePurchaseMode}/all-bids/${crop.id}`); setAllOpen(false)}}
               className={`${classes.nested} ${
                 bestAllMyDealsMode === "all-bids" && !!cropId && +cropId === crop.id
                   ? classes.selected

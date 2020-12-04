@@ -53,14 +53,14 @@ function LocationBlock({
         </div>
       </div>
       <div>
-        <Button
+        {/* <Button
           variant="contained"
           color="primary"
           onClick={handleClickLocation}
           className={innerClasses.leftButton}
         >
           {intl.formatMessage({ id: "BID.LOCATION.BUTTON" })}
-        </Button>
+        </Button> */}
         {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
           <Button variant="contained" color="primary" onClick={handleClickPrices}>
             {intl.formatMessage({ id: "BID.PRICES.BUTTON" })}

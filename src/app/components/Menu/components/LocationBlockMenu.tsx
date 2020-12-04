@@ -39,7 +39,6 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    console.log("TUT RERENDER 2");
     if (editSuccess || editError) {
       enqueueSnackbar(
         editSuccess
@@ -65,6 +64,10 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
 
   return (
     <div style={{ marginTop: 20, marginBottom: 20 }}>
+      {me && !me.points.length && (
+        <h6>У вас ещё нет точек отгрузки / погрузки</h6>
+      )}
+
       {me &&
         me.points.map(point => (
           <React.Fragment key={point.id}>
@@ -90,7 +93,7 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
         color="primary"
         style={{ width: "100%", marginTop: 10 }}
       >
-        Изменить точки
+        {intl.formatMessage({ id: "BID.LOCATION.BUTTON" })}
       </Button>
 
       <LocationDialog

@@ -160,7 +160,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   ]);
 
   useEffect(() => {
-    console.log("TUT RERENDER 1");
     if (editSuccess || editError) {
       enqueueSnackbar(
         editSuccess
