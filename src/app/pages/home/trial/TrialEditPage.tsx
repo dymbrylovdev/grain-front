@@ -15,7 +15,7 @@ import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
 import NumberFormatCustom from "../../../components/NumberFormatCustom/NumberFormatCustom";
-import NumberFormatPhone from "../../../components/NumberFormatCustom/NumberFormatPhone";
+import NumberFormatTrial from "../../../components/NumberFormatCustom/NumberFormatTrial";
 
 const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -33,6 +33,7 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 }) => {
   const classes = useStyles();
   const history = useHistory();
+  const isTrial = true;
 
   const { values, handleSubmit, handleChange, handleBlur, resetForm, touched, errors } = useFormik({
     initialValues: { trial_days: "", manager_email: "", manager_phone: "" },
@@ -154,7 +155,7 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               helperText={touched.manager_phone && errors.manager_phone}
               error={Boolean(touched.manager_phone && errors.manager_phone)}
               InputProps={{
-                inputComponent: NumberFormatPhone as any,
+                inputComponent: NumberFormatTrial as any, 
               }}
               autoComplete="off"
             />
