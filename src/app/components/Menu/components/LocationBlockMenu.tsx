@@ -88,7 +88,7 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
         onClick={toggleLocationsModal}
         variant="contained"
         color="primary"
-        style={{ width: "100%" }}
+        style={{ width: "100%", marginTop: 10 }}
       >
         Изменить точки
       </Button>

@@ -140,8 +140,6 @@ const LeftMenu: React.FC<IProps> = ({
     setLeftMenuOpen(false);
   };
 
-  console.log(me);
-
   return (
     <div>
       <div className={classes.title}>
