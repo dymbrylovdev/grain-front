@@ -266,16 +266,6 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             </MenuItem>
           )}
           {accessByRoles(me, ["ROLE_TRADER"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile/tariffs")}>
-              {intl.formatMessage({ id: "SUBMENU.TARIFFS.BUSINESS" })}
-            </MenuItem>
-          )}
-          {accessByRoles(me, ["ROLE_TRADER"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile/points")}>
-              {intl.formatMessage({ id: "SUBMENU.POINTS" })}
-            </MenuItem>
-          )}
-          {accessByRoles(me, ["ROLE_TRADER"]) && (
             <MenuItem onClick={() => setFiltersOpen(!filtersOpen)} className={classes.nester}>
               {intl.formatMessage({ id: "SUBMENU.MY_FILTERS" })}
               {filtersOpen ? (
@@ -294,6 +284,16 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 {intl.formatMessage({ id: "SUBMENU.SELLER_FILTERS" })}
               </MenuItem>
             </Collapse>
+          )}
+          {accessByRoles(me, ["ROLE_TRADER"]) && (
+            <MenuItem onClick={() => handleClick("/user/profile/points")}>
+              {intl.formatMessage({ id: "SUBMENU.POINTS" })}
+            </MenuItem>
+          )}
+          {accessByRoles(me, ["ROLE_TRADER"]) && (
+            <MenuItem onClick={() => handleClick("/user/profile/tariffs")}>
+              {intl.formatMessage({ id: "SUBMENU.TARIFFS" })}
+            </MenuItem>
           )}
 
           {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (

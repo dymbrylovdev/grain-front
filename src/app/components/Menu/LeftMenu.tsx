@@ -117,11 +117,6 @@ const LeftMenu: React.FC<IProps> = ({
 
   const [bestOpen, setBestOpen] = useState(false);
   const [allOpen, setAllOpen] = useState(false);
-  const [locationModalOpen, setLocationModalOpen] = useState(false);
-
-  const toggleLocationsModal = () => {
-    setLocationModalOpen(!locationModalOpen);
-  };
 
   useEffect(() => {
     if (!salePurchaseMode) {

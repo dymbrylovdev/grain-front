@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { Col, Row } from "react-bootstrap";
 
@@ -15,6 +15,10 @@ const CheckBoxParamGroup = ({
     }
   };
 
+  useEffect(() => {
+    onSubmit();
+  }, [values]);
+
   return (
     <Col>
       <Row>{param.name}</Row>
@@ -28,7 +32,6 @@ const CheckBoxParamGroup = ({
                   <Checkbox
                     checked={values[valueName] || false}
                     onChange={handleChange}
-                    onBlur={onSubmit}
                   />
                 }
                 label={item}
