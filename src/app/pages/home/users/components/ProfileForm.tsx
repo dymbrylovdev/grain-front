@@ -521,18 +521,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
-      <div>
-        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-          <Skeleton width={135} height={37.5} animation="wave" />
-        ) : (
-          <FormControlLabel
-            control={<Checkbox checked={values.use_vat} onChange={handleChange} />}
-            label={intl.formatMessage({ id: "USER.EDIT_FORM.USE_VAT" })}
-            name="use_vat"
-            disabled={editMode === "view"}
-          />
-        )}
-      </div>
       {!(meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading)) &&
         editMode === "profile" && (
           <Collapse in={openInfoAlert}>
@@ -560,6 +548,18 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             </Alert>
           </Collapse>
         )}
+      <div>
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+          <Skeleton width={135} height={37.5} animation="wave" />
+        ) : (
+          <FormControlLabel
+            control={<Checkbox checked={values.use_vat} onChange={handleChange} />}
+            label={intl.formatMessage({ id: "USER.EDIT_FORM.USE_VAT" })}
+            name="use_vat"
+            disabled={editMode === "view"}
+          />
+        )}
+      </div>
 
       {prompterRunning && prompterStep === 0 && !values.use_vat && (
         <div>
