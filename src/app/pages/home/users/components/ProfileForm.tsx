@@ -175,17 +175,15 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       phone: Yup.string()
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
         .matches(/^[0-9][0-9]{9}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
-      // repeatPassword: Yup.string().test(
-      //   "passwords-match",
-      //   intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
-      //   function(value) {
-      //     return this.parent.password === value;
-      //   }
-      // ),
+      repeatPassword: Yup.string().test(
+        "passwords-match",
+        intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
+        function(value) {
+          return this.parent.password === value;
+        }
+      ),
     }),
   });
-
-  console.log(me);
 
   useEffect(() => {
     if (meSuccess && !!values && !!me && isEqual(getInitialValues(me), values)) {

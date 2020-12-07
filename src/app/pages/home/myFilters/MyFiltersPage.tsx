@@ -200,9 +200,9 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                       ? "0"
                       : me?.tariff_matrix?.max_filters_count - filterCount,
                   word: declOfNum(me?.tariff_matrix?.max_filters_count - filterCount, [
-                    "фильтр",
-                    "фильтра",
-                    "фильтров",
+                    "подписка",
+                    "подписки",
+                    "подписок",
                   ]),
                   fullCount: me?.tariff_matrix?.max_filters_count,
                 }
