@@ -36,7 +36,7 @@ const isSearchEmpty = values => {
   return false;
 };
 
-function CompanySearchForm({ intl, setCompanyAction, classes, company, editAction, confirms }) {
+function CompanySearchForm({ intl, setCompanyAction, classes, company, editAction, edit, confirms }) {
   const formRef = useRef();
   const innerClasses = innerStyles();
   const [companies, setCompanies] = useState([]);
@@ -66,6 +66,7 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company, editActio
       //setCompanyAction(company);
       //setCurrentCompany(company);
       //console.log(company);
+      edit();
       editAction({
         data: {
           company_id: company.id,
@@ -76,7 +77,7 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company, editActio
       });
       setDialogOpen(false);
     },
-    [confirms, editAction]
+    [confirms, editAction, edit]
   );
   useEffect(() => {
     formRef.current.resetForm({ values: getInitialValues(company) });

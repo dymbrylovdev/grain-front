@@ -286,7 +286,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           </div>
         )}
 
-      {editMode !== "view" && !!currentUser && !currentUser.company && (
+      {/* {editMode !== "view" && !!currentUser && !currentUser.company && (
         <CompanySearchForm
           classes={classes}
           company={currentUser && currentUser.company}
@@ -304,7 +304,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           }
           confirms={editMode === "profile" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
         />
-      )}
+      )} */}
       <CompanyConfirmDialog
         id={companyConfirmId}
         intl={intl}

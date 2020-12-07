@@ -130,7 +130,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const [isOpenCompanyConfirm, setIsOpenCompanyConfirm] = useState<boolean>(false);
   const [companyConfirmId, setCompanyConfirmId] = useState<number>(0);
   const [currentUser, setCurrentUser] = useState<IUser>();
-  const [isAlertOpen, setAlertDialogOpen] = useState(false);
+  const [isCompanyAlertOpen, setCompanyAlertOpen] = useState(false);
 
   const {
     values,
@@ -662,6 +662,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
+      {/* //* Companies */}
+
       {editMode !== "create" && (
       <div>
         {currentUser && currentUser.company ? (
@@ -686,7 +688,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 className={classes.textField}
               />
               {editMode !== "view" && (
-                <IconButton size={"medium"} color="secondary" onClick={() => setAlertOpen(true)}>
+                <IconButton size={"medium"} color="secondary" onClick={() => setCompanyAlertOpen(true)}>
                   <DeleteIcon />
                 </IconButton>
               )}
@@ -781,6 +783,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 ? editMe
                 : ({ data }: any) => editUser({ id: userId as number, data: data })
             }
+            edit={handleSubmit}
             confirms={editMode === "profile" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
           />
         )}
@@ -788,10 +791,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           id={companyConfirmId}
           intl={intl}
           isOpen={isOpenCompanyConfirm}
-          handleClose={() => setIsOpenCompanyConfirm(false)}
+          handleClose={() => setCompanyAlertOpen(false)}
         />
         <AlertDialog
-          isOpen={isAlertOpen}
+          isOpen={isCompanyAlertOpen}
           text={intl.formatMessage({
             id: "COMPANY.DIALOGS.DELETE_TEXT",
           })}
@@ -801,14 +804,14 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           cancelText={intl.formatMessage({
             id: "COMPANY.DIALOGS.CANCEL_TEXT",
           })}
-          handleClose={() => setAlertDialogOpen(false)}
+          handleClose={() => setCompanyAlertOpen(false)}
           handleAgree={() => {
             setFieldValue("company_id", 0);
             setFieldValue("company_confirmed_by_email", false);
             setFieldValue("company_confirmed_by_phone", false);
             setFieldValue("company_confirmed_by_payment", false);
             handleSubmit();
-            setAlertDialogOpen(false);
+            setCompanyAlertOpen(false);
           }}
           loadingText={intl.formatMessage({
             id: "COMPANY.DIALOGS.LOADING_TEXT",
