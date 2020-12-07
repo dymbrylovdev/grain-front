@@ -417,7 +417,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </TableCell>
                       <TableCell style={{ backgroundColor: "#eeeeee" }}>
                         <p>
-                          {/* //! Changed */}
                           <div style={{ cursor: "pointer", color: "blue" }} onClick={linkToContact}>
                             {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
                           </div>
@@ -453,7 +452,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </TableCell>
                       <TableCell>
                         <p>
-                          {/* //! Changed */}
                           <div style={{ cursor: "pointer", color: "blue" }} onClick={linkToContact}>
                             {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
                           </div>
@@ -510,12 +508,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
               </Table>
 
               {me && accessByRoles(me, ["ROLE_TRADER"]) && (
-                <div style={{ marginTop: 20 }}>
-                  Сегодня вам доступен просмотр {me?.contact_view_count} контактов
-                </div>
-              )}
-
-              {isAlertOpen && (
                 <div style={{marginTop: 20}}>
                   <Alert
                     className={classes.infoAlert}
@@ -535,7 +527,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </IconButton>
                     }
                   >
-                    {intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}
+                    {`Сегодня вам доступен просмотр ${me?.contact_view_count} контактов ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
                   </Alert>
                 </div>
               )}

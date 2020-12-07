@@ -571,7 +571,7 @@ const BidForm: React.FC<IProps> = ({
                 )}
               </div>
 
-              {isContactAlertOpen && (
+              {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
                 <Alert
                   className={classes.infoAlert}
                   severity="warning"
@@ -590,7 +590,7 @@ const BidForm: React.FC<IProps> = ({
                     </IconButton>
                   }
                 >
-                  {intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}
+                  {`Сегодня вам доступен просмотр ${me?.contact_view_count} контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
                 </Alert>
               )}
 

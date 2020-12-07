@@ -143,7 +143,7 @@ const LeftMenu: React.FC<IProps> = ({
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
-  
+
       <LocationBlockMenu me={me} classes={classes} />
 
       {!!bestAllMyDealsMode &&
@@ -191,41 +191,6 @@ const LeftMenu: React.FC<IProps> = ({
         )}
 
       <MenuItem
-        onClick={() => {
-          setAllOpen(false);
-          setBestOpen(!bestOpen);
-        }}
-        className={`${classes.nester} ${
-          bestAllMyDealsMode === "best-bids" ? classes.selected : ""
-        }`}
-      >
-        {intl.formatMessage({ id: "SUBMENU.BIDS.BEST" })}
-        {bestOpen ? (
-          <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
-        ) : (
-          <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
-        )}
-      </MenuItem>
-      <Collapse in={bestOpen} timeout="auto" unmountOnExit>
-        {me?.crops?.map(crop => (
-          <MenuItem
-            key={crop.id}
-            onClick={() => {handleClick(`/${salePurchaseMode}/best-bids/${crop.id}`); setBestOpen(false)}}
-            className={`${classes.nested} ${
-              bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id
-                ? classes.selected
-                : ""
-            }`}
-          >
-            • {crop.name}
-          </MenuItem>
-        ))}
-        <MenuItem onClick={() => handleClick("/user/profile/crops")} className={classes.nested}>
-          • {intl.formatMessage({ id: "SUBMENU.PROFILE.CROPS" })}
-        </MenuItem>
-      </Collapse>
-
-      <MenuItem
         className={bestAllMyDealsMode === "my-bids" ? classes.selected : ""}
         onClick={() => {
           setBestOpen(false);
@@ -259,7 +224,10 @@ const LeftMenu: React.FC<IProps> = ({
           {me.crops.map(crop => (
             <MenuItem
               key={crop.id}
-              onClick={() => {handleClick(`/${salePurchaseMode}/all-bids/${crop.id}`); setAllOpen(false)}}
+              onClick={() => {
+                handleClick(`/${salePurchaseMode}/all-bids/${crop.id}`);
+                setAllOpen(false);
+              }}
               className={`${classes.nested} ${
                 bestAllMyDealsMode === "all-bids" && !!cropId && +cropId === crop.id
                   ? classes.selected
@@ -274,6 +242,44 @@ const LeftMenu: React.FC<IProps> = ({
           </MenuItem>
         </Collapse>
       )}
+
+      <MenuItem
+        onClick={() => {
+          setAllOpen(false);
+          setBestOpen(!bestOpen);
+        }}
+        className={`${classes.nester} ${
+          bestAllMyDealsMode === "best-bids" ? classes.selected : ""
+        }`}
+      >
+        {intl.formatMessage({ id: "SUBMENU.BIDS.BEST" })}
+        {bestOpen ? (
+          <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
+        ) : (
+          <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
+        )}
+      </MenuItem>
+      <Collapse in={bestOpen} timeout="auto" unmountOnExit>
+        {me?.crops?.map(crop => (
+          <MenuItem
+            key={crop.id}
+            onClick={() => {
+              handleClick(`/${salePurchaseMode}/best-bids/${crop.id}`);
+              setBestOpen(false);
+            }}
+            className={`${classes.nested} ${
+              bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id
+                ? classes.selected
+                : ""
+            }`}
+          >
+            • {crop.name}
+          </MenuItem>
+        ))}
+        <MenuItem onClick={() => handleClick("/user/profile/crops")} className={classes.nested}>
+          • {intl.formatMessage({ id: "SUBMENU.PROFILE.CROPS" })}
+        </MenuItem>
+      </Collapse>
 
       {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
         <Divider style={{ margin: "6px 0" }} />

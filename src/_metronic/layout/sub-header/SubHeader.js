@@ -52,8 +52,6 @@ class SubHeader extends React.Component {
             )}
 
             <LayoutContextConsumer>
-              {/*{({ subheader: { title, breadcrumb } }) => (*/}
-
               {({ subheader: { title, breadcrumb } }) => (
                 <>
                   <h3 className="kt-subheader__title">{title}</h3>
