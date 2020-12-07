@@ -17,7 +17,7 @@ import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
-import { ProfileForm, CropsForm, LocationsForm } from "./components";
+import { ProfileForm, CropsForm, LocationsForm, CompanyForm } from "./components";
 import Prompter from "../prompter/Prompter";
 import ScrollToTop from "../../../components/ui/ScrollToTop";
 import TariffForm from "./components/TariffForm";
@@ -329,7 +329,6 @@ const UserEditPage: React.FC<TPropsFromRedux &
             {editMode === "create" ? (
               <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
             ) : (
-              // ! Changed CompanyForm to CropsForm
               <CropsForm userId={+id || undefined} editMode={editMode} />
             )}
           </TabPanel>

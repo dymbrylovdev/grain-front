@@ -36,7 +36,15 @@ const isSearchEmpty = values => {
   return false;
 };
 
-function CompanySearchForm({ intl, setCompanyAction, classes, company, editAction, edit, confirms }) {
+function CompanySearchForm({
+  intl,
+  setCompanyAction,
+  classes,
+  company,
+  editAction,
+  values,
+  confirms,
+}) {
   const formRef = useRef();
   const innerClasses = innerStyles();
   const [companies, setCompanies] = useState([]);
@@ -66,22 +74,37 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company, editActio
       //setCompanyAction(company);
       //setCurrentCompany(company);
       //console.log(company);
-      edit();
       editAction({
         data: {
           company_id: company.id,
           company_confirmed_by_email: confirms,
           company_confirmed_by_phone: confirms,
           company_confirmed_by_payment: confirms,
+          email: values.email,
+          fio: values.fio,
+          is_funnel_state_automate: values.is_funnel_state_automate,
+          login: values.login,
+          phone: values.phone,
+          use_vat: values.use_vat,
         },
       });
       setDialogOpen(false);
     },
-    [confirms, editAction, edit]
+    [
+      confirms,
+      editAction,
+      values.email,
+      values.fio,
+      values.is_funnel_state_automate,
+      values.login,
+      values.phone,
+      values.use_vat,
+    ]
   );
   useEffect(() => {
     formRef.current.resetForm({ values: getInitialValues(company) });
   }, [company]);
+
   return (
     <>
       <CompanySearchDialog
