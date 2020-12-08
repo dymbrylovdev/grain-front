@@ -2,11 +2,6 @@ import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Typography,
   TextField,
   Theme,
@@ -26,6 +21,7 @@ import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { actions as tariffsActions } from "../../../../store/ducks/tariffs.duck";
 import { actions as crops2Actions } from "../../../../store/ducks/crops2.duck";
 
+import TariffTable from "./TariffTable";
 import useStyles from "../../styles";
 import { IAppState } from "../../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
@@ -137,8 +133,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   let groupedTariffsType: ITariffType[] | undefined = undefined;
   let groupedTariffsPeriod: ITariffPeriod[] | undefined = undefined;
   let groupedForBuyer: ITariffType[] | undefined = undefined;
-  let tariffsForUsers: ITariffType[] | undefined = undefined;
-  let tariffsForBuyers: ITariffType[] | undefined = undefined;
+
   if (tariffs && realUser) {
     realTariffs = tariffs.filter(item => item.role.name === realUser?.roles[0]);
 
@@ -157,9 +152,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
     let c = realBuyerTariffs.map(item => item.tariff);
     groupedForBuyer = uniqBy(c, n => n.name);
-
-    tariffsForUsers = groupedTariffsType.filter(item => item.name !== "Бесплатный");
-    tariffsForBuyers = groupedForBuyer.filter(item => item.name !== "Бесплатный");
   }
 
   let realCrops: ICrop[] = [];
@@ -345,8 +337,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         !realSelectedTariff ||
         !groupedTariffsType ||
         !groupedTariffsPeriod ||
-        !tariffsForBuyers ||
-        !tariffsForUsers ||
         !groupedForBuyer ||
         !realUser ||
         editLoading ? (
@@ -354,343 +344,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         ) : (
           <>
             {editMode === "profile" && (
-              <div className={classes.table}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.4)" }}
-                      >
-                        <b>{intl.formatMessage({ id: "TARIFFS.NAME.FREE" })}</b>
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}
-                      >
-                        <b>{intl.formatMessage({ id: "TARIFFS.NAME.PREMIUM" })}</b>
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.4)" }}
-                        >
-                          <b>{intl.formatMessage({ id: "TARIFFS.NAME.BUSINESS" })}</b>
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>Количество публикаций объявлений</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        Неограниченно
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        Неограниченно
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          Неограниченно
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>Количество активных объявлений</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        Неограниченно
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        Неограниченно
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          Неограниченно
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>Количество точек отгрузки</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        Неограниченно
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        Неограниченно
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          Неограниченно
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>Срок публикации заявки</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        14 дней
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        14 дней
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          14 дней
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>Периодичность подписки</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        2 раза в неделю (понедельник и среда)
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        2 раза в неделю (понедельник и среда)
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          2 раза в неделю (понедельник и среда)
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>Время получения подписки</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        6:00 (по Москве)
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        6:00 (по Москве)
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          6:00 (по Москве)
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      ></TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      ></TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        ></TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>Отображение объявлений в списках ваших клиентов</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        Общие условия
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        Приоритетное размещение
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          Приоритетное размещение
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>Список встречных объявлений с лучшими ценами</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        10
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        10
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          10
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>Количество культур с которыми можно работать в системе</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        1
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        5
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          10
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>Количество подписок</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        1
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        5
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          10
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>Количество просмотров контактов в день</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        8
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        50
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          80
-                        </TableCell>
-                      )}
-                    </TableRow>
-
-                    <TableRow>
-                      <TableCell>Обращение в службу поддержки</TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-                      >
-                        Обращения обрабатываются в течение 24 часов
-                      </TableCell>
-                      <TableCell
-                        align="center"
-                        style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-                      >
-                        Обращения обрабатываются в течение 24 часов
-                      </TableCell>
-                      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-                        <TableCell
-                          align="center"
-                          style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-                        >
-                          Персональный менеджер
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
+              <TariffTable me={me} classes={classes} />
             )}
 
             {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
@@ -701,9 +355,11 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 <h6 className={innerClasses.title}>{`Начало действия тарифа: ${intl.formatDate(
                   realUser?.tariff_expired_at
                 )}`}</h6>
-                <h6 className={innerClasses.title}>
-                  Срок действия тарифа: {realUser?.tariff_matrix.tariff_period.period}
-                </h6>
+                {realUser?.tariff_matrix.tariff.name !== "Бесплатный" ? (
+                  <h6 className={innerClasses.title}>
+                    Срок действия тарифа: {realUser?.tariff_matrix.tariff_period.period}
+                  </h6>
+                ) : null}
               </div>
             )}
 
@@ -744,19 +400,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 helperText={touched.tariff_type_id && errors.tariff_type_id}
                 error={Boolean(touched.tariff_type_id && errors.tariff_type_id)}
               >
-                {editMode === "profile"
-                  ? !["ROLE_BUYER"].includes(realUser.roles[0])
-                    ? tariffsForUsers.map(item => (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      ))
-                    : tariffsForBuyers.map(item => (
-                        <MenuItem key={item.id} value={item.id}>
-                          {item.name}
-                        </MenuItem>
-                      ))
-                  : !["ROLE_BUYER"].includes(realUser.roles[0])
+                {!["ROLE_BUYER"].includes(realUser.roles[0])
                   ? groupedTariffsType.map(item => (
                       <MenuItem key={item.id} value={item.id}>
                         {item.name}
@@ -810,7 +454,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       </div>
       {realUser && realSelectedTariff && (
         <div className={innerClasses.buttonsBottomContain}>
-          <Button style={{ marginRight: 15 }} variant="contained" color="primary">
+          <Button variant="contained" color="primary">
             <a
               style={{ color: "#FFF" }}
               href="https://drive.google.com/drive/folders/1fajBzWbprZShBTjoDp2JN-Xw4K6VHwKL"
@@ -820,15 +464,16 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             </a>
           </Button>
           {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-            <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
+            <Button style={{ marginLeft: 15 }} variant="contained" color="primary" onClick={() => handleSubmit()}>
               {intl.formatMessage({ id: "TARIFFS.SAVE" })}
             </Button>
           )}
-          {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
-            <Button variant="contained" color="primary" onClick={() => onToggleModal()}>
-              {intl.formatMessage({ id: "TARIFFS.PAYMENT" })}
-            </Button>
-          )}
+          {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
+            realSelectedTariff.tariff.name !== "Бесплатный" && (
+              <Button style={{ marginLeft: 15 }} variant="contained" color="primary" onClick={() => onToggleModal()}>
+                {intl.formatMessage({ id: "TARIFFS.PAYMENT" })}
+              </Button>
+            )}
         </div>
       )}
 

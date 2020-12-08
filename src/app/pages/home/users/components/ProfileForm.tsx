@@ -799,7 +799,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             id={companyConfirmId}
             intl={intl}
             isOpen={isOpenCompanyConfirm}
-            handleClose={() => setCompanyAlertOpen(false)}
+            handleClose={() => setIsOpenCompanyConfirm(false)}
           />
           <AlertDialog
             isOpen={isCompanyAlertOpen}

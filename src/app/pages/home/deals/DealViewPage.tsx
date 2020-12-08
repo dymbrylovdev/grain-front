@@ -514,18 +514,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
                     severity="warning"
                     color="error"
                     style={{ marginTop: 8, marginBottom: 8 }}
-                    action={
-                      <IconButton
-                        aria-label="close"
-                        color="inherit"
-                        size="small"
-                        onClick={() => {
-                          setAlertOpen(false);
-                        }}
-                      >
-                        <CloseIcon fontSize="inherit" />
-                      </IconButton>
-                    }
                   >
                     {`Сегодня вам доступен просмотр ${me?.contact_view_count} контактов ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
                   </Alert>

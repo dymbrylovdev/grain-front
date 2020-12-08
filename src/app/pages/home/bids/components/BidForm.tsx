@@ -563,12 +563,6 @@ const BidForm: React.FC<IProps> = ({
                       : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
                   }: ${bid.vendor.fio || bid.vendor.login}`}
                 </div>
-
-                {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
-                  <div className={innerClasses.authorText}>
-                    Сегодня вам доступен просмотр {me?.contact_view_count} контактов
-                  </div>
-                )}
               </div>
 
               {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
@@ -577,18 +571,6 @@ const BidForm: React.FC<IProps> = ({
                   severity="warning"
                   color="error"
                   style={{ marginTop: 8, marginBottom: 8 }}
-                  action={
-                    <IconButton
-                      aria-label="close"
-                      color="inherit"
-                      size="small"
-                      onClick={() => {
-                        setContactAlertOpen(false);
-                      }}
-                    >
-                      <CloseIcon fontSize="inherit" />
-                    </IconButton>
-                  }
                 >
                   {`Сегодня вам доступен просмотр ${me?.contact_view_count} контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
                 </Alert>
