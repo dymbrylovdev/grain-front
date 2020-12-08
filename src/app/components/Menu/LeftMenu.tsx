@@ -144,8 +144,6 @@ const LeftMenu: React.FC<IProps> = ({
 
       <Divider style={{ margin: "6px 0" }} />
 
-      <LocationBlockMenu me={me} classes={classes} />
-
       {!!bestAllMyDealsMode &&
         bestAllMyDealsMode !== "deals" &&
         accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
@@ -285,17 +283,14 @@ const LeftMenu: React.FC<IProps> = ({
         <Divider style={{ margin: "6px 0" }} />
       )}
 
-      {/* // ! Changed */}
-
       {bestAllMyDealsMode === "best-bids" && (
-        <div>
+        <>
+          <LocationBlockMenu me={me} classes={classes} />
           <FilterBids />
-        </div>
+        </>
       )}
 
       {bestAllMyDealsMode === "best-bids" && <Divider style={{ margin: "6px 0" }} />}
-
-      {/* // ! Changed */}
 
       {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
         <MenuItem

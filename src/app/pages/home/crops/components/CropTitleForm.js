@@ -131,8 +131,7 @@ function CropTitleForm({
             />
 
             <div className={classes.helperText}>
-              Стоимость доставки 1 тонны = (4 руб. за км) x (коэффициент доставки культуры) x
-              (расстояние в км)
+              {intl.formatMessage({ id: "CROP.FORM.FORMULA" })}
             </div>
 
             <div className={`${classes.bottomButtonsContainer} ${classes.bottomMargin2}`}>

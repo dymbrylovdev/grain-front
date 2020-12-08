@@ -32,7 +32,13 @@ function PhoneBlock({ intl, company = {}, user = {}, classes }) {
         <>
           <div>
             {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1" })}
-            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_1" })}</b>
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_1" })}
+            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_1_1" })}</b>
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_1_2" })}
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_2" })}
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_3" })}
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_4" })}
+            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_5" })}</b>
           </div>
           <br />
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT2" })}</div>
@@ -60,6 +66,11 @@ function PhoneBlock({ intl, company = {}, user = {}, classes }) {
           <br />
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT5" })}</div>
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT6" })}</div>
+          <br />
+          <div>
+            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT20" })}</b>
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT20_1" })}
+          </div>
           <br />
           <div>
             <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT7" })}</b>
