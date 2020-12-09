@@ -34,199 +34,199 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
 
         <TableBody>
           <TableRow>
-            <TableCell>Количество публикаций объявлений</TableCell>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}</TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-              Неограниченно
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
             </TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              Неограниченно
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
             </TableCell>
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                Неограниченно
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
               </TableCell>
             )}
           </TableRow>
 
           <TableRow>
-            <TableCell>Количество активных объявлений</TableCell>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE2" })}</TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-              Неограниченно
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
             </TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              Неограниченно
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
             </TableCell>
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                Неограниченно
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
               </TableCell>
             )}
           </TableRow>
 
           <TableRow>
-            <TableCell>Количество точек отгрузки</TableCell>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE3" })}</TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-              Неограниченно
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
             </TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              Неограниченно
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
             </TableCell>
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                Неограниченно
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
               </TableCell>
             )}
           </TableRow>
 
           <TableRow>
-            <TableCell>Срок публикации заявки</TableCell>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE4" })}</TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-              14 дней
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT2" })}
             </TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              14 дней
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT2" })}
             </TableCell>
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                14 дней
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT2" })}
               </TableCell>
             )}
           </TableRow>
 
           <TableRow>
-            <TableCell>Периодичность подписки</TableCell>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE5" })}</TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-              2 раза в неделю (понедельник и среда)
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT3" })}
             </TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              2 раза в неделю (понедельник и среда)
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT3" })}
             </TableCell>
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                2 раза в неделю (понедельник и среда)
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT3" })}
               </TableCell>
             )}
           </TableRow>
 
           <TableRow>
-            <TableCell>Время получения подписки</TableCell>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE6" })}</TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-              6:00 (по Москве)
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT4" })}
             </TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              6:00 (по Москве)
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT4" })}
             </TableCell>
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                6:00 (по Москве)
+                 {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT4" })}
               </TableCell>
             )}
           </TableRow>
 
           <TableRow>
-            <TableCell></TableCell>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE7" })}</TableCell>
             <TableCell
               align="center"
               style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-            ></TableCell>
+            >+</TableCell>
             <TableCell
               align="center"
               style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-            ></TableCell>
+            >+</TableCell>
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell
                 align="center"
                 style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-              ></TableCell>
+              >+</TableCell>
             )}
           </TableRow>
 
           <TableRow>
-            <TableCell>Отображение объявлений в списках ваших клиентов</TableCell>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE8" })}</TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-              Общие условия
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5" })}
             </TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              Приоритетное размещение
+              <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT6" })}</b>
             </TableCell>
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                Приоритетное размещение
+                <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT6" })}</b>
               </TableCell>
             )}
           </TableRow>
 
           <TableRow>
-            <TableCell>Список встречных объявлений с лучшими ценами</TableCell>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE9" })}</TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               10
             </TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+              <b>10</b>
+            </TableCell>
+            {!accessByRoles(me, ["ROLE_VENDOR"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                <b>10</b>
+              </TableCell>
+            )}
+          </TableRow>
+
+          <TableRow>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE10" })}</TableCell>
+            <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+              1
+            </TableCell>
+            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+              <b>5</b>
+            </TableCell>
+            {!accessByRoles(me, ["ROLE_VENDOR"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                <b>10</b>
+              </TableCell>
+            )}
+          </TableRow>
+
+          <TableRow>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}</TableCell>
+            <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+              1
+            </TableCell>
+            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+              <b>5</b>
+            </TableCell>
+            {!accessByRoles(me, ["ROLE_VENDOR"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                <b>10</b>
+              </TableCell>
+            )}
+          </TableRow>
+
+          <TableRow>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}</TableCell>
+            <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               10
             </TableCell>
+            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+              <b>50</b>
+            </TableCell>
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                10
+                <b>100</b>
               </TableCell>
             )}
           </TableRow>
 
           <TableRow>
-            <TableCell>Количество культур с которыми можно работать в системе</TableCell>
+            <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE13" })}</TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-              1
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT7" })}
             </TableCell>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              5
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT7" })}
             </TableCell>
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                10
-              </TableCell>
-            )}
-          </TableRow>
-
-          <TableRow>
-            <TableCell>Количество подписок</TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-              1
-            </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              5
-            </TableCell>
-            {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                10
-              </TableCell>
-            )}
-          </TableRow>
-
-          <TableRow>
-            <TableCell>Количество просмотров контактов в день</TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-              8
-            </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              50
-            </TableCell>
-            {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                80
-              </TableCell>
-            )}
-          </TableRow>
-
-          <TableRow>
-            <TableCell>Обращение в службу поддержки</TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-              Обращения обрабатываются в течение 24 часов
-            </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              Обращения обрабатываются в течение 24 часов
-            </TableCell>
-            {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                Персональный менеджер
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8" })}
               </TableCell>
             )}
           </TableRow>

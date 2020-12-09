@@ -118,6 +118,12 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   userId,
   setLocTabPulse,
 
+  clearActivateUser,
+  activateUser,
+  userActivateLoading,
+  userActivateSuccess,
+  userActivateError,
+
   openInfoAlert,
   setOpenInfoAlert,
 }) => {
@@ -184,6 +190,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       ),
     }),
   });
+
+  const onEmailConfirm = () => {
+    if (user) activateUser({ email: user.email });
+  };
 
   useEffect(() => {
     if (meSuccess && !!values && !!me && isEqual(getInitialValues(me), values)) {
@@ -301,6 +311,20 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     intl,
     setEditNoNoti,
   ]);
+
+  useEffect(() => {
+    if (userActivateSuccess || userActivateError) {
+      enqueueSnackbar(
+        userActivateSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.USERS.ACTIVATE.SUCCESS" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${userActivateError}`,
+        {
+          variant: userActivateSuccess ? "success" : "error",
+        }
+      );
+      clearActivateUser();
+    }
+  }, [clearActivateUser, userActivateSuccess, userActivateError, intl, enqueueSnackbar]);
 
   useEffect(() => {
     switch (editMode) {
@@ -841,6 +865,26 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           </div>
         )}
         <div className={classes.flexRow} style={{ marginTop: 4, marginBottom: 4 }}>
+          {accessByRoles(me, ["ROLE_ADMIN"]) && (
+            <div className={classes.button}>
+              <ButtonWithLoader
+                loading={editMeLoading || createLoading || editLoading}
+                disabled={
+                  editMeLoading ||
+                  createLoading ||
+                  editLoading ||
+                  meLoading ||
+                  userLoading ||
+                  userActivateLoading ||
+                  (editMode !== "profile" && funnelStatesLoading) ||
+                  isEqual(oldValues, values)
+                }
+                onPress={onEmailConfirm}
+              >
+                {intl.formatMessage({ id: "USER.EDIT_FORM.ACTIVATE" })}
+              </ButtonWithLoader>
+            </div>
+          )}
           {editMode !== "view" && (
             <div className={classes.button}>
               <ButtonWithLoader
@@ -912,6 +956,10 @@ const connector = connect(
     prompterRunning: state.prompter.running,
     prompterStep: state.prompter.activeStep,
 
+    userActivateLoading: state.users.userActivateLoading,
+    userActivateSuccess: state.users.userActivateSuccess,
+    userActivateError: state.users.userActivateError,
+
     openInfoAlert: state.users.openInfoAlert,
   }),
   {
@@ -929,6 +977,9 @@ const connector = connect(
     createUser: usersActions.createRequest,
     clearEditUser: usersActions.clearEdit,
     editUser: usersActions.editRequest,
+
+    clearActivateUser: usersActions.clearUserActive,
+    activateUser: usersActions.userActiveRequest,
 
     setEditNoNoti: authActions.setEditNoNoti,
     setOpenInfoAlert: usersActions.setOpenInfoAlert,

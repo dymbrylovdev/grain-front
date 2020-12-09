@@ -4,6 +4,7 @@ export const USER_URL = "/api/user/";
 export const USER_CREATE_URL = "/api/user/create";
 export const GET_USERS_URL = "/api/users";
 export const GET_STATUSES_URL = "/api/users/statuses";
+export const GET_USER_ACTIVATE = "api/user_activate/send";
 
 export function createUser(data) {
   return axios.post(USER_CREATE_URL, data);
@@ -31,4 +32,8 @@ export function getStatuses() {
 
 export function getUserById(id) {
   return axios.get(`${USER_URL}${id}`);
+}
+
+export function getUserActivate(email) {
+  return axios.get(`${GET_USER_ACTIVATE}?email=${email}`);
 }
