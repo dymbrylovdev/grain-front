@@ -666,8 +666,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
-      {/* //* Companies */}
-
       {editMode !== "create" && (
         <div>
           {currentUser && currentUser.company ? (
