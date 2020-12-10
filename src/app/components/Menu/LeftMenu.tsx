@@ -110,12 +110,12 @@ const LeftMenu: React.FC<IProps> = ({
   salePurchaseMode,
   setSalePurchaseMode,
   setLeftMenuOpen,
-  enumParams,
 }) => {
   const classes = useStyles();
   const history = useHistory();
 
   const [bestOpen, setBestOpen] = useState(false);
+  const [selectedOpen, setSelectedOpen] = useState(false);
   const [allOpen, setAllOpen] = useState(false);
 
   useEffect(() => {
@@ -134,6 +134,8 @@ const LeftMenu: React.FC<IProps> = ({
     }
     setLeftMenuOpen(false);
   };
+
+  const selectedCrop = me?.crops.filter(crop => !!cropId && +cropId === crop.id);
 
   return (
     <div>
@@ -245,6 +247,7 @@ const LeftMenu: React.FC<IProps> = ({
         onClick={() => {
           setAllOpen(false);
           setBestOpen(!bestOpen);
+          setSelectedOpen(false);
         }}
         className={`${classes.nester} ${
           bestAllMyDealsMode === "best-bids" ? classes.selected : ""
@@ -257,6 +260,7 @@ const LeftMenu: React.FC<IProps> = ({
           <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
         )}
       </MenuItem>
+
       <Collapse in={bestOpen} timeout="auto" unmountOnExit>
         {me?.crops?.map(crop => (
           <MenuItem
@@ -264,6 +268,7 @@ const LeftMenu: React.FC<IProps> = ({
             onClick={() => {
               handleClick(`/${salePurchaseMode}/best-bids/${crop.id}`);
               setBestOpen(false);
+              setSelectedOpen(true);
             }}
             className={`${classes.nested} ${
               bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id
@@ -277,6 +282,21 @@ const LeftMenu: React.FC<IProps> = ({
         <MenuItem onClick={() => handleClick("/user/profile/crops")} className={classes.nested}>
           • {intl.formatMessage({ id: "SUBMENU.PROFILE.CROPS" })}
         </MenuItem>
+      </Collapse>
+
+      <Collapse in={selectedOpen} timeout="auto" unmountOnExit>
+        {selectedCrop.map(crop => (
+          <MenuItem
+            key={crop.id}
+            className={`${classes.nested} ${
+              bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id
+                ? classes.selected
+                : ""
+            }`}
+          >
+            • {crop.name}
+          </MenuItem>
+        ))}
       </Collapse>
 
       {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (

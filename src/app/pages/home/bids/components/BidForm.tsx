@@ -38,9 +38,6 @@ import { TrafficLight } from "../../users/components";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { thousands } from "../../deals/utils/utils";
 
-import { actions } from "../../../../store/ducks/myFilters.duck";
-import MyFilters from "./filter/MyFilters";
-
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
     fontSize: 16,
@@ -841,6 +838,7 @@ const BidForm: React.FC<IProps> = ({
             <div className={innerClasses.calcTitle}>
               {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
             </div>
+            {/* //* HERE */}
             <TextField
               type="text"
               label={intl.formatMessage({
@@ -856,6 +854,7 @@ const BidForm: React.FC<IProps> = ({
                 inputComponent: NumberFormatCustom as any,
               }}
               autoComplete="off"
+              autoFocus={true}
             />
             <div className={innerClasses.calcDescription}>
               {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
