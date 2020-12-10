@@ -115,8 +115,9 @@ const LeftMenu: React.FC<IProps> = ({
   const history = useHistory();
 
   const [bestOpen, setBestOpen] = useState(false);
-  const [selectedOpen, setSelectedOpen] = useState(false);
+  const [selectedBestOpen, setSelectedBestOpen] = useState(false);
   const [allOpen, setAllOpen] = useState(false);
+  const [selectedAllOpen, setSelectedAllOpen] = useState(false);
 
   useEffect(() => {
     if (!salePurchaseMode) {
@@ -206,6 +207,8 @@ const LeftMenu: React.FC<IProps> = ({
           onClick={() => {
             setBestOpen(false);
             setAllOpen(!allOpen);
+            setSelectedBestOpen(false);
+            setSelectedAllOpen(false);
           }}
           className={`${classes.nester} ${
             bestAllMyDealsMode === "all-bids" ? classes.selected : ""
@@ -227,6 +230,7 @@ const LeftMenu: React.FC<IProps> = ({
               onClick={() => {
                 handleClick(`/${salePurchaseMode}/all-bids/${crop.id}`);
                 setAllOpen(false);
+                setSelectedAllOpen(true);
               }}
               className={`${classes.nested} ${
                 bestAllMyDealsMode === "all-bids" && !!cropId && +cropId === crop.id
@@ -243,11 +247,29 @@ const LeftMenu: React.FC<IProps> = ({
         </Collapse>
       )}
 
+      {accessByRoles(me, ["ROLE_ADMIN"]) && (
+        <Collapse in={selectedAllOpen} timeout="auto" unmountOnExit>
+          {selectedCrop.map(crop => (
+            <MenuItem
+              key={crop.id}
+              className={`${classes.nested} ${
+                bestAllMyDealsMode === "all-bids" && !!cropId && +cropId === crop.id
+                  ? classes.selected
+                  : ""
+              }`}
+            >
+              • {crop.name}
+            </MenuItem>
+          ))}
+        </Collapse>
+      )}
+
       <MenuItem
         onClick={() => {
           setAllOpen(false);
           setBestOpen(!bestOpen);
-          setSelectedOpen(false);
+          setSelectedBestOpen(false);
+          setSelectedAllOpen(false);
         }}
         className={`${classes.nester} ${
           bestAllMyDealsMode === "best-bids" ? classes.selected : ""
@@ -268,7 +290,7 @@ const LeftMenu: React.FC<IProps> = ({
             onClick={() => {
               handleClick(`/${salePurchaseMode}/best-bids/${crop.id}`);
               setBestOpen(false);
-              setSelectedOpen(true);
+              setSelectedBestOpen(true);
             }}
             className={`${classes.nested} ${
               bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id
@@ -284,7 +306,7 @@ const LeftMenu: React.FC<IProps> = ({
         </MenuItem>
       </Collapse>
 
-      <Collapse in={selectedOpen} timeout="auto" unmountOnExit>
+      <Collapse in={selectedBestOpen} timeout="auto" unmountOnExit>
         {selectedCrop.map(crop => (
           <MenuItem
             key={crop.id}
