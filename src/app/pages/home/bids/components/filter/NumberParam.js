@@ -41,6 +41,9 @@ const useStyles = makeStyles(theme => ({
     // maxWidth: 200,
     // marginLeft: theme.spacing(2),
   },
+  resize: {
+    fontSize: 30
+  }
 }));
 
 function NumberParam({ values, param, handleChange, clearAction, isEditable = true, handleSubmit = null }) {
@@ -85,6 +88,9 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
                 }
               : undefined
           }
+          InputLabelProps={{
+            style: { fontSize: 12 }
+          }}
           disabled={!isEditable}
           autoComplete="off"
         />

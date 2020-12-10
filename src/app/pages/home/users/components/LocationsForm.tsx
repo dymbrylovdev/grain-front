@@ -254,7 +254,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   </>
                 ) : (
                   <>
-                    <div>Название точки:</div>
+                    <div style={{fontSize: 16}}>{intl.formatMessage({ id: "LOCATIONS.FORM.NAME" })}</div>
                     <div className={innerClasses.name}>{item.name}</div>
                     {editMode !== "view" && (
                       <div>
@@ -359,7 +359,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 <Skeleton width="100%" height={22} animation="wave" />
               </p>
             ) : (
-              <p>{intl.formatMessage({ id: "LOCATIONS.MORE" })}</p>
+              <p style={{fontSize: 16, marginTop: 20}}><b>{intl.formatMessage({ id: "LOCATIONS.MORE" })}</b></p>
             ))}
         </>
       )}
