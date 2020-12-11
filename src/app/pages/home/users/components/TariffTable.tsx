@@ -1,5 +1,13 @@
 import React from "react";
-import { Table, TableBody, TableCell, TableHead, TableRow, Grid as div } from "@material-ui/core";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Button,
+  Grid as div,
+} from "@material-ui/core";
 import { IntlShape } from "react-intl";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 
@@ -21,9 +29,11 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.4)" }}>
               <b>{intl.formatMessage({ id: "TARIFFS.NAME.FREE" })}</b>
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
-              <b>{intl.formatMessage({ id: "TARIFFS.NAME.PREMIUM" })}</b>
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.4)" }}>
+                <b>{intl.formatMessage({ id: "TARIFFS.NAME.PREMIUM" })}</b>
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.4)" }}>
                 <b>{intl.formatMessage({ id: "TARIFFS.NAME.BUSINESS" })}</b>
@@ -38,9 +48,11 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
@@ -53,9 +65,11 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
@@ -68,9 +82,11 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
@@ -83,9 +99,11 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT2" })}
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT2" })}
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT2" })}
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT2" })}
@@ -98,9 +116,11 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT3" })}
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT3" })}
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT3" })}
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT3" })}
@@ -113,31 +133,32 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT4" })}
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT4" })}
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT4" })}
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                 {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT4" })}
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT4" })}
               </TableCell>
             )}
           </TableRow>
 
           <TableRow>
             <TableCell>{intl.formatMessage({ id: "TARIFFS.TABLE.TITLE7" })}</TableCell>
-            <TableCell
-              align="center"
-              style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
-            >+</TableCell>
-            <TableCell
-              align="center"
-              style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-            >+</TableCell>
+            <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+              +
+            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                +
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-              >+</TableCell>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                +
+              </TableCell>
             )}
           </TableRow>
 
@@ -146,9 +167,11 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5" })}
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT6" })}</b>
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT6" })}</b>
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT6" })}</b>
@@ -161,9 +184,11 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               10
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              <b>10</b>
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                <b>10</b>
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 <b>10</b>
@@ -176,9 +201,11 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               1
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              <b>5</b>
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                <b>5</b>
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 <b>10</b>
@@ -191,9 +218,11 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               1
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              <b>5</b>
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                <b>5</b>
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 <b>10</b>
@@ -206,9 +235,11 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               10
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              <b>50</b>
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                <b>50</b>
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 <b>100</b>
@@ -221,15 +252,18 @@ const TariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, classes, 
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT7" })}
             </TableCell>
-            <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT7" })}
-            </TableCell>
+            {!accessByRoles(me, ["ROLE_TRADER"]) && (
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT7" })}
+              </TableCell>
+            )}
             {!accessByRoles(me, ["ROLE_VENDOR"]) && (
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8" })}
               </TableCell>
             )}
           </TableRow>
+
         </TableBody>
       </Table>
     </div>

@@ -22,6 +22,8 @@ import { actions as tariffsActions } from "../../../../store/ducks/tariffs.duck"
 import { actions as crops2Actions } from "../../../../store/ducks/crops2.duck";
 
 import TariffTable from "./TariffTable";
+import NewTariffTable from "./NewTariffTable";
+import TariffPaymentBlock from "./TariffPaymentBlock";
 import useStyles from "../../styles";
 import { IAppState } from "../../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
@@ -166,10 +168,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   // const [addingCrop, setAddingCrop] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [openModal, setOpenModal] = useState(false);
-
-  const onToggleModal = () => {
-    setOpenModal(!openModal);
-  };
+  const [showTariffTable, setShowTariffTable] = useState(true);
 
   const handleDateChange = (date: any) => {
     setSelectedDate(date);
@@ -266,7 +265,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         },
       });
     }
-  }, [realUser, resetForm, tariffs, selectedDate]);
+  }, [realUser, resetForm, tariffs]);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -344,15 +343,21 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         ) : (
           <>
             {editMode === "profile" && (
-              <TariffTable me={me} classes={classes} />
+              <>
+                {showTariffTable ? (
+                  <NewTariffTable me={me} classes={classes} showTariffTable={showTariffTable} setShowTariffTable={setShowTariffTable} />
+                ) : (
+                  <div>123</div>
+                )}
+              </>
             )}
 
-            {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
+            {/* {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
               <div style={{ marginTop: 30, marginBottom: 10 }}>
                 <h6 className={innerClasses.title}>
-                  Ваш текущий тариф: {realUser?.tariff_matrix.tariff.name}
+                  Текущий тариф: {realUser?.tariff_matrix.tariff.name}
                 </h6>
-                <h6 className={innerClasses.title}>{`Начало действия тарифа: ${intl.formatDate(
+                <h6 className={innerClasses.title}>{`Окончание действия тарифа: ${intl.formatDate(
                   realUser?.tariff_expired_at
                 )}`}</h6>
                 {realUser?.tariff_matrix.tariff.name !== "Бесплатный" ? (
@@ -361,9 +366,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   </h6>
                 ) : null}
               </div>
-            )}
+            )} */}
 
-            <div>
+            {/* <div>
               {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
                 realSelectedTariff.tariff.name !== "Бесплатный" && (
                   <div className={innerClasses.calendarContain}>
@@ -448,7 +453,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     )}
                   </div>
                 )}
-            </div>
+            </div> */}
           </>
         )}
       </div>
@@ -463,7 +468,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               Скачать договор
             </a>
           </Button>
-          {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+          {/* {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
             <Button style={{ marginLeft: 15 }} variant="contained" color="primary" onClick={() => handleSubmit()}>
               {intl.formatMessage({ id: "TARIFFS.SAVE" })}
             </Button>
@@ -473,7 +478,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               <Button style={{ marginLeft: 15 }} variant="contained" color="primary" onClick={() => onToggleModal()}>
                 {intl.formatMessage({ id: "TARIFFS.PAYMENT" })}
               </Button>
-            )}
+            )} */}
         </div>
       )}
 
@@ -483,43 +488,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         groupedTariffsType &&
         tariffs &&
         !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
-          <Dialog open={openModal} onClose={onToggleModal}>
-            <div style={{ padding: 10 }}>
-              <h5>{intl.formatMessage({ id: "TARIFFS.PAYMENT.FORM.TITLE" })}</h5>
-              <div>
-                <h6>
-                  <b>Сумма платежа:</b> {realSelectedTariff.price}
-                </h6>
-                <br />
-                <h6>
-                  <b>Назначение платежа:</b> Тариф "{realSelectedTariff.tariff.name}{" "}
-                  {realSelectedTariff.tariff_period ? realSelectedTariff.tariff_period.period : 0}"
-                  для {realUser.email}, id = {realUser.id}{" "}
-                  {`Начало действия тарифа: ${intl.formatDate(selectedDate)}`}
-                </h6>
-                <br />
-                <h6>
-                  <b>Реквизиты для оплаты</b>
-                </h6>
-                <h6>Полное наименование: ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ "АМБАР"</h6>
-                <br />
-                <h6>Директор: Егиазарова Кристина Суреновна</h6>
-                <h6>ОГРН: 1202300046915</h6>
-                <h6>ИНН: 2312294751</h6>
-                <h6>КПП: 231201001</h6>
-                <h6>Наименование банка: АО "Альфа БАНК"</h6>
-                <h6>Корреспондентский счет: 30101810200000000593</h6>
-                <h6>БИК: 044525593</h6>
-                <h6>Расчетный счет: 40702810001100023020</h6>
-                <br />
-                <h6>Адрес для корреспонденции: 350080 г. Краснодар</h6>
-                <h6>
-                  Юридический адрес: КРАЙ КРАСНОДАРСКИЙ, г. КРАСНОДАР, УЛИЦА ИМ. ТЮЛЯЕВА, ДОМ 2
-                  КОРПУС 2
-                </h6>
-              </div>
-            </div>
-          </Dialog>
+          <TariffPaymentBlock realUser={realUser} openModal={openModal} setOpenModal={setOpenModal} />
         )}
     </>
   );
