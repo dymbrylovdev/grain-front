@@ -288,6 +288,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       {editMode !== "view" && !!currentUser && !currentUser.company && (
         <CompanySearchForm
+          me={me}
           classes={classes}
           company={currentUser && currentUser.company}
           setCompanyAction={(company: any) => {

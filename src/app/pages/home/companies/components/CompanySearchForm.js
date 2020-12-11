@@ -9,6 +9,7 @@ import { searchCompanies } from "../../../../crud/companies.crud";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import CompanySearchDialog from "./CompanySearchDialog";
+import ScrollToTop from "../../../../components/ui/ScrollToTop";
 
 const innerStyles = makeStyles(theme => ({
   title: {
@@ -39,6 +40,7 @@ const isSearchEmpty = values => {
 function CompanySearchForm({
   intl,
   setCompanyAction,
+  me,
   classes,
   company,
   editAction,
@@ -46,6 +48,7 @@ function CompanySearchForm({
   confirms,
 }) {
   const formRef = useRef();
+  const searchRef = useRef();
   const innerClasses = innerStyles();
   const [companies, setCompanies] = useState([]);
   //const [currentCompany, setCurrentCompany] = useState(company);
@@ -101,9 +104,16 @@ function CompanySearchForm({
       values.use_vat,
     ]
   );
+
+  const scrollBottom = () => window.scrollTo(0, window.innerHeight);
+
   useEffect(() => {
     formRef.current.resetForm({ values: getInitialValues(company) });
   }, [company]);
+
+  useEffect(() => {
+    if (me?.company === null) scrollBottom();
+  }, [me?.company]);
 
   return (
     <>
@@ -162,9 +172,10 @@ function CompanySearchForm({
         }) => (
           <div noValidate className="kt-form" onSubmit={handleSubmit}>
             <Box
+              ref={searchRef}
               className={classes.paramContainer}
               border={1}
-              borderColor="#eeeeee"
+              borderColor={me?.company === null ? "#6775c4" : "#eeeeee"}
               borderRadius={5}
             >
               <div className={innerClasses.title}>
@@ -198,6 +209,7 @@ function CompanySearchForm({
                 helperText={touched.inn && errors.inn}
                 error={Boolean(touched.inn && errors.inn)}
                 autoComplete="off"
+                autoFocus={me?.company === null ? true : false}
               />
               <StatusAlert status={status} />
               <div className={classes.buttonContainer}>

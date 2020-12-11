@@ -192,6 +192,7 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     title={intl.formatMessage({
                       id: "COMPANY.CONFIRM.NO_CONFIRM",
                     })}
+                    onClick={() => console.log("click")}
                   >
                     <ReportProblemIcon
                       color="error"
