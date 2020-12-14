@@ -11,7 +11,7 @@ import {
 import { IntlShape } from "react-intl";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 
-import { accessByRoles } from "../../../../utils/utils";
+import { accessByRoles } from "../../../../../../utils/utils";
 
 interface IProps {
   intl: IntlShape;

@@ -20,7 +20,7 @@ import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
 import { ProfileForm, CropsForm, LocationsForm } from "./components";
 import Prompter from "../prompter/Prompter";
 import ScrollToTop from "../../../components/ui/ScrollToTop";
-import TariffForm from "./components/TariffForm";
+import TariffForm from "./components/TariffForm/TariffForm";
 import { accessByRoles } from "../../../utils/utils";
 import { access } from "fs";
 

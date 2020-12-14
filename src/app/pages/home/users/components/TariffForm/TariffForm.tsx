@@ -15,25 +15,25 @@ import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 
-import { actions as builderActions } from "../../../../../_metronic/ducks/builder";
-import { actions as authActions } from "../../../../store/ducks/auth.duck";
-import { actions as usersActions } from "../../../../store/ducks/users.duck";
-import { actions as tariffsActions } from "../../../../store/ducks/tariffs.duck";
-import { actions as crops2Actions } from "../../../../store/ducks/crops2.duck";
+import { actions as builderActions } from "../../../../../../_metronic/ducks/builder";
+import { actions as authActions } from "../../../../../store/ducks/auth.duck";
+import { actions as usersActions } from "../../../../../store/ducks/users.duck";
+import { actions as tariffsActions } from "../../../../../store/ducks/tariffs.duck";
+import { actions as crops2Actions } from "../../../../../store/ducks/crops2.duck";
 
-import TariffTable from "./TariffTable";
-import NewTariffTable from "./NewTariffTable";
-import TariffPaymentBlock from "./TariffPaymentBlock";
-import useStyles from "../../styles";
-import { IAppState } from "../../../../store/rootDuck";
+import TariffCards from "./components/TariffCards";
+import NewTariffTable from "./components/NewTariffTable";
+import TariffPaymentBlock from "./components/TariffPaymentBlock";
+import useStyles from "../../../styles";
+import { IAppState } from "../../../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
-import { IUser } from "../../../../interfaces/users";
-import { ITariff, ITariffType, ITariffPeriod } from "../../../../interfaces/tariffs";
-import { ICrop } from "../../../../interfaces/crops";
-import getMenuConfig from "../../../../router/MenuConfig";
+import { IUser } from "../../../../../interfaces/users";
+import { ITariff, ITariffType, ITariffPeriod } from "../../../../../interfaces/tariffs";
+import { ICrop } from "../../../../../interfaces/crops";
+import getMenuConfig from "../../../../../router/MenuConfig";
 import DateFnsUtils from "@date-io/date-fns";
 import ruRU from "date-fns/locale/ru";
-import { accessByRoles } from "../../../../utils/utils";
+import { accessByRoles } from "../../../../../utils/utils";
 import uniqBy from "lodash/uniqBy";
 
 const innerStyles = makeStyles((theme: Theme) => ({
@@ -132,6 +132,10 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   let realTariffs: ITariff[] | undefined = undefined;
   let realBuyerTariffs: ITariff[] | undefined = undefined;
+
+  let realGroupedTariffs: ITariff[] | undefined = undefined;
+  let realGroupedBuyerTariffs: ITariff[] | undefined = undefined;
+
   let groupedTariffsType: ITariffType[] | undefined = undefined;
   let groupedTariffsPeriod: ITariffPeriod[] | undefined = undefined;
   let groupedForBuyer: ITariffType[] | undefined = undefined;
@@ -154,6 +158,11 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
     let c = realBuyerTariffs.map(item => item.tariff);
     groupedForBuyer = uniqBy(c, n => n.name);
+
+    realGroupedTariffs = realTariffs.filter(item => item.tariff.name !== "Бесплатный");
+    realGroupedBuyerTariffs = realBuyerTariffs.filter(
+      item => item.tariff.name === "Бизнес/Трейдер"
+    );
   }
 
   let realCrops: ICrop[] = [];
@@ -168,11 +177,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   // const [addingCrop, setAddingCrop] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [openModal, setOpenModal] = useState(false);
-  const [showTariffTable, setShowTariffTable] = useState(true);
-
-  const handleDateChange = (date: any) => {
-    setSelectedDate(date);
-  };
+  const [showTariffTable, setShowTariffTable] = useState(0);
+  const [selectedTariff, setSelectedTariff] = useState(undefined);
 
   const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
     initialValues: {
@@ -344,13 +350,35 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           <>
             {editMode === "profile" && (
               <>
-                {showTariffTable ? (
-                  <NewTariffTable me={me} classes={classes} showTariffTable={showTariffTable} setShowTariffTable={setShowTariffTable} />
+                {!showTariffTable ? (
+                  <NewTariffTable
+                    me={me}
+                    classes={classes}
+                    showTariffTable={showTariffTable}
+                    setShowTariffTable={setShowTariffTable}
+                  />
                 ) : (
-                  <div>123</div>
+                  <TariffCards
+                    me={me}
+                    realGroupedTariffs={realGroupedTariffs}
+                    realGroupedBuyerTariffs={realGroupedBuyerTariffs}
+                    showTariffTable={showTariffTable}
+                    setShowTariffTable={setShowTariffTable}
+                    openModal={openModal}
+                    setOpenModal={setOpenModal}
+                    selectedTariff={selectedTariff}
+                    setSelectedTariff={setSelectedTariff}
+                  />
                 )}
               </>
             )}
+
+            <TariffPaymentBlock
+              realUser={realUser}
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+              selectedTariff={selectedTariff}
+            />
 
             {/* {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
               <div style={{ marginTop: 30, marginBottom: 10 }}>
@@ -465,7 +493,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               href="https://drive.google.com/drive/folders/1fajBzWbprZShBTjoDp2JN-Xw4K6VHwKL"
               target="blank"
             >
-              Скачать договор
+              {intl.formatMessage({ id: "ALL_BUTTONS.DOWNLOAD" })}
             </a>
           </Button>
           {/* {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
@@ -482,14 +510,19 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         </div>
       )}
 
-      {realUser &&
+      {/* {realUser &&
         realSelectedTariff &&
+        selectedTariff &&
         me &&
         groupedTariffsType &&
         tariffs &&
         !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
-          <TariffPaymentBlock realUser={realUser} openModal={openModal} setOpenModal={setOpenModal} />
-        )}
+          <TariffPaymentBlock
+            openModal={openModal}
+            setOpenModal={setOpenModal}
+            selectedTariff={selectedTariff}
+          />
+        )} */}
     </>
   );
 };

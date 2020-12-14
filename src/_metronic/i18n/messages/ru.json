@@ -10,6 +10,7 @@
   "ALL.BUTTONS.CLEAR": "Очистить",
   "ALL.BUTTONS.SUBMIT": "Применить",
   "ALL.BUTTONS.CREATE_FILTER": "Создать фильтр",
+  "ALL_BUTTONS.DOWNLOAD": "Скачать договор",
 
   "ALL.DIALOGS.DEL_TEXT": "Удаление...",
 
@@ -543,10 +544,12 @@
   "TARIFFS.TABLE.TEXT2": "14 дней",
   "TARIFFS.TABLE.TEXT3": "2 раза в неделю (понедельник и среда)",
   "TARIFFS.TABLE.TEXT4": "6:00 (по Москве)",
-  "TARIFFS.TABLE.TEXT5": "Общие условия",
+  "TARIFFS.TABLE.TEXT5": "Общие ",
+  "TARIFFS.TABLE.TEXT5_1": "условия",
   "TARIFFS.TABLE.TEXT6": "Приоритетное размещение",
   "TARIFFS.TABLE.TEXT7": "Обращения обрабатываются в течение 24 часов",
-  "TARIFFS.TABLE.TEXT8": "Персональный менеджер",
+  "TARIFFS.TABLE.TEXT8": "Персональный ",
+  "TARIFFS.TABLE.TEXT8_1": "менеджер",
 
   "TRIAL.TITLE": "Тарифы • Пробный период",
   "TRIAL.FORM.TIME": "Срок пробного периода, дней",

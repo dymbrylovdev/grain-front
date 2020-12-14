@@ -12,18 +12,24 @@ import {
 import { IntlShape } from "react-intl";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 
-import { accessByRoles } from "../../../../utils/utils";
-import { IUser } from "../../../../interfaces/users";
+import { accessByRoles } from "../../../../../../utils/utils";
+import { IUser } from "../../../../../../interfaces/users";
 
 interface IProps {
   intl: IntlShape;
   me: IUser;
   classes: any;
-  showTariffTable: boolean;
+  showTariffTable: number;
   setShowTariffTable: any;
 }
 
-const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, classes, showTariffTable, setShowTariffTable }) => {
+const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
+  intl,
+  me,
+  classes,
+  showTariffTable,
+  setShowTariffTable,
+}) => {
   return (
     <TableContainer style={{ display: "flex", justifyContent: "space-between" }}>
       <Table>
@@ -33,7 +39,9 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
               <b>{intl.formatMessage({ id: "TARIFFS.NAME.FREE" })}</b>
             </TableCell>
           </TableRow>
+        </TableHead>
 
+        <TableBody>
           <TableRow>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}{" "}
@@ -83,9 +91,14 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
           </TableRow>
 
           <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+            <TableCell
+              size="small"
+              align="center"
+              style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
+            >
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE8" })}{" "}
               {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5" })}
+              <br /> {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5_1" })}
             </TableCell>
           </TableRow>
 
@@ -114,7 +127,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
           </TableRow>
 
           <TableRow>
-            <TableCell size="small" align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+            <TableCell
+              size="small"
+              align="center"
+              style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
+            >
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE13" })}{" "}
               {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT7" })}
             </TableCell>
@@ -131,8 +148,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE15" })} -
             </TableCell>
           </TableRow>
-
-        </TableHead>
+        </TableBody>
       </Table>
 
       {!accessByRoles(me, ["ROLE_TRADER"]) && (
@@ -143,7 +159,9 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
                 <b>{intl.formatMessage({ id: "TARIFFS.NAME.PREMIUM" })}</b>
               </TableCell>
             </TableRow>
+          </TableHead>
 
+          <TableBody>
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}{" "}
@@ -193,7 +211,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
             </TableRow>
 
             <TableRow>
-              <TableCell size="small" align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+              <TableCell
+                size="small"
+                align="center"
+                style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
+              >
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE8" })}{" "}
                 <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT6" })}</b>
               </TableCell>
@@ -224,7 +246,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
             </TableRow>
 
             <TableRow>
-              <TableCell size="small" align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+              <TableCell
+                size="small"
+                align="center"
+                style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
+              >
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE13" })}{" "}
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT7" })}
               </TableCell>
@@ -243,14 +269,17 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
             </TableRow>
 
             <TableRow>
-              <TableCell
-                align="center"
-                style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}
-              >
-                <Button variant="contained" color="primary" onClick={() => setShowTariffTable(false)}>Перейти на премиум</Button>
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setShowTariffTable(1)}
+                >
+                  Перейти на премиум
+                </Button>
               </TableCell>
             </TableRow>
-          </TableHead>
+          </TableBody>
         </Table>
       )}
 
@@ -262,7 +291,9 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
                 <b>{intl.formatMessage({ id: "TARIFFS.NAME.BUSINESS" })}</b>
               </TableCell>
             </TableRow>
+          </TableHead>
 
+          <TableBody>
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}{" "}
@@ -312,7 +343,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
             </TableRow>
 
             <TableRow>
-              <TableCell size="small" align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+              <TableCell
+                size="small"
+                align="center"
+                style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
+              >
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE8" })}{" "}
                 <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT6" })}</b>
               </TableCell>
@@ -343,9 +378,14 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
             </TableRow>
 
             <TableRow>
-              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+              <TableCell
+                size="small"
+                align="center"
+                style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
+              >
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE13" })}{" "}
                 <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8" })}</b>
+                <br /> <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8_1" })}</b>
               </TableCell>
             </TableRow>
 
@@ -363,10 +403,16 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({ intl, me, cl
 
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                <Button variant="contained" color="primary">Перейти на бизнес</Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setShowTariffTable(2)}
+                >
+                  Перейти на бизнес
+                </Button>
               </TableCell>
             </TableRow>
-          </TableHead>
+          </TableBody>
         </Table>
       )}
     </TableContainer>
