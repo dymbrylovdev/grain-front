@@ -403,7 +403,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
               </TableCell>
             </TableRow>
 
-            {editMode === "profile" && (
+            {editMode === "edit" && !["ROLE_BUYER"].includes(realUser.roles[0]) ? (
               <TableRow>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                   <Button variant="contained" color="primary" onClick={() => setShowTariffTable(2)}>
@@ -411,7 +411,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                   </Button>
                 </TableCell>
               </TableRow>
-            )}
+            ) : null}
           </TableBody>
         </Table>
       )}
