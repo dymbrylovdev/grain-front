@@ -102,7 +102,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
             >
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE8" })}{" "}
               {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5" })}
-              <br /> {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5_1" })}
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5_1" })}
             </TableCell>
           </TableRow>
 
@@ -403,7 +403,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
               </TableCell>
             </TableRow>
 
-            {editMode === "edit" && !["ROLE_BUYER"].includes(realUser.roles[0]) ? (
+            {editMode === "profile" && (
               <TableRow>
                 <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                   <Button variant="contained" color="primary" onClick={() => setShowTariffTable(2)}>
@@ -411,7 +411,18 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                   </Button>
                 </TableCell>
               </TableRow>
-            ) : null}
+            )}
+
+            {editMode === "edit" && ["ROLE_TRADER"].includes(realUser.roles[0]) && (
+              <TableRow>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <Button variant="contained" color="primary" onClick={() => setShowTariffTable(2)}>
+                    {intl.formatMessage({ id: "TARIFFS.PAYMENT.GET_BUSINESS" })}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )}
+
           </TableBody>
         </Table>
       )}
