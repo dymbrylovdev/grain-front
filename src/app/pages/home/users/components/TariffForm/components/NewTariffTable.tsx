@@ -19,6 +19,8 @@ interface IProps {
   intl: IntlShape;
   me: IUser;
   classes: any;
+  editMode: "profile" | "edit" | "view" | "create";
+  realUser: IUser;
   showTariffTable: number;
   setShowTariffTable: any;
 }
@@ -27,6 +29,8 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
   intl,
   me,
   classes,
+  editMode,
+  realUser,
   showTariffTable,
   setShowTariffTable,
 }) => {
@@ -151,7 +155,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
         </TableBody>
       </Table>
 
-      {!accessByRoles(me, ["ROLE_TRADER"]) && (
+      {!["ROLE_TRADER"].includes(realUser.roles[0]) && (
         <Table>
           <TableHead>
             <TableRow>
@@ -270,12 +274,10 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
 
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => setShowTariffTable(1)}
-                >
-                  Перейти на премиум
+                <Button variant="contained" color="primary" onClick={() => setShowTariffTable(1)}>
+                  {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
+                    ? intl.formatMessage({ id: "TARIFFS.PAYMENT.GET_PREMIUM" })
+                    : intl.formatMessage({ id: "TARIFFS.PAYMENT.SET_PREMIUM" })}
                 </Button>
               </TableCell>
             </TableRow>
@@ -283,7 +285,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
         </Table>
       )}
 
-      {!accessByRoles(me, ["ROLE_VENDOR"]) && (
+      {!["ROLE_VENDOR"].includes(realUser.roles[0]) && (
         <Table>
           <TableHead>
             <TableRow>
@@ -401,17 +403,15 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
               </TableCell>
             </TableRow>
 
-            <TableRow>
-              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => setShowTariffTable(2)}
-                >
-                  Перейти на бизнес
-                </Button>
-              </TableCell>
-            </TableRow>
+            {editMode === "profile" && (
+              <TableRow>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <Button variant="contained" color="primary" onClick={() => setShowTariffTable(2)}>
+                    {intl.formatMessage({ id: "TARIFFS.PAYMENT.GET_BUSINESS" })}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       )}

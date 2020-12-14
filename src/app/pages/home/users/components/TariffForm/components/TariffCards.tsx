@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardActions, Button, Divider, Grid as div } from "@material-ui/core";
 import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
 
-import TariffPaymentBlock from "./TariffPaymentBlock";
 import { makeStyles } from "@material-ui/styles";
+
 import { ITariff } from "../../../../../../interfaces/tariffs";
 import { IUser } from "../../../../../../interfaces/users";
+import { accessByRoles } from "../../../../../../utils/utils";
 
 const useStyles = makeStyles({
   root: {
@@ -19,9 +20,11 @@ const useStyles = makeStyles({
   card: {
     width: "100%",
     margin: 5,
+    fontSize: 16,
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 500,
   },
   button: {
     width: "100%",
@@ -31,6 +34,8 @@ const useStyles = makeStyles({
 interface IProps {
   intl: IntlShape;
   me: IUser;
+  edit: any;
+  editMode: "profile" | "edit" | "view" | "create";
   realGroupedTariffs: ITariff[] | undefined;
   realGroupedBuyerTariffs: ITariff[] | undefined;
 
@@ -47,6 +52,8 @@ interface IProps {
 const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
   intl,
   me,
+  edit,
+  editMode,
   realGroupedTariffs,
   realGroupedBuyerTariffs,
 
@@ -63,12 +70,14 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
 
   const handleSubmit = tariff => {
     setSelectedTariff(tariff);
-    setOpenModal(true);
+    !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
+      ? setOpenModal(true)
+      : edit()
   };
 
   return (
     <div className={innerClasses.root}>
-      <div style={{ marginBottom: 10 }}>
+      <div style={{ marginBottom: 15, marginLeft: 5 }}>
         <Button onClick={() => setShowTariffTable(0)} variant="outlined" color="primary">
           {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
         </Button>
@@ -80,7 +89,7 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
               <CardContent>
                 <div className={innerClasses.title}>{item.tariff.name}</div>
                 <div>{item.tariff_period.period} Дней</div>
-                <div className={innerClasses.title} style={{ marginTop: 10 }}>
+                <div className={innerClasses.title} style={{ marginTop: 20 }}>
                   {item.price} руб.
                 </div>
               </CardContent>
@@ -92,7 +101,9 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
                   variant="contained"
                   color="primary"
                 >
-                  Выбрать
+                  {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
+                    ? intl.formatMessage({ id: "TARIFFS.PAYMENT.PAY" })
+                    : intl.formatMessage({ id: "TARIFFS.PAYMENT.SET" })}
                 </Button>
               </CardActions>
             </Card>
@@ -116,7 +127,9 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
                   variant="contained"
                   color="primary"
                 >
-                  Выбрать
+                  {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
+                    ? intl.formatMessage({ id: "TARIFFS.PAYMENT.PAY" })
+                    : intl.formatMessage({ id: "TARIFFS.PAYMENT.SET" })}
                 </Button>
               </CardActions>
             </Card>

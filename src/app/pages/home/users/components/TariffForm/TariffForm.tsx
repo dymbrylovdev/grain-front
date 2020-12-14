@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import {
-  Typography,
-  TextField,
-  Theme,
-  Grid as div,
-  Button,
-  MenuItem,
-  Dialog,
-} from "@material-ui/core";
+import { Theme, Grid as div, Button } from "@material-ui/core";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
@@ -49,7 +41,6 @@ const innerStyles = makeStyles((theme: Theme) => ({
       animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
     },
   },
-
   title: {
     paddingTop: 3,
     paddingBottom: 3,
@@ -78,6 +69,12 @@ const innerStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(2),
     paddingLeft: theme.spacing(2),
+  },
+  tariffInfo: {
+    fontSize: 18,
+    fontWeight: 400,
+    marginTop: 20,
+    marginBottom: 20,
   },
 }));
 
@@ -136,28 +133,12 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   let realGroupedTariffs: ITariff[] | undefined = undefined;
   let realGroupedBuyerTariffs: ITariff[] | undefined = undefined;
 
-  let groupedTariffsType: ITariffType[] | undefined = undefined;
-  let groupedTariffsPeriod: ITariffPeriod[] | undefined = undefined;
-  let groupedForBuyer: ITariffType[] | undefined = undefined;
-
   if (tariffs && realUser) {
     realTariffs = tariffs.filter(item => item.role.name === realUser?.roles[0]);
 
     realBuyerTariffs = tariffs.filter(
       item => item.role.name === "ROLE_BUYER" || item.role.name === "ROLE_TRADER"
     );
-
-    let a = realTariffs.map(item => item.tariff);
-    groupedTariffsType = uniqBy(a, n => n.name);
-
-    let b = realTariffs.map(item => item.tariff_period);
-    //@ts-ignore
-    b.includes(null)
-      ? (groupedTariffsPeriod = b)
-      : (groupedTariffsPeriod = uniqBy(b, n => n.period));
-
-    let c = realBuyerTariffs.map(item => item.tariff);
-    groupedForBuyer = uniqBy(c, n => n.name);
 
     realGroupedTariffs = realTariffs.filter(item => item.tariff.name !== "Бесплатный");
     realGroupedBuyerTariffs = realBuyerTariffs.filter(
@@ -174,8 +155,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     });
   }
 
-  // const [addingCrop, setAddingCrop] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [openModal, setOpenModal] = useState(false);
   const [showTariffTable, setShowTariffTable] = useState(0);
   const [selectedTariff, setSelectedTariff] = useState(undefined);
@@ -188,74 +167,19 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         ? realUser?.tariff_matrix.tariff_period.id
         : undefined,
       crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
-      tariff_expired_at: new Date(),
     },
     onSubmit: () => {
-      let newCropIds = [...values.crop_ids];
-      // let selectedTariff = tariffs?.find(
-      //   tariff =>
-      //     tariff.tariff.id === values.tariff_type_id &&
-      //     tariff.tariff_period.id === values.tariff_period_id
-      // );
-      let newTariffExpiredDate = selectedDate;
-      if (
-        values.crop_ids &&
-        values.tariff_id &&
-        values.tariff_type_id &&
-        values.tariff_period_id &&
-        tariffs &&
-        realSelectedTariff &&
-        values.crop_ids.length > realSelectedTariff.max_crops_count
-      ) {
-        newCropIds.splice(realSelectedTariff.max_crops_count);
-      }
-      if (
-        realSelectedTariff?.id &&
-        realUser?.tariff_matrix?.id &&
-        [1, 2, 102].includes(realUser.tariff_matrix.id) &&
-        [3, 4, 5].includes(realSelectedTariff.id) &&
-        crops
-      ) {
-        newCropIds = Array.from(crops, x => x.id);
-        newCropIds.splice(realSelectedTariff.max_crops_count);
-      }
       if (realUser && values.tariff_id) {
-        if (editMode === "profile") {
-          editMe({
-            data: { crop_ids: newCropIds },
-          });
-        } else {
-          edit({
-            id: realUser?.id,
-            data: {
-              tariff_matrix_id: realSelectedTariff?.id,
-              crop_ids: newCropIds,
-              tariff_expired_at: newTariffExpiredDate,
-            },
-          });
-        }
+        edit({
+          id: realUser?.id,
+          data: {
+            //@ts-ignore
+            tariff_matrix_id: selectedTariff ? selectedTariff?.id : undefined,
+          },
+        });
       }
     },
   });
-
-  let realSelectedTariff: ITariff | undefined = undefined;
-  if (realTariffs && realUser) {
-    if (!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0])) {
-      ["ROLE_BUYER"].includes(realUser.roles[0])
-        ? (realSelectedTariff = realBuyerTariffs?.find(
-            tariff =>
-              tariff.tariff.id === values.tariff_type_id &&
-              tariff.tariff_period.id === values.tariff_period_id
-          ))
-        : (realSelectedTariff = realTariffs?.find(
-            tariff =>
-              tariff.tariff.id === values.tariff_type_id &&
-              tariff.tariff_period.id === values.tariff_period_id
-          ));
-    } else {
-      realSelectedTariff = realUser.tariff_matrix;
-    }
-  }
 
   useEffect(() => {
     if (realUser) {
@@ -267,7 +191,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             ? realUser?.tariff_matrix.tariff_period.id
             : undefined,
           crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
-          tariff_expired_at: selectedDate,
         },
       });
     }
@@ -331,6 +254,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchCrops();
   }, [fetchCrops]);
 
+  console.log(realUser);
+
   return (
     <>
       <div>
@@ -339,27 +264,34 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         loadingUser ||
         !realTariffs ||
         !realBuyerTariffs ||
-        !realSelectedTariff ||
-        !groupedTariffsType ||
-        !groupedTariffsPeriod ||
-        !groupedForBuyer ||
         !realUser ||
         editLoading ? (
           <Skeleton width="100%" height={68} animation="wave" />
         ) : (
           <>
-            {editMode === "profile" && (
+            {(editMode === "profile" || editMode === "edit") && (
               <>
+                <div className={innerClasses.tariffInfo}>
+                  <div>Текущий тариф: {realUser.tariff_matrix.tariff.name}</div>
+                  {realUser.tariff_matrix.tariff.name !== "Бесплатный" ? (
+                    <div>Период: {realUser.tariff_matrix.tariff_period.period}</div>
+                  ) : null}
+                </div>
+
                 {!showTariffTable ? (
                   <NewTariffTable
                     me={me}
                     classes={classes}
+                    editMode={editMode}
+                    realUser={realUser}
                     showTariffTable={showTariffTable}
                     setShowTariffTable={setShowTariffTable}
                   />
                 ) : (
                   <TariffCards
                     me={me}
+                    edit={handleSubmit}
+                    editMode={editMode}
                     realGroupedTariffs={realGroupedTariffs}
                     realGroupedBuyerTariffs={realGroupedBuyerTariffs}
                     showTariffTable={showTariffTable}
@@ -372,29 +304,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 )}
               </>
             )}
-
-            <TariffPaymentBlock
-              realUser={realUser}
-              openModal={openModal}
-              setOpenModal={setOpenModal}
-              selectedTariff={selectedTariff}
-            />
-
-            {/* {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
-              <div style={{ marginTop: 30, marginBottom: 10 }}>
-                <h6 className={innerClasses.title}>
-                  Текущий тариф: {realUser?.tariff_matrix.tariff.name}
-                </h6>
-                <h6 className={innerClasses.title}>{`Окончание действия тарифа: ${intl.formatDate(
-                  realUser?.tariff_expired_at
-                )}`}</h6>
-                {realUser?.tariff_matrix.tariff.name !== "Бесплатный" ? (
-                  <h6 className={innerClasses.title}>
-                    Срок действия тарифа: {realUser?.tariff_matrix.tariff_period.period}
-                  </h6>
-                ) : null}
-              </div>
-            )} */}
 
             {/* <div>
               {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
@@ -414,78 +323,12 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       </div>
                     </MuiPickersUtilsProvider>
                   </div>
-                )}
-
-              <TextField
-                select
-                type="text"
-                label={intl.formatMessage({
-                  id: "USER.EDIT_FORM.TARIFFS",
-                })}
-                margin="normal"
-                className={classes.textField}
-                value={values.tariff_type_id}
-                name="tariff_type_id"
-                variant="outlined"
-                onChange={e => {
-                  setFieldValue("tariff_type_id", e.target.value);
-                }}
-                helperText={touched.tariff_type_id && errors.tariff_type_id}
-                error={Boolean(touched.tariff_type_id && errors.tariff_type_id)}
-              >
-                {!["ROLE_BUYER"].includes(realUser.roles[0])
-                  ? groupedTariffsType.map(item => (
-                      <MenuItem key={item.id} value={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))
-                  : groupedForBuyer.map(item => (
-                      <MenuItem key={item.id} value={item.id}>
-                        {item.name}
-                      </MenuItem>
-                    ))}
-              </TextField>
-
-              {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
-                realSelectedTariff.tariff.name !== "Бесплатный" && (
-                  <TextField
-                    select
-                    type="text"
-                    label={intl.formatMessage({ id: "TARIFFS.DURATION" })}
-                    margin="normal"
-                    className={classes.textField}
-                    value={values.tariff_period_id ? values.tariff_period_id : 0}
-                    name="tariff_period_id"
-                    variant="outlined"
-                    onChange={e => {
-                      setFieldValue("tariff_period_id", e.target.value);
-                    }}
-                    helperText={touched.tariff_period_id && errors.tariff_period_id}
-                    error={Boolean(touched.tariff_period_id && errors.tariff_period_id)}
-                  >
-                    {groupedTariffsPeriod.map(item => (
-                      <MenuItem key={item.id} value={item.id}>
-                        {item.period}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                )}
-
-              {editMode === "profile" &&
-                !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
-                  <div className={innerClasses.tariffPriceBlock}>
-                    {realSelectedTariff.tariff.name !== "Бесплатный" && (
-                      <Typography variant="h6">
-                        Стоимость тарифа: <b>{realSelectedTariff.price}</b>
-                      </Typography>
-                    )}
-                  </div>
-                )}
-            </div> */}
+                )}*/}
           </>
         )}
       </div>
-      {realUser && realSelectedTariff && (
+
+      {realUser && (
         <div className={innerClasses.buttonsBottomContain}>
           <Button variant="contained" color="primary">
             <a
@@ -496,33 +339,17 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               {intl.formatMessage({ id: "ALL_BUTTONS.DOWNLOAD" })}
             </a>
           </Button>
-          {/* {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-            <Button style={{ marginLeft: 15 }} variant="contained" color="primary" onClick={() => handleSubmit()}>
-              {intl.formatMessage({ id: "TARIFFS.SAVE" })}
-            </Button>
-          )}
-          {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
-            realSelectedTariff.tariff.name !== "Бесплатный" && (
-              <Button style={{ marginLeft: 15 }} variant="contained" color="primary" onClick={() => onToggleModal()}>
-                {intl.formatMessage({ id: "TARIFFS.PAYMENT" })}
-              </Button>
-            )} */}
         </div>
       )}
 
-      {/* {realUser &&
-        realSelectedTariff &&
-        selectedTariff &&
-        me &&
-        groupedTariffsType &&
-        tariffs &&
-        !["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) && (
-          <TariffPaymentBlock
-            openModal={openModal}
-            setOpenModal={setOpenModal}
-            selectedTariff={selectedTariff}
-          />
-        )} */}
+      {realUser && (
+        <TariffPaymentBlock
+          realUser={realUser}
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          selectedTariff={selectedTariff}
+        />
+      )}
     </>
   );
 };
