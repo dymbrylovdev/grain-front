@@ -873,7 +873,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           </div>
         )}
         <div className={classes.flexRow} style={{ marginTop: 4, marginBottom: 4 }}>
-          {accessByRoles(me, ["ROLE_ADMIN"]) && (
+          {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
             <div className={classes.button}>
               <ButtonWithLoader
                 loading={editMeLoading || createLoading || editLoading}

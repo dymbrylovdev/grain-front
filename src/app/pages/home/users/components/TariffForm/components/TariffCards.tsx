@@ -1,5 +1,6 @@
 import React from "react";
-import { Card, CardContent, CardActions, Button, Divider, Grid as div } from "@material-ui/core";
+import { Card, CardContent, CardActions, Button, Divider, Grid as div, Theme } from "@material-ui/core";
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
 
 import { makeStyles } from "@material-ui/styles";
@@ -7,18 +8,27 @@ import { makeStyles } from "@material-ui/styles";
 import { ITariff } from "../../../../../../interfaces/tariffs";
 import { IUser } from "../../../../../../interfaces/users";
 import { accessByRoles } from "../../../../../../utils/utils";
+import DateFnsUtils from "@date-io/date-fns";
+import ruRU from "date-fns/locale/ru";
 
-const useStyles = makeStyles({
+// 660px
+
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     // display: "flex",
     // justifyContent: "space-between",
   },
   cardContain: {
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    [theme.breakpoints.up("sm")]: {
+      flexWrap: "nowrap",
+      justifyContent: "space-between"
+    }
   },
   card: {
-    width: "100%",
+    width: "40%",
     margin: 5,
     fontSize: 16,
   },
@@ -29,7 +39,15 @@ const useStyles = makeStyles({
   button: {
     width: "100%",
   },
-});
+  calendarContain: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  calendarBlock: {
+    maxWidth: 250,
+  },
+}));
 
 interface IProps {
   intl: IntlShape;
@@ -47,6 +65,9 @@ interface IProps {
 
   selectedTariff: ITariff | undefined;
   setSelectedTariff: any;
+
+  selectedDate: any;
+  setSelectedDate: any;
 }
 
 const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
@@ -65,23 +86,41 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
 
   selectedTariff,
   setSelectedTariff,
+
+  selectedDate,
+  setSelectedDate,
 }) => {
   const innerClasses = useStyles();
 
   const handleSubmit = tariff => {
     setSelectedTariff(tariff);
-    !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
-      ? setOpenModal(true)
-      : edit()
+    !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ? setOpenModal(true) : edit();
   };
 
   return (
     <div className={innerClasses.root}>
       <div style={{ marginBottom: 15, marginLeft: 5 }}>
-        <Button onClick={() => setShowTariffTable(0)} variant="outlined" color="primary">
-          {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-        </Button>
+        <div className={innerClasses.calendarContain}>
+          <Button onClick={() => setShowTariffTable(0)} variant="outlined" color="primary">
+            {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+          </Button>
+
+          <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
+            <div className={innerClasses.calendarBlock}>
+              <KeyboardDatePicker
+                variant="dialog"
+                format="dd/MM/yyyy"
+                margin="normal"
+                id="data-picker-dialog"
+                label={intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })}
+                value={selectedDate}
+                onChange={e => setSelectedDate(e)}
+              ></KeyboardDatePicker>
+            </div>
+          </MuiPickersUtilsProvider>
+        </div>
       </div>
+
       <div className={innerClasses.cardContain}>
         {showTariffTable === 1 &&
           realGroupedTariffs?.map(item => (

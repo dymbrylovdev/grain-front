@@ -140,6 +140,12 @@ const theme = createMuiTheme(
         elevation: 1,
       },
     },
+
+    breakpoints: {
+      values: {
+        sm: 660
+      }
+    }
   }
 );
 

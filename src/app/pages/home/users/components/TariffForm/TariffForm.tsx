@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Theme, Grid as div, Button } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
@@ -23,8 +24,6 @@ import { IUser } from "../../../../../interfaces/users";
 import { ITariff, ITariffType, ITariffPeriod } from "../../../../../interfaces/tariffs";
 import { ICrop } from "../../../../../interfaces/crops";
 import getMenuConfig from "../../../../../router/MenuConfig";
-import DateFnsUtils from "@date-io/date-fns";
-import ruRU from "date-fns/locale/ru";
 import { accessByRoles } from "../../../../../utils/utils";
 import uniqBy from "lodash/uniqBy";
 
@@ -48,14 +47,6 @@ const innerStyles = makeStyles((theme: Theme) => ({
     fontWeight: 400,
     color: "#000000",
     opacity: 0.87,
-  },
-  calendarContain: {
-    display: "flex",
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  calendarBlock: {
-    maxWidth: 250,
   },
   buttonsBottomContain: {
     display: "flex",
@@ -157,7 +148,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   const [openModal, setOpenModal] = useState(false);
   const [showTariffTable, setShowTariffTable] = useState(0);
-  const [selectedTariff, setSelectedTariff] = useState(undefined);
+  const [selectedTariff, setSelectedTariff] = useState<ITariff | undefined>(undefined);
+  const [selectedDate, setSelectedDate] = useState();
 
   const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
     initialValues: {
@@ -169,13 +161,25 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
     },
     onSubmit: () => {
+      let params: any = {};
+      let tariff_matrix_id_for_prolongation = selectedTariff && selectedTariff.id;
+      let tariff_matrix_id = selectedTariff && selectedTariff.id;
+      let tariff_prolongation_start_date = selectedDate && selectedDate;
+
+      if (
+        realUser &&
+        realUser.tariff_matrix &&
+        realUser.tariff_matrix.tariff.name !== "Бесплатный"
+      ) {
+        params = { ...params, tariff_matrix_id_for_prolongation };
+      } else {
+        params = { ...params, tariff_matrix_id };
+      }
+
       if (realUser && values.tariff_id) {
         edit({
           id: realUser?.id,
-          data: {
-            //@ts-ignore
-            tariff_matrix_id: selectedTariff ? selectedTariff?.id : undefined,
-          },
+          data: params,
         });
       }
     },
@@ -272,11 +276,28 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
             {(editMode === "profile" || editMode === "edit") && (
               <>
                 <div className={innerClasses.tariffInfo}>
-                  <div>Текущий тариф: {realUser.tariff_matrix.tariff.name}</div>
+                  <div>
+                    Текущий тариф:{" "}
+                    {realUser.tariff_matrix.tariff.name === "Бизнес/Трейдер"
+                      ? "Бизнес"
+                      : realUser.tariff_matrix.tariff.name}
+                  </div>
                   {realUser.tariff_matrix.tariff.name !== "Бесплатный" ? (
-                    <div>Период: {realUser.tariff_matrix.tariff_period.period}</div>
+                    <div>Период действия тарифа: {realUser.tariff_matrix.tariff_period.period}</div>
+                  ) : null}
+                  {realUser.tariff_matrix.tariff.name !== "Бесплатный" ? (
+                    <div>Дата окончания тарифа: {intl.formatDate(realUser.tariff_expired_at)}</div>
                   ) : null}
                 </div>
+
+                {realUser.tariff_prolongations.length ? (
+                  <Alert className={classes.infoAlert} severity="info" color="info">
+                    Вам будет доступен тариф{" "}
+                    {realUser.tariff_prolongations[0].tariff_matrix.tariff.name}{" "}
+                    {realUser.tariff_prolongations[0].tariff_matrix.tariff_period.period}{". "}
+                    Дата начала действия тарифа {intl.formatDate(realUser.tariff_prolongations[0].start_date)}
+                  </Alert>
+                ) : null}
 
                 {!showTariffTable ? (
                   <NewTariffTable
@@ -300,6 +321,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     setOpenModal={setOpenModal}
                     selectedTariff={selectedTariff}
                     setSelectedTariff={setSelectedTariff}
+                    selectedDate={selectedDate}
+                    setSelectedDate={setSelectedDate}
                   />
                 )}
               </>
@@ -348,6 +371,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           openModal={openModal}
           setOpenModal={setOpenModal}
           selectedTariff={selectedTariff}
+          selectedDate={selectedDate}
         />
       )}
     </>

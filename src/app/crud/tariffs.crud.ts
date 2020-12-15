@@ -14,3 +14,7 @@ export const editTariff = (id: number, data: ITariffToRequest) => {
 export const editTariffPeriod = (id: number, data: ITariffToRequest) => {
   return axios.put(`${TARIFF_URL}_period/${id}`, data);
 };
+
+export const getTariffsProlongations = (id: number) => {
+  return axios.get(`${TARIFF_URL}_prolongation/${id}`);
+}

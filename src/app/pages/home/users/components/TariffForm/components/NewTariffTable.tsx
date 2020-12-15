@@ -386,6 +386,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                 style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
               >
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE13" })}{" "}
+                <br />
                 <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8" })}</b>
                 <br /> <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8_1" })}</b>
               </TableCell>

@@ -33,6 +33,7 @@ export interface IUser {
   is_funnel_state_automate?: boolean;
   use_vat: boolean;
   tariff_matrix: ITariff;
+  tariff_prolongations: any;
   tariff_price?: number[];
   tariff_expired_at?: Date;
   crops: ICrop[];
@@ -76,6 +77,7 @@ export interface IUserForEdit {
   use_vat?: boolean;
   tariff_id?: number;
   tariff_matrix_id?: number;
+  tariff_matrix_id_for_prolongation?: number;
   tariff_type_id?: number;
   tariff_period_id?: number;
   tariff_expired_at?: Date;

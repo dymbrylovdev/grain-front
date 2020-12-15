@@ -46,6 +46,7 @@ interface IProps {
   openModal: boolean;
   setOpenModal: any;
   selectedTariff: ITariff | undefined;
+  selectedDate: any;
 }
 
 const TariffPaymentBlock: React.FC<IProps & WrappedComponentProps> = ({
@@ -54,6 +55,7 @@ const TariffPaymentBlock: React.FC<IProps & WrappedComponentProps> = ({
   openModal,
   setOpenModal,
   selectedTariff,
+  selectedDate,
 }) => {
   const innerClasses = useStyles();
 
@@ -97,7 +99,7 @@ const TariffPaymentBlock: React.FC<IProps & WrappedComponentProps> = ({
                 для <span className={innerClasses.span}>{realUser.email}</span>, id ={" "}
                 <span className={innerClasses.span}>{realUser.id}</span>{" "}
               </div>
-              <div>{`Начало действия тарифа: `}</div>
+                <div>{intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })} {intl.formatDate(selectedDate)}</div>
               <div className={innerClasses.subTitle}>
                 {intl.formatMessage({ id: "TARIFFS.PAYMENT.REQUISITES" })}
               </div>

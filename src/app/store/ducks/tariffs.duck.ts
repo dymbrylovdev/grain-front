@@ -5,7 +5,7 @@ import { put, takeLatest, call } from "redux-saga/effects";
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
 import { ITariff, ITariffToRequest } from "../../interfaces/tariffs";
-import { getTariffs, editTariff, editTariffPeriod } from "../../crud/tariffs.crud";
+import { getTariffs, editTariff, editTariffPeriod, getTariffsProlongations } from "../../crud/tariffs.crud";
 
 const CLEAR_FETCH = "tariffs/CLEAR_FETCH";
 const FETCH_REQUEST = "tariffs/FETCH_REQUEST";

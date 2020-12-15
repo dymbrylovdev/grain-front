@@ -520,7 +520,7 @@
   "TARIFFS.NAME.PREMIUM": "Премиум",
   "TARIFFS.NAME.INSIDE": "Внутренний",
   "TARIFFS.DURATION": "Время длительности тарифа",
-  "TARIFFS.DATE.PICKER": "Начало действия тарифа",
+  "TARIFFS.DATE.PICKER": "Начало действия тарифа:",
   "TARIFFS.SAVE": "Сохранить тариф",
   "TARIFFS.PAYMENT.PAY": "Выбрать",
   "TARIFFS.PAYMENT.SET": "Установить",
