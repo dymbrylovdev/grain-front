@@ -283,7 +283,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       : realUser.tariff_matrix.tariff.name}
                   </div>
                   {realUser.tariff_matrix.tariff.name !== "Бесплатный" ? (
-                    <div>Период действия тарифа: {realUser.tariff_matrix.tariff_period.period}</div>
+                    <div>Период действия тарифа: {realUser.tariff_matrix.tariff_period.period} дней</div>
                   ) : null}
                   {realUser.tariff_matrix.tariff.name !== "Бесплатный" ? (
                     <div>Дата окончания тарифа: {intl.formatDate(realUser.tariff_expired_at)}</div>
