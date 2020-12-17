@@ -17,11 +17,12 @@ import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
-import { ProfileForm, CompanyForm, LocationsForm } from "./components";
+import { ProfileForm, CropsForm, LocationsForm } from "./components";
 import Prompter from "../prompter/Prompter";
 import ScrollToTop from "../../../components/ui/ScrollToTop";
-import TariffForm from "./components/TariffForm";
+import TariffForm from "./components/TariffForm/TariffForm";
 import { accessByRoles } from "../../../utils/utils";
+import { access } from "fs";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -112,19 +113,46 @@ const UserEditPage: React.FC<TPropsFromRedux &
   }, [editMode]);
 
   useEffect(() => {
-    if (match.url.indexOf("profile/crops") !== -1) {
-      setValueTabs(3);
+    if (editMode === "profile") {
+      if (match.url.indexOf("profile") !== -1) {
+        setValueTabs(0);
+      }
+      if (match.url.indexOf("profile/points") !== -1) {
+        setValueTabs(1);
+      }
+      if (match.url.indexOf("profile/crops") !== -1) {
+        setValueTabs(2);
+      }
+      if (match.url.indexOf("profile/tariffs") !== -1) {
+        setValueTabs(3);
+      }
     }
-  }, [match.url]);
+  }, [match.url, editMode]);
 
   useEffect(() => {
-    if (!!me?.fio && !!me?.phone && me?.points.length === 0) setLocTabPulse(true);
-    if (me?.points.length !== 0) setLocTabPulse(false);
+    if (!!me?.fio && !!me?.phone && me?.points?.length === 0) setLocTabPulse(true);
+    if (me?.points?.length !== 0) setLocTabPulse(false);
   }, [me]);
 
   const handleTabsChange = (event: any, newValue: number) => {
     setValueTabs(newValue);
+
+    if (editMode === "profile") {
+      if (newValue === 0) history.push("/user/profile");
+      if (newValue === 1) history.push("/user/profile/points");
+      if (newValue === 2) history.push("/user/profile/crops");
+      if (newValue === 3) history.push("/user/profile/tariffs");
+    }
   };
+
+  // const testFunc = () => {
+  //   if (editMode === "profile") {
+  //     if (valueTabs === 0) history.push("/user/profile");
+  //     if (valueTabs === 1) history.push("/user/profile/points");
+  //     if (valueTabs === 2) history.push("/user/profile/crops");
+  //     if (valueTabs === 3) history.push("/user/profile/tariffs");
+  //   }
+  // }
 
   const subTitle = (editMode: "profile" | "create" | "edit" | "view"): string => {
     switch (editMode) {
@@ -205,7 +233,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
   return (
     <>
       <ScrollToTop />
-      <Prompter />
+      {/* <Prompter /> */}
       <Paper className={classes.paperWithForm}>
         <LayoutSubheader
           title={subTitle(editMode)}
@@ -266,12 +294,14 @@ const UserEditPage: React.FC<TPropsFromRedux &
                 />
               )}
               {editMode !== "create" && (
-                <Tab
-                  label={intl.formatMessage({ id: "USER.EDIT_FORM.COMPANY" })}
-                  {...a11yProps(2)}
-                />
+                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />
               )}
-              {(editMode === "edit" || editMode === "profile") && (
+              {((me &&
+                editMode === "profile" &&
+                !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+                (user &&
+                  editMode === "edit" &&
+                  ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
                 <Tab
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
                   {...a11yProps(3)}
@@ -299,7 +329,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
             {editMode === "create" ? (
               <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
             ) : (
-              <CompanyForm userId={+id || undefined} editMode={editMode} />
+              <CropsForm userId={+id || undefined} editMode={editMode} />
             )}
           </TabPanel>
           <TabPanel value={valueTabs} index={3}>

@@ -232,8 +232,6 @@ const FilterModal = ({
       );
       clearDelFilter();
       if (delSuccess) {
-        // console.log("delFilterId: ", delFilterId);
-        // console.log("currentFilter: ", currentFilter);
         if (!!delFilterId && currentFilter && currentFilter.id === delFilterId) {
           setCurrentFilter(cropId, undefined);
           formik.resetForm({ values: getInitialValues(currentFilter) });
@@ -468,7 +466,6 @@ const FilterModal = ({
                       let params = { ...values };
                       params.name = values.name.trim();
                       params.cropId = cropId;
-                      // console.log(values);
                       setCurrentFilter(
                         cropId,
                         filterForSubmit(currentFilter, params, newCropName())

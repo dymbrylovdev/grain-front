@@ -5,6 +5,7 @@ import { Redirect } from "react-router-dom";
 import { actions as authActions } from "../../store/ducks/auth.duck";
 import { actions as myFiltersActions } from "../../store/ducks/myFilters.duck";
 import { actions as prompterActions } from "../../store/ducks/prompter.duck";
+import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
 
 import { LayoutSplashScreen } from "../../../_metronic";
 import { IAppState } from "../../store/rootDuck";
@@ -15,13 +16,21 @@ const Logout: React.FC<TPropsFromRedux> = ({
   clearCurrentPurchaseFilter,
   hasAuthToken,
   stopPrompter,
+  setSalePurchaseMode,
 }) => {
   useEffect(() => {
     clearCurrentSaleFilter();
     clearCurrentPurchaseFilter();
+    setSalePurchaseMode(undefined);
     stopPrompter();
     logout();
-  }, [clearCurrentPurchaseFilter, clearCurrentSaleFilter, logout, stopPrompter]);
+  }, [
+    clearCurrentPurchaseFilter,
+    clearCurrentSaleFilter,
+    logout,
+    setSalePurchaseMode,
+    stopPrompter,
+  ]);
 
   return hasAuthToken ? <LayoutSplashScreen /> : <Redirect to="/auth" />;
 };
@@ -35,6 +44,7 @@ const connector = connect(
     clearCurrentSaleFilter: myFiltersActions.clearCurrentSaleFilter,
     clearCurrentPurchaseFilter: myFiltersActions.clearCurrentPurchaseFilter,
     stopPrompter: prompterActions.stopPrompter,
+    ...leftMenuActions,
   }
 );
 

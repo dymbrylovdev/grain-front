@@ -33,7 +33,7 @@ function CropPage({
 
   const classes = useStyles();
 
-  const { crop, user } = useSelector(({ crops: { crops }, auth: { user } }) => {
+  const { crop } = useSelector(({ crops: { crops } }) => {
     const filterCrops =
       crops && crops.data && crops.data.filter(item => item.id === Number.parseInt(cropIdFromUrl));
     if (filterCrops && filterCrops.length > 0) {
@@ -41,6 +41,13 @@ function CropPage({
     }
     return { crop: {} };
   }, shallowEqual);
+
+  const { user } = useSelector(
+    ({ auth }) => ({
+      user: auth.user,
+    }),
+    shallowEqual
+  );
 
   const {
     delSuccess,

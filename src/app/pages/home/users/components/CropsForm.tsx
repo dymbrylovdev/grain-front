@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import {
@@ -7,12 +7,11 @@ import {
   IconButton,
   Grid as div,
   Button,
-  MenuItem,
   Divider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { useFormik } from "formik";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 
 import { actions as builderActions } from "../../../../../_metronic/ducks/builder";
@@ -22,27 +21,15 @@ import { actions as tariffsActions } from "../../../../store/ducks/tariffs.duck"
 import { actions as crops2Actions } from "../../../../store/ducks/crops2.duck";
 
 import useStyles from "../../styles";
-import { IAppState } from "../../../../store/rootDuck";
+import { IAppState } from '../../../../store/rootDuck';
 import { Skeleton, Autocomplete } from "@material-ui/lab";
 import { IUser } from "../../../../interfaces/users";
-import { ITariff } from "../../../../interfaces/tariffs";
+import { ITariff, ITariffType, ITariffPeriod } from "../../../../interfaces/tariffs";
 import { ICrop } from "../../../../interfaces/crops";
 import getMenuConfig from "../../../../router/MenuConfig";
+import uniqBy from "lodash/uniqBy";
 
 const innerStyles = makeStyles((theme: Theme) => ({
-  name: {
-    marginLeft: theme.spacing(1),
-  },
-  button: {
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(1),
-  },
-  pulseRoot: {
-    "& fieldset": {
-      animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
-    },
-  },
-
   title: {
     fontWeight: "bold",
     marginBottom: theme.spacing(1),
@@ -55,7 +42,7 @@ const innerStyles = makeStyles((theme: Theme) => ({
     height: 43.5,
     marginTop: theme.spacing(0.5),
     marginBottom: theme.spacing(0.5),
-  },
+  }
 }));
 
 interface IProps {
@@ -63,7 +50,7 @@ interface IProps {
   userId?: number;
 }
 
-const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
+const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   fetchMe,
   me,
   loadingMe,
@@ -108,8 +95,19 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   if ((editMode === "edit" || editMode === "view") && user) realUser = user;
 
   let realTariffs: ITariff[] | undefined = undefined;
+  // let groupedTariffsType: ITariffType[] | undefined = undefined;
+  // let groupedTariffsPeriod: ITariffPeriod[] | undefined = undefined;
   if (tariffs && realUser) {
-    realTariffs = tariffs.filter(item => item.role === realUser?.roles[0]);
+    realTariffs = tariffs.filter(item => item.role.name === realUser?.roles[0]);
+
+    // let a = realTariffs.map(item => item.tariff);
+    // groupedTariffsType = uniqBy(a, n => n.name);
+
+    // let b = realTariffs.map(item => item.tariff_period);
+    // //@ts-ignore
+    // b.includes(null)
+    //   ? (groupedTariffsPeriod = b)
+    //   : (groupedTariffsPeriod = uniqBy(b, n => n.period));
   }
 
   let realCrops: ICrop[] = [];
@@ -125,30 +123,42 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
     initialValues: {
-      tariff_id: realUser?.tariff.id,
+      tariff_id: realUser?.tariff_matrix.id,
+      tariff_type_id: realUser?.tariff_matrix.tariff.id,
+      tariff_period_id: realUser?.tariff_matrix.tariff_period
+        ? realUser?.tariff_matrix.tariff_period.id
+        : undefined,
       crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
+      // tariff_expired_at: new Date(),
     },
     onSubmit: () => {
       let newCropIds = [...values.crop_ids];
-      let selectedTariff = tariffs?.find(tariff => tariff.id === values.tariff_id);
+      // let selectedTariff = tariffs?.find(
+      //   tariff =>
+      //     tariff.tariff.id === values.tariff_type_id &&
+      //     tariff.tariff_period.id === values.tariff_period_id
+      // );
+      // let newTariffExpiredDate = selectedDate;
       if (
         values.crop_ids &&
         values.tariff_id &&
+        values.tariff_type_id &&
+        values.tariff_period_id &&
         tariffs &&
-        selectedTariff &&
-        values.crop_ids.length > selectedTariff.max_crops_count
+        realSelectedTariff &&
+        values.crop_ids.length > realSelectedTariff.max_crops_count
       ) {
-        newCropIds.splice(selectedTariff.max_crops_count);
+        newCropIds.splice(realSelectedTariff.max_crops_count);
       }
       if (
-        selectedTariff?.id &&
-        realUser?.tariff?.id &&
-        [1, 2, 102].includes(realUser.tariff.id) &&
-        [3, 4, 5].includes(selectedTariff.id) &&
+        realSelectedTariff?.id &&
+        realUser?.tariff_matrix?.id &&
+        [1, 2, 102].includes(realUser.tariff_matrix.id) &&
+        [3, 4, 5].includes(realSelectedTariff.id) &&
         crops
       ) {
         newCropIds = Array.from(crops, x => x.id);
-        newCropIds.splice(selectedTariff.max_crops_count);
+        newCropIds.splice(realSelectedTariff.max_crops_count);
       }
       if (realUser && values.tariff_id) {
         if (editMode === "profile") {
@@ -158,19 +168,41 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         } else {
           edit({
             id: realUser?.id,
-            data: { tariff_id: values.tariff_id, crop_ids: newCropIds },
+            data: {
+              // tariff_matrix_id: realSelectedTariff?.id,
+              crop_ids: newCropIds,
+              // tariff_expired_at: newTariffExpiredDate,
+            },
           });
         }
       }
     },
   });
 
+  let realSelectedTariff: ITariff | undefined = undefined;
+  if (realTariffs && realUser) {
+    if (!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0])) {
+      realSelectedTariff = realTariffs?.find(
+        tariff =>
+          tariff.tariff.id === values.tariff_type_id &&
+          tariff.tariff_period.id === values.tariff_period_id
+      );
+    } else {
+      realSelectedTariff = realUser.tariff_matrix;
+    }
+  }
+
   useEffect(() => {
     if (realUser) {
       resetForm({
         values: {
-          tariff_id: realUser?.tariff.id,
+          tariff_id: realUser?.tariff_matrix.id,
+          tariff_type_id: realUser?.tariff_matrix.tariff.id,
+          tariff_period_id: realUser?.tariff_matrix.tariff_period
+            ? realUser?.tariff_matrix.tariff_period.id
+            : undefined,
           crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
+          // tariff_expired_at: selectedDate,
         },
       });
     }
@@ -236,44 +268,15 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   return (
     <>
-      <div>
-        {!me || loadingMe || loadingUser || !realTariffs || !realUser || editLoading ? (
-          <Skeleton width="100%" height={68} animation="wave" />
-        ) : (
-          <TextField
-            select
-            type="text"
-            label={intl.formatMessage({
-              id: "USER.EDIT_FORM.TARIFFS",
-            })}
-            margin="normal"
-            className={classes.textField}
-            value={values.tariff_id}
-            name="tariff_id"
-            variant="outlined"
-            onChange={e => {
-              setFieldValue("tariff_id", e.target.value);
-              handleSubmit();
-            }}
-            helperText={touched.tariff_id && errors.tariff_id}
-            error={Boolean(touched.tariff_id && errors.tariff_id)}
-            disabled={
-              !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ||
-              ["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) ||
-              editMode === "profile"
-            }
-          >
-            {realTariffs.map(item => (
-              <MenuItem key={item.id} value={item.id}>
-                {item.name}
-              </MenuItem>
-            ))}
-          </TextField>
-        )}
-      </div>
       <div className={classes.box}>
         <div className={innerClasses.title}>{intl.formatMessage({ id: "TARIFFS.CROPS" })}</div>
-        {loadingMe || loadingUser || !realTariffs || !realUser || editLoading ? (
+        {loadingMe ||
+        loadingUser ||
+        !realTariffs ||
+        // !groupedTariffsType ||
+        // !groupedTariffsPeriod ||
+        !realUser ||
+        editLoading ? (
           <>
             <Skeleton width="100%" height={52.5} animation="wave" />
             <Skeleton width="100%" height={52.5} animation="wave" />
@@ -315,8 +318,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           <div className={innerClasses.crop}>
             {!!crops &&
             !!realUser?.crops &&
-            !!realUser?.tariff &&
-            realUser?.crops?.length < realUser?.tariff?.max_crops_count &&
+            !!realUser?.tariff_matrix &&
+            realUser?.crops?.length < realUser?.tariff_matrix?.max_crops_count &&
             realUser?.crops?.length < crops.length ? (
               <div>{intl.formatMessage({ id: "TARIFFS.MORE_CROPS" })}</div>
             ) : (
@@ -326,8 +329,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         )}
         {!!crops &&
           !!realUser?.crops &&
-          !!realUser?.tariff &&
-          realUser?.crops?.length < realUser?.tariff?.max_crops_count &&
+          !!realUser?.tariff_matrix &&
+          realUser?.crops?.length < realUser?.tariff_matrix?.max_crops_count &&
           realUser?.crops?.length < crops.length && (
             <div className={classes.textFieldContainer}>
               {!addingCrop ? (
@@ -373,8 +376,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           )}
       </div>
     </>
-  );
-};
+  )
+}
 
 const connector = connect(
   (state: IAppState) => ({
@@ -419,4 +422,4 @@ const connector = connect(
 
 type TPropsFromRedux = ConnectedProps<typeof connector>;
 
-export default connector(injectIntl(LocationsForm));
+export default connector(injectIntl(CropsForm));

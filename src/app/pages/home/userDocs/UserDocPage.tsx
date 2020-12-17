@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core";
-import { injectIntl, FormattedMessage } from "react-intl";
+import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
 import { Formik, Form } from "formik";
 import { EditorState } from "draft-js";
 import { stateToHTML } from "draft-js-export-html";
@@ -17,6 +17,11 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "center",
     marginTop: theme.spacing(3),
   },
+  menuFlexRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "start",
+  },
 }));
 
 interface IUserAgreement {
@@ -27,7 +32,7 @@ interface IUserAgreement {
 }
 
 // TODO: make user_agreement from router
-function UserDocPage() {
+const UserDocPage: React.FC<WrappedComponentProps> = ({ intl }) => {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [userAgreement, setUserAgreement] = useState<IUserAgreement | null>(null);
@@ -71,28 +76,26 @@ function UserDocPage() {
   };
 
   return (
-    <>
-      <Formik initialValues={{}} onSubmit={handleSubmit}>
-        {() => (
-          <Form>
-            <RichEditor
-              editorState={editorState}
-              setEditorState={setEditorState}
-              placeholder={userAgreement ? userAgreement.text : ""}
-            />
+    <Formik initialValues={{}} onSubmit={handleSubmit}>
+      {() => (
+        <Form>
+          <RichEditor
+            editorState={editorState}
+            setEditorState={setEditorState}
+            placeholder={userAgreement ? userAgreement.text : ""}
+          />
 
-            <div className={classes.buttonContainer}>
-              <ButtonWithLoader onPress={handleSubmit} loading={loading}>
-                <FormattedMessage
-                  id={userAgreement ? "USERDOC.BUTTON.SAVE" : "USERDOC.BUTTON.CREATE"}
-                />
-              </ButtonWithLoader>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </>
+          <div className={classes.buttonContainer}>
+            <ButtonWithLoader onPress={handleSubmit} loading={loading}>
+              <FormattedMessage
+                id={userAgreement ? "USERDOC.BUTTON.SAVE" : "USERDOC.BUTTON.CREATE"}
+              />
+            </ButtonWithLoader>
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
-}
+};
 
 export default injectIntl(UserDocPage);

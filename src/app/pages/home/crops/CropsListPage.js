@@ -21,7 +21,7 @@ import useStyles from "../styles";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import { LoadError } from "../../../components/ui/Errors";
 
-function CropsListPage({ setMenuConfig, getCrops, match }) {
+function CropsListPage({ intl, setMenuConfig, getCrops, match }) {
   const history = useHistory();
 
   const { crops, user, loading, errors } = useSelector(

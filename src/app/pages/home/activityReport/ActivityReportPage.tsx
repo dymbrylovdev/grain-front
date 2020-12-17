@@ -1,15 +1,7 @@
 import React, { useEffect } from "react";
-// import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import {
-  Paper,
-  // Button,
-  AppBar,
-  Tabs,
-  Divider,
-  Tab,
-} from "@material-ui/core";
+import { Paper, AppBar, Tabs, Divider, Tab } from "@material-ui/core";
 
 import { actions as funnelStatesActions } from "../../../store/ducks/funnelStates.duck";
 
@@ -21,6 +13,7 @@ import ActivityReport from "./components/ActivityReport";
 
 const ActivityReportPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
+  me,
   tab,
   setTab,
   fetch,
@@ -87,6 +80,7 @@ const ActivityReportPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
 const connector = connect(
   (state: IAppState) => ({
+    me: state.auth.user,
     tab: state.funnelStates.reportTab,
     reports: state.funnelStates.reports,
     loading: state.funnelStates.reportLoading,

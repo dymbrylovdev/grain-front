@@ -32,7 +32,13 @@ function PhoneBlock({ intl, company = {}, user = {}, classes }) {
         <>
           <div>
             {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1" })}
-            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_1" })}</b>
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_1" })}
+            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_1_1" })}</b>
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_1_2" })}
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_2" })}
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_3" })}
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_4" })}
+            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT1_5" })}</b>
           </div>
           <br />
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT2" })}</div>
@@ -62,6 +68,11 @@ function PhoneBlock({ intl, company = {}, user = {}, classes }) {
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT6" })}</div>
           <br />
           <div>
+            <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT20" })}</b>
+            {intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT20_1" })}
+          </div>
+          <br />
+          <div>
             <b>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT7" })}</b>
           </div>
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT8" })}</div>
@@ -70,10 +81,10 @@ function PhoneBlock({ intl, company = {}, user = {}, classes }) {
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT10" })}</div>
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT11" })}</div>
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT12" })}</div>
-          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT13" })}</div>
-          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT14" })}</div>
-          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT15" })}</div>
-          <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT16" })}</div>
+          <div>Наименование банка: АО "Альфа БАНК"</div>
+          <div>Корреспондентский счёт: 30101810200000000593</div>
+          <div>БИК: 044525593</div>
+          <div>Расчетный счёт: 40702810001100023020</div>
           <br />
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT17" })}</div>
           <div>{intl.formatMessage({ id: "COMPANY.CONFIRM.PAY.TEXT18" })}</div>

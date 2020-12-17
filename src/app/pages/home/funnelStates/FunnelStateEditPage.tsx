@@ -28,6 +28,7 @@ const FunnelStateEditPage: React.FC<TPropsFromRedux &
   },
   match,
   intl,
+  me,
   fetch,
   funnelStates,
   loading,
@@ -354,6 +355,7 @@ const FunnelStateEditPage: React.FC<TPropsFromRedux &
 
 const connector = connect(
   (state: IAppState) => ({
+    me: state.auth.user,
     funnelStates: state.funnelStates.funnelStates,
     loading: state.funnelStates.loading,
     error: state.funnelStates.error,

@@ -288,6 +288,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       {editMode !== "view" && !!currentUser && !currentUser.company && (
         <CompanySearchForm
+          me={me}
           classes={classes}
           company={currentUser && currentUser.company}
           setCompanyAction={(company: any) => {
@@ -302,6 +303,7 @@ const CompanyForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               ? editMe
               : ({ data }: any) => editUser({ id: userId as number, data: data })
           }
+          values={values}
           confirms={editMode === "profile" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
         />
       )}

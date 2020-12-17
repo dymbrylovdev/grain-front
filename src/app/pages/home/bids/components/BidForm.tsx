@@ -10,6 +10,8 @@ import {
   Button,
   IconButton,
   Collapse,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
@@ -29,7 +31,7 @@ import { ILocation } from "../../../../interfaces/locations";
 import useStyles from "../../styles";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
-import { IParamValue } from "../../../../interfaces/filters";
+import { IMyFilterItem, IParamValue } from "../../../../interfaces/filters";
 import NumberFormatCustom from "../../../../components/NumberFormatCustom/NumberFormatCustom";
 import { accessByRoles, getConfirmCompanyString } from "../../../../utils/utils";
 import { TrafficLight } from "../../users/components";
@@ -72,7 +74,8 @@ const getInitialValues = (
   editMode: string,
   vendorId: number,
   user: IUser | undefined,
-  me: IUser | undefined
+  me: IUser | undefined,
+  isFilterCreated: boolean
 ) => {
   let newCropId: number | string = "";
   if (editMode === "view" || editMode === "edit") {
@@ -98,6 +101,7 @@ const getInitialValues = (
     price: bid?.price || "",
     description: bid?.description || "",
     crop_id: newCropId,
+    is_filter_created: isFilterCreated ? 1 : 0,
     location:
       editMode === "create"
         ? !!vendorId
@@ -155,7 +159,6 @@ const getDeliveryPrice = (
     return Math.round(pricePerKm * distance);
   }
 };
-
 interface IProps {
   intl: IntlShape;
   vendorId: number;
@@ -185,12 +188,14 @@ interface IProps {
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
   create: (
     type: TBidType,
-    data: IBidToRequest
+    data: IBidToRequest,
+    is_filter_created: number
   ) => ActionWithPayload<
     "bids/CREATE_REQUEST",
     {
       type: TBidType;
       data: IBidToRequest;
+      is_filter_created: number;
     }
   >;
   edit: (
@@ -206,7 +211,12 @@ interface IProps {
   createSuccess: boolean;
   createError: string | null;
   clearCreate: () => Action<"bids/CLEAR_CREATE">;
+  post: (id: number) => ActionWithPayload<"myFilters/POST_FILTER", number>;
+  postSuccess: boolean;
+  postError: string | null;
+  clearPost: () => Action<"myFilters/CLEAR_POST">;
   profit: IProfit;
+  editContactViewCount: any;
   setOpenInfoAlert: (
     openInfoAlert: boolean
   ) => ActionWithPayload<
@@ -231,6 +241,8 @@ const BidForm: React.FC<IProps> = ({
 
   create,
   edit,
+  post,
+  editContactViewCount,
 
   fetchLocations,
   locations,
@@ -249,6 +261,10 @@ const BidForm: React.FC<IProps> = ({
   createError,
   clearCreate,
 
+  postSuccess,
+  postError,
+  clearPost,
+
   profit,
   openInfoAlert,
   setOpenInfoAlert,
@@ -260,6 +276,12 @@ const BidForm: React.FC<IProps> = ({
   const inputEl = useRef<HTMLButtonElement>(null);
   const [goToRef, setGoToRef] = useState(false);
   const [isMoreBidOpen, setMoreBidOpen] = useState(false);
+  const [isFilterCreated, setFilterCreated] = useState(true);
+  const [isContactAlertOpen, setContactAlertOpen] = useState(false);
+
+  const createFilter = (id: number) => {
+    if (editMode === "edit") post(id);
+  };
 
   useEffect(() => {
     if (goToRef) {
@@ -268,6 +290,7 @@ const BidForm: React.FC<IProps> = ({
     }
   }, [goToRef]);
 
+  const bidId: number = !!bid ? bid.id : 0;
   const vendor_id =
     (!bid && +vendorId) || (bid && bid.vendor && bid.vendor.id) || (me?.id as number);
   const vendor = me?.id === vendor_id ? me : user;
@@ -278,6 +301,27 @@ const BidForm: React.FC<IProps> = ({
     : vendor?.crops.length === 1
     ? vendor.crops[0].id
     : 0;
+
+  const onCheckboxChange = () => {
+    setFilterCreated(!isFilterCreated);
+  };
+
+  const linkToContact = () => {
+    let contactViewCount = me?.contact_view_count;
+    //@ts-ignore
+    if (contactViewCount > 0) {
+      history.push(
+        me?.id === (!!bid && bid.vendor && bid.vendor.id)
+          ? "/user/profile"
+          : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
+      );
+      //@ts-ignore
+      editContactViewCount({ data: { contact_view_count: contactViewCount - 1 } });
+    } else {
+      setContactAlertOpen(!isContactAlertOpen);
+      setTimeout(() => setContactAlertOpen(false), 5000);
+    }
+  };
 
   const {
     values,
@@ -296,9 +340,11 @@ const BidForm: React.FC<IProps> = ({
       editMode,
       vendorId,
       user,
-      me
+      me,
+      isFilterCreated
     ),
     onSubmit: values => {
+      const is_filter_created = isFilterCreated ? 1 : 0;
       const paramValues: IParamValue[] = [];
       cropParams?.forEach(param => {
         const id = param.id;
@@ -316,7 +362,7 @@ const BidForm: React.FC<IProps> = ({
       };
       const bidType = params.bid_type;
       delete params.bid_type;
-      if (editMode === "create") create(bidType, params);
+      if (editMode === "create") create(bidType, params, is_filter_created);
       if (editMode === "edit" && !!bid) {
         delete params.vendor_id;
         edit(bid.id, params);
@@ -385,10 +431,43 @@ const BidForm: React.FC<IProps> = ({
   ]);
 
   useEffect(() => {
+    if (postSuccess || postError) {
+      enqueueSnackbar(
+        postSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.SAVE_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${postError}`,
+        {
+          variant: postSuccess ? "success" : "error",
+        }
+      );
+      clearPost();
+    }
+  }, [clearPost, postError, postSuccess, enqueueSnackbar, history, intl, salePurchaseMode]);
+
+  useEffect(() => {
     resetForm({
-      values: getInitialValues(bid, currentCropId, salePurchaseMode, editMode, vendorId, user, me),
+      values: getInitialValues(
+        bid,
+        currentCropId,
+        salePurchaseMode,
+        editMode,
+        vendorId,
+        user,
+        me,
+        isFilterCreated
+      ),
     });
-  }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
+  }, [
+    bid,
+    currentCropId,
+    editMode,
+    me,
+    resetForm,
+    salePurchaseMode,
+    user,
+    vendorId,
+    // isFilterCreated,
+  ]);
 
   useEffect(() => {
     if (currentCropId) fetchCropParams(currentCropId);
@@ -463,21 +542,37 @@ const BidForm: React.FC<IProps> = ({
               </div>
             )}
             <div>
-              <Link
-                to={
-                  me?.id === (!!bid && bid.vendor && bid.vendor.id)
-                    ? "/user/profile"
-                    : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
-                }
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                }}
               >
-                <div className={innerClasses.authorText}>
+                <div
+                  className={innerClasses.authorText}
+                  style={{ cursor: "pointer", color: "blue" }}
+                  onClick={linkToContact}
+                >
                   {`${
                     bid.type === "sale"
                       ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
                       : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
                   }: ${bid.vendor.fio || bid.vendor.login}`}
                 </div>
-              </Link>
+              </div>
+
+              {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
+                <Alert
+                  className={classes.infoAlert}
+                  severity="warning"
+                  color="error"
+                  style={{ marginTop: 8, marginBottom: 8 }}
+                >
+                  {`Сегодня вам доступен просмотр ${me?.contact_view_count} контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
+                </Alert>
+              )}
+
               {!!bid.vendor.company && (
                 <div className={classes.bottomMargin1}>{bid.vendor.company.short_name}</div>
               )}
@@ -503,13 +598,13 @@ const BidForm: React.FC<IProps> = ({
         (loading ? (
           <Skeleton width="100%" height={20} animation="wave" />
         ) : (
-          <div>
+          <p>
             {intl.formatMessage({ id: "DEALS.DEAL.DATE" })}:{" "}
             {`${bid.modified_at.slice(8, 10)}.${bid.modified_at.slice(
               5,
               7
             )}.${bid.modified_at.slice(0, 4)}`}
-          </div>
+          </p>
         ))}
 
       {!!bid?.vendor?.company?.colors && !!bid?.vendor?.company_confirmed_by_payment && (
@@ -743,6 +838,7 @@ const BidForm: React.FC<IProps> = ({
             <div className={innerClasses.calcTitle}>
               {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
             </div>
+            {/* //* HERE */}
             <TextField
               type="text"
               label={intl.formatMessage({
@@ -758,6 +854,7 @@ const BidForm: React.FC<IProps> = ({
                 inputComponent: NumberFormatCustom as any,
               }}
               autoComplete="off"
+              autoFocus={true}
             />
             <div className={innerClasses.calcDescription}>
               {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
@@ -1278,18 +1375,25 @@ const BidForm: React.FC<IProps> = ({
         ))}
 
       <div className={classes.bottomButtonsContainer}>
-        {/* <div className={classes.button}>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => history.goBack()}
-            disabled={buttonLoading || loading}
-          >
-            {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-          </Button>
-        </div> */}
         {editMode !== "view" && (
           <>
+            {editMode === "edit" ? (
+              <div className={classes.button}>
+                <ButtonWithLoader onPress={() => createFilter(bidId)}>
+                  {intl.formatMessage({ id: "ALL.BUTTONS.CREATE_FILTER" })}
+                </ButtonWithLoader>
+              </div>
+            ) : (
+              <div className={classes.button}>
+                <FormControlLabel
+                  control={
+                    <Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />
+                  }
+                  label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
+                />
+              </div>
+            )}
+
             <div className={classes.button}>
               <ButtonWithLoader
                 loading={buttonLoading}
@@ -1352,7 +1456,8 @@ const BidForm: React.FC<IProps> = ({
               editMode,
               vendorId,
               user,
-              me
+              me,
+              isFilterCreated
             ),
           });
           window.scrollTo({

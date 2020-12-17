@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from "react";
-// import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import {
-  Paper,
-  // Button,
-  AppBar,
-  Tabs,
-  Divider,
-  Tab,
-} from "@material-ui/core";
+import { Paper, AppBar, Tabs, Divider, Tab } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 
 import { actions as funnelStatesActions } from "../../../store/ducks/funnelStates.duck";
@@ -23,6 +15,7 @@ import FunnelStatesTable from "./components/FunnelStatesTable";
 
 const FunnelStatesPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
+  me,
   tab,
   setTab,
   fetch,
@@ -141,6 +134,7 @@ const FunnelStatesPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
 const connector = connect(
   (state: IAppState) => ({
+    me: state.auth.user,
     tab: state.funnelStates.tab,
     funnelStates: state.funnelStates.funnelStates,
     loading: state.funnelStates.loading,

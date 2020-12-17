@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
+import { useSnackbar } from "notistack";
 import { useHistory } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -72,6 +73,8 @@ const BidTable: React.FC<IProps> = ({
   setProfit,
 }) => {
   const history = useHistory();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const [clientWidth, setClientWidth] = useState(document.body.clientWidth);
 
@@ -332,8 +335,8 @@ const BidTable: React.FC<IProps> = ({
                         setProfit({
                           bid_id: bid.id,
                           value: maxProfit || 0,
-                        });
-                        history.push(`/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`);
+                        }); 
+                        history.push(`/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`) 
                       }}
                     >
                       <VisibilityIcon />

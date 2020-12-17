@@ -4,7 +4,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import { IconButton } from "@material-ui/core";
-import { useTheme, makeStyles } from "@material-ui/core/styles";
+import { useTheme, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
     root: {

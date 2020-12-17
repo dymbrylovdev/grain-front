@@ -92,6 +92,9 @@ const theme = createMuiTheme(
         root: {
           marginBottom: 0,
         },
+        label: {
+          fontSize: 14,
+        },
       },
       MuiSkeleton: {
         root: {
@@ -108,6 +111,22 @@ const theme = createMuiTheme(
           fontSize: 12,
         },
       },
+      MuiMenuItem: {
+        root: {
+          fontSize: 14,
+          lineHeight: "24px",
+          "&:hover": {
+            color: "#5d78ff",
+            background: "none",
+          },
+        },
+      },
+      MuiMenu: {
+        paper: {
+          width: "100%",
+          maxWidth: 280,
+        },
+      },
     },
     props: {
       // Name of the component ⚛️
@@ -121,6 +140,12 @@ const theme = createMuiTheme(
         elevation: 1,
       },
     },
+
+    breakpoints: {
+      values: {
+        sm: 660
+      }
+    }
   }
 );
 

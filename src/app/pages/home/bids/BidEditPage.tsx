@@ -12,6 +12,7 @@ import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
 import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as yaLocationsActions } from "../../../store/ducks/yaLocations.duck";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
+import { actions as myFiltersActions } from '../../../store/ducks/myFilters.duck';
 
 import { IAppState } from "../../../store/rootDuck";
 import { ErrorPage } from "../../../components/ErrorPage";
@@ -81,6 +82,14 @@ const BidEditPage: React.FC<TPropsFromRedux &
   editLoading,
   editSuccess,
   editError,
+
+  clearPost,
+  post,
+  postLoading,
+  postSuccess,
+  postError,
+
+  editContactViewCount,
 
   fetchLocations,
   clearLocations,
@@ -183,7 +192,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
     fetchMe();
   }, [fetchMe]);
 
-  let title = null;
+  let title = "string";
   if (editMode === "create" && !vendorId) title = intl.formatMessage({ id: "BID.TITLE.CREATE" });
   if (editMode === "create" && !!vendorId && !!user && user.id === +vendorId)
     title = `${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [ ${user.login} ]`;
@@ -258,15 +267,20 @@ const BidEditPage: React.FC<TPropsFromRedux &
             cropParams={cropParams}
             cropParamsLoading={cropParamsLoading}
             setAlertOpen={setAlertOpen}
-            buttonLoading={createLoading || editLoading}
+            buttonLoading={createLoading || editLoading || postLoading}
             create={create}
             createSuccess={createSuccess}
             createError={createError}
             clearCreate={clearCreate}
+            post={post}
+            postSuccess={postSuccess}
+            postError={postError}
+            clearPost={clearPost}
             edit={edit}
             profit={profit}
             openInfoAlert={openInfoAlert}
             setOpenInfoAlert={setOpenInfoAlert}
+            editContactViewCount={editContactViewCount}
           />
         )}
         <AlertDialog
@@ -327,6 +341,14 @@ const connector = connect(
     delSuccess: state.bids.delSuccess,
     delError: state.bids.delError,
 
+    postLoading: state.myFilters.postLoading,
+    postSuccess: state.myFilters.postSuccess,
+    postError: state.myFilters.postError,
+
+    contactViewCountLoading: state.users.contactViewCountLoading,
+    contactViewCountSuccess: state.users.contactViewCountSuccess,
+    contactViewCountError: state.users.contactViewCountError,
+
     locations: state.yaLocations.yaLocations,
     loadingLocations: state.yaLocations.loading,
 
@@ -334,6 +356,8 @@ const connector = connect(
   }),
   {
     fetchUser: usersActions.fetchByIdRequest,
+
+    editContactViewCount: usersActions.contactViewCountRequest,
 
     fetchMe: authActions.fetchRequest,
 
@@ -348,6 +372,9 @@ const connector = connect(
 
     clearDel: bidsActions.clearDel,
     del: bidsActions.delRequest,
+
+    clearPost: myFiltersActions.clearPost,
+    post: myFiltersActions.postFilter,
 
     setActiveStep: prompterActions.setActiveStep,
     fetchCrops: crops2Actions.fetchRequest,

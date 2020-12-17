@@ -9,17 +9,12 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TextField,
-  Button,
   Tooltip,
 } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import { useSnackbar } from "notistack";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
@@ -30,9 +25,6 @@ import { IAppState } from "../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
 import { FilterModal } from "./components";
-import { isDealsFilterEmpty } from "./utils/utils";
-import { accessByRoles } from "../../../utils/utils";
-import NumberFormatCustom from "../../../components/NumberFormatCustom/NumberFormatCustom";
 import MiniTrafficLight from "../users/components/miniTrafficLight/MiniTrafficLight";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
@@ -75,18 +67,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const history = useHistory();
   const [filterModalOpen, setFilterModalOpen] = useState(false);
 
-  const { values, handleSubmit, touched, errors, setFieldValue, resetForm } = useFormik({
-    initialValues: { weeks, term },
-    onSubmit: values => {
-      setWeeks(values.weeks > 0 ? values.weeks : 1);
-      setTerm(values.term);
-      fetch(page, perPage, values.weeks > 0 ? values.weeks : 1, !values.term ? 999 : +values.term);
-    },
-    validationSchema: Yup.object().shape({
-      weeks: Yup.number().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-    }),
-  });
-
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (editFilterSuccess || editFilterError) {
@@ -119,7 +99,13 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   ]);
 
   useEffect(() => {
-    if (!!dealsFilters) fetch(page, perPage, weeks, !term ? 999 : +term);
+    const timeout: any = setTimeout(() => {
+      if (!!dealsFilters) fetch(page, perPage, weeks, !term ? 999 : +term);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [dealsFilters, fetch, page, perPage, term, weeks]);
 
   useEffect(() => {
@@ -134,12 +120,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetchDealsFilters();
   }, [fetchDealsFilters]);
 
-  useEffect(() => {
-    resetForm({
-      values: { weeks, term },
-    });
-  }, [resetForm, term, weeks]);
-
   if (error || filtersError || cropsError || allCropParamsError) {
     setTimeout(() => {
       window.location.reload();
@@ -147,110 +127,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }
 
   return (
-    <Paper className={classes.paperWithTable}>
-      {!!crops && <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />}
-      {
-        <div
-          className={classes.flexRow}
-          style={{ justifyContent: "space-between", marginBottom: "8px", marginTop: "16px" }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
-              alignItems: "center",
-            }}
-          >
-            <div style={{ marginRight: "16px" }}>
-              <div>{intl.formatMessage({ id: "DEALS.WEEKS.TEXT" })}</div>
-              <div style={{ width: 200 }}>
-                <TextField
-                  margin="normal"
-                  label={intl.formatMessage({
-                    id: "DEALS.WEEKS.WEEKS",
-                  })}
-                  value={values.weeks}
-                  onChange={e => {
-                    let newValue = e.target.value;
-                    if (+newValue < 0) {
-                      newValue = "0";
-                    }
-                    if (+newValue > 100) {
-                      newValue = "100";
-                    }
-                    setFieldValue("weeks", newValue);
-                  }}
-                  InputProps={{ inputComponent: NumberFormatCustom as any }}
-                  onBlur={() => handleSubmit()}
-                  name="weeks"
-                  variant="outlined"
-                  helperText={touched.weeks && errors.weeks}
-                  error={Boolean(touched.weeks && errors.weeks)}
-                  autoComplete="off"
-                />
-              </div>
-            </div>
-            <div style={{ marginRight: "16px" }}>
-              <div>{intl.formatMessage({ id: "FILTER.FORM.MAX_PAYMENT_TERM1" })}</div>
-              <div style={{ width: 200 }}>
-                <TextField
-                  type="text"
-                  label={intl.formatMessage({
-                    id: "FILTER.FORM.MAX_PAYMENT_TERM2",
-                  })}
-                  margin="normal"
-                  name="term"
-                  value={values.term || ""}
-                  variant="outlined"
-                  onBlur={() => handleSubmit()}
-                  onChange={e => {
-                    let newValue = e.target.value;
-                    if (+newValue < 0) {
-                      newValue = "0";
-                    }
-                    if (+newValue > 999) {
-                      newValue = "999";
-                    }
-                    setFieldValue("term", newValue);
-                  }}
-                  InputProps={{ inputComponent: NumberFormatCustom as any }}
-                  autoComplete="off"
-                />
-              </div>
-            </div>
-
-            <div style={{ marginTop: 8, marginBottom: 8 }}>
-              <Button variant="contained" color="primary" onClick={() => handleSubmit()}>
-                {intl.formatMessage({ id: "DEALS.WEEKS.BUTTON" })}
-              </Button>
-            </div>
-          </div>
-          {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-            <div
-              className={classes.flexRow}
-              style={{ textAlign: "right", marginLeft: 16, alignSelf: "flex-start" }}
-            >
-              <div>{intl.formatMessage({ id: "DEALS.FILTER.NAME" })}</div>
-              <div>
-                <IconButton
-                  onClick={() => {
-                    setFilterModalOpen(true);
-                  }}
-                >
-                  <CustomIcon
-                    path={
-                      isDealsFilterEmpty(dealsFilters)
-                        ? "/media/filter/filter.svg"
-                        : "/media/filter/filter_full.svg"
-                    }
-                  />
-                </IconButton>
-              </div>
-            </div>
-          )}
-        </div>
-      }
+    <Paper className={classes.paperWithTable} style={{ paddingTop: 16 }}>
+      <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />
       {!deals || !crops || !dealsFilters || !allCropParams ? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />

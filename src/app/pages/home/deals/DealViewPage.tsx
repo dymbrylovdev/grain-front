@@ -1,19 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { compose } from "redux";
 import { RouteComponentProps, Link, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Button } from "@material-ui/core";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  IconButton,
+} from "@material-ui/core";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
+import { actions as usersActions } from "../../../store/ducks/users.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
 
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
-import { Skeleton } from "@material-ui/lab";
+import { Alert, Skeleton } from "@material-ui/lab";
+import CloseIcon from "@material-ui/icons/Close";
 import { LayoutSubheader } from "../../../../_metronic";
 import { UserActivity, TrafficLight } from "../users/components";
 import { accessByRoles, getConfirmCompanyString } from "../../../utils/utils";
@@ -46,10 +58,12 @@ const DealViewPage: React.FC<TPropsFromRedux &
   fetchCrops,
   cropsError,
 
+  fetchMe,
   fetchDealsFilters,
   dealsFilters,
   filtersLoading,
   filtersError,
+  editContactViewCount,
 
   fetchCropParams,
   cropParams,
@@ -58,9 +72,32 @@ const DealViewPage: React.FC<TPropsFromRedux &
   const classes = useStyles();
   const history = useHistory();
 
+  const [isAlertOpen, setAlertOpen] = useState(false);
+
+  const linkToContact = () => {
+    if (deal && me) {
+      let contactViewCount = me.contact_view_count;
+      //@ts-ignore
+      if (contactViewCount > 1) {
+        history.push(`/user/view/${deal.sale_bid.vendor.id}`);
+        //@ts-ignore
+        editContactViewCount({ data: { contact_view_count: contactViewCount - 2 } });
+      } else {
+        setAlertOpen(!isAlertOpen);
+        setTimeout(() => {
+          setAlertOpen(false);
+        }, 5000);
+      }
+    }
+  };
+
   useEffect(() => {
     if (!!dealsFilters && !deals && !loading) fetch(page, perPage, weeks, !term ? 999 : +term);
   }, [deals, dealsFilters, fetch, loading, page, perPage, term, weeks]);
+
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
 
   useEffect(() => {
     fetchCropParams(+cropId);
@@ -373,82 +410,84 @@ const DealViewPage: React.FC<TPropsFromRedux &
                     </TableCell>
                   </TableRow>
 
-                  <TableRow>
-                    <TableCell>
-                      <strong>{intl.formatMessage({ id: "DEALS.TABLE.AGENT" })}</strong>
-                    </TableCell>
-                    <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                      <p>
-                        <Link to={`/user/view/${deal.sale_bid.vendor.id}`}>
-                          {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
-                        </Link>
-                      </p>
-                      {!!deal?.sale_bid?.vendor?.phone && (
-                        <p>тел.: +7 {deal.sale_bid.vendor.phone}</p>
-                      )}
-                      <UserActivity intl={intl} user={deal.sale_bid.vendor} />
-                      <div className={classes.topMargin}>
-                        {!!deal.sale_bid.vendor.company && (
-                          <div>{deal.sale_bid.vendor.company.short_name}</div>
+                  {me && (
+                    <TableRow>
+                      <TableCell>
+                        <strong>{intl.formatMessage({ id: "DEALS.TABLE.AGENT" })}</strong>
+                      </TableCell>
+                      <TableCell style={{ backgroundColor: "#eeeeee" }}>
+                        <p>
+                          <div style={{ cursor: "pointer", color: "blue" }} onClick={linkToContact}>
+                            {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
+                          </div>
+                        </p>
+                        {!!deal?.sale_bid?.vendor?.phone && (
+                          <p>тел.: +7 {deal.sale_bid.vendor.phone}</p>
                         )}
-                        <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
-                          {!!deal?.sale_bid?.vendor?.company && (
-                            <div className={classes.rightMargin1}>
-                              {!deal?.sale_bid?.vendor?.company_confirmed_by_payment ? (
-                                <ReportProblemIcon color="error" />
-                              ) : (
-                                <CheckCircleOutlineIcon color="secondary" />
-                              )}
-                            </div>
+                        <UserActivity intl={intl} user={deal.sale_bid.vendor} />
+                        <div className={classes.topMargin}>
+                          {!!deal.sale_bid.vendor.company && (
+                            <div>{deal.sale_bid.vendor.company.short_name}</div>
                           )}
-                          <div>{getConfirmCompanyString(deal.sale_bid.vendor, intl)}</div>
+                          <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
+                            {!!deal?.sale_bid?.vendor?.company && (
+                              <div className={classes.rightMargin1}>
+                                {!deal?.sale_bid?.vendor?.company_confirmed_by_payment ? (
+                                  <ReportProblemIcon color="error" />
+                                ) : (
+                                  <CheckCircleOutlineIcon color="secondary" />
+                                )}
+                              </div>
+                            )}
+                            <div>{getConfirmCompanyString(deal.sale_bid.vendor, intl)}</div>
+                          </div>
+                          {!!deal?.sale_bid?.vendor?.company?.colors &&
+                            !!deal?.sale_bid?.vendor?.company_confirmed_by_payment && (
+                              <TrafficLight
+                                intl={intl}
+                                colors={deal?.sale_bid?.vendor?.company?.colors}
+                              />
+                            )}
                         </div>
-                        {!!deal?.sale_bid?.vendor?.company?.colors &&
-                          !!deal?.sale_bid?.vendor?.company_confirmed_by_payment && (
-                            <TrafficLight
-                              intl={intl}
-                              colors={deal?.sale_bid?.vendor?.company?.colors}
-                            />
-                          )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <p>
-                        <Link to={`/user/view/${deal.purchase_bid.vendor.id}`}>
-                          {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
-                        </Link>
-                      </p>
-                      {!!deal?.purchase_bid?.vendor?.phone && (
-                        <p>тел.: +7 {deal.purchase_bid.vendor.phone}</p>
-                      )}
-                      <UserActivity intl={intl} user={deal.purchase_bid.vendor} />
+                      </TableCell>
+                      <TableCell>
+                        <p>
+                          <div style={{ cursor: "pointer", color: "blue" }} onClick={linkToContact}>
+                            {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
+                          </div>
+                        </p>
+                        {!!deal?.purchase_bid?.vendor?.phone && (
+                          <p>тел.: +7 {deal.purchase_bid.vendor.phone}</p>
+                        )}
+                        <UserActivity intl={intl} user={deal.purchase_bid.vendor} />
 
-                      <div className={classes.topMargin}>
-                        {!!deal.purchase_bid.vendor.company && (
-                          <div>{deal.purchase_bid.vendor.company.short_name}</div>
-                        )}
-                        <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
-                          {!!deal?.purchase_bid?.vendor?.company && (
-                            <div className={classes.rightMargin1}>
-                              {!deal?.purchase_bid?.vendor?.company_confirmed_by_payment ? (
-                                <ReportProblemIcon color="error" />
-                              ) : (
-                                <CheckCircleOutlineIcon color="secondary" />
-                              )}
-                            </div>
+                        <div className={classes.topMargin}>
+                          {!!deal.purchase_bid.vendor.company && (
+                            <div>{deal.purchase_bid.vendor.company.short_name}</div>
                           )}
-                          <div>{getConfirmCompanyString(deal.purchase_bid.vendor, intl)}</div>
+                          <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
+                            {!!deal?.purchase_bid?.vendor?.company && (
+                              <div className={classes.rightMargin1}>
+                                {!deal?.purchase_bid?.vendor?.company_confirmed_by_payment ? (
+                                  <ReportProblemIcon color="error" />
+                                ) : (
+                                  <CheckCircleOutlineIcon color="secondary" />
+                                )}
+                              </div>
+                            )}
+                            <div>{getConfirmCompanyString(deal.purchase_bid.vendor, intl)}</div>
+                          </div>
+                          {!!deal?.purchase_bid?.vendor?.company?.colors &&
+                            !!deal?.purchase_bid?.vendor?.company_confirmed_by_payment && (
+                              <TrafficLight
+                                intl={intl}
+                                colors={deal?.purchase_bid?.vendor?.company?.colors}
+                              />
+                            )}
                         </div>
-                        {!!deal?.purchase_bid?.vendor?.company?.colors &&
-                          !!deal?.purchase_bid?.vendor?.company_confirmed_by_payment && (
-                            <TrafficLight
-                              intl={intl}
-                              colors={deal?.purchase_bid?.vendor?.company?.colors}
-                            />
-                          )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                      </TableCell>
+                    </TableRow>
+                  )}
 
                   {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
                     <TableRow>
@@ -467,6 +506,20 @@ const DealViewPage: React.FC<TPropsFromRedux &
                   )}
                 </TableBody>
               </Table>
+
+              {me && accessByRoles(me, ["ROLE_TRADER"]) && (
+                <div style={{marginTop: 20}}>
+                  <Alert
+                    className={classes.infoAlert}
+                    severity="warning"
+                    color="error"
+                    style={{ marginTop: 8, marginBottom: 8 }}
+                  >
+                    {`Сегодня вам доступен просмотр ${me?.contact_view_count} контактов ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
+                  </Alert>
+                </div>
+              )}
+
             </div>
           </>
         )
@@ -497,13 +550,19 @@ const connector = connect(
     dealsFilters: state.deals.filters,
     filtersLoading: state.deals.filtersLoading,
     filtersError: state.deals.filtersError,
+
+    contactViewCountLoading: state.users.contactViewCountLoading,
+    contactViewCountSuccess: state.users.contactViewCountSuccess,
+    contactViewCountError: state.users.contactViewCountError,
   }),
   {
+    fetchMe: authActions.fetchRequest,
     fetch: dealsActions.fetchRequest,
     fetchCrops: crops2Actions.fetchRequest,
     fetchCropParams: crops2Actions.cropParamsRequest,
     setDeal: dealsActions.setDeal,
     fetchDealsFilters: dealsActions.fetchFiltersRequest,
+    editContactViewCount: usersActions.contactViewCountRequest,
   }
 );
 

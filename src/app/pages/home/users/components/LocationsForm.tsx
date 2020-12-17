@@ -99,7 +99,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   if ((editMode === "edit" || editMode === "view") && user) locations = user.points;
 
   const [editNameId, setEditNameId] = useState(-1);
-  const [creatingLocation, setCreatingLocation] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [deleteLocationId, setDeleteLocationId] = useState(-1);
   const [autoLocation, setAutoLocation] = useState({ text: "" });
@@ -255,6 +254,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   </>
                 ) : (
                   <>
+                    <div style={{fontSize: 16}}>{intl.formatMessage({ id: "LOCATIONS.FORM.NAME" })}</div>
                     <div className={innerClasses.name}>{item.name}</div>
                     {editMode !== "view" && (
                       <div>
@@ -299,7 +299,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                         clearLocations={clearGoogleLocations}
                         setSelectedLocation={(location: ILocationToRequest) => {
                           if (location.text !== "") {
-                            delete location.name;
+                            // delete location.name;
                             location.user_id = userId || me?.id;
                             edit({ id: item.id, data: location });
                           }
@@ -359,7 +359,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 <Skeleton width="100%" height={22} animation="wave" />
               </p>
             ) : (
-              <p>{intl.formatMessage({ id: "LOCATIONS.MORE" })}</p>
+              <p style={{fontSize: 16, marginTop: 20}}><b>{intl.formatMessage({ id: "LOCATIONS.MORE" })}</b></p>
             ))}
         </>
       )}
@@ -367,16 +367,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       {editMode !== "view" && (
         <div className={classes.box}>
           <div className={classes.textFieldContainer}>
-            {!creatingLocation ? (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setCreatingLocation(true)}
-                disabled={loadingMe || loadingUser}
-              >
-                {intl.formatMessage({ id: "LOCATIONS.FORM.ADD_LOCATIONS" })}
-              </Button>
-            ) : (
               <div className={classes.textField}>
                 <AutocompleteLocations
                   options={googleLocations || []}
@@ -399,17 +389,14 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     if (location.text !== "") {
                       setAutoLocation({ text: "" });
                       userId ? (location.user_id = userId) : (location.user_id = me?.id);
-                      setCreatingLocation(false);
                       create(location);
                     }
                   }}
-                  handleBlur={() => setCreatingLocation(false)}
                   disable={false}
                   prompterRunning={me?.points.length === 0 ? prompterRunning : false}
                   prompterStep={prompterStep}
                 />
               </div>
-            )}
           </div>
         </div>
       )}

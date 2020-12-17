@@ -66,7 +66,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     params: { cropId },
   },
   match,
-
+  location,
   intl,
 
   fetchMe,
@@ -418,7 +418,7 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   return (
     <>
-      <Prompter />
+      {/* <Prompter /> */}
       <LayoutSubheader title={pageTitle} />
       <Paper className={classes.paperWithTable}>
         <div className={innerClasses.topContainer}>
@@ -446,7 +446,7 @@ const BidsPage: React.FC<TPropsFromRedux &
             )}
           </div>
 
-          {bestAllMyMode === "best-bids" && (
+          {/* {bestAllMyMode === "best-bids" && (
             <>
               <div className={innerClasses.filterText}>
                 {filterTitle}
@@ -462,7 +462,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 <CustomIcon path={filterIconPath} />
               </IconButton>
             </>
-          )}
+          )} */}
         </div>
 
         {bestAllMyMode === "best-bids" && (
@@ -579,33 +579,6 @@ const BidsPage: React.FC<TPropsFromRedux &
             )}
           </>
         )}
-
-        <FilterModal
-          isOpen={filterModalOpen}
-          handleClose={() => setFilterModalOpen(false)}
-          classes={classes}
-          handleSubmit={(values: any) => {
-            let params = { ...values };
-            params.name = values.name.trim();
-            setFilterModalOpen(false);
-            if (salePurchaseMode === "sale")
-              setCurrentSaleFilter(+cropId, { ...params, cropId: +cropId });
-            if (salePurchaseMode === "purchase")
-              setCurrentPurchaseFilter(+cropId, { ...params, cropId: +cropId });
-          }}
-          cropId={+cropId}
-          enumParams={cropParams && cropParams.filter(item => item.type === "enum")}
-          numberParams={cropParams && cropParams.filter(item => item.type === "number")}
-          currentFilter={
-            salePurchaseMode === "sale"
-              ? currentSaleFilters[cropId]
-              : currentPurchaseFilters[cropId]
-          }
-          setCurrentFilter={
-            salePurchaseMode === "sale" ? setCurrentSaleFilter : setCurrentPurchaseFilter
-          }
-          salePurchaseMode={salePurchaseMode}
-        />
         <LocationDialog
           isOpen={locationModalOpen}
           handleClose={() => setLocationModalOpen(false)}

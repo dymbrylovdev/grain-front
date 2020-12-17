@@ -9,6 +9,7 @@ import { searchCompanies } from "../../../../crud/companies.crud";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import CompanySearchDialog from "./CompanySearchDialog";
+import ScrollToTop from "../../../../components/ui/ScrollToTop";
 
 const innerStyles = makeStyles(theme => ({
   title: {
@@ -36,8 +37,18 @@ const isSearchEmpty = values => {
   return false;
 };
 
-function CompanySearchForm({ intl, setCompanyAction, classes, company, editAction, confirms }) {
+function CompanySearchForm({
+  intl,
+  setCompanyAction,
+  me,
+  classes,
+  company,
+  editAction,
+  values,
+  confirms,
+}) {
   const formRef = useRef();
+  const searchRef = useRef();
   const innerClasses = innerStyles();
   const [companies, setCompanies] = useState([]);
   //const [currentCompany, setCurrentCompany] = useState(company);
@@ -72,15 +83,38 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company, editActio
           company_confirmed_by_email: confirms,
           company_confirmed_by_phone: confirms,
           company_confirmed_by_payment: confirms,
+          email: values.email,
+          fio: values.fio,
+          is_funnel_state_automate: values.is_funnel_state_automate,
+          login: values.login,
+          phone: values.phone,
+          use_vat: values.use_vat,
         },
       });
       setDialogOpen(false);
     },
-    [confirms, editAction]
+    [
+      confirms,
+      editAction,
+      values.email,
+      values.fio,
+      values.is_funnel_state_automate,
+      values.login,
+      values.phone,
+      values.use_vat,
+    ]
   );
+
+  const scrollBottom = () => window.scrollTo(0, window.innerHeight);
+
   useEffect(() => {
     formRef.current.resetForm({ values: getInitialValues(company) });
   }, [company]);
+
+  useEffect(() => {
+    if (me?.company === null) scrollBottom();
+  }, [me?.company]);
+
   return (
     <>
       <CompanySearchDialog
@@ -138,9 +172,10 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company, editActio
         }) => (
           <div noValidate className="kt-form" onSubmit={handleSubmit}>
             <Box
+              ref={searchRef}
               className={classes.paramContainer}
               border={1}
-              borderColor="#eeeeee"
+              borderColor={me?.company === null ? "#6775c4" : "#eeeeee"}
               borderRadius={5}
             >
               <div className={innerClasses.title}>
@@ -174,6 +209,7 @@ function CompanySearchForm({ intl, setCompanyAction, classes, company, editActio
                 helperText={touched.inn && errors.inn}
                 error={Boolean(touched.inn && errors.inn)}
                 autoComplete="off"
+                autoFocus={me?.company === null ? true : false}
               />
               <StatusAlert status={status} />
               <div className={classes.buttonContainer}>

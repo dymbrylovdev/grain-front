@@ -7,6 +7,7 @@ export interface IBid {
   volume: number;
   description: string;
   is_pro: boolean;
+  is_filter_created: number;
   author: {
     id: number;
     fio: string;
@@ -106,6 +107,7 @@ export interface IBidToRequest {
   ];
   vendor_id?: number;
   payment_term?: number;
+  is_filter_created?: number;
 }
 
 export interface IBestBids {

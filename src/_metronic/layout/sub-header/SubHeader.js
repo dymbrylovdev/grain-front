@@ -5,16 +5,17 @@ import objectPath from "object-path";
 import { withRouter } from "react-router-dom";
 //import SaveIcon from "@material-ui/icons/Save";
 //import IconButton from "@material-ui/core/IconButton";
-import ReportProblemIcon from "@material-ui/icons/ReportProblem";
+// import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import { LayoutContextConsumer } from "../LayoutContext";
 import * as builder from "../../ducks/builder";
 // import { QuickActions } from './components/QuickActions';
 // import { ReactComponent as SortNum1Icon } from '../../../_metronic/layout/assets/layout-svg-icons/SortNum1.svg';
 import BreadCrumbs from "./components/BreadCrumbs";
-import { Button, Tooltip } from "@material-ui/core";
-import { roles } from "../../../app/pages/home/users/utils/profileForm";
+import { Button } from "@material-ui/core";
+// import { roles } from "../../../app/pages/home/users/utils/profileForm";
 import { injectIntl } from "react-intl";
+import { accessByRoles } from "../../../app/utils/utils";
 
 class SubHeader extends React.Component {
   render() {
@@ -24,10 +25,21 @@ class SubHeader extends React.Component {
       subheaderMobileToggle,
       me,
       history,
-      intl,
+
+      // intl,
     } = this.props;
+
     return (
-      <div id="kt_subheader" className={`kt-subheader ${subheaderCssClasses} kt-grid__item`}>
+      <div
+        id="kt_subheader"
+        className={`kt-subheader ${subheaderCssClasses} kt-grid__item`}
+        style={{
+          top: 50,
+          left: 0,
+          boxShadow: "0 0 5px rgba(0,0,0,0.15)",
+          zIndex: 100,
+        }}
+      >
         <div className={`kt-container ${subheaderContainerCssClasses}`}>
           <div className="kt-subheader__main">
             {subheaderMobileToggle && (
@@ -40,8 +52,6 @@ class SubHeader extends React.Component {
             )}
 
             <LayoutContextConsumer>
-              {/*{({ subheader: { title, breadcrumb } }) => (*/}
-
               {({ subheader: { title, breadcrumb } }) => (
                 <>
                   <h3 className="kt-subheader__title">{title}</h3>
@@ -50,7 +60,7 @@ class SubHeader extends React.Component {
               )}
             </LayoutContextConsumer>
 
-            {/*<span className="kt-subheader__separator kt-subheader__separator--v" />*/}
+            {/* <span className="kt-subheader__separator kt-subheader__separator--v" /> */}
             {/* <span className="kt-subheader__desc">#XRS-45670</span> */}
             {/* <a href="#" className="btn btn-label-warning btn-bold btn-sm btn-icon-h kt-margin-l-10">
               Add New
@@ -58,7 +68,7 @@ class SubHeader extends React.Component {
           </div>
 
           <div className="kt-subheader__toolbar">
-            {!!me && !me.company_confirmed_by_payment && !me.company_confirmed_by_email && (
+            {/* {!!me && !me.company_confirmed_by_payment && !me.company_confirmed_by_email && (
               <div>
                 <Tooltip
                   title={intl.formatMessage({
@@ -71,13 +81,13 @@ class SubHeader extends React.Component {
                   />
                 </Tooltip>
               </div>
-            )}
-            <div className="kt-subheader__wrapper" style={{ marginRight: 16 }}>
-              <div>email: {me.login}</div>
+            )} */}
+            <div className="kt-subheader__wrapper">
+              {/* <div>email: {me.login}</div>
               <div>
                 роль:{" "}
                 {me?.roles?.length > 0 ? roles.find(item => item.id === me.roles[0])?.value : ""}
-              </div>
+              </div> */}
               {/* <button type="button" className="btn kt-subheader__btn-primary">
                 Actions &nbsp;
                 <SortNum1Icon className="kt-svg-icon kt-svg-icon--sm" />
@@ -87,8 +97,19 @@ class SubHeader extends React.Component {
                 <SaveIcon className="kt-svg-icon kt-svg-icon--primary kt-svg-icon--md" />
               </IconButton> */}
             </div>
-            {me && (
+            {me && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
               <Button
+                variant="contained"
+                color="primary"
+                onClick={() => history.push('/user/create')}
+              >
+                Добавить пользователя
+              </Button>
+            )}
+
+            {me && !accessByRoles(me, ["ROLE_MANAGER"]) && (
+              <Button
+                style={{marginLeft: 15}}
                 variant="contained"
                 color="primary"
                 onClick={() => history.push(`/bid/create/${me.is_buyer ? "purchase" : "sale"}/0`)}

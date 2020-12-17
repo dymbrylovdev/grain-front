@@ -10,17 +10,18 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    // marginBottom: theme.spacing(0),
+    // marginTop: theme.spacing(1),
     flexWrap: "wrap",
     width: "100%",
   },
   numContainer: {
-    marginLeft: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(0),
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     flex: 1,
   },
   radioGroup: {
@@ -34,26 +35,71 @@ const useStyles = makeStyles(theme => ({
     width: 200,
   },
   textField: {
-    marginBottom: 0,
-    marginTop: 0,
-    minWidth: 20,
-    maxWidth: 200,
-    marginLeft: theme.spacing(2),
+    marginBottom: theme.spacing(0),
+    marginTop: theme.spacing(0),
+    // minWidth: 20,
+    // maxWidth: 200,
+    // marginLeft: theme.spacing(2),
   },
+  resize: {
+    fontSize: 30
+  }
 }));
 
-function NumberParam({ values, param, handleChange, clearAction, isEditable = true }) {
+function NumberParam({ values, param, handleChange, clearAction, isEditable = true, handleSubmit = null }) {
   const composeName = `compose${param.id}`;
   const numberName = `number${param.id}`;
   const classes = useStyles();
+
+  const onSubmit = () => {
+    if (handleSubmit) {
+      handleSubmit();
+    }
+  }
+
   return (
     <div className={classes.container}>
-      <div className={classes.paramName}>{param.name}</div>
+      {/* <div className={classes.paramName}>{param.name}</div> */}
       <div className={classes.numContainer}>
+        <TextField
+          className={classes.textField}
+          type="text"
+          label={param.name}
+          margin="normal"
+          name={numberName}
+          value={values[numberName] || ""}
+          variant="outlined"
+          onChange={handleChange}
+          onBlur={onSubmit}
+          InputProps={
+            isEditable
+              ? {
+                  inputComponent: NumberFormatCustom,
+                  endAdornment: (
+                    <IconButton
+                      onClick={() => {
+                        clearAction(composeName, "");
+                        clearAction(numberName, "");
+                      }}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }
+              : undefined
+          }
+          InputLabelProps={{
+            style: { fontSize: 12 }
+          }}
+          disabled={!isEditable}
+          autoComplete="off"
+        />
+
         <RadioGroup
           name={composeName}
           value={values[composeName] || "≤"}
           onChange={handleChange}
+          onBlur={onSubmit}
           className={classes.radioGroup}
           row={true}
         >
@@ -72,35 +118,6 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
             style={{ fontSize: 15 }}
           />
         </RadioGroup>
-
-        <TextField
-          className={classes.textField}
-          type="text"
-          margin="normal"
-          name={numberName}
-          value={values[numberName] || ""}
-          variant="outlined"
-          onChange={handleChange}
-          InputProps={
-            isEditable
-              ? {
-                  inputComponent: NumberFormatCustom,
-                  endAdornment: (
-                    <IconButton
-                      onClick={() => {
-                        clearAction(composeName, "");
-                        clearAction(numberName, "");
-                      }}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                  ),
-                }
-              : undefined
-          }
-          disabled={!isEditable}
-          autoComplete="off"
-        />
       </div>
     </div>
   );

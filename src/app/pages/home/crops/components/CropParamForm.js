@@ -64,7 +64,7 @@ function CropParamForm({
         })}
         onSubmit={(values, { setStatus, setSubmitting }) => {
           values.name = values.name.trim();
-          console.log(values);
+          
           if (values.type === "enum") {
             const enumArray = [];
             Object.keys(values).forEach(param => {

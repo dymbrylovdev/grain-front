@@ -78,6 +78,11 @@ const getAdminMenu = (crops: ICrop[]) => ({
                 bullet: "dot",
                 submenu: getCropsSubmenu(crops, "sale/all-bids"),
               },
+              {
+                title: "Фильтры",
+                page: "",
+                translate: "SUBMENU.FILTERS",
+              },
             ],
           },
           {
@@ -103,6 +108,11 @@ const getAdminMenu = (crops: ICrop[]) => ({
                 translate: "SUBMENU.ALL_BIDS",
                 bullet: "dot",
                 submenu: getCropsSubmenu(crops, "purchase/all-bids"),
+              },
+              {
+                title: "Фильтры",
+                page: "",
+                translate: "SUBMENU.FILTERS",
               },
             ],
           },
