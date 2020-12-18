@@ -164,17 +164,17 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       let params: any = {};
       let tariff_matrix_id_for_prolongation = selectedTariff && selectedTariff.id;
       let tariff_matrix_id = selectedTariff && selectedTariff.id;
-      
+
       let dateToString = selectedDate;
-      let tariff_prolongation_start_date = dateToString.toString();
+      let tariff_start_date = dateToString.toString();
 
       if (
         realUser &&
         realUser.tariff_matrix
       ) {
-        params = { ...params, tariff_matrix_id_for_prolongation, tariff_prolongation_start_date };
+        params = { ...params, tariff_matrix_id_for_prolongation, tariff_start_date };
       } else {
-        params = { ...params, tariff_matrix_id, tariff_prolongation_start_date };
+        params = { ...params, tariff_matrix_id, tariff_start_date };
       }
 
       if (realUser && values.tariff_id) {
