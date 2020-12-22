@@ -36,6 +36,7 @@ export interface IUser {
   tariff_prolongations: any;
   tariff_price?: number[];
   tariff_expired_at?: Date;
+  tariff_start_date?: Date;
   crops: ICrop[];
 }
 
