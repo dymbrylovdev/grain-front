@@ -169,14 +169,14 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       let tariff_start_date = dateToString.toString();
       let tariff_prolongation_start_date = dateToString.toString();
 
-      if (realUser && realUser.tariff_matrix.tariff.name !== "Бесплатный") {
-        params = { ...params, tariff_matrix_id_for_prolongation, tariff_prolongation_start_date };
-      } else {
-        params = { ...params, tariff_matrix_id_for_prolongation, tariff_start_date }
-      }
-      
-      if (realUser && !realUser.tariff_matrix) {
+      if (realUser && realUser.tariff_matrix === null) {
         params = { ...params, tariff_matrix_id, tariff_start_date }
+      }
+
+      if (realUser && realUser.tariff_matrix.tariff.name === "Бесплатный") {
+        params = { ...params, tariff_matrix_id_for_prolongation, tariff_start_date };
+      } else {
+        params = { ...params, tariff_matrix_id_for_prolongation, tariff_prolongation_start_date }
       }
 
       if (realUser && values.tariff_id) {
