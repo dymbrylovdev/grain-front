@@ -167,14 +167,16 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
       let dateToString = selectedDate;
       let tariff_start_date = dateToString.toString();
+      let tariff_prolongation_start_date = dateToString.toString();
 
-      if (
-        realUser &&
-        realUser.tariff_matrix
-      ) {
-        params = { ...params, tariff_matrix_id_for_prolongation, tariff_start_date };
+      if (realUser && realUser.tariff_matrix.tariff.name !== "Бесплатный") {
+        params = { ...params, tariff_matrix_id_for_prolongation, tariff_prolongation_start_date };
       } else {
-        params = { ...params, tariff_matrix_id, tariff_start_date };
+        params = { ...params, tariff_matrix_id_for_prolongation, tariff_start_date }
+      }
+      
+      if (realUser && !realUser.tariff_matrix) {
+        params = { ...params, tariff_matrix_id, tariff_start_date }
       }
 
       if (realUser && values.tariff_id) {
@@ -282,7 +284,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       : realUser.tariff_matrix.tariff.name}
                   </div>
                   {realUser.tariff_matrix.tariff.name !== "Бесплатный" ? (
-                    <div>Период действия тарифа: {realUser.tariff_matrix.tariff_period.period} дней</div>
+                    <div>
+                      Период действия тарифа: {realUser.tariff_matrix.tariff_period.period} дней
+                    </div>
                   ) : null}
                   {realUser.tariff_matrix.tariff.name !== "Бесплатный" ? (
                     <div>Дата окончания тарифа: {intl.formatDate(realUser.tariff_expired_at)}</div>
@@ -293,8 +297,10 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   <Alert className={classes.infoAlert} severity="info" color="info">
                     Вам будет доступен тариф{" "}
                     {realUser.tariff_prolongations[0].tariff_matrix.tariff.name}{" "}
-                    {realUser.tariff_prolongations[0].tariff_matrix.tariff_period.period}{". "}
-                    Дата начала действия тарифа {intl.formatDate(realUser.tariff_prolongations[0].start_date)}
+                    {realUser.tariff_prolongations[0].tariff_matrix.tariff_period.period}
+                    {". "}
+                    Дата начала действия тарифа{" "}
+                    {intl.formatDate(realUser.tariff_prolongations[0].start_date)}
                   </Alert>
                 ) : null}
 
@@ -326,26 +332,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 )}
               </>
             )}
-
-            {/* <div>
-              {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
-                realSelectedTariff.tariff.name !== "Бесплатный" && (
-                  <div className={innerClasses.calendarContain}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
-                      <div className={innerClasses.calendarBlock}>
-                        <KeyboardDatePicker
-                          variant="dialog"
-                          format="dd/MM/yyyy"
-                          margin="normal"
-                          id="data-picker-dialog"
-                          label={intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })}
-                          value={selectedDate}
-                          onChange={handleDateChange}
-                        ></KeyboardDatePicker>
-                      </div>
-                    </MuiPickersUtilsProvider>
-                  </div>
-                )}*/}
           </>
         )}
       </div>
