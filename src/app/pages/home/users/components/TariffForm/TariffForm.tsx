@@ -165,9 +165,10 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       let tariff_matrix_id_for_prolongation = selectedTariff && selectedTariff.id;
       let tariff_matrix_id = selectedTariff && selectedTariff.id;
 
-      let dateToDateTime = "@" + Math.round(selectedDate.getTime() / 1000);
-      let tariff_start_date = dateToDateTime;
-      // let tariff_prolongation_start_date = dateToDateTime;
+      //* timestamp нужен для конвертации типа date в js в тип dateTime php
+      let timestamp = "@" + Math.round(selectedDate.getTime() / 1000);
+      let tariff_start_date = timestamp;
+      let tariff_prolongation_start_date = timestamp;
 
       if (realUser && realUser.tariff_matrix === null) {
         params = { ...params, tariff_matrix_id, tariff_start_date };
@@ -175,10 +176,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
       if (realUser && realUser.tariff_matrix.tariff.name === "Бесплатный") {
         params = { ...params, tariff_matrix_id_for_prolongation, tariff_start_date };
+      } else {
+        params = { ...params, tariff_matrix_id_for_prolongation, tariff_prolongation_start_date };
       }
-      // else {
-      //   params = { ...params, tariff_matrix_id_for_prolongation, tariff_prolongation_start_date }
-      // }
 
       if (realUser && values.tariff_id) {
         edit({
