@@ -162,23 +162,13 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     },
     onSubmit: () => {
       let params: any = {};
-      let tariff_matrix_id_for_prolongation = selectedTariff && selectedTariff.id;
       let tariff_matrix_id = selectedTariff && selectedTariff.id;
 
       //* timestamp нужен для конвертации типа date в js в тип dateTime php
       let timestamp = "@" + Math.round(selectedDate.getTime() / 1000);
       let tariff_start_date = timestamp;
-      let tariff_prolongation_start_date = timestamp;
 
-      if (realUser && realUser.tariff_matrix === null) {
-        params = { ...params, tariff_matrix_id, tariff_start_date };
-      }
-
-      if (realUser && realUser.tariff_matrix.tariff.name === "Бесплатный") {
-        params = { ...params, tariff_matrix_id_for_prolongation, tariff_start_date };
-      } else {
-        params = { ...params, tariff_matrix_id_for_prolongation, tariff_prolongation_start_date };
-      }
+      params = { tariff_matrix_id, tariff_start_date };
 
       if (realUser && values.tariff_id) {
         edit({
@@ -262,8 +252,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchCrops();
   }, [fetchCrops]);
 
-  console.log(realUser);
-
   return (
     <>
       <div>
@@ -303,9 +291,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     {realUser.tariff_prolongations[0].tariff_matrix.tariff_period.period}
                     {". "}
                     Дата начала действия тарифа{" "}
-                    {realUser.tariff_matrix.tariff.name !== "Бесплатный"
-                      ? intl.formatDate(realUser.tariff_prolongations[0].start_date)
-                      : intl.formatDate(realUser.tariff_start_date)}
+                    {intl.formatDate(realUser.tariff_prolongations[0].start_date)}
                   </Alert>
                 ) : null}
 

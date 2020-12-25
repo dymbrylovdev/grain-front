@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, IconButton, Grid as div } from "@material-ui/core";
+import { Dialog, Button, IconButton, Grid as div } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
@@ -8,6 +8,8 @@ import { makeStyles } from "@material-ui/styles";
 
 import { ITariff } from "../../../../../../interfaces/tariffs";
 import { IUser } from "../../../../../../interfaces/users";
+
+import "./test.css";
 
 const useStyles = makeStyles({
   dialog: {
@@ -99,30 +101,32 @@ const TariffPaymentBlock: React.FC<IProps & WrappedComponentProps> = ({
                 для <span className={innerClasses.span}>{realUser.email}</span>, id ={" "}
                 <span className={innerClasses.span}>{realUser.id}</span>{" "}
               </div>
-                <div>{intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })} {intl.formatDate(selectedDate)}</div>
+              <div>
+                {intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })} {intl.formatDate(selectedDate)}
+              </div>
               <div className={innerClasses.subTitle}>
                 {intl.formatMessage({ id: "TARIFFS.PAYMENT.REQUISITES" })}
               </div>
-              <div style={{paddingBottom: 15}}>
+              <div style={{ paddingBottom: 15 }}>
                 {intl.formatMessage({ id: "TARIFFS.PAYMENT.FULLNAME" })}{" "}
-                {intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT1" })}{" "}
-                "{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT1_2" })}"
+                {intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT1" })} "
+                {intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT1_2" })}"
               </div>
               <div>{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT2" })}</div>
               <div>{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT3" })}</div>
               <div>{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT4" })}</div>
               <div>{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT5" })}</div>
               <div>
-                {intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT6" })}{" "}
-                "{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT6_2" })}"
+                {intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT6" })} "
+                {intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT6_2" })}"
               </div>
               <div>{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT7" })}</div>
               <div>{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT8" })}</div>
-              <div style={{paddingBottom: 15}}>{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT9" })}</div>
-              <div>{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT10" })}</div>
-              <div>
-                {intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT11" })}
+              <div style={{ paddingBottom: 15 }}>
+                {intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT9" })}
               </div>
+              <div>{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT10" })}</div>
+              <div>{intl.formatMessage({ id: "TARIFFS.PAYMENT.TEXT11" })}</div>
             </div>
           </>
         )}
