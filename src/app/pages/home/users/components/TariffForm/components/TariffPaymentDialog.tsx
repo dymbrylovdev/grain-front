@@ -58,6 +58,8 @@ const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
         open={openModal}
         onClose={() => setOpenModal(!openModal)}
         className={innerClasses.dialog}
+        fullWidth={true}
+        maxWidth="sm"
       >
         <div className={innerClasses.titleContain}>
           <Tabs
@@ -95,7 +97,7 @@ const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
         </TabPanel>
 
         <TabPanel value={valueTabs} index={1}>
-          <PaymentByCard />
+          <PaymentByCard realUser={realUser} selectedTariff={selectedTariff} />
         </TabPanel>
       </Dialog>
     </>

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 
-const PaymentByCard = () => {
+const PaymentByCard = ({ realUser, selectedTariff }) => {
+
   useEffect(() => {
     const Options = {
       options: {
@@ -19,11 +20,12 @@ const PaymentByCard = () => {
         email: true
       },
       params: {
-        merchant_id: 1396424,
+        merchant_id: 1465280,
         currency: "RUB",
         order_id: new Date().getTime(),
-        amount: 5000,
-        order_desc: "Тариф такой-то, период такой-то",
+        amount: selectedTariff.price * 100,
+        order_desc: `Тариф: ${selectedTariff.tariff.name}, период: ${selectedTariff.tariff_period.period} дней`,
+        email: realUser.email,
       },
       messages: {
         en: {
@@ -32,16 +34,6 @@ const PaymentByCard = () => {
           expiry_date: "Срок действия",
           pay: "Оплатить",
         },
-      },
-      validate: {
-        en: {
-          credit_card: function (field) {
-            return "Ошибка " + field + " must be a valid curd number(en)";
-          },
-          custom_field_1: function (field) {
-            return "Поля " + field + " обязательный для заполнения";
-          }
-        },
       }
     };
     //@ts-ignore
@@ -49,9 +41,7 @@ const PaymentByCard = () => {
   }, []);
 
   return (
-    <div style={{paddingTop: 10, paddingRight: 20, paddingBottom: 10, paddingLeft: 20}}>
-      <div id="fondy-container"></div>
-    </div>
+    <div id="fondy-container"></div>
   );
 };
 
