@@ -16,7 +16,7 @@ import { actions as crops2Actions } from "../../../../../store/ducks/crops2.duck
 
 import TariffCards from "./components/TariffCards";
 import NewTariffTable from "./components/NewTariffTable";
-import TariffPaymentBlock from "./components/TariffPaymentBlock";
+import TariffPaymentDialog from "./components/TariffPaymentDialog";
 import useStyles from "../../../styles";
 import { IAppState } from "../../../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
@@ -342,7 +342,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       )}
 
       {realUser && (
-        <TariffPaymentBlock
+        <TariffPaymentDialog
           realUser={realUser}
           openModal={openModal}
           setOpenModal={setOpenModal}
