@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, Tabs, Tab, Divider, IconButton, Grid as div } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
@@ -34,6 +34,8 @@ interface IProps {
   setOpenModal: any;
   selectedTariff: ITariff | undefined;
   selectedDate: Date;
+  fetchMerchant: any;
+  merchant: any;
 }
 
 const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
@@ -43,6 +45,8 @@ const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
   setOpenModal,
   selectedTariff,
   selectedDate,
+  fetchMerchant,
+  merchant
 }) => {
   const innerClasses = useStyles();
 
@@ -51,6 +55,10 @@ const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
   const handleTabsChange = (e: any, newValue: number) => {
     setValueTabs(newValue);
   };
+
+  useEffect(() => {
+    fetchMerchant();
+  }, [fetchMerchant]);
 
   return (
     <>
@@ -97,7 +105,7 @@ const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
         </TabPanel>
 
         <TabPanel value={valueTabs} index={1}>
-          <PaymentByCard realUser={realUser} selectedTariff={selectedTariff} />
+          <PaymentByCard realUser={realUser} selectedTariff={selectedTariff} selectedDate={selectedDate} merchant={merchant} />
         </TabPanel>
       </Dialog>
     </>

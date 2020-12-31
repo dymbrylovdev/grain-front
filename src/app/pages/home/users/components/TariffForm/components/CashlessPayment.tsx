@@ -17,7 +17,7 @@ const useStyles = makeStyles({
   textContain: {
     paddingTop: 0,
     paddingRight: 15,
-    paddingBottom: 93,
+    paddingBottom: 50,
     paddingLeft: 15,
   },
   title: {

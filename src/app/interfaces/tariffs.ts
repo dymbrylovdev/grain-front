@@ -7,6 +7,7 @@ export interface ITariff {
   max_filters_count: number;
   max_crops_count: number;
   tariff_period: ITariffPeriod;
+  tariff_expired_at: Date;
   price: number;
   period: number;
   role: any;

@@ -103,6 +103,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   prompterRunning,
   prompterStep,
 
+  fondyCredentialsRequest,
+  merchant,
+
   fetchTariffs,
   tariffs,
 
@@ -274,12 +277,14 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       ? "Бизнес"
                       : realUser.tariff_matrix.tariff.name}
                   </div>
-                  {realUser.tariff_matrix.tariff.name !== "Бесплатный" ? (
+                  {realUser.tariff_matrix.tariff.name !== "Бесплатный" &&
+                  realUser.tariff_matrix.tariff_period ? (
                     <div>
                       Период действия тарифа: {realUser.tariff_matrix.tariff_period.period} дней
                     </div>
                   ) : null}
-                  {realUser.tariff_matrix.tariff.name !== "Бесплатный" ? (
+                  {realUser.tariff_matrix.tariff.name !== "Бесплатный" &&
+                  realUser.tariff_matrix.tariff_expired_at ? (
                     <div>Дата окончания тарифа: {intl.formatDate(realUser.tariff_expired_at)}</div>
                   ) : null}
                 </div>
@@ -343,6 +348,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
       {realUser && (
         <TariffPaymentDialog
+          fetchMerchant={fondyCredentialsRequest}
+          merchant={merchant}
           realUser={realUser}
           openModal={openModal}
           setOpenModal={setOpenModal}
@@ -372,6 +379,11 @@ const connector = connect(
     editMeSuccess: state.auth.editSuccess,
     editMeError: state.auth.editError,
 
+    merchant: state.tariffs.merchant_id,
+    fondyCredentialsLoading: state.tariffs.fondyCredentialsLoading,
+    fondyCredentialsSuccess: state.tariffs.fondyCredentialsSuccess,
+    fondyCredentialsError: state.tariffs.fondyCredentialsError,
+
     prompterRunning: state.prompter.running,
     prompterStep: state.prompter.activeStep,
 
@@ -390,6 +402,9 @@ const connector = connect(
     edit: usersActions.editRequest,
     clearEditMe: authActions.clearEdit,
     editMe: authActions.editRequest,
+
+    clearFondyCredentials: tariffsActions.clearFondyCredentials,
+    fondyCredentialsRequest: tariffsActions.fondyCredentialsRequest,
 
     setMenuConfig: builderActions.setMenuConfig,
   }
