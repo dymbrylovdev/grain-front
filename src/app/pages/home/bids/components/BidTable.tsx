@@ -34,7 +34,7 @@ interface IProps {
   intl: any;
   classes: any;
   bids: IBid[] | undefined;
-  isHaveRules: (user: any, id: number) => boolean;
+  isHaveRules?: (user: any, id: number) => boolean;
   handleDeleteDialiog: (id: number) => void;
   user: IUser;
   title?: string;
@@ -43,7 +43,7 @@ interface IProps {
   loading: boolean;
   addUrl?: string;
   salePurchaseMode?: "sale" | "purchase";
-  bestAllMyMode?: "best-bids" | "all-bids" | "my-bids";
+  bestAllMyMode?: "best-bids" | "all-bids" | "my-bids" | "edit";
   crops: ICrop[] | undefined;
   setProfit: (
     profit: IProfit
@@ -117,7 +117,7 @@ const BidTable: React.FC<IProps> = ({
                 <TopTableCell>
                   <FormattedMessage
                     id={
-                      bestAllMyMode === "my-bids"
+                      bestAllMyMode === "my-bids" || "edit"
                         ? "BIDSLIST.TABLE.COST"
                         : "BIDSLIST.TABLE.COST." + salePurchaseMode
                     }
@@ -341,7 +341,7 @@ const BidTable: React.FC<IProps> = ({
                     >
                       <VisibilityIcon />
                     </IconButton>
-                    {isHaveRules(user, bid.vendor.id) && (
+                    {isHaveRules && isHaveRules(user, bid.vendor.id) && (
                       <>
                         <IconButton
                           size="medium"
@@ -350,7 +350,7 @@ const BidTable: React.FC<IProps> = ({
                             history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`)
                           }
                         >
-                          {isHaveRules(user, bid.vendor.id) ? <EditIcon /> : <VisibilityIcon />}
+                          {isHaveRules && isHaveRules(user, bid.vendor.id) ? <EditIcon /> : <VisibilityIcon />}
                         </IconButton>
                         <IconButton
                           size="medium"

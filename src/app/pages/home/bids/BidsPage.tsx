@@ -131,10 +131,11 @@ const BidsPage: React.FC<TPropsFromRedux &
   editError,
   setProfit,
 }) => {
-  let bestAllMyMode: "best-bids" | "all-bids" | "my-bids" = "best-bids";
+  let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
   if (match.url.indexOf("best-bids") !== -1) bestAllMyMode = "best-bids";
   if (match.url.indexOf("all-bids") !== -1) bestAllMyMode = "all-bids";
   if (match.url.indexOf("my-bids") !== -1) bestAllMyMode = "my-bids";
+  if (match.url.indexOf("edit") !== -1) bestAllMyMode = "edit";
 
   let salePurchaseMode: "sale" | "purchase" = "sale";
   if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";

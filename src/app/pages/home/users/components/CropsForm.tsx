@@ -27,7 +27,6 @@ import { IUser } from "../../../../interfaces/users";
 import { ITariff, ITariffType, ITariffPeriod } from "../../../../interfaces/tariffs";
 import { ICrop } from "../../../../interfaces/crops";
 import getMenuConfig from "../../../../router/MenuConfig";
-import uniqBy from "lodash/uniqBy";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   title: {

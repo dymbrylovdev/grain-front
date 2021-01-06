@@ -26,6 +26,10 @@ export function getUsers(page, perPage) {
   return axios.get(`${GET_USERS_URL}?page=${page}&per_page=${perPage}`);
 }
 
+export const getUserBids = (id) => {
+  return axios.get(`api/user/${id}/bids`);
+}
+
 export function getStatuses() {
   return axios.get(GET_STATUSES_URL);
 }

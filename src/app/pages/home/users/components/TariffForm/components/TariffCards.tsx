@@ -7,7 +7,6 @@ import { makeStyles } from "@material-ui/styles";
 
 import { ITariff } from "../../../../../../interfaces/tariffs";
 import { IUser } from "../../../../../../interfaces/users";
-import { accessByRoles } from "../../../../../../utils/utils";
 import DateFnsUtils from "@date-io/date-fns";
 import ruRU from "date-fns/locale/ru";
 

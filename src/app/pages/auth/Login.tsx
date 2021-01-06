@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { compose } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
-import { TextField } from "@material-ui/core";
+import { TextField, Tabs, Tab, Button } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -11,6 +11,8 @@ import { useSnackbar } from "notistack";
 import { actions as authActions } from "../../store/ducks/auth.duck";
 
 import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
+import { TabPanel, a11yProps } from "../../components/ui/Table/TabPanel";
+import NumberFormatPhone from "../../components/NumberFormatCustom/NumberFormatPhone";
 import { IAppState } from "../../store/rootDuck";
 
 const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
@@ -24,6 +26,40 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   loginSuccess,
   loginError,
 }) => {
+  const [valueTabs, setValueTabs] = useState(0);
+  const [phoneLoginPhase, setPhoneLoginPhase] = useState(0);
+
+  const handleTabsChange = (e: any, newValue: number) => {
+    setValueTabs(newValue);
+  };
+
+  let validationSchema = {};
+
+  if (valueTabs === 0) {
+    validationSchema = {
+      email: Yup.string()
+        .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
+        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+      password: Yup.string().required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
+    };
+  }
+  if (valueTabs === 1) {
+    if (phoneLoginPhase === 0) {
+      validationSchema = {
+        phone: Yup.string()
+          .matches(/^[0-9][0-9]{9}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
+          .required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
+      };
+    }
+    if (phoneLoginPhase === 1) {
+      validationSchema = {
+        codeConfirm: Yup.string().required(
+          intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })
+        ),
+      };
+    }
+  }
+
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (fetchError) {
@@ -68,17 +104,17 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             initialValues={{
               email: "",
               password: "",
+              phone: "",
+              codeConfirm: "",
             }}
-            validationSchema={Yup.object().shape({
-              email: Yup.string()
-                .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
-                .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-              password: Yup.string().required(
-                intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })
-              ),
-            })}
+            validationSchema={Yup.object().shape(validationSchema)}
             onSubmit={values => {
-              login({ login: values.email, password: values.password });
+              if (valueTabs === 0) {
+                login({ login: values.email, password: values.password });
+              }
+              if (valueTabs === 1) {
+                phoneLoginPhase ? console.log('Функция логина по номеру телефона') : setPhoneLoginPhase(1);
+              }
             }}
           >
             {({
@@ -97,56 +133,147 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 className="kt-form"
                 onSubmit={handleSubmit}
               >
-                <div className="form-group">
-                  <TextField
-                    type="email"
-                    label={intl.formatMessage({
-                      id: "AUTH.INPUT.EMAIL",
-                    })}
-                    margin="normal"
-                    className="kt-width-full"
-                    name="email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.email}
-                    helperText={touched.email && errors.email}
-                    error={Boolean(touched.email && errors.email)}
-                  />
-                </div>
+                <Tabs
+                  value={valueTabs}
+                  onChange={handleTabsChange}
+                  variant="scrollable"
+                  indicatorColor="primary"
+                  textColor="primary"
+                  aria-label="tabs"
+                >
+                  <Tab label="По email" {...a11yProps(0)} />
+                  <Tab label="По телефону" {...a11yProps(1)} />
+                </Tabs>
 
-                <div className="form-group">
-                  <TextField
-                    type="password"
-                    margin="normal"
-                    label={intl.formatMessage({
-                      id: "AUTH.INPUT.PASSWORD",
-                    })}
-                    className="kt-width-full"
-                    name="password"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.password}
-                    helperText={touched.password && errors.password}
-                    error={Boolean(touched.password && errors.password)}
-                  />
-                </div>
+                <TabPanel value={valueTabs} index={0}>
+                  <div className="form-group">
+                    <TextField
+                      type="email"
+                      label={intl.formatMessage({
+                        id: "AUTH.INPUT.EMAIL",
+                      })}
+                      margin="normal"
+                      className="kt-width-full"
+                      name="email"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.email}
+                      helperText={touched.email && errors.email}
+                      error={Boolean(touched.email && errors.email)}
+                    />
+                  </div>
 
-                <div className="kt-login__actions">
-                  <div>
-                    <ButtonWithLoader
-                      onPress={handleSubmit}
-                      disabled={fetchLoading || loginLoading}
-                      loading={fetchLoading || loginLoading}
-                    >
-                      <FormattedMessage id="AUTH.LOGIN.BUTTON" />
-                    </ButtonWithLoader>
-                    <div style={{ marginTop: 16 }}>
-                      <Link to="/auth/forgot-password" className="kt-link kt-login__link-forgot">
-                        <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
-                      </Link>
+                  <div className="form-group">
+                    <TextField
+                      type="password"
+                      margin="normal"
+                      label={intl.formatMessage({
+                        id: "AUTH.INPUT.PASSWORD",
+                      })}
+                      className="kt-width-full"
+                      name="password"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.password}
+                      helperText={touched.password && errors.password}
+                      error={Boolean(touched.password && errors.password)}
+                    />
+                  </div>
+
+                  <div className="kt-login__actions">
+                    <div>
+                      <ButtonWithLoader
+                        onPress={handleSubmit}
+                        disabled={fetchLoading || loginLoading}
+                        loading={fetchLoading || loginLoading}
+                      >
+                        <FormattedMessage id="AUTH.LOGIN.BUTTON" />
+                      </ButtonWithLoader>
+                      <div style={{ marginTop: 16 }}>
+                        <Link to="/auth/forgot-password" className="kt-link kt-login__link-forgot">
+                          <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </TabPanel>
+
+                <TabPanel value={valueTabs} index={1}>
+                  <div className="form-group">
+                    {phoneLoginPhase === 0 && (
+                      <>
+                        <TextField
+                          type="phone"
+                          label={intl.formatMessage({
+                            id: "AUTH.INPUT.PHONE",
+                          })}
+                          margin="normal"
+                          className="kt-width-full"
+                          name="phone"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.phone}
+                          helperText={touched.phone && errors.phone}
+                          error={Boolean(touched.phone && errors.phone)}
+                          InputProps={{
+                            inputComponent: NumberFormatPhone as any,
+                          }}
+                        />
+
+                        <div className="kt-login__actions">
+                          <ButtonWithLoader
+                            onPress={handleSubmit}
+                            disabled={fetchLoading || loginLoading}
+                            loading={fetchLoading || loginLoading}
+                          >
+                            <FormattedMessage id="AUTH.LOGIN.PHONE" />
+                          </ButtonWithLoader>
+                        </div>
+                      </>
+                    )}
+
+                    {phoneLoginPhase === 1 && (
+                      <>
+                        <TextField
+                          type="text"
+                          label={intl.formatMessage({
+                            id: "AUTH.INPUT.CODE",
+                          })}
+                          margin="normal"
+                          className="kt-width-full"
+                          name="codeConfirm"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.codeConfirm}
+                          helperText={touched.codeConfirm && errors.codeConfirm}
+                          error={Boolean(touched.codeConfirm && errors.codeConfirm)}
+                        />
+
+                        <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                          <div className="kt-login__actions" style={{ marginRight: 30 }}>
+                            <ButtonWithLoader
+                              onPress={() => setPhoneLoginPhase(0)}
+                              disabled={fetchLoading || loginLoading}
+                              loading={fetchLoading || loginLoading}
+                            >
+                              <FormattedMessage id="AUTH.GENERAL.BACK_BUTTON" />
+                            </ButtonWithLoader>
+                          </div>
+
+                          <div className="kt-login__actions">
+                            <ButtonWithLoader
+                              onPress={handleSubmit}
+                              disabled={fetchLoading || loginLoading}
+                              loading={fetchLoading || loginLoading}
+                            >
+                              <FormattedMessage id="AUTH.LOGIN.BUTTON" />
+                            </ButtonWithLoader>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </TabPanel>
               </form>
             )}
           </Formik>

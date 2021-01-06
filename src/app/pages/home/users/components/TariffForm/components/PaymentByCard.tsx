@@ -1,9 +1,6 @@
 import React, { useEffect } from "react";
 
 const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant }) => {
-
-  const moyaFunc = () => console.log('moya func');
-
   useEffect(() => {
     const Options = {
       options: {
@@ -30,16 +27,14 @@ const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant }) => 
         server_callback_url: "https://grain15-api.me-interactive.net/api/fondy/callback",
         lang: "ru",
         product_id: selectedTariff.id,
-        custom: {start_date: selectedDate.toString()},
+        custom: { start_date: selectedDate.toString(), user_id: realUser.id },
       },
     };
     //@ts-ignore
     const app = window.fondy("#fondy-container", Options);
   }, []);
 
-  return (
-    <div id="fondy-container"></div>
-  );
+  return <div id="fondy-container"></div>;
 };
 
 export default PaymentByCard;

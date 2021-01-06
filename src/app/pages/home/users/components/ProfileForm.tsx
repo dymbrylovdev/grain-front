@@ -359,13 +359,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     if (accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !funnelStates) fetchFunnelStates();
   }, [editMode, fetchFunnelStates, funnelStates, me]);
 
-  // useEffect(() => {
-  //   if (me?.company !== null && !me?.company_confirmed_by_payment && !me?.company_confirmed_by_email) {
-  //     setCompanyConfirmId(values.company_id);
-  //     setIsOpenCompanyConfirm(true);
-  //   }
-  // }, [me?.company, me?.company_confirmed_by_payment, me?.company_confirmed_by_email, values.company_id]);
-
   const newRoles = [...roles];
   if (accessByRoles(me, ["ROLE_MANAGER"]) && editMode === "create") {
     newRoles.splice(0, 2);
