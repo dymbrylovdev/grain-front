@@ -252,7 +252,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
             <Tabs
               value={valueTabs}
               onChange={handleTabsChange}
-              variant="scrollable"
+              variant="fullWidth"
               indicatorColor="primary"
               textColor="primary"
               aria-label="tabs"

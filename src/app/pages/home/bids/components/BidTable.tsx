@@ -125,13 +125,17 @@ const BidTable: React.FC<IProps> = ({
                 </TopTableCell>
                 {bestAllMyMode !== "my-bids" && (
                   <TopTableCell>
-                    <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
+                    {bestAllMyMode !== "edit" ? (
+                      <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
+                    ) : null}
                   </TopTableCell>
                 )}
                 {bestAllMyMode !== "my-bids" &&
                   accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
                     <TopTableCell>
-                      <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
+                      {bestAllMyMode !== "edit" ? (
+                        <FormattedMessage id="BIDSLIST.TABLE.PROFIT" />
+                      ) : null}
                     </TopTableCell>
                   )}
                 <TopTableCell>
@@ -139,11 +143,15 @@ const BidTable: React.FC<IProps> = ({
                 </TopTableCell>
                 {clientWidth > 1024 && bestAllMyMode !== "my-bids" && (
                   <TopTableCell>
-                    {salePurchaseMode === "sale" ? (
-                      <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
-                    ) : (
-                      <FormattedMessage id="BIDSLIST.TABLE.BUYER" />
-                    )}
+                    {bestAllMyMode !== "edit" ? (
+                      <>
+                        {salePurchaseMode === "sale" ? (
+                          <FormattedMessage id="BIDSLIST.TABLE.AUTHOR" />
+                        ) : (
+                          <FormattedMessage id="BIDSLIST.TABLE.BUYER" />
+                        )}
+                      </>
+                    ) : null}
                   </TopTableCell>
                 )}
                 {bestAllMyMode === "my-bids" && (
@@ -160,7 +168,9 @@ const BidTable: React.FC<IProps> = ({
                     (clientWidth <= 1024 &&
                       accessByRoles(user, ["ROLE_BUYER", "ROLE_VENDOR"]))) && (
                     <TopTableCell>
-                      <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
+                      {bestAllMyMode !== "edit" ? (
+                        <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" />
+                      ) : null}
                     </TopTableCell>
                   )}
                 {salePurchaseMode === "purchase" && (
@@ -228,87 +238,98 @@ const BidTable: React.FC<IProps> = ({
                   </TableCell>
                   {bestAllMyMode !== "my-bids" && (
                     <TableCell>
-                      {bid?.price_with_delivery_with_vat
-                        ? Math.round(bid.price_with_delivery_with_vat)
-                        : "-"}
+                      {bestAllMyMode !== "edit"
+                        ? bid?.price_with_delivery_with_vat
+                          ? Math.round(bid.price_with_delivery_with_vat)
+                          : "-"
+                        : null}
                     </TableCell>
                   )}
                   {bestAllMyMode !== "my-bids" &&
                     accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
                       <TableCell>
-                        <Grid container direction="column" justify="center" alignItems="flex-start">
-                          {!!bid?.point_prices && !!bid.point_prices.length
-                            ? bid.point_prices.map(
-                                (item, i) =>
-                                  i === 0 &&
-                                  (i === 0 ? (
-                                    <div key={i}>
-                                      <strong>{Math.round(item.profit)}</strong>
-                                      {` • ${item.point.name}`}
-                                    </div>
-                                  ) : (
-                                    <div key={i}>
-                                      {Math.round(item.profit)}
-                                      {` • ${item.point.name}`}
-                                    </div>
-                                  ))
-                              )
-                            : "-"}
-                        </Grid>
+                        {bestAllMyMode !== "edit" ? (
+                          <Grid
+                            container
+                            direction="column"
+                            justify="center"
+                            alignItems="flex-start"
+                          >
+                            {!!bid?.point_prices && !!bid.point_prices.length
+                              ? bid.point_prices.map(
+                                  (item, i) =>
+                                    i === 0 &&
+                                    (i === 0 ? (
+                                      <div key={i}>
+                                        <strong>{Math.round(item.profit)}</strong>
+                                        {` • ${item.point.name}`}
+                                      </div>
+                                    ) : (
+                                      <div key={i}>
+                                        {Math.round(item.profit)}
+                                        {` • ${item.point.name}`}
+                                      </div>
+                                    ))
+                                )
+                              : "-"}
+                          </Grid>
+                        ) : null}
                       </TableCell>
                     )}
                   <TableCell>{bid.volume}</TableCell>
                   {clientWidth > 1024 && bestAllMyMode !== "my-bids" && (
                     <TableCell>
-                      <Grid container direction="column" justify="center" alignItems="flex-start">
-                        <div className={classes.flexRow}>
-                          {!!bid?.vendor &&
-                          (bid.vendor.company_confirmed_by_payment ||
-                            bid.vendor.company_confirmed_by_email) ? (
-                            <Tooltip
-                              title={intl.formatMessage({
-                                id: "USERLIST.TOOLTIP.COMPANY",
-                              })}
-                            >
-                              <CheckCircleOutlineIcon
-                                color="secondary"
-                                style={{ marginRight: 4, width: 16, height: 16 }}
-                              />
-                            </Tooltip>
-                          ) : (
-                            <Tooltip
-                              title={intl.formatMessage({
-                                id: "USERLIST.TOOLTIP.NO_COMPANY",
-                              })}
-                            >
-                              <ReportProblemIcon
-                                color="error"
-                                style={{ marginRight: 4, width: 16, height: 16 }}
-                              />
-                            </Tooltip>
-                          )}
-                          <div>{`${bid.vendor.fio || bid.vendor.login || ""}`}</div>
-                        </div>
-                        {bid.vendor.company && (
-                          <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                            {bid?.vendor?.company_confirmed_by_payment &&
-                            !!bid?.vendor?.company?.colors &&
-                            bid.vendor.company.colors.length > 0 ? (
-                              <MiniTrafficLight intl={intl} colors={bid.vendor.company.colors} />
+                      {bestAllMyMode !== "edit" ? (
+                        <Grid container direction="column" justify="center" alignItems="flex-start">
+                          <div className={classes.flexRow}>
+                            {!!bid?.vendor &&
+                            (bid.vendor.company_confirmed_by_payment ||
+                              bid.vendor.company_confirmed_by_email) ? (
+                              <Tooltip
+                                title={intl.formatMessage({
+                                  id: "USERLIST.TOOLTIP.COMPANY",
+                                })}
+                              >
+                                <CheckCircleOutlineIcon
+                                  color="secondary"
+                                  style={{ marginRight: 4, width: 16, height: 16 }}
+                                />
+                              </Tooltip>
                             ) : (
-                              <div style={{ width: 20, flex: "none" }}></div>
+                              <Tooltip
+                                title={intl.formatMessage({
+                                  id: "USERLIST.TOOLTIP.NO_COMPANY",
+                                })}
+                              >
+                                <ReportProblemIcon
+                                  color="error"
+                                  style={{ marginRight: 4, width: 16, height: 16 }}
+                                />
+                              </Tooltip>
                             )}
-                            <div>{`${bid.vendor.company.short_name || ""}`}</div>
+                            <div>{`${bid.vendor.fio || bid.vendor.login || ""}`}</div>
                           </div>
-                        )}
-                      </Grid>
+                          {bid.vendor.company && (
+                            <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                              {bid?.vendor?.company_confirmed_by_payment &&
+                              !!bid?.vendor?.company?.colors &&
+                              bid.vendor.company.colors.length > 0 ? (
+                                <MiniTrafficLight intl={intl} colors={bid.vendor.company.colors} />
+                              ) : (
+                                <div style={{ width: 20, flex: "none" }}></div>
+                              )}
+                              <div>{`${bid.vendor.company.short_name || ""}`}</div>
+                            </div>
+                          )}
+                        </Grid>
+                      ) : null}
                     </TableCell>
                   )}
                   {bestAllMyMode !== "my-bids" &&
                     (clientWidth > 1024 ||
                       (clientWidth <= 1024 &&
                         accessByRoles(user, ["ROLE_BUYER", "ROLE_VENDOR"]))) && (
-                      <TableCell>{bid.distance || "-"}</TableCell>
+                      <TableCell>{bestAllMyMode !== "edit" ? bid.distance || "-" : null}</TableCell>
                     )}
 
                   {bestAllMyMode === "my-bids" && <TableCell>{bid?.location?.text}</TableCell>}
@@ -335,8 +356,8 @@ const BidTable: React.FC<IProps> = ({
                         setProfit({
                           bid_id: bid.id,
                           value: maxProfit || 0,
-                        }); 
-                        history.push(`/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`) 
+                        });
+                        history.push(`/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`);
                       }}
                     >
                       <VisibilityIcon />
@@ -350,7 +371,11 @@ const BidTable: React.FC<IProps> = ({
                             history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`)
                           }
                         >
-                          {isHaveRules && isHaveRules(user, bid.vendor.id) ? <EditIcon /> : <VisibilityIcon />}
+                          {isHaveRules && isHaveRules(user, bid.vendor.id) ? (
+                            <EditIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
                         </IconButton>
                         <IconButton
                           size="medium"
