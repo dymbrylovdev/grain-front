@@ -41,9 +41,11 @@ export interface IUser {
 }
 
 export interface IUserForRegister {
-  email: string;
+  email?: string;
+  phone?: string;
+  code?: string;
   roles: TRole[];
-  login: string;
+  login?: string;
   crop_ids?: number[];
 }
 
@@ -93,6 +95,11 @@ export interface IChangePasswordData {
 
 export interface ILoginSuccessData extends IUser {
   api_token: string;
+}
+
+export interface ILoginByPhoneData {
+  phone: string;
+  code: string;
 }
 
 export interface IRegSuccessData {

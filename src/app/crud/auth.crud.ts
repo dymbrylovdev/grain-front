@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IUserForEdit, IUserForRegister, IChangePasswordData } from "../interfaces/users";
+import { IUserForEdit, IUserForRegister, IChangePasswordData, ILoginByPhoneData } from "../interfaces/users";
 
 export const LOGIN_URL = "api/user/login";
 export const REQUEST_PASSWORD_URL = "/api/_p/reset_password/send_code";
@@ -8,6 +8,7 @@ export const REGISTER_URL = "/api/_p/user/register";
 export const ME_URL = "api/user/me";
 export const USER_URL = "/api/user/";
 export const GET_USER_URL = "/api/me";
+export const LOGIN_BY_PHONE = "api/login/by_phone";
 
 export const register = (data: IUserForRegister) => {
   return axios.post(REGISTER_URL, data);
@@ -19,6 +20,10 @@ export const login = (login: string, password: string) => {
   bodyFormData.set("password", password);
   return axios.post(LOGIN_URL, bodyFormData);
 };
+
+export const loginByPhone = (data: ILoginByPhoneData) => {
+  return axios.post(LOGIN_BY_PHONE, data);
+}
 
 export const getMe = () => {
   return axios.get(GET_USER_URL);
