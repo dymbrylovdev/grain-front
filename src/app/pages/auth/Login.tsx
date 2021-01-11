@@ -12,7 +12,7 @@ import { actions as authActions } from "../../store/ducks/auth.duck";
 
 import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
 import { TabPanel, a11yProps } from "../../components/ui/Table/TabPanel";
-import NumberFormatPhone from "../../components/NumberFormatCustom/NumberFormatPhone";
+import NumberFormatForRegister from "../../components/NumberFormatCustom/NumberFormatForRegister";
 import { IAppState } from "../../store/rootDuck";
 
 const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
@@ -25,6 +25,18 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   loginLoading,
   loginSuccess,
   loginError,
+
+  clearLoginByPhone,
+  loginByPhone,
+  loginByPhoneLoading,
+  loginByPhoneSuccess,
+  loginByPhoneError,
+
+  clearSendCode,
+  sendCodeConfirm,
+  sendCodeLoading,
+  sendCodeSuccess,
+  sendCodeError,
 }) => {
   const [valueTabs, setValueTabs] = useState(0);
   const [phoneLoginPhase, setPhoneLoginPhase] = useState(0);
@@ -32,6 +44,11 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const handleTabsChange = (e: any, newValue: number) => {
     setValueTabs(newValue);
   };
+
+  const sendCodeSetPhase = (values) => {
+    sendCodeConfirm({ phone: `7${values.phone}` });
+    setPhoneLoginPhase(1);
+  }
 
   let validationSchema = {};
 
@@ -47,7 +64,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     if (phoneLoginPhase === 0) {
       validationSchema = {
         phone: Yup.string()
-          .matches(/^[0-9][0-9]{9}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
+          
           .required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
       };
     }
@@ -61,6 +78,32 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }
 
   const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    if (sendCodeSuccess || sendCodeError) {
+      enqueueSnackbar(
+        sendCodeSuccess
+          ? intl.formatMessage({ id: "AUTH.VALIDATION.CODE.CONFIRM" })
+          : sendCodeError,
+        {
+          variant: sendCodeSuccess ? "success" : "error",
+        }
+      );
+      clearSendCode();
+    }
+  }, [enqueueSnackbar, sendCodeSuccess, sendCodeError, clearSendCode]);
+
+  useEffect(() => {
+    if (loginByPhoneError) {
+      enqueueSnackbar(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID.CODE" }),
+        {
+          variant: "error"
+        }
+      )
+      clearLoginByPhone();
+    }
+  }, [enqueueSnackbar, loginByPhoneError]);
+
   useEffect(() => {
     if (fetchError) {
       enqueueSnackbar(fetchError, {
@@ -76,11 +119,12 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [clearLogin, enqueueSnackbar, fetchError, loginError]);
 
   useEffect(() => {
-    if (loginSuccess) {
+    if (loginSuccess || loginByPhoneSuccess) {
       fetch();
       clearLogin();
+      clearLoginByPhone();
     }
-  }, [clearLogin, fetch, loginSuccess]);
+  }, [clearLoginByPhone, clearLogin, fetch, loginSuccess, loginByPhoneSuccess]);
 
   return (
     <>
@@ -113,7 +157,9 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 login({ login: values.email, password: values.password });
               }
               if (valueTabs === 1) {
-                phoneLoginPhase ? console.log('Функция логина по номеру телефона') : setPhoneLoginPhase(1);
+                !phoneLoginPhase
+                  ? sendCodeSetPhase(values)
+                  : loginByPhone({ phone: `7${values.phone}`, code: values.codeConfirm });
               }
             }}
           >
@@ -184,7 +230,9 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     <div>
                       <ButtonWithLoader
                         onPress={handleSubmit}
-                        disabled={fetchLoading || loginLoading}
+                        disabled={
+                          fetchLoading || loginLoading || loginByPhoneLoading || sendCodeLoading
+                        }
                         loading={fetchLoading || loginLoading}
                       >
                         <FormattedMessage id="AUTH.LOGIN.BUTTON" />
@@ -216,14 +264,16 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           helperText={touched.phone && errors.phone}
                           error={Boolean(touched.phone && errors.phone)}
                           InputProps={{
-                            inputComponent: NumberFormatPhone as any,
+                            inputComponent: NumberFormatForRegister as any,
                           }}
                         />
 
                         <div className="kt-login__actions">
                           <ButtonWithLoader
                             onPress={handleSubmit}
-                            disabled={fetchLoading || loginLoading}
+                            disabled={
+                              fetchLoading || loginLoading || loginByPhoneLoading || sendCodeLoading
+                            }
                             loading={fetchLoading || loginLoading}
                           >
                             <FormattedMessage id="AUTH.LOGIN.PHONE" />
@@ -290,11 +340,25 @@ const connector = connect(
     loginLoading: state.auth.loginLoading,
     loginSuccess: state.auth.loginSuccess,
     loginError: state.auth.loginError,
+
+    loginByPhoneLoading: state.auth.loginByPhoneLoading,
+    loginByPhoneSuccess: state.auth.loginByPhoneSuccess,
+    loginByPhoneError: state.auth.loginByPhoneError,
+
+    sendCodeLoading: state.auth.sendCodeConfirmLoading,
+    sendCodeSuccess: state.auth.sendCodeConfirmSuccess,
+    sendCodeError: state.auth.sendCodeConfirmError,
   }),
   {
     fetch: authActions.fetchRequest,
     login: authActions.loginRequest,
     clearLogin: authActions.clearLogin,
+
+    loginByPhone: authActions.loginByPhoneRequest,
+    clearLoginByPhone: authActions.clearLoginByPhone,
+
+    sendCodeConfirm: authActions.sendCodeRequest,
+    clearSendCode: authActions.clearSendCode,
   }
 );
 

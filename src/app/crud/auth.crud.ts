@@ -9,6 +9,7 @@ export const ME_URL = "api/user/me";
 export const USER_URL = "/api/user/";
 export const GET_USER_URL = "/api/me";
 export const LOGIN_BY_PHONE = "api/login/by_phone";
+export const SEND_CODE = "api/login/send_code";
 
 export const register = (data: IUserForRegister) => {
   return axios.post(REGISTER_URL, data);
@@ -21,8 +22,8 @@ export const login = (login: string, password: string) => {
   return axios.post(LOGIN_URL, bodyFormData);
 };
 
-export const loginByPhone = (data: ILoginByPhoneData) => {
-  return axios.post(LOGIN_BY_PHONE, data);
+export const loginByPhone = (phone: string, code: string) => {
+  return axios.post(`${LOGIN_BY_PHONE}?phone=${phone}&code=${code}`);
 }
 
 export const getMe = () => {
@@ -39,4 +40,8 @@ export const requestPassword = (email: string) => {
 
 export const changePassword = (data: IChangePasswordData) => {
   return axios.post(CHANGE_PASSWORD_URL, data);
+};
+
+export const sendCodeConfirm = (phone: string) => {
+  return axios.post(`${SEND_CODE}?phone=${phone}`);
 };

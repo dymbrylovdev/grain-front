@@ -203,7 +203,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       <div>
                         <div className={classes.topAndBottomMargin1}>{item.email}</div>
                         {!!item.phone && (
-                          <div className={classes.topAndBottomMargin1}>+7 {item.phone}</div>
+                          <div className={classes.topAndBottomMargin1}>{item.phone}</div>
                         )}
                       </div>
                     </TableCell>

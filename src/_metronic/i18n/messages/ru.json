@@ -118,6 +118,8 @@
   "AUTH.VALIDATION.INVALID_LOGIN": "Неверный логин или пароль",
   "AUTH.VALIDATION.REQUIRED_FIELD": "Обязательное поле",
   "AUTH.VALIDATION.INVALID_FIELD": "Поле некорректно",
+  "AUTH.VALIDATION.CODE.CONFIRM": "На указанный вами номер отправлен код подтверждения",
+  "AUTH.VALIDATION.INVALID.CODE": "Неверный код",
   "AUTH.CREATOR.COMPANY": "Разработка: Start Mobile",
   "AUTH.BUTTON.BACK": "Назад",
   "AUTH.BUTTON.RESET": "Восстановить",

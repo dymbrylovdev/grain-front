@@ -10,7 +10,6 @@ import {
   RadioGroup,
   Radio,
   FormLabel,
-  Button,
   Tabs,
   Tab,
 } from "@material-ui/core";
@@ -63,7 +62,6 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     if (phoneRegPhase === 0) {
       validationSchema = {
         phone: Yup.string()
-          .matches(/^[0-9][0-9]{10}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
           .required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
       };
     }
@@ -94,7 +92,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     if (regSuccess) {
       if (valueTabs === 0) history.push("/auth/email-sent/registration");
       if (valueTabs === 1) {
-        enqueueSnackbar("На указанный вами номер отправлен код подтверждения", {
+        enqueueSnackbar(intl.formatMessage({ id: 'AUTH.VALIDATION.CODE.CONFIRM' }), {
           variant: "success",
         });
 
@@ -114,9 +112,11 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           variant: loginByPhoneSuccess ? "success" : "error",
         }
       );
+      clearLoginByPhone();
     }
-    clearLoginByPhone();
-  }, [enqueueSnackbar, loginByPhoneSuccess, loginByPhoneError, clearLoginByPhone]);
+
+    if (loginByPhoneSuccess) history.push("/auth/email-sent/registration");
+  }, [enqueueSnackbar, loginByPhoneSuccess, loginByPhoneError, clearLoginByPhone, history]);
 
   return (
     <>
@@ -151,14 +151,14 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               if (valueTabs === 1) {
                 if (phoneRegPhase === 0) {
                   register({
-                    phone: values.phone,
+                    phone: `7${values.phone}`,
                     roles: [values.role as TRole],
                     crop_ids: [1],
                   });
                 }
                 if (phoneRegPhase === 1) {
                   loginByPhone({
-                    phone: values.phone,
+                    phone: `7${values.phone}`,
                     code: values.codeConfirm,
                   });
                 }
@@ -288,7 +288,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   )}
 
                   <ButtonWithLoader
-                    disabled={regLoading || !values.acceptTerms}
+                    disabled={regLoading || !values.acceptTerms || loginByPhoneLoading}
                     onPress={handleSubmit}
                     loading={regLoading}
                   >

@@ -1,5 +1,12 @@
 import React, { useEffect, useCallback } from "react";
-import { MenuItem, TextField, IconButton, Divider } from "@material-ui/core";
+import {
+  MenuItem,
+  TextField,
+  IconButton,
+  Divider,
+  Checkbox,
+  FormControlLabel,
+} from "@material-ui/core";
 import useStyles from "../../../pages/home/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import { connect, ConnectedProps } from "react-redux";
@@ -219,6 +226,12 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             }}
             autoComplete="off"
           />
+        </div>
+      )}
+
+      {salePurchaseMode === "purchase" && (
+        <div className={classes.textFieldContainer}>
+          <FormControlLabel control={<Checkbox />} label="Предоплата" />
         </div>
       )}
 

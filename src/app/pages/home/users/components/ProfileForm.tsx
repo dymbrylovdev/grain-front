@@ -35,7 +35,7 @@ import { getInitialValues, roles } from "../utils/profileForm";
 import { setMeValues, setCreateValues, setEditValues } from "../utils/submitValues";
 import { IAppState } from "../../../../store/rootDuck";
 import { IUser, IUserForEdit } from "../../../../interfaces/users";
-import NumberFormatPhone from "../../../../components/NumberFormatCustom/NumberFormatPhone";
+import NumberFormatForRegister from "../../../../components/NumberFormatCustom/NumberFormatForRegister";
 import { accessByRoles } from "../../../../utils/utils";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { TrafficLight } from ".";
@@ -623,7 +623,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             disabled={editMode === "view"}
             InputLabelProps={{ shrink: true }}
             InputProps={{
-              inputComponent: NumberFormatPhone as any,
+              inputComponent: NumberFormatForRegister as any,
             }}
             autoComplete="off"
           />
