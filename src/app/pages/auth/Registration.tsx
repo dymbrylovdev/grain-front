@@ -115,7 +115,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearLoginByPhone();
     }
 
-    if (loginByPhoneSuccess) history.push("/auth/email-sent/registration");
+    if (loginByPhoneSuccess) history.push("/");
   }, [enqueueSnackbar, loginByPhoneSuccess, loginByPhoneError, clearLoginByPhone, history]);
 
   return (
@@ -176,8 +176,8 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   variant="fullWidth"
                   style={{ marginBottom: 20 }}
                 >
-                  <Tab label="Регистрация по почте" {...a11yProps(0)} />
-                  <Tab label="Регистрация по телефону" {...a11yProps(1)} />
+                  <Tab label={intl.formatMessage({ id: "AUTH.REGISTER.EMAIL" })} {...a11yProps(0)} />
+                  <Tab label={intl.formatMessage({ id: "AUTH.REGISTER.PHONE" })} {...a11yProps(1)} />
                 </Tabs>
 
                 <RadioGroup name="role" value={values.role} onChange={handleChange}>

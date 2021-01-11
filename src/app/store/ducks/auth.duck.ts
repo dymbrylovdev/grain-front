@@ -8,7 +8,6 @@ import {
   IUserForEdit,
   IUserForRegister,
   IRegSuccessData,
-  ILoginByPhoneData,
 } from "../../interfaces/users";
 import { Reducer } from "redux";
 import { PersistPartial } from "redux-persist/es/persistReducer";
@@ -355,6 +354,8 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       case LOGIN_BY_PHONE_REQUEST: {
         return {
           ...state,
+          user: undefined,
+          authToken: undefined,
           loginByPhoneLoading: true,
           loginByPhoneSuccess: false,
           loginByPhoneError: null,
@@ -364,17 +365,18 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       case LOGIN_BY_PHONE_SUCCESS: {
         return {
           ...state,
+          authToken: action.payload.data.api_token,
           loginByPhoneLoading: false,
           loginByPhoneSuccess: true,
-        }
+        };
       }
 
       case LOGIN_BY_PHONE_FAIL: {
         return {
           ...state,
           loginByPhoneLoading: false,
-          loginByPhoneError: action.payload
-        }
+          loginByPhoneError: action.payload,
+        };
       }
 
       case CLEAR_SEND_CODE: {
@@ -383,7 +385,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
           sendCodeConfirmLoading: false,
           sendCodeConfirmSuccess: false,
           sendCodeConfirmError: null,
-        }
+        };
       }
 
       case SEND_CODE_REQUEST: {
@@ -392,7 +394,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
           sendCodeConfirmLoading: true,
           sendCodeConfirmSuccess: false,
           sendCodeConfirmError: null,
-        }
+        };
       }
 
       case SEND_CODE_SUCCESS: {
@@ -400,15 +402,15 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
           ...state,
           sendCodeConfirmLoading: false,
           sendCodeConfirmSuccess: true,
-        }
+        };
       }
 
       case SEND_CODE_FAIL: {
         return {
           ...state,
           sendCodeConfirmLoading: false,
-          sendCodeConfirmError: action.payload
-        }
+          sendCodeConfirmError: action.payload,
+        };
       }
 
       default:
@@ -460,14 +462,16 @@ export const actions = {
   newPasswordFail: (payload: string) => createAction(NEW_PASSWORD_FAIL, payload),
 
   clearLoginByPhone: () => createAction(CLEAR_LOGIN_BY_PHONE),
-  loginByPhoneRequest: (payload: { phone: string, code: string }) => createAction(LOGIN_BY_PHONE_REQUEST, payload),
-  loginByPhoneSuccess: () => createAction(LOGIN_BY_PHONE_SUCCESS),
+  loginByPhoneRequest: (payload: { phone: string; code: string }) =>
+    createAction(LOGIN_BY_PHONE_REQUEST, payload),
+  loginByPhoneSuccess: (payload: IServerResponse<ILoginSuccessData>) =>
+    createAction(LOGIN_BY_PHONE_SUCCESS, payload),
   loginByPhoneFail: (payload: string) => createAction(LOGIN_BY_PHONE_FAIL, payload),
 
   clearSendCode: () => createAction(CLEAR_SEND_CODE),
   sendCodeRequest: (payload: { phone: string }) => createAction(SEND_CODE_REQUEST, payload),
   sendCodeSuccess: () => createAction(SEND_CODE_SUCCESS),
-  sendCodeFail: (payload: string) => createAction(SEND_CODE_FAIL, payload), 
+  sendCodeFail: (payload: string) => createAction(SEND_CODE_FAIL, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -538,10 +542,12 @@ function* newPasswordSaga({
   }
 }
 
-function* loginByPhoneSaga({ payload }: { payload: { phone: string, code: string }}) {
+function* loginByPhoneSaga({ payload }: { payload: { phone: string; code: string } }) {
   try {
-    yield call(() => loginByPhone(payload.phone, payload.code));
-    yield put(actions.loginByPhoneSuccess()); 
+    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() =>
+      loginByPhone(payload.phone, payload.code)
+    );
+    yield put(actions.loginByPhoneSuccess(data));
   } catch (e) {
     yield put(actions.loginByPhoneFail(e?.response?.data?.message || "Ошибка соединения."));
   }
@@ -569,6 +575,12 @@ export function* saga() {
     NEW_PASSWORD_REQUEST,
     newPasswordSaga
   );
-  yield takeLatest<ReturnType<typeof actions.loginByPhoneRequest>>(LOGIN_BY_PHONE_REQUEST, loginByPhoneSaga);
-  yield takeLatest<ReturnType<typeof actions.sendCodeRequest>>(SEND_CODE_REQUEST, sendCodeConfigrmSaga);
+  yield takeLatest<ReturnType<typeof actions.loginByPhoneRequest>>(
+    LOGIN_BY_PHONE_REQUEST,
+    loginByPhoneSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.sendCodeRequest>>(
+    SEND_CODE_REQUEST,
+    sendCodeConfigrmSaga
+  );
 }

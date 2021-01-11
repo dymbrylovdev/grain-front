@@ -109,6 +109,8 @@
   "AUTH.REGISTER.VENDOR": "Продавец",
   "AUTH.REGISTER.BUYER": "Покупатель",
   "AUTH.REGISTER.TRADER": "Трейдер",
+  "AUTH.REGISTER.EMAIL": "По почте",
+  "AUTH.REGISTER.PHONE": "По телефону",
   "AUTH.BUTTON.REGISTER": "Регистрация",
   "AUTH.VALIDATION.INVALID": "{name} неверно",
   "AUTH.VALIDATION.REQUIRED": "{name} требуется",

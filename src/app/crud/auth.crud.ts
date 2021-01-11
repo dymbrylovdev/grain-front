@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IUserForEdit, IUserForRegister, IChangePasswordData, ILoginByPhoneData } from "../interfaces/users";
+import { IUserForEdit, IUserForRegister, IChangePasswordData } from "../interfaces/users";
 
 export const LOGIN_URL = "api/user/login";
 export const REQUEST_PASSWORD_URL = "/api/_p/reset_password/send_code";
