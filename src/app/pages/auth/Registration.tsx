@@ -28,6 +28,10 @@ import { roles } from "../home/users/utils/profileForm";
 
 const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
+  fetch,
+  fetchLoading,
+  fetchError,
+
   clearReg,
   register,
   regLoading,
@@ -61,8 +65,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   if (valueTabs === 1) {
     if (phoneRegPhase === 0) {
       validationSchema = {
-        phone: Yup.string()
-          .required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
+        phone: Yup.string().required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
       };
     }
     if (phoneRegPhase === 1) {
@@ -92,7 +95,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     if (regSuccess) {
       if (valueTabs === 0) history.push("/auth/email-sent/registration");
       if (valueTabs === 1) {
-        enqueueSnackbar(intl.formatMessage({ id: 'AUTH.VALIDATION.CODE.CONFIRM' }), {
+        enqueueSnackbar(intl.formatMessage({ id: "AUTH.VALIDATION.CODE.CONFIRM" }), {
           variant: "success",
         });
 
@@ -104,19 +107,27 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   useEffect(() => {
     if (loginByPhoneSuccess || loginByPhoneError) {
-      enqueueSnackbar(
-        loginByPhoneSuccess 
-          ? "Пользователь успешно создан" 
-          : "Произошла ошибка!",
-        {
-          variant: loginByPhoneSuccess ? "success" : "error",
-        }
-      );
+      enqueueSnackbar(loginByPhoneSuccess ? "Пользователь успешно создан" : "Произошла ошибка!", {
+        variant: loginByPhoneSuccess ? "success" : "error",
+      });
       clearLoginByPhone();
     }
-
-    if (loginByPhoneSuccess) history.push("/");
   }, [enqueueSnackbar, loginByPhoneSuccess, loginByPhoneError, clearLoginByPhone, history]);
+
+  useEffect(() => {
+    if (fetchError) {
+      enqueueSnackbar(fetchError, {
+        variant: "error"
+      });
+    }
+  }, [fetchError, enqueueSnackbar]);
+
+  useEffect(() => {
+    if (loginByPhoneSuccess) {
+      fetch();
+      clearLoginByPhone();
+    }
+  }, [loginByPhoneSuccess, fetch, clearLoginByPhone]);
 
   return (
     <>
@@ -176,8 +187,14 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   variant="fullWidth"
                   style={{ marginBottom: 20 }}
                 >
-                  <Tab label={intl.formatMessage({ id: "AUTH.REGISTER.EMAIL" })} {...a11yProps(0)} />
-                  <Tab label={intl.formatMessage({ id: "AUTH.REGISTER.PHONE" })} {...a11yProps(1)} />
+                  <Tab
+                    label={intl.formatMessage({ id: "AUTH.REGISTER.EMAIL" })}
+                    {...a11yProps(0)}
+                  />
+                  <Tab
+                    label={intl.formatMessage({ id: "AUTH.REGISTER.PHONE" })}
+                    {...a11yProps(1)}
+                  />
                 </Tabs>
 
                 <RadioGroup name="role" value={values.role} onChange={handleChange}>
@@ -288,7 +305,9 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   )}
 
                   <ButtonWithLoader
-                    disabled={regLoading || !values.acceptTerms || loginByPhoneLoading}
+                    disabled={
+                      regLoading || !values.acceptTerms || loginByPhoneLoading || fetchLoading
+                    }
                     onPress={handleSubmit}
                     loading={regLoading}
                   >
@@ -306,6 +325,9 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
 const connector = connect(
   (state: IAppState) => ({
+    fetchLoading: state.auth.loading,
+    fetchError: state.auth.error,
+
     regLoading: state.auth.regLoading,
     regSuccess: state.auth.regSuccess,
     regError: state.auth.regError,
@@ -315,6 +337,7 @@ const connector = connect(
     loginByPhoneError: state.auth.loginByPhoneError,
   }),
   {
+    fetch: authActions.fetchRequest,
     register: authActions.regRequest,
     clearReg: authActions.clearReg,
 
