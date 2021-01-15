@@ -446,24 +446,6 @@ const BidsPage: React.FC<TPropsFromRedux &
               </Button>
             )}
           </div>
-
-          {/* {bestAllMyMode === "best-bids" && (
-            <>
-              <div className={innerClasses.filterText}>
-                {filterTitle}
-                <br />
-                {filterName}
-              </div>
-              <IconButton
-                className={!!prompterRunning && activeStep === 2 ? innerClasses.iconButton : ""}
-                onClick={() => {
-                  setFilterModalOpen(true);
-                }}
-              >
-                <CustomIcon path={filterIconPath} />
-              </IconButton>
-            </>
-          )} */}
         </div>
 
         {bestAllMyMode === "best-bids" && (

@@ -39,6 +39,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   setWeeks,
   term,
   setTerm,
+  min_prepayment_amount,
+  setPrepayment,
   fetch,
   deals,
   loading,
@@ -81,7 +83,13 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEditFilter();
     }
     if (editFilterSuccess) {
-      fetch(1, perPage, weeks, !term ? 999 : +term);
+      fetch(
+        1,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined
+      );
       fetchDealsFilters();
     }
   }, [
@@ -96,17 +104,25 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     perPage,
     term,
     weeks,
+    min_prepayment_amount,
   ]);
 
   useEffect(() => {
     const timeout: any = setTimeout(() => {
-      if (!!dealsFilters) fetch(page, perPage, weeks, !term ? 999 : +term);
+      if (!!dealsFilters)
+        fetch(
+          page,
+          perPage,
+          weeks,
+          !term ? 999 : +term,
+          min_prepayment_amount ? min_prepayment_amount : undefined
+        );
     }, 1000);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [dealsFilters, fetch, page, perPage, term, weeks]);
+  }, [dealsFilters, fetch, page, perPage, term, weeks, min_prepayment_amount]);
 
   useEffect(() => {
     fetchCrops();
@@ -327,6 +343,7 @@ const connector = connect(
     total: state.deals.total,
     weeks: state.deals.weeks,
     term: state.deals.term,
+    min_prepayment_amount: state.deals.min_prepayment_amount,
     deals: state.deals.deals,
     loading: state.deals.loading,
     error: state.deals.error,
@@ -354,6 +371,7 @@ const connector = connect(
     editFilter: dealsActions.editFilterRequest,
     setWeeks: dealsActions.setWeeks,
     setTerm: dealsActions.setTerm,
+    setPrepayment: dealsActions.setPrepayment,
   }
 );
 

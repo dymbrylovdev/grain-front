@@ -123,6 +123,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       min_full_price: Yup.number()
         .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+      min_prepayment_amount: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
     }),
   });
   const { resetForm, values, handleBlur } = formik;
@@ -229,12 +230,6 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         </div>
       )}
 
-      {salePurchaseMode === "purchase" && (
-        <div className={classes.textFieldContainer}>
-          <FormControlLabel control={<Checkbox />} label="Предоплата" />
-        </div>
-      )}
-
       <div className={classes.textFieldContainer}>
         <TextField
           type="text"
@@ -287,6 +282,38 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           autoComplete="off"
         />
       </div>
+
+      {salePurchaseMode === "purchase" && (
+        <div className={classes.textFieldContainer}>
+          <TextField
+            type="text"
+            label={intl.formatMessage({
+              id: "FILTER.FORM.MIN.PREPAYMENT",
+            })}
+            margin="normal"
+            name="min_prepayment_amount"
+            value={formik.values.min_prepayment_amount || ""}
+            variant="outlined"
+            onBlur={filterSubmit}
+            //@ts-ignore
+            onChange={formik.handleChange("min_prepayment_amount")}
+            InputProps={{
+              // inputComponent: NumberFormatCustom,
+              endAdornment: (
+                <IconButton onClick={() => formik.setFieldValue("min_prepayment_amount", "")}>
+                  <CloseIcon />
+                </IconButton>
+              ),
+            }}
+            helperText={formik.touched.min_prepayment_amount && formik.errors.min_prepayment_amount}
+            error={Boolean(
+              formik.touched.min_prepayment_amount && formik.errors.min_prepayment_amount
+            )}
+            autoComplete="off"
+          />
+        </div>
+      )}
+
       <div className={classes.textFieldContainer}>
         <TextField
           type="text"
@@ -357,8 +384,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             formik.handleSubmit();
           }}
         >
-          {/* {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })} */}
-          Добавить подписку
+          {intl.formatMessage({ id: "FILTER.FORM.BUTTON.ADD" })}
         </ButtonWithLoader>
       </div>
 

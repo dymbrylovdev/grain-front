@@ -20,6 +20,7 @@ export const filterForCreate = (
     max_payment_term: +data.max_payment_term || 0,
     max_full_price: +data.max_full_price || 0,
     min_full_price: +data.min_full_price || 0,
+    min_prepayment_amount: +data.min_prepayment_amount || 0,
     max_distance: +data.max_destination || 0,
     subscribed: data.subscribed,
     point_prices: data.point_prices,
@@ -66,6 +67,7 @@ export const filterForBids = (
       max_payment_term: +data.max_payment_term || 999,
       max_full_price: +data.max_full_price || 0,
       min_full_price: +data.min_full_price || 0,
+      min_prepayment_amount: +data.min_prepayment_amount || 0,
       max_distance: +data.max_destination || 0,
       point_prices: data.point_prices,
     },
@@ -109,6 +111,7 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
   if (data?.max_payment_term) newFilter["max_payment_term"] = data.max_payment_term;
   if (data?.max_full_price) newFilter["max_full_price"] = data.max_full_price;
   if (data?.min_full_price) newFilter["min_full_price"] = data.min_full_price;
+  if (data?.min_prepayment_amount) newFilter["min_prepayment_amount"] = data.min_prepayment_amount;
   if (data?.max_distance) newFilter["max_destination"] = data.max_distance;
   if (data?.parameter_values && data.parameter_values.length) {
     data.parameter_values.forEach(item => {

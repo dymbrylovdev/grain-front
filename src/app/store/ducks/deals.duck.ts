@@ -16,6 +16,7 @@ const FETCH_FAIL = "deals/FETCH_FAIL";
 
 const SET_WEEKS = "deals/SET_WEEKS";
 const SET_TERM = "deals/SET_TERM";
+const SET_PREPAYMENT_AMOUNT = "deals/SET_PREPAYMENT_AMOUNT";
 const SET_DEAL = "deals/SET_DEAL";
 
 const CLEAR_FETCH_FILTERS = "deals/CLEAR_FETCH_FILTERS";
@@ -34,6 +35,7 @@ export interface IInitialState {
   total: number;
   weeks: number;
   term: number | undefined;
+  min_prepayment_amount?: number | undefined;
   deals: IDeal[] | undefined;
   loading: boolean;
   success: boolean;
@@ -57,6 +59,7 @@ const initialState: IInitialState = {
   total: 0,
   weeks: 1,
   term: undefined,
+  min_prepayment_amount: undefined,
   deals: undefined,
   loading: false,
   success: false,
@@ -75,7 +78,7 @@ const initialState: IInitialState = {
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
-  { storage, key: "deals", whitelist: ["weeks", "term"] },
+  { storage, key: "deals", whitelist: ["weeks", "term", "min_prepayment_amount"] },
   (state = initialState, action) => {
     switch (action.type) {
       case FETCH_REQUEST: {
@@ -111,6 +114,10 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 
       case SET_TERM: {
         return { ...state, term: action.payload.term };
+      }
+
+      case SET_PREPAYMENT_AMOUNT: {
+        return { ...state, min_prepayment_amount: action.payload.min_prepayment_amount };
       }
 
       case SET_DEAL: {
@@ -193,13 +200,15 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 );
 
 export const actions = {
-  fetchRequest: (page: number, perPage: number, weeks: number, term: number) =>
-    createAction(FETCH_REQUEST, { page, perPage, weeks, term }),
+  fetchRequest: (page: number, perPage: number, weeks: number, term: number, min_prepayment_amount: number | undefined) =>
+    createAction(FETCH_REQUEST, { page, perPage, weeks, term, min_prepayment_amount }),
   fetchSuccess: (payload: IServerResponse<IDeal[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
   setWeeks: (weeks: number) => createAction(SET_WEEKS, { weeks }),
   setTerm: (term: number | undefined) => createAction(SET_TERM, { term }),
+  setPrepayment: (min_prepayment_amount: number | undefined) =>
+    createAction(SET_PREPAYMENT_AMOUNT, { min_prepayment_amount }),
   setDeal: (deal: IDeal | undefined) => createAction(SET_DEAL, { deal }),
 
   clearFetchFilters: () => createAction(CLEAR_FETCH_FILTERS),
@@ -220,11 +229,11 @@ export type TActions = ActionsUnion<typeof actions>;
 function* fetchSaga({
   payload,
 }: {
-  payload: { page: number; perPage: number; weeks: number; term: number };
+  payload: { page: number; perPage: number; weeks: number; term: number; min_prepayment_amount: number | undefined; };
 }) {
   try {
     const { data }: { data: IServerResponse<IDeal[]> } = yield call(() =>
-      getDeals(payload.page, payload.perPage, payload.weeks, payload.term)
+      getDeals(payload.page, payload.perPage, payload.weeks, payload.term, payload.min_prepayment_amount)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {

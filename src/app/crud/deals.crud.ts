@@ -8,12 +8,15 @@ export const getDeals = (
   perPage: number,
   weeks: number,
   term: number,
+  min_prepayment_amount?: number,
   id?: number
 ) => {
   return axios.get(
     `${DEALS_URL}?page=${page}&per_page=${perPage}${
       !!id ? `&filter_id=${id}` : ""
-    }&expire_at=${weeks}&max_payment_term=${term}`
+    }&expire_at=${weeks}&max_payment_term=${term}${
+      !!min_prepayment_amount ? `&min_prepayment_amount=${min_prepayment_amount}` : ""
+    }`
   );
 };
 

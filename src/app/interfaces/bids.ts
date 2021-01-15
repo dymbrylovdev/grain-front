@@ -81,6 +81,7 @@ export interface IBid {
     name: string;
   };
   payment_term: number;
+  prepayment_amount: number;
   vendor_use_vat: boolean;
 }
 

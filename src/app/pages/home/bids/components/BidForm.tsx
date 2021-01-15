@@ -115,6 +115,7 @@ const getInitialValues = (
     pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: !!bid ? bid.type : salePurchaseMode,
     payment_term: bid?.payment_term || "",
+    prepayment_amount: bid?.prepayment_amount || "",
   };
   if (bid && bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.forEach(item => {
@@ -359,6 +360,7 @@ const BidForm: React.FC<IProps> = ({
         volume: +values.volume,
         payment_term: +values.payment_term,
         parameter_values: paramValues,
+        prepayment_amount: +values.prepayment_amount,
       };
       const bidType = params.bid_type;
       delete params.bid_type;
@@ -569,7 +571,9 @@ const BidForm: React.FC<IProps> = ({
                   color="error"
                   style={{ marginTop: 8, marginBottom: 8 }}
                 >
-                  {`Сегодня вам доступен просмотр ${me?.contact_view_count} контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
+                  {`Сегодня вам доступен просмотр ${
+                    me?.contact_view_count
+                  } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
                 </Alert>
               )}
 
@@ -710,6 +714,49 @@ const BidForm: React.FC<IProps> = ({
           disabled={editMode === "view"}
           autoComplete="off"
         />
+      )}
+
+      {loading ? (
+        <Skeleton width="100%" height={70} animation="wave" />
+      ) : (
+        <>
+          {values.bid_type === "purchase" && (
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "BIDSLIST.TABLE.PREPAYMENT",
+              })}
+              margin="normal"
+              name="prepayment_amount"
+              value={values.prepayment_amount}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={touched.prepayment_amount && errors.prepayment_amount}
+              error={Boolean(touched.prepayment_amount && errors.prepayment_amount)}
+              InputProps={
+                editMode !== "view"
+                  ? {
+                      style:
+                        editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
+                          ? {
+                              color: "#fd397a",
+                            }
+                          : {},
+                      inputComponent: NumberFormatCustom as any,
+                      endAdornment: (
+                        <IconButton onClick={() => setFieldValue("prepayment_amount", "")}>
+                          <CloseIcon />
+                        </IconButton>
+                      ),
+                    }
+                  : undefined
+              }
+              disabled={editMode === "view"}
+              autoComplete="off"
+            />
+          )}
+        </>
       )}
 
       {!!me &&
@@ -1386,9 +1433,7 @@ const BidForm: React.FC<IProps> = ({
             ) : (
               <div className={classes.button}>
                 <FormControlLabel
-                  control={
-                    <Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />
-                  }
+                  control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
                   label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
                 />
               </div>
