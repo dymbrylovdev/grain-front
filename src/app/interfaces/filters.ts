@@ -42,6 +42,7 @@ export interface IMyFilterItem {
   parameter_values: IMyFiltersParam[];
   point_prices: IPointPrice[];
   subscribed: boolean;
+  is_sending_sms: boolean;
 }
 
 export interface IMyFilters {
@@ -65,6 +66,7 @@ export interface IFilterForCreate {
   parameter_values?: IParamValue[];
   point_prices?: IPointPriceForEdit[];
   subscribed?: boolean;
+  is_sending_sms?: boolean;
   bid_type?: TBidType;
 }
 

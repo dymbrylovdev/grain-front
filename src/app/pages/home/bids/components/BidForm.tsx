@@ -23,7 +23,7 @@ import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
-import { IBid, TBidType, IBidToRequest, IProfit } from "../../../../interfaces/bids";
+import { IBid, TBidType, IBidToRequest, IProfit, IBidsPair } from "../../../../interfaces/bids";
 import { IUser } from "../../../../interfaces/users";
 import { ActionWithPayload, Action } from "../../../../utils/action-helper";
 import { ICropParam, ICrop } from "../../../../interfaces/crops";
@@ -169,11 +169,14 @@ interface IProps {
   cropId: number;
   crops: ICrop[] | undefined;
   bid: IBid | undefined;
+  bidsPair: IBidsPair | undefined;
   me: IUser | undefined;
   fetchLocations: (payload: any) => ActionWithPayload<"yaLocations/FETCH_REQUEST", any>;
   locations: ILocation[] | undefined;
   loadingLocations: boolean;
   clearLocations: () => Action<"yaLocations/CLEAR">;
+  clearBidsPair: () => Action<"bids/CLEAR_BIDS_PAIR">;
+  fetchBidsPair: any;
   clearCropParams: () => Action<"crops2/CLEAR_CROP_PARAMS">;
   fetchCropParams: (
     cropId: number
@@ -249,6 +252,10 @@ const BidForm: React.FC<IProps> = ({
   locations,
   loadingLocations,
   clearLocations,
+
+  bidsPair,
+  clearBidsPair,
+  fetchBidsPair,
 
   clearCropParams,
   fetchCropParams,
@@ -470,6 +477,17 @@ const BidForm: React.FC<IProps> = ({
     vendorId,
     // isFilterCreated,
   ]);
+
+  // useEffect(() => {
+  //   if (editMode === "create" && me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
+  //     let params = {};
+
+  //     if (values.crop_id !== "") {
+  //       params = { crop_id: values.crop_id };
+  //       fetchBidsPair(values.bid_type, params);
+  //     }
+  //   }
+  // }, [values.bid_type, values.crop_id, fetchBidsPair]);
 
   useEffect(() => {
     if (currentCropId) fetchCropParams(currentCropId);

@@ -380,7 +380,8 @@
 
   "FILTERS.TABLE.HEADER.CROP": "Культура",
   "FILTERS.TABLE.HEADER.NAME": "Название фильтра",
-  "FILTERS.TABLE.HEADER.SUBSCRIPTION": "Подписка",
+  "FILTERS.TABLE.HEADER.SUBSCRIPTION": "Рассылка на e-mail",
+  "FILTERS.TABLE.HEADER.SMS.SENDING": "Рассылка на sms",
   "FILTERS.TABLE.HEADER.ACTIONS": "Действия",
   "FILTERS.TABLE.EMPTY": "У Вас нет сохраненных фильтров.",
   "FILTERS.PRICE": "Цена",
@@ -517,6 +518,7 @@
   "TARIFFS.TEXT21": "Общее количество отображаемых объявлений (лучших заявок)",
   "TARIFFS.TITLE3": "Фильтры и подписки",
   "TARIFFS.TEXT31": "Максимальное количество фильтров и подписок",
+  "TARIFFS.TEXT32": "Максимальное количество SMS-рассылок",
   "TARIFFS.TITLE4": "Зерновые культуры",
   "TARIFFS.TEXT41": "Количество культур, с которыми можно работать в системе",
   "TARIFFS.TITLE5": "Стоимость тарифа",

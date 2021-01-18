@@ -116,6 +116,11 @@ export interface IBestBids {
   inexact: IBid[];
 }
 
+export interface IBidsPair {
+  price: number;
+  price_with_delivery: number;
+}
+
 export interface IProfit {
   bid_id: number;
   value: number;

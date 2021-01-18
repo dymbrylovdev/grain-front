@@ -30,7 +30,6 @@ import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
 import { declOfNum } from "../../../utils";
 import { accessByRoles } from "../../../utils/utils";
-import MyFilters from "../bids/components/filter/MyFilters";
 
 const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps> = ({
   match,
@@ -223,6 +222,9 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                     <TopTableCell>
                       <FormattedMessage id="FILTERS.TABLE.HEADER.SUBSCRIPTION" />
                     </TopTableCell>
+                    <TopTableCell>
+                      <FormattedMessage id="FILTERS.TABLE.HEADER.SMS.SENDING" />
+                    </TopTableCell>
                     <TopTableCell align="right"></TopTableCell>
                   </TableRow>
                 </TableHead>
@@ -235,6 +237,9 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                         <TableCell>{item.name}</TableCell>
                         <TableCell>
                           <StatusIndicator isActive={item.subscribed} />
+                        </TableCell>
+                        <TableCell>
+                          <StatusIndicator isActive={item.is_sending_sms} />
                         </TableCell>
                         <TableCell align="right">
                           <IconButton

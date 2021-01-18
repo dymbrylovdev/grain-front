@@ -23,6 +23,7 @@ export const filterForCreate = (
     min_prepayment_amount: +data.min_prepayment_amount || 0,
     max_distance: +data.max_destination || 0,
     subscribed: data.subscribed,
+    is_sending_sms: data.is_sending_sms,
     point_prices: data.point_prices,
     bid_type: data.bid_type,
   };
@@ -135,6 +136,7 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
     });
   }
   if (data) newFilter["subscribed"] = data.subscribed;
+  if (data) newFilter["is_sending_sms"] = data.is_sending_sms;
   if (data && data.point_prices && data.point_prices.length) {
     let pointPrices: IPointPriceForEdit[] = [];
     data.point_prices.forEach(item => {
@@ -159,11 +161,13 @@ export const filterForSubmit = (
   delete oldF.name;
   delete oldF.point_prices;
   delete oldF.subscribed;
+  delete oldF.is_sending_sms;
   delete newF.bid_type;
   delete newF.id;
   delete newF.name;
   delete newF.point_prices;
   delete newF.subscribed;
+  delete newF.is_sending_sms;
   if (isEqual(oldF, newF)) {
     return oldFilter;
   }

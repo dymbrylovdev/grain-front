@@ -415,6 +415,82 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </TableRow>
 
               <TableRow>
+                <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT32" })}</TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 2) as ITariff}
+                    realCell={{ id: 2, field: "max_sms_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 6) as ITariff}
+                    realCell={{ id: 6, field: "max_sms_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 22) as ITariff}
+                    realCell={{ id: 22, field: "max_sms_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 10) as ITariff}
+                    realCell={{ id: 10, field: "max_sms_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 14) as ITariff}
+                    realCell={{ id: 14, field: "max_sms_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 18) as ITariff}
+                    realCell={{ id: 18, field: "max_sms_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 100) as ITariff}
+                    realCell={{ id: 100, field: "max_sms_count" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 101) as ITariff}
+                    realCell={{ id: 101, field: "max_sms_count" }}
+                  />
+                </TableCell>
+              </TableRow>
+
+              <TableRow>
                 <TableCell>
                   <b>{intl.formatMessage({ id: "TARIFFS.TITLE4" })}</b>
                 </TableCell>
