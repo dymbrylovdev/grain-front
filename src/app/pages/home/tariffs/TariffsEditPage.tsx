@@ -706,7 +706,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TableCell
                   style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}
                 >
-                  Количество дней:
+                  Количество дней: (пробный период)
                   <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
@@ -724,13 +724,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 2) as unknown) as ITariff}
-                    realCell={{ id: 2, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell
@@ -740,13 +733,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 6) as unknown) as ITariff}
-                    realCell={{ id: 6, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell
@@ -756,13 +742,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 22) as unknown) as ITariff}
-                    realCell={{ id: 22, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
@@ -818,13 +797,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 3) as unknown) as ITariff}
-                    realCell={{ id: 3, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell
@@ -834,13 +806,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 7) as unknown) as ITariff}
-                    realCell={{ id: 7, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell
@@ -850,13 +815,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 102) as unknown) as ITariff}
-                    realCell={{ id: 102, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
@@ -912,13 +870,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 4) as unknown) as ITariff}
-                    realCell={{ id: 4, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell
@@ -928,13 +879,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 8) as unknown) as ITariff}
-                    realCell={{ id: 8, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell
@@ -944,13 +888,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 24) as unknown) as ITariff}
-                    realCell={{ id: 24, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
@@ -1006,13 +943,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 5) as unknown) as ITariff}
-                    realCell={{ id: 5, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell
@@ -1022,13 +952,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 9) as unknown) as ITariff}
-                    realCell={{ id: 9, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell
@@ -1038,13 +961,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     fontWeight: "bold",
                   }}
                 >
-                  {/* <EditableCell
-                    useInnerStyles={useInnerStyles}
-                    cell={cell}
-                    setCell={setCell}
-                    tariff={(tariffs.find(item => item.id === 25) as unknown) as ITariff}
-                    realCell={{ id: 25, field: "price" }}
-                  /> */}
                   0
                 </TableCell>
                 <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
