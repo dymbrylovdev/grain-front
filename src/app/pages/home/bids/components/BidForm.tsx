@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { IntlShape } from "react-intl";
 import { Link } from "react-router-dom";
 import {
@@ -122,6 +122,7 @@ const getInitialValues = (
       values[`parameter${item.parameter_id}`] = item.value;
     });
   }
+
   return values;
 };
 
@@ -177,6 +178,7 @@ interface IProps {
   clearLocations: () => Action<"yaLocations/CLEAR">;
   clearBidsPair: () => Action<"bids/CLEAR_BIDS_PAIR">;
   fetchBidsPair: any;
+  bidsPairError: string | null;
   clearCropParams: () => Action<"crops2/CLEAR_CROP_PARAMS">;
   fetchCropParams: (
     cropId: number
@@ -256,6 +258,7 @@ const BidForm: React.FC<IProps> = ({
   bidsPair,
   clearBidsPair,
   fetchBidsPair,
+  bidsPairError,
 
   clearCropParams,
   fetchCropParams,
@@ -353,20 +356,15 @@ const BidForm: React.FC<IProps> = ({
     ),
     onSubmit: values => {
       const is_filter_created = isFilterCreated ? 1 : 0;
-      const paramValues: IParamValue[] = [];
-      cropParams?.forEach(param => {
-        const id = param.id;
-        if (values[`parameter${id}`] && values[`parameter${id}`] !== "") {
-          paramValues.push({ parameter_id: id, value: values[`parameter${id}`].toString() });
-        }
-      });
+      const newParamValues = initializeParamValues();
+
       const params: { [x: string]: any } = {
         ...values,
         vendor_id,
         price: +values.price,
         volume: +values.volume,
         payment_term: +values.payment_term,
-        parameter_values: paramValues,
+        parameter_values: newParamValues,
         prepayment_amount: +values.prepayment_amount,
       };
       const bidType = params.bid_type;
@@ -402,6 +400,18 @@ const BidForm: React.FC<IProps> = ({
   });
 
   const [formikErrored, setFormikErrored] = useState(false);
+
+  const initializeParamValues = useCallback(() => {
+    const paramValues: IParamValue[] = [];
+    cropParams?.forEach(param => {
+      const id = param.id;
+      if (values[`parameter${id}`] && values[`parameter${id}`] !== "") {
+        paramValues.push({ parameter_id: id, value: values[`parameter${id}`].toString() });
+      }
+    });
+
+    return paramValues;
+  }, [cropParams, values]);
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -466,28 +476,39 @@ const BidForm: React.FC<IProps> = ({
         isFilterCreated
       ),
     });
-  }, [
-    bid,
-    currentCropId,
-    editMode,
-    me,
-    resetForm,
-    salePurchaseMode,
-    user,
-    vendorId,
-    // isFilterCreated,
-  ]);
+  }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
 
-  // useEffect(() => {
-  //   if (editMode === "create" && me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
-  //     let params = {};
+  useEffect(() => {
+    if (editMode === "create" && me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
+      let params = {};
+      const newParamsValues = initializeParamValues();
 
-  //     if (values.crop_id !== "") {
-  //       params = { crop_id: values.crop_id };
-  //       fetchBidsPair(values.bid_type, params);
-  //     }
-  //   }
-  // }, [values.bid_type, values.crop_id, fetchBidsPair]);
+      params = {
+        crop_id: values.crop_id,
+        parameter_values: newParamsValues,
+        location: values.location,
+      };
+
+      //@ts-ignore
+      if (params.crop_id !== "") fetchBidsPair(values.bid_type, params);
+    }
+  }, [values.bid_type, values.crop_id, values.location, initializeParamValues, fetchBidsPair]);
+
+  useEffect(() => {
+    if (bidsPairError) {
+      enqueueSnackbar(
+        `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${bidsPairError}`,
+        {
+          variant: "error",
+        }
+      );
+      clearBidsPair();
+    }
+  }, [bidsPairError, clearBidsPair, enqueueSnackbar, intl]);
+
+  useEffect(() => {
+    clearBidsPair();
+  }, [history.location.pathname ,clearBidsPair]);
 
   useEffect(() => {
     if (currentCropId) fetchCropParams(currentCropId);
@@ -732,6 +753,16 @@ const BidForm: React.FC<IProps> = ({
           disabled={editMode === "view"}
           autoComplete="off"
         />
+      )}
+
+      {editMode === "create" && bidsPair && (
+        <>
+          {bidsPair.price_with_delivery ? (
+            <div>Лучшая цена: {bidsPair.price_with_delivery} (с учётом доставки)</div>
+          ) : (
+            <div>Лучшая цена: {bidsPair.price} (без учёта доставки)</div>
+          )}
+        </>
       )}
 
       {loading ? (

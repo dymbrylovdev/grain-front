@@ -494,9 +494,9 @@ function* fetchBidsPairSaga({
   };
 }) {
   try {
-    const { data }: { data: any } = yield call(() => {
-      getBestPrice(payload.type, payload.data);
-    });
+    const { data }: { data: any } = yield call(() => 
+      getBestPrice(payload.type, payload.data)
+    );
     yield put(actions.bidsPairSuccess(data));
   } catch (e) {
     yield put(actions.bidsPairFail(e?.response?.data?.message || "Ошибка соединения."));
