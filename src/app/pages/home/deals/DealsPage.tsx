@@ -117,7 +117,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           !term ? 999 : +term,
           min_prepayment_amount ? min_prepayment_amount : undefined
         );
-    }, 1000);
+    }, 5000);
 
     return () => {
       clearTimeout(timeout);

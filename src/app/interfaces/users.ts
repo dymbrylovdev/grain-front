@@ -23,6 +23,7 @@ export interface IUser {
   company_confirmed_by_payment?: boolean;
   contact_view_count?: number;
   points: ILocation[];
+  registration_type: string;
   funnel_state: {
     id: number;
     name: string;

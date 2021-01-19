@@ -255,6 +255,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchCrops();
   }, [fetchCrops]);
 
+  console.log(realUser);
+
   return (
     <>
       <div>
@@ -284,7 +286,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     </div>
                   ) : null}
                   {realUser.tariff_matrix.tariff.name !== "Бесплатный" &&
-                  realUser.tariff_matrix.tariff_expired_at ? (
+                  realUser.tariff_expired_at ? (
                     <div>Дата окончания тарифа: {intl.formatDate(realUser.tariff_expired_at)}</div>
                   ) : null}
                 </div>

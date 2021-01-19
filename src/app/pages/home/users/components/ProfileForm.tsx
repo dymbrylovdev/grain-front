@@ -171,16 +171,19 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       status: Yup.string().required(
         intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
       ),
-      email: Yup.string()
-        .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+      email:
+        me?.registration_type === "phone"
+          ? Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
+          : Yup.string()
+              .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
+              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
       password:
         editMode === "create"
           ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
           : Yup.string(),
       phone: Yup.string()
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-        .matches(/^[0-9][0-9]{9}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+        .matches(/^[0-9][0-9]{10}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
       repeatPassword: Yup.string().test(
         "passwords-match",
         intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
@@ -363,8 +366,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   if (accessByRoles(me, ["ROLE_MANAGER"]) && editMode === "create") {
     newRoles.splice(0, 2);
   }
-
-  console.log(me);
 
   return (
     <>
