@@ -758,9 +758,9 @@ const BidForm: React.FC<IProps> = ({
       {editMode === "create" && bidsPair && (
         <>
           {bidsPair.price_with_delivery ? (
-            <div>Лучшая цена: {bidsPair.price_with_delivery} (с учётом доставки)</div>
+            <h5>Лучшая цена: {bidsPair.price_with_delivery} (с учётом доставки)</h5>
           ) : (
-            <div>Лучшая цена: {bidsPair.price} (без учёта доставки)</div>
+            <h5>Лучшая цена: {bidsPair.price} (без учёта доставки)</h5>
           )}
         </>
       )}
