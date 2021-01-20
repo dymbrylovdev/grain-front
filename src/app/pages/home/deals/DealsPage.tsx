@@ -10,6 +10,7 @@ import {
   TableRow,
   Paper,
   Tooltip,
+  TableFooter,
 } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
@@ -26,6 +27,7 @@ import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
 import { FilterModal } from "./components";
 import MiniTrafficLight from "../users/components/miniTrafficLight/MiniTrafficLight";
+import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -108,23 +110,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   ]);
 
   useEffect(() => {
-    const timeout: any = setTimeout(() => {
-      if (!!dealsFilters)
-        fetch(
-          page,
-          perPage,
-          weeks,
-          !term ? 999 : +term,
-          min_prepayment_amount ? min_prepayment_amount : undefined
-        );
-    }, 5000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [dealsFilters, fetch, page, perPage, term, weeks, min_prepayment_amount]);
-
-  useEffect(() => {
     fetchCrops();
   }, [fetchCrops]);
 
@@ -135,6 +120,17 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     fetchDealsFilters();
   }, [fetchDealsFilters]);
+
+  useEffect(() => {
+    if (!!dealsFilters)
+      fetch(
+        page,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined
+      );
+  }, [dealsFilters, fetch, page, perPage, term, weeks, min_prepayment_amount]);
 
   if (error || filtersError || cropsError || allCropParamsError) {
     setTimeout(() => {
@@ -307,17 +303,25 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   </TableRow>
                 ))}
             </TableBody>
-            {/* <TableFooter>
+            <TableFooter>
               <TableRow>
                 <TablePaginator
                   page={page}
                   realPerPage={deals.length}
                   perPage={perPage}
                   total={total}
-                  fetchRows={(page, perPage) => fetch(page, perPage, weeks, !term ? 999 : +term)}
+                  fetchRows={(page, perPage) =>
+                    fetch(
+                      page,
+                      perPage,
+                      weeks,
+                      !term ? 999 : +term,
+                      min_prepayment_amount ? min_prepayment_amount : undefined
+                    )
+                  }
                 />
               </TableRow>
-            </TableFooter> */}
+            </TableFooter>
           </Table>
         </div>
       )}

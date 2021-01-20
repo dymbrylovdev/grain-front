@@ -10,6 +10,8 @@ import {
   IconButton,
   Collapse,
   Button,
+  Dialog,
+  DialogActions,
 } from "@material-ui/core";
 import { Alert, Skeleton } from "@material-ui/lab";
 import { Link, useHistory } from "react-router-dom";
@@ -137,6 +139,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const [companyConfirmId, setCompanyConfirmId] = useState<number>(0);
   const [currentUser, setCurrentUser] = useState<IUser>();
   const [isCompanyAlertOpen, setCompanyAlertOpen] = useState(false);
+  const [isChangePasswordModalOpen, setChangePasswordModalOpen] = useState<boolean>(false);
 
   const {
     values,
@@ -633,67 +636,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
-      {editMode !== "view" && (
-        <div className={classes.box}>
-          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-            <Skeleton width="100%" height={32} animation="wave" />
-          ) : editMode === "create" ? (
-            <p>{intl.formatMessage({ id: "PROFILE.INPUT.PASSWORD.CREATE_TITLE" })}</p>
-          ) : (
-            <p>{intl.formatMessage({ id: "PROFILE.INPUT.PASSWORD.EDIT_TITLE" })}</p>
-          )}
-          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <TextField
-              type={!visiblePass ? "password" : "text"}
-              label={intl.formatMessage({
-                id: "PROFILE.INPUT.PASSWORD",
-              })}
-              margin="normal"
-              name="password"
-              value={values.password}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={touched.password && errors.password}
-              error={Boolean(touched.password && errors.password)}
-              InputProps={{
-                endAdornment: !visiblePass ? (
-                  <IconButton onClick={() => setVisiblePass(true)}>
-                    <VisibilityIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton onClick={() => setVisiblePass(false)}>
-                    <VisibilityOffIcon />
-                  </IconButton>
-                ),
-              }}
-              autoComplete="off"
-            />
-          )}
-
-          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <TextField
-              type="password"
-              label={intl.formatMessage({
-                id: "PROFILE.INPUT.REPEATPASSWORD",
-              })}
-              margin="normal"
-              name="repeatPassword"
-              value={values.repeatPassword}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={touched.repeatPassword && errors.repeatPassword}
-              error={Boolean(touched.repeatPassword && errors.repeatPassword)}
-            />
-          )}
-        </div>
-      )}
-
       {editMode !== "create" && (
         <div>
           {currentUser && currentUser.company ? (
@@ -890,6 +832,19 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               </ButtonWithLoader>
             </div>
           )}
+
+          {editMode !== "view" && (
+            <div className={classes.button}>
+              <ButtonWithLoader
+                loading={editMeLoading || createLoading || editLoading}
+                disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
+                onPress={() => setChangePasswordModalOpen(true)}
+              >
+                {intl.formatMessage({ id: "ALL.BUTTONS.CHANGE.PASSWORD" })}
+              </ButtonWithLoader>
+            </div>
+          )}
+
           {editMode !== "view" && (
             <div className={classes.button}>
               <ButtonWithLoader
@@ -911,6 +866,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               </ButtonWithLoader>
             </div>
           )}
+
           {editMode === "edit" && me?.is_admin && (
             <div className={classes.button}>
               <OutlinedRedButton
@@ -924,6 +880,98 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           )}
         </div>
       </div>
+
+      <Dialog
+        open={isChangePasswordModalOpen}
+        onClose={() => setChangePasswordModalOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        {editMode !== "view" && (
+          <div
+            className={classes.box}
+            style={{ marginTop: 20, marginBottom: 20, marginRight: 20, marginLeft: 20 }}
+          >
+            {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+              <Skeleton width="100%" height={32} animation="wave" />
+            ) : editMode === "create" ? (
+              <p>{intl.formatMessage({ id: "PROFILE.INPUT.PASSWORD.CREATE_TITLE" })}</p>
+            ) : (
+              <p>{intl.formatMessage({ id: "PROFILE.INPUT.PASSWORD.EDIT_TITLE" })}</p>
+            )}
+            {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <TextField
+                type={!visiblePass ? "password" : "text"}
+                label={intl.formatMessage({
+                  id: "PROFILE.INPUT.PASSWORD",
+                })}
+                margin="normal"
+                name="password"
+                value={values.password}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.password && errors.password}
+                error={Boolean(touched.password && errors.password)}
+                InputProps={{
+                  endAdornment: !visiblePass ? (
+                    <IconButton onClick={() => setVisiblePass(true)}>
+                      <VisibilityIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton onClick={() => setVisiblePass(false)}>
+                      <VisibilityOffIcon />
+                    </IconButton>
+                  ),
+                }}
+                autoComplete="off"
+              />
+            )}
+
+            {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <TextField
+                type="password"
+                label={intl.formatMessage({
+                  id: "PROFILE.INPUT.REPEATPASSWORD",
+                })}
+                margin="normal"
+                name="repeatPassword"
+                value={values.repeatPassword}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.repeatPassword && errors.repeatPassword}
+                error={Boolean(touched.repeatPassword && errors.repeatPassword)}
+              />
+            )}
+
+            <div
+              className={classes.button}
+              style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}
+            >
+              <ButtonWithLoader
+                loading={editMeLoading || createLoading || editLoading}
+                disabled={
+                  editMeLoading ||
+                  createLoading ||
+                  editLoading ||
+                  meLoading ||
+                  userLoading ||
+                  (editMode !== "profile" && funnelStatesLoading) ||
+                  isEqual(oldValues, values)
+                }
+                onPress={handleSubmit}
+              >
+                {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+              </ButtonWithLoader>
+            </div>
+          </div>
+        )}
+      </Dialog>
     </>
   );
 };
