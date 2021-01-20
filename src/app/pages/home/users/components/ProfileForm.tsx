@@ -175,15 +175,12 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
       ),
       email:
-        me?.registration_type === "phone"
+        me?.registration_type === "phone" || editMode === "create"
           ? Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
           : Yup.string()
               .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
               .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-      password:
-        editMode === "create"
-          ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-          : Yup.string(),
+      password: Yup.string(),
       phone: Yup.string()
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
         .matches(/^[0-9][0-9]{10}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
@@ -884,7 +881,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       <Dialog
         open={isChangePasswordModalOpen}
         onClose={() => setChangePasswordModalOpen(false)}
-        maxWidth="md"
+        maxWidth="sm"
         fullWidth
       >
         {editMode !== "view" && (

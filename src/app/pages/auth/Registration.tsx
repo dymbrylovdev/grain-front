@@ -12,6 +12,10 @@ import {
   FormLabel,
   Tabs,
   Tab,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
@@ -21,6 +25,7 @@ import { actions as authActions } from "../../store/ducks/auth.duck";
 import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
 import TermDialog from "./components/TermDialog";
 import NumberFormatForRegister from "../../components/NumberFormatCustom/NumberFormatForRegister";
+import phoneCountryCodesArr from "./phoneCountryCodes";
 import { TabPanel, a11yProps } from "../../components/ui/Table/TabPanel";
 import { IAppState } from "../../store/rootDuck";
 import { TRole } from "../../interfaces/users";
@@ -48,9 +53,14 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [isAgreementOpen, setOpenUserAgreement] = useState(false);
   const [phoneRegPhase, setPhoneRegPhase] = useState(0);
   const [valueTabs, setValueTabs] = useState(0);
+  const [phoneCountryCode, setPhoneCountryPhone] = useState("7");
 
   const handleTabsChange = (e: any, newValue: number) => {
     setValueTabs(newValue);
+  };
+
+  const onSelectChange = e => {
+    setPhoneCountryPhone(e.target.value);
   };
 
   let validationSchema = {};
@@ -117,7 +127,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     if (fetchError) {
       enqueueSnackbar(fetchError, {
-        variant: "error"
+        variant: "error",
       });
     }
   }, [fetchError, enqueueSnackbar]);
@@ -144,6 +154,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             initialValues={{
               email: "",
               phone: "",
+              phoneCode: phoneCountryCode,
               codeConfirm: "",
               login: "",
               role: "ROLE_BUYER",
@@ -162,14 +173,14 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               if (valueTabs === 1) {
                 if (phoneRegPhase === 0) {
                   register({
-                    phone: `7${values.phone}`,
+                    phone: `${values.phoneCode}${values.phone}`,
                     roles: [values.role as TRole],
                     crop_ids: [1],
                   });
                 }
                 if (phoneRegPhase === 1) {
                   loginByPhone({
-                    phone: `7${values.phone}`,
+                    phone: `${values.phoneCode}${values.phone}`,
                     code: values.codeConfirm,
                   });
                 }
@@ -232,20 +243,47 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TabPanel value={valueTabs} index={1}>
                   <div className="form-group mb-0">
                     {phoneRegPhase === 0 ? (
-                      <TextField
-                        label={intl.formatMessage({ id: "AUTH.INPUT.PHONE" })}
-                        margin="normal"
-                        className="kt-width-full"
-                        name="phone"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.phone}
-                        helperText={touched.phone && errors.phone}
-                        error={Boolean(touched.phone && errors.phone)}
-                        InputProps={{
-                          inputComponent: NumberFormatForRegister as any,
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-start",
+                          alignItems: "center",
                         }}
-                      />
+                      >
+                        <FormControl
+                          className="kt-width-full"
+                          style={{ marginTop: 8, marginRight: 8 }}
+                        >
+                          <InputLabel id="phone-code-label">Код</InputLabel>
+                          <Select
+                            labelId="phone-code-label"
+                            id="phone-code"
+                            value={phoneCountryCode}
+                            onChange={onSelectChange}
+                            style={{ width: 55 }}
+                          >
+                            {phoneCountryCodesArr.map(item => (
+                              <MenuItem key={item.id} value={item.code}>
+                                {item.code}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <TextField
+                          label={intl.formatMessage({ id: "AUTH.INPUT.PHONE" })}
+                          margin="normal"
+                          className="kt-width-full"
+                          name="phone"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.phone}
+                          helperText={touched.phone && errors.phone}
+                          error={Boolean(touched.phone && errors.phone)}
+                          InputProps={{
+                            inputComponent: NumberFormatForRegister as any,
+                          }}
+                        />
+                      </div>
                     ) : (
                       <TextField
                         label={intl.formatMessage({ id: "AUTH.INPUT.CODE" })}

@@ -2,7 +2,16 @@ import React, { useState, useEffect } from "react";
 import { compose } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
-import { TextField, Tabs, Tab, Button } from "@material-ui/core";
+import {
+  TextField,
+  Tabs,
+  Tab,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -13,6 +22,7 @@ import { actions as authActions } from "../../store/ducks/auth.duck";
 import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
 import { TabPanel, a11yProps } from "../../components/ui/Table/TabPanel";
 import NumberFormatForRegister from "../../components/NumberFormatCustom/NumberFormatForRegister";
+import phoneCountryCodesArr from "./phoneCountryCodes";
 import { IAppState } from "../../store/rootDuck";
 
 const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
@@ -40,14 +50,19 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 }) => {
   const [valueTabs, setValueTabs] = useState(0);
   const [phoneLoginPhase, setPhoneLoginPhase] = useState(0);
+  const [phoneCountryCode, setPhoneCountryPhone] = useState('7');
 
   const handleTabsChange = (e: any, newValue: number) => {
     setValueTabs(newValue);
   };
 
-  const sendCodeSetPhase = (values) => {
-    sendCodeConfirm({ phone: `7${values.phone}` });
+  const sendCodeSetPhase = values => {
+    sendCodeConfirm({ phone: `${values.phoneCode}${values.phone}` });
     setPhoneLoginPhase(1);
+  };
+
+  const onSelectChange = (e) => {
+    setPhoneCountryPhone(e.target.value);
   }
 
   let validationSchema = {};
@@ -63,9 +78,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   if (valueTabs === 1) {
     if (phoneLoginPhase === 0) {
       validationSchema = {
-        phone: Yup.string()
-          
-          .required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
+        phone: Yup.string().required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
       };
     }
     if (phoneLoginPhase === 1) {
@@ -95,11 +108,9 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   useEffect(() => {
     if (loginByPhoneError) {
-      enqueueSnackbar(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID.CODE" }),
-        {
-          variant: "error"
-        }
-      )
+      enqueueSnackbar(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID.CODE" }), {
+        variant: "error",
+      });
       clearLoginByPhone();
     }
   }, [enqueueSnackbar, loginByPhoneError]);
@@ -149,6 +160,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               email: "",
               password: "",
               phone: "",
+              phoneCode: phoneCountryCode,
               codeConfirm: "",
             }}
             validationSchema={Yup.object().shape(validationSchema)}
@@ -159,7 +171,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               if (valueTabs === 1) {
                 !phoneLoginPhase
                   ? sendCodeSetPhase(values)
-                  : loginByPhone({ phone: `7${values.phone}`, code: values.codeConfirm });
+                  : loginByPhone({ phone: `${values.phoneCode}${values.phone}`, code: values.codeConfirm });
               }
             }}
           >
@@ -250,23 +262,46 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <div className="form-group">
                     {phoneLoginPhase === 0 && (
                       <>
-                        <TextField
-                          type="phone"
-                          label={intl.formatMessage({
-                            id: "AUTH.INPUT.PHONE",
-                          })}
-                          margin="normal"
-                          className="kt-width-full"
-                          name="phone"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.phone}
-                          helperText={touched.phone && errors.phone}
-                          error={Boolean(touched.phone && errors.phone)}
-                          InputProps={{
-                            inputComponent: NumberFormatForRegister as any,
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-start",
+                            alignItems: "center",
                           }}
-                        />
+                        >
+                          <FormControl className="kt-width-full" style={{marginTop: 8, marginRight: 8}}>
+                            <InputLabel id="phone-code-label">Код</InputLabel>
+                            <Select
+                              labelId="phone-code-label"
+                              id="phone-code"
+                              value={phoneCountryCode}
+                              onChange={onSelectChange}
+                              style={{width: 55}}
+                            >
+                              {phoneCountryCodesArr.map(item => (
+                                <MenuItem key={item.id} value={item.code}>{item.code}</MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+
+                          <TextField
+                            type="phone"
+                            label={intl.formatMessage({
+                              id: "AUTH.INPUT.PHONE",
+                            })}
+                            margin="normal"
+                            className="kt-width-full"
+                            name="phone"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.phone}
+                            helperText={touched.phone && errors.phone}
+                            error={Boolean(touched.phone && errors.phone)}
+                            InputProps={{
+                              inputComponent: NumberFormatForRegister as any,
+                            }}
+                          />
+                        </div>
 
                         <div className="kt-login__actions">
                           <ButtonWithLoader
