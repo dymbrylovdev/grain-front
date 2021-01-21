@@ -29,6 +29,7 @@ const useStyles = makeStyles({
 
 interface IProps {
   intl: IntlShape;
+  me: IUser;
   realUser: IUser;
   openModal: boolean;
   setOpenModal: any;
@@ -40,13 +41,14 @@ interface IProps {
 
 const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
   intl,
+  me,
   realUser,
   openModal,
   setOpenModal,
   selectedTariff,
   selectedDate,
   fetchMerchant,
-  merchant
+  merchant,
 }) => {
   const innerClasses = useStyles();
 
@@ -79,7 +81,9 @@ const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
             aria-label="tabs"
           >
             <Tab label={intl.formatMessage({ id: "TARIFFS.PAYMENT.TAB1" })} {...a11yProps(0)} />
-            <Tab label={intl.formatMessage({ id: "TARIFFS.PAYMENT.TAB2" })} {...a11yProps(1)} />
+            {me && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && (
+              <Tab label={intl.formatMessage({ id: "TARIFFS.PAYMENT.TAB2" })} {...a11yProps(1)} />
+            )}
           </Tabs>
 
           <IconButton
@@ -104,9 +108,16 @@ const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
           />
         </TabPanel>
 
-        <TabPanel value={valueTabs} index={1}>
-          <PaymentByCard realUser={realUser} selectedTariff={selectedTariff} selectedDate={selectedDate} merchant={merchant} />
-        </TabPanel>
+        {me && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && (
+          <TabPanel value={valueTabs} index={1}>
+            <PaymentByCard
+              realUser={realUser}
+              selectedTariff={selectedTariff}
+              selectedDate={selectedDate}
+              merchant={merchant}
+            />
+          </TabPanel>
+        )}
       </Dialog>
     </>
   );

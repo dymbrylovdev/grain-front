@@ -337,7 +337,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           <Button variant="contained" color="primary">
             <a
               style={{ color: "#FFF" }}
-              href="https://drive.google.com/drive/folders/1fajBzWbprZShBTjoDp2JN-Xw4K6VHwKL"
+              href="https://docs.google.com/document/d/1D4cUTqpcZHx_eMXwcvPwL2TOJua-nHTEWI6bSerzgeo/edit?usp=sharing"
               target="blank"
             >
               {intl.formatMessage({ id: "ALL_BUTTONS.DOWNLOAD" })}
@@ -346,8 +346,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         </div>
       )}
 
-      {realUser && (
+      {realUser && me && (
         <TariffPaymentDialog
+          me={me}
           fetchMerchant={fondyCredentialsRequest}
           merchant={merchant}
           realUser={realUser}
