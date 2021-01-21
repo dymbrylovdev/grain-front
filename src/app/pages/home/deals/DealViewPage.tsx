@@ -142,6 +142,8 @@ const DealViewPage: React.FC<TPropsFromRedux &
     }, 10000);
   }
 
+  console.log(deal);
+
   return (
     <Paper className={classes.paperWithTable}>
       {!!crops && (

@@ -494,21 +494,15 @@ const BidForm: React.FC<IProps> = ({
     }
   }, [values.bid_type, values.crop_id, values.location, initializeParamValues, fetchBidsPair]);
 
-  useEffect(() => {
-    if (bidsPairError) {
-      enqueueSnackbar(
-        `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${bidsPairError}`,
-        {
-          variant: "error",
-        }
-      );
-      clearBidsPair();
-    }
-  }, [bidsPairError, clearBidsPair, enqueueSnackbar, intl]);
+  // useEffect(() => {
+  //   if (bidsPairError) {
+  //     clearBidsPair();
+  //   }
+  // }, [bidsPairError, clearBidsPair, enqueueSnackbar, intl]);
 
   useEffect(() => {
     clearBidsPair();
-  }, [history.location.pathname ,clearBidsPair]);
+  }, [history, clearBidsPair]);
 
   useEffect(() => {
     if (currentCropId) fetchCropParams(currentCropId);
@@ -757,10 +751,39 @@ const BidForm: React.FC<IProps> = ({
 
       {editMode === "create" && bidsPair && (
         <>
-          {bidsPair.price_with_delivery ? (
-            <h5>Лучшая цена: {bidsPair.price_with_delivery} (с учётом доставки)</h5>
+          {!bidsPairError ? (
+            <>
+              {bidsPair.price_with_delivery ? (
+                <Alert
+                  className={classes.infoAlert}
+                  severity="info"
+                  color="info"
+                  style={{ marginTop: 15 }}
+                >
+                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${bidsPair.price_with_delivery} ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
+                </Alert>
+              ) : (
+                <Alert
+                  className={classes.infoAlert}
+                  severity="info"
+                  color="info"
+                  style={{ marginTop: 15 }}
+                >
+                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${bidsPair.price} ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
+                </Alert>
+              )}
+            </>
           ) : (
-            <h5>Лучшая цена: {bidsPair.price} (без учёта доставки)</h5>
+            <Alert
+              className={classes.infoAlert}
+              severity="warning"
+              color="error"
+              style={{ marginTop: 15 }}
+            >
+              {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${intl.formatMessage({
+                id: "BID.CREATE.NOT.FOUND",
+              })}`}
+            </Alert>
           )}
         </>
       )}

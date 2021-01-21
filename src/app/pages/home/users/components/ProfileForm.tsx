@@ -961,7 +961,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                   (editMode !== "profile" && funnelStatesLoading) ||
                   isEqual(oldValues, values)
                 }
-                onPress={handleSubmit}
+                onPress={() => {
+                  handleSubmit();
+                  setChangePasswordModalOpen(false);
+                }}
               >
                 {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
               </ButtonWithLoader>
