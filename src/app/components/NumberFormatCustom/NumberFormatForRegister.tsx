@@ -5,6 +5,7 @@ interface NumberFormatCustomProps {
   inputRef: (instance: NumberFormat | null) => void;
   onChange: (event: { target: { name: string; value: string } }) => void;
   name: string;
+  placeholder: string;
 }
 
 function NumberFormatPhone(props: NumberFormatCustomProps) {
@@ -25,7 +26,7 @@ function NumberFormatPhone(props: NumberFormatCustomProps) {
       thousandSeparator={false}
       isNumericString
       type="tel"
-      format="(###) ### - ####" 
+      format="+# (###) - ### - ####"
       allowEmptyFormatting
       mask=" . "
     />

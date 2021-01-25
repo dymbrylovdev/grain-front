@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Formik } from "formik";
 import { connect, ConnectedProps } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
@@ -25,7 +25,7 @@ import { actions as authActions } from "../../store/ducks/auth.duck";
 import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
 import TermDialog from "./components/TermDialog";
 import NumberFormatForRegister from "../../components/NumberFormatCustom/NumberFormatForRegister";
-import phoneCountryCodesArr from "./phoneCountryCodes";
+import { phoneCountryCodes, countries } from "./phoneCountryCodes";
 import { TabPanel, a11yProps } from "../../components/ui/Table/TabPanel";
 import { IAppState } from "../../store/rootDuck";
 import { TRole } from "../../interfaces/users";
@@ -53,14 +53,25 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [isAgreementOpen, setOpenUserAgreement] = useState(false);
   const [phoneRegPhase, setPhoneRegPhase] = useState(0);
   const [valueTabs, setValueTabs] = useState(0);
-  const [phoneCountryCode, setPhoneCountryPhone] = useState("7");
+  const [countryCode, setCountryCode] = useState(countries[0].code);
+  const [countryName, setCountryName] = useState(phoneCountryCodes[0]);
 
   const handleTabsChange = (e: any, newValue: number) => {
     setValueTabs(newValue);
   };
 
-  const onSelectChange = e => {
-    setPhoneCountryPhone(e.target.value);
+  const handleCountryNameChange = (e: any) => {
+    setCountryName(e.target.value);
+  }
+
+  const handleCountryCodeChange = (e: any) => {
+    const countryName = e.target.value;
+
+    countries.forEach(country => {
+      if (country.country === countryName) {
+        setCountryCode(country.code);
+      }
+    });
   };
 
   let validationSchema = {};
@@ -154,7 +165,6 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             initialValues={{
               email: "",
               phone: "",
-              phoneCode: phoneCountryCode,
               codeConfirm: "",
               login: "",
               role: "ROLE_BUYER",
@@ -173,14 +183,14 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               if (valueTabs === 1) {
                 if (phoneRegPhase === 0) {
                   register({
-                    phone: `${values.phoneCode}${values.phone}`,
+                    phone: `${countryCode}${values.phone}`,
                     roles: [values.role as TRole],
                     crop_ids: [1],
                   });
                 }
                 if (phoneRegPhase === 1) {
                   loginByPhone({
-                    phone: `${values.phoneCode}${values.phone}`,
+                    phone: `${countryCode}${values.phone}`,
                     code: values.codeConfirm,
                   });
                 }
@@ -243,32 +253,31 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TabPanel value={valueTabs} index={1}>
                   <div className="form-group mb-0">
                     {phoneRegPhase === 0 ? (
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-start",
-                          alignItems: "center",
-                        }}
-                      >
-                        <FormControl
+                      <>
+                        <TextField
+                          select
+                          type="country"
+                          label={intl.formatMessage({
+                            id: "AUTH.INPUT.COUNTRIES",
+                          })}
+                          margin="normal"
                           className="kt-width-full"
-                          style={{ marginTop: 8, marginRight: 8 }}
+                          name="country"
+                          onBlur={handleBlur}
+                          //@ts-ignore
+                          onChange={(e) => {
+                            handleCountryNameChange(e);
+                            handleCountryCodeChange(e);
+                          }}
+                          value={countryName}
                         >
-                          <InputLabel id="phone-code-label">Код</InputLabel>
-                          <Select
-                            labelId="phone-code-label"
-                            id="phone-code"
-                            value={phoneCountryCode}
-                            onChange={onSelectChange}
-                            style={{ width: 55 }}
-                          >
-                            {phoneCountryCodesArr.map(item => (
-                              <MenuItem key={item.id} value={item.code}>
-                                {item.code}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
+                          {countries.map(item => (
+                            <MenuItem key={item.id} value={item.country}>
+                              {item.country}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                        
                         <TextField
                           label={intl.formatMessage({ id: "AUTH.INPUT.PHONE" })}
                           margin="normal"
@@ -279,11 +288,12 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           value={values.phone}
                           helperText={touched.phone && errors.phone}
                           error={Boolean(touched.phone && errors.phone)}
-                          InputProps={{
-                            inputComponent: NumberFormatForRegister as any,
-                          }}
+                          placeholder={`+${countryCode}`}
+                          // InputProps={{
+                          //   inputComponent: NumberFormatForRegister as any,
+                          // }}
                         />
-                      </div>
+                      </>
                     ) : (
                       <TextField
                         label={intl.formatMessage({ id: "AUTH.INPUT.CODE" })}

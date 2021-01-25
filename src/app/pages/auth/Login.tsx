@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { compose } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
@@ -22,7 +22,7 @@ import { actions as authActions } from "../../store/ducks/auth.duck";
 import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
 import { TabPanel, a11yProps } from "../../components/ui/Table/TabPanel";
 import NumberFormatForRegister from "../../components/NumberFormatCustom/NumberFormatForRegister";
-import phoneCountryCodesArr from "./phoneCountryCodes";
+import { phoneCountryCodes, countries } from "./phoneCountryCodes";
 import { IAppState } from "../../store/rootDuck";
 
 const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
@@ -50,7 +50,8 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 }) => {
   const [valueTabs, setValueTabs] = useState(0);
   const [phoneLoginPhase, setPhoneLoginPhase] = useState(0);
-  const [phoneCountryCode, setPhoneCountryPhone] = useState('7');
+  const [countryCode, setCountryCode] = useState(countries[0].code);
+  const [countryName, setCountryName] = useState(phoneCountryCodes[0]);
 
   const handleTabsChange = (e: any, newValue: number) => {
     setValueTabs(newValue);
@@ -61,9 +62,19 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     setPhoneLoginPhase(1);
   };
 
-  const onSelectChange = (e) => {
-    setPhoneCountryPhone(e.target.value);
+  const handleCountryNameChange = (e: any) => {
+    setCountryName(e.target.value);
   }
+
+  const handleCountryCodeChange = (e: any) => {
+    const countryName = e.target.value;
+
+    countries.forEach(country => {
+      if (country.country === countryName) {
+        setCountryCode(country.code);
+      }
+    });
+  };
 
   let validationSchema = {};
 
@@ -160,7 +171,6 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               email: "",
               password: "",
               phone: "",
-              phoneCode: phoneCountryCode,
               codeConfirm: "",
             }}
             validationSchema={Yup.object().shape(validationSchema)}
@@ -171,7 +181,10 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               if (valueTabs === 1) {
                 !phoneLoginPhase
                   ? sendCodeSetPhase(values)
-                  : loginByPhone({ phone: `${values.phoneCode}${values.phone}`, code: values.codeConfirm });
+                  : loginByPhone({
+                      phone: `${countryCode}${values.phone}`,
+                      code: values.codeConfirm,
+                    });
               }
             }}
           >
@@ -184,6 +197,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               handleBlur,
               handleSubmit,
               isSubmitting,
+              resetForm
             }) => (
               <form
                 noValidate={true}
@@ -262,46 +276,48 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <div className="form-group">
                     {phoneLoginPhase === 0 && (
                       <>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
+                        <TextField
+                          select
+                          type="country"
+                          label={intl.formatMessage({
+                            id: "AUTH.INPUT.COUNTRIES",
+                          })}
+                          margin="normal"
+                          className="kt-width-full"
+                          name="country"
+                          onBlur={handleBlur}
+                          //@ts-ignore
+                          onChange={(e) => {
+                            handleCountryNameChange(e);
+                            handleCountryCodeChange(e);
                           }}
+                          value={countryName}
                         >
-                          <FormControl className="kt-width-full" style={{marginTop: 8, marginRight: 8}}>
-                            <InputLabel id="phone-code-label">Код</InputLabel>
-                            <Select
-                              labelId="phone-code-label"
-                              id="phone-code"
-                              value={phoneCountryCode}
-                              onChange={onSelectChange}
-                              style={{width: 55}}
-                            >
-                              {phoneCountryCodesArr.map(item => (
-                                <MenuItem key={item.id} value={item.code}>{item.code}</MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
+                          {countries.map(item => (
+                            <MenuItem key={item.id} value={item.country}>
+                              {item.country}
+                            </MenuItem>
+                          ))}
+                        </TextField>
 
-                          <TextField
-                            type="phone"
-                            label={intl.formatMessage({
-                              id: "AUTH.INPUT.PHONE",
-                            })}
-                            margin="normal"
-                            className="kt-width-full"
-                            name="phone"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.phone}
-                            helperText={touched.phone && errors.phone}
-                            error={Boolean(touched.phone && errors.phone)}
-                            InputProps={{
-                              inputComponent: NumberFormatForRegister as any,
-                            }}
-                          />
-                        </div>
+                        <TextField
+                          type="phone"
+                          label={intl.formatMessage({
+                            id: "AUTH.INPUT.PHONE",
+                          })}
+                          margin="normal"
+                          className="kt-width-full"
+                          name="phone"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          value={values.phone}
+                          helperText={touched.phone && errors.phone}
+                          error={Boolean(touched.phone && errors.phone)}
+                          placeholder={`+${countryCode}`}
+                          // InputProps={{
+                          //   inputComponent: NumberFormatForRegister as any,
+                          // }}
+                        />
 
                         <div className="kt-login__actions">
                           <ButtonWithLoader
