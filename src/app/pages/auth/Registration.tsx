@@ -183,14 +183,14 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               if (valueTabs === 1) {
                 if (phoneRegPhase === 0) {
                   register({
-                    phone: `${countryCode}${values.phone}`,
+                    phone: values.phone,
                     roles: [values.role as TRole],
                     crop_ids: [1],
                   });
                 }
                 if (phoneRegPhase === 1) {
                   loginByPhone({
-                    phone: `${countryCode}${values.phone}`,
+                    phone: values.phone,
                     code: values.codeConfirm,
                   });
                 }
@@ -288,7 +288,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           value={values.phone}
                           helperText={touched.phone && errors.phone}
                           error={Boolean(touched.phone && errors.phone)}
-                          placeholder={`+${countryCode}`}
+                          placeholder={`+${countryCode} (###) - ### ####`}
                           // InputProps={{
                           //   inputComponent: NumberFormatForRegister as any,
                           // }}

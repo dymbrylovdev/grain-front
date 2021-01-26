@@ -58,7 +58,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   };
 
   const sendCodeSetPhase = values => {
-    sendCodeConfirm({ phone: `${values.phoneCode}${values.phone}` });
+    sendCodeConfirm({ phone: values.phone });
     setPhoneLoginPhase(1);
   };
 
@@ -175,6 +175,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             }}
             validationSchema={Yup.object().shape(validationSchema)}
             onSubmit={values => {
+              console.log(values);
               if (valueTabs === 0) {
                 login({ login: values.email, password: values.password });
               }
@@ -182,7 +183,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 !phoneLoginPhase
                   ? sendCodeSetPhase(values)
                   : loginByPhone({
-                      phone: `${countryCode}${values.phone}`,
+                      phone: values.phone,
                       code: values.codeConfirm,
                     });
               }
@@ -313,7 +314,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           value={values.phone}
                           helperText={touched.phone && errors.phone}
                           error={Boolean(touched.phone && errors.phone)}
-                          placeholder={`+${countryCode}`}
+                          placeholder={`+${countryCode} (###) - ### ####`}
                           // InputProps={{
                           //   inputComponent: NumberFormatForRegister as any,
                           // }}
