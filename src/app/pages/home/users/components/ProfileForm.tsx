@@ -625,9 +625,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             error={Boolean(touched.phone && errors.phone)}
             disabled={editMode === "view"}
             InputLabelProps={{ shrink: true }}
-            InputProps={{
-              inputComponent: NumberFormatForProfile as any,
-            }}
+            // InputProps={{
+            //   inputComponent: NumberFormatForProfile as any,
+            // }}
             autoComplete="off"
           />
         )}

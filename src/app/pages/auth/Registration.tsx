@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Formik } from "formik";
+import { Formik, useFormik } from "formik";
 import { connect, ConnectedProps } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
@@ -62,7 +62,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   const handleCountryNameChange = (e: any) => {
     setCountryName(e.target.value);
-  }
+  };
 
   const handleCountryCodeChange = (e: any) => {
     const countryName = e.target.value;
@@ -97,6 +97,44 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       };
     }
   }
+
+  const { values, errors, touched, resetForm, handleChange, handleBlur, handleSubmit } = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      email: "",
+      phone: `+${countryCode}`,
+      codeConfirm: "",
+      login: "",
+      role: "ROLE_BUYER",
+      acceptTerms: true,
+    },
+    onSubmit: (values) => {
+      if (valueTabs === 0) {
+        register({
+          email: values.email,
+          roles: [values.role as TRole],
+          login: values.email,
+          crop_ids: [1],
+        });
+      }
+      if (valueTabs === 1) {
+        if (phoneRegPhase === 0) {
+          register({
+            phone: values.phone,
+            roles: [values.role as TRole],
+            crop_ids: [1],
+          });
+        }
+        if (phoneRegPhase === 1) {
+          loginByPhone({
+            phone: values.phone,
+            code: values.codeConfirm,
+          });
+        }
+      }
+    },
+    validationSchema: Yup.object().shape(validationSchema)
+  });
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -161,7 +199,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             </h3>
           </div>
 
-          <Formik
+          {/* <Formik
             initialValues={{
               email: "",
               phone: "",
@@ -197,7 +235,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               }
             }}
           >
-            {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+            {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => ( */}
               <form onSubmit={handleSubmit} noValidate autoComplete="off">
                 <Tabs
                   value={valueTabs}
@@ -265,7 +303,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           name="country"
                           onBlur={handleBlur}
                           //@ts-ignore
-                          onChange={(e) => {
+                          onChange={e => {
                             handleCountryNameChange(e);
                             handleCountryCodeChange(e);
                           }}
@@ -277,7 +315,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                             </MenuItem>
                           ))}
                         </TextField>
-                        
+
                         <TextField
                           label={intl.formatMessage({ id: "AUTH.INPUT.PHONE" })}
                           margin="normal"
@@ -363,8 +401,8 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   </ButtonWithLoader>
                 </div>
               </form>
-            )}
-          </Formik>
+            {/* )}
+          </Formik> */}
         </div>
       </div>
     </>
