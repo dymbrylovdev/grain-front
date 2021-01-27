@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   MenuItem,
   TextField,
@@ -24,6 +24,7 @@ import { filterForCreate, filterForSubmit } from "../../../pages/home/myFilters/
 import { useSnackbar } from "notistack";
 import NumberParam from "../../../pages/home/bids/components/filter/NumberParam";
 import ButtonWithLoader from "../../ui/Buttons/ButtonWithLoader";
+import { setUser } from "@sentry/browser";
 
 const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   me,
@@ -63,6 +64,8 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   openInfoAlert,
   setOpenInfoAlert,
 }) => {
+  const [hasUserPointsActive, setUserPointsActive] = useState(false);
+
   const classes = useStyles();
   const location = useLocation();
 
@@ -181,6 +184,12 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     resetForm({ values: getInitialValues(currentFilter) });
   }, [currentFilter, getInitialValues, resetForm]);
+
+  useEffect(() => {
+    if (me) {
+      setUserPointsActive(me.points.some(point => point.active === true));
+    }
+  }, [me]);
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
@@ -335,6 +344,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               </IconButton>
             ),
           }}
+          disabled={!hasUserPointsActive}
           autoComplete="off"
         />
       </div>

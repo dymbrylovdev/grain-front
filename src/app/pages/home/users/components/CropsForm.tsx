@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import {
-  TextField,
-  Theme,
-  IconButton,
-  Grid as div,
-  Button,
-  Divider,
-} from "@material-ui/core";
+import { TextField, Theme, IconButton, Grid as div, Button, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { useFormik } from "formik";
@@ -21,12 +14,13 @@ import { actions as tariffsActions } from "../../../../store/ducks/tariffs.duck"
 import { actions as crops2Actions } from "../../../../store/ducks/crops2.duck";
 
 import useStyles from "../../styles";
-import { IAppState } from '../../../../store/rootDuck';
+import { IAppState } from "../../../../store/rootDuck";
 import { Skeleton, Autocomplete } from "@material-ui/lab";
 import { IUser } from "../../../../interfaces/users";
 import { ITariff, ITariffType, ITariffPeriod } from "../../../../interfaces/tariffs";
 import { ICrop } from "../../../../interfaces/crops";
 import getMenuConfig from "../../../../router/MenuConfig";
+import { accessByRoles } from "../../../../utils/utils";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   title: {
@@ -41,7 +35,7 @@ const innerStyles = makeStyles((theme: Theme) => ({
     height: 43.5,
     marginTop: theme.spacing(0.5),
     marginBottom: theme.spacing(0.5),
-  }
+  },
 }));
 
 interface IProps {
@@ -285,18 +279,20 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
             <div key={item.id}>
               <div className={innerClasses.crop}>
                 <div>{item.name}</div>
-                <IconButton
-                  size={"medium"}
-                  onClick={() => {
-                    let newCropIds = [...values.crop_ids];
-                    newCropIds.splice(newCropIds.indexOf(item.id), 1);
-                    setFieldValue("crop_ids", newCropIds);
-                    handleSubmit();
-                  }}
-                  color="secondary"
-                >
-                  <DeleteIcon />
-                </IconButton>
+                {(editMode !== "view" || (me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]))) && (
+                  <IconButton
+                    size={"medium"}
+                    onClick={() => {
+                      let newCropIds = [...values.crop_ids];
+                      newCropIds.splice(newCropIds.indexOf(item.id), 1);
+                      setFieldValue("crop_ids", newCropIds);
+                      handleSubmit();
+                    }}
+                    color="secondary"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
               </div>
               <Divider />
             </div>
@@ -375,8 +371,8 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
           )}
       </div>
     </>
-  )
-}
+  );
+};
 
 const connector = connect(
   (state: IAppState) => ({
