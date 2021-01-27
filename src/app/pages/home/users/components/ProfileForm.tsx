@@ -175,11 +175,11 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
       ),
       email:
-        me?.registration_type === "phone" || editMode === "create"
+        editMode === "create"
           ? Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
+                        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
           : Yup.string()
-              .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
-              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+              .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
       password: Yup.string(),
       phone: Yup.string()
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),

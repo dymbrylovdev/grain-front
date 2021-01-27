@@ -26,7 +26,7 @@ function NumberFormatPhone(props: NumberFormatCustomProps) {
       thousandSeparator={false}
       isNumericString
       type="tel"
-      format="# (###) - ### - ####"
+      format="+"
       allowEmptyFormatting
       mask=" . "
     />

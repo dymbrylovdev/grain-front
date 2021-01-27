@@ -106,7 +106,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     initialValues: {
       email: "",
       password: "",
-      phone: `+${countryCode}`,
+      phone: `${countryCode}`,
       codeConfirm: "",
     },
     onSubmit: values => {

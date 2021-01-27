@@ -102,13 +102,13 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     enableReinitialize: true,
     initialValues: {
       email: "",
-      phone: `+${countryCode}`,
+      phone: `${countryCode}`,
       codeConfirm: "",
       login: "",
       role: "ROLE_BUYER",
       acceptTerms: true,
     },
-    onSubmit: (values) => {
+    onSubmit: values => {
       if (valueTabs === 0) {
         register({
           email: values.email,
@@ -133,7 +133,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         }
       }
     },
-    validationSchema: Yup.object().shape(validationSchema)
+    validationSchema: Yup.object().shape(validationSchema),
   });
 
   const { enqueueSnackbar } = useSnackbar();
@@ -199,210 +199,163 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             </h3>
           </div>
 
-          {/* <Formik
-            initialValues={{
-              email: "",
-              phone: "",
-              codeConfirm: "",
-              login: "",
-              role: "ROLE_BUYER",
-              acceptTerms: true,
-            }}
-            validationSchema={Yup.object().shape(validationSchema)}
-            onSubmit={values => {
-              if (valueTabs === 0) {
-                register({
-                  email: values.email,
-                  roles: [values.role as TRole],
-                  login: values.email,
-                  crop_ids: [1],
-                });
-              }
-              if (valueTabs === 1) {
-                if (phoneRegPhase === 0) {
-                  register({
-                    phone: values.phone,
-                    roles: [values.role as TRole],
-                    crop_ids: [1],
-                  });
-                }
-                if (phoneRegPhase === 1) {
-                  loginByPhone({
-                    phone: values.phone,
-                    code: values.codeConfirm,
-                  });
-                }
-              }
-            }}
-          >
-            {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => ( */}
-              <form onSubmit={handleSubmit} noValidate autoComplete="off">
-                <Tabs
-                  value={valueTabs}
-                  onChange={handleTabsChange}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  aria-label="tabs"
-                  variant="fullWidth"
-                  style={{ marginBottom: 20 }}
-                >
-                  <Tab
-                    label={intl.formatMessage({ id: "AUTH.REGISTER.EMAIL" })}
-                    {...a11yProps(0)}
-                  />
-                  <Tab
-                    label={intl.formatMessage({ id: "AUTH.REGISTER.PHONE" })}
-                    {...a11yProps(1)}
-                  />
-                </Tabs>
+          <form onSubmit={handleSubmit} noValidate autoComplete="off">
+            <Tabs
+              value={valueTabs}
+              onChange={handleTabsChange}
+              indicatorColor="primary"
+              textColor="primary"
+              aria-label="tabs"
+              variant="fullWidth"
+              style={{ marginBottom: 20 }}
+            >
+              <Tab label={intl.formatMessage({ id: "AUTH.REGISTER.EMAIL" })} {...a11yProps(0)} />
+              <Tab label={intl.formatMessage({ id: "AUTH.REGISTER.PHONE" })} {...a11yProps(1)} />
+            </Tabs>
 
-                <RadioGroup name="role" value={values.role} onChange={handleChange}>
-                  <FormLabel component="legend">
-                    {intl.formatMessage({ id: "AUTH.REGISTER.ROLE_TITLE" })}
-                  </FormLabel>
-                  <FormControlLabel
-                    value="ROLE_BUYER"
-                    control={<Radio />}
-                    label={roles.find(role => role.id === "ROLE_BUYER")?.value}
-                  />
-                  <FormControlLabel
-                    value="ROLE_VENDOR"
-                    control={<Radio />}
-                    label={roles.find(role => role.id === "ROLE_VENDOR")?.value}
-                  />
-                </RadioGroup>
+            <RadioGroup name="role" value={values.role} onChange={handleChange}>
+              <FormLabel component="legend">
+                {intl.formatMessage({ id: "AUTH.REGISTER.ROLE_TITLE" })}
+              </FormLabel>
+              <FormControlLabel
+                value="ROLE_BUYER"
+                control={<Radio />}
+                label={roles.find(role => role.id === "ROLE_BUYER")?.value}
+              />
+              <FormControlLabel
+                value="ROLE_VENDOR"
+                control={<Radio />}
+                label={roles.find(role => role.id === "ROLE_VENDOR")?.value}
+              />
+            </RadioGroup>
 
-                <TabPanel value={valueTabs} index={0}>
-                  <div className="form-group mb-0">
+            <TabPanel value={valueTabs} index={0}>
+              <div className="form-group mb-0">
+                <TextField
+                  label={intl.formatMessage({ id: "AUTH.INPUT.EMAIL" })}
+                  margin="normal"
+                  className="kt-width-full"
+                  name="email"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.email}
+                  helperText={touched.email && errors.email}
+                  error={Boolean(touched.email && errors.email)}
+                />
+              </div>
+            </TabPanel>
+
+            <TabPanel value={valueTabs} index={1}>
+              <div className="form-group mb-0">
+                {phoneRegPhase === 0 ? (
+                  <>
                     <TextField
-                      label={intl.formatMessage({ id: "AUTH.INPUT.EMAIL" })}
+                      select
+                      type="country"
+                      label={intl.formatMessage({
+                        id: "AUTH.INPUT.COUNTRIES",
+                      })}
                       margin="normal"
                       className="kt-width-full"
-                      name="email"
+                      name="country"
+                      onBlur={handleBlur}
+                      //@ts-ignore
+                      onChange={e => {
+                        handleCountryNameChange(e);
+                        handleCountryCodeChange(e);
+                      }}
+                      value={countryName}
+                    >
+                      {countries.map(item => (
+                        <MenuItem key={item.id} value={item.country}>
+                          {item.country}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+
+                    <TextField
+                      label={intl.formatMessage({ id: "AUTH.INPUT.PHONE" })}
+                      margin="normal"
+                      className="kt-width-full"
+                      name="phone"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      value={values.email}
-                      helperText={touched.email && errors.email}
-                      error={Boolean(touched.email && errors.email)}
+                      value={values.phone}
+                      helperText={touched.phone && errors.phone}
+                      error={Boolean(touched.phone && errors.phone)}
+                      placeholder={`+${countryCode} (###) - ### ####`}
+                      // InputProps={{
+                      //   inputComponent: NumberFormatForRegister as any,
+                      // }}
                     />
-                  </div>
-                </TabPanel>
-
-                <TabPanel value={valueTabs} index={1}>
-                  <div className="form-group mb-0">
-                    {phoneRegPhase === 0 ? (
-                      <>
-                        <TextField
-                          select
-                          type="country"
-                          label={intl.formatMessage({
-                            id: "AUTH.INPUT.COUNTRIES",
-                          })}
-                          margin="normal"
-                          className="kt-width-full"
-                          name="country"
-                          onBlur={handleBlur}
-                          //@ts-ignore
-                          onChange={e => {
-                            handleCountryNameChange(e);
-                            handleCountryCodeChange(e);
-                          }}
-                          value={countryName}
-                        >
-                          {countries.map(item => (
-                            <MenuItem key={item.id} value={item.country}>
-                              {item.country}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-
-                        <TextField
-                          label={intl.formatMessage({ id: "AUTH.INPUT.PHONE" })}
-                          margin="normal"
-                          className="kt-width-full"
-                          name="phone"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          value={values.phone}
-                          helperText={touched.phone && errors.phone}
-                          error={Boolean(touched.phone && errors.phone)}
-                          placeholder={`+${countryCode} (###) - ### ####`}
-                          // InputProps={{
-                          //   inputComponent: NumberFormatForRegister as any,
-                          // }}
-                        />
-                      </>
-                    ) : (
-                      <TextField
-                        label={intl.formatMessage({ id: "AUTH.INPUT.CODE" })}
-                        margin="normal"
-                        className="kt-width-full"
-                        name="codeConfirm"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.codeConfirm}
-                        helperText={touched.codeConfirm && errors.codeConfirm}
-                        error={Boolean(touched.codeConfirm && errors.codeConfirm)}
-                      />
-                    )}
-                  </div>
-                </TabPanel>
-
-                <div className="form-group mb-0">
-                  <FormControlLabel
-                    label={
-                      <>
-                        {intl.formatMessage({ id: "AUTH.REGISTER.AGREE_TERM" })}{" "}
-                        <div className="kt-link" onClick={() => setOpenUserAgreement(true)}>
-                          {intl.formatMessage({ id: "AUTH.GENERAL.LEGAL" })}
-                        </div>
-                      </>
-                    }
-                    control={
-                      <Checkbox
-                        color="primary"
-                        name="acceptTerms"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        checked={values.acceptTerms}
-                      />
-                    }
+                  </>
+                ) : (
+                  <TextField
+                    label={intl.formatMessage({ id: "AUTH.INPUT.CODE" })}
+                    margin="normal"
+                    className="kt-width-full"
+                    name="codeConfirm"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.codeConfirm}
+                    helperText={touched.codeConfirm && errors.codeConfirm}
+                    error={Boolean(touched.codeConfirm && errors.codeConfirm)}
                   />
-                </div>
+                )}
+              </div>
+            </TabPanel>
 
-                <div className="kt-login__actions">
-                  {phoneRegPhase === 1 ? (
-                    <button
-                      onClick={() => setPhoneRegPhase(0)}
-                      type="button"
-                      className="btn btn-secondary btn-elevate kt-login__btn-secondary"
-                    >
-                      {intl.formatMessage({ id: "AUTH.GENERAL.BACK_BUTTON" })}
-                    </button>
-                  ) : (
-                    <Link to="/auth">
-                      <button
-                        type="button"
-                        className="btn btn-secondary btn-elevate kt-login__btn-secondary"
-                      >
-                        {intl.formatMessage({ id: "AUTH.GENERAL.BACK_BUTTON" })}
-                      </button>
-                    </Link>
-                  )}
+            <div className="form-group mb-0">
+              <FormControlLabel
+                label={
+                  <>
+                    {intl.formatMessage({ id: "AUTH.REGISTER.AGREE_TERM" })}{" "}
+                    <div className="kt-link" onClick={() => setOpenUserAgreement(true)}>
+                      {intl.formatMessage({ id: "AUTH.GENERAL.LEGAL" })}
+                    </div>
+                  </>
+                }
+                control={
+                  <Checkbox
+                    color="primary"
+                    name="acceptTerms"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    checked={values.acceptTerms}
+                  />
+                }
+              />
+            </div>
 
-                  <ButtonWithLoader
-                    disabled={
-                      regLoading || !values.acceptTerms || loginByPhoneLoading || fetchLoading
-                    }
-                    onPress={handleSubmit}
-                    loading={regLoading}
+            <div className="kt-login__actions">
+              {phoneRegPhase === 1 ? (
+                <button
+                  onClick={() => setPhoneRegPhase(0)}
+                  type="button"
+                  className="btn btn-secondary btn-elevate kt-login__btn-secondary"
+                >
+                  {intl.formatMessage({ id: "AUTH.GENERAL.BACK_BUTTON" })}
+                </button>
+              ) : (
+                <Link to="/auth">
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-elevate kt-login__btn-secondary"
                   >
-                    {intl.formatMessage({ id: "AUTH.BUTTON.REGISTER" })}
-                  </ButtonWithLoader>
-                </div>
-              </form>
-            {/* )}
-          </Formik> */}
+                    {intl.formatMessage({ id: "AUTH.GENERAL.BACK_BUTTON" })}
+                  </button>
+                </Link>
+              )}
+
+              <ButtonWithLoader
+                disabled={regLoading || !values.acceptTerms || loginByPhoneLoading || fetchLoading}
+                onPress={handleSubmit}
+                loading={regLoading}
+              >
+                {intl.formatMessage({ id: "AUTH.BUTTON.REGISTER" })}
+              </ButtonWithLoader>
+            </div>
+          </form>
         </div>
       </div>
     </>
