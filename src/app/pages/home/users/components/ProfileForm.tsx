@@ -182,8 +182,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
       password: Yup.string(),
       phone: Yup.string()
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-        .matches(/^[0-9][0-9]{10}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+        // .matches(/^[0-9][0-9]{10}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
       repeatPassword: Yup.string().test(
         "passwords-match",
         intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
