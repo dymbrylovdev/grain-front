@@ -39,6 +39,7 @@ export interface IUser {
   tariff_expired_at?: Date;
   tariff_start_date?: Date;
   crops: ICrop[];
+  available_filter_count: number;
 }
 
 export interface IUserForRegister {

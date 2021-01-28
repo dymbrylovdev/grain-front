@@ -494,12 +494,6 @@ const BidForm: React.FC<IProps> = ({
     }
   }, [values.bid_type, values.crop_id, values.location, initializeParamValues, fetchBidsPair]);
 
-  // useEffect(() => {
-  //   if (bidsPairError) {
-  //     clearBidsPair();
-  //   }
-  // }, [bidsPairError, clearBidsPair, enqueueSnackbar, intl]);
-
   useEffect(() => {
     clearBidsPair();
   }, [history, clearBidsPair]);
@@ -508,9 +502,17 @@ const BidForm: React.FC<IProps> = ({
     if (currentCropId) fetchCropParams(currentCropId);
   }, [currentCropId, fetchCropParams]);
 
+  useEffect(() => {
+    if (me && me.available_filter_count === 0) {
+      setFilterCreated(false);
+    }
+  }, [me]);
+
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
+
+  console.log(me);
 
   return (
     <div className={classes.form}>
@@ -760,7 +762,9 @@ const BidForm: React.FC<IProps> = ({
                   color="info"
                   style={{ marginTop: 15 }}
                 >
-                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${bidsPair.price_with_delivery} ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
+                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
+                    bidsPair.price_with_delivery
+                  } ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
                 </Alert>
               ) : (
                 <Alert
@@ -769,7 +773,9 @@ const BidForm: React.FC<IProps> = ({
                   color="info"
                   style={{ marginTop: 15 }}
                 >
-                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${bidsPair.price} ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
+                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
+                    bidsPair.price
+                  } ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
                 </Alert>
               )}
             </>
@@ -1494,7 +1500,7 @@ const BidForm: React.FC<IProps> = ({
         ))}
 
       <div className={classes.bottomButtonsContainer}>
-        {editMode !== "view" && (
+        {me && editMode !== "view" && (
           <>
             {editMode === "edit" ? (
               <div className={classes.button}>
@@ -1504,10 +1510,12 @@ const BidForm: React.FC<IProps> = ({
               </div>
             ) : (
               <div className={classes.button}>
-                <FormControlLabel
-                  control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
-                  label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
-                />
+                {me.available_filter_count && (
+                  <FormControlLabel
+                    control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
+                    label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
+                  />
+                )}
               </div>
             )}
 
