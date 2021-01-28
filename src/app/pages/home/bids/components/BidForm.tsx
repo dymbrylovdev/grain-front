@@ -1508,12 +1508,12 @@ const BidForm: React.FC<IProps> = ({
               </div>
             ) : (
               <div className={classes.button}>
-                {me.available_filter_count && (
+                {me.available_filter_count ? (
                   <FormControlLabel
                     control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
                     label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
                   />
-                )}
+                ) : null}
               </div>
             )}
 
