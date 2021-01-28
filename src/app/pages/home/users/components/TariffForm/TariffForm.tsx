@@ -13,6 +13,7 @@ import { actions as authActions } from "../../../../../store/ducks/auth.duck";
 import { actions as usersActions } from "../../../../../store/ducks/users.duck";
 import { actions as tariffsActions } from "../../../../../store/ducks/tariffs.duck";
 import { actions as crops2Actions } from "../../../../../store/ducks/crops2.duck";
+import { actions as trialActions } from "../../../../../store/ducks/trial.duck";
 
 import TariffCards from "./components/TariffCards";
 import NewTariffTable from "./components/NewTariffTable";
@@ -113,6 +114,15 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   crops,
 
   setMenuConfig,
+
+  clearTrial,
+  fetchTrial,
+
+  trial,
+  trialLoading,
+  trialSuccess,
+  trialError,
+
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
@@ -255,6 +265,10 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchCrops();
   }, [fetchCrops]);
 
+  useEffect(() => {
+    fetchTrial();
+  }, [fetchTrial]);
+
   return (
     <>
       <div>
@@ -356,6 +370,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           setOpenModal={setOpenModal}
           selectedTariff={selectedTariff}
           selectedDate={selectedDate}
+          trial={trial}
         />
       )}
     </>
@@ -391,6 +406,11 @@ const connector = connect(
     tariffs: state.tariffs.tariffs,
 
     crops: state.crops2.crops,
+
+    trial: state.trial.trial,
+    trialLoading: state.trial.loading,
+    trialSuccess: state.trial.success,
+    trialError: state.trial.error
   }),
   {
     fetchMe: authActions.fetchRequest,
@@ -408,6 +428,9 @@ const connector = connect(
     fondyCredentialsRequest: tariffsActions.fondyCredentialsRequest,
 
     setMenuConfig: builderActions.setMenuConfig,
+
+    clearTrial: trialActions.clearFetch,
+    fetchTrial: trialActions.fetchRequest,
   }
 );
 

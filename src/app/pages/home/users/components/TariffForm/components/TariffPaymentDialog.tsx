@@ -37,6 +37,7 @@ interface IProps {
   selectedDate: Date;
   fetchMerchant: any;
   merchant: any;
+  trial: any;
 }
 
 const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
@@ -49,6 +50,7 @@ const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
   selectedDate,
   fetchMerchant,
   merchant,
+  trial
 }) => {
   const innerClasses = useStyles();
 
@@ -115,6 +117,7 @@ const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
               selectedTariff={selectedTariff}
               selectedDate={selectedDate}
               merchant={merchant}
+              trial={trial}
             />
           </TabPanel>
         )}

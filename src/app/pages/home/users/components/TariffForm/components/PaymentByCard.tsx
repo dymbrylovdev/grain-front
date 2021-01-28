@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant }) => {
+const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial }) => {
   useEffect(() => {
     const Options = {
       options: {
@@ -23,7 +23,7 @@ const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant }) => 
         order_id: new Date().getTime(),
         amount: selectedTariff.price * 100,
         order_desc: `Тариф: ${selectedTariff.tariff.name}, период: ${selectedTariff.tariff_period.period} дней`,
-        email: realUser.email,
+        email: realUser.registration_type === "phone" ? trial.manager_email : realUser.email,
         server_callback_url: "https://grain15-api.me-interactive.net/api/fondy/callback",
         lang: "ru",
         product_id: selectedTariff.id,
