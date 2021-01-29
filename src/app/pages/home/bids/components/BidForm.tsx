@@ -171,6 +171,7 @@ interface IProps {
   crops: ICrop[] | undefined;
   bid: IBid | undefined;
   bidsPair: IBidsPair | undefined;
+  fetchMe: any;
   me: IUser | undefined;
   fetchLocations: (payload: any) => ActionWithPayload<"yaLocations/FETCH_REQUEST", any>;
   locations: ILocation[] | undefined;
@@ -243,6 +244,8 @@ const BidForm: React.FC<IProps> = ({
   cropId,
   crops,
   bid,
+
+  fetchMe,
   me,
 
   create,
@@ -436,6 +439,7 @@ const BidForm: React.FC<IProps> = ({
       clearCreate();
       if (createSuccess) {
         setMoreBidOpen(true);
+        fetchMe();
       }
     }
   }, [
@@ -447,6 +451,7 @@ const BidForm: React.FC<IProps> = ({
     intl,
     salePurchaseMode,
     vendorId,
+    fetchMe
   ]);
 
   useEffect(() => {

@@ -265,6 +265,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
             crops={crops}
             bid={editMode === "create" ? undefined : bid}
             bidsPair={bidsPair}
+            fetchMe={fetchMe}
             me={me}
             fetchLocations={fetchLocations}
             locations={locations}
