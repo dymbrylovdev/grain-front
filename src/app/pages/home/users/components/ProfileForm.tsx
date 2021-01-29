@@ -153,6 +153,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   } = useFormik({
     initialValues: getInitialValues(undefined),
     onSubmit: values => {
+      if (roles.find(el => el.id === values.role) === undefined) return;
+
       if (editMode === "profile" && !isEqual(oldValues, values)) {
         let params: IUserForEdit = setMeValues(values);
         params.company_id = values.company_id;
@@ -170,7 +172,13 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       }
     },
     validationSchema: Yup.object().shape({
-      role: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+      role: Yup.string().test(
+        'role',
+        intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }),
+        value => roles.find(el => el.id === value) ? true : false
+      ).required(
+        intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
+      ),
       status: Yup.string().required(
         intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
       ),
