@@ -233,6 +233,8 @@ interface IProps {
     }
   >;
   openInfoAlert: boolean;
+  fetchFilters: any;
+  filterCount: number;
 }
 
 const BidForm: React.FC<IProps> = ({
@@ -282,6 +284,9 @@ const BidForm: React.FC<IProps> = ({
   profit,
   openInfoAlert,
   setOpenInfoAlert,
+
+  fetchFilters,
+  filterCount,
 }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -440,6 +445,7 @@ const BidForm: React.FC<IProps> = ({
       if (createSuccess) {
         setMoreBidOpen(true);
         fetchMe();
+        fetchFilters();
       }
     }
   }, [
@@ -451,7 +457,8 @@ const BidForm: React.FC<IProps> = ({
     intl,
     salePurchaseMode,
     vendorId,
-    fetchMe
+    fetchMe,
+    fetchFilters,
   ]);
 
   useEffect(() => {
@@ -508,10 +515,10 @@ const BidForm: React.FC<IProps> = ({
   }, [currentCropId, fetchCropParams]);
 
   useEffect(() => {
-    if (me && me.available_filter_count === 0) {
+    if (!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0) {
       setFilterCreated(false);
     }
-  }, [me]);
+  }, [me, filterCount]);
 
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
@@ -1513,12 +1520,14 @@ const BidForm: React.FC<IProps> = ({
               </div>
             ) : (
               <div className={classes.button}>
-                {me.available_filter_count ? (
+                {!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0 ? (
+                  null
+                ) : (
                   <FormControlLabel
                     control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
                     label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
                   />
-                ) : null}
+                )}
               </div>
             )}
 

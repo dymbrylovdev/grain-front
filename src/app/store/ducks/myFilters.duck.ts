@@ -47,8 +47,6 @@ const DEL_REQUEST = "myFilters/DEL_REQUEST";
 const DEL_SUCCESS = "myFilters/DEL_SUCCESS";
 const DEL_FAIL = "myFilters/DEL_FAIL";
 
-// ! Added
-
 const CLEAR_POST = "myFilters/CLEAR_POST";
 const POST_FILTER = "myFilters/POST_FILTER";
 const POST_SUCCESS = "myFilters/POST_SUCCESS";
@@ -80,8 +78,6 @@ export interface IInitialState {
   delLoading: boolean;
   delSuccess: boolean;
   delError: string | null;
-
-  // * Added
 
   postFilterId: number | undefined;
   postLoading: boolean;
