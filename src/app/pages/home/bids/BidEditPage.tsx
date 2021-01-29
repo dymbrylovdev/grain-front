@@ -110,6 +110,9 @@ const BidEditPage: React.FC<TPropsFromRedux &
 
   openInfoAlert,
   setOpenInfoAlert,
+
+  fetchFilters,
+  filterCount,
 }) => {
   const isNoModerate = !vendorId && !+bidId && me?.status === "На модерации";
   const classes = useStyles();
@@ -267,6 +270,8 @@ const BidEditPage: React.FC<TPropsFromRedux &
             bidsPair={bidsPair}
             fetchMe={fetchMe}
             me={me}
+            fetchFilters={fetchFilters}
+            filterCount={filterCount}
             fetchLocations={fetchLocations}
             locations={locations}
             clearBidsPair={clearBidsPair}
@@ -370,6 +375,8 @@ const connector = connect(
     loadingLocations: state.yaLocations.loading,
 
     openInfoAlert: state.bids.openInfoAlert,
+
+    filterCount: state.myFilters.filterCount,
   }),
   {
     fetchUser: usersActions.fetchByIdRequest,
@@ -377,6 +384,8 @@ const connector = connect(
     editContactViewCount: usersActions.contactViewCountRequest,
 
     fetchMe: authActions.fetchRequest,
+
+    fetchFilters: myFiltersActions.fetchRequest,
 
     clearFetch: bidsActions.clearFetchById,
     fetch: bidsActions.fetchByIdRequest,
