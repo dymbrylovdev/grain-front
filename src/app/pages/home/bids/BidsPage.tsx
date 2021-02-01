@@ -4,8 +4,8 @@ import { useHistory, RouteComponentProps } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Paper, Button, makeStyles } from "@material-ui/core";
-import { IconButton } from "@material-ui/core";
-import CustomIcon from "../../../components/ui/Images/CustomIcon";
+// import { IconButton } from "@material-ui/core";
+// import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import { useSnackbar } from "notistack";
 
 import { actions as bidsActions } from "../../../store/ducks/bids.duck";
@@ -17,11 +17,11 @@ import { actions as authActions } from "../../../store/ducks/auth.duck";
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
-import FilterModal from "./components/filter/FilterModal";
+// import FilterModal from "./components/filter/FilterModal";
 import LocationBlock from "./components/location/LocationBlock";
 import PricesDialog from "./components/prices/PricesDialog";
 import LocationDialog from "./components/location/LocationDialog";
-import Prompter from "../prompter/Prompter";
+// import Prompter from "../prompter/Prompter";
 import BidTable from "./components/BidTable";
 import { IUser } from "../../../interfaces/users";
 import { filterForBids } from "../myFilters/utils";
@@ -66,18 +66,18 @@ const BidsPage: React.FC<TPropsFromRedux &
     params: { cropId },
   },
   match,
-  location,
+  // location,
   intl,
 
   fetchMe,
   me,
-  activeStep,
-  prompterRunning,
-  setActiveStep,
+  // activeStep,
+  // prompterRunning,
+  // setActiveStep,
   currentSaleFilters,
-  setCurrentSaleFilter,
+  // setCurrentSaleFilter,
   currentPurchaseFilters,
-  setCurrentPurchaseFilter,
+  // setCurrentPurchaseFilter,
 
   page,
   perPage,
@@ -85,50 +85,50 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   fetch,
   bids,
-  loading,
+  // loading,
   error,
 
   fetchBestBids,
   bestBids,
-  bestLoading,
+  // bestLoading,
   bestError,
 
   fetchMyBids,
   myBids,
-  myLoading,
+  // myLoading,
   myError,
 
   fetchCrops,
   crops,
-  cropsLoading,
+  // cropsLoading,
   cropsError,
 
   fetchCropParams,
   cropParams,
-  cropParamsLoading,
+  // cropParamsLoading,
   cropParamsError,
 
   fetchFilters,
   clearEditFilters,
-  editFilterLoading,
+  // editFilterLoading,
   editFilterSuccess,
   editFilterError,
 
-  clearCreate,
-  create,
-  createLoading,
-  createSuccess,
-  createError,
+  // clearCreate,
+  // create,
+  // createLoading,
+  // createSuccess,
+  // createError,
   clearDel,
   del,
   delLoading,
   delSuccess,
   delError,
-  clearEdit,
-  edit,
-  editLoading,
-  editSuccess,
-  editError,
+  // clearEdit,
+  // edit,
+  // editLoading,
+  // editSuccess,
+  // editError,
   setProfit,
 }) => {
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
@@ -179,50 +179,50 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
-  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  // const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [pricesModalOpen, setPricesModalOpen] = useState(false);
 
-  const filterTitle =
-    salePurchaseMode === "sale"
-      ? !currentSaleFilters[cropId]
-        ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
-        : !currentSaleFilters[cropId]?.id
-        ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
-        : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
-      : salePurchaseMode === "purchase"
-      ? !currentPurchaseFilters[cropId]
-        ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
-        : !currentPurchaseFilters[cropId]?.id
-        ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
-        : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
-      : "";
+  // const filterTitle =
+    // salePurchaseMode === "sale"
+      // ? !currentSaleFilters[cropId]
+        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
+        // : !currentSaleFilters[cropId]?.id
+        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
+        // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
+      // : salePurchaseMode === "purchase"
+      // ? !currentPurchaseFilters[cropId]
+        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
+        // : !currentPurchaseFilters[cropId]?.id
+        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
+        // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
+      // : "";
 
-  const filterName =
-    salePurchaseMode === "sale"
-      ? currentSaleFilters[cropId] &&
-        currentSaleFilters[cropId]?.id &&
-        currentSaleFilters[cropId]?.name
-        ? currentSaleFilters[cropId]?.name
-        : ""
-      : salePurchaseMode === "purchase"
-      ? currentPurchaseFilters[cropId] &&
-        currentPurchaseFilters[cropId]?.id &&
-        currentPurchaseFilters[cropId]?.name
-        ? currentPurchaseFilters[cropId]?.name
-        : ""
-      : "";
+  // const filterName =
+    // salePurchaseMode === "sale"
+      // ? currentSaleFilters[cropId] &&
+        // currentSaleFilters[cropId]?.id &&
+        // currentSaleFilters[cropId]?.name
+        // ? currentSaleFilters[cropId]?.name
+        // : ""
+      // : salePurchaseMode === "purchase"
+      // ? currentPurchaseFilters[cropId] &&
+        // currentPurchaseFilters[cropId]?.id &&
+        // currentPurchaseFilters[cropId]?.name
+        // ? currentPurchaseFilters[cropId]?.name
+        // : ""
+      // : "";
 
-  const filterIconPath =
-    salePurchaseMode === "sale"
-      ? !currentSaleFilters[cropId]
-        ? "/media/filter/filter.svg"
-        : "/media/filter/filter_full.svg"
-      : salePurchaseMode === "purchase"
-      ? !currentPurchaseFilters[cropId]
-        ? "/media/filter/filter.svg"
-        : "/media/filter/filter_full.svg"
-      : "";
+  // const filterIconPath =
+    // salePurchaseMode === "sale"
+      // ? !currentSaleFilters[cropId]
+        // ? "/media/filter/filter.svg"
+        // : "/media/filter/filter_full.svg"
+      // : salePurchaseMode === "purchase"
+      // ? !currentPurchaseFilters[cropId]
+        // ? "/media/filter/filter.svg"
+        // : "/media/filter/filter_full.svg"
+      // : "";
 
   const isHaveRules = (user: IUser, id: number) => {
     return accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id;
@@ -313,7 +313,7 @@ const BidsPage: React.FC<TPropsFromRedux &
           }
           break;
         case "my-bids":
-          fetchMyBids(salePurchaseMode);
+          fetchMyBids(salePurchaseMode, page, perPage);
           break;
         case "all-bids":
           fetch(+cropId, salePurchaseMode, page, perPage);
@@ -385,7 +385,7 @@ const BidsPage: React.FC<TPropsFromRedux &
           }
           break;
         case "my-bids":
-          fetchMyBids(salePurchaseMode);
+          fetchMyBids(salePurchaseMode, page, perPage);
           break;
         case "all-bids":
           fetch(+cropId, salePurchaseMode, page, perPage);
@@ -517,6 +517,10 @@ const BidsPage: React.FC<TPropsFromRedux &
                 setDeleteBidId(id);
                 setAlertOpen(true);
               }}
+              paginationData={{ page, perPage, total }}
+              fetcher={(newPage: number, newPerPage: number) =>
+                fetchMyBids(salePurchaseMode, newPage, newPerPage)
+              }
               user={me as IUser}
               loading={!myBids}
               addUrl={"fromMy"}

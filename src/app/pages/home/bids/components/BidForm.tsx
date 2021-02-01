@@ -1523,10 +1523,20 @@ const BidForm: React.FC<IProps> = ({
                 {!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0 ? (
                   null
                 ) : (
-                  <FormControlLabel
-                    control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
-                    label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
-                  />
+                  <>
+                    {me.email && (
+                      <FormControlLabel
+                        control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
+                        label={'Подписка по e-mail'}
+                      />
+                    )}
+                    {me.phone && (
+                      <FormControlLabel
+                        control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
+                        label={'Подписка по смс'}
+                      />
+                    )}
+                  </>
                 )}
               </div>
             )}

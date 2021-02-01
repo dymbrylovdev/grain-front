@@ -9,8 +9,8 @@ export const getBestBids = (type: TBidType, filter: IFilterForBids) => {
   return axios.post(`/api/bids/${type}/best`, filter);
 };
 
-export const getMyBids = (type: TBidType) => {
-  return axios.get(`/api/my/bids?type=${type}`);
+export const getMyBids = (type: TBidType, page: number, perPage: number) => {
+  return axios.get(`/api/my/bids?type=${type}&page=${page}&per_page=${perPage}`);
 };
 
 export const getAllBids = (cropId: number, type: TBidType, page: number, perPage: number) => {

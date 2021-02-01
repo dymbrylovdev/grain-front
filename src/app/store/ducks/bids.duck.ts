@@ -203,6 +203,9 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         // console.log("FETCH_MY: ", action.payload);
         return {
           ...state,
+          page: action.payload.page,
+          per_page: action.payload.per_page,
+          total: action.payload.total,
           myBids: action.payload.data,
           myLoading: false,
           mySuccess: true,
@@ -389,7 +392,9 @@ export const actions = {
   fetchSuccess: (payload: IServerResponse<IBid[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
-  fetchMyRequest: (bidType: TBidType) => createAction(FETCH_MY_REQUEST, { bidType }),
+  fetchMyRequest: (bidType: TBidType, page: number, perPage: number) => (
+    createAction(FETCH_MY_REQUEST, { bidType, page, perPage })
+  ),
   fetchMySuccess: (payload: IServerResponse<IBid[]>) => createAction(FETCH_MY_SUCCESS, payload),
   fetchMyFail: (payload: string) => createAction(FETCH_MY_FAIL, payload),
 
@@ -452,10 +457,10 @@ function* fetchSaga({
   }
 }
 
-function* fetchMySaga({ payload }: { payload: { bidType: TBidType } }) {
+function* fetchMySaga({ payload }: { payload: { bidType: TBidType, page: number; perPage: number } }) {
   try {
     const { data }: { data: IServerResponse<IBid[]> } = yield call(() =>
-      getMyBids(payload.bidType)
+      getMyBids(payload.bidType, payload.page, payload.perPage)
     );
     yield put(actions.fetchMySuccess(data));
   } catch (e) {
