@@ -20,8 +20,10 @@ export const filterForCreate = (
     max_payment_term: +data.max_payment_term || 0,
     max_full_price: +data.max_full_price || 0,
     min_full_price: +data.min_full_price || 0,
+    min_prepayment_amount: +data.min_prepayment_amount || 0,
     max_distance: +data.max_destination || 0,
     subscribed: data.subscribed,
+    is_sending_sms: data.is_sending_sms,
     point_prices: data.point_prices,
     bid_type: data.bid_type,
   };
@@ -66,6 +68,7 @@ export const filterForBids = (
       max_payment_term: +data.max_payment_term || 999,
       max_full_price: +data.max_full_price || 0,
       min_full_price: +data.min_full_price || 0,
+      min_prepayment_amount: +data.min_prepayment_amount || 0,
       max_distance: +data.max_destination || 0,
       point_prices: data.point_prices,
     },
@@ -109,6 +112,7 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
   if (data?.max_payment_term) newFilter["max_payment_term"] = data.max_payment_term;
   if (data?.max_full_price) newFilter["max_full_price"] = data.max_full_price;
   if (data?.min_full_price) newFilter["min_full_price"] = data.min_full_price;
+  if (data?.min_prepayment_amount) newFilter["min_prepayment_amount"] = data.min_prepayment_amount;
   if (data?.max_distance) newFilter["max_destination"] = data.max_distance;
   if (data?.parameter_values && data.parameter_values.length) {
     data.parameter_values.forEach(item => {
@@ -132,6 +136,7 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
     });
   }
   if (data) newFilter["subscribed"] = data.subscribed;
+  if (data) newFilter["is_sending_sms"] = data.is_sending_sms;
   if (data && data.point_prices && data.point_prices.length) {
     let pointPrices: IPointPriceForEdit[] = [];
     data.point_prices.forEach(item => {
@@ -156,11 +161,13 @@ export const filterForSubmit = (
   delete oldF.name;
   delete oldF.point_prices;
   delete oldF.subscribed;
+  delete oldF.is_sending_sms;
   delete newF.bid_type;
   delete newF.id;
   delete newF.name;
   delete newF.point_prices;
   delete newF.subscribed;
+  delete newF.is_sending_sms;
   if (isEqual(oldF, newF)) {
     return oldFilter;
   }

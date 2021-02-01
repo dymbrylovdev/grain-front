@@ -46,6 +46,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
   total,
   weeks,
   term,
+  min_prepayment_amount,
   fetch,
   deals,
   loading,
@@ -92,8 +93,15 @@ const DealViewPage: React.FC<TPropsFromRedux &
   };
 
   useEffect(() => {
-    if (!!dealsFilters && !deals && !loading) fetch(page, perPage, weeks, !term ? 999 : +term);
-  }, [deals, dealsFilters, fetch, loading, page, perPage, term, weeks]);
+    if (!!dealsFilters && !deals && !loading)
+      fetch(
+        page,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined
+      );
+  }, [deals, dealsFilters, fetch, loading, page, perPage, term, weeks, min_prepayment_amount]);
 
   useEffect(() => {
     fetchMe();
@@ -508,18 +516,19 @@ const DealViewPage: React.FC<TPropsFromRedux &
               </Table>
 
               {me && accessByRoles(me, ["ROLE_TRADER"]) && (
-                <div style={{marginTop: 20}}>
+                <div style={{ marginTop: 20 }}>
                   <Alert
                     className={classes.infoAlert}
                     severity="warning"
                     color="error"
                     style={{ marginTop: 8, marginBottom: 8 }}
                   >
-                    {`Сегодня вам доступен просмотр ${me?.contact_view_count} контактов ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
+                    {`Сегодня вам доступен просмотр ${
+                      me?.contact_view_count
+                    } контактов ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
                   </Alert>
                 </div>
               )}
-
             </div>
           </>
         )
@@ -537,6 +546,7 @@ const connector = connect(
     total: state.deals.total,
     weeks: state.deals.weeks,
     term: state.deals.term,
+    min_prepayment_amount: state.deals.min_prepayment_amount,
 
     deals: state.deals.deals,
     loading: state.deals.loading,

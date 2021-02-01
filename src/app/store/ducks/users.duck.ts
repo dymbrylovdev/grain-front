@@ -7,6 +7,7 @@ import { IServerResponse } from "../../interfaces/server";
 import {
   getUsers,
   getUserById,
+  getUserBids,
   deleteUser,
   createUser,
   editUser,
@@ -14,6 +15,7 @@ import {
   getUserActivate,
 } from "../../crud/users.crud";
 import { IUser, IUserForCreate, IUserForEdit } from "../../interfaces/users";
+import { IBid } from "../../interfaces/bids";
 
 const CLEAR_FETCH = "users/CLEAR_FETCH";
 const FETCH_REQUEST = "users/FETCH_REQUEST";
@@ -52,12 +54,18 @@ const USER_ACTIVATE_REQUEST = "users/USER_ACTIVATE_REQUEST";
 const USER_ACTIVATE_SUCCESS = "users/USER_ACTIVATE_SUCCESS";
 const USER_ACTIVATE_FAIL = "users/USER_ACTIVATE_FAIL";
 
+const CLEAR_USER_BIDS = "users/CLEAR_USER_BIDS";
+const USER_BIDS_REQUEST = "users/USER_BIDS_REQUEST";
+const USER_BIDS_SUCCESS = "users/USER_BIDS_SUCCESS";
+const USER_BIDS_FAIL = "users/USER_BIDS_FAIL";
+
 export interface IInitialState {
   page: number;
   per_page: number;
   total: number;
   prevUsersCount: number;
   users: IUser[] | undefined;
+  userBids: IBid[] | undefined;
   loading: boolean;
   success: boolean;
   error: string | null;
@@ -88,6 +96,10 @@ export interface IInitialState {
   userActivateSuccess: boolean;
   userActivateError: string | null;
 
+  userBidsLoading: boolean;
+  userBidsSuccess: boolean;
+  userBidsError: string | null;
+
   openInfoAlert: boolean;
 }
 
@@ -97,6 +109,7 @@ const initialState: IInitialState = {
   total: 0,
   prevUsersCount: 5,
   users: undefined,
+  userBids: undefined,
   loading: false,
   success: false,
   error: null,
@@ -126,6 +139,10 @@ const initialState: IInitialState = {
   userActivateLoading: false,
   userActivateSuccess: false,
   userActivateError: null,
+
+  userBidsLoading: false,
+  userBidsSuccess: false,
+  userBidsError: null,
 
   openInfoAlert: true,
 };
@@ -326,6 +343,27 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return { ...state, userActivateLoading: false, userActivateError: action.payload };
     }
 
+    case CLEAR_USER_BIDS: {
+      return { ...state, userBidsLoading: false, userBidsSuccess: false, userBidsError: null };
+    }
+
+    case USER_BIDS_REQUEST: {
+      return { ...state, userBidsLoading: true, userBidsSuccess: false, userBidsError: null };
+    }
+
+    case USER_BIDS_SUCCESS: {
+      return {
+        ...state,
+        userBids: action.payload.data,
+        userBidsLoading: false,
+        userBidsSuccess: true,
+      };
+    }
+
+    case USER_BIDS_FAIL: {
+      return { ...state, userBidsLoading: false, userBidsError: action.payload };
+    }
+
     default:
       return state;
   }
@@ -368,6 +406,11 @@ export const actions = {
   userActiveRequest: (payload: { email: string }) => createAction(USER_ACTIVATE_REQUEST, payload),
   userActivateSuccess: () => createAction(USER_ACTIVATE_SUCCESS),
   useractivateError: (payload: string) => createAction(USER_ACTIVATE_FAIL, payload),
+
+  clearUserBids: () => createAction(CLEAR_USER_BIDS),
+  userBidsRequest: (payload: number) => createAction(USER_BIDS_REQUEST, payload),
+  userBidsSuccess: (payload: IServerResponse<IBid[]>) => createAction(USER_BIDS_SUCCESS, payload),
+  userBidsFail: (payload: string) => createAction(USER_BIDS_FAIL, payload),
 
   setOpenInfoAlert: (openInfoAlert: boolean) =>
     createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
@@ -442,6 +485,15 @@ function* userActivateSaga({ payload }: { payload: { email: String } }) {
   }
 }
 
+function* userBidsSaga({ payload }: { payload: number }) {
+  try {
+    const { data }: { data: IServerResponse<IBid[]> } = yield call(() => getUserBids(payload));
+    yield put(actions.userBidsSuccess(data));
+  } catch (e) {
+    yield put(actions.userBidsFail(e?.response?.data?.message) || "Ошибка соединения.");
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.fetchByIdRequest>>(FETCH_BY_ID_REQUEST, fetchByIdSaga);
@@ -452,5 +504,9 @@ export function* saga() {
     CONTACT_VIEW_COUNT_REQUEST,
     contactViewCountSaga
   );
-  yield takeLatest<ReturnType<typeof actions.userActiveRequest>>(USER_ACTIVATE_REQUEST, userActivateSaga);
+  yield takeLatest<ReturnType<typeof actions.userActiveRequest>>(
+    USER_ACTIVATE_REQUEST,
+    userActivateSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.userBidsRequest>>(USER_BIDS_REQUEST, userBidsSaga);
 }

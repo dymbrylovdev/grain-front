@@ -5,8 +5,10 @@ export interface ITariff {
   priority_places_bids_on_mailing_count: number;
   common_bids_count: number;
   max_filters_count: number;
+  max_sms_count: number;
   max_crops_count: number;
   tariff_period: ITariffPeriod;
+  tariff_expired_at: Date;
   price: number;
   period: number;
   role: any;
@@ -39,6 +41,7 @@ export type TTariffField =
   | "common_bids_count"
   | "max_filters_count"
   | "max_crops_count"
+  | "max_sms_count"
   | "contact_view_limit"
   | "price"
   | "period";

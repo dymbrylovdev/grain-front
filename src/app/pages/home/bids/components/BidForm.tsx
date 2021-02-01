@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { IntlShape } from "react-intl";
 import { Link } from "react-router-dom";
 import {
@@ -23,7 +23,7 @@ import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
-import { IBid, TBidType, IBidToRequest, IProfit } from "../../../../interfaces/bids";
+import { IBid, TBidType, IBidToRequest, IProfit, IBidsPair } from "../../../../interfaces/bids";
 import { IUser } from "../../../../interfaces/users";
 import { ActionWithPayload, Action } from "../../../../utils/action-helper";
 import { ICropParam, ICrop } from "../../../../interfaces/crops";
@@ -115,12 +115,14 @@ const getInitialValues = (
     pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: !!bid ? bid.type : salePurchaseMode,
     payment_term: bid?.payment_term || "",
+    prepayment_amount: bid?.prepayment_amount || "",
   };
   if (bid && bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.forEach(item => {
       values[`parameter${item.parameter_id}`] = item.value;
     });
   }
+
   return values;
 };
 
@@ -168,11 +170,16 @@ interface IProps {
   cropId: number;
   crops: ICrop[] | undefined;
   bid: IBid | undefined;
+  bidsPair: IBidsPair | undefined;
+  fetchMe: any;
   me: IUser | undefined;
   fetchLocations: (payload: any) => ActionWithPayload<"yaLocations/FETCH_REQUEST", any>;
   locations: ILocation[] | undefined;
   loadingLocations: boolean;
   clearLocations: () => Action<"yaLocations/CLEAR">;
+  clearBidsPair: () => Action<"bids/CLEAR_BIDS_PAIR">;
+  fetchBidsPair: any;
+  bidsPairError: string | null;
   clearCropParams: () => Action<"crops2/CLEAR_CROP_PARAMS">;
   fetchCropParams: (
     cropId: number
@@ -226,6 +233,8 @@ interface IProps {
     }
   >;
   openInfoAlert: boolean;
+  fetchFilters: any;
+  filterCount: number;
 }
 
 const BidForm: React.FC<IProps> = ({
@@ -237,6 +246,8 @@ const BidForm: React.FC<IProps> = ({
   cropId,
   crops,
   bid,
+
+  fetchMe,
   me,
 
   create,
@@ -248,6 +259,11 @@ const BidForm: React.FC<IProps> = ({
   locations,
   loadingLocations,
   clearLocations,
+
+  bidsPair,
+  clearBidsPair,
+  fetchBidsPair,
+  bidsPairError,
 
   clearCropParams,
   fetchCropParams,
@@ -268,6 +284,9 @@ const BidForm: React.FC<IProps> = ({
   profit,
   openInfoAlert,
   setOpenInfoAlert,
+
+  fetchFilters,
+  filterCount,
 }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -345,20 +364,16 @@ const BidForm: React.FC<IProps> = ({
     ),
     onSubmit: values => {
       const is_filter_created = isFilterCreated ? 1 : 0;
-      const paramValues: IParamValue[] = [];
-      cropParams?.forEach(param => {
-        const id = param.id;
-        if (values[`parameter${id}`] && values[`parameter${id}`] !== "") {
-          paramValues.push({ parameter_id: id, value: values[`parameter${id}`].toString() });
-        }
-      });
+      const newParamValues = initializeParamValues();
+
       const params: { [x: string]: any } = {
         ...values,
         vendor_id,
         price: +values.price,
         volume: +values.volume,
         payment_term: +values.payment_term,
-        parameter_values: paramValues,
+        parameter_values: newParamValues,
+        prepayment_amount: +values.prepayment_amount,
       };
       const bidType = params.bid_type;
       delete params.bid_type;
@@ -394,6 +409,18 @@ const BidForm: React.FC<IProps> = ({
 
   const [formikErrored, setFormikErrored] = useState(false);
 
+  const initializeParamValues = useCallback(() => {
+    const paramValues: IParamValue[] = [];
+    cropParams?.forEach(param => {
+      const id = param.id;
+      if (values[`parameter${id}`] && values[`parameter${id}`] !== "") {
+        paramValues.push({ parameter_id: id, value: values[`parameter${id}`].toString() });
+      }
+    });
+
+    return paramValues;
+  }, [cropParams, values]);
+
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (formikErrored) {
@@ -417,6 +444,8 @@ const BidForm: React.FC<IProps> = ({
       clearCreate();
       if (createSuccess) {
         setMoreBidOpen(true);
+        fetchMe();
+        fetchFilters();
       }
     }
   }, [
@@ -428,6 +457,8 @@ const BidForm: React.FC<IProps> = ({
     intl,
     salePurchaseMode,
     vendorId,
+    fetchMe,
+    fetchFilters,
   ]);
 
   useEffect(() => {
@@ -457,21 +488,37 @@ const BidForm: React.FC<IProps> = ({
         isFilterCreated
       ),
     });
-  }, [
-    bid,
-    currentCropId,
-    editMode,
-    me,
-    resetForm,
-    salePurchaseMode,
-    user,
-    vendorId,
-    // isFilterCreated,
-  ]);
+  }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
+
+  useEffect(() => {
+    if (editMode === "create" && me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
+      let params = {};
+      const newParamsValues = initializeParamValues();
+
+      params = {
+        crop_id: values.crop_id,
+        parameter_values: newParamsValues,
+        location: values.location,
+      };
+
+      //@ts-ignore
+      if (params.crop_id !== "") fetchBidsPair(values.bid_type, params);
+    }
+  }, [values.bid_type, values.crop_id, values.location, initializeParamValues, fetchBidsPair]);
+
+  useEffect(() => {
+    clearBidsPair();
+  }, [history, clearBidsPair]);
 
   useEffect(() => {
     if (currentCropId) fetchCropParams(currentCropId);
   }, [currentCropId, fetchCropParams]);
+
+  useEffect(() => {
+    if (!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0) {
+      setFilterCreated(false);
+    }
+  }, [me, filterCount]);
 
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
@@ -569,7 +616,9 @@ const BidForm: React.FC<IProps> = ({
                   color="error"
                   style={{ marginTop: 8, marginBottom: 8 }}
                 >
-                  {`Сегодня вам доступен просмотр ${me?.contact_view_count} контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
+                  {`Сегодня вам доступен просмотр ${
+                    me?.contact_view_count
+                  } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
                 </Alert>
               )}
 
@@ -710,6 +759,92 @@ const BidForm: React.FC<IProps> = ({
           disabled={editMode === "view"}
           autoComplete="off"
         />
+      )}
+
+      {editMode === "create" && bidsPair && (
+        <>
+          {!bidsPairError ? (
+            <>
+              {bidsPair.price_with_delivery ? (
+                <Alert
+                  className={classes.infoAlert}
+                  severity="info"
+                  color="info"
+                  style={{ marginTop: 15 }}
+                >
+                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
+                    bidsPair.price_with_delivery
+                  } ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
+                </Alert>
+              ) : (
+                <Alert
+                  className={classes.infoAlert}
+                  severity="info"
+                  color="info"
+                  style={{ marginTop: 15 }}
+                >
+                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
+                    bidsPair.price
+                  } ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
+                </Alert>
+              )}
+            </>
+          ) : (
+            <Alert
+              className={classes.infoAlert}
+              severity="warning"
+              color="error"
+              style={{ marginTop: 15 }}
+            >
+              {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${intl.formatMessage({
+                id: "BID.CREATE.NOT.FOUND",
+              })}`}
+            </Alert>
+          )}
+        </>
+      )}
+
+      {loading ? (
+        <Skeleton width="100%" height={70} animation="wave" />
+      ) : (
+        <>
+          {values.bid_type === "purchase" && (
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "BIDSLIST.TABLE.PREPAYMENT",
+              })}
+              margin="normal"
+              name="prepayment_amount"
+              value={values.prepayment_amount}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={touched.prepayment_amount && errors.prepayment_amount}
+              error={Boolean(touched.prepayment_amount && errors.prepayment_amount)}
+              InputProps={
+                editMode !== "view"
+                  ? {
+                      style:
+                        editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
+                          ? {
+                              color: "#fd397a",
+                            }
+                          : {},
+                      inputComponent: NumberFormatCustom as any,
+                      endAdornment: (
+                        <IconButton onClick={() => setFieldValue("prepayment_amount", "")}>
+                          <CloseIcon />
+                        </IconButton>
+                      ),
+                    }
+                  : undefined
+              }
+              disabled={editMode === "view"}
+              autoComplete="off"
+            />
+          )}
+        </>
       )}
 
       {!!me &&
@@ -1375,7 +1510,7 @@ const BidForm: React.FC<IProps> = ({
         ))}
 
       <div className={classes.bottomButtonsContainer}>
-        {editMode !== "view" && (
+        {me && editMode !== "view" && (
           <>
             {editMode === "edit" ? (
               <div className={classes.button}>
@@ -1385,12 +1520,14 @@ const BidForm: React.FC<IProps> = ({
               </div>
             ) : (
               <div className={classes.button}>
-                <FormControlLabel
-                  control={
-                    <Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />
-                  }
-                  label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
-                />
+                {!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0 ? (
+                  null
+                ) : (
+                  <FormControlLabel
+                    control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
+                    label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
+                  />
+                )}
               </div>
             )}
 

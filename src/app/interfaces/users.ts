@@ -23,6 +23,7 @@ export interface IUser {
   company_confirmed_by_payment?: boolean;
   contact_view_count?: number;
   points: ILocation[];
+  registration_type: string;
   funnel_state: {
     id: number;
     name: string;
@@ -36,13 +37,17 @@ export interface IUser {
   tariff_prolongations: any;
   tariff_price?: number[];
   tariff_expired_at?: Date;
+  tariff_start_date?: Date;
   crops: ICrop[];
+  available_filter_count: number;
 }
 
 export interface IUserForRegister {
-  email: string;
+  email?: string;
+  phone?: string;
+  code?: string;
   roles: TRole[];
-  login: string;
+  login?: string;
   crop_ids?: number[];
 }
 
@@ -92,6 +97,11 @@ export interface IChangePasswordData {
 
 export interface ILoginSuccessData extends IUser {
   api_token: string;
+}
+
+export interface ILoginByPhoneData {
+  phone: string;
+  code: string;
 }
 
 export interface IRegSuccessData {

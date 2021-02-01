@@ -5,18 +5,27 @@ import storage from "redux-persist/lib/storage";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
-import { IBid, IBestBids, IBidToRequest, TBidType, IProfit } from "../../interfaces/bids";
-import { IFilterForBids, IFilterForBid } from "../../interfaces/filters";
+import {
+  IBid,
+  IBestBids,
+  IBidToRequest,
+  TBidType,
+  IProfit,
+  IBidsPair,
+} from "../../interfaces/bids";
+import { IFilterForBids, IFilterForBid, IParamValue } from "../../interfaces/filters";
 import {
   getAllBids,
   getMyBids,
   getBestBids,
   getBidById,
+  getBestPrice,
   createBid,
   editBid,
   deleteBid,
 } from "../../crud/bids.crud";
 import persistReducer, { PersistPartial } from "redux-persist/es/persistReducer";
+import { ILocation } from "../../interfaces/locations";
 
 const FETCH_REQUEST = "bids/FETCH_REQUEST";
 const FETCH_SUCCESS = "bids/FETCH_SUCCESS";
@@ -35,6 +44,11 @@ const CLEAR_FETCH_BY_ID = "bids/CLEAR_FETCH_BY_ID";
 const FETCH_BY_ID_REQUEST = "bids/FETCH_BY_ID_REQUEST";
 const FETCH_BY_ID_SUCCESS = "bids/FETCH_BY_ID_SUCCESS";
 const FETCH_BY_ID_FAIL = "bids/FETCH_BY_ID_FAIL";
+
+const CLEAR_BIDS_PAIR = "bids/CLEAR_BIDS_PAIR";
+const BIDS_PAIR_REQUEST = "bids/BIDS_PAIR_REQUEST";
+const BIDS_PAIR_SUCCESS = "bids/BIDS_PAIR_SUCCESS";
+const BIDS_PAIR_FAIL = "bids/BIDS_PAIR_FAIL";
 
 const CLEAR_CREATE = "bids/CLEAR_CREATE";
 const CREATE_REQUEST = "bids/CREATE_REQUEST";
@@ -73,10 +87,15 @@ export interface IInitialState {
   mySuccess: boolean;
   myError: string | null;
 
-  bestBids: IBestBids | undefined;
+  bestBids: any | undefined;
   bestLoading: boolean;
   bestSuccess: boolean;
   bestError: string | null;
+
+  bidsPair: IBidsPair | undefined;
+  bidsPairLoading: boolean;
+  bidsPairSuccess: boolean;
+  bidsPairError: string | null;
 
   createLoading: boolean;
   createSuccess: boolean;
@@ -117,6 +136,11 @@ const initialState: IInitialState = {
   bestLoading: false,
   bestSuccess: false,
   bestError: null,
+
+  bidsPair: undefined,
+  bidsPairLoading: false,
+  bidsPairSuccess: false,
+  bidsPairError: null,
 
   createLoading: false,
   createSuccess: false,
@@ -258,6 +282,33 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, byIdLoading: false, byIdError: action.payload };
       }
 
+      case CLEAR_BIDS_PAIR: {
+        return {
+          ...state,
+          bidsPair: undefined,
+          bidsPairLoading: false,
+          bidsPairSuccess: false,
+          bidsPairError: null,
+        };
+      }
+
+      case BIDS_PAIR_REQUEST: {
+        return { ...state, bidsPairLoading: true, bidsPairSuccess: false, bidsPairError: null };
+      }
+
+      case BIDS_PAIR_SUCCESS: {
+        return {
+          ...state,
+          bidsPair: action.payload.data,
+          bidsPairLoading: false,
+          bidsPairSuccess: true,
+        };
+      }
+
+      case BIDS_PAIR_FAIL: {
+        return { ...state, bidsPairLoading: false, bidsPairError: action.payload };
+      }
+
       case CLEAR_CREATE: {
         return { ...state, createLoading: false, createSuccess: false, createError: null };
       }
@@ -355,10 +406,18 @@ export const actions = {
   fetchByIdSuccess: (payload: IServerResponse<IBid>) => createAction(FETCH_BY_ID_SUCCESS, payload),
   fetchByIdFail: (payload: string) => createAction(FETCH_BY_ID_FAIL, payload),
 
+  clearBidsPair: () => createAction(CLEAR_BIDS_PAIR),
+  fetchBidsPair: (
+    type: TBidType,
+    data: { crop_id: number; parameter_values?: IParamValue; location?: ILocation }
+  ) => createAction(BIDS_PAIR_REQUEST, { type, data }),
+  bidsPairSuccess: (payload: any) => createAction(BIDS_PAIR_SUCCESS, payload),
+  bidsPairFail: (payload: string) => createAction(BIDS_PAIR_FAIL, payload),
+
   clearCreate: () => createAction(CLEAR_CREATE),
   createRequest: (type: TBidType, data: IBidToRequest, is_filter_created: number) =>
     createAction(CREATE_REQUEST, { type, data, is_filter_created }),
-  createSuccess: () => createAction(CREATE_SUCCESS), 
+  createSuccess: () => createAction(CREATE_SUCCESS),
   createFail: (payload: string) => createAction(CREATE_FAIL, payload),
 
   clearEdit: () => createAction(CLEAR_EDIT),
@@ -426,7 +485,29 @@ function* fetchByIdSaga({ payload }: { payload: { id: number; filter: IFilterFor
   }
 }
 
-function* createSaga({ payload }: { payload: { type: TBidType; data: IBidToRequest; is_filter_created: number;} }) {
+function* fetchBidsPairSaga({
+  payload,
+}: {
+  payload: {
+    type: TBidType;
+    data: { crop_id: number; parameter_values?: IParamValue; location?: ILocation };
+  };
+}) {
+  try {
+    const { data }: { data: any } = yield call(() => 
+      getBestPrice(payload.type, payload.data)
+    );
+    yield put(actions.bidsPairSuccess(data));
+  } catch (e) {
+    yield put(actions.bidsPairFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
+function* createSaga({
+  payload,
+}: {
+  payload: { type: TBidType; data: IBidToRequest; is_filter_created: number };
+}) {
   try {
     yield call(() => createBid(payload.type, payload.data, payload.is_filter_created));
     yield put(actions.createSuccess());
@@ -458,6 +539,7 @@ export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchMyRequest>>(FETCH_MY_REQUEST, fetchMySaga);
   yield takeLatest<ReturnType<typeof actions.fetchBestRequest>>(FETCH_BEST_REQUEST, fetchBestSaga);
   yield takeLatest<ReturnType<typeof actions.fetchByIdRequest>>(FETCH_BY_ID_REQUEST, fetchByIdSaga);
+  yield takeLatest<ReturnType<typeof actions.fetchBidsPair>>(BIDS_PAIR_REQUEST, fetchBidsPairSaga);
   yield takeLatest<ReturnType<typeof actions.createRequest>>(CREATE_REQUEST, createSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
   yield takeLatest<ReturnType<typeof actions.delRequest>>(DEL_REQUEST, delSaga);

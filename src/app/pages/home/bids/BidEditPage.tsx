@@ -56,6 +56,13 @@ const BidEditPage: React.FC<TPropsFromRedux &
   loading,
   error,
 
+  clearBidsPair,
+  fetchBidsPair,
+  bidsPair,
+  bidsPairLoading,
+  bidsPairSuccess,
+  bidsPairError,
+
   fetchCrops,
   crops,
   cropsLoading,
@@ -103,6 +110,9 @@ const BidEditPage: React.FC<TPropsFromRedux &
 
   openInfoAlert,
   setOpenInfoAlert,
+
+  fetchFilters,
+  filterCount,
 }) => {
   const isNoModerate = !vendorId && !+bidId && me?.status === "На модерации";
   const classes = useStyles();
@@ -257,9 +267,16 @@ const BidEditPage: React.FC<TPropsFromRedux &
             cropId={+cropId}
             crops={crops}
             bid={editMode === "create" ? undefined : bid}
+            bidsPair={bidsPair}
+            fetchMe={fetchMe}
             me={me}
+            fetchFilters={fetchFilters}
+            filterCount={filterCount}
             fetchLocations={fetchLocations}
             locations={locations}
+            clearBidsPair={clearBidsPair}
+            fetchBidsPair={fetchBidsPair}
+            bidsPairError={bidsPairError}
             loadingLocations={loadingLocations}
             clearLocations={clearLocations}
             clearCropParams={clearCropParams}
@@ -316,6 +333,11 @@ const connector = connect(
     loading: state.bids.byIdLoading,
     error: state.bids.byIdError,
 
+    bidsPair: state.bids.bidsPair,
+    bidsPairLoading: state.bids.bidsPairLoading,
+    bidsPairSuccess: state.bids.bidsPairSuccess,
+    bidsPairError: state.bids.bidsPairError,
+
     profit: state.bids.profit,
 
     currentSaleFilters: state.myFilters.currentSaleFilters,
@@ -353,6 +375,8 @@ const connector = connect(
     loadingLocations: state.yaLocations.loading,
 
     openInfoAlert: state.bids.openInfoAlert,
+
+    filterCount: state.myFilters.filterCount,
   }),
   {
     fetchUser: usersActions.fetchByIdRequest,
@@ -361,8 +385,13 @@ const connector = connect(
 
     fetchMe: authActions.fetchRequest,
 
+    fetchFilters: myFiltersActions.fetchRequest,
+
     clearFetch: bidsActions.clearFetchById,
     fetch: bidsActions.fetchByIdRequest,
+
+    clearBidsPair: bidsActions.clearBidsPair,
+    fetchBidsPair: bidsActions.fetchBidsPair,
 
     clearCreate: bidsActions.clearCreate,
     create: bidsActions.createRequest,

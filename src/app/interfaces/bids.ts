@@ -81,6 +81,7 @@ export interface IBid {
     name: string;
   };
   payment_term: number;
+  prepayment_amount: number;
   vendor_use_vat: boolean;
 }
 
@@ -113,6 +114,11 @@ export interface IBidToRequest {
 export interface IBestBids {
   equal: IBid[];
   inexact: IBid[];
+}
+
+export interface IBidsPair {
+  price: number;
+  price_with_delivery: number;
 }
 
 export interface IProfit {

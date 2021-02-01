@@ -1,5 +1,13 @@
 import React from "react";
-import { Card, CardContent, CardActions, Button, Divider, Grid as div, Theme } from "@material-ui/core";
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Divider,
+  Grid as div,
+  Theme,
+} from "@material-ui/core";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
 
@@ -7,7 +15,6 @@ import { makeStyles } from "@material-ui/styles";
 
 import { ITariff } from "../../../../../../interfaces/tariffs";
 import { IUser } from "../../../../../../interfaces/users";
-import { accessByRoles } from "../../../../../../utils/utils";
 import DateFnsUtils from "@date-io/date-fns";
 import ruRU from "date-fns/locale/ru";
 
@@ -24,8 +31,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexWrap: "wrap",
     [theme.breakpoints.up("sm")]: {
       flexWrap: "nowrap",
-      justifyContent: "space-between"
-    }
+      justifyContent: "space-between",
+    },
   },
   card: {
     width: "40%",
@@ -97,6 +104,11 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
     !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ? setOpenModal(true) : edit();
   };
 
+  const showRequisites = tariff => {
+    setSelectedTariff(tariff);
+    setOpenModal(true);
+  };
+
   return (
     <div className={innerClasses.root}>
       <div style={{ marginBottom: 15, marginLeft: 5 }}>
@@ -134,16 +146,30 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
               </CardContent>
               <Divider />
               <CardActions>
-                <Button
-                  onClick={() => handleSubmit(item)}
-                  className={innerClasses.button}
-                  variant="contained"
-                  color="primary"
-                >
-                  {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
-                    ? intl.formatMessage({ id: "TARIFFS.PAYMENT.PAY" })
-                    : intl.formatMessage({ id: "TARIFFS.PAYMENT.SET" })}
-                </Button>
+                <div style={{width: '100%'}}>
+                  <Button
+                    onClick={() => handleSubmit(item)}
+                    className={innerClasses.button}
+                    variant="contained"
+                    color="primary"
+                  >
+                    {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
+                      ? intl.formatMessage({ id: "TARIFFS.PAYMENT.PAY" })
+                      : intl.formatMessage({ id: "TARIFFS.PAYMENT.SET" })}
+                  </Button>
+
+                  {editMode === "edit" && (
+                    <Button
+                      onClick={() => showRequisites(item)}
+                      className={innerClasses.button}
+                      variant="contained"
+                      color="primary"
+                      style={{marginTop: 10}}
+                    >
+                      {intl.formatMessage({ id: "ALL_BUTTONS.REQUSITES" })}
+                    </Button>
+                  )}
+                </div>
               </CardActions>
             </Card>
           ))}
@@ -160,16 +186,30 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
               </CardContent>
               <Divider />
               <CardActions>
-                <Button
-                  onClick={() => handleSubmit(item)}
-                  className={innerClasses.button}
-                  variant="contained"
-                  color="primary"
-                >
-                  {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
-                    ? intl.formatMessage({ id: "TARIFFS.PAYMENT.PAY" })
-                    : intl.formatMessage({ id: "TARIFFS.PAYMENT.SET" })}
-                </Button>
+                <div>
+                  <Button
+                    onClick={() => handleSubmit(item)}
+                    className={innerClasses.button}
+                    variant="contained"
+                    color="primary"
+                  >
+                    {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
+                      ? intl.formatMessage({ id: "TARIFFS.PAYMENT.PAY" })
+                      : intl.formatMessage({ id: "TARIFFS.PAYMENT.SET" })}
+                  </Button>
+
+                  {editMode === "edit" && (
+                    <Button
+                      onClick={() => showRequisites(item)}
+                      className={innerClasses.button}
+                      variant="contained"
+                      color="primary"
+                      style={{marginTop: 10}}
+                    >
+                      {intl.formatMessage({ id: "ALL_BUTTONS.REQUSITES" })}
+                    </Button>
+                  )}
+                </div>
               </CardActions>
             </Card>
           ))}

@@ -10,6 +10,7 @@ import {
   TableRow,
   Paper,
   Tooltip,
+  TableFooter,
 } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
@@ -26,6 +27,7 @@ import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
 import { FilterModal } from "./components";
 import MiniTrafficLight from "../users/components/miniTrafficLight/MiniTrafficLight";
+import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -39,6 +41,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   setWeeks,
   term,
   setTerm,
+  min_prepayment_amount,
+  setPrepayment,
   fetch,
   deals,
   loading,
@@ -81,7 +85,13 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEditFilter();
     }
     if (editFilterSuccess) {
-      fetch(1, perPage, weeks, !term ? 999 : +term);
+      fetch(
+        1,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined
+      );
       fetchDealsFilters();
     }
   }, [
@@ -96,17 +106,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     perPage,
     term,
     weeks,
+    min_prepayment_amount,
   ]);
-
-  useEffect(() => {
-    const timeout: any = setTimeout(() => {
-      if (!!dealsFilters) fetch(page, perPage, weeks, !term ? 999 : +term);
-    }, 1000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [dealsFilters, fetch, page, perPage, term, weeks]);
 
   useEffect(() => {
     fetchCrops();
@@ -119,6 +120,17 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     fetchDealsFilters();
   }, [fetchDealsFilters]);
+
+  useEffect(() => {
+    if (!!dealsFilters)
+      fetch(
+        page,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined
+      );
+  }, [dealsFilters, fetch, page, perPage, term, weeks, min_prepayment_amount]);
 
   if (error || filtersError || cropsError || allCropParamsError) {
     setTimeout(() => {
@@ -291,17 +303,25 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   </TableRow>
                 ))}
             </TableBody>
-            {/* <TableFooter>
+            <TableFooter>
               <TableRow>
                 <TablePaginator
                   page={page}
                   realPerPage={deals.length}
                   perPage={perPage}
                   total={total}
-                  fetchRows={(page, perPage) => fetch(page, perPage, weeks, !term ? 999 : +term)}
+                  fetchRows={(page, perPage) =>
+                    fetch(
+                      page,
+                      perPage,
+                      weeks,
+                      !term ? 999 : +term,
+                      min_prepayment_amount ? min_prepayment_amount : undefined
+                    )
+                  }
                 />
               </TableRow>
-            </TableFooter> */}
+            </TableFooter>
           </Table>
         </div>
       )}
@@ -327,6 +347,7 @@ const connector = connect(
     total: state.deals.total,
     weeks: state.deals.weeks,
     term: state.deals.term,
+    min_prepayment_amount: state.deals.min_prepayment_amount,
     deals: state.deals.deals,
     loading: state.deals.loading,
     error: state.deals.error,
@@ -354,6 +375,7 @@ const connector = connect(
     editFilter: dealsActions.editFilterRequest,
     setWeeks: dealsActions.setWeeks,
     setTerm: dealsActions.setTerm,
+    setPrepayment: dealsActions.setPrepayment,
   }
 );
 

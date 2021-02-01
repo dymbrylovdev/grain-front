@@ -37,10 +37,12 @@ export interface IMyFilterItem {
   max_payment_term: number;
   max_full_price: number;
   min_full_price: number;
+  min_prepayment_amount: number;
   max_distance: number;
   parameter_values: IMyFiltersParam[];
   point_prices: IPointPrice[];
   subscribed: boolean;
+  is_sending_sms: boolean;
 }
 
 export interface IMyFilters {
@@ -59,10 +61,12 @@ export interface IFilterForCreate {
   max_payment_term?: number;
   max_full_price?: number;
   min_full_price?: number;
+  min_prepayment_amount?: number;
   max_distance?: number;
   parameter_values?: IParamValue[];
   point_prices?: IPointPriceForEdit[];
   subscribed?: boolean;
+  is_sending_sms?: boolean;
   bid_type?: TBidType;
 }
 
@@ -79,6 +83,7 @@ export interface IFilterForBids {
     max_payment_term?: number;
     max_full_price?: number;
     min_full_price?: number;
+    min_prepayment_amount?: number;
     max_distance?: number;
     parameter_values?: IParamValue[];
     point_prices?: IPointPriceForEdit[];

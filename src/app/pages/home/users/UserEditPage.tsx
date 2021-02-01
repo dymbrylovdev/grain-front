@@ -17,12 +17,10 @@ import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
-import { ProfileForm, CropsForm, LocationsForm } from "./components";
-import Prompter from "../prompter/Prompter";
+import { ProfileForm, CropsForm, LocationsForm, BidsForm } from "./components";
 import ScrollToTop from "../../../components/ui/ScrollToTop";
 import TariffForm from "./components/TariffForm/TariffForm";
 import { accessByRoles } from "../../../utils/utils";
-import { access } from "fs";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -145,15 +143,6 @@ const UserEditPage: React.FC<TPropsFromRedux &
     }
   };
 
-  // const testFunc = () => {
-  //   if (editMode === "profile") {
-  //     if (valueTabs === 0) history.push("/user/profile");
-  //     if (valueTabs === 1) history.push("/user/profile/points");
-  //     if (valueTabs === 2) history.push("/user/profile/crops");
-  //     if (valueTabs === 3) history.push("/user/profile/tariffs");
-  //   }
-  // }
-
   const subTitle = (editMode: "profile" | "create" | "edit" | "view"): string => {
     switch (editMode) {
       case "profile":
@@ -233,7 +222,6 @@ const UserEditPage: React.FC<TPropsFromRedux &
   return (
     <>
       <ScrollToTop />
-      {/* <Prompter /> */}
       <Paper className={classes.paperWithForm}>
         <LayoutSubheader
           title={subTitle(editMode)}
@@ -264,11 +252,10 @@ const UserEditPage: React.FC<TPropsFromRedux &
             <Tabs
               value={valueTabs}
               onChange={handleTabsChange}
-              variant="scrollable"
+              variant="fullWidth"
               indicatorColor="primary"
               textColor="primary"
               aria-label="tabs"
-              // centered
             >
               <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
 
@@ -301,11 +288,14 @@ const UserEditPage: React.FC<TPropsFromRedux &
                 !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
                 (user &&
                   editMode === "edit" &&
-                  ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
+                  ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER", "ROLE_MANAGER"].includes(user.roles[0]))) && (
                 <Tab
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
                   {...a11yProps(3)}
                 />
+              )}
+              {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
+                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(4)} />
               )}
             </Tabs>
           </AppBar>
@@ -332,8 +322,13 @@ const UserEditPage: React.FC<TPropsFromRedux &
               <CropsForm userId={+id || undefined} editMode={editMode} />
             )}
           </TabPanel>
+
           <TabPanel value={valueTabs} index={3}>
             <TariffForm editMode={editMode} userId={+id || undefined} />
+          </TabPanel>
+
+          <TabPanel value={valueTabs} index={4}>
+            <BidsForm userId={+id || undefined} classes={classes} />
           </TabPanel>
         </div>
         <AlertDialog

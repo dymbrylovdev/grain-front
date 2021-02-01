@@ -18,10 +18,12 @@ import { put, call, takeLatest } from "redux-saga/effects";
 import {
   register,
   login,
+  loginByPhone,
   getMe,
   editMe,
   requestPassword,
   changePassword,
+  sendCodeConfirm,
 } from "../../crud/auth.crud";
 
 const CLEAR_REG = "auth/CLEAR_REG";
@@ -58,6 +60,16 @@ const NEW_PASSWORD_REQUEST = "auth/NEW_PASSWORD_REQUEST";
 const NEW_PASSWORD_SUCCESS = "auth/NEW_PASSWORD_SUCCESS";
 const NEW_PASSWORD_FAIL = "auth/NEW_PASSWORD_FAIL";
 
+const CLEAR_LOGIN_BY_PHONE = "auth/CLEAR_LOGIN_BY_PHONE";
+const LOGIN_BY_PHONE_REQUEST = "auth/LOGIN_BY_PHONE_REQUEST";
+const LOGIN_BY_PHONE_SUCCESS = "auth/LOGIN_BY_PHONE_SUCCESS";
+const LOGIN_BY_PHONE_FAIL = "auth/LOGIN_BY_PHONE_FAIL";
+
+const CLEAR_SEND_CODE = "auth/CLEAR_SEND_CODE";
+const SEND_CODE_REQUEST = "auth/SEND_CODE_REQUEST";
+const SEND_CODE_SUCCESS = "auth/SEND_CODE_SUCCESS";
+const SEND_CODE_FAIL = "auth/SEND_CODE_FAIL";
+
 export interface IInitialState {
   user: IUser | undefined;
   authToken: string | undefined;
@@ -86,6 +98,14 @@ export interface IInitialState {
   newPasswordLoading: boolean;
   newPasswordSuccess: boolean;
   newPasswordError: string | null;
+
+  loginByPhoneLoading: boolean;
+  loginByPhoneSuccess: boolean;
+  loginByPhoneError: string | null;
+
+  sendCodeConfirmLoading: boolean;
+  sendCodeConfirmSuccess: boolean;
+  sendCodeConfirmError: string | null;
 
   emailRequested: string;
 }
@@ -118,6 +138,14 @@ const initialState: IInitialState = {
   newPasswordLoading: false,
   newPasswordSuccess: false,
   newPasswordError: null,
+
+  loginByPhoneLoading: false,
+  loginByPhoneSuccess: false,
+  loginByPhoneError: null,
+
+  sendCodeConfirmLoading: false,
+  sendCodeConfirmSuccess: false,
+  sendCodeConfirmError: null,
 
   emailRequested: "",
 };
@@ -314,6 +342,77 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         };
       }
 
+      case CLEAR_LOGIN_BY_PHONE: {
+        return {
+          ...state,
+          loginByPhoneLoading: false,
+          loginByPhoneSuccess: false,
+          loginByPhoneError: null,
+        };
+      }
+
+      case LOGIN_BY_PHONE_REQUEST: {
+        return {
+          ...state,
+          user: undefined,
+          authToken: undefined,
+          loginByPhoneLoading: true,
+          loginByPhoneSuccess: false,
+          loginByPhoneError: null,
+        };
+      }
+
+      case LOGIN_BY_PHONE_SUCCESS: {
+        return {
+          ...state,
+          authToken: action.payload.data.api_token,
+          loginByPhoneLoading: false,
+          loginByPhoneSuccess: true,
+        };
+      }
+
+      case LOGIN_BY_PHONE_FAIL: {
+        return {
+          ...state,
+          loginByPhoneLoading: false,
+          loginByPhoneError: action.payload,
+        };
+      }
+
+      case CLEAR_SEND_CODE: {
+        return {
+          ...state,
+          sendCodeConfirmLoading: false,
+          sendCodeConfirmSuccess: false,
+          sendCodeConfirmError: null,
+        };
+      }
+
+      case SEND_CODE_REQUEST: {
+        return {
+          ...state,
+          sendCodeConfirmLoading: true,
+          sendCodeConfirmSuccess: false,
+          sendCodeConfirmError: null,
+        };
+      }
+
+      case SEND_CODE_SUCCESS: {
+        return {
+          ...state,
+          sendCodeConfirmLoading: false,
+          sendCodeConfirmSuccess: true,
+        };
+      }
+
+      case SEND_CODE_FAIL: {
+        return {
+          ...state,
+          sendCodeConfirmLoading: false,
+          sendCodeConfirmError: action.payload,
+        };
+      }
+
       default:
         return state;
     }
@@ -361,6 +460,18 @@ export const actions = {
   newPasswordSuccess: (payload: IServerResponse<ILoginSuccessData>) =>
     createAction(NEW_PASSWORD_SUCCESS, payload),
   newPasswordFail: (payload: string) => createAction(NEW_PASSWORD_FAIL, payload),
+
+  clearLoginByPhone: () => createAction(CLEAR_LOGIN_BY_PHONE),
+  loginByPhoneRequest: (payload: { phone: string; code: string }) =>
+    createAction(LOGIN_BY_PHONE_REQUEST, payload),
+  loginByPhoneSuccess: (payload: IServerResponse<ILoginSuccessData>) =>
+    createAction(LOGIN_BY_PHONE_SUCCESS, payload),
+  loginByPhoneFail: (payload: string) => createAction(LOGIN_BY_PHONE_FAIL, payload),
+
+  clearSendCode: () => createAction(CLEAR_SEND_CODE),
+  sendCodeRequest: (payload: { phone: string }) => createAction(SEND_CODE_REQUEST, payload),
+  sendCodeSuccess: () => createAction(SEND_CODE_SUCCESS),
+  sendCodeFail: (payload: string) => createAction(SEND_CODE_FAIL, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -431,6 +542,26 @@ function* newPasswordSaga({
   }
 }
 
+function* loginByPhoneSaga({ payload }: { payload: { phone: string; code: string } }) {
+  try {
+    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() =>
+      loginByPhone(payload.phone, payload.code)
+    );
+    yield put(actions.loginByPhoneSuccess(data));
+  } catch (e) {
+    yield put(actions.loginByPhoneFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
+function* sendCodeConfigrmSaga({ payload }: { payload: { phone: string } }) {
+  try {
+    yield call(() => sendCodeConfirm(payload.phone));
+    yield put(actions.sendCodeSuccess());
+  } catch (e) {
+    yield put(actions.sendCodeFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
@@ -443,5 +574,13 @@ export function* saga() {
   yield takeLatest<ReturnType<typeof actions.newPasswordRequest>>(
     NEW_PASSWORD_REQUEST,
     newPasswordSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.loginByPhoneRequest>>(
+    LOGIN_BY_PHONE_REQUEST,
+    loginByPhoneSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.sendCodeRequest>>(
+    SEND_CODE_REQUEST,
+    sendCodeConfigrmSaga
   );
 }

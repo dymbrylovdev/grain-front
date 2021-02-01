@@ -1,6 +1,7 @@
 import axios from "axios";
-import { IFilterForBids, IFilterForBid } from "../interfaces/filters";
+import { IFilterForBids, IFilterForBid, IParamValue } from "../interfaces/filters";
 import { IBidToRequest, TBidType } from "../interfaces/bids";
+import { ILocation } from "../interfaces/locations";
 
 const AD_URL = "/api/bid";
 
@@ -20,8 +21,17 @@ export const getBidById = (id: number, filter: IFilterForBid) => {
   return axios.post(`${AD_URL}/get/${id}`, filter);
 };
 
+export const getBestPrice = (
+  type: TBidType,
+  data: { crop_id: number; parameter_values?: IParamValue; location?: ILocation }
+) => {
+  return axios.post(`${AD_URL}s/best_pair?type=${type}`, data);
+};
+
 export const createBid = (type: TBidType, data: IBidToRequest | any, is_filter_created: number) => {
-  return axios.post(`${AD_URL}/${type}`, data, { params: { 'is_filter_created': is_filter_created } } );
+  return axios.post(`${AD_URL}/${type}`, data, {
+    params: { is_filter_created: is_filter_created },
+  });
 };
 
 export const editBid = (id: number, data: IBidToRequest) => {

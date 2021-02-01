@@ -13,10 +13,11 @@ import { actions as authActions } from "../../../../../store/ducks/auth.duck";
 import { actions as usersActions } from "../../../../../store/ducks/users.duck";
 import { actions as tariffsActions } from "../../../../../store/ducks/tariffs.duck";
 import { actions as crops2Actions } from "../../../../../store/ducks/crops2.duck";
+import { actions as trialActions } from "../../../../../store/ducks/trial.duck";
 
 import TariffCards from "./components/TariffCards";
 import NewTariffTable from "./components/NewTariffTable";
-import TariffPaymentBlock from "./components/TariffPaymentBlock";
+import TariffPaymentDialog from "./components/TariffPaymentDialog";
 import useStyles from "../../../styles";
 import { IAppState } from "../../../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
@@ -103,6 +104,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   prompterRunning,
   prompterStep,
 
+  fondyCredentialsRequest,
+  merchant,
+
   fetchTariffs,
   tariffs,
 
@@ -110,6 +114,15 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   crops,
 
   setMenuConfig,
+
+  clearTrial,
+  fetchTrial,
+
+  trial,
+  trialLoading,
+  trialSuccess,
+  trialError,
+
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
@@ -149,7 +162,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   const [openModal, setOpenModal] = useState(false);
   const [showTariffTable, setShowTariffTable] = useState(0);
   const [selectedTariff, setSelectedTariff] = useState<ITariff | undefined>(undefined);
-  const [selectedDate, setSelectedDate] = useState();
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
     initialValues: {
@@ -162,19 +175,13 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     },
     onSubmit: () => {
       let params: any = {};
-      let tariff_matrix_id_for_prolongation = selectedTariff && selectedTariff.id;
       let tariff_matrix_id = selectedTariff && selectedTariff.id;
-      let tariff_prolongation_start_date = selectedDate && selectedDate;
 
-      if (
-        realUser &&
-        realUser.tariff_matrix &&
-        realUser.tariff_matrix.tariff.name !== "Бесплатный"
-      ) {
-        params = { ...params, tariff_matrix_id_for_prolongation };
-      } else {
-        params = { ...params, tariff_matrix_id };
-      }
+      //* timestamp нужен для конвертации типа date в js в тип dateTime php
+      let timestamp = "@" + Math.round(selectedDate.getTime() / 1000);
+      let tariff_start_date = timestamp;
+
+      params = { tariff_matrix_id, tariff_start_date };
 
       if (realUser && values.tariff_id) {
         edit({
@@ -258,7 +265,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchCrops();
   }, [fetchCrops]);
 
-  console.log(realUser);
+  useEffect(() => {
+    fetchTrial();
+  }, [fetchTrial]);
 
   return (
     <>
@@ -282,10 +291,14 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       ? "Бизнес"
                       : realUser.tariff_matrix.tariff.name}
                   </div>
-                  {realUser.tariff_matrix.tariff.name !== "Бесплатный" ? (
-                    <div>Период действия тарифа: {realUser.tariff_matrix.tariff_period.period} дней</div>
+                  {realUser.tariff_matrix.tariff.name !== "Бесплатный" &&
+                  realUser.tariff_matrix.tariff_period ? (
+                    <div>
+                      Период действия тарифа: {realUser.tariff_matrix.tariff_period.period} дней
+                    </div>
                   ) : null}
-                  {realUser.tariff_matrix.tariff.name !== "Бесплатный" ? (
+                  {realUser.tariff_matrix.tariff.name !== "Бесплатный" &&
+                  realUser.tariff_expired_at ? (
                     <div>Дата окончания тарифа: {intl.formatDate(realUser.tariff_expired_at)}</div>
                   ) : null}
                 </div>
@@ -294,8 +307,10 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   <Alert className={classes.infoAlert} severity="info" color="info">
                     Вам будет доступен тариф{" "}
                     {realUser.tariff_prolongations[0].tariff_matrix.tariff.name}{" "}
-                    {realUser.tariff_prolongations[0].tariff_matrix.tariff_period.period}{". "}
-                    Дата начала действия тарифа {intl.formatDate(realUser.tariff_prolongations[0].start_date)}
+                    {realUser.tariff_prolongations[0].tariff_matrix.tariff_period.period}
+                    {". "}
+                    Дата начала действия тарифа{" "}
+                    {intl.formatDate(realUser.tariff_prolongations[0].start_date)}
                   </Alert>
                 ) : null}
 
@@ -327,26 +342,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 )}
               </>
             )}
-
-            {/* <div>
-              {!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0]) &&
-                realSelectedTariff.tariff.name !== "Бесплатный" && (
-                  <div className={innerClasses.calendarContain}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
-                      <div className={innerClasses.calendarBlock}>
-                        <KeyboardDatePicker
-                          variant="dialog"
-                          format="dd/MM/yyyy"
-                          margin="normal"
-                          id="data-picker-dialog"
-                          label={intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })}
-                          value={selectedDate}
-                          onChange={handleDateChange}
-                        ></KeyboardDatePicker>
-                      </div>
-                    </MuiPickersUtilsProvider>
-                  </div>
-                )}*/}
           </>
         )}
       </div>
@@ -356,7 +351,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           <Button variant="contained" color="primary">
             <a
               style={{ color: "#FFF" }}
-              href="https://drive.google.com/drive/folders/1fajBzWbprZShBTjoDp2JN-Xw4K6VHwKL"
+              href="https://docs.google.com/document/d/1D4cUTqpcZHx_eMXwcvPwL2TOJua-nHTEWI6bSerzgeo/edit?usp=sharing"
               target="blank"
             >
               {intl.formatMessage({ id: "ALL_BUTTONS.DOWNLOAD" })}
@@ -365,13 +360,17 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         </div>
       )}
 
-      {realUser && (
-        <TariffPaymentBlock
+      {realUser && me && (
+        <TariffPaymentDialog
+          me={me}
+          fetchMerchant={fondyCredentialsRequest}
+          merchant={merchant}
           realUser={realUser}
           openModal={openModal}
           setOpenModal={setOpenModal}
           selectedTariff={selectedTariff}
           selectedDate={selectedDate}
+          trial={trial}
         />
       )}
     </>
@@ -396,12 +395,22 @@ const connector = connect(
     editMeSuccess: state.auth.editSuccess,
     editMeError: state.auth.editError,
 
+    merchant: state.tariffs.merchant_id,
+    fondyCredentialsLoading: state.tariffs.fondyCredentialsLoading,
+    fondyCredentialsSuccess: state.tariffs.fondyCredentialsSuccess,
+    fondyCredentialsError: state.tariffs.fondyCredentialsError,
+
     prompterRunning: state.prompter.running,
     prompterStep: state.prompter.activeStep,
 
     tariffs: state.tariffs.tariffs,
 
     crops: state.crops2.crops,
+
+    trial: state.trial.trial,
+    trialLoading: state.trial.loading,
+    trialSuccess: state.trial.success,
+    trialError: state.trial.error
   }),
   {
     fetchMe: authActions.fetchRequest,
@@ -415,7 +424,13 @@ const connector = connect(
     clearEditMe: authActions.clearEdit,
     editMe: authActions.editRequest,
 
+    clearFondyCredentials: tariffsActions.clearFondyCredentials,
+    fondyCredentialsRequest: tariffsActions.fondyCredentialsRequest,
+
     setMenuConfig: builderActions.setMenuConfig,
+
+    clearTrial: trialActions.clearFetch,
+    fetchTrial: trialActions.fetchRequest,
   }
 );
 

@@ -10,6 +10,8 @@ import {
   IconButton,
   Collapse,
   Button,
+  Dialog,
+  DialogActions,
 } from "@material-ui/core";
 import { Alert, Skeleton } from "@material-ui/lab";
 import { Link, useHistory } from "react-router-dom";
@@ -35,7 +37,7 @@ import { getInitialValues, roles } from "../utils/profileForm";
 import { setMeValues, setCreateValues, setEditValues } from "../utils/submitValues";
 import { IAppState } from "../../../../store/rootDuck";
 import { IUser, IUserForEdit } from "../../../../interfaces/users";
-import NumberFormatPhone from "../../../../components/NumberFormatCustom/NumberFormatPhone";
+import NumberFormatForProfile from "../../../../components/NumberFormatCustom/NumberFormatForProfile";
 import { accessByRoles } from "../../../../utils/utils";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { TrafficLight } from ".";
@@ -137,6 +139,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const [companyConfirmId, setCompanyConfirmId] = useState<number>(0);
   const [currentUser, setCurrentUser] = useState<IUser>();
   const [isCompanyAlertOpen, setCompanyAlertOpen] = useState(false);
+  const [isChangePasswordModalOpen, setChangePasswordModalOpen] = useState<boolean>(false);
 
   const {
     values,
@@ -150,6 +153,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   } = useFormik({
     initialValues: getInitialValues(undefined),
     onSubmit: values => {
+      if (roles.find(el => el.id === values.role) === undefined) return;
+
       if (editMode === "profile" && !isEqual(oldValues, values)) {
         let params: IUserForEdit = setMeValues(values);
         params.company_id = values.company_id;
@@ -167,20 +172,21 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       }
     },
     validationSchema: Yup.object().shape({
-      role: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+      role: Yup.string().test(
+        'role',
+        intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }),
+        value => roles.find(el => el.id === value) ? true : false
+      ).required(
+        intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
+      ),
       status: Yup.string().required(
         intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
       ),
-      email: Yup.string()
-        .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-      password:
-        editMode === "create"
-          ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-          : Yup.string(),
+      email: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
+      password: Yup.string(),
       phone: Yup.string()
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-        .matches(/^[0-9][0-9]{9}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+        // .matches(/^[0-9][0-9]{10}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
       repeatPassword: Yup.string().test(
         "passwords-match",
         intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
@@ -358,13 +364,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   useEffect(() => {
     if (accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !funnelStates) fetchFunnelStates();
   }, [editMode, fetchFunnelStates, funnelStates, me]);
-
-  // useEffect(() => {
-  //   if (me?.company !== null && !me?.company_confirmed_by_payment && !me?.company_confirmed_by_email) {
-  //     setCompanyConfirmId(values.company_id);
-  //     setIsOpenCompanyConfirm(true);
-  //   }
-  // }, [me?.company, me?.company_confirmed_by_payment, me?.company_confirmed_by_email, values.company_id]);
 
   const newRoles = [...roles];
   if (accessByRoles(me, ["ROLE_MANAGER"]) && editMode === "create") {
@@ -629,74 +628,13 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             error={Boolean(touched.phone && errors.phone)}
             disabled={editMode === "view"}
             InputLabelProps={{ shrink: true }}
-            InputProps={{
-              inputComponent: NumberFormatPhone as any,
-            }}
+            // InputProps={{
+            //   inputComponent: NumberFormatForProfile as any,
+            // }}
             autoComplete="off"
           />
         )}
       </div>
-
-      {editMode !== "view" && (
-        <div className={classes.box}>
-          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-            <Skeleton width="100%" height={32} animation="wave" />
-          ) : editMode === "create" ? (
-            <p>{intl.formatMessage({ id: "PROFILE.INPUT.PASSWORD.CREATE_TITLE" })}</p>
-          ) : (
-            <p>{intl.formatMessage({ id: "PROFILE.INPUT.PASSWORD.EDIT_TITLE" })}</p>
-          )}
-          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <TextField
-              type={!visiblePass ? "password" : "text"}
-              label={intl.formatMessage({
-                id: "PROFILE.INPUT.PASSWORD",
-              })}
-              margin="normal"
-              name="password"
-              value={values.password}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={touched.password && errors.password}
-              error={Boolean(touched.password && errors.password)}
-              InputProps={{
-                endAdornment: !visiblePass ? (
-                  <IconButton onClick={() => setVisiblePass(true)}>
-                    <VisibilityIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton onClick={() => setVisiblePass(false)}>
-                    <VisibilityOffIcon />
-                  </IconButton>
-                ),
-              }}
-              autoComplete="off"
-            />
-          )}
-
-          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <TextField
-              type="password"
-              label={intl.formatMessage({
-                id: "PROFILE.INPUT.REPEATPASSWORD",
-              })}
-              margin="normal"
-              name="repeatPassword"
-              value={values.repeatPassword}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={touched.repeatPassword && errors.repeatPassword}
-              error={Boolean(touched.repeatPassword && errors.repeatPassword)}
-            />
-          )}
-        </div>
-      )}
 
       {editMode !== "create" && (
         <div>
@@ -894,6 +832,19 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               </ButtonWithLoader>
             </div>
           )}
+
+          {editMode !== "view" && (
+            <div className={classes.button}>
+              <ButtonWithLoader
+                loading={editMeLoading || createLoading || editLoading}
+                disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
+                onPress={() => setChangePasswordModalOpen(true)}
+              >
+                {intl.formatMessage({ id: "ALL.BUTTONS.CHANGE.PASSWORD" })}
+              </ButtonWithLoader>
+            </div>
+          )}
+
           {editMode !== "view" && (
             <div className={classes.button}>
               <ButtonWithLoader
@@ -915,6 +866,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               </ButtonWithLoader>
             </div>
           )}
+
           {editMode === "edit" && me?.is_admin && (
             <div className={classes.button}>
               <OutlinedRedButton
@@ -928,6 +880,101 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           )}
         </div>
       </div>
+
+      <Dialog
+        open={isChangePasswordModalOpen}
+        onClose={() => setChangePasswordModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        {editMode !== "view" && (
+          <div
+            className={classes.box}
+            style={{ marginTop: 20, marginBottom: 20, marginRight: 20, marginLeft: 20 }}
+          >
+            {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+              <Skeleton width="100%" height={32} animation="wave" />
+            ) : editMode === "create" ? (
+              <p>{intl.formatMessage({ id: "PROFILE.INPUT.PASSWORD.CREATE_TITLE" })}</p>
+            ) : (
+              <p>{intl.formatMessage({ id: "PROFILE.INPUT.PASSWORD.EDIT_TITLE" })}</p>
+            )}
+            {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <TextField
+                type={!visiblePass ? "password" : "text"}
+                label={intl.formatMessage({
+                  id: "PROFILE.INPUT.PASSWORD",
+                })}
+                margin="normal"
+                name="password"
+                value={values.password}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.password && errors.password}
+                error={Boolean(touched.password && errors.password)}
+                InputProps={{
+                  endAdornment: !visiblePass ? (
+                    <IconButton onClick={() => setVisiblePass(true)}>
+                      <VisibilityIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton onClick={() => setVisiblePass(false)}>
+                      <VisibilityOffIcon />
+                    </IconButton>
+                  ),
+                }}
+                autoComplete="off"
+              />
+            )}
+
+            {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <TextField
+                type="password"
+                label={intl.formatMessage({
+                  id: "PROFILE.INPUT.REPEATPASSWORD",
+                })}
+                margin="normal"
+                name="repeatPassword"
+                value={values.repeatPassword}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.repeatPassword && errors.repeatPassword}
+                error={Boolean(touched.repeatPassword && errors.repeatPassword)}
+              />
+            )}
+
+            <div
+              className={classes.button}
+              style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}
+            >
+              <ButtonWithLoader
+                loading={editMeLoading || createLoading || editLoading}
+                disabled={
+                  editMeLoading ||
+                  createLoading ||
+                  editLoading ||
+                  meLoading ||
+                  userLoading ||
+                  (editMode !== "profile" && funnelStatesLoading) ||
+                  isEqual(oldValues, values)
+                }
+                onPress={() => {
+                  handleSubmit();
+                  setChangePasswordModalOpen(false);
+                }}
+              >
+                {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+              </ButtonWithLoader>
+            </div>
+          </div>
+        )}
+      </Dialog>
     </>
   );
 };

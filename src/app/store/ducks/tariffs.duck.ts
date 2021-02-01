@@ -5,7 +5,7 @@ import { put, takeLatest, call } from "redux-saga/effects";
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
 import { ITariff, ITariffToRequest } from "../../interfaces/tariffs";
-import { getTariffs, editTariff, editTariffPeriod, getTariffsProlongations } from "../../crud/tariffs.crud";
+import { getTariffs, editTariff, editTariffPeriod, getTariffsProlongations, getFondyCredentials } from "../../crud/tariffs.crud";
 
 const CLEAR_FETCH = "tariffs/CLEAR_FETCH";
 const FETCH_REQUEST = "tariffs/FETCH_REQUEST";
@@ -21,6 +21,11 @@ const CLEAR_EDIT_PERIOD = "tariffs/CLEAR_EDIT_PERIOD";
 const EDIT_PERIOD_REQUEST = "tariffs/EDIT_PERIOD_REQUEST";
 const EDIT_PERIOD_SUCCESS = "tariffs/EDIT_PERIOD_SUCCESS";
 const EDIT_PERIOD_FAIL = "tariffs/EDIT_PERIOD_FAIL";
+
+const CLEAR_FONDY_CREDENTIALS = "tariffs/CLEAR_FONDY_CREDENTIALS";
+const FONDY_CREDENTIALS_REQUEST = "tariffs/FONDY_CREDENTIALS_REQUEST";
+const FONDY_CREDENTIALS_SUCCESS = "tariffs/FONDY_CREDENTIALS_SUCCESS";
+const FONDY_CREDENTIALS_FAIL = "tariffs/FONDY_CREDENTIALS_FAIL";
 export interface IInitialState {
   tariffs: ITariff[] | undefined;
   loading: boolean;
@@ -34,6 +39,11 @@ export interface IInitialState {
   editPeriodLoading: boolean;
   editPeriodSuccess: boolean;
   editPeriodError: string | null;
+
+  merchant_id: string | undefined;
+  fondyCredentialsLoading: boolean;
+  fondyCredentialsSuccess: boolean;
+  fondyCredentialsError: string | null;
 }
 
 const initialState: IInitialState = {
@@ -49,6 +59,11 @@ const initialState: IInitialState = {
   editPeriodLoading: false,
   editPeriodSuccess: false,
   editPeriodError: null,
+
+  merchant_id: undefined,
+  fondyCredentialsLoading: false,
+  fondyCredentialsSuccess: false,
+  fondyCredentialsError: null,
 };
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
@@ -171,6 +186,42 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       };
     }
 
+    case CLEAR_FONDY_CREDENTIALS: {
+      return {
+        ...state,
+        merchant_id: undefined,
+        fondyCredentialsLoading: false,
+        fondyCredentialsSuccess: false,
+        fondyCredentialsError: null,
+      }
+    }
+
+    case FONDY_CREDENTIALS_REQUEST: {
+      return {
+        ...state,
+        fondyCredentialsLoading: true,
+        fondyCredentialsSuccess: false,
+        fondyCredentialsError: null,
+      }
+    }
+
+    case FONDY_CREDENTIALS_SUCCESS: {
+      return {
+        ...state,
+        merchant_id: action.payload.response.data,
+        fondyCredentialsLoading: false,
+        fondyCredentialsSuccess: true,
+      }
+    }
+
+    case FONDY_CREDENTIALS_FAIL: {
+      return {
+        ...state,
+        fondyCredentialsLoading: false,
+        fondyCredentialsError: action.payload.error,
+      }
+    }
+
     default:
       return state;
   }
@@ -193,6 +244,11 @@ export const actions = {
   editPeriodSuccess: (response: IServerResponse<ITariff>) =>
     createAction(EDIT_PERIOD_SUCCESS, { response }),
   editPeriodFail: (error: string) => createAction(EDIT_PERIOD_FAIL, { error }),
+
+  clearFondyCredentials: () => createAction(CLEAR_FONDY_CREDENTIALS),
+  fondyCredentialsRequest: () => createAction(FONDY_CREDENTIALS_REQUEST),
+  fondyCredentialsSuccess: (response: IServerResponse<any>) => createAction(FONDY_CREDENTIALS_SUCCESS, { response }),
+  fondyCredentialsFail: (error: string) => createAction(FONDY_CREDENTIALS_FAIL, { error }),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -228,6 +284,15 @@ function* editPeriodSaga({ payload }: { payload: { id: number; data: ITariffToRe
   }
 }
 
+function* fondyCredentialsSaga() {
+  try {
+    const { data }: { data: IServerResponse<any> } = yield call(() => getFondyCredentials());
+    yield put(actions.fondyCredentialsSuccess(data));
+  } catch (e) {
+    yield put(actions.fondyCredentialsFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
@@ -235,4 +300,5 @@ export function* saga() {
     EDIT_PERIOD_REQUEST,
     editPeriodSaga
   );
+  yield takeLatest<ReturnType<typeof actions.fondyCredentialsRequest>>(FONDY_CREDENTIALS_REQUEST, fondyCredentialsSaga);
 }

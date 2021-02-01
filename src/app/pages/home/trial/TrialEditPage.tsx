@@ -100,29 +100,6 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           ) : (
             <TextField
               type="text"
-              label={intl.formatMessage({ id: "TRIAL.FORM.TIME" })}
-              margin="normal"
-              className={classes.textField}
-              name="trial_days"
-              value={values.trial_days}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={touched.trial_days && errors.trial_days}
-              error={Boolean(touched.trial_days && errors.trial_days)}
-              InputProps={{
-                inputComponent: NumberFormatCustom as any,
-              }}
-              autoComplete="off"
-            />
-          )}
-        </div>
-        <div className={classes.textFieldContainer}>
-          {loading ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <TextField
-              type="text"
               label={intl.formatMessage({ id: "TRIAL.FORM.EMAIL" })}
               margin="normal"
               className={classes.textField}

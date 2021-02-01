@@ -1,5 +1,12 @@
-import React, { useEffect, useCallback } from "react";
-import { MenuItem, TextField, IconButton, Divider } from "@material-ui/core";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  MenuItem,
+  TextField,
+  IconButton,
+  Divider,
+  Checkbox,
+  FormControlLabel,
+} from "@material-ui/core";
 import useStyles from "../../../pages/home/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import { connect, ConnectedProps } from "react-redux";
@@ -17,6 +24,7 @@ import { filterForCreate, filterForSubmit } from "../../../pages/home/myFilters/
 import { useSnackbar } from "notistack";
 import NumberParam from "../../../pages/home/bids/components/filter/NumberParam";
 import ButtonWithLoader from "../../ui/Buttons/ButtonWithLoader";
+import { setUser } from "@sentry/browser";
 
 const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   me,
@@ -56,6 +64,8 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   openInfoAlert,
   setOpenInfoAlert,
 }) => {
+  const [hasUserPointsActive, setUserPointsActive] = useState(false);
+
   const classes = useStyles();
   const location = useLocation();
 
@@ -116,6 +126,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       min_full_price: Yup.number()
         .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+      min_prepayment_amount: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
     }),
   });
   const { resetForm, values, handleBlur } = formik;
@@ -173,6 +184,12 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     resetForm({ values: getInitialValues(currentFilter) });
   }, [currentFilter, getInitialValues, resetForm]);
+
+  useEffect(() => {
+    if (me) {
+      setUserPointsActive(me.points.some(point => point.active === true));
+    }
+  }, [me]);
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
@@ -274,6 +291,38 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           autoComplete="off"
         />
       </div>
+
+      {salePurchaseMode === "purchase" && (
+        <div className={classes.textFieldContainer}>
+          <TextField
+            type="text"
+            label={intl.formatMessage({
+              id: "FILTER.FORM.MIN.PREPAYMENT",
+            })}
+            margin="normal"
+            name="min_prepayment_amount"
+            value={formik.values.min_prepayment_amount || ""}
+            variant="outlined"
+            onBlur={filterSubmit}
+            //@ts-ignore
+            onChange={formik.handleChange("min_prepayment_amount")}
+            InputProps={{
+              // inputComponent: NumberFormatCustom,
+              endAdornment: (
+                <IconButton onClick={() => formik.setFieldValue("min_prepayment_amount", "")}>
+                  <CloseIcon />
+                </IconButton>
+              ),
+            }}
+            helperText={formik.touched.min_prepayment_amount && formik.errors.min_prepayment_amount}
+            error={Boolean(
+              formik.touched.min_prepayment_amount && formik.errors.min_prepayment_amount
+            )}
+            autoComplete="off"
+          />
+        </div>
+      )}
+
       <div className={classes.textFieldContainer}>
         <TextField
           type="text"
@@ -295,6 +344,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               </IconButton>
             ),
           }}
+          disabled={!hasUserPointsActive}
           autoComplete="off"
         />
       </div>
@@ -344,8 +394,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             formik.handleSubmit();
           }}
         >
-          {/* {intl.formatMessage({ id: "FILTER.FORM.BUTTON.SAVE" })} */}
-          Добавить подписку
+          {intl.formatMessage({ id: "FILTER.FORM.BUTTON.ADD" })}
         </ButtonWithLoader>
       </div>
 

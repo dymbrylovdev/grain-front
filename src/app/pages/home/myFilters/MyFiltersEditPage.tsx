@@ -243,7 +243,6 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
       window.location.reload();
     }, 10000);
   }
-  
 
   return (
     <Paper className={classes.paperWithForm}>
@@ -567,13 +566,23 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                     />
 
                     {!isNew && (
-                      <FormControlLabel
-                        className={classes.switcher}
-                        control={<Checkbox checked={values.subscribed} onChange={handleChange} />}
-                        label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SUBSCRIPTION" })}
-                        name="subscribed"
-                        disabled={!isEditable}
-                      />
+                      <>
+                        <FormControlLabel
+                          className={classes.switcher}
+                          control={<Checkbox checked={values.subscribed} onChange={handleChange} />}
+                          label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SUBSCRIPTION" })}
+                          name="subscribed"
+                          disabled={!isEditable}
+                        />
+
+                        <FormControlLabel
+                          className={classes.switcher}
+                          control={<Checkbox checked={values.is_sending_sms} onChange={handleChange} />}
+                          label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SMS.SENDING" })}
+                          name="is_sending_sms"
+                          disabled={!isEditable}
+                        />
+                      </>
                     )}
 
                     <Grid

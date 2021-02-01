@@ -25,9 +25,14 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   intl,
   setWeeks,
   setTerm,
+  setPrepayment,
 }) => {
-  const { weeks, term } = useSelector(
-    ({ deals: { weeks, term } }: IAppState) => ({ weeks, term }),
+  const { weeks, term, min_prepayment_amount } = useSelector(
+    ({ deals: { weeks, term, min_prepayment_amount } }: IAppState) => ({
+      weeks,
+      term,
+      min_prepayment_amount,
+    }),
     shallowEqual
   );
 
@@ -94,6 +99,31 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                 newValue = "999";
               }
               setTerm(+newValue);
+            }}
+            InputProps={{ inputComponent: NumberFormatCustom as any }}
+            autoComplete="off"
+          />
+        </div>
+        <div className={classes.nested}>
+          {intl.formatMessage({ id: "FILTER.FORM.MAX_PAYMENT_TERM3" })}
+          <TextField
+            type="text"
+            label={intl.formatMessage({
+              id: "FILTER.FORM.MAX_PAYMENT_TERM3",
+            })}
+            margin="normal"
+            name="min_prepayment_amount"
+            value={min_prepayment_amount || ""}
+            variant="outlined"
+            onChange={e => {
+              let newValue = e.target.value;
+              // if (+newValue < 0) {
+              //   newValue = "0";
+              // }
+              // if (+newValue > 999) {
+              //   newValue = "999";
+              // }
+              setPrepayment(+newValue);
             }}
             InputProps={{ inputComponent: NumberFormatCustom as any }}
             autoComplete="off"
