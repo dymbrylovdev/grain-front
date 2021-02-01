@@ -115,7 +115,7 @@ const getInitialValues = (
     pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: !!bid ? bid.type : salePurchaseMode,
     payment_term: bid?.payment_term || "",
-    prepayment_amount: bid?.prepayment_amount || "",
+    prepayment_amount: bid?.prepayment_amount || ""
   };
   if (bid && bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.forEach(item => {
@@ -297,6 +297,7 @@ const BidForm: React.FC<IProps> = ({
   const [isMoreBidOpen, setMoreBidOpen] = useState(false);
   const [isFilterCreated, setFilterCreated] = useState(true);
   const [isContactAlertOpen, setContactAlertOpen] = useState(false);
+  const [fullPrepayment, setFullPrepayment] = useState(false);
 
   const createFilter = (id: number) => {
     if (editMode === "edit") post(id);
@@ -371,9 +372,9 @@ const BidForm: React.FC<IProps> = ({
         vendor_id,
         price: +values.price,
         volume: +values.volume,
-        payment_term: +values.payment_term,
+        payment_term: fullPrepayment ? 0 : +values.payment_term,
         parameter_values: newParamValues,
-        prepayment_amount: +values.prepayment_amount,
+        prepayment_amount: fullPrepayment ? 100 : 0,
       };
       const bidType = params.bid_type;
       delete params.bid_type;
@@ -401,7 +402,7 @@ const BidForm: React.FC<IProps> = ({
         intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
       ),
       payment_term:
-        salePurchaseMode === "purchase"
+        salePurchaseMode === "purchase" && !fullPrepayment
           ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
           : Yup.string(),
     }),
@@ -520,6 +521,14 @@ const BidForm: React.FC<IProps> = ({
     }
   }, [me, filterCount]);
 
+  useEffect(() => {
+    if (values.prepayment_amount === 100) setFullPrepayment(true);
+  }, [values.prepayment_amount])
+  
+  useEffect(() => {
+    if (fullPrepayment) setFieldValue("payment_term", '');
+  }, [fullPrepayment])
+
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
@@ -553,7 +562,7 @@ const BidForm: React.FC<IProps> = ({
                   !values.volume ||
                   !values.price ||
                   !values.crop_id ||
-                  (salePurchaseMode === "purchase" && !values.payment_term)
+                  (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
                     ? setFormikErrored(true)
                     : setFormikErrored(false);
                   handleSubmit();
@@ -809,40 +818,51 @@ const BidForm: React.FC<IProps> = ({
       ) : (
         <>
           {values.bid_type === "purchase" && (
-            <TextField
-              type="text"
-              label={intl.formatMessage({
-                id: "BIDSLIST.TABLE.PREPAYMENT",
-              })}
-              margin="normal"
-              name="prepayment_amount"
-              value={values.prepayment_amount}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={touched.prepayment_amount && errors.prepayment_amount}
-              error={Boolean(touched.prepayment_amount && errors.prepayment_amount)}
-              InputProps={
-                editMode !== "view"
-                  ? {
-                      style:
-                        editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
-                          ? {
-                              color: "#fd397a",
-                            }
-                          : {},
-                      inputComponent: NumberFormatCustom as any,
-                      endAdornment: (
-                        <IconButton onClick={() => setFieldValue("prepayment_amount", "")}>
-                          <CloseIcon />
-                        </IconButton>
-                      ),
-                    }
-                  : undefined
-              }
-              disabled={editMode === "view"}
-              autoComplete="off"
-            />
+            <>
+              <FormControlLabel
+                control={
+                  <Checkbox checked={fullPrepayment} onChange={() => setFullPrepayment(s => !s)} />
+                }
+                label={'Предоплата 100%'}
+                name="fullPrepayment"
+                style={{marginBottom: 10, marginTop: 10}}
+                disabled={editMode === "view"}
+              />
+              {/*<TextField
+                type="text"
+                label={intl.formatMessage({
+                  id: "BIDSLIST.TABLE.PREPAYMENT",
+                })}
+                margin="normal"
+                name="prepayment_amount"
+                value={values.prepayment_amount}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.prepayment_amount && errors.prepayment_amount}
+                error={Boolean(touched.prepayment_amount && errors.prepayment_amount)}
+                InputProps={
+                  editMode !== "view"
+                    ? {
+                        style:
+                          editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
+                            ? {
+                                color: "#fd397a",
+                              }
+                            : {},
+                        inputComponent: NumberFormatCustom as any,
+                        endAdornment: (
+                          <IconButton onClick={() => setFieldValue("prepayment_amount", "")}>
+                            <CloseIcon />
+                          </IconButton>
+                        ),
+                      }
+                    : undefined
+                }
+                disabled={editMode === "view"}
+                autoComplete="off"
+              />*/}
+            </>
           )}
         </>
       )}
@@ -945,14 +965,17 @@ const BidForm: React.FC<IProps> = ({
                 ? {
                     inputComponent: NumberFormatCustom as any,
                     endAdornment: (
-                      <IconButton onClick={() => setFieldValue("payment_term", "")}>
+                      <IconButton
+                        onClick={() => setFieldValue("payment_term", "")}
+                        disabled={fullPrepayment}
+                      >
                         <CloseIcon />
                       </IconButton>
                     ),
                   }
                 : undefined
             }
-            disabled={editMode === "view"}
+            disabled={editMode === "view" || fullPrepayment}
             autoComplete="off"
           />
         ))}
@@ -1550,7 +1573,7 @@ const BidForm: React.FC<IProps> = ({
                   !values.volume ||
                   !values.price ||
                   !values.crop_id ||
-                  (salePurchaseMode === "purchase" && !values.payment_term)
+                  (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
                     ? setFormikErrored(true)
                     : setFormikErrored(false);
                   handleSubmit();

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps, shallowEqual, useSelector } from "react-redux";
-import { Collapse, Divider, makeStyles, MenuItem, TextField } from "@material-ui/core";
+import { Collapse, Divider, makeStyles, MenuItem, TextField, FormControlLabel, Checkbox } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
@@ -35,6 +35,10 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     }),
     shallowEqual
   );
+
+  useEffect(() => {
+    if (min_prepayment_amount === 100) setTerm(undefined);
+  }, [min_prepayment_amount, setTerm])
 
   const classes = useStyles();
   const [filterOpen, setFilterOpen] = useState(true);
@@ -102,31 +106,21 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             }}
             InputProps={{ inputComponent: NumberFormatCustom as any }}
             autoComplete="off"
+            disabled={min_prepayment_amount === 100}
           />
         </div>
         <div className={classes.nested}>
-          {intl.formatMessage({ id: "FILTER.FORM.MAX_PAYMENT_TERM3" })}
-          <TextField
-            type="text"
-            label={intl.formatMessage({
-              id: "FILTER.FORM.MAX_PAYMENT_TERM3",
-            })}
-            margin="normal"
-            name="min_prepayment_amount"
-            value={min_prepayment_amount || ""}
-            variant="outlined"
-            onChange={e => {
-              let newValue = e.target.value;
-              // if (+newValue < 0) {
-              //   newValue = "0";
-              // }
-              // if (+newValue > 999) {
-              //   newValue = "999";
-              // }
-              setPrepayment(+newValue);
-            }}
-            InputProps={{ inputComponent: NumberFormatCustom as any }}
-            autoComplete="off"
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={min_prepayment_amount === 100}
+                onChange={() => {
+                  setPrepayment(min_prepayment_amount === 100 ? 0 : 100);
+                }}
+              />
+            }
+            label={'Только с предоплатой'}
+            name="fullPrepayment"
           />
         </div>
       </Collapse>
