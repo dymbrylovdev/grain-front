@@ -18,7 +18,8 @@ const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial
         email: true,
       },
       params: {
-        merchant_id: 1465280,
+        //merchnat id for test server 14652801465280
+        merchant_id: merchant.merchant_id,
         currency: "RUB",
         order_id: new Date().getTime(),
         amount: selectedTariff.price * 100,
