@@ -161,7 +161,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         editMe({ data: params });
       }
 
-      if (editMode === "create") createUser(setCreateValues({ ...values, crop_ids: [1] }));
+      if (editMode === "create") {
+        values.status = 'Активный';
+        createUser(setCreateValues({ ...values, crop_ids: [1] }));
+      };
       if (editMode === "edit" && user) {
         let params: IUserForEdit = setEditValues(values);
         params.funnel_state_id = values.funnel_state_id;
@@ -179,9 +182,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       ).required(
         intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
       ),
-      status: Yup.string().required(
+      status: editMode !== 'create' ? Yup.string().required(
         intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
-      ),
+      ) : Yup.string(),
       email: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
       password: Yup.string(),
       phone: Yup.string()
@@ -397,7 +400,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
-      {editMode !== "profile" && (
+      {editMode !== "profile" && editMode !== 'create' && (
         <div className={classes.textFieldContainer}>
           {meLoading || userLoading || funnelStatesLoading || !statuses ? (
             <Skeleton width="100%" height={70} animation="wave" />
