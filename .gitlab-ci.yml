@@ -34,7 +34,7 @@ deploy:
   stage: deploy
   image: gitlab/dind:latest
   only:
-    - "1.6"
+    - "1.6.1"
   environment: production
   services:
     - docker:dind
