@@ -3,7 +3,6 @@ import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Theme, Grid as div, Button } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import { makeStyles } from "@material-ui/styles";
 import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
@@ -22,11 +21,9 @@ import useStyles from "../../../styles";
 import { IAppState } from "../../../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
 import { IUser } from "../../../../../interfaces/users";
-import { ITariff, ITariffType, ITariffPeriod } from "../../../../../interfaces/tariffs";
+import { ITariff } from "../../../../../interfaces/tariffs";
 import { ICrop } from "../../../../../interfaces/crops";
 import getMenuConfig from "../../../../../router/MenuConfig";
-import { accessByRoles } from "../../../../../utils/utils";
-import uniqBy from "lodash/uniqBy";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   name: {
@@ -122,7 +119,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   trialLoading,
   trialSuccess,
   trialError,
-
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
@@ -410,7 +406,7 @@ const connector = connect(
     trial: state.trial.trial,
     trialLoading: state.trial.loading,
     trialSuccess: state.trial.success,
-    trialError: state.trial.error
+    trialError: state.trial.error,
   }),
   {
     fetchMe: authActions.fetchRequest,

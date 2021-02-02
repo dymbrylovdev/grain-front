@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, Tabs, Tab, Divider, IconButton, Grid as div } from "@material-ui/core";
-import { Skeleton } from "@material-ui/lab";
 import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
 import { TabPanel, a11yProps } from "../../../../../../components/ui/Table/TabPanel";
@@ -50,7 +49,7 @@ const TariffPaymentDialog: React.FC<IProps & WrappedComponentProps> = ({
   selectedDate,
   fetchMerchant,
   merchant,
-  trial
+  trial,
 }) => {
   const innerClasses = useStyles();
 
