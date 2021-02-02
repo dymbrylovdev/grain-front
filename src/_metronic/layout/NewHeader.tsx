@@ -224,11 +224,11 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
             </MenuItem>
           )}
-          {accessByRoles(me, ["ROLE_BUYER"]) && (
+          {/* {accessByRoles(me, ["ROLE_BUYER"]) && (
             <MenuItem onClick={() => handleClick("/sale/filters")}>
               {intl.formatMessage({ id: "SUBMENU.MY_FILTERS" })}
             </MenuItem>
-          )}
+          )} */}
           {accessByRoles(me, ["ROLE_BUYER"]) && (
             <MenuItem onClick={() => handleClick("/user/profile/points")}>
               {intl.formatMessage({ id: "SUBMENU.POINTS" })}
@@ -245,11 +245,11 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
             </MenuItem>
           )}
-          {accessByRoles(me, ["ROLE_VENDOR"]) && (
+          {/* {accessByRoles(me, ["ROLE_VENDOR"]) && (
             <MenuItem onClick={() => handleClick("/purchase/filters")}>
               {intl.formatMessage({ id: "SUBMENU.MY_FILTERS" })}
             </MenuItem>
-          )}
+          )} */}
           {accessByRoles(me, ["ROLE_VENDOR"]) && (
             <MenuItem onClick={() => handleClick("/user/profile/points")}>
               {intl.formatMessage({ id: "SUBMENU.POINTS" })}
@@ -266,7 +266,7 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
             </MenuItem>
           )}
-          {accessByRoles(me, ["ROLE_TRADER"]) && (
+          {/* {accessByRoles(me, ["ROLE_TRADER"]) && (
             <MenuItem onClick={() => setFiltersOpen(!filtersOpen)} className={classes.nester}>
               {intl.formatMessage({ id: "SUBMENU.MY_FILTERS" })}
               {filtersOpen ? (
@@ -285,7 +285,7 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 {intl.formatMessage({ id: "SUBMENU.SELLER_FILTERS" })}
               </MenuItem>
             </Collapse>
-          )}
+          )} */}
           {accessByRoles(me, ["ROLE_TRADER"]) && (
             <MenuItem onClick={() => handleClick("/user/profile/points")}>
               {intl.formatMessage({ id: "SUBMENU.POINTS" })}
@@ -357,7 +357,7 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               <MenuItem onClick={() => handleClick("/user/profile")} className={classes.nested}>
                 {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
               </MenuItem>
-              <MenuItem
+              {/* <MenuItem
                 onClick={() => setFiltersOpen(!filtersOpen)}
                 className={classes.nester_nested}
               >
@@ -381,7 +381,7 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 >
                   {intl.formatMessage({ id: "SUBMENU.SELLER_FILTERS" })}
                 </MenuItem>
-              </Collapse>
+              </Collapse> */}
               {accessByRoles(me, ["ROLE_ADMIN"]) && (
                 <MenuItem
                   onClick={() => setCatalogSettingsOpen(!catalogSettingsOpen)}
