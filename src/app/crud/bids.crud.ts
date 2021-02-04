@@ -28,10 +28,8 @@ export const getBestPrice = (
   return axios.post(`${AD_URL}s/best_pair?type=${type}`, data);
 };
 
-export const createBid = (type: TBidType, data: IBidToRequest | any, is_filter_created: number) => {
-  return axios.post(`${AD_URL}/${type}`, data, {
-    params: { is_filter_created: is_filter_created },
-  });
+export const createBid = (type: TBidType, data: IBidToRequest | any, is_sending_email: number, is_sending_sms: number) => {
+  return axios.post(`${AD_URL}/${type}?is_sending_email=${is_sending_email}&is_sending_sms=${is_sending_sms}`, data);
 };
 
 export const editBid = (id: number, data: IBidToRequest) => {

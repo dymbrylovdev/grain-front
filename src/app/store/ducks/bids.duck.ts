@@ -420,8 +420,8 @@ export const actions = {
   bidsPairFail: (payload: string) => createAction(BIDS_PAIR_FAIL, payload),
 
   clearCreate: () => createAction(CLEAR_CREATE),
-  createRequest: (type: TBidType, data: IBidToRequest, is_filter_created: number) =>
-    createAction(CREATE_REQUEST, { type, data, is_filter_created }),
+  createRequest: (type: TBidType, data: IBidToRequest, is_sending_email: number, is_sending_sms: number) =>
+    createAction(CREATE_REQUEST, { type, data, is_sending_email, is_sending_sms }),
   createSuccess: () => createAction(CREATE_SUCCESS),
   createFail: (payload: string) => createAction(CREATE_FAIL, payload),
 
@@ -511,10 +511,10 @@ function* fetchBidsPairSaga({
 function* createSaga({
   payload,
 }: {
-  payload: { type: TBidType; data: IBidToRequest; is_filter_created: number };
+  payload: { type: TBidType; data: IBidToRequest; is_sending_email: number, is_sending_sms: number };
 }) {
   try {
-    yield call(() => createBid(payload.type, payload.data, payload.is_filter_created));
+    yield call(() => createBid(payload.type, payload.data, payload.is_sending_email, payload.is_sending_sms));
     yield put(actions.createSuccess());
   } catch (e) {
     yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));

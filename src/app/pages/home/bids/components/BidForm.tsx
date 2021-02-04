@@ -75,7 +75,8 @@ const getInitialValues = (
   vendorId: number,
   user: IUser | undefined,
   me: IUser | undefined,
-  isFilterCreated: boolean
+  isSendingEmail: boolean,
+  isSendingSms: boolean,
 ) => {
   let newCropId: number | string = "";
   if (editMode === "view" || editMode === "edit") {
@@ -101,7 +102,8 @@ const getInitialValues = (
     price: bid?.price || "",
     description: bid?.description || "",
     crop_id: newCropId,
-    is_filter_created: isFilterCreated ? 1 : 0,
+    is_sending_email: isSendingEmail ? 1 : 0,
+    is_sending_sms: isSendingSms ? 1 : 0,
     location:
       editMode === "create"
         ? !!vendorId
@@ -196,13 +198,15 @@ interface IProps {
   create: (
     type: TBidType,
     data: IBidToRequest,
-    is_filter_created: number
+    is_sending_email: number,
+    is_sending_sms: number
   ) => ActionWithPayload<
     "bids/CREATE_REQUEST",
     {
       type: TBidType;
       data: IBidToRequest;
-      is_filter_created: number;
+      is_sending_email: number;
+      is_sending_sms: number;
     }
   >;
   edit: (
@@ -295,7 +299,8 @@ const BidForm: React.FC<IProps> = ({
   const inputEl = useRef<HTMLButtonElement>(null);
   const [goToRef, setGoToRef] = useState(false);
   const [isMoreBidOpen, setMoreBidOpen] = useState(false);
-  const [isFilterCreated, setFilterCreated] = useState(true);
+  const [isSendingEmail, setSendingEmail] = useState(true);
+  const [isSendingSms, setSendingSms] = useState(false);
   const [isContactAlertOpen, setContactAlertOpen] = useState(false);
   const [fullPrepayment, setFullPrepayment] = useState(false);
 
@@ -322,8 +327,9 @@ const BidForm: React.FC<IProps> = ({
     ? vendor.crops[0].id
     : 0;
 
-  const onCheckboxChange = () => {
-    setFilterCreated(!isFilterCreated);
+  const onCheckboxChange = (e: any, val: number) => {
+    if (val === 1) setSendingEmail(!isSendingEmail);
+    if (val === 2) setSendingSms(!isSendingSms);
   };
 
   const linkToContact = () => {
@@ -361,10 +367,12 @@ const BidForm: React.FC<IProps> = ({
       vendorId,
       user,
       me,
-      isFilterCreated
+      isSendingEmail,
+      isSendingSms,
     ),
     onSubmit: values => {
-      const is_filter_created = isFilterCreated ? 1 : 0;
+      const is_sending_email = isSendingEmail ? 1 : 0;
+      const is_sending_sms = isSendingSms ? 1 : 0;
       const newParamValues = initializeParamValues();
 
       const params: { [x: string]: any } = {
@@ -378,7 +386,7 @@ const BidForm: React.FC<IProps> = ({
       };
       const bidType = params.bid_type;
       delete params.bid_type;
-      if (editMode === "create") create(bidType, params, is_filter_created);
+      if (editMode === "create") create(bidType, params, is_sending_email, is_sending_sms);
       if (editMode === "edit" && !!bid) {
         delete params.vendor_id;
         edit(bid.id, params);
@@ -486,7 +494,8 @@ const BidForm: React.FC<IProps> = ({
         vendorId,
         user,
         me,
-        isFilterCreated
+        isSendingEmail,
+        isSendingSms,
       ),
     });
   }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
@@ -517,7 +526,7 @@ const BidForm: React.FC<IProps> = ({
 
   useEffect(() => {
     if (!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0) {
-      setFilterCreated(false);
+      setSendingEmail(false);
     }
   }, [me, filterCount]);
 
@@ -1513,18 +1522,18 @@ const BidForm: React.FC<IProps> = ({
                   null
                 ) : (
                   <>
-                    {me.email && (
+                    {me && me.email ? (
                       <FormControlLabel
-                        control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
+                        control={<Checkbox checked={isSendingEmail} onChange={(e) => onCheckboxChange(e, 1)} />}
                         label={'Подписка по e-mail'}
                       />
-                    )}
-                    {me.phone && (
+                    ) : null}
+                    {me && me.phone ? (
                       <FormControlLabel
-                        control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
+                        control={<Checkbox checked={isSendingSms} onChange={(e) => onCheckboxChange(e, 2)} />}
                         label={'Подписка по смс'}
                       />
-                    )}
+                    ) : null}
                   </>
                 )}
               </div>
@@ -1593,7 +1602,8 @@ const BidForm: React.FC<IProps> = ({
               vendorId,
               user,
               me,
-              isFilterCreated
+              isSendingEmail,
+              isSendingSms
             ),
           });
           window.scrollTo({
