@@ -828,40 +828,6 @@ const BidForm: React.FC<IProps> = ({
                 style={{marginBottom: 10, marginTop: 10}}
                 disabled={editMode === "view"}
               />
-              {/*<TextField
-                type="text"
-                label={intl.formatMessage({
-                  id: "BIDSLIST.TABLE.PREPAYMENT",
-                })}
-                margin="normal"
-                name="prepayment_amount"
-                value={values.prepayment_amount}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                helperText={touched.prepayment_amount && errors.prepayment_amount}
-                error={Boolean(touched.prepayment_amount && errors.prepayment_amount)}
-                InputProps={
-                  editMode !== "view"
-                    ? {
-                        style:
-                          editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
-                            ? {
-                                color: "#fd397a",
-                              }
-                            : {},
-                        inputComponent: NumberFormatCustom as any,
-                        endAdornment: (
-                          <IconButton onClick={() => setFieldValue("prepayment_amount", "")}>
-                            <CloseIcon />
-                          </IconButton>
-                        ),
-                      }
-                    : undefined
-                }
-                disabled={editMode === "view"}
-                autoComplete="off"
-              />*/}
             </>
           )}
         </>

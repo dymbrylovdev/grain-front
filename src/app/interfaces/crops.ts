@@ -11,4 +11,5 @@ export interface ICropParam {
   name: string;
   type: "enum" | "number";
   enum: string[];
+  is_deleted: boolean;
 }
