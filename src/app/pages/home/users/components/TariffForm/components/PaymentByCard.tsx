@@ -5,7 +5,7 @@ const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial
     const Options = {
       options: {
         methods: ["card"],
-        methods_disabled: ["banklinks_eu", "local_methods"],
+        // methods_disabled: ["banklinks_eu", "local_methods"],
         card_icons: [],
         default_country: "RU",
         full_screen: false,
@@ -18,7 +18,7 @@ const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial
         email: true,
       },
       params: {
-        //merchnat id for test server 14652801465280
+        //merchnat id for test server 1465280
         merchant_id: 1454955, // merchant.merchant_id,
         currency: "RUB",
         order_id: new Date().getTime(),
