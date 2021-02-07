@@ -110,7 +110,11 @@ const PaymentPage: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       <Divider />
 
       <TabPanel value={valueTabs} index={0}>
-        <CashlessPayment realUser={me} selectedTariff={selectedTariff} selectedDate={new Date()} />
+        <CashlessPayment
+          realUser={me}
+          selectedTariff={selectedTariff}
+          selectedDate={selectedDate}
+        />
       </TabPanel>
 
       {me && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && (
@@ -118,7 +122,7 @@ const PaymentPage: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           <PaymentByCard
             realUser={me}
             selectedTariff={selectedTariff}
-            selectedDate={123}
+            selectedDate={selectedDate}
             merchant={merchant}
             trial={trial}
           />

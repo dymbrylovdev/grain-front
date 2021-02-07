@@ -139,7 +139,7 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
             <Card className={innerClasses.card} key={item.id}>
               <CardContent>
                 <div className={innerClasses.title}>{item.tariff.name}</div>
-                <div>{item.tariff_period.period} Дней</div>
+                <div>{item.tariff_period?.period} Дней</div>
                 <div className={innerClasses.title} style={{ marginTop: 20 }}>
                   {item.price} руб.
                 </div>
