@@ -70,7 +70,7 @@ interface IProps {
   openModal: boolean;
   setOpenModal: any;
 
-  selectedTariff: ITariff | undefined;
+  selectedTariff: ITariff | null;
   setSelectedTariff: any;
 
   selectedDate: any;
@@ -100,7 +100,7 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
   const innerClasses = useStyles();
 
   const handleSubmit = tariff => {
-    setSelectedTariff(tariff);
+    setSelectedTariff(tariff.id);
     !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ? setOpenModal(true) : edit();
   };
 
@@ -146,7 +146,7 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
               </CardContent>
               <Divider />
               <CardActions>
-                <div style={{width: '100%'}}>
+                <div style={{ width: "100%" }}>
                   <Button
                     onClick={() => handleSubmit(item)}
                     className={innerClasses.button}
@@ -164,7 +164,7 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
                       className={innerClasses.button}
                       variant="contained"
                       color="primary"
-                      style={{marginTop: 10}}
+                      style={{ marginTop: 10 }}
                     >
                       {intl.formatMessage({ id: "ALL_BUTTONS.REQUSITES" })}
                     </Button>
@@ -204,7 +204,7 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
                       className={innerClasses.button}
                       variant="contained"
                       color="primary"
-                      style={{marginTop: 10}}
+                      style={{ marginTop: 10 }}
                     >
                       {intl.formatMessage({ id: "ALL_BUTTONS.REQUSITES" })}
                     </Button>

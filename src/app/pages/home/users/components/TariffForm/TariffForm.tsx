@@ -16,7 +16,7 @@ import { actions as trialActions } from "../../../../../store/ducks/trial.duck";
 
 import TariffCards from "./components/TariffCards";
 import NewTariffTable from "./components/NewTariffTable";
-import TariffPaymentDialog from "./components/TariffPaymentDialog";
+// import TariffPaymentDialog from "./components/TariffPaymentDialog";
 import useStyles from "../../../styles";
 import { IAppState } from "../../../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
@@ -24,6 +24,7 @@ import { IUser } from "../../../../../interfaces/users";
 import { ITariff } from "../../../../../interfaces/tariffs";
 import { ICrop } from "../../../../../interfaces/crops";
 import getMenuConfig from "../../../../../router/MenuConfig";
+import { useHistory } from "react-router-dom";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   name: {
@@ -77,7 +78,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   me,
   loadingMe,
   errorMe,
-
+  setSelectedTariff,
+  selectedTariff,
   fetchUser,
   user,
   loadingUser,
@@ -122,6 +124,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
+  const history = useHistory();
 
   let realUser: IUser | undefined = undefined;
   if (editMode === "profile" && me) realUser = me;
@@ -157,7 +160,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   const [openModal, setOpenModal] = useState(false);
   const [showTariffTable, setShowTariffTable] = useState(0);
-  const [selectedTariff, setSelectedTariff] = useState<ITariff | undefined>(undefined);
+  // const [selectedTariff, setSelectedTariff] = useState<ITariff | undefined>(undefined);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
@@ -265,6 +268,10 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchTrial();
   }, [fetchTrial]);
 
+  useEffect(() => {
+    if (selectedTariff) history.push("/user/profile/tariffs/payment");
+  }, [selectedTariff, history]);
+
   return (
     <>
       <div>
@@ -356,7 +363,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
         </div>
       )}
 
-      {realUser && me && (
+      {/* {realUser && me && (
         <TariffPaymentDialog
           me={me}
           fetchMerchant={fondyCredentialsRequest}
@@ -368,7 +375,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           selectedDate={selectedDate}
           trial={trial}
         />
-      )}
+      )} */}
     </>
   );
 };
@@ -391,6 +398,7 @@ const connector = connect(
     editMeSuccess: state.auth.editSuccess,
     editMeError: state.auth.editError,
 
+    selectedTariff: state.tariffs.selectedTariff,
     merchant: state.tariffs.merchant_id,
     fondyCredentialsLoading: state.tariffs.fondyCredentialsLoading,
     fondyCredentialsSuccess: state.tariffs.fondyCredentialsSuccess,
@@ -414,6 +422,7 @@ const connector = connect(
     fetchCrops: crops2Actions.fetchRequest,
 
     fetchTariffs: tariffsActions.fetchRequest,
+    setSelectedTariff: tariffsActions.setSelectedTariff,
 
     clearEdit: usersActions.clearEdit,
     edit: usersActions.editRequest,

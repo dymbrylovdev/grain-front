@@ -5,12 +5,21 @@ import { put, takeLatest, call } from "redux-saga/effects";
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
 import { ITariff, ITariffToRequest } from "../../interfaces/tariffs";
-import { getTariffs, editTariff, editTariffPeriod, getTariffsProlongations, getFondyCredentials } from "../../crud/tariffs.crud";
+import {
+  getTariffs,
+  editTariff,
+  editTariffPeriod,
+  getTariffsProlongations,
+  getFondyCredentials,
+} from "../../crud/tariffs.crud";
 
 const CLEAR_FETCH = "tariffs/CLEAR_FETCH";
 const FETCH_REQUEST = "tariffs/FETCH_REQUEST";
 const FETCH_SUCCESS = "tariffs/FETCH_SUCCESS";
 const FETCH_FAIL = "tariffs/FETCH_FAIL";
+
+const SET_TARIFF = "tariffs/SET_TARIFF";
+const CLEAR_SELECTED_TARIFF = "tariffs/CLEAR_SELECTED_TARIFF";
 
 const CLEAR_EDIT = "tariffs/CLEAR_EDIT";
 const EDIT_REQUEST = "tariffs/EDIT_REQUEST";
@@ -31,6 +40,8 @@ export interface IInitialState {
   loading: boolean;
   success: boolean;
   error: string | null;
+  selectedTariff: ITariff | null;
+  selectedDate: string | null;
 
   editLoading: boolean;
   editSuccess: boolean;
@@ -51,6 +62,8 @@ const initialState: IInitialState = {
   loading: false,
   success: false,
   error: null,
+  selectedTariff: null,
+  selectedDate: null,
 
   editLoading: false,
   editSuccess: false,
@@ -68,6 +81,23 @@ const initialState: IInitialState = {
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
   switch (action.type) {
+    case CLEAR_SELECTED_TARIFF: {
+      return {
+        ...state,
+        selectedTariff: null,
+      };
+    }
+
+    case SET_TARIFF: {
+      const selectedTariff = state.tariffs?.find(item => item.id === action.payload.id);
+
+      if (!selectedTariff) return { ...state };
+      return {
+        ...state,
+        selectedTariff,
+      };
+    }
+
     case CLEAR_FETCH: {
       return {
         ...state,
@@ -193,7 +223,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
         fondyCredentialsLoading: false,
         fondyCredentialsSuccess: false,
         fondyCredentialsError: null,
-      }
+      };
     }
 
     case FONDY_CREDENTIALS_REQUEST: {
@@ -202,7 +232,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
         fondyCredentialsLoading: true,
         fondyCredentialsSuccess: false,
         fondyCredentialsError: null,
-      }
+      };
     }
 
     case FONDY_CREDENTIALS_SUCCESS: {
@@ -211,7 +241,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
         merchant_id: action.payload.response.data,
         fondyCredentialsLoading: false,
         fondyCredentialsSuccess: true,
-      }
+      };
     }
 
     case FONDY_CREDENTIALS_FAIL: {
@@ -219,7 +249,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
         ...state,
         fondyCredentialsLoading: false,
         fondyCredentialsError: action.payload.error,
-      }
+      };
     }
 
     default:
@@ -232,6 +262,8 @@ export const actions = {
   fetchRequest: () => createAction(FETCH_REQUEST),
   fetchSuccess: (response: IServerResponse<ITariff[]>) => createAction(FETCH_SUCCESS, { response }),
   fetchFail: (error: string) => createAction(FETCH_FAIL, { error }),
+  setSelectedTariff: (id: number) => createAction(SET_TARIFF, { id }),
+  clearSelectedTariff: () => createAction(CLEAR_SELECTED_TARIFF),
 
   clearEdit: () => createAction(CLEAR_EDIT),
   editRequest: (id: number, data: ITariffToRequest) => createAction(EDIT_REQUEST, { id, data }),
@@ -247,7 +279,8 @@ export const actions = {
 
   clearFondyCredentials: () => createAction(CLEAR_FONDY_CREDENTIALS),
   fondyCredentialsRequest: () => createAction(FONDY_CREDENTIALS_REQUEST),
-  fondyCredentialsSuccess: (response: IServerResponse<any>) => createAction(FONDY_CREDENTIALS_SUCCESS, { response }),
+  fondyCredentialsSuccess: (response: IServerResponse<any>) =>
+    createAction(FONDY_CREDENTIALS_SUCCESS, { response }),
   fondyCredentialsFail: (error: string) => createAction(FONDY_CREDENTIALS_FAIL, { error }),
 };
 
@@ -300,5 +333,8 @@ export function* saga() {
     EDIT_PERIOD_REQUEST,
     editPeriodSaga
   );
-  yield takeLatest<ReturnType<typeof actions.fondyCredentialsRequest>>(FONDY_CREDENTIALS_REQUEST, fondyCredentialsSaga);
+  yield takeLatest<ReturnType<typeof actions.fondyCredentialsRequest>>(
+    FONDY_CREDENTIALS_REQUEST,
+    fondyCredentialsSaga
+  );
 }

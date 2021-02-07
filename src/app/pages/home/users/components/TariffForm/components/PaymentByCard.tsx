@@ -24,7 +24,8 @@ const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial
         order_id: new Date().getTime(),
         amount: selectedTariff.price * 100,
         order_desc: `Тариф: ${selectedTariff.tariff.name}, период: ${selectedTariff.tariff_period.period} дней`,
-        email: realUser.registration_type === "phone" ? trial.manager_email : realUser.email,
+        email:
+          realUser.registration_type === "phone" && trial ? trial.manager_email : realUser.email,
         server_callback_url: "https://api.kupit-zerno.com/api/fondy/callback",
         lang: "ru",
         product_id: selectedTariff.id,
@@ -34,11 +35,12 @@ const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial
     //@ts-ignore
     const app = window.fondy("#fondy-container", Options);
   }, [
-    merchant.merchant_id,
     realUser.email,
     realUser.id,
     realUser.registration_type,
     selectedDate,
+    trial,
+    trial.manager_email,
     selectedTariff.id,
     selectedTariff.price,
     selectedTariff.tariff.name,
