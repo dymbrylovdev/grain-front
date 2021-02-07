@@ -20,6 +20,7 @@ const FETCH_FAIL = "tariffs/FETCH_FAIL";
 
 const SET_TARIFF = "tariffs/SET_TARIFF";
 const CLEAR_SELECTED_TARIFF = "tariffs/CLEAR_SELECTED_TARIFF";
+const SET_SELECTED_DATA = "tariffs/SET_SELECTED_DATA";
 
 const CLEAR_EDIT = "tariffs/CLEAR_EDIT";
 const EDIT_REQUEST = "tariffs/EDIT_REQUEST";
@@ -41,7 +42,7 @@ export interface IInitialState {
   success: boolean;
   error: string | null;
   selectedTariff: ITariff | null;
-  selectedDate: string | null;
+  selectedDate: Date;
 
   editLoading: boolean;
   editSuccess: boolean;
@@ -63,7 +64,7 @@ const initialState: IInitialState = {
   success: false,
   error: null,
   selectedTariff: null,
-  selectedDate: null,
+  selectedDate: new Date(),
 
   editLoading: false,
   editSuccess: false,
@@ -95,6 +96,13 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return {
         ...state,
         selectedTariff,
+      };
+    }
+
+    case SET_SELECTED_DATA: {
+      return {
+        ...state,
+        selectedDate: action.payload.selectedDate,
       };
     }
 
@@ -264,6 +272,7 @@ export const actions = {
   fetchFail: (error: string) => createAction(FETCH_FAIL, { error }),
   setSelectedTariff: (id: number) => createAction(SET_TARIFF, { id }),
   clearSelectedTariff: () => createAction(CLEAR_SELECTED_TARIFF),
+  setSelectedDate: (selectedDate: Date) => createAction(SET_SELECTED_DATA, { selectedDate }),
 
   clearEdit: () => createAction(CLEAR_EDIT),
   editRequest: (id: number, data: ITariffToRequest) => createAction(EDIT_REQUEST, { id, data }),

@@ -45,7 +45,7 @@ interface IProps {
   trial: any;
 }
 
-const PaymentPage: React.FC<IProps & WrappedComponentProps> = ({
+const PaymentPage: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   intl,
   me,
   loadingMe,
@@ -67,8 +67,8 @@ const PaymentPage: React.FC<IProps & WrappedComponentProps> = ({
   };
 
   useEffect(() => {
-    if (!selectedTariff) history.goBack();
-  }, [history, selectedTariff]);
+    if (!selectedTariff || !selectedDate) history.push("/user/profile/tariffs");
+  }, [history, selectedDate, selectedTariff]);
 
   useEffect(() => {
     fetchMerchant();
@@ -136,6 +136,7 @@ const connector = connect(
 
     merchant: state.tariffs.merchant_id,
     selectedTariff: state.tariffs.selectedTariff,
+    selectedDate: state.tariffs.selectedDate,
 
     trial: state.trial.trial,
     trialLoading: state.trial.loading,

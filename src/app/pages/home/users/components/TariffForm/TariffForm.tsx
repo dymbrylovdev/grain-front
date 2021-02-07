@@ -80,6 +80,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   errorMe,
   setSelectedTariff,
   selectedTariff,
+  setSelectedDate,
+  selectedDate,
   fetchUser,
   user,
   loadingUser,
@@ -160,10 +162,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   const [openModal, setOpenModal] = useState(false);
   const [showTariffTable, setShowTariffTable] = useState(0);
-  // const [selectedTariff, setSelectedTariff] = useState<ITariff | undefined>(undefined);
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
+  const { values, resetForm, handleSubmit } = useFormik({
     initialValues: {
       tariff_id: realUser?.tariff_matrix.id,
       tariff_type_id: realUser?.tariff_matrix.tariff.id,
@@ -362,20 +362,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           </Button>
         </div>
       )}
-
-      {/* {realUser && me && (
-        <TariffPaymentDialog
-          me={me}
-          fetchMerchant={fondyCredentialsRequest}
-          merchant={merchant}
-          realUser={realUser}
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-          selectedTariff={selectedTariff}
-          selectedDate={selectedDate}
-          trial={trial}
-        />
-      )} */}
     </>
   );
 };
@@ -399,6 +385,7 @@ const connector = connect(
     editMeError: state.auth.editError,
 
     selectedTariff: state.tariffs.selectedTariff,
+    selectedDate: state.tariffs.selectedDate,
     merchant: state.tariffs.merchant_id,
     fondyCredentialsLoading: state.tariffs.fondyCredentialsLoading,
     fondyCredentialsSuccess: state.tariffs.fondyCredentialsSuccess,
@@ -423,6 +410,7 @@ const connector = connect(
 
     fetchTariffs: tariffsActions.fetchRequest,
     setSelectedTariff: tariffsActions.setSelectedTariff,
+    setSelectedDate: tariffsActions.setSelectedDate,
 
     clearEdit: usersActions.clearEdit,
     edit: usersActions.editRequest,
