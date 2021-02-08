@@ -4,7 +4,7 @@ import { LayoutSplashScreen } from "../../../_metronic";
 import getMenuConfig from "../../router/MenuConfig";
 import UserDocPage from "./userDocs/UserDocPage";
 import { useSelector, shallowEqual, connect } from "react-redux";
-import { UsersPage, UserEditPage } from "./users";
+import { UsersPage, UserEditPage, UserPaymentPage } from "./users";
 import { CropsListPage, CropPage } from "./crops";
 import { CompanyPage, CompaniesListPage, CompanyConfirmPage } from "./companies";
 import * as builder from "../../../_metronic/ducks/builder";
@@ -59,7 +59,8 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/user/profile" exact component={UserEditPage} />
         <Route path="/user/profile/points" component={UserEditPage} />
         <Route path="/user/profile/crops" component={UserEditPage} />
-        <Route path="/user/profile/tariffs" component={UserEditPage} />
+        <Route path="/user/profile/tariffs" exact component={UserEditPage} />
+        <Route path="/user/profile/tariffs/payment" component={UserPaymentPage} />
         <Route path="/user-list" component={UsersPage} />
         <Route path="/user/create" component={UserEditPage} />
         <Route path="/user/edit/:id" component={UserEditPage} />

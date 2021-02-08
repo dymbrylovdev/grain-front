@@ -15,10 +15,11 @@ const useStyles = makeStyles({
     alignItems: "center",
   },
   textContain: {
-    paddingTop: 0,
-    paddingRight: 15,
-    paddingBottom: 50,
-    paddingLeft: 15,
+    paddingTop: 20,
+    paddingRight: 12,
+    paddingBottom: 20,
+    paddingLeft: 12,
+    backgroundColor: "#fff"
   },
   title: {
     fontSize: 18,

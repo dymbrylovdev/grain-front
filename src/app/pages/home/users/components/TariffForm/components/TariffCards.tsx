@@ -70,11 +70,13 @@ interface IProps {
   openModal: boolean;
   setOpenModal: any;
 
-  selectedTariff: ITariff | undefined;
+  selectedTariff: ITariff | null;
   setSelectedTariff: any;
 
   selectedDate: any;
   setSelectedDate: any;
+
+  goToTariffPurchase: any;
 }
 
 const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
@@ -96,17 +98,19 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
 
   selectedDate,
   setSelectedDate,
+
+  goToTariffPurchase,
 }) => {
   const innerClasses = useStyles();
 
   const handleSubmit = tariff => {
-    setSelectedTariff(tariff);
-    !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ? setOpenModal(true) : edit();
+    setSelectedTariff(tariff.id)
+    !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ? goToTariffPurchase() : edit();
   };
 
   const showRequisites = tariff => {
-    setSelectedTariff(tariff);
-    setOpenModal(true);
+    setSelectedTariff(tariff.id);
+    goToTariffPurchase();
   };
 
   return (
@@ -139,14 +143,14 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
             <Card className={innerClasses.card} key={item.id}>
               <CardContent>
                 <div className={innerClasses.title}>{item.tariff.name}</div>
-                <div>{item.tariff_period.period} Дней</div>
+                <div>{item.tariff_period?.period} Дней</div>
                 <div className={innerClasses.title} style={{ marginTop: 20 }}>
                   {item.price} руб.
                 </div>
               </CardContent>
               <Divider />
               <CardActions>
-                <div style={{width: '100%'}}>
+                <div style={{ width: "100%" }}>
                   <Button
                     onClick={() => handleSubmit(item)}
                     className={innerClasses.button}
@@ -164,7 +168,7 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
                       className={innerClasses.button}
                       variant="contained"
                       color="primary"
-                      style={{marginTop: 10}}
+                      style={{ marginTop: 10 }}
                     >
                       {intl.formatMessage({ id: "ALL_BUTTONS.REQUSITES" })}
                     </Button>
@@ -204,7 +208,7 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
                       className={innerClasses.button}
                       variant="contained"
                       color="primary"
-                      style={{marginTop: 10}}
+                      style={{ marginTop: 10 }}
                     >
                       {intl.formatMessage({ id: "ALL_BUTTONS.REQUSITES" })}
                     </Button>
