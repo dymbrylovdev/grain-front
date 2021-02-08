@@ -572,7 +572,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                           control={<Checkbox checked={values.subscribed} onChange={handleChange} />}
                           label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SUBSCRIPTION" })}
                           name="subscribed"
-                          disabled={!isEditable}
+                          disabled={!isEditable || !me.email}
                         />
 
                         <FormControlLabel
@@ -580,7 +580,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                           control={<Checkbox checked={values.is_sending_sms} onChange={handleChange} />}
                           label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SMS.SENDING" })}
                           name="is_sending_sms"
-                          disabled={!isEditable}
+                          disabled={!isEditable || !me.phone}
                         />
                       </>
                     )}

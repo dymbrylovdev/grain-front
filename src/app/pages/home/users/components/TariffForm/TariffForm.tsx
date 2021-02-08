@@ -309,8 +309,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 {realUser.tariff_prolongations.length ? (
                   <Alert className={classes.infoAlert} severity="info" color="info">
                     Вам будет доступен тариф{" "}
-                    {realUser.tariff_prolongations[0].tariff_matrix.tariff.name}{" "}
-                    {realUser.tariff_prolongations[0].tariff_matrix.tariff_period.period}
+                    {realUser.tariff_prolongations[0].tariff_matrix.tariff.name} на{" "}
+                    {realUser.tariff_prolongations[0].tariff_matrix.tariff_period.period} дней
                     {". "}
                     Дата начала действия тарифа{" "}
                     {intl.formatDate(realUser.tariff_prolongations[0].start_date)}

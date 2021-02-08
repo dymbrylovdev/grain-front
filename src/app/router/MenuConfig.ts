@@ -175,23 +175,23 @@ const getAdminMenu = (crops: ICrop[]) => ({
             page: "user/profile",
             translate: "SUBMENU.PROFILE",
           },
-          {
-            title: "Мои фильтры",
-            page: "",
-            translate: "SUBMENU.MY_FILTERS",
-            submenu: [
-              {
-                title: "Фильтры на продажу",
-                page: "sale/filters",
-                translate: "SUBMENU.BUYER_FILTERS",
-              },
-              {
-                title: "Фильтры на покупку",
-                page: "purchase/filters",
-                translate: "SUBMENU.SELLER_FILTERS",
-              },
-            ],
-          },
+          // {
+            // title: "Мои фильтры",
+            // page: "",
+            // translate: "SUBMENU.MY_FILTERS",
+            // submenu: [
+              // {
+                // title: "Фильтры на продажу",
+                // page: "sale/filters",
+                // translate: "SUBMENU.BUYER_FILTERS",
+              // },
+              // {
+                // title: "Фильтры на покупку",
+                // page: "purchase/filters",
+                // translate: "SUBMENU.SELLER_FILTERS",
+              // },
+            // ],
+          // },
           {
             title: "Настройки каталога",
             page: "",
@@ -383,23 +383,23 @@ const getManagerMenu = (crops: ICrop[]) => ({
             page: "user/profile",
             translate: "SUBMENU.PROFILE",
           },
-          {
-            title: "Мои фильтры",
-            page: "",
-            translate: "SUBMENU.MY_FILTERS",
-            submenu: [
-              {
-                title: "Фильтры на продажу",
-                page: "sale/filters",
-                translate: "SUBMENU.BUYER_FILTERS",
-              },
-              {
-                title: "Фильтры на покупку",
-                page: "purchase/filters",
-                translate: "SUBMENU.SELLER_FILTERS",
-              },
-            ],
-          },
+          // {
+            // title: "Мои фильтры",
+            // page: "",
+            // translate: "SUBMENU.MY_FILTERS",
+            // submenu: [
+              // {
+                // title: "Фильтры на продажу",
+                // page: "sale/filters",
+                // translate: "SUBMENU.BUYER_FILTERS",
+              // },
+              // {
+                // title: "Фильтры на покупку",
+                // page: "purchase/filters",
+                // translate: "SUBMENU.SELLER_FILTERS",
+              // },
+            // ],
+          // },
         ],
       },
       {
@@ -442,12 +442,12 @@ const getVendorMenu = (crops: ICrop[]) => ({
         page: "user/profile",
         translate: "SUBMENU.PROFILE",
       },
-      {
-        title: "Мои подписки",
-        icon: "far fa-bell",
-        page: "purchase/filters",
-        translate: "SUBMENU.MY_FILTERS",
-      },
+      // {
+        // title: "Мои подписки",
+        // icon: "far fa-bell",
+        // page: "purchase/filters",
+        // translate: "SUBMENU.MY_FILTERS",
+      // },
       {
         title: "Выход",
         icon: "far fa-share-square",
@@ -488,12 +488,12 @@ const getBuyerMenu = (crops: ICrop[]) => ({
         page: "user/profile",
         translate: "SUBMENU.PROFILE",
       },
-      {
-        title: "Мои подписки",
-        icon: "far fa-bell",
-        page: "sale/filters",
-        translate: "SUBMENU.MY_FILTERS",
-      },
+      // {
+        // title: "Мои подписки",
+        // icon: "far fa-bell",
+        // page: "sale/filters",
+        // translate: "SUBMENU.MY_FILTERS",
+      // },
       {
         title: "Выход",
         icon: "far fa-share-square",
@@ -571,24 +571,24 @@ const getTraderMenu = (crops: ICrop[]) => ({
         page: "user/profile",
         translate: "SUBMENU.PROFILE",
       },
-      {
-        title: "Мои подписки",
-        icon: "far fa-bell",
-        page: "",
-        translate: "SUBMENU.MY_FILTERS",
-        submenu: [
-          {
-            title: "Подписки на продажу",
-            page: "sale/filters",
-            translate: "SUBMENU.BUYER_FILTERS",
-          },
-          {
-            title: "Подписки на покупку",
-            page: "purchase/filters",
-            translate: "SUBMENU.SELLER_FILTERS",
-          },
-        ],
-      },
+      // {
+        // title: "Мои подписки",
+        // icon: "far fa-bell",
+        // page: "",
+        // translate: "SUBMENU.MY_FILTERS",
+        // submenu: [
+          // {
+            // title: "Подписки на продажу",
+            // page: "sale/filters",
+            // translate: "SUBMENU.BUYER_FILTERS",
+          // },
+          // {
+            // title: "Подписки на покупку",
+            // page: "purchase/filters",
+            // translate: "SUBMENU.SELLER_FILTERS",
+          // },
+        // ],
+      // },
       {
         title: "Выход",
         icon: "far fa-share-square",

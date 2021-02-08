@@ -108,7 +108,8 @@ export interface IBidToRequest {
   ];
   vendor_id?: number;
   payment_term?: number;
-  is_filter_created?: number;
+  is_sending_email?: number;
+  is_sending_sms?: number;
 }
 
 export interface IBestBids {

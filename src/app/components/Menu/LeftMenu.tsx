@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { Collapse, Divider, makeStyles, MenuItem, Button } from "@material-ui/core";
 import { IntlShape } from "react-intl";
 import ExpandLess from "@material-ui/icons/ExpandLess";
@@ -118,6 +118,7 @@ const LeftMenu: React.FC<IProps> = ({
   const [selectedBestOpen, setSelectedBestOpen] = useState(false);
   const [allOpen, setAllOpen] = useState(false);
   const [selectedAllOpen, setSelectedAllOpen] = useState(false);
+  const [mySubscriptionsMode, setMySubscriptionMode] = useState(false);
 
   useEffect(() => {
     if (!salePurchaseMode) {
@@ -138,6 +139,17 @@ const LeftMenu: React.FC<IProps> = ({
 
   const selectedCrop = me?.crops.filter(crop => !!cropId && +cropId === crop.id);
 
+  const location = useLocation().pathname;
+
+  useEffect(() => {
+    if (location === '/purchase/filters' || location === '/sale/filters') {
+      setMySubscriptionMode(true);
+      setSalePurchaseMode(location === '/purchase/filters' ? 'purchase' : 'sale');
+    } else {
+      setMySubscriptionMode(false);
+    }
+  }, [location, setSalePurchaseMode]);
+
   return (
     <div>
       <div className={classes.title}>
@@ -147,49 +159,60 @@ const LeftMenu: React.FC<IProps> = ({
 
       <Divider style={{ margin: "6px 0" }} />
 
-      {!!bestAllMyDealsMode &&
-        bestAllMyDealsMode !== "deals" &&
-        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-          <MenuItem
-            className={salePurchaseMode === "sale" ? classes.selected : ""}
-            onClick={() => {
-              setSalePurchaseMode("sale");
-              if (bestAllMyDealsMode) {
-                handleClick(
-                  `/sale/${bestAllMyDealsMode}${
-                    ["best-bids", "all-bids"].includes(bestAllMyDealsMode) ? "/" + cropId : ""
-                  }`
-                );
-              }
-            }}
-          >
-            • {intl.formatMessage({ id: "DEALS.TABLE.SALE" })}
-          </MenuItem>
-        )}
-      {!!bestAllMyDealsMode &&
-        bestAllMyDealsMode !== "deals" &&
-        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-          <MenuItem
-            className={salePurchaseMode === "purchase" ? classes.selected : ""}
-            onClick={() => {
-              setSalePurchaseMode("purchase");
-              if (bestAllMyDealsMode) {
-                handleClick(
-                  `/purchase/${bestAllMyDealsMode}${
-                    ["best-bids", "all-bids"].includes(bestAllMyDealsMode) ? "/" + cropId : ""
-                  }`
-                );
-              }
-            }}
-          >
-            • {intl.formatMessage({ id: "DEALS.TABLE.PURCHASE" })}
-          </MenuItem>
-        )}
-      {!!bestAllMyDealsMode &&
-        bestAllMyDealsMode !== "deals" &&
-        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-          <Divider style={{ margin: "6px 0" }} />
-        )}
+      {/* Продажа-Покупка меню */}
+      {((!!bestAllMyDealsMode &&
+        bestAllMyDealsMode !== "deals") ||
+        mySubscriptionsMode
+       ) && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
+         <>
+            <MenuItem
+              className={salePurchaseMode === "sale" ? classes.selected : ""}
+              onClick={() => {
+                setSalePurchaseMode("sale");
+                if (bestAllMyDealsMode) {
+                  handleClick(
+                    `/sale/${bestAllMyDealsMode}${
+                      ["best-bids", "all-bids"].includes(bestAllMyDealsMode) ? "/" + cropId : ""
+                    }`
+                  );
+                } else if (mySubscriptionsMode) {
+                  handleClick('/sale/filters');
+                }
+              }}
+            >
+              • {intl.formatMessage({ id: "DEALS.TABLE.SALE" })}
+            </MenuItem>
+            <MenuItem
+              className={salePurchaseMode === "purchase" ? classes.selected : ""}
+              onClick={() => {
+                setSalePurchaseMode("purchase");
+                if (bestAllMyDealsMode) {
+                  handleClick(
+                    `/purchase/${bestAllMyDealsMode}${
+                      ["best-bids", "all-bids"].includes(bestAllMyDealsMode) ? "/" + cropId : ""
+                    }`
+                  );
+                } else if (mySubscriptionsMode) {
+                  handleClick('/purchase/filters');
+                }
+              }}
+            >
+              • {intl.formatMessage({ id: "DEALS.TABLE.PURCHASE" })}
+            </MenuItem>
+            <Divider style={{ margin: "6px 0" }} />
+         </>
+      )}
+
+      <MenuItem
+        className={mySubscriptionsMode ? classes.selected : ""}
+        onClick={() => {
+          if (!mySubscriptionsMode) {
+            handleClick(`/${me.roles.includes('ROLE_BUYER') ? 'sale' : 'purchase'}/filters`)
+          }
+        }}
+      >
+        Мои подписки
+      </MenuItem>
 
       <MenuItem
         className={bestAllMyDealsMode === "my-bids" ? classes.selected : ""}

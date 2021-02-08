@@ -75,7 +75,8 @@ const getInitialValues = (
   vendorId: number,
   user: IUser | undefined,
   me: IUser | undefined,
-  isFilterCreated: boolean
+  isSendingEmail: boolean,
+  isSendingSms: boolean,
 ) => {
   let newCropId: number | string = "";
   if (editMode === "view" || editMode === "edit") {
@@ -101,7 +102,8 @@ const getInitialValues = (
     price: bid?.price || "",
     description: bid?.description || "",
     crop_id: newCropId,
-    is_filter_created: isFilterCreated ? 1 : 0,
+    is_sending_email: isSendingEmail ? 1 : 0,
+    is_sending_sms: isSendingSms ? 1 : 0,
     location:
       editMode === "create"
         ? !!vendorId
@@ -115,7 +117,7 @@ const getInitialValues = (
     pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: !!bid ? bid.type : salePurchaseMode,
     payment_term: bid?.payment_term || "",
-    prepayment_amount: bid?.prepayment_amount || "",
+    prepayment_amount: bid?.prepayment_amount || ""
   };
   if (bid && bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.forEach(item => {
@@ -196,13 +198,15 @@ interface IProps {
   create: (
     type: TBidType,
     data: IBidToRequest,
-    is_filter_created: number
+    is_sending_email: number,
+    is_sending_sms: number
   ) => ActionWithPayload<
     "bids/CREATE_REQUEST",
     {
       type: TBidType;
       data: IBidToRequest;
-      is_filter_created: number;
+      is_sending_email: number;
+      is_sending_sms: number;
     }
   >;
   edit: (
@@ -295,8 +299,10 @@ const BidForm: React.FC<IProps> = ({
   const inputEl = useRef<HTMLButtonElement>(null);
   const [goToRef, setGoToRef] = useState(false);
   const [isMoreBidOpen, setMoreBidOpen] = useState(false);
-  const [isFilterCreated, setFilterCreated] = useState(true);
+  const [isSendingEmail, setSendingEmail] = useState(true);
+  const [isSendingSms, setSendingSms] = useState(false);
   const [isContactAlertOpen, setContactAlertOpen] = useState(false);
+  const [fullPrepayment, setFullPrepayment] = useState(false);
 
   const createFilter = (id: number) => {
     if (editMode === "edit") post(id);
@@ -321,8 +327,9 @@ const BidForm: React.FC<IProps> = ({
     ? vendor.crops[0].id
     : 0;
 
-  const onCheckboxChange = () => {
-    setFilterCreated(!isFilterCreated);
+  const onCheckboxChange = (e: any, val: number) => {
+    if (val === 1) setSendingEmail(!isSendingEmail);
+    if (val === 2) setSendingSms(!isSendingSms);
   };
 
   const linkToContact = () => {
@@ -360,10 +367,12 @@ const BidForm: React.FC<IProps> = ({
       vendorId,
       user,
       me,
-      isFilterCreated
+      isSendingEmail,
+      isSendingSms,
     ),
     onSubmit: values => {
-      const is_filter_created = isFilterCreated ? 1 : 0;
+      const is_sending_email = isSendingEmail ? 1 : 0;
+      const is_sending_sms = isSendingSms ? 1 : 0;
       const newParamValues = initializeParamValues();
 
       const params: { [x: string]: any } = {
@@ -371,13 +380,13 @@ const BidForm: React.FC<IProps> = ({
         vendor_id,
         price: +values.price,
         volume: +values.volume,
-        payment_term: +values.payment_term,
+        payment_term: fullPrepayment ? 0 : +values.payment_term,
         parameter_values: newParamValues,
-        prepayment_amount: +values.prepayment_amount,
+        prepayment_amount: fullPrepayment ? 100 : 0,
       };
       const bidType = params.bid_type;
       delete params.bid_type;
-      if (editMode === "create") create(bidType, params, is_filter_created);
+      if (editMode === "create") create(bidType, params, is_sending_email, is_sending_sms);
       if (editMode === "edit" && !!bid) {
         delete params.vendor_id;
         edit(bid.id, params);
@@ -401,7 +410,7 @@ const BidForm: React.FC<IProps> = ({
         intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
       ),
       payment_term:
-        salePurchaseMode === "purchase"
+        salePurchaseMode === "purchase" && !fullPrepayment
           ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
           : Yup.string(),
     }),
@@ -485,7 +494,8 @@ const BidForm: React.FC<IProps> = ({
         vendorId,
         user,
         me,
-        isFilterCreated
+        isSendingEmail,
+        isSendingSms,
       ),
     });
   }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
@@ -516,9 +526,17 @@ const BidForm: React.FC<IProps> = ({
 
   useEffect(() => {
     if (!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0) {
-      setFilterCreated(false);
+      setSendingEmail(false);
     }
   }, [me, filterCount]);
+
+  useEffect(() => {
+    if (values.prepayment_amount === 100) setFullPrepayment(true);
+  }, [values.prepayment_amount])
+  
+  useEffect(() => {
+    if (fullPrepayment) setFieldValue("payment_term", '');
+  }, [fullPrepayment])
 
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
@@ -553,7 +571,7 @@ const BidForm: React.FC<IProps> = ({
                   !values.volume ||
                   !values.price ||
                   !values.crop_id ||
-                  (salePurchaseMode === "purchase" && !values.payment_term)
+                  (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
                     ? setFormikErrored(true)
                     : setFormikErrored(false);
                   handleSubmit();
@@ -809,40 +827,17 @@ const BidForm: React.FC<IProps> = ({
       ) : (
         <>
           {values.bid_type === "purchase" && (
-            <TextField
-              type="text"
-              label={intl.formatMessage({
-                id: "BIDSLIST.TABLE.PREPAYMENT",
-              })}
-              margin="normal"
-              name="prepayment_amount"
-              value={values.prepayment_amount}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={touched.prepayment_amount && errors.prepayment_amount}
-              error={Boolean(touched.prepayment_amount && errors.prepayment_amount)}
-              InputProps={
-                editMode !== "view"
-                  ? {
-                      style:
-                        editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
-                          ? {
-                              color: "#fd397a",
-                            }
-                          : {},
-                      inputComponent: NumberFormatCustom as any,
-                      endAdornment: (
-                        <IconButton onClick={() => setFieldValue("prepayment_amount", "")}>
-                          <CloseIcon />
-                        </IconButton>
-                      ),
-                    }
-                  : undefined
-              }
-              disabled={editMode === "view"}
-              autoComplete="off"
-            />
+            <>
+              <FormControlLabel
+                control={
+                  <Checkbox checked={fullPrepayment} onChange={() => setFullPrepayment(s => !s)} />
+                }
+                label={'Предоплата 100%'}
+                name="fullPrepayment"
+                style={{marginBottom: 10, marginTop: 10}}
+                disabled={editMode === "view"}
+              />
+            </>
           )}
         </>
       )}
@@ -945,14 +940,17 @@ const BidForm: React.FC<IProps> = ({
                 ? {
                     inputComponent: NumberFormatCustom as any,
                     endAdornment: (
-                      <IconButton onClick={() => setFieldValue("payment_term", "")}>
+                      <IconButton
+                        onClick={() => setFieldValue("payment_term", "")}
+                        disabled={fullPrepayment}
+                      >
                         <CloseIcon />
                       </IconButton>
                     ),
                   }
                 : undefined
             }
-            disabled={editMode === "view"}
+            disabled={editMode === "view" || fullPrepayment}
             autoComplete="off"
           />
         ))}
@@ -1523,10 +1521,20 @@ const BidForm: React.FC<IProps> = ({
                 {!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0 ? (
                   null
                 ) : (
-                  <FormControlLabel
-                    control={<Checkbox checked={isFilterCreated} onChange={onCheckboxChange} />}
-                    label={intl.formatMessage({ id: "FILTER.SOMETHING.CHECKBOX" })}
-                  />
+                  <>
+                    {me && me.email ? (
+                      <FormControlLabel
+                        control={<Checkbox checked={isSendingEmail} onChange={(e) => onCheckboxChange(e, 1)} />}
+                        label={'Подписка по e-mail'}
+                      />
+                    ) : null}
+                    {me && me.phone ? (
+                      <FormControlLabel
+                        control={<Checkbox checked={isSendingSms} onChange={(e) => onCheckboxChange(e, 2)} />}
+                        label={'Подписка по смс'}
+                      />
+                    ) : null}
+                  </>
                 )}
               </div>
             )}
@@ -1540,7 +1548,7 @@ const BidForm: React.FC<IProps> = ({
                   !values.volume ||
                   !values.price ||
                   !values.crop_id ||
-                  (salePurchaseMode === "purchase" && !values.payment_term)
+                  (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
                     ? setFormikErrored(true)
                     : setFormikErrored(false);
                   handleSubmit();
@@ -1594,7 +1602,8 @@ const BidForm: React.FC<IProps> = ({
               vendorId,
               user,
               me,
-              isFilterCreated
+              isSendingEmail,
+              isSendingSms
             ),
           });
           window.scrollTo({

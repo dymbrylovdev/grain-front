@@ -24,7 +24,7 @@ import { filterForCreate, filterForSubmit } from "../../../pages/home/myFilters/
 import { useSnackbar } from "notistack";
 import NumberParam from "../../../pages/home/bids/components/filter/NumberParam";
 import ButtonWithLoader from "../../ui/Buttons/ButtonWithLoader";
-import { setUser } from "@sentry/browser";
+// import { setUser } from "@sentry/browser";
 
 const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   me,
@@ -32,7 +32,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   crops,
   cropParams,
   fetchFilters,
-  loadingFilters,
+  // loadingFilters,
   myFilters,
   clearBids,
 
@@ -49,27 +49,27 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   createSuccess,
   createError,
 
-  clearDelFilter,
-  delFilter,
-  delLoading,
-  delSuccess,
-  delError,
+  // clearDelFilter,
+  // delFilter,
+  // delLoading,
+  // delSuccess,
+  // delError,
 
-  clearEditFilter,
-  editFilter,
-  editLoading,
-  editSuccess,
-  editError,
+  // clearEditFilter,
+  // editFilter,
+  // editLoading,
+  // editSuccess,
+  // editError,
 
-  openInfoAlert,
-  setOpenInfoAlert,
+  // openInfoAlert,
+  // setOpenInfoAlert,
 }) => {
   const [hasUserPointsActive, setUserPointsActive] = useState(false);
 
   const classes = useStyles();
   const location = useLocation();
 
-  const [, , route, cropId] = location.pathname.split("/");
+  const [, , , cropId] = location.pathname.split("/");
 
   const enumParams: any = cropParams && cropParams.filter(item => item.type === "enum");
   const numberParams: any = cropParams && cropParams.filter(item => item.type === "number");
@@ -129,11 +129,12 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       min_prepayment_amount: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
     }),
   });
-  const { resetForm, values, handleBlur } = formik;
+  const { resetForm, values } = formik;
 
   const filterSubmit = () => {
     let params = { ...values };
     params.name = values.name.trim();
+    if (params.min_prepayment_amount === '100') params.max_payment_term = '';
     params.cropId = cropId;
     setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
     clearBids();
@@ -142,6 +143,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const handleSubmit = useCallback(
     (values: any) => {
       let params = { ...values };
+      if (params.min_prepayment_amount === '100') params.max_payment_term = '';
       params.name = values.name.trim();
       setCurrentFilter(+cropId, { ...params, cropId: +cropId });
     },
@@ -190,21 +192,25 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       setUserPointsActive(me.points.some(point => point.active === true));
     }
   }, [me]);
+  
+  useEffect(() => {
+    if (values.min_prepayment_amount === '100') {
+      values.max_payment_term = '';
+    }
+  }, [values.min_prepayment_amount])
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      {enumParams &&
-        //@ts-ignore
-        enumParams.map(param => (
-          <MenuItem key={param.id}>
-            <CheckBoxParamGroup
-              param={param}
-              values={formik.values}
-              handleChange={formik.handleChange}
-              handleSubmit={filterSubmit}
-            />
-          </MenuItem>
-        ))}
+      {enumParams && enumParams.map((param: any) => (
+        <MenuItem key={param.id}>
+          <CheckBoxParamGroup
+            param={param}
+            values={formik.values}
+            handleChange={formik.handleChange}
+            handleSubmit={filterSubmit}
+          />
+        </MenuItem>
+      ))}
 
       {salePurchaseMode === "purchase" && (
         <div className={classes.textFieldContainer}>
@@ -229,12 +235,16 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             InputProps={{
               // inputComponent: NumberFormatCustom,
               endAdornment: (
-                <IconButton onClick={() => formik.setFieldValue("max_payment_term", "")}>
+                <IconButton
+                  onClick={() => formik.setFieldValue("max_payment_term", "")}
+                  disabled={values.min_prepayment_amount === '100'}
+                >
                   <CloseIcon />
                 </IconButton>
               ),
             }}
             autoComplete="off"
+            disabled={values.min_prepayment_amount === '100'}
           />
         </div>
       )}
@@ -293,34 +303,51 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       </div>
 
       {salePurchaseMode === "purchase" && (
-        <div className={classes.textFieldContainer}>
-          <TextField
-            type="text"
-            label={intl.formatMessage({
-              id: "FILTER.FORM.MIN.PREPAYMENT",
-            })}
-            margin="normal"
-            name="min_prepayment_amount"
-            value={formik.values.min_prepayment_amount || ""}
-            variant="outlined"
-            onBlur={filterSubmit}
-            //@ts-ignore
-            onChange={formik.handleChange("min_prepayment_amount")}
-            InputProps={{
-              // inputComponent: NumberFormatCustom,
-              endAdornment: (
-                <IconButton onClick={() => formik.setFieldValue("min_prepayment_amount", "")}>
-                  <CloseIcon />
-                </IconButton>
-              ),
-            }}
-            helperText={formik.touched.min_prepayment_amount && formik.errors.min_prepayment_amount}
-            error={Boolean(
-              formik.touched.min_prepayment_amount && formik.errors.min_prepayment_amount
-            )}
-            autoComplete="off"
+        <>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={values.min_prepayment_amount === '100'}
+                onChange={() => {
+                  formik.setFieldValue(
+                    "min_prepayment_amount",
+                    values.min_prepayment_amount === '' ? '100' : ''
+                  )
+                }}
+              />
+            }
+            label={'Только с предоплатой'}
+            name="fullPrepayment"
           />
-        </div>
+          {/*<div className={classes.textFieldContainer}>
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "FILTER.FORM.MIN.PREPAYMENT",
+              })}
+              margin="normal"
+              name="min_prepayment_amount"
+              value={formik.values.min_prepayment_amount || ""}
+              variant="outlined"
+              onBlur={filterSubmit}
+              //@ts-ignore
+              onChange={formik.handleChange("min_prepayment_amount")}
+              InputProps={{
+                // inputComponent: NumberFormatCustom,
+                endAdornment: (
+                  <IconButton onClick={() => formik.setFieldValue("min_prepayment_amount", "")}>
+                    <CloseIcon />
+                  </IconButton>
+                ),
+              }}
+              helperText={formik.touched.min_prepayment_amount && formik.errors.min_prepayment_amount}
+              error={Boolean(
+                formik.touched.min_prepayment_amount && formik.errors.min_prepayment_amount
+              )}
+              autoComplete="off"
+            />
+          </div>*/}
+        </>
       )}
 
       <div className={classes.textFieldContainer}>

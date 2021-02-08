@@ -134,10 +134,14 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case CROP_PARAMS_SUCCESS: {
-        // console.log(action.payload.data);
+        let newCrops: ICropParam[] = [];
+        action.payload.data.forEach(param => {
+          if (!param.is_deleted) newCrops.push(param)
+        });
+
         return {
           ...state,
-          cropParams: action.payload.data,
+          cropParams: newCrops,
           cropParamsLoading: false,
           cropParamsSuccess: true,
         };
