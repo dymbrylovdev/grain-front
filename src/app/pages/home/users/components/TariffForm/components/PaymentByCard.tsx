@@ -48,7 +48,11 @@ const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial
     trial.manager_email,
   ]);
 
-  return <div id="fondy-container"></div>;
+  return (
+    <div style={{paddingTop: 40, backgroundColor: "#fff"}}>
+      <div id="fondy-container"></div>
+    </div>
+  );
 };
 
 export default PaymentByCard;

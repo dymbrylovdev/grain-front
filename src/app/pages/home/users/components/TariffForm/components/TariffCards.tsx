@@ -75,6 +75,8 @@ interface IProps {
 
   selectedDate: any;
   setSelectedDate: any;
+
+  goToTariffPurchase: any;
 }
 
 const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
@@ -96,17 +98,19 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
 
   selectedDate,
   setSelectedDate,
+
+  goToTariffPurchase,
 }) => {
   const innerClasses = useStyles();
 
   const handleSubmit = tariff => {
-    setSelectedTariff(tariff.id);
-    !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ? setOpenModal(true) : edit();
+    setSelectedTariff(tariff.id)
+    !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ? goToTariffPurchase() : edit();
   };
 
   const showRequisites = tariff => {
-    setSelectedTariff(tariff);
-    setOpenModal(true);
+    setSelectedTariff(tariff.id);
+    goToTariffPurchase();
   };
 
   return (

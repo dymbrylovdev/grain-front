@@ -163,6 +163,10 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   const [openModal, setOpenModal] = useState(false);
   const [showTariffTable, setShowTariffTable] = useState(0);
 
+  const goToTariffPurchase = () => {
+    history.push("/user/profile/tariffs/payment");
+  }
+
   const { values, resetForm, handleSubmit } = useFormik({
     initialValues: {
       tariff_id: realUser?.tariff_matrix.id,
@@ -268,10 +272,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchTrial();
   }, [fetchTrial]);
 
-  useEffect(() => {
-    if (selectedTariff) history.push("/user/profile/tariffs/payment");
-  }, [selectedTariff, history]);
-
   return (
     <>
       <div>
@@ -341,6 +341,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     setSelectedTariff={setSelectedTariff}
                     selectedDate={selectedDate}
                     setSelectedDate={setSelectedDate}
+                    goToTariffPurchase={goToTariffPurchase}
+                    
                   />
                 )}
               </>
