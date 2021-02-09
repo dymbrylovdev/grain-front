@@ -197,6 +197,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     if (values.min_prepayment_amount === '100') {
       values.max_payment_term = '';
     }
+    filterSubmit();
   }, [values.min_prepayment_amount])
 
   return (
@@ -303,51 +304,21 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       </div>
 
       {salePurchaseMode === "purchase" && (
-        <>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={values.min_prepayment_amount === '100'}
-                onChange={() => {
-                  formik.setFieldValue(
-                    "min_prepayment_amount",
-                    values.min_prepayment_amount === '' ? '100' : ''
-                  )
-                }}
-              />
-            }
-            label={'Только с предоплатой'}
-            name="fullPrepayment"
-          />
-          {/*<div className={classes.textFieldContainer}>
-            <TextField
-              type="text"
-              label={intl.formatMessage({
-                id: "FILTER.FORM.MIN.PREPAYMENT",
-              })}
-              margin="normal"
-              name="min_prepayment_amount"
-              value={formik.values.min_prepayment_amount || ""}
-              variant="outlined"
-              onBlur={filterSubmit}
-              //@ts-ignore
-              onChange={formik.handleChange("min_prepayment_amount")}
-              InputProps={{
-                // inputComponent: NumberFormatCustom,
-                endAdornment: (
-                  <IconButton onClick={() => formik.setFieldValue("min_prepayment_amount", "")}>
-                    <CloseIcon />
-                  </IconButton>
-                ),
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={values.min_prepayment_amount === '100'}
+              onChange={() => {
+                formik.setFieldValue(
+                  "min_prepayment_amount",
+                  values.min_prepayment_amount === '' ? '100' : ''
+                )
               }}
-              helperText={formik.touched.min_prepayment_amount && formik.errors.min_prepayment_amount}
-              error={Boolean(
-                formik.touched.min_prepayment_amount && formik.errors.min_prepayment_amount
-              )}
-              autoComplete="off"
             />
-          </div>*/}
-        </>
+          }
+          label={'Только с предоплатой'}
+          name="fullPrepayment"
+        />
       )}
 
       <div className={classes.textFieldContainer}>
