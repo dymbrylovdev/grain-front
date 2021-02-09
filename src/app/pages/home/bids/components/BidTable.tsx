@@ -123,7 +123,7 @@ const BidTable: React.FC<IProps> = ({
                     }
                   />
                 </TopTableCell>
-                {bestAllMyMode !== "my-bids" && (
+                {(bestAllMyMode !== "my-bids" && user.points.length > 0) && (
                   <TopTableCell>
                     {bestAllMyMode !== "edit" ? (
                       <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
@@ -236,7 +236,7 @@ const BidTable: React.FC<IProps> = ({
                       )}
                     </div>
                   </TableCell>
-                  {bestAllMyMode !== "my-bids" && (
+                  {(bestAllMyMode !== "my-bids" && user.points.length > 0) && (
                     <TableCell>
                       {bestAllMyMode !== "edit"
                         ? bid?.price_with_delivery_with_vat
