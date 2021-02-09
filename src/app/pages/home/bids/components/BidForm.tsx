@@ -84,13 +84,13 @@ const getInitialValues = (
   }
   if (editMode === "create") {
     if (vendorId) {
-      if (user && user.crops.length === 1) {
+      if (user && user.crops.length >= 1) {
         newCropId = user.crops[0].id;
       } else {
         newCropId = "";
       }
     } else {
-      if (me && me.crops.length === 1) {
+      if (me && me.crops.length >= 1) {
         newCropId = me.crops[0].id;
       } else {
         newCropId = "";
