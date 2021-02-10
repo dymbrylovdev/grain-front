@@ -166,6 +166,21 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
         >
           {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
         </Button>
+
+        {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
+          me &&
+          me.tariff_matrix.tariff.name === "Бесплатный" && (
+            <Button
+              className={classes.button}
+              variant="contained"
+              color="primary"
+              onClick={() => history.push(`/user/profile/tariffs`)}
+              disabled={!myFilters}
+            >
+              {intl.formatMessage({ id: "BID.PRICES.GET.PREMIUM" })}
+            </Button>
+          )}
+
         {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
           <Button
             className={classes.button}
@@ -195,7 +210,8 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                 { id: "FILTER.FORM.LIMIT" },
                 {
                   count:
-                    !me?.tariff_matrix || (!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0)
+                    !me?.tariff_matrix ||
+                    (!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0)
                       ? "0"
                       : me?.tariff_matrix?.max_filters_count - filterCount,
                   word: declOfNum(me?.tariff_matrix?.max_filters_count - filterCount, [

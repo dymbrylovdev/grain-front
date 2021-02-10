@@ -288,6 +288,7 @@
   "BID.LOCATION.DONE.SALE": "Точка отгрузки указана.",
   "BID.LOCATION.DONE.PURCHASE": "Точка приемки указана.",
   "BID.PRICES.BUTTON": "Цены по точкам",
+  "BID.PRICES.GET.PREMIUM": "Снять ограничения",
   "BID.STATUS.CREATE_SUCCESS": "Объявление успешно добавлено",
   "BID.STATUS.EDIT_SUCCESS": "Объявление успешно сохранено",
   "BID.STATUS.ERROR": "Ошибка добавления объявления",

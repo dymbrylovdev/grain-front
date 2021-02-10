@@ -76,7 +76,7 @@ const getInitialValues = (
   user: IUser | undefined,
   me: IUser | undefined,
   isSendingEmail: boolean,
-  isSendingSms: boolean,
+  isSendingSms: boolean
 ) => {
   let newCropId: number | string = "";
   if (editMode === "view" || editMode === "edit") {
@@ -117,7 +117,7 @@ const getInitialValues = (
     pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: !!bid ? bid.type : salePurchaseMode,
     payment_term: bid?.payment_term || "",
-    prepayment_amount: bid?.prepayment_amount || ""
+    prepayment_amount: bid?.prepayment_amount || "",
   };
   if (bid && bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.forEach(item => {
@@ -342,7 +342,9 @@ const BidForm: React.FC<IProps> = ({
           : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
       );
       //@ts-ignore
-      editContactViewCount({ data: { contact_view_count: contactViewCount - 1 } });
+      if (!["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && history.location.pathname !== "/user/profile")
+        //@ts-ignore
+        editContactViewCount({ data: { contact_view_count: contactViewCount - 1 } });
     } else {
       setContactAlertOpen(!isContactAlertOpen);
       setTimeout(() => setContactAlertOpen(false), 5000);
@@ -368,7 +370,7 @@ const BidForm: React.FC<IProps> = ({
       user,
       me,
       isSendingEmail,
-      isSendingSms,
+      isSendingSms
     ),
     onSubmit: values => {
       const is_sending_email = isSendingEmail ? 1 : 0;
@@ -495,7 +497,7 @@ const BidForm: React.FC<IProps> = ({
         user,
         me,
         isSendingEmail,
-        isSendingSms,
+        isSendingSms
       ),
     });
   }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
@@ -532,11 +534,11 @@ const BidForm: React.FC<IProps> = ({
 
   useEffect(() => {
     if (values.prepayment_amount === 100) setFullPrepayment(true);
-  }, [values.prepayment_amount])
-  
+  }, [values.prepayment_amount]);
+
   useEffect(() => {
-    if (fullPrepayment) setFieldValue("payment_term", '');
-  }, [fullPrepayment])
+    if (fullPrepayment) setFieldValue("payment_term", "");
+  }, [fullPrepayment]);
 
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
@@ -832,9 +834,9 @@ const BidForm: React.FC<IProps> = ({
                 control={
                   <Checkbox checked={fullPrepayment} onChange={() => setFullPrepayment(s => !s)} />
                 }
-                label={'Предоплата 100%'}
+                label={"Предоплата 100%"}
                 name="fullPrepayment"
-                style={{marginBottom: 10, marginTop: 10}}
+                style={{ marginBottom: 10, marginTop: 10 }}
                 disabled={editMode === "view"}
               />
             </>
@@ -1518,20 +1520,26 @@ const BidForm: React.FC<IProps> = ({
               </div>
             ) : (
               <div className={classes.button}>
-                {!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0 ? (
-                  null
-                ) : (
+                {!!me?.tariff_matrix &&
+                me.tariff_matrix.max_filters_count - filterCount <= 0 ? null : (
                   <>
                     {me && me.email ? (
                       <FormControlLabel
-                        control={<Checkbox checked={isSendingEmail} onChange={(e) => onCheckboxChange(e, 1)} />}
-                        label={'Подписка по e-mail'}
+                        control={
+                          <Checkbox
+                            checked={isSendingEmail}
+                            onChange={e => onCheckboxChange(e, 1)}
+                          />
+                        }
+                        label={"Подписка по e-mail"}
                       />
                     ) : null}
                     {me && me.phone ? (
                       <FormControlLabel
-                        control={<Checkbox checked={isSendingSms} onChange={(e) => onCheckboxChange(e, 2)} />}
-                        label={'Подписка по смс'}
+                        control={
+                          <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
+                        }
+                        label={"Подписка по смс"}
                       />
                     ) : null}
                   </>
