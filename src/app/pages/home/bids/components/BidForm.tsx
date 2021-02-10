@@ -335,7 +335,7 @@ const BidForm: React.FC<IProps> = ({
   const linkToContact = () => {
     let contactViewCount = me?.contact_view_count;
     //@ts-ignore
-    if (contactViewCount > 0) {
+    if (contactViewCount > 0 || ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
       history.push(
         me?.id === (!!bid && bid.vendor && bid.vendor.id)
           ? "/user/profile"
