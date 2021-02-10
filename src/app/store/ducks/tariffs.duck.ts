@@ -36,6 +36,8 @@ const CLEAR_FONDY_CREDENTIALS = "tariffs/CLEAR_FONDY_CREDENTIALS";
 const FONDY_CREDENTIALS_REQUEST = "tariffs/FONDY_CREDENTIALS_REQUEST";
 const FONDY_CREDENTIALS_SUCCESS = "tariffs/FONDY_CREDENTIALS_SUCCESS";
 const FONDY_CREDENTIALS_FAIL = "tariffs/FONDY_CREDENTIALS_FAIL";
+
+const SET_TARIFF_TABLE = "tariffs/SET_TARIFF_TABLE";
 export interface IInitialState {
   tariffs: ITariff[] | undefined;
   loading: boolean;
@@ -56,6 +58,8 @@ export interface IInitialState {
   fondyCredentialsLoading: boolean;
   fondyCredentialsSuccess: boolean;
   fondyCredentialsError: string | null;
+
+  showTariffTable: number;
 }
 
 const initialState: IInitialState = {
@@ -78,6 +82,8 @@ const initialState: IInitialState = {
   fondyCredentialsLoading: false,
   fondyCredentialsSuccess: false,
   fondyCredentialsError: null,
+
+  showTariffTable: 0,
 };
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
@@ -260,6 +266,13 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       };
     }
 
+    case SET_TARIFF_TABLE: {
+      return {
+        ...state,
+        showTariffTable: action.payload
+      }
+    }
+
     default:
       return state;
   }
@@ -291,6 +304,8 @@ export const actions = {
   fondyCredentialsSuccess: (response: IServerResponse<any>) =>
     createAction(FONDY_CREDENTIALS_SUCCESS, { response }),
   fondyCredentialsFail: (error: string) => createAction(FONDY_CREDENTIALS_FAIL, { error }),
+
+  setTariffTable: (newTariffTable: number) => createAction(SET_TARIFF_TABLE, newTariffTable),
 };
 
 export type TActions = ActionsUnion<typeof actions>;

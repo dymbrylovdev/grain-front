@@ -20,6 +20,7 @@ import { useSnackbar } from "notistack";
 
 import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
+import { actions as tariffsActions } from "../../../store/ducks/tariffs.duck";
 
 import { IAppState } from "../../../store/rootDuck";
 import useStyles from "../styles";
@@ -63,6 +64,8 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
   setCurrentPurchaseFilter,
   currentSaleFilters,
   currentPurchaseFilters,
+
+  setTariffTable,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -174,7 +177,10 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
               className={classes.button}
               variant="contained"
               color="primary"
-              onClick={() => history.push(`/user/profile/tariffs`)}
+              onClick={() => {
+                setTariffTable(1);
+                history.push(`/user/profile/tariffs`);
+              }}
               disabled={!myFilters}
             >
               {intl.formatMessage({ id: "BID.PRICES.GET.PREMIUM" })}
@@ -352,6 +358,7 @@ const connector = connect(
     edit: myFiltersActions.editRequest,
     setCurrentSaleFilter: myFiltersActions.setCurrentSaleFilter,
     setCurrentPurchaseFilter: myFiltersActions.setCurrentPurchaseFilter,
+    setTariffTable: tariffsActions.setTariffTable,
   }
 );
 
