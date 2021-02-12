@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
+import { useHistory } from "react-router-dom";
+import { Button } from "@material-ui/core";
 
 import BidTable from "../../bids/components/BidTable";
 
@@ -14,6 +16,7 @@ interface IProps {
   intl: IntlShape;
   classes: any;
   userId?: number;
+  isBuyer?: boolean;
 }
 
 const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
@@ -21,6 +24,7 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   intl,
   userId,
   userBids,
+  isBuyer,
   classes,
 
   fetchCrops,
@@ -34,6 +38,8 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   userBidsSuccess,
   userBidsError,
 }) => {
+  const history = useHistory();
+
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
 
@@ -64,6 +70,16 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
         crops={crops}
         setProfit={setProfit}
       />
+
+      <div style={{display: "flex", justifyContent: "flex-end", marginTop: 15}}>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => {history.push(`/bid/create/${isBuyer ? "purchase" : "sale"}/0/0/${userId}`)}}
+        >
+          Добавить объявление
+        </Button>
+      </div>
     </div>
   );
 };

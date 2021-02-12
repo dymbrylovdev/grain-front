@@ -123,6 +123,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   trialLoading,
   trialSuccess,
   trialError,
+
+  showTariffTable,
+  setTariffTable,
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
@@ -161,7 +164,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   }
 
   const [openModal, setOpenModal] = useState(false);
-  const [showTariffTable, setShowTariffTable] = useState(0);
+  // const [showTariffTable, setShowTariffTable] = useState(0);
 
   const goToTariffPurchase = () => {
     history.push("/user/profile/tariffs/payment");
@@ -324,7 +327,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     editMode={editMode}
                     realUser={realUser}
                     showTariffTable={showTariffTable}
-                    setShowTariffTable={setShowTariffTable}
+                    setShowTariffTable={setTariffTable}
                   />
                 ) : (
                   <TariffCards
@@ -334,7 +337,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     realGroupedTariffs={realGroupedTariffs}
                     realGroupedBuyerTariffs={realGroupedBuyerTariffs}
                     showTariffTable={showTariffTable}
-                    setShowTariffTable={setShowTariffTable}
+                    setShowTariffTable={setTariffTable}
                     openModal={openModal}
                     setOpenModal={setOpenModal}
                     selectedTariff={selectedTariff}
@@ -397,6 +400,7 @@ const connector = connect(
     prompterStep: state.prompter.activeStep,
 
     tariffs: state.tariffs.tariffs,
+    showTariffTable: state.tariffs.showTariffTable,
 
     crops: state.crops2.crops,
 
@@ -421,6 +425,8 @@ const connector = connect(
 
     clearFondyCredentials: tariffsActions.clearFondyCredentials,
     fondyCredentialsRequest: tariffsActions.fondyCredentialsRequest,
+
+    setTariffTable: tariffsActions.setTariffTable,
 
     setMenuConfig: builderActions.setMenuConfig,
 

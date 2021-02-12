@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { TextField, Theme, IconButton, Grid as div, Button, Divider } from "@material-ui/core";
@@ -79,9 +80,11 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   crops,
 
   setMenuConfig,
+  setTariffTable,
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
+  const history = useHistory();
 
   let realUser: IUser | undefined = undefined;
   if (editMode === "profile" && me) realUser = me;
@@ -279,7 +282,8 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
             <div key={item.id}>
               <div className={innerClasses.crop}>
                 <div>{item.name}</div>
-                {(editMode !== "view" || (me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]))) && (
+                {(editMode !== "view" ||
+                  (me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]))) && (
                   <IconButton
                     size={"medium"}
                     onClick={() => {
@@ -329,14 +333,33 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
           realUser?.crops?.length < crops.length && (
             <div className={classes.textFieldContainer}>
               {!addingCrop ? (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => setAddingCrop(true)}
-                  disabled={loadingMe || loadingUser || editLoading}
-                >
-                  {intl.formatMessage({ id: "CROPSLIST.BUTTON.CREATE" })}
-                </Button>
+                <>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setAddingCrop(true)}
+                    disabled={loadingMe || loadingUser || editLoading}
+                  >
+                    {intl.formatMessage({ id: "CROPSLIST.BUTTON.CREATE" })}
+                  </Button>
+
+                  {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
+                    me &&
+                    me.tariff_matrix.tariff.name === "Бесплатный" && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          setTariffTable(1);
+                          history.push(`/user/profile/tariffs`);
+                        }}
+                        style={{marginLeft: 15}}
+                        disabled={loadingMe || loadingUser || editLoading}
+                      >
+                        {intl.formatMessage({ id: "BID.PRICES.GET.PREMIUM" })}
+                      </Button>
+                    )}
+                </>
               ) : (
                 <div className={classes.textField}>
                   <Autocomplete
@@ -412,6 +435,8 @@ const connector = connect(
     editMe: authActions.editRequest,
 
     setMenuConfig: builderActions.setMenuConfig,
+
+    setTariffTable: tariffsActions.setTariffTable,
   }
 );
 

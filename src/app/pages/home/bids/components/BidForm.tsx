@@ -12,6 +12,7 @@ import {
   Collapse,
   FormControlLabel,
   Checkbox,
+  Divider
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
@@ -76,7 +77,7 @@ const getInitialValues = (
   user: IUser | undefined,
   me: IUser | undefined,
   isSendingEmail: boolean,
-  isSendingSms: boolean,
+  isSendingSms: boolean
 ) => {
   let newCropId: number | string = "";
   if (editMode === "view" || editMode === "edit") {
@@ -84,13 +85,13 @@ const getInitialValues = (
   }
   if (editMode === "create") {
     if (vendorId) {
-      if (user && user.crops.length === 1) {
+      if (user && user.crops.length >= 1) {
         newCropId = user.crops[0].id;
       } else {
         newCropId = "";
       }
     } else {
-      if (me && me.crops.length === 1) {
+      if (me && me.crops.length >= 1) {
         newCropId = me.crops[0].id;
       } else {
         newCropId = "";
@@ -117,7 +118,7 @@ const getInitialValues = (
     pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: !!bid ? bid.type : salePurchaseMode,
     payment_term: bid?.payment_term || "",
-    prepayment_amount: bid?.prepayment_amount || ""
+    prepayment_amount: bid?.prepayment_amount || "",
   };
   if (bid && bid.parameter_values && bid.parameter_values.length > 0) {
     bid.parameter_values.forEach(item => {
@@ -335,14 +336,20 @@ const BidForm: React.FC<IProps> = ({
   const linkToContact = () => {
     let contactViewCount = me?.contact_view_count;
     //@ts-ignore
-    if (contactViewCount > 0) {
+    if (contactViewCount > 0 || ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
       history.push(
         me?.id === (!!bid && bid.vendor && bid.vendor.id)
           ? "/user/profile"
           : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
       );
       //@ts-ignore
-      editContactViewCount({ data: { contact_view_count: contactViewCount - 1 } });
+      if (
+        //@ts-ignore
+        !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) &&
+        history.location.pathname !== "/user/profile"
+      )
+        //@ts-ignore
+        editContactViewCount({ data: { contact_view_count: contactViewCount - 1 } });
     } else {
       setContactAlertOpen(!isContactAlertOpen);
       setTimeout(() => setContactAlertOpen(false), 5000);
@@ -368,7 +375,7 @@ const BidForm: React.FC<IProps> = ({
       user,
       me,
       isSendingEmail,
-      isSendingSms,
+      isSendingSms
     ),
     onSubmit: values => {
       const is_sending_email = isSendingEmail ? 1 : 0;
@@ -495,7 +502,7 @@ const BidForm: React.FC<IProps> = ({
         user,
         me,
         isSendingEmail,
-        isSendingSms,
+        isSendingSms
       ),
     });
   }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
@@ -532,11 +539,11 @@ const BidForm: React.FC<IProps> = ({
 
   useEffect(() => {
     if (values.prepayment_amount === 100) setFullPrepayment(true);
-  }, [values.prepayment_amount])
-  
+  }, [values.prepayment_amount]);
+
   useEffect(() => {
-    if (fullPrepayment) setFieldValue("payment_term", '');
-  }, [fullPrepayment])
+    if (fullPrepayment) setFieldValue("payment_term", "");
+  }, [fullPrepayment]);
 
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
@@ -711,6 +718,38 @@ const BidForm: React.FC<IProps> = ({
           </TextField>
         ))}
 
+      {loading ? (
+        <Skeleton width="100%" height={70} animation="wave" />
+      ) : (
+        <Autocomplete
+          id="crop_id"
+          options={vendor?.crops || []}
+          getOptionLabel={option => option.name}
+          noOptionsText={intl.formatMessage({
+            id: "ALL.AUTOCOMPLIT.EMPTY",
+          })}
+          value={vendor?.crops?.find(item => item.id === values.crop_id) || null}
+          onChange={(e: any, val: ICrop | null) => {
+            setFieldValue("crop_id", val?.id || "");
+            !!val?.id ? fetchCropParams(val.id) : clearCropParams();
+          }}
+          disabled={editMode === "view"}
+          renderInput={params => (
+            <TextField
+              {...params}
+              margin="normal"
+              label={intl.formatMessage({
+                id: "FILTER.FORM.NAME.CROP",
+              })}
+              variant="outlined"
+              onBlur={handleBlur}
+              helperText={touched.crop_id && errors.crop_id}
+              error={Boolean(touched.crop_id && errors.crop_id)}
+            />
+          )}
+        />
+      )}
+
       {editMode === "edit" &&
         bid?.vendor_use_vat !== bid?.vendor?.use_vat &&
         (loading ? (
@@ -832,9 +871,9 @@ const BidForm: React.FC<IProps> = ({
                 control={
                   <Checkbox checked={fullPrepayment} onChange={() => setFullPrepayment(s => !s)} />
                 }
-                label={'Предоплата 100%'}
+                label={"Предоплата 100%"}
                 name="fullPrepayment"
-                style={{marginBottom: 10, marginTop: 10}}
+                style={{ marginBottom: 10, marginTop: 10 }}
                 disabled={editMode === "view"}
               />
             </>
@@ -1381,38 +1420,6 @@ const BidForm: React.FC<IProps> = ({
         </div>
       )}
 
-      {loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <Autocomplete
-          id="crop_id"
-          options={vendor?.crops || []}
-          getOptionLabel={option => option.name}
-          noOptionsText={intl.formatMessage({
-            id: "ALL.AUTOCOMPLIT.EMPTY",
-          })}
-          value={vendor?.crops?.find(item => item.id === values.crop_id) || null}
-          onChange={(e: any, val: ICrop | null) => {
-            setFieldValue("crop_id", val?.id || "");
-            !!val?.id ? fetchCropParams(val.id) : clearCropParams();
-          }}
-          disabled={editMode === "view"}
-          renderInput={params => (
-            <TextField
-              {...params}
-              margin="normal"
-              label={intl.formatMessage({
-                id: "FILTER.FORM.NAME.CROP",
-              })}
-              variant="outlined"
-              onBlur={handleBlur}
-              helperText={touched.crop_id && errors.crop_id}
-              error={Boolean(touched.crop_id && errors.crop_id)}
-            />
-          )}
-        />
-      )}
-
       {!loading &&
         !!values.crop_id &&
         (cropParamsLoading ? (
@@ -1518,20 +1525,26 @@ const BidForm: React.FC<IProps> = ({
               </div>
             ) : (
               <div className={classes.button}>
-                {!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0 ? (
-                  null
-                ) : (
+                {!!me?.tariff_matrix &&
+                me.tariff_matrix.max_filters_count - filterCount <= 0 ? null : (
                   <>
                     {me && me.email ? (
                       <FormControlLabel
-                        control={<Checkbox checked={isSendingEmail} onChange={(e) => onCheckboxChange(e, 1)} />}
-                        label={'Подписка по e-mail'}
+                        control={
+                          <Checkbox
+                            checked={isSendingEmail}
+                            onChange={e => onCheckboxChange(e, 1)}
+                          />
+                        }
+                        label={"Подписка по e-mail"}
                       />
                     ) : null}
                     {me && me.phone ? (
                       <FormControlLabel
-                        control={<Checkbox checked={isSendingSms} onChange={(e) => onCheckboxChange(e, 2)} />}
-                        label={'Подписка по смс'}
+                        control={
+                          <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
+                        }
+                        label={"Подписка по смс"}
                       />
                     ) : null}
                   </>
@@ -1586,7 +1599,7 @@ const BidForm: React.FC<IProps> = ({
         })}
         handleClose={() => {
           if (!!+vendorId) {
-            history.push("/user-list");
+            history.push(`/user/edit/${vendorId}`);
           } else {
             history.push(`/${salePurchaseMode}/my-bids`);
           }

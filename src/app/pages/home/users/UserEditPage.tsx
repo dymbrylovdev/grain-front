@@ -327,9 +327,11 @@ const UserEditPage: React.FC<TPropsFromRedux &
             <TariffForm editMode={editMode} userId={+id || undefined} />
           </TabPanel>
 
-          <TabPanel value={valueTabs} index={4}>
-            <BidsForm userId={+id || undefined} classes={classes} />
-          </TabPanel>
+          {user && (
+            <TabPanel value={valueTabs} index={4}>
+              <BidsForm userId={+id || undefined} classes={classes} isBuyer={user.is_buyer} />
+            </TabPanel>
+          )}
         </div>
         <AlertDialog
           isOpen={isAlertOpen}
