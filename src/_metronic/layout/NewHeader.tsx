@@ -231,7 +231,7 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           )} */}
           {accessByRoles(me, ["ROLE_BUYER"]) && (
             <MenuItem onClick={() => handleClick("/user/profile/points")}>
-              {intl.formatMessage({ id: "SUBMENU.POINTS" })}
+              {intl.formatMessage({ id: "SUBMENU.POINTS2" })}
             </MenuItem>
           )}
           {accessByRoles(me, ["ROLE_BUYER"]) && (
