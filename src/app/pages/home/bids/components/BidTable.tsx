@@ -66,17 +66,14 @@ const BidTable: React.FC<IProps> = ({
   paginationData,
   loading,
   fetcher,
-  addUrl,
   salePurchaseMode,
   bestAllMyMode,
   crops,
   setProfit,
 }) => {
   const history = useHistory();
-
-  const { enqueueSnackbar } = useSnackbar();
-
   const [clientWidth, setClientWidth] = useState(document.body.clientWidth);
+  const [hasActivePoints, setHasActivePoints] = useState(false);
 
   const updateWindowDimensions = () => {
     setClientWidth(window.innerWidth);
@@ -88,6 +85,14 @@ const BidTable: React.FC<IProps> = ({
       window.removeEventListener("resize", updateWindowDimensions);
     };
   }, []);
+
+  useEffect(() => {
+    if (user.points.find(el => el.active)) {
+      setHasActivePoints(true);
+    } else {
+      setHasActivePoints(false);
+    }
+  }, [user.points]);
 
   return (
     <>
@@ -123,7 +128,7 @@ const BidTable: React.FC<IProps> = ({
                     }
                   />
                 </TopTableCell>
-                {(bestAllMyMode !== "my-bids" && user.points.length > 0) && (
+                {(bestAllMyMode !== "my-bids" && hasActivePoints) && (
                   <TopTableCell>
                     {bestAllMyMode !== "edit" ? (
                       <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" />
@@ -236,7 +241,7 @@ const BidTable: React.FC<IProps> = ({
                       )}
                     </div>
                   </TableCell>
-                  {(bestAllMyMode !== "my-bids" && user.points.length > 0) && (
+                  {(bestAllMyMode !== "my-bids" && hasActivePoints) && (
                     <TableCell>
                       {bestAllMyMode !== "edit"
                         ? bid?.price_with_delivery_with_vat
