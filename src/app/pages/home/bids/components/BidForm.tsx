@@ -12,6 +12,7 @@ import {
   Collapse,
   FormControlLabel,
   Checkbox,
+  Divider
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
@@ -342,7 +343,11 @@ const BidForm: React.FC<IProps> = ({
           : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
       );
       //@ts-ignore
-      if (!["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && history.location.pathname !== "/user/profile")
+      if (
+        //@ts-ignore
+        !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) &&
+        history.location.pathname !== "/user/profile"
+      )
         //@ts-ignore
         editContactViewCount({ data: { contact_view_count: contactViewCount - 1 } });
     } else {
@@ -712,6 +717,38 @@ const BidForm: React.FC<IProps> = ({
             </MenuItem>
           </TextField>
         ))}
+
+      {loading ? (
+        <Skeleton width="100%" height={70} animation="wave" />
+      ) : (
+        <Autocomplete
+          id="crop_id"
+          options={vendor?.crops || []}
+          getOptionLabel={option => option.name}
+          noOptionsText={intl.formatMessage({
+            id: "ALL.AUTOCOMPLIT.EMPTY",
+          })}
+          value={vendor?.crops?.find(item => item.id === values.crop_id) || null}
+          onChange={(e: any, val: ICrop | null) => {
+            setFieldValue("crop_id", val?.id || "");
+            !!val?.id ? fetchCropParams(val.id) : clearCropParams();
+          }}
+          disabled={editMode === "view"}
+          renderInput={params => (
+            <TextField
+              {...params}
+              margin="normal"
+              label={intl.formatMessage({
+                id: "FILTER.FORM.NAME.CROP",
+              })}
+              variant="outlined"
+              onBlur={handleBlur}
+              helperText={touched.crop_id && errors.crop_id}
+              error={Boolean(touched.crop_id && errors.crop_id)}
+            />
+          )}
+        />
+      )}
 
       {editMode === "edit" &&
         bid?.vendor_use_vat !== bid?.vendor?.use_vat &&
@@ -1383,38 +1420,6 @@ const BidForm: React.FC<IProps> = ({
         </div>
       )}
 
-      {loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <Autocomplete
-          id="crop_id"
-          options={vendor?.crops || []}
-          getOptionLabel={option => option.name}
-          noOptionsText={intl.formatMessage({
-            id: "ALL.AUTOCOMPLIT.EMPTY",
-          })}
-          value={vendor?.crops?.find(item => item.id === values.crop_id) || null}
-          onChange={(e: any, val: ICrop | null) => {
-            setFieldValue("crop_id", val?.id || "");
-            !!val?.id ? fetchCropParams(val.id) : clearCropParams();
-          }}
-          disabled={editMode === "view"}
-          renderInput={params => (
-            <TextField
-              {...params}
-              margin="normal"
-              label={intl.formatMessage({
-                id: "FILTER.FORM.NAME.CROP",
-              })}
-              variant="outlined"
-              onBlur={handleBlur}
-              helperText={touched.crop_id && errors.crop_id}
-              error={Boolean(touched.crop_id && errors.crop_id)}
-            />
-          )}
-        />
-      )}
-
       {!loading &&
         !!values.crop_id &&
         (cropParamsLoading ? (
@@ -1594,7 +1599,7 @@ const BidForm: React.FC<IProps> = ({
         })}
         handleClose={() => {
           if (!!+vendorId) {
-            history.push("/user-list");
+            history.push(`/user/edit/${vendorId}`);
           } else {
             history.push(`/${salePurchaseMode}/my-bids`);
           }

@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Paper, useMediaQuery, makeStyles, Drawer } from "@material-ui/core";
@@ -7,9 +8,6 @@ import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
 import { IAppState } from "../../store/rootDuck";
 
 import { LeftMenu } from ".";
-import { RouteComponentProps, useLocation } from "react-router-dom";
-import MyFilters from "../../pages/home/bids/components/filter/MyFilters";
-
 
 const useStyles = makeStyles(theme => ({
   root: {

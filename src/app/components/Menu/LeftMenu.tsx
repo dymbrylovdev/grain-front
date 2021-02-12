@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { Collapse, Divider, makeStyles, MenuItem, Button } from "@material-ui/core";
+import { Collapse, Divider, makeStyles, MenuItem } from "@material-ui/core";
 import { IntlShape } from "react-intl";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
@@ -31,7 +31,6 @@ const useStyles = makeStyles(theme => ({
   },
   selected: {
     color: "#5d78ff",
-    // fontWeight: "bold",
   },
   btns: {
     display: "flex",
