@@ -114,9 +114,13 @@ const LeftMenu: React.FC<IProps> = ({
   const history = useHistory();
 
   const [bestOpen, setBestOpen] = useState(false);
-  const [selectedBestOpen, setSelectedBestOpen] = useState(false);
+  const [selectedBestOpen, setSelectedBestOpen] = useState(
+    bestAllMyDealsMode === "best-bids" || false
+  );
   const [allOpen, setAllOpen] = useState(false);
-  const [selectedAllOpen, setSelectedAllOpen] = useState(false);
+  const [selectedAllOpen, setSelectedAllOpen] = useState(
+    bestAllMyDealsMode === "all-bids" || false
+  );
   const [mySubscriptionsMode, setMySubscriptionMode] = useState(false);
 
   useEffect(() => {
@@ -141,9 +145,9 @@ const LeftMenu: React.FC<IProps> = ({
   const location = useLocation().pathname;
 
   useEffect(() => {
-    if (location === '/purchase/filters' || location === '/sale/filters') {
+    if (location === "/purchase/filters" || location === "/sale/filters") {
       setMySubscriptionMode(true);
-      setSalePurchaseMode(location === '/purchase/filters' ? 'purchase' : 'sale');
+      setSalePurchaseMode(location === "/purchase/filters" ? "purchase" : "sale");
     } else {
       setMySubscriptionMode(false);
     }
@@ -159,11 +163,9 @@ const LeftMenu: React.FC<IProps> = ({
       <Divider style={{ margin: "6px 0" }} />
 
       {/* Продажа-Покупка меню */}
-      {((!!bestAllMyDealsMode &&
-        bestAllMyDealsMode !== "deals") ||
-        mySubscriptionsMode
-       ) && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-         <>
+      {((!!bestAllMyDealsMode && bestAllMyDealsMode !== "deals") || mySubscriptionsMode) &&
+        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
+          <>
             <MenuItem
               className={salePurchaseMode === "sale" ? classes.selected : ""}
               onClick={() => {
@@ -175,7 +177,7 @@ const LeftMenu: React.FC<IProps> = ({
                     }`
                   );
                 } else if (mySubscriptionsMode) {
-                  handleClick('/sale/filters');
+                  handleClick("/sale/filters");
                 }
               }}
             >
@@ -192,21 +194,21 @@ const LeftMenu: React.FC<IProps> = ({
                     }`
                   );
                 } else if (mySubscriptionsMode) {
-                  handleClick('/purchase/filters');
+                  handleClick("/purchase/filters");
                 }
               }}
             >
               • {intl.formatMessage({ id: "DEALS.TABLE.PURCHASE" })}
             </MenuItem>
             <Divider style={{ margin: "6px 0" }} />
-         </>
-      )}
+          </>
+        )}
 
       <MenuItem
         className={mySubscriptionsMode ? classes.selected : ""}
         onClick={() => {
           if (!mySubscriptionsMode) {
-            handleClick(`/${me.roles.includes('ROLE_BUYER') ? 'sale' : 'purchase'}/filters`)
+            handleClick(`/${me.roles.includes("ROLE_BUYER") ? "sale" : "purchase"}/filters`);
           }
         }}
       >

@@ -158,6 +158,7 @@ function BidCreatePage({
   if (preloading) return <Preloader />;
   if (errors.get) return <LoadError handleClick={() => getBidById(bidId, bid)} />;
   if (isRedirectTo && isRedirectTo !== -1) return <Redirect to={`/bidsList/${isRedirectTo}`} />;
+
   return (
     <>
       <Prompter />

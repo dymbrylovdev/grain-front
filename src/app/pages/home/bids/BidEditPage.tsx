@@ -12,7 +12,7 @@ import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
 import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as yaLocationsActions } from "../../../store/ducks/yaLocations.duck";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
-import { actions as myFiltersActions } from '../../../store/ducks/myFilters.duck';
+import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
 
 import { IAppState } from "../../../store/rootDuck";
 import { ErrorPage } from "../../../components/ErrorPage";

@@ -12,7 +12,7 @@ import {
   Collapse,
   FormControlLabel,
   Checkbox,
-  Divider
+  Divider,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
@@ -548,7 +548,7 @@ const BidForm: React.FC<IProps> = ({
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
-
+  
   return (
     <div className={classes.form}>
       <div className={classes.topButtonsContainer}>
