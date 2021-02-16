@@ -288,7 +288,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
                 !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
                 (user &&
                   editMode === "edit" &&
-                  ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER", "ROLE_MANAGER"].includes(user.roles[0]))) && (
+                  ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
                 <Tab
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
                   {...a11yProps(3)}

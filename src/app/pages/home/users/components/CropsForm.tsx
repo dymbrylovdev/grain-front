@@ -353,7 +353,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
                           setTariffTable(1);
                           history.push(`/user/profile/tariffs`);
                         }}
-                        style={{marginLeft: 15}}
+                        style={{ marginLeft: 15 }}
                         disabled={loadingMe || loadingUser || editLoading}
                       >
                         {intl.formatMessage({ id: "BID.PRICES.GET.PREMIUM" })}
