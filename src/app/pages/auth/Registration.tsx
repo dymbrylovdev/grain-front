@@ -274,7 +274,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     </TextField>
 
                     <div style={{width: '100%', display: 'flex', alignItems: 'center'}}>
-                      <div style={{fontSize: '16px', marginTop: '23px', marginRight: '3px', color: '#000'}}>+</div>
+                      <div style={{fontSize: '16px', marginTop: '16px', marginRight: '3px', color: '#000'}}>+</div>
                       <TextField
                         label={intl.formatMessage({ id: "AUTH.INPUT.PHONE" })}
                         margin="normal"

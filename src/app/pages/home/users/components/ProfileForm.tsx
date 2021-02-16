@@ -683,7 +683,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
-            <div style={{fontSize: '26px', marginTop: '7px', marginRight: "5px"}}>+</div>
+            <div style={{fontSize: '26px', marginTop: '3px', marginRight: "5px"}}>+</div>
             <TextField
               type="tel"
               label={intl.formatMessage({
