@@ -286,24 +286,23 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       ))}
                     </TextField>
 
-                    <TextField
-                      type="phone"
-                      label={intl.formatMessage({
-                        id: "AUTH.INPUT.PHONE",
-                      })}
-                      margin="normal"
-                      className="kt-width-full"
-                      name="phone"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.phone}
-                      helperText={touched.phone && errors.phone}
-                      error={Boolean(touched.phone && errors.phone)}
-                      defaultValue={`+${countryCode}`}
-                      // InputProps={{
-                      //   inputComponent: NumberFormatForRegister as any,
-                      // }}
-                    />
+                    <div style={{width: '100%', display: 'flex', alignItems: 'center'}}>
+                      <div style={{fontSize: '16px', marginTop: '23px', marginRight: '3px', color: '#000'}}>+</div>
+                      <TextField
+                        type="phone"
+                        label={intl.formatMessage({
+                          id: "AUTH.INPUT.PHONE",
+                        })}
+                        margin="normal"
+                        className="kt-width-full"
+                        name="phone"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.phone}
+                        helperText={touched.phone && errors.phone}
+                        error={Boolean(touched.phone && errors.phone)}
+                      />
+                    </div>
 
                     <div className="kt-login__actions">
                       <ButtonWithLoader

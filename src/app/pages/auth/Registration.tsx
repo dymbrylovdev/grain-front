@@ -273,21 +273,21 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       ))}
                     </TextField>
 
-                    <TextField
-                      label={intl.formatMessage({ id: "AUTH.INPUT.PHONE" })}
-                      margin="normal"
-                      className="kt-width-full"
-                      name="phone"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.phone}
-                      helperText={touched.phone && errors.phone}
-                      error={Boolean(touched.phone && errors.phone)}
-                      placeholder={`+${countryCode} (###) - ### ####`}
-                      // InputProps={{
-                      //   inputComponent: NumberFormatForRegister as any,
-                      // }}
-                    />
+                    <div style={{width: '100%', display: 'flex', alignItems: 'center'}}>
+                      <div style={{fontSize: '16px', marginTop: '23px', marginRight: '3px', color: '#000'}}>+</div>
+                      <TextField
+                        label={intl.formatMessage({ id: "AUTH.INPUT.PHONE" })}
+                        margin="normal"
+                        className="kt-width-full"
+                        name="phone"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.phone}
+                        helperText={touched.phone && errors.phone}
+                        error={Boolean(touched.phone && errors.phone)}
+                        placeholder={`+${countryCode} (###) - ### ####`}
+                      />
+                    </div>
                   </>
                 ) : (
                   <TextField
