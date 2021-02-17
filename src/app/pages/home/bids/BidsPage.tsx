@@ -103,6 +103,9 @@ const BidsPage: React.FC<TPropsFromRedux &
   perPage,
   total,
 
+  dateFilter,
+  setDateFilter,
+
   fetch,
   bids,
   // loading,
@@ -204,23 +207,16 @@ const BidsPage: React.FC<TPropsFromRedux &
   const [pricesModalOpen, setPricesModalOpen] = useState(false);
   const [showDateFilter, setShowDateFilter] = useState(false);
 
-  const [minDate, setMinDate] = useState(new Date());
-  const [maxDate, setMaxDate] = useState(new Date());
-
   const fetchAll = () => {
     if (!!me) {
       if (["ROLE_ADMIN"].includes(me.roles[0])) {
         setShowDateFilter(true);
-        fetch(+cropId, salePurchaseMode, page, perPage, minDate, maxDate);
+        fetch(+cropId, salePurchaseMode, page, perPage, dateFilter.minDate, dateFilter.maxDate);
       } else {
         fetch(+cropId, salePurchaseMode, page, perPage);
       }
     }
   };
-
-  useEffect(() => {
-    fetchAll();
-  }, [minDate, maxDate]);
 
   // const filterTitle =
   // salePurchaseMode === "sale"
@@ -279,6 +275,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   }
 
   const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     if (editFilterSuccess || editFilterError) {
       enqueueSnackbar(
@@ -446,6 +443,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     page,
     perPage,
     salePurchaseMode,
+    dateFilter,
   ]);
 
   useEffect(() => {
@@ -496,10 +494,10 @@ const BidsPage: React.FC<TPropsFromRedux &
                     variant="dialog"
                     format="dd/MM/yyyy"
                     margin="normal"
-                    id="data-picker-dialog"
+                    id="min-date"
                     label={intl.formatMessage({ id: "BIDLIST.MIN_DATE.PICKER" })}
-                    value={minDate}
-                    onChange={e => setMinDate(e as Date)}
+                    value={dateFilter.minDate}
+                    onChange={e => setDateFilter({ minDate: e as Date })}
                   />
                 </div>
               </MuiPickersUtilsProvider>
@@ -510,10 +508,10 @@ const BidsPage: React.FC<TPropsFromRedux &
                     variant="dialog"
                     format="dd/MM/yyyy"
                     margin="normal"
-                    id="data-picker-dialog"
+                    id="max-date"
                     label={intl.formatMessage({ id: "BIDLIST.MAX_DATE.PICKER" })}
-                    value={maxDate}
-                    onChange={e => setMaxDate(e as Date)}
+                    value={dateFilter.maxDate}
+                    onChange={e => setDateFilter({ maxDate: e as Date })}
                   />
                 </div>
               </MuiPickersUtilsProvider>
@@ -627,7 +625,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 setAlertOpen(true);
               }}
               user={me as IUser}
-              loading={!bids || !cropParams}
+              loading={!bids || (!cropParams && cropId !== "0")}
               paginationData={{ page, perPage, total }}
               fetcher={(newPage: number, newPerPage: number) =>
                 fetch(+cropId, salePurchaseMode, newPage, newPerPage)
@@ -691,6 +689,8 @@ const connector = connect(
     perPage: state.bids.per_page,
     total: state.bids.total,
 
+    dateFilter: state.bids.dateFilter,
+
     bids: state.bids.bids,
     loading: state.bids.loading,
     error: state.bids.error,
@@ -744,6 +744,8 @@ const connector = connect(
     del: bidsActions.delRequest,
 
     setProfit: bidsActions.setProfit,
+
+    setDateFilter: bidsActions.setDateFilter,
 
     setActiveStep: prompterActions.setActiveStep,
     setCurrentSaleFilter: myFiltersActions.setCurrentSaleFilter,

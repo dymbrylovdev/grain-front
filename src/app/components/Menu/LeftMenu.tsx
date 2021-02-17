@@ -15,6 +15,7 @@ import DealsFilterForAll from "./components/DealsFilterForAll";
 import DealsFilterForAdm from "./components/DealsFilterForAdm";
 import FilterBids from "./components/FilterBids";
 import LocationBlockMenu from "./components/LocationBlockMenu";
+import FilterByManager from "./components/FilterByManager";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -248,7 +249,13 @@ const LeftMenu: React.FC<IProps> = ({
       )}
       {accessByRoles(me, ["ROLE_ADMIN"]) && (
         <Collapse in={allOpen} timeout="auto" unmountOnExit>
-          {me.crops.map(crop => (
+          {[
+            {
+              id: 0,
+              name: intl.formatMessage({ id: "SUBMENU.ALL_CROPS" }),
+            },
+            ...me.crops,
+          ].map(crop => (
             <MenuItem
               key={crop.id}
               onClick={() => {
@@ -353,6 +360,13 @@ const LeftMenu: React.FC<IProps> = ({
         <>
           <LocationBlockMenu me={me} classes={classes} />
           <FilterBids />
+        </>
+      )}
+
+      {bestAllMyDealsMode === "all-bids" && (
+        <>
+          <FilterByManager cropId={cropId} salePurchaseMode={salePurchaseMode} />
+          <Divider style={{ margin: "6px 0" }} />
         </>
       )}
 

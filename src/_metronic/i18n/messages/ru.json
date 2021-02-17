@@ -43,6 +43,7 @@
   "SUBMENU.MY_BIDS": "Мои объявления",
   "SUBMENU.FILTERS": "Фильтры",
   "SUBMENU.ALL_BIDS": "Все объявления",
+  "SUBMENU.ALL_CROPS": "Все культуры",
   "SUBMENU.GRAIN.CREATE_AD": "Добавить объявление",
   "SUBMENU.USER.LIST": "Список пользователей",
   "SUBMENU.USER.CREATE_USER": "Добавить пользователя",
@@ -281,6 +282,7 @@
   "BIDLIST.MORE_BID.CANCEL_TEXT": "Нет, закрыть окно",
   "BIDLIST.MIN_DATE.PICKER": "Мин дата обновления:",
   "BIDLIST.MAX_DATE.PICKER": "Макc дата обновления:",
+  "BIDLIST.FILTTER.MANAGERS": "Менеджеры",
 
   "BID.BOTTOM.TEXT": "Цена в объявлениях указана за тонну.",
   "BID.LOCATION.SALE.TEXT": "Цена в объявлениях указана с учётом доставки до указанных точек приемки:",

@@ -31,7 +31,6 @@ export const getAllBids = (
   if (maxDate) {
     max_date = format(maxDate, "yyyy-MM-dd");
   }
-
   return axios.get(
     `/api/crop/${cropId}/bids?type=${type}&page=${page}&per_page=${perPage}&min_date=${min_date}&max_date=${max_date}`
   );
