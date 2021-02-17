@@ -328,6 +328,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     realUser={realUser}
                     showTariffTable={showTariffTable}
                     setShowTariffTable={setTariffTable}
+                    tariffs={tariffs}
                   />
                 ) : (
                   <TariffCards

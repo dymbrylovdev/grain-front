@@ -13,6 +13,7 @@ export interface ITariff {
   period: number;
   role: any;
   tariff: ITariffType;
+  contact_view_limit: number;
 }
 
 export interface ITariffType {
