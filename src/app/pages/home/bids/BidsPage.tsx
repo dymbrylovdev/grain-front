@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { compose } from "redux";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Paper, Button, makeStyles } from "@material-ui/core";
+import { Button, makeStyles, Paper } from "@material-ui/core";
 // import { IconButton } from "@material-ui/core";
 // import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import { useSnackbar } from "notistack";
@@ -28,12 +28,17 @@ import { filterForBids } from "../myFilters/utils";
 import { LayoutSubheader } from "../../../../_metronic";
 import { accessByRoles } from "../../../utils/utils";
 import { IBid } from "../../../interfaces/bids";
+import DateFnsUtils from "@date-io/date-fns";
+import ruRU from "date-fns/locale/ru";
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
     flexDirection: "row",
     display: "flex",
+    flexWrap: "wrap",
     alignItems: "center",
+    justifyContent: "center",
     width: "100%",
     marginTop: theme.spacing(2),
   },
@@ -49,6 +54,10 @@ const useInnerStyles = makeStyles(theme => ({
   topSpaceContainer: {
     marginBottom: theme.spacing(2),
   },
+  calendarBlock: {
+    maxWidth: 250,
+    marginLeft: theme.spacing(2),
+  },
   text: {
     marginRight: theme.spacing(1),
     marginBottom: theme.spacing(1),
@@ -56,6 +65,17 @@ const useInnerStyles = makeStyles(theme => ({
   },
   iconButton: {
     animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
+  },
+  datesFilterBlock: {
+    flexDirection: "row",
+    display: "flex",
+    alignSelf: "flex-end",
+  },
+  totalText: {
+    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -182,47 +202,66 @@ const BidsPage: React.FC<TPropsFromRedux &
   // const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [pricesModalOpen, setPricesModalOpen] = useState(false);
+  const [showDateFilter, setShowDateFilter] = useState(false);
+
+  const [minDate, setMinDate] = useState(new Date());
+  const [maxDate, setMaxDate] = useState(new Date());
+
+  const fetchAll = () => {
+    if (!!me) {
+      if (["ROLE_ADMIN"].includes(me.roles[0])) {
+        setShowDateFilter(true);
+        fetch(+cropId, salePurchaseMode, page, perPage, minDate, maxDate);
+      } else {
+        fetch(+cropId, salePurchaseMode, page, perPage);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchAll();
+  }, [minDate, maxDate]);
 
   // const filterTitle =
-    // salePurchaseMode === "sale"
-      // ? !currentSaleFilters[cropId]
-        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
-        // : !currentSaleFilters[cropId]?.id
-        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
-        // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
-      // : salePurchaseMode === "purchase"
-      // ? !currentPurchaseFilters[cropId]
-        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
-        // : !currentPurchaseFilters[cropId]?.id
-        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
-        // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
-      // : "";
+  // salePurchaseMode === "sale"
+  // ? !currentSaleFilters[cropId]
+  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
+  // : !currentSaleFilters[cropId]?.id
+  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
+  // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
+  // : salePurchaseMode === "purchase"
+  // ? !currentPurchaseFilters[cropId]
+  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
+  // : !currentPurchaseFilters[cropId]?.id
+  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
+  // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
+  // : "";
 
   // const filterName =
-    // salePurchaseMode === "sale"
-      // ? currentSaleFilters[cropId] &&
-        // currentSaleFilters[cropId]?.id &&
-        // currentSaleFilters[cropId]?.name
-        // ? currentSaleFilters[cropId]?.name
-        // : ""
-      // : salePurchaseMode === "purchase"
-      // ? currentPurchaseFilters[cropId] &&
-        // currentPurchaseFilters[cropId]?.id &&
-        // currentPurchaseFilters[cropId]?.name
-        // ? currentPurchaseFilters[cropId]?.name
-        // : ""
-      // : "";
+  // salePurchaseMode === "sale"
+  // ? currentSaleFilters[cropId] &&
+  // currentSaleFilters[cropId]?.id &&
+  // currentSaleFilters[cropId]?.name
+  // ? currentSaleFilters[cropId]?.name
+  // : ""
+  // : salePurchaseMode === "purchase"
+  // ? currentPurchaseFilters[cropId] &&
+  // currentPurchaseFilters[cropId]?.id &&
+  // currentPurchaseFilters[cropId]?.name
+  // ? currentPurchaseFilters[cropId]?.name
+  // : ""
+  // : "";
 
   // const filterIconPath =
-    // salePurchaseMode === "sale"
-      // ? !currentSaleFilters[cropId]
-        // ? "/media/filter/filter.svg"
-        // : "/media/filter/filter_full.svg"
-      // : salePurchaseMode === "purchase"
-      // ? !currentPurchaseFilters[cropId]
-        // ? "/media/filter/filter.svg"
-        // : "/media/filter/filter_full.svg"
-      // : "";
+  // salePurchaseMode === "sale"
+  // ? !currentSaleFilters[cropId]
+  // ? "/media/filter/filter.svg"
+  // : "/media/filter/filter_full.svg"
+  // : salePurchaseMode === "purchase"
+  // ? !currentPurchaseFilters[cropId]
+  // ? "/media/filter/filter.svg"
+  // : "/media/filter/filter_full.svg"
+  // : "";
 
   const isHaveRules = (user: IUser, id: number) => {
     return accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id;
@@ -316,7 +355,7 @@ const BidsPage: React.FC<TPropsFromRedux &
           fetchMyBids(salePurchaseMode, page, perPage);
           break;
         case "all-bids":
-          fetch(+cropId, salePurchaseMode, page, perPage);
+          fetchAll();
           break;
       }
     }
@@ -355,6 +394,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     if (!!me) {
       switch (bestAllMyMode) {
         case "best-bids":
+          setShowDateFilter(false);
           if (salePurchaseMode === "sale") {
             if (currentSaleFilters[cropId] && cropParams) {
               fetchBestBids(
@@ -385,10 +425,11 @@ const BidsPage: React.FC<TPropsFromRedux &
           }
           break;
         case "my-bids":
+          setShowDateFilter(false);
           fetchMyBids(salePurchaseMode, page, perPage);
           break;
         case "all-bids":
-          fetch(+cropId, salePurchaseMode, page, perPage);
+          fetchAll();
           break;
       }
     }
@@ -446,7 +487,45 @@ const BidsPage: React.FC<TPropsFromRedux &
               </Button>
             )}
           </div>
+
+          {showDateFilter && (
+            <div className={innerClasses.datesFilterBlock}>
+              <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
+                <div className={innerClasses.calendarBlock}>
+                  <KeyboardDatePicker
+                    variant="dialog"
+                    format="dd/MM/yyyy"
+                    margin="normal"
+                    id="data-picker-dialog"
+                    label={intl.formatMessage({ id: "BIDLIST.MIN_DATE.PICKER" })}
+                    value={minDate}
+                    onChange={e => setMinDate(e as Date)}
+                  />
+                </div>
+              </MuiPickersUtilsProvider>
+
+              <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
+                <div className={innerClasses.calendarBlock}>
+                  <KeyboardDatePicker
+                    variant="dialog"
+                    format="dd/MM/yyyy"
+                    margin="normal"
+                    id="data-picker-dialog"
+                    label={intl.formatMessage({ id: "BIDLIST.MAX_DATE.PICKER" })}
+                    value={maxDate}
+                    onChange={e => setMaxDate(e as Date)}
+                  />
+                </div>
+              </MuiPickersUtilsProvider>
+            </div>
+          )}
         </div>
+
+        {showDateFilter && (
+          <div className={innerClasses.totalText}>
+            {intl.formatMessage({ id: "BIDSLIST.TABLE.TOTAL" })}: {total}
+          </div>
+        )}
 
         {bestAllMyMode === "best-bids" && (
           <>

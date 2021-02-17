@@ -283,17 +283,19 @@ const UserEditPage: React.FC<TPropsFromRedux &
               {editMode !== "create" && (
                 <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />
               )}
+
               {((me &&
                 editMode === "profile" &&
                 !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
                 (user &&
                   editMode === "edit" &&
-                  ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER", "ROLE_MANAGER"].includes(user.roles[0]))) && (
+                  ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
                 <Tab
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
                   {...a11yProps(3)}
                 />
               )}
+
               {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
                 <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(4)} />
               )}
@@ -323,12 +325,14 @@ const UserEditPage: React.FC<TPropsFromRedux &
             )}
           </TabPanel>
 
-          <TabPanel value={valueTabs} index={3}>
-            <TariffForm editMode={editMode} userId={+id || undefined} />
-          </TabPanel>
+          {user && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]) && (
+            <TabPanel value={valueTabs} index={3}>
+              <TariffForm editMode={editMode} userId={+id || undefined} />
+            </TabPanel>
+          )}
 
           {user && (
-            <TabPanel value={valueTabs} index={4}>
+            <TabPanel value={valueTabs} index={["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]) ? 4 : 3}>
               <BidsForm userId={+id || undefined} classes={classes} isBuyer={user.is_buyer} />
             </TabPanel>
           )}

@@ -256,6 +256,7 @@
   "BIDSLIST.TABLE.DESCRIPTION": "Комментарий",
   "BIDSLIST.TABLE.ACTIONS": "Действия",
   "BIDSLIST.TABLE.CROP": "Культура",
+  "BIDSLIST.TABLE.TOTAL": "Количество объявлений",
   "BIDSLIST.TABLE.DESTINATION": "Расстояниe",
   "BIDSLIST.TABLE.AUTHOR": "Поставщик",
   "BIDSLIST.TABLE.BUYER": "Покупатель",
@@ -278,6 +279,8 @@
   "BIDLIST.MORE_BID.TEXT": "Ваше объявление успешно опубликовано. Добавить ещё одно?",
   "BIDLIST.MORE_BID.AGREE_TEXT": "Да, добавить объявление",
   "BIDLIST.MORE_BID.CANCEL_TEXT": "Нет, закрыть окно",
+  "BIDLIST.MIN_DATE.PICKER": "Мин дата обновления:",
+  "BIDLIST.MAX_DATE.PICKER": "Макc дата обновления:",
 
   "BID.BOTTOM.TEXT": "Цена в объявлениях указана за тонну.",
   "BID.LOCATION.SALE.TEXT": "Цена в объявлениях указана с учётом доставки до указанных точек приемки:",
