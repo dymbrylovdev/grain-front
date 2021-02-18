@@ -14,7 +14,7 @@ import {
   editContactViewContact,
   getUserActivate,
 } from "../../crud/users.crud";
-import { IUser, IUserForCreate, IUserForEdit } from "../../interfaces/users";
+import {IUser, IUserForCreate, IUserForEdit, TRole} from '../../interfaces/users';
 import { IBid } from "../../interfaces/bids";
 
 const CLEAR_FETCH = "users/CLEAR_FETCH";
@@ -371,7 +371,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 
 export const actions = {
   clearFetch: () => createAction(CLEAR_FETCH),
-  fetchRequest: (payload: { page: number; perPage: number }) =>
+  fetchRequest: (payload: { page: number; perPage: number, roles?: TRole[] }) =>
     createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
@@ -418,10 +418,10 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga({ payload }: { payload: { page: number; perPage: number } }) {
+function* fetchSaga({ payload }: { payload: { page: number; perPage: number, roles?: TRole[] } }) {
   try {
     const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
-      getUsers(payload.page, payload.perPage)
+      getUsers(payload.page, payload.perPage, payload.roles)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {

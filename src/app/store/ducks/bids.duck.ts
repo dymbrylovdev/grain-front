@@ -68,16 +68,17 @@ const DEL_FAIL = "bids/DEL_FAIL";
 const SET_PROFIT = "bids/SET_PROFIT";
 const SET_OPEN_INFO_ALERT = "bids/SET_OPEN_INFO_ALERT";
 
-const SET_DATE_FILTER = "bids/SET_DATE_FILTER";
+const SET_FILTER = "bids/SET_FILTER";
 
 export interface IInitialState {
   page: number;
   per_page: number;
   total: number;
   bids: IBid[] | undefined;
-  dateFilter: {
+  filter: {
     minDate: Date | null;
     maxDate: Date | null;
+    authorLogin: string;
   };
   loading: boolean;
   success: boolean;
@@ -124,9 +125,10 @@ const initialState: IInitialState = {
   per_page: 20,
   total: 0,
   bids: undefined,
-  dateFilter: {
+  filter: {
     minDate: new Date(),
     maxDate: new Date(),
+    authorLogin: "",
   },
   loading: false,
   success: false,
@@ -390,11 +392,11 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         };
       }
 
-      case SET_DATE_FILTER: {
+      case SET_FILTER: {
         return {
           ...state,
-          dateFilter: {
-            ...state.dateFilter,
+          filter: {
+            ...state.filter,
             ...action.payload.filter,
           },
         };
@@ -413,8 +415,10 @@ export const actions = {
     page: number,
     perPage: number,
     minDate?: Date | null,
-    maxDate?: Date | null
-  ) => createAction(FETCH_REQUEST, { bidType, cropId, page, perPage, minDate, maxDate }),
+    maxDate?: Date | null,
+    authorLogin?: string
+  ) =>
+    createAction(FETCH_REQUEST, { bidType, cropId, page, perPage, minDate, maxDate, authorLogin }),
   fetchSuccess: (payload: IServerResponse<IBid[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
@@ -467,8 +471,8 @@ export const actions = {
   setProfit: (profit: IProfit) => createAction(SET_PROFIT, { profit }),
   setOpenInfoAlert: (openInfoAlert: boolean) =>
     createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
-  setDateFilter: (filter: { minDate?: Date | null; maxDate?: Date | null }) =>
-    createAction(SET_DATE_FILTER, { filter }),
+  setFilter: (filter: { minDate?: Date | null; maxDate?: Date | null; authorLogin?: string }) =>
+    createAction(SET_FILTER, { filter }),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -483,6 +487,7 @@ function* fetchSaga({
     perPage: number;
     minDate?: Date | null;
     maxDate?: Date | null;
+    authorLogin?: string;
   };
 }) {
   try {
@@ -493,7 +498,8 @@ function* fetchSaga({
         payload.page,
         payload.perPage,
         payload.minDate,
-        payload.maxDate
+        payload.maxDate,
+        payload.authorLogin
       )
     );
     yield put(actions.fetchSuccess(data));

@@ -7,13 +7,15 @@ import { IAppState } from "../../../store/rootDuck";
 import RadioParamGroup from "../../../pages/home/bids/components/filter/RadioParamGroup";
 import { actions as bidsActions } from "../../../store/ducks/bids.duck";
 import { TBidType } from "../../../interfaces/bids";
+import { actions as usersActions } from "../../../store/ducks/users.duck";
+import { TRole } from "../../../interfaces/users";
 // import { setUser } from "@sentry/browser";
 
 const FilterByManager: React.FC<PropsFromRedux &
   WrappedComponentProps & {
     cropId: string | undefined;
     salePurchaseMode: TBidType | undefined;
-  }> = ({ intl, fetch, page, perPage, dateFilter, cropId, salePurchaseMode }) => {
+  }> = ({ intl, setFilter, filter, fetchUsers, users }) => {
   const values = [
     {
       value: "1",
@@ -32,26 +34,30 @@ const FilterByManager: React.FC<PropsFromRedux &
       label: "Some text 4",
     },
   ];
-  const [value, setValue] = useState("1");
 
   useEffect(() => {
-    if (cropId && salePurchaseMode) {
-      fetch(+cropId, salePurchaseMode, page, perPage, dateFilter.minDate, dateFilter.maxDate);
-    }
-  }, [value]);
+    fetchUsers({ page: 1, perPage: 999, roles: ["ROLE_MANAGER"] });
+  }, []);
 
   const handleChange = e => {
-    console.log(e);
-    setValue(e);
+    setFilter({ authorLogin: e });
   };
+
+  const data = [
+    {
+      value: "",
+      label: "Все авторы объявлений",
+    },
+    ...(users?.map(user => ({ label: user.login, value: user.login })) || []),
+  ];
 
   return (
     <div>
       <MenuItem>
         <RadioParamGroup
           name={intl.formatMessage({ id: "BIDLIST.FILTTER.MANAGERS" })}
-          data={values}
-          value={value}
+          data={data}
+          value={filter.authorLogin}
           handleChange={handleChange}
         />
       </MenuItem>
@@ -61,12 +67,12 @@ const FilterByManager: React.FC<PropsFromRedux &
 
 const connector = connect(
   (state: IAppState) => ({
-    page: state.bids.page,
-    perPage: state.bids.per_page,
-    dateFilter: state.bids.dateFilter,
+    filter: state.bids.filter,
+    users: state.users.users,
   }),
   {
-    fetch: bidsActions.fetchRequest,
+    setFilter: bidsActions.setFilter,
+    fetchUsers: usersActions.fetchRequest,
   }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;

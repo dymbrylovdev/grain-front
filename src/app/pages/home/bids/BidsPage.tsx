@@ -100,7 +100,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   perPage,
   total,
 
-  dateFilter,
+  filter,
 
   fetch,
   bids,
@@ -205,7 +205,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   const fetchAll = () => {
     if (!!me) {
       if (["ROLE_ADMIN"].includes(me.roles[0])) {
-        fetch(+cropId, salePurchaseMode, page, perPage, dateFilter.minDate, dateFilter.maxDate);
+        fetch(+cropId, salePurchaseMode, page, perPage, filter.minDate, filter.maxDate, filter.authorLogin);
       } else {
         fetch(+cropId, salePurchaseMode, page, perPage);
       }
@@ -435,7 +435,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     page,
     perPage,
     salePurchaseMode,
-    dateFilter,
+    filter,
   ]);
 
   useEffect(() => {
@@ -649,7 +649,7 @@ const connector = connect(
     perPage: state.bids.per_page,
     total: state.bids.total,
 
-    dateFilter: state.bids.dateFilter,
+    filter: state.bids.filter,
 
     bids: state.bids.bids,
     loading: state.bids.loading,

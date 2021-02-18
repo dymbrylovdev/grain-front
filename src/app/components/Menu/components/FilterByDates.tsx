@@ -18,8 +18,8 @@ const useInnerStyles = makeStyles(theme => ({
 
 const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   intl,
-  dateFilter,
-  setDateFilter,
+  filter,
+  setFilter,
 }) => {
   const innerClasses = useInnerStyles();
 
@@ -40,8 +40,8 @@ const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                 margin="normal"
                 id="min-date"
                 label={intl.formatMessage({ id: "BIDLIST.MIN_DATE.PICKER" })}
-                value={dateFilter.minDate}
-                onChange={e => setDateFilter({ minDate: e as Date })}
+                value={filter.minDate}
+                onChange={e => setFilter({ minDate: e as Date })}
               />
             </div>
           </MuiPickersUtilsProvider>
@@ -59,8 +59,8 @@ const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                 margin="normal"
                 id="max-date"
                 label={intl.formatMessage({ id: "BIDLIST.MAX_DATE.PICKER" })}
-                value={dateFilter.maxDate}
-                onChange={e => setDateFilter({ maxDate: e as Date })}
+                value={filter.maxDate}
+                onChange={e => setFilter({ maxDate: e as Date })}
               />
             </div>
           </MuiPickersUtilsProvider>
@@ -72,11 +72,11 @@ const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
 const connector = connect(
   (state: IAppState) => ({
-    dateFilter: state.bids.dateFilter,
+    filter: state.bids.filter,
   }),
   {
     fetch: bidsActions.fetchRequest,
-    setDateFilter: bidsActions.setDateFilter,
+    setFilter: bidsActions.setFilter,
   }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;
