@@ -19,7 +19,6 @@ import LocationDialog from "./components/location/LocationDialog";
 import Prompter from "../prompter/Prompter";
 import { useSnackbar } from "notistack";
 import { ErrorPage } from "../../../components/ErrorPage";
-
 function BidCreatePage({
   intl,
   match,

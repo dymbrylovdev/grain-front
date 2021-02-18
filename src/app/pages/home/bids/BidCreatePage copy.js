@@ -30,6 +30,7 @@ function BidCreatePage({
   getCropParams,
   setActiveStep,
 }) {
+
   const classes = useStyles();
   const [isRedirectTo, setRedirect] = useState(-1);
   const [locationModalOpen, setLocationModalOpen] = useState(false);

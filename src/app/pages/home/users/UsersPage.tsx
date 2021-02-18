@@ -386,7 +386,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           color="primary"
                           onClick={() =>
                             history.push(
-                              `/bid/create/${item.is_buyer ? "purchase" : "sale"}/0/0/${item.id}`
+                              `/bid/create/${
+                                item.roles.includes("ROLE_BUYER") ? "purchase" : "sale"
+                              }/0/0/${item.id}`
                             )
                           }
                         >

@@ -203,18 +203,22 @@ const BidEditPage: React.FC<TPropsFromRedux &
   }, [fetchMe]);
 
   let title = "string";
+
   if (editMode === "create" && !vendorId) title = intl.formatMessage({ id: "BID.TITLE.CREATE" });
   if (editMode === "create" && !!vendorId && !!user && user.id === +vendorId)
     title = `${intl.formatMessage({ id: "BID.TITLE.BY_VENDOR" })} [ ${user.login} ]`;
   if (editMode === "view") title = intl.formatMessage({ id: "BID.TITLE.VIEW" });
   if (editMode === "edit") title = intl.formatMessage({ id: "BID.TITLE.EDIT" });
-
   if (!+bidId && (editMode === "edit" || editMode === "view")) return <ErrorPage />;
+
   if (!(editMode === "create" || editMode === "edit" || editMode === "view")) return <ErrorPage />;
+
   if (!(salePurchaseMode === "sale" || salePurchaseMode === "purchase")) return <ErrorPage />;
   if (editMode === "create" && me?.is_buyer && salePurchaseMode === "sale") return <ErrorPage />;
+
   if (editMode === "create" && me?.is_vendor && salePurchaseMode === "purchase")
     return <ErrorPage />;
+
   if (
     editMode === "edit" &&
     me &&
@@ -223,6 +227,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
     bid.vendor.id !== me?.id
   )
     return <ErrorPage />;
+
   if (
     !!user &&
     !!vendorId &&
@@ -232,6 +237,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
     salePurchaseMode !== "purchase"
   )
     return <ErrorPage />;
+
   if (
     !!user &&
     !!vendorId &&
