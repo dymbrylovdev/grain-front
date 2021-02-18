@@ -28,9 +28,6 @@ import { filterForBids } from "../myFilters/utils";
 import { LayoutSubheader } from "../../../../_metronic";
 import { accessByRoles } from "../../../utils/utils";
 import { IBid } from "../../../interfaces/bids";
-import DateFnsUtils from "@date-io/date-fns";
-import ruRU from "date-fns/locale/ru";
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -104,7 +101,6 @@ const BidsPage: React.FC<TPropsFromRedux &
   total,
 
   dateFilter,
-  setDateFilter,
 
   fetch,
   bids,
@@ -205,12 +201,10 @@ const BidsPage: React.FC<TPropsFromRedux &
   // const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [pricesModalOpen, setPricesModalOpen] = useState(false);
-  const [showDateFilter, setShowDateFilter] = useState(false);
 
   const fetchAll = () => {
     if (!!me) {
       if (["ROLE_ADMIN"].includes(me.roles[0])) {
-        setShowDateFilter(true);
         fetch(+cropId, salePurchaseMode, page, perPage, dateFilter.minDate, dateFilter.maxDate);
       } else {
         fetch(+cropId, salePurchaseMode, page, perPage);
@@ -391,7 +385,6 @@ const BidsPage: React.FC<TPropsFromRedux &
     if (!!me) {
       switch (bestAllMyMode) {
         case "best-bids":
-          setShowDateFilter(false);
           if (salePurchaseMode === "sale") {
             if (currentSaleFilters[cropId] && cropParams) {
               fetchBestBids(
@@ -422,7 +415,6 @@ const BidsPage: React.FC<TPropsFromRedux &
           }
           break;
         case "my-bids":
-          setShowDateFilter(false);
           fetchMyBids(salePurchaseMode, page, perPage);
           break;
         case "all-bids":
@@ -485,41 +477,9 @@ const BidsPage: React.FC<TPropsFromRedux &
               </Button>
             )}
           </div>
-
-          {showDateFilter && (
-            <div className={innerClasses.datesFilterBlock}>
-              <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
-                <div className={innerClasses.calendarBlock}>
-                  <KeyboardDatePicker
-                    variant="dialog"
-                    format="dd/MM/yyyy"
-                    margin="normal"
-                    id="min-date"
-                    label={intl.formatMessage({ id: "BIDLIST.MIN_DATE.PICKER" })}
-                    value={dateFilter.minDate}
-                    onChange={e => setDateFilter({ minDate: e as Date })}
-                  />
-                </div>
-              </MuiPickersUtilsProvider>
-
-              <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
-                <div className={innerClasses.calendarBlock}>
-                  <KeyboardDatePicker
-                    variant="dialog"
-                    format="dd/MM/yyyy"
-                    margin="normal"
-                    id="max-date"
-                    label={intl.formatMessage({ id: "BIDLIST.MAX_DATE.PICKER" })}
-                    value={dateFilter.maxDate}
-                    onChange={e => setDateFilter({ maxDate: e as Date })}
-                  />
-                </div>
-              </MuiPickersUtilsProvider>
-            </div>
-          )}
         </div>
 
-        {showDateFilter && (
+        {me && ["ROLE_ADMIN"].includes(me.roles[0]) && (
           <div className={innerClasses.totalText}>
             {intl.formatMessage({ id: "BIDSLIST.TABLE.TOTAL" })}: {total}
           </div>
@@ -744,8 +704,6 @@ const connector = connect(
     del: bidsActions.delRequest,
 
     setProfit: bidsActions.setProfit,
-
-    setDateFilter: bidsActions.setDateFilter,
 
     setActiveStep: prompterActions.setActiveStep,
     setCurrentSaleFilter: myFiltersActions.setCurrentSaleFilter,

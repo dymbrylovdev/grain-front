@@ -283,6 +283,7 @@
   "BIDLIST.MIN_DATE.PICKER": "Мин дата обновления:",
   "BIDLIST.MAX_DATE.PICKER": "Макc дата обновления:",
   "BIDLIST.FILTTER.MANAGERS": "Менеджеры",
+  "BIDLIST.FILTTER.UPDATE_DATE_RANGE": "Диапазон даты обновления",
 
   "BID.BOTTOM.TEXT": "Цена в объявлениях указана за тонну.",
   "BID.LOCATION.SALE.TEXT": "Цена в объявлениях указана с учётом доставки до указанных точек приемки:",

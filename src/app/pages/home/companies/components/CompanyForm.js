@@ -238,6 +238,9 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
               />
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
+                  okLabel="ОК"
+                  clearLabel="Очистить"
+                  cancelLabel="Отмена"
                   name="registration_at"
                   variant="inline"
                   format="dd/MM/yyyy"
