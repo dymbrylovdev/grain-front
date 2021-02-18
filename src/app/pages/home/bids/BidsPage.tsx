@@ -205,7 +205,15 @@ const BidsPage: React.FC<TPropsFromRedux &
   const fetchAll = () => {
     if (!!me) {
       if (["ROLE_ADMIN"].includes(me.roles[0])) {
-        fetch(+cropId, salePurchaseMode, page, perPage, filter.minDate, filter.maxDate, filter.authorLogin);
+        fetch(
+          +cropId,
+          salePurchaseMode,
+          page,
+          perPage,
+          filter.minDate,
+          filter.maxDate,
+          filter.authorLogin
+        );
       } else {
         fetch(+cropId, salePurchaseMode, page, perPage);
       }
@@ -479,7 +487,7 @@ const BidsPage: React.FC<TPropsFromRedux &
           </div>
         </div>
 
-        {me && ["ROLE_ADMIN"].includes(me.roles[0]) && (
+        {me && ["ROLE_ADMIN"].includes(me.roles[0]) && bestAllMyMode === "all-bids" && (
           <div className={innerClasses.totalText}>
             {intl.formatMessage({ id: "BIDSLIST.TABLE.TOTAL" })}: {total}
           </div>
