@@ -68,11 +68,18 @@ const DEL_FAIL = "bids/DEL_FAIL";
 const SET_PROFIT = "bids/SET_PROFIT";
 const SET_OPEN_INFO_ALERT = "bids/SET_OPEN_INFO_ALERT";
 
+const SET_FILTER = "bids/SET_FILTER";
+
 export interface IInitialState {
   page: number;
   per_page: number;
   total: number;
   bids: IBid[] | undefined;
+  filter: {
+    minDate: Date | null;
+    maxDate: Date | null;
+    authorId: string;
+  };
   loading: boolean;
   success: boolean;
   error: string | null;
@@ -118,6 +125,11 @@ const initialState: IInitialState = {
   per_page: 20,
   total: 0,
   bids: undefined,
+  filter: {
+    minDate: new Date(),
+    maxDate: new Date(),
+    authorId: "",
+  },
   loading: false,
   success: false,
   error: null,
@@ -380,6 +392,16 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         };
       }
 
+      case SET_FILTER: {
+        return {
+          ...state,
+          filter: {
+            ...state.filter,
+            ...action.payload.filter,
+          },
+        };
+      }
+
       default:
         return state;
     }
@@ -387,14 +409,21 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 );
 
 export const actions = {
-  fetchRequest: (cropId: number, bidType: TBidType, page: number, perPage: number) =>
-    createAction(FETCH_REQUEST, { bidType, cropId, page, perPage }),
+  fetchRequest: (
+    cropId: number,
+    bidType: TBidType,
+    page: number,
+    perPage: number,
+    minDate?: Date | null,
+    maxDate?: Date | null,
+    authorId?: string
+  ) =>
+    createAction(FETCH_REQUEST, { bidType, cropId, page, perPage, minDate, maxDate, authorId }),
   fetchSuccess: (payload: IServerResponse<IBid[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
-  fetchMyRequest: (bidType: TBidType, page: number, perPage: number) => (
-    createAction(FETCH_MY_REQUEST, { bidType, page, perPage })
-  ),
+  fetchMyRequest: (bidType: TBidType, page: number, perPage: number) =>
+    createAction(FETCH_MY_REQUEST, { bidType, page, perPage }),
   fetchMySuccess: (payload: IServerResponse<IBid[]>) => createAction(FETCH_MY_SUCCESS, payload),
   fetchMyFail: (payload: string) => createAction(FETCH_MY_FAIL, payload),
 
@@ -420,8 +449,12 @@ export const actions = {
   bidsPairFail: (payload: string) => createAction(BIDS_PAIR_FAIL, payload),
 
   clearCreate: () => createAction(CLEAR_CREATE),
-  createRequest: (type: TBidType, data: IBidToRequest, is_sending_email: number, is_sending_sms: number) =>
-    createAction(CREATE_REQUEST, { type, data, is_sending_email, is_sending_sms }),
+  createRequest: (
+    type: TBidType,
+    data: IBidToRequest,
+    is_sending_email: number,
+    is_sending_sms: number
+  ) => createAction(CREATE_REQUEST, { type, data, is_sending_email, is_sending_sms }),
   createSuccess: () => createAction(CREATE_SUCCESS),
   createFail: (payload: string) => createAction(CREATE_FAIL, payload),
 
@@ -438,6 +471,8 @@ export const actions = {
   setProfit: (profit: IProfit) => createAction(SET_PROFIT, { profit }),
   setOpenInfoAlert: (openInfoAlert: boolean) =>
     createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
+  setFilter: (filter: { minDate?: Date | null; maxDate?: Date | null; authorId?: string }) =>
+    createAction(SET_FILTER, { filter }),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -445,11 +480,27 @@ export type TActions = ActionsUnion<typeof actions>;
 function* fetchSaga({
   payload,
 }: {
-  payload: { cropId: number; bidType: TBidType; page: number; perPage: number };
+  payload: {
+    cropId: number;
+    bidType: TBidType;
+    page: number;
+    perPage: number;
+    minDate?: Date | null;
+    maxDate?: Date | null;
+    authorId?: string;
+  };
 }) {
   try {
     const { data }: { data: IServerResponse<IBid[]> } = yield call(() =>
-      getAllBids(payload.cropId, payload.bidType, payload.page, payload.perPage)
+      getAllBids(
+        payload.cropId,
+        payload.bidType,
+        payload.page,
+        payload.perPage,
+        payload.minDate,
+        payload.maxDate,
+        payload.authorId
+      )
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
@@ -457,7 +508,11 @@ function* fetchSaga({
   }
 }
 
-function* fetchMySaga({ payload }: { payload: { bidType: TBidType, page: number; perPage: number } }) {
+function* fetchMySaga({
+  payload,
+}: {
+  payload: { bidType: TBidType; page: number; perPage: number };
+}) {
   try {
     const { data }: { data: IServerResponse<IBid[]> } = yield call(() =>
       getMyBids(payload.bidType, payload.page, payload.perPage)
@@ -499,9 +554,7 @@ function* fetchBidsPairSaga({
   };
 }) {
   try {
-    const { data }: { data: any } = yield call(() => 
-      getBestPrice(payload.type, payload.data)
-    );
+    const { data }: { data: any } = yield call(() => getBestPrice(payload.type, payload.data));
     yield put(actions.bidsPairSuccess(data));
   } catch (e) {
     yield put(actions.bidsPairFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -511,10 +564,17 @@ function* fetchBidsPairSaga({
 function* createSaga({
   payload,
 }: {
-  payload: { type: TBidType; data: IBidToRequest; is_sending_email: number, is_sending_sms: number };
+  payload: {
+    type: TBidType;
+    data: IBidToRequest;
+    is_sending_email: number;
+    is_sending_sms: number;
+  };
 }) {
   try {
-    yield call(() => createBid(payload.type, payload.data, payload.is_sending_email, payload.is_sending_sms));
+    yield call(() =>
+      createBid(payload.type, payload.data, payload.is_sending_email, payload.is_sending_sms)
+    );
     yield put(actions.createSuccess());
   } catch (e) {
     yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));

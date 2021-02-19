@@ -12,7 +12,7 @@ import {
   Collapse,
   FormControlLabel,
   Checkbox,
-  Divider
+  Divider,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";

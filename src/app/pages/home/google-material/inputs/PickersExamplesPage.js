@@ -9,7 +9,7 @@ import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
-  KeyboardDatePicker
+  KeyboardDatePicker,
 } from "@material-ui/pickers";
 import Notice from "../../../../partials/content/Notice";
 import CodeExample from "../../../../partials/content/CodeExample";
@@ -18,46 +18,46 @@ import CodeExample from "../../../../partials/content/CodeExample";
 const useStyles = makeStyles(theme => ({
   container: {
     display: "flex",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
   },
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 200
-  }
+    width: 200,
+  },
 }));
 
 // Example 2
 const useStyles2 = makeStyles(theme => ({
   container: {
     display: "flex",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
   },
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 200
-  }
+    width: 200,
+  },
 }));
 
 // Example 3
 const useStyles3 = makeStyles(theme => ({
   container: {
     display: "flex",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
   },
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 200
-  }
+    width: 200,
+  },
 }));
 
 // Example 4
 const useStyles4 = makeStyles({
   grid: {
-    width: "60%"
-  }
+    width: "60%",
+  },
 });
 
 export default function PickersExamplesPage() {
@@ -65,9 +65,7 @@ export default function PickersExamplesPage() {
   const classes2 = useStyles2();
   const classes3 = useStyles3();
   // The first commit of Material-UI
-  const [selectedDate, setSelectedDate] = React.useState(
-    new Date("2014-08-18T21:11:54")
-  );
+  const [selectedDate, setSelectedDate] = React.useState(new Date("2014-08-18T21:11:54"));
 
   const classes4 = useStyles4();
 
@@ -78,10 +76,7 @@ export default function PickersExamplesPage() {
   return (
     <>
       <Notice icon="flaticon-warning kt-font-primary">
-        <p>
-          Pickers provide a simple way to select a single value from a
-          pre-determined set.
-        </p>
+        <p>Pickers provide a simple way to select a single value from a pre-determined set.</p>
         <p>
           For more info please check the components's official{" "}
           <a
@@ -97,13 +92,10 @@ export default function PickersExamplesPage() {
 
       <Notice>
         <ul>
+          <li>On mobile, pickers are best suited for display in confirmation dialog.</li>
           <li>
-            On mobile, pickers are best suited for display in confirmation
-            dialog.
-          </li>
-          <li>
-            For inline display, such as on a form, consider using compact
-            controls such as segmented dropdown buttons.
+            For inline display, such as on a form, consider using compact controls such as segmented
+            dropdown buttons.
           </li>
         </ul>
       </Notice>
@@ -125,7 +117,7 @@ export default function PickersExamplesPage() {
                     defaultValue="2017-05-24"
                     className={classes.textField}
                     InputLabelProps={{
-                      shrink: true
+                      shrink: true,
                     }}
                   />
                 </form>
@@ -137,8 +129,7 @@ export default function PickersExamplesPage() {
           <CodeExample jsCode={jsCode2} beforeCodeTitle="Date & Time pickers">
             <div className="kt-section">
               <span className="kt-section__sub">
-                A native date & time picker example with{" "}
-                <code>type="datetime-local"</code>.
+                A native date & time picker example with <code>type="datetime-local"</code>.
               </span>
               <div className="kt-separator kt-separator--dashed"></div>
               <div className="kt-section__content">
@@ -150,7 +141,7 @@ export default function PickersExamplesPage() {
                     defaultValue="2017-05-24T10:30"
                     className={classes2.textField}
                     InputLabelProps={{
-                      shrink: true
+                      shrink: true,
                     }}
                   />
                 </form>
@@ -177,10 +168,10 @@ export default function PickersExamplesPage() {
                     defaultValue="07:30"
                     className={classes3.textField}
                     InputLabelProps={{
-                      shrink: true
+                      shrink: true,
                     }}
                     inputProps={{
-                      step: 300 // 5 min
+                      step: 300, // 5 min
                     }}
                   />
                 </form>
@@ -195,8 +186,7 @@ export default function PickersExamplesPage() {
                 <a href="https://material-ui-pickers.dev/">
                   <code>@material-ui/pickers</code>
                 </a>{" "}
-                provides date and time controls that follow the Material Design
-                spec.
+                provides date and time controls that follow the Material Design spec.
               </span>
             </div>
             <div className="kt-separator kt-separator--dashed"></div>
@@ -205,23 +195,29 @@ export default function PickersExamplesPage() {
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <Grid container className={classes.grid} justify="space-around">
                   <KeyboardDatePicker
+                    okLabel="ОК"
+                    clearLabel="Очистить"
+                    cancelLabel="Отмена"
                     margin="normal"
                     id="mui-pickers-date"
                     label="Date picker"
                     value={selectedDate}
                     onChange={handleDateChange}
                     KeyboardButtonProps={{
-                      "aria-label": "change date"
+                      "aria-label": "change date",
                     }}
                   />
                   <KeyboardTimePicker
+                    okLabel="ОК"
+                    clearLabel="Очистить"
+                    cancelLabel="Отмена"
                     margin="normal"
                     id="mui-pickers-time"
                     label="Time picker"
                     value={selectedDate}
                     onChange={handleDateChange}
                     KeyboardButtonProps={{
-                      "aria-label": "change time"
+                      "aria-label": "change time",
                     }}
                   />
                 </Grid>
@@ -377,6 +373,9 @@ export default function MaterialUIPickers() {
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <Grid container className={classes.grid} justify="space-around">
         <KeyboardDatePicker
+         okLabel="ОК"
+                clearLabel="Очистить"
+                cancelLabel="Отмена"
           margin="normal"
           id="mui-pickers-date"
           label="Date picker"
@@ -387,6 +386,9 @@ export default function MaterialUIPickers() {
           }}
         />
         <KeyboardTimePicker
+         okLabel="ОК"
+                clearLabel="Очистить"
+                cancelLabel="Отмена"
           margin="normal"
           id="mui-pickers-time"
           label="Time picker"
