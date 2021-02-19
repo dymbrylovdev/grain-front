@@ -21,7 +21,7 @@ export const getAllBids = (
   perPage: number,
   minDate: Date | null = null,
   maxDate: Date | null = null,
-  authorLogin: string = ""
+  authorId: string = ""
 ) => {
   let min_date = "";
   let max_date = "";
@@ -35,8 +35,8 @@ export const getAllBids = (
 
   let url = `/api/crop/${cropId}/bids?type=${type}&page=${page}&per_page=${perPage}&min_date=${min_date}&max_date=${max_date}`;
 
-  if (authorLogin) {
-    url += `&author=${authorLogin}`;
+  if (authorId) {
+    url += `&author_id=${authorId}`;
   }
 
   return axios.get(url);

@@ -24,7 +24,7 @@ const FilterByManager: React.FC<PropsFromRedux &
   }, []);
 
   const handleChange = e => {
-    setFilter({ authorLogin: e });
+    setFilter({ authorId: e });
   };
 
   const data = [
@@ -34,7 +34,7 @@ const FilterByManager: React.FC<PropsFromRedux &
     },
     ...(users?.map(user => ({
       label: user.login || user.phone?.toString() || "",
-      value: user.login,
+      value: user.id.toString(),
     })) || []),
   ];
 
@@ -44,7 +44,7 @@ const FilterByManager: React.FC<PropsFromRedux &
         <RadioParamGroup
           name={intl.formatMessage({ id: "BIDLIST.FILTTER.MANAGERS" })}
           data={data}
-          value={filter.authorLogin}
+          value={filter.authorId}
           handleChange={handleChange}
         />
       </MenuItem>

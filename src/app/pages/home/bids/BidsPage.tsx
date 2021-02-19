@@ -212,7 +212,7 @@ const BidsPage: React.FC<TPropsFromRedux &
           perPage,
           filter.minDate,
           filter.maxDate,
-          filter.authorLogin
+          filter.authorId
         );
       } else {
         fetch(+cropId, salePurchaseMode, page, perPage);

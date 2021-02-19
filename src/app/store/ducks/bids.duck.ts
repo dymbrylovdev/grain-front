@@ -78,7 +78,7 @@ export interface IInitialState {
   filter: {
     minDate: Date | null;
     maxDate: Date | null;
-    authorLogin: string;
+    authorId: string;
   };
   loading: boolean;
   success: boolean;
@@ -128,7 +128,7 @@ const initialState: IInitialState = {
   filter: {
     minDate: new Date(),
     maxDate: new Date(),
-    authorLogin: "",
+    authorId: "",
   },
   loading: false,
   success: false,
@@ -416,9 +416,9 @@ export const actions = {
     perPage: number,
     minDate?: Date | null,
     maxDate?: Date | null,
-    authorLogin?: string
+    authorId?: string
   ) =>
-    createAction(FETCH_REQUEST, { bidType, cropId, page, perPage, minDate, maxDate, authorLogin }),
+    createAction(FETCH_REQUEST, { bidType, cropId, page, perPage, minDate, maxDate, authorId }),
   fetchSuccess: (payload: IServerResponse<IBid[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
@@ -471,7 +471,7 @@ export const actions = {
   setProfit: (profit: IProfit) => createAction(SET_PROFIT, { profit }),
   setOpenInfoAlert: (openInfoAlert: boolean) =>
     createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
-  setFilter: (filter: { minDate?: Date | null; maxDate?: Date | null; authorLogin?: string }) =>
+  setFilter: (filter: { minDate?: Date | null; maxDate?: Date | null; authorId?: string }) =>
     createAction(SET_FILTER, { filter }),
 };
 
@@ -487,7 +487,7 @@ function* fetchSaga({
     perPage: number;
     minDate?: Date | null;
     maxDate?: Date | null;
-    authorLogin?: string;
+    authorId?: string;
   };
 }) {
   try {
@@ -499,7 +499,7 @@ function* fetchSaga({
         payload.perPage,
         payload.minDate,
         payload.maxDate,
-        payload.authorLogin
+        payload.authorId
       )
     );
     yield put(actions.fetchSuccess(data));
