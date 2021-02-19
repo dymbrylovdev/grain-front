@@ -124,6 +124,9 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
           <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
             <div className={innerClasses.calendarBlock}>
               <KeyboardDatePicker
+                okLabel="ОК"
+                clearLabel="Очистить"
+                cancelLabel="Отмена"
                 variant="dialog"
                 format="dd/MM/yyyy"
                 margin="normal"
@@ -131,7 +134,7 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
                 label={intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })}
                 value={selectedDate}
                 onChange={e => setSelectedDate(e)}
-              ></KeyboardDatePicker>
+              />
             </div>
           </MuiPickersUtilsProvider>
         </div>

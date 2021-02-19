@@ -15,6 +15,8 @@ import DealsFilterForAll from "./components/DealsFilterForAll";
 import DealsFilterForAdm from "./components/DealsFilterForAdm";
 import FilterBids from "./components/FilterBids";
 import LocationBlockMenu from "./components/LocationBlockMenu";
+import FilterByManager from "./components/FilterByManager";
+import FilterByDates from "./components/FilterByDates";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -114,9 +116,13 @@ const LeftMenu: React.FC<IProps> = ({
   const history = useHistory();
 
   const [bestOpen, setBestOpen] = useState(false);
-  const [selectedBestOpen, setSelectedBestOpen] = useState(false);
+  const [selectedBestOpen, setSelectedBestOpen] = useState(
+    bestAllMyDealsMode === "best-bids" || false
+  );
   const [allOpen, setAllOpen] = useState(false);
-  const [selectedAllOpen, setSelectedAllOpen] = useState(false);
+  const [selectedAllOpen, setSelectedAllOpen] = useState(
+    bestAllMyDealsMode === "all-bids" || false
+  );
   const [mySubscriptionsMode, setMySubscriptionMode] = useState(false);
 
   useEffect(() => {
@@ -136,14 +142,22 @@ const LeftMenu: React.FC<IProps> = ({
     setLeftMenuOpen(false);
   };
 
-  const selectedCrop = me?.crops.filter(crop => !!cropId && +cropId === crop.id);
+  const crops = [
+    {
+      id: 0,
+      name: intl.formatMessage({ id: "SUBMENU.ALL_CROPS" }),
+    },
+    ...me?.crops,
+  ];
+
+  const selectedCrop = crops.filter(crop => !!cropId && +cropId === crop.id);
 
   const location = useLocation().pathname;
 
   useEffect(() => {
-    if (location === '/purchase/filters' || location === '/sale/filters') {
+    if (location === "/purchase/filters" || location === "/sale/filters") {
       setMySubscriptionMode(true);
-      setSalePurchaseMode(location === '/purchase/filters' ? 'purchase' : 'sale');
+      setSalePurchaseMode(location === "/purchase/filters" ? "purchase" : "sale");
     } else {
       setMySubscriptionMode(false);
     }
@@ -159,11 +173,9 @@ const LeftMenu: React.FC<IProps> = ({
       <Divider style={{ margin: "6px 0" }} />
 
       {/* Продажа-Покупка меню */}
-      {((!!bestAllMyDealsMode &&
-        bestAllMyDealsMode !== "deals") ||
-        mySubscriptionsMode
-       ) && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-         <>
+      {((!!bestAllMyDealsMode && bestAllMyDealsMode !== "deals") || mySubscriptionsMode) &&
+        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
+          <>
             <MenuItem
               className={salePurchaseMode === "sale" ? classes.selected : ""}
               onClick={() => {
@@ -175,7 +187,7 @@ const LeftMenu: React.FC<IProps> = ({
                     }`
                   );
                 } else if (mySubscriptionsMode) {
-                  handleClick('/sale/filters');
+                  handleClick("/sale/filters");
                 }
               }}
             >
@@ -192,21 +204,21 @@ const LeftMenu: React.FC<IProps> = ({
                     }`
                   );
                 } else if (mySubscriptionsMode) {
-                  handleClick('/purchase/filters');
+                  handleClick("/purchase/filters");
                 }
               }}
             >
               • {intl.formatMessage({ id: "DEALS.TABLE.PURCHASE" })}
             </MenuItem>
             <Divider style={{ margin: "6px 0" }} />
-         </>
-      )}
+          </>
+        )}
 
       <MenuItem
         className={mySubscriptionsMode ? classes.selected : ""}
         onClick={() => {
           if (!mySubscriptionsMode) {
-            handleClick(`/${me.roles.includes('ROLE_BUYER') ? 'sale' : 'purchase'}/filters`)
+            handleClick(`/${me.roles.includes("ROLE_BUYER") ? "sale" : "purchase"}/filters`);
           }
         }}
       >
@@ -246,7 +258,7 @@ const LeftMenu: React.FC<IProps> = ({
       )}
       {accessByRoles(me, ["ROLE_ADMIN"]) && (
         <Collapse in={allOpen} timeout="auto" unmountOnExit>
-          {me.crops.map(crop => (
+          {crops.map(crop => (
             <MenuItem
               key={crop.id}
               onClick={() => {
@@ -351,6 +363,15 @@ const LeftMenu: React.FC<IProps> = ({
         <>
           <LocationBlockMenu me={me} classes={classes} />
           <FilterBids />
+        </>
+      )}
+
+      {bestAllMyDealsMode === "all-bids" && accessByRoles(me, ["ROLE_ADMIN"]) && (
+        <>
+          <FilterByManager cropId={cropId} salePurchaseMode={salePurchaseMode} />
+          <Divider style={{ margin: "6px 0" }} />
+          <FilterByDates />
+          <Divider style={{ margin: "6px 0" }} />
         </>
       )}
 

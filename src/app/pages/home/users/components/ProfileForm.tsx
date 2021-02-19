@@ -33,7 +33,7 @@ import { actions as funnelStatesActions } from "../../../../store/ducks/funnelSt
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import useStyles from "../../styles";
 import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
-import { getInitialValues, roles } from "../utils/profileForm";
+import { roles } from "../utils/profileForm";
 import { setMeValues, setCreateValues, setEditValues } from "../utils/submitValues";
 import { IAppState } from "../../../../store/rootDuck";
 import { IUser, IUserForEdit } from "../../../../interfaces/users";
@@ -44,6 +44,7 @@ import { TrafficLight } from ".";
 import CompanyConfirmBlock from "../../companies/components/CompanyConfirmBlock";
 import CompanySearchForm from "../../companies/components/CompanySearchForm";
 import CompanyConfirmDialog from "./CompanyConfirmDialog";
+import { phoneCountryCodes, countries } from "../../../auth/phoneCountryCodes";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   companyContainer: {
@@ -140,6 +141,41 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const [currentUser, setCurrentUser] = useState<IUser>();
   const [isCompanyAlertOpen, setCompanyAlertOpen] = useState(false);
   const [isChangePasswordModalOpen, setChangePasswordModalOpen] = useState<boolean>(false);
+  const [countryCode, setCountryCode] = useState(countries[0].code);
+  const [countryName, setCountryName] = useState(phoneCountryCodes[0]);
+
+  const handleCountryNameChange = (e: any) => {
+    setCountryName(e.target.value);
+  };
+
+  const handleCountryCodeChange = (e: any) => {
+    const countryName = e.target.value;
+
+    countries.forEach(country => {
+      if (country.country === countryName) {
+        setCountryCode(country.code);
+      }
+    });
+  };
+
+  const getInitialValues = (user: IUser | undefined) => ({
+    login: user?.login || "",
+    fio: user?.fio || "",
+    phone: user?.phone || `${countryCode}`,
+    email: user?.email || "",
+    password: "",
+    repeatPassword: "",
+    role: user?.roles?.length ? user.roles[0] : "",
+    status: user?.status || "",
+    funnel_state_id: user?.funnel_state?.id || 0,
+    is_funnel_state_automate: user?.is_funnel_state_automate || false,
+    use_vat: user?.use_vat === undefined ? false : user.use_vat,
+    company_confirmed_by_email: user ? user.company_confirmed_by_email : false,
+    company_confirmed_by_phone: user ? user.company_confirmed_by_phone : false,
+    company_confirmed_by_payment: user ? user.company_confirmed_by_payment : false,
+    company_name: user && user.company ? user.company.short_name : "",
+    company_id: user && user.company ? user.company.id : 0,
+  });
 
   const {
     values,
@@ -162,9 +198,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       }
 
       if (editMode === "create") {
-        values.status = 'Активный';
+        values.status = "Активный";
         createUser(setCreateValues({ ...values, crop_ids: [1] }));
-      };
+      }
       if (editMode === "edit" && user) {
         let params: IUserForEdit = setEditValues(values);
         params.funnel_state_id = values.funnel_state_id;
@@ -175,21 +211,19 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       }
     },
     validationSchema: Yup.object().shape({
-      role: Yup.string().test(
-        'role',
-        intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }),
-        value => roles.find(el => el.id === value) ? true : false
-      ).required(
-        intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
-      ),
-      status: editMode !== 'create' ? Yup.string().required(
-        intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
-      ) : Yup.string(),
+      role: Yup.string()
+        .test("role", intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }), value =>
+          roles.find(el => el.id === value) ? true : false
+        )
+        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+      status:
+        editMode !== "create"
+          ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+          : Yup.string(),
       email: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
       password: Yup.string(),
-      phone: Yup.string()
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-        // .matches(/^[0-9][0-9]{10}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+      phone: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+      // .matches(/^[0-9][0-9]{10}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
       repeatPassword: Yup.string().test(
         "passwords-match",
         intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
@@ -368,6 +402,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     if (accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !funnelStates) fetchFunnelStates();
   }, [editMode, fetchFunnelStates, funnelStates, me]);
 
+  useEffect(() => {
+    setFieldValue("phone", countryCode);
+  }, [countryCode, setFieldValue]);
+
   const newRoles = [...roles];
   if (accessByRoles(me, ["ROLE_MANAGER"]) && editMode === "create") {
     newRoles.splice(0, 2);
@@ -400,7 +438,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
-      {editMode !== "profile" && editMode !== 'create' && (
+      {editMode !== "profile" && editMode !== "create" && (
         <div className={classes.textFieldContainer}>
           {meLoading || userLoading || funnelStatesLoading || !statuses ? (
             <Skeleton width="100%" height={70} animation="wave" />
@@ -606,36 +644,70 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
+      {editMode === "create" && (
+        <div className={classes.textFieldContainer}>
+          {meLoading || userLoading || funnelStatesLoading ? (
+            <Skeleton width="100%" height={70} animation="wave" />
+          ) : (
+            <TextField
+              select
+              type="country"
+              label={intl.formatMessage({
+                id: "AUTH.INPUT.COUNTRIES",
+              })}
+              margin="normal"
+              className={classes.textField}
+              name="country"
+              variant="outlined"
+              onBlur={handleBlur}
+              //@ts-ignore
+              onChange={e => {
+                handleCountryNameChange(e);
+                handleCountryCodeChange(e);
+              }}
+              value={countryName}
+              fullWidth
+            >
+              {countries.map(item => (
+                <MenuItem key={item.id} value={item.country}>
+                  {item.country}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+        </div>
+      )}
+
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
-          <TextField
-            type="tel"
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.PHONE",
-            })}
-            margin="normal"
-            className={classes.textField}
-            classes={
-              prompterRunning && prompterStep === 0 && !!values.fio && !values.phone
-                ? { root: innerClasses.pulseRoot }
-                : {}
-            }
-            name="phone"
-            value={values.phone}
-            variant="outlined"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            helperText={touched.phone && errors.phone}
-            error={Boolean(touched.phone && errors.phone)}
-            disabled={editMode === "view"}
-            InputLabelProps={{ shrink: true }}
-            // InputProps={{
-            //   inputComponent: NumberFormatForProfile as any,
-            // }}
-            autoComplete="off"
-          />
+          <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
+            <div style={{fontSize: '26px', marginTop: '3px', marginRight: "5px"}}>+</div>
+            <TextField
+              type="tel"
+              label={intl.formatMessage({
+                id: "PROFILE.INPUT.PHONE",
+              })}
+              margin="normal"
+              className={classes.textField}
+              classes={
+                prompterRunning && prompterStep === 0 && !!values.fio && !values.phone
+                  ? { root: innerClasses.pulseRoot }
+                  : {}
+              }
+              name="phone"
+              value={values.phone}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={touched.phone && errors.phone}
+              error={Boolean(touched.phone && errors.phone)}
+              disabled={editMode === "view"}
+              InputLabelProps={{ shrink: true }}
+              autoComplete="off"
+            />
+          </div>
         )}
       </div>
 

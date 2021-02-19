@@ -155,6 +155,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   }
 
   let realCrops: ICrop[] = [];
+
   if (crops) {
     crops.forEach(crop => {
       if (!realUser?.crops.find(item => item.id === crop.id)) {
@@ -168,7 +169,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   const goToTariffPurchase = () => {
     history.push("/user/profile/tariffs/payment");
-  }
+  };
 
   const { values, resetForm, handleSubmit } = useFormik({
     initialValues: {
@@ -328,6 +329,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     realUser={realUser}
                     showTariffTable={showTariffTable}
                     setShowTariffTable={setTariffTable}
+                    tariffs={tariffs}
                   />
                 ) : (
                   <TariffCards
@@ -345,7 +347,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     selectedDate={selectedDate}
                     setSelectedDate={setSelectedDate}
                     goToTariffPurchase={goToTariffPurchase}
-                    
                   />
                 )}
               </>

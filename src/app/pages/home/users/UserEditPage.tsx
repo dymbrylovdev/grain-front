@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { compose } from "redux";
-import { useHistory, RouteComponentProps } from "react-router-dom";
-import { connect, ConnectedProps } from "react-redux";
-import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Paper, AppBar, Tabs, Tab, Divider, makeStyles, Button } from "@material-ui/core";
-import { useSnackbar } from "notistack";
+import React, {useEffect, useState} from 'react';
+import {compose} from 'redux';
+import {RouteComponentProps, useHistory} from 'react-router-dom';
+import {connect, ConnectedProps} from 'react-redux';
+import {injectIntl, WrappedComponentProps} from 'react-intl';
+import {AppBar, Button, Divider, makeStyles, Paper, Tab, Tabs} from '@material-ui/core';
+import {useSnackbar} from 'notistack';
 
-import { actions as usersActions } from "../../../store/ducks/users.duck";
-import { actions as authActions } from "../../../store/ducks/auth.duck";
-import { actions as locationsActions } from "../../../store/ducks/locations.duck";
-import { actions as googleLocationsActions } from "../../../store/ducks/yaLocations.duck";
-import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
+import {actions as usersActions} from '../../../store/ducks/users.duck';
+import {actions as authActions} from '../../../store/ducks/auth.duck';
+import {actions as locationsActions} from '../../../store/ducks/locations.duck';
+import {actions as googleLocationsActions} from '../../../store/ducks/yaLocations.duck';
+import {actions as prompterActions} from '../../../store/ducks/prompter.duck';
 
-import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
-import useStyles from "../styles";
-import { IAppState } from "../../../store/rootDuck";
-import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
-import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
-import { ProfileForm, CropsForm, LocationsForm, BidsForm } from "./components";
-import ScrollToTop from "../../../components/ui/ScrollToTop";
-import TariffForm from "./components/TariffForm/TariffForm";
-import { accessByRoles } from "../../../utils/utils";
+import AlertDialog from '../../../components/ui/Dialogs/AlertDialog';
+import useStyles from '../styles';
+import {IAppState} from '../../../store/rootDuck';
+import {LayoutSubheader} from '../../../../_metronic/layout/LayoutContext';
+import {a11yProps, TabPanel} from '../../../components/ui/Table/TabPanel';
+import {BidsForm, CropsForm, LocationsForm, ProfileForm} from './components';
+import ScrollToTop from '../../../components/ui/ScrollToTop';
+import TariffForm from './components/TariffForm/TariffForm';
+import {accessByRoles} from '../../../utils/utils';
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -283,17 +283,19 @@ const UserEditPage: React.FC<TPropsFromRedux &
               {editMode !== "create" && (
                 <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />
               )}
+
               {((me &&
                 editMode === "profile" &&
                 !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
                 (user &&
                   editMode === "edit" &&
-                  ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER", "ROLE_MANAGER"].includes(user.roles[0]))) && (
+                  ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
                 <Tab
                   label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
                   {...a11yProps(3)}
                 />
               )}
+
               {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
                 <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(4)} />
               )}
@@ -323,12 +325,22 @@ const UserEditPage: React.FC<TPropsFromRedux &
             )}
           </TabPanel>
 
-          <TabPanel value={valueTabs} index={3}>
-            <TariffForm editMode={editMode} userId={+id || undefined} />
-          </TabPanel>
+          {((me &&
+            editMode === "profile" &&
+            !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+            (user &&
+              editMode === "edit" &&
+              ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
+            <TabPanel value={valueTabs} index={3}>
+              <TariffForm editMode={editMode} userId={+id || undefined} />
+            </TabPanel>
+          )}
 
           {user && (
-            <TabPanel value={valueTabs} index={4}>
+            <TabPanel
+              value={valueTabs}
+              index={["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]) ? 4 : 3}
+            >
               <BidsForm userId={+id || undefined} classes={classes} isBuyer={user.is_buyer} />
             </TabPanel>
           )}

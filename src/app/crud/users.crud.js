@@ -22,13 +22,19 @@ export function deleteUser(id) {
   return axios.delete(`${USER_URL}${id}`);
 }
 
-export function getUsers(page, perPage) {
-  return axios.get(`${GET_USERS_URL}?page=${page}&per_page=${perPage}`);
+export function getUsers(page, perPage, roles = []) {
+  let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}`;
+
+  if (roles.length) {
+    url += `&roles=${roles.join(",")}`;
+  }
+
+  return axios.get(url);
 }
 
-export const getUserBids = (id) => {
+export const getUserBids = id => {
   return axios.get(`api/user/${id}/bids`);
-}
+};
 
 export function getStatuses() {
   return axios.get(GET_STATUSES_URL);
