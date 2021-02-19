@@ -223,7 +223,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       email: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
       password: Yup.string(),
       phone: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-      // .matches(/^[0-9][0-9]{10}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+      // .matches(/^[0-9]{10,14}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
       repeatPassword: Yup.string().test(
         "passwords-match",
         intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
