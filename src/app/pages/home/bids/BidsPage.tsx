@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { compose } from "redux";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Paper, Button, makeStyles } from "@material-ui/core";
+import { Button, makeStyles, Paper } from "@material-ui/core";
 // import { IconButton } from "@material-ui/core";
 // import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import { useSnackbar } from "notistack";
@@ -33,7 +33,9 @@ const useInnerStyles = makeStyles(theme => ({
   topContainer: {
     flexDirection: "row",
     display: "flex",
+    flexWrap: "wrap",
     alignItems: "center",
+    justifyContent: "center",
     width: "100%",
     marginTop: theme.spacing(2),
   },
@@ -49,6 +51,10 @@ const useInnerStyles = makeStyles(theme => ({
   topSpaceContainer: {
     marginBottom: theme.spacing(2),
   },
+  calendarBlock: {
+    maxWidth: 250,
+    marginLeft: theme.spacing(2),
+  },
   text: {
     marginRight: theme.spacing(1),
     marginBottom: theme.spacing(1),
@@ -56,6 +62,17 @@ const useInnerStyles = makeStyles(theme => ({
   },
   iconButton: {
     animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
+  },
+  datesFilterBlock: {
+    flexDirection: "row",
+    display: "flex",
+    alignSelf: "flex-end",
+  },
+  totalText: {
+    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -82,6 +99,8 @@ const BidsPage: React.FC<TPropsFromRedux &
   page,
   perPage,
   total,
+
+  filter,
 
   fetch,
   bids,
@@ -142,7 +161,14 @@ const BidsPage: React.FC<TPropsFromRedux &
   if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
 
   let pageTitle = "";
+
   if (!!crops) {
+    crops.push({
+      id: 0,
+      name: "Все культуры",
+      vat: 0,
+    });
+
     switch (bestAllMyMode) {
       case "best-bids":
         if (salePurchaseMode === "sale")
@@ -183,46 +209,64 @@ const BidsPage: React.FC<TPropsFromRedux &
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [pricesModalOpen, setPricesModalOpen] = useState(false);
 
+  const fetchAll = () => {
+    if (!!me) {
+      if (["ROLE_ADMIN"].includes(me.roles[0])) {
+        fetch(
+          +cropId,
+          salePurchaseMode,
+          page,
+          perPage,
+          filter.minDate,
+          filter.maxDate,
+          filter.authorId
+        );
+      } else {
+        fetch(+cropId, salePurchaseMode, page, perPage);
+      }
+    }
+  };
+
   // const filterTitle =
-    // salePurchaseMode === "sale"
-      // ? !currentSaleFilters[cropId]
-        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
-        // : !currentSaleFilters[cropId]?.id
-        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
-        // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
-      // : salePurchaseMode === "purchase"
-      // ? !currentPurchaseFilters[cropId]
-        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
-        // : !currentPurchaseFilters[cropId]?.id
-        // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
-        // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
-      // : "";
+  // salePurchaseMode === "sale"
+  // ? !currentSaleFilters[cropId]
+  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
+  // : !currentSaleFilters[cropId]?.id
+  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
+  // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
+  // : salePurchaseMode === "purchase"
+  // ? !currentPurchaseFilters[cropId]
+  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
+  // : !currentPurchaseFilters[cropId]?.id
+  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
+  // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
+  // : "";
 
   // const filterName =
-    // salePurchaseMode === "sale"
-      // ? currentSaleFilters[cropId] &&
-        // currentSaleFilters[cropId]?.id &&
-        // currentSaleFilters[cropId]?.name
-        // ? currentSaleFilters[cropId]?.name
-        // : ""
-      // : salePurchaseMode === "purchase"
-      // ? currentPurchaseFilters[cropId] &&
-        // currentPurchaseFilters[cropId]?.id &&
-        // currentPurchaseFilters[cropId]?.name
-        // ? currentPurchaseFilters[cropId]?.name
-        // : ""
-      // : "";
+  // salePurchaseMode === "sale"
+  // ? currentSaleFilters[cropId] &&
+  // currentSaleFilters[cropId]?.id &&
+  // currentSaleFilters[cropId]?.name
+  // ? currentSaleFilters[cropId]?.name
+  // : ""
+  // : salePurchaseMode === "purchase"
+  // ? currentPurchaseFilters[cropId] &&
+  // currentPurchaseFilters[cropId]?.id &&
+  // currentPurchaseFilters[cropId]?.name
+  // ? currentPurchaseFilters[cropId]?.name
+  // : ""
+  // : "";
 
   // const filterIconPath =
-    // salePurchaseMode === "sale"
-      // ? !currentSaleFilters[cropId]
-        // ? "/media/filter/filter.svg"
-        // : "/media/filter/filter_full.svg"
-      // : salePurchaseMode === "purchase"
-      // ? !currentPurchaseFilters[cropId]
-        // ? "/media/filter/filter.svg"
-        // : "/media/filter/filter_full.svg"
-      // : "";
+  // salePurchaseMode === "sale"
+  // ? !currentSaleFilters[cropId]
+  // ? "/media/filter/filter.svg"
+  // : "/media/filter/filter_full.svg"
+  // : salePurchaseMode === "purchase"
+  // ? !currentPurchaseFilters[cropId]
+  // ? "/media/filter/filter.svg"
+  // : "/media/filter/filter_full.svg"
+  // : "";
 
   const isHaveRules = (user: IUser, id: number) => {
     return accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id;
@@ -240,6 +284,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   }
 
   const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     if (editFilterSuccess || editFilterError) {
       enqueueSnackbar(
@@ -316,7 +361,7 @@ const BidsPage: React.FC<TPropsFromRedux &
           fetchMyBids(salePurchaseMode, page, perPage);
           break;
         case "all-bids":
-          fetch(+cropId, salePurchaseMode, page, perPage);
+          fetchAll();
           break;
       }
     }
@@ -388,7 +433,7 @@ const BidsPage: React.FC<TPropsFromRedux &
           fetchMyBids(salePurchaseMode, page, perPage);
           break;
         case "all-bids":
-          fetch(+cropId, salePurchaseMode, page, perPage);
+          fetchAll();
           break;
       }
     }
@@ -405,6 +450,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     page,
     perPage,
     salePurchaseMode,
+    filter,
   ]);
 
   useEffect(() => {
@@ -447,6 +493,12 @@ const BidsPage: React.FC<TPropsFromRedux &
             )}
           </div>
         </div>
+
+        {me && ["ROLE_ADMIN"].includes(me.roles[0]) && bestAllMyMode === "all-bids" && (
+          <div className={innerClasses.totalText}>
+            {intl.formatMessage({ id: "BIDSLIST.TABLE.TOTAL" })}: {total}
+          </div>
+        )}
 
         {bestAllMyMode === "best-bids" && (
           <>
@@ -548,7 +600,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 setAlertOpen(true);
               }}
               user={me as IUser}
-              loading={!bids || !cropParams}
+              loading={!bids || (!cropParams && cropId !== "0")}
               paginationData={{ page, perPage, total }}
               fetcher={(newPage: number, newPerPage: number) =>
                 fetch(+cropId, salePurchaseMode, newPage, newPerPage)
@@ -611,6 +663,8 @@ const connector = connect(
     page: state.bids.page,
     perPage: state.bids.per_page,
     total: state.bids.total,
+
+    filter: state.bids.filter,
 
     bids: state.bids.bids,
     loading: state.bids.loading,
