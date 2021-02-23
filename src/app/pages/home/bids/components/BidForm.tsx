@@ -85,13 +85,13 @@ const getInitialValues = (
   }
   if (editMode === "create") {
     if (vendorId) {
-      if (user && user.crops.length >= 1) {
+      if (user && user.crops.length === 1) {
         newCropId = user.crops[0].id;
       } else {
         newCropId = "";
       }
     } else {
-      if (me && me.crops.length >= 1) {
+      if (me && me.crops.length === 1) {
         newCropId = me.crops[0].id;
       } else {
         newCropId = "";
@@ -524,6 +524,7 @@ const BidForm: React.FC<IProps> = ({
   }, [values.bid_type, values.crop_id, values.location, initializeParamValues, fetchBidsPair]);
 
   useEffect(() => {
+    console.log("clear bids pair")
     clearBidsPair();
   }, [history, clearBidsPair]);
 
@@ -1624,6 +1625,7 @@ const BidForm: React.FC<IProps> = ({
             behavior: "smooth",
           });
           setMoreBidOpen(false);
+          clearBidsPair();
         }}
       />
     </div>
