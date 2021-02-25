@@ -226,10 +226,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         countryCode.length === 1
           ? Yup.string()
               .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-              .matches(/^[0-9]{11}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
+              .matches(/^(\d{1}|\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
           : Yup.string()
               .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-              .matches(/^[0-9]{13}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+              .matches(/^(\d{3}|\d{13})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
       repeatPassword: Yup.string().test(
         "passwords-match",
         intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
