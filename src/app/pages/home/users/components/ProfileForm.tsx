@@ -222,8 +222,14 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           : Yup.string(),
       email: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
       password: Yup.string(),
-      phone: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-      // .matches(/^[0-9]{10,14}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+      phone:
+        countryCode.length === 1
+          ? Yup.string()
+              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+              .matches(/^[0-9]{11}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
+          : Yup.string()
+              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+              .matches(/^[0-9]{13}$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
       repeatPassword: Yup.string().test(
         "passwords-match",
         intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
@@ -684,7 +690,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
-            <div style={{fontSize: '26px', marginTop: '3px', marginRight: "5px"}}>+</div>
+            <div style={{ fontSize: "26px", marginTop: "3px", marginRight: "5px" }}>+</div>
             <TextField
               type="tel"
               label={intl.formatMessage({
