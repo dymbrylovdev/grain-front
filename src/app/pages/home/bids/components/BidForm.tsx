@@ -182,7 +182,9 @@ interface IProps {
   clearLocations: () => Action<"yaLocations/CLEAR">;
   clearBidsPair: () => Action<"bids/CLEAR_BIDS_PAIR">;
   fetchBidsPair: any;
+  bidsPairSuccess: boolean;
   bidsPairError: string | null;
+  bidsPairLoading: boolean;
   clearCropParams: () => Action<"crops2/CLEAR_CROP_PARAMS">;
   fetchCropParams: (
     cropId: number
@@ -268,7 +270,9 @@ const BidForm: React.FC<IProps> = ({
   bidsPair,
   clearBidsPair,
   fetchBidsPair,
+  bidsPairSuccess,
   bidsPairError,
+  bidsPairLoading,
 
   clearCropParams,
   fetchCropParams,
@@ -524,7 +528,7 @@ const BidForm: React.FC<IProps> = ({
   }, [values.bid_type, values.crop_id, values.location, initializeParamValues, fetchBidsPair]);
 
   useEffect(() => {
-    console.log("clear bids pair")
+    console.log("clear bids pair");
     clearBidsPair();
   }, [history, clearBidsPair]);
 
@@ -821,43 +825,51 @@ const BidForm: React.FC<IProps> = ({
 
       {editMode === "create" && bidsPair && (
         <>
-          {!bidsPairError ? (
+          {bidsPairLoading ? (
+            <Skeleton width="100%" height={70} animation="wave" />
+          ) : (
             <>
-              {bidsPair.price_with_delivery ? (
+              {bidsPairError && (
                 <Alert
                   className={classes.infoAlert}
-                  severity="info"
-                  color="info"
+                  severity="warning"
+                  color="error"
                   style={{ marginTop: 15 }}
                 >
-                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
-                    bidsPair.price_with_delivery
-                  } ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
-                </Alert>
-              ) : (
-                <Alert
-                  className={classes.infoAlert}
-                  severity="info"
-                  color="info"
-                  style={{ marginTop: 15 }}
-                >
-                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
-                    bidsPair.price
-                  } ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
+                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${intl.formatMessage({
+                    id: "BID.CREATE.NOT.FOUND",
+                  })}`}
                 </Alert>
               )}
+
+              {bidsPairSuccess && (
+                <>
+                  {bidsPair.price_with_delivery ? (
+                    <Alert
+                      className={classes.infoAlert}
+                      severity="info"
+                      color="info"
+                      style={{ marginTop: 15 }}
+                    >
+                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
+                        bidsPair.price_with_delivery
+                      } ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
+                    </Alert>
+                  ) : (
+                    <Alert
+                      className={classes.infoAlert}
+                      severity="info"
+                      color="info"
+                      style={{ marginTop: 15 }}
+                    >
+                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
+                        bidsPair.price
+                      } ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
+                    </Alert>
+                  )}
+                </>
+              )}
             </>
-          ) : (
-            <Alert
-              className={classes.infoAlert}
-              severity="warning"
-              color="error"
-              style={{ marginTop: 15 }}
-            >
-              {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${intl.formatMessage({
-                id: "BID.CREATE.NOT.FOUND",
-              })}`}
-            </Alert>
           )}
         </>
       )}

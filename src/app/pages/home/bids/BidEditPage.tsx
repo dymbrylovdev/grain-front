@@ -282,7 +282,9 @@ const BidEditPage: React.FC<TPropsFromRedux &
             locations={locations}
             clearBidsPair={clearBidsPair}
             fetchBidsPair={fetchBidsPair}
+            bidsPairSuccess={bidsPairSuccess}
             bidsPairError={bidsPairError}
+            bidsPairLoading={bidsPairLoading}
             loadingLocations={loadingLocations}
             clearLocations={clearLocations}
             clearCropParams={clearCropParams}
