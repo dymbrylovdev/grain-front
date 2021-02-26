@@ -528,7 +528,6 @@ const BidForm: React.FC<IProps> = ({
   }, [values.bid_type, values.crop_id, values.location, initializeParamValues, fetchBidsPair]);
 
   useEffect(() => {
-    console.log("clear bids pair");
     clearBidsPair();
   }, [history, clearBidsPair]);
 
