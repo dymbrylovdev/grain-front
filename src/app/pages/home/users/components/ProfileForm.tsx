@@ -99,7 +99,12 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   fetchUser,
   user,
   userLoading,
+  userSuccess,
   userError,
+
+  editUserLoading,
+  editUserSuccess,
+  editUserError,
 
   clearCreateUser,
   createUser,
@@ -129,12 +134,14 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   openInfoAlert,
   setOpenInfoAlert,
+  editNoNoti
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
   const history = useHistory();
 
   const [oldValues, setOldValues] = useState<any | undefined>(undefined);
+  const [oldUserValues, setOldUserValues] = useState<any | undefined>(undefined);
   const [visiblePass, setVisiblePass] = useState(true);
   const [isOpenCompanyConfirm, setIsOpenCompanyConfirm] = useState<boolean>(false);
   const [companyConfirmId, setCompanyConfirmId] = useState<number>(0);
@@ -201,7 +208,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         values.status = "Активный";
         createUser(setCreateValues({ ...values, crop_ids: [1] }));
       }
-      if (editMode === "edit" && user) {
+      if (editMode === "edit" && user && !isEqual(oldUserValues, values)) {
         let params: IUserForEdit = setEditValues(values);
         params.funnel_state_id = values.funnel_state_id;
         params.is_funnel_state_automate = values.is_funnel_state_automate;
@@ -251,16 +258,21 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       clearMe();
       setOldValues(values);
     }
-  }, [clearMe, editMode, me, meSuccess, oldValues, setEditNoNoti, user, values]);
+
+    if (userSuccess && !!values && !!user && isEqual(getInitialValues(user), values)) {
+      setEditNoNoti(false);
+      setOldUserValues(values);
+    }
+  }, [clearMe, editMode, me, meSuccess, userSuccess, oldValues, oldUserValues, setEditNoNoti, user, values]);
 
   useEffect(() => {
     return () => {
-      if (editMode === "profile" && !!oldValues) {
+      if ((editMode === "profile" && !!oldValues) || (editMode === "edit" && !!oldUserValues)) {
         setEditNoNoti(true);
         handleSubmit();
       }
     };
-  }, [editMode, handleSubmit, oldValues, setEditNoNoti]);
+  }, [editMode, handleSubmit, oldValues, oldUserValues, setEditNoNoti]);
 
   useEffect(() => {
     if (!values.fio) setLocTabPulse(false);
@@ -363,6 +375,36 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   ]);
 
   useEffect(() => {
+    if (editUserSuccess || editUserError) {
+      if (!editMeNoNoti) {
+        enqueueSnackbar(
+          editUserSuccess
+            ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_PROFILE" })
+            : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editUserError}`,
+          {
+            variant: editUserSuccess ? "success" : "error",
+          }
+        );
+      }
+      setEditNoNoti(false);
+      clearUser();
+    }
+    if (editUserSuccess && userId) {
+      fetchUser({ id: userId });
+    }
+  }, [
+    clearUser,
+    editUserError,
+    editUserSuccess,
+    editMeNoNoti,
+    enqueueSnackbar,
+    fetchUser,
+    intl,
+    setEditNoNoti,
+    userId
+  ]);
+
+  useEffect(() => {
     if (userActivateSuccess || userActivateError) {
       enqueueSnackbar(
         userActivateSuccess
@@ -386,7 +428,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         if (userId) fetchUser({ id: userId });
         break;
     }
-  }, [editMode, fetchMe, fetchUser, userId]);
+  }, [editMode, fetchMe, fetchUser, userId, setEditNoNoti]);
 
   useEffect(() => {
     switch (editMode) {
@@ -1079,7 +1121,12 @@ const connector = connect(
 
     user: state.users.user,
     userLoading: state.users.byIdLoading,
+    userSuccess: state.users.byIdSuccess,
     userError: state.users.byIdError,
+
+    editUserLoading: state.users.editLoading,
+    editUserSuccess: state.users.editSuccess,
+    editUserError: state.users.editError,
 
     createdUserId: state.users.createdUserId,
 
@@ -1099,6 +1146,8 @@ const connector = connect(
     userActivateError: state.users.userActivateError,
 
     openInfoAlert: state.users.openInfoAlert,
+
+    editNoNoti: state.auth.editNoNoti,
   }),
   {
     fetchFunnelStates: funnelStatesActions.fetchRequest,
