@@ -41,7 +41,6 @@ const getFilterEditArray = (values: { [x: string]: any }) => {
   // console.log("filterEditArray:", filterEditArray);
   return filterEditArray;
 };
-
 interface IProps {
   currentFilter: IMyFilterItem;
   setFilterId: React.Dispatch<React.SetStateAction<string>>;
