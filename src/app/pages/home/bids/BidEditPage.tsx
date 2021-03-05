@@ -180,8 +180,6 @@ const BidEditPage: React.FC<TPropsFromRedux &
     }
   }, [clearEdit, editError, editSuccess, enqueueSnackbar, history, intl]);
 
-  console.log(vendorId)
-
   useEffect(() => {
     if (vendorId) {
       fetchUsersCrops(+vendorId);
