@@ -612,7 +612,7 @@ const BidForm: React.FC<IProps> = ({
                 >
                   <div className={innerClasses.authorText}>
                     {intl.formatMessage({ id: "BID.FORM.AUTHOR" })}{" "}
-                    {bid.author.fio || bid.author.login}
+                    {bid.author.fio || bid.author.login || `ID ${bid.author.id}`}
                   </div>
                 </Link>
               </div>
@@ -634,7 +634,7 @@ const BidForm: React.FC<IProps> = ({
                     bid.type === "sale"
                       ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
                       : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
-                  }: ${bid.vendor.fio || bid.vendor.login}`}
+                  }: ${bid.vendor.fio || bid.vendor.login || `ID ${bid.vendor.id}`}`}
                 </div>
               </div>
 

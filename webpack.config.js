@@ -30,7 +30,7 @@ const mainConfig = function () {
 			// main output path in assets folder
 			path: distPath,
 			// output path based on the entries' filename
-			filename: "[name].js"
+			filename: "[name].[contenthash].js"
 		},
 		resolve: {extensions: ['.scss']},
 		plugins: [

@@ -198,7 +198,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       values.max_payment_term = '';
     }
     filterSubmit();
-  }, [values.min_prepayment_amount])
+  }, [values.min_prepayment_amount]);
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">

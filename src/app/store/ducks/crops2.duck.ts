@@ -15,6 +15,7 @@ import {
   delCropParam,
 } from "../../crud/crops.crud";
 import { ICrop, ICropParam, TAllCropRequest } from "../../interfaces/crops";
+import { getUsersCrops } from "../../crud/users.crud";
 
 const FETCH_REQUEST = "crops2/FETCH_REQUEST";
 const FETCH_SUCCESS = "crops2/FETCH_SUCCESS";
@@ -40,6 +41,11 @@ const DEL_CROP_PARAM_REQUEST = "crops2/DEL_CROP_PARAM_REQUEST";
 const DEL_CROP_PARAM_SUCCESS = "crops2/DEL_CROP_PARAM_SUCCESS";
 const DEL_CROP_PARAM_FAIL = "crops2/DEL_CROP_PARAM_FAIL";
 
+const CLEAR_USER_CROPS = "crops2/CLEAR_USER_CROPS";
+const USER_CROPS_REQUEST = "crops2/USER_CROPS_REQUEST";
+const USER_CROPS_SUCCESS = "crops2/USER_CROPS_SUCCESS";
+const USER_CROPS_FAIL = "crops2/USER_CROPS_FAIL";
+
 export interface IInitialState {
   crops: ICrop[] | undefined;
   loading: boolean;
@@ -63,6 +69,10 @@ export interface IInitialState {
   delCropParamLoading: boolean;
   delCropParamSuccess: boolean;
   delCropParamError: string | null;
+
+  usersCropsLoading: boolean;
+  usersCropsSuccess: boolean;
+  usersCropsError: string | null;
 }
 
 const initialState: IInitialState = {
@@ -88,6 +98,10 @@ const initialState: IInitialState = {
   delCropParamLoading: false,
   delCropParamSuccess: false,
   delCropParamError: null,
+
+  usersCropsLoading: false,
+  usersCropsSuccess: false,
+  usersCropsError: null,
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
@@ -227,6 +241,22 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, delCropParamLoading: false, delCropParamError: action.payload };
       }
 
+      case CLEAR_USER_CROPS: {
+        return { ...state, usersCropsLoading: false, usersCropsSuccess: false, usersCropsError: null }
+      }
+  
+      case USER_CROPS_REQUEST: {
+        return { ...state, crops: undefined, usersCropsLoading: true, usersCropsSuccess: false, usersCropsError: null }
+      }
+  
+      case USER_CROPS_SUCCESS: {
+        return { ...state, crops: action.payload.data, usersCropsLoading: false, usersCropsSuccess: true }
+      }
+  
+      case USER_CROPS_FAIL: {
+        return { ...state, usersCropsLoading: false, usersCropsError: action.payload }
+      }
+
       default:
         return state;
     }
@@ -259,6 +289,11 @@ export const actions = {
   delCropParamRequest: (id: number) => createAction(DEL_CROP_PARAM_REQUEST, { id }),
   delCropParamSuccess: () => createAction(DEL_CROP_PARAM_SUCCESS),
   delCropParamFail: (payload: string) => createAction(DEL_CROP_PARAM_FAIL, payload),
+
+  clearUserCrops: () => createAction(CLEAR_USER_CROPS),
+  userCropsRequest: (payload: number) => createAction(USER_CROPS_REQUEST, payload),
+  userCropsSuccess: (payload: IServerResponse<ICrop[]>) => createAction(USER_CROPS_SUCCESS, payload),
+  userCropsFail: (payload: string) => createAction(USER_CROPS_FAIL, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -312,6 +347,15 @@ function* delCropParamSaga({ payload }: { payload: { id: number } }) {
   }
 }
 
+function* userCropsSaga({ payload }: { payload: number }) {
+  try {
+    const { data }: { data: IServerResponse<ICrop[]> } = yield call(() => getUsersCrops(payload));
+    yield put(actions.userCropsSuccess(data));
+  } catch (e) {
+    yield put(actions.userCropsFail(e?.response?.data?.message) || "Ошибка соединения.");
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.cropParamsRequest>>(
@@ -327,4 +371,5 @@ export function* saga() {
     DEL_CROP_PARAM_REQUEST,
     delCropParamSaga
   );
+  yield takeLatest<ReturnType<typeof actions.userCropsRequest>>(USER_CROPS_REQUEST, userCropsSaga);
 }
