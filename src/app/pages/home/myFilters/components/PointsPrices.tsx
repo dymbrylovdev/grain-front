@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { TextField, Grid as div, IconButton, Divider } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
@@ -44,6 +44,8 @@ const getFilterEditArray = (values: { [x: string]: any }) => {
 interface IProps {
   currentFilter: IMyFilterItem;
   setFilterId: React.Dispatch<React.SetStateAction<string>>;
+  newFilter: any;
+  filterSubmit: any;
 }
 
 const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
@@ -75,8 +77,26 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
   editError,
 
   setFilterId,
+
+  pointPrices,
+  setPointPrices,
+  clearPointPrices,
+
+  newFilter,
+  filterSubmit,
 }) => {
   const classes = useStyles();
+
+  let pointData: any[] = [];
+
+  const pointDataForRequest = () => {
+    currentFilter.point_prices.map(item => {
+      pointData.push({
+        point_id: item.point.id,
+        price: item.price,
+      })
+    })
+  };
 
   const {
     values,
@@ -102,6 +122,9 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
           parameter_values,
         },
       });
+      clearPointPrices();
+      pointDataForRequest();
+      setPointPrices(pointData);
     },
     validationSchema: Yup.object().shape(getValidationObject(me, intl)),
   });
@@ -156,7 +179,10 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
             color="primary"
             disabled={editLoading}
             loading={editLoading}
-            onPress={handleSubmit}
+            onPress={() => {
+              handleSubmit();
+              filterSubmit();
+            }}
           >
             {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
           </ButtonWithLoader>
@@ -180,6 +206,7 @@ const connector = connect(
     editLoading: state.myFilters.editLoading,
     editSuccess: state.myFilters.editSuccess,
     editError: state.myFilters.editError,
+    pointPrices: state.myFilters.pointPrices,
   }),
   {
     fetchFilters: myFiltersActions.fetchRequest,
@@ -189,6 +216,8 @@ const connector = connect(
     delFilter: myFiltersActions.delRequest,
     clearEditFilter: myFiltersActions.clearEdit,
     editFilter: myFiltersActions.editRequest,
+    setPointPrices: myFiltersActions.setPointPrices,
+    clearPointPrices: myFiltersActions.clearPointPrices,
   }
 );
 
