@@ -263,18 +263,6 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           >
                             {roles.find(role => role.id === item.roles[0])?.value}
                           </div>
-                          {/* <IconButton
-                            size="medium"
-                            color="primary"
-                            onClick={() => {
-                              setInfoText(
-                                intl.formatMessage({ id: "FUNNEL_STATES.DIALOGS.INFO.ADMIN_TEXT" })
-                              );
-                              setInfoOpen(true);
-                            }}
-                          >
-                            <HelpOutlineIcon />
-                          </IconButton> */}
                         </div>
                       ) : !item.funnel_state ? (
                         <div className={classes.flexRow}>
