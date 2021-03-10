@@ -342,7 +342,9 @@ const BidForm: React.FC<IProps> = ({
     //@ts-ignore
     if (contactViewCount > 0 || ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
       history.push(
-        me?.id === (!!bid && bid.vendor && bid.vendor.id)
+        me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
+          ? `/user/edit/${!!bid && bid.vendor && bid.vendor.id}`
+          : me?.id === (!!bid && bid.vendor && bid.vendor.id)
           ? "/user/profile"
           : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
       );
@@ -601,13 +603,18 @@ const BidForm: React.FC<IProps> = ({
         <Skeleton width="100%" height={127} animation="wave" />
       ) : (
         bid?.vendor &&
-        bid?.author && (
+        bid?.author &&
+        me && (
           <>
             {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
               <div>
                 <Link
                   to={
-                    me?.id === bid?.author?.id ? "/user/profile" : `/user/view/${bid?.author?.id}`
+                    ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
+                      ? `/user/edit/${bid?.author?.id}`
+                      : me?.id === bid?.author?.id
+                      ? "/user/profile"
+                      : `/user/view/${bid?.author?.id}`
                   }
                 >
                   <div className={innerClasses.authorText}>

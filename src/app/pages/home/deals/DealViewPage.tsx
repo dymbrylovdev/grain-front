@@ -430,7 +430,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                           </div>
                         </p>
                         {!!deal?.sale_bid?.vendor?.phone && (
-                          <p>тел.: +7 {deal.sale_bid.vendor.phone}</p>
+                          <p>тел.: {deal.sale_bid.vendor.phone}</p>
                         )}
                         <UserActivity intl={intl} user={deal.sale_bid.vendor} />
                         <div className={classes.topMargin}>
@@ -465,7 +465,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                           </div>
                         </p>
                         {!!deal?.purchase_bid?.vendor?.phone && (
-                          <p>тел.: +7 {deal.purchase_bid.vendor.phone}</p>
+                          <p>тел.: {deal.purchase_bid.vendor.phone}</p>
                         )}
                         <UserActivity intl={intl} user={deal.purchase_bid.vendor} />
 
