@@ -85,7 +85,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEditFilter();
     }
     if (editFilterSuccess) {
-      console.log('fetching in useeffect')
       fetch(
         1,
         perPage,

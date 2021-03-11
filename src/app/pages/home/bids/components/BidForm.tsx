@@ -411,8 +411,8 @@ const BidForm: React.FC<IProps> = ({
         .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       price: Yup.number()
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-        .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+        // .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+        // .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       location: Yup.object({
         text: Yup.string().required(
@@ -739,7 +739,7 @@ const BidForm: React.FC<IProps> = ({
           noOptionsText={intl.formatMessage({
             id: "ALL.AUTOCOMPLIT.EMPTY",
           })}
-          value={vendor?.crops?.find(item => item.id === values.crop_id) || null}
+          value={vendor?.crops?.find(item => item.id === values.crop_id) || crops?.find(item => item.id === values.crop_id)}
           onChange={(e: any, val: ICrop | null) => {
             setFieldValue("crop_id", val?.id || "");
             !!val?.id ? fetchCropParams(val.id) : clearCropParams();
