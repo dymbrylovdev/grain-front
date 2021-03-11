@@ -123,7 +123,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   useEffect(() => {
     if (!!dealsFilters)
-      console.log('fetching in useeffect')
       fetch(
         page,
         perPage,
