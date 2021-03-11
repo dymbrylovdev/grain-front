@@ -79,8 +79,12 @@ const DealViewPage: React.FC<TPropsFromRedux &
     if (deal && me) {
       let contactViewCount = me.contact_view_count;
       //@ts-ignore
-      if (contactViewCount > 1) {
-        history.push(`/user/view/${deal.sale_bid.vendor.id}`);
+      if (contactViewCount > 1 || ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
+        history.push(
+          me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
+            ? `/user/edit/${deal.sale_bid.vendor.id}`
+            : `/user/view/${deal.sale_bid.vendor.id}`
+        );
         //@ts-ignore
         editContactViewCount({ data: { contact_view_count: contactViewCount - 2 } });
       } else {
