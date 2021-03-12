@@ -736,7 +736,7 @@ const BidForm: React.FC<IProps> = ({
           noOptionsText={intl.formatMessage({
             id: "ALL.AUTOCOMPLIT.EMPTY",
           })}
-          value={vendor?.crops?.find(item => item.id === values.crop_id) || crops?.find(item => item.id === values.crop_id)}
+          value={vendor?.crops?.find(item => item.id === values.crop_id) || null}
           onChange={(e: any, val: ICrop | null) => {
             setFieldValue("crop_id", val?.id || "");
             !!val?.id ? fetchCropParams(val.id) : clearCropParams();
