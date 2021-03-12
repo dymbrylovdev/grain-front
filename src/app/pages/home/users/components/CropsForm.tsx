@@ -91,19 +91,8 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   if ((editMode === "edit" || editMode === "view") && user) realUser = user;
 
   let realTariffs: ITariff[] | undefined = undefined;
-  // let groupedTariffsType: ITariffType[] | undefined = undefined;
-  // let groupedTariffsPeriod: ITariffPeriod[] | undefined = undefined;
   if (tariffs && realUser) {
     realTariffs = tariffs.filter(item => item.role.name === realUser?.roles[0]);
-
-    // let a = realTariffs.map(item => item.tariff);
-    // groupedTariffsType = uniqBy(a, n => n.name);
-
-    // let b = realTariffs.map(item => item.tariff_period);
-    // //@ts-ignore
-    // b.includes(null)
-    //   ? (groupedTariffsPeriod = b)
-    //   : (groupedTariffsPeriod = uniqBy(b, n => n.period));
   }
 
   let realCrops: ICrop[] = [];
@@ -125,16 +114,9 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
         ? realUser?.tariff_matrix.tariff_period.id
         : undefined,
       crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
-      // tariff_expired_at: new Date(),
     },
     onSubmit: () => {
       let newCropIds = [...values.crop_ids];
-      // let selectedTariff = tariffs?.find(
-      //   tariff =>
-      //     tariff.tariff.id === values.tariff_type_id &&
-      //     tariff.tariff_period.id === values.tariff_period_id
-      // );
-      // let newTariffExpiredDate = selectedDate;
       if (
         values.crop_ids &&
         values.tariff_id &&
@@ -165,9 +147,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
           edit({
             id: realUser?.id,
             data: {
-              // tariff_matrix_id: realSelectedTariff?.id,
               crop_ids: newCropIds,
-              // tariff_expired_at: newTariffExpiredDate,
             },
           });
         }
@@ -198,7 +178,6 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
             ? realUser?.tariff_matrix.tariff_period.id
             : undefined,
           crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
-          // tariff_expired_at: selectedDate,
         },
       });
     }
@@ -269,8 +248,6 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
         {loadingMe ||
         loadingUser ||
         !realTariffs ||
-        // !groupedTariffsType ||
-        // !groupedTariffsPeriod ||
         !realUser ||
         editLoading ? (
           <>

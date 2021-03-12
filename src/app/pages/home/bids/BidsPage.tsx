@@ -213,7 +213,7 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   const fetchAll = () => {
     if (!!me) {
-      if (["ROLE_ADMIN"].includes(me.roles[0])) {
+      if (["ROLE_ADMIN"].includes(me.roles[0]) && filter.minDate && filter.maxDate) {
         fetch(
           +cropId,
           salePurchaseMode,

@@ -9,6 +9,7 @@ import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/picker
 import DateFnsUtils from "@date-io/date-fns";
 import ruRU from "date-fns/locale/ru";
 import { makeStyles, MenuItem } from "@material-ui/core";
+import { isValid } from "date-fns";
 
 const useInnerStyles = makeStyles(theme => ({
   calendarBlock: {
@@ -36,12 +37,17 @@ const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                 clearLabel="Очистить"
                 cancelLabel="Отмена"
                 variant="inline"
+                disabled={false}
                 format="dd/MM/yyyy"
                 margin="normal"
                 id="min-date"
                 label={intl.formatMessage({ id: "BIDLIST.MIN_DATE.PICKER" })}
                 value={filter.minDate}
-                onChange={e => setFilter({ minDate: e as Date })}
+                onChange={e => {
+                  if (isValid(e)) {
+                    setFilter({ minDate: e as Date });
+                  }
+                }}
               />
             </div>
           </MuiPickersUtilsProvider>
@@ -60,7 +66,11 @@ const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                 id="max-date"
                 label={intl.formatMessage({ id: "BIDLIST.MAX_DATE.PICKER" })}
                 value={filter.maxDate}
-                onChange={e => setFilter({ maxDate: e as Date })}
+                onChange={e => {
+                  if (isValid(e)) {
+                    setFilter({ maxDate: e as Date });
+                  }
+                }}
               />
             </div>
           </MuiPickersUtilsProvider>

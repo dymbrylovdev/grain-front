@@ -342,7 +342,9 @@ const BidForm: React.FC<IProps> = ({
     //@ts-ignore
     if (contactViewCount > 0 || ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
       history.push(
-        me?.id === (!!bid && bid.vendor && bid.vendor.id)
+        me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
+          ? `/user/edit/${!!bid && bid.vendor && bid.vendor.id}`
+          : me?.id === (!!bid && bid.vendor && bid.vendor.id)
           ? "/user/profile"
           : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
       );
@@ -409,8 +411,6 @@ const BidForm: React.FC<IProps> = ({
         .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       price: Yup.number()
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-        .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       location: Yup.object({
         text: Yup.string().required(
@@ -580,7 +580,6 @@ const BidForm: React.FC<IProps> = ({
                 onPress={() => {
                   !values.location.text ||
                   !values.volume ||
-                  !values.price ||
                   !values.crop_id ||
                   (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
                     ? setFormikErrored(true)
@@ -601,13 +600,18 @@ const BidForm: React.FC<IProps> = ({
         <Skeleton width="100%" height={127} animation="wave" />
       ) : (
         bid?.vendor &&
-        bid?.author && (
+        bid?.author &&
+        me && (
           <>
             {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
               <div>
                 <Link
                   to={
-                    me?.id === bid?.author?.id ? "/user/profile" : `/user/view/${bid?.author?.id}`
+                    ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
+                      ? `/user/edit/${bid?.author?.id}`
+                      : me?.id === bid?.author?.id
+                      ? "/user/profile"
+                      : `/user/view/${bid?.author?.id}`
                   }
                 >
                   <div className={innerClasses.authorText}>
@@ -732,7 +736,7 @@ const BidForm: React.FC<IProps> = ({
           noOptionsText={intl.formatMessage({
             id: "ALL.AUTOCOMPLIT.EMPTY",
           })}
-          value={vendor?.crops?.find(item => item.id === values.crop_id) || null}
+          value={vendor?.crops?.find(item => item.id === values.crop_id) || crops?.find(item => item.id === values.crop_id)}
           onChange={(e: any, val: ICrop | null) => {
             setFieldValue("crop_id", val?.id || "");
             !!val?.id ? fetchCropParams(val.id) : clearCropParams();
@@ -1571,7 +1575,6 @@ const BidForm: React.FC<IProps> = ({
                 onPress={() => {
                   !values.location.text ||
                   !values.volume ||
-                  !values.price ||
                   !values.crop_id ||
                   (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
                     ? setFormikErrored(true)

@@ -24,7 +24,7 @@ const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
   fetchRows,
 }) => {
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    id ? fetchRows({ page: newPage + 1, perPage, id }) : fetchRows({ page: newPage + 1, perPage });
+    id ? fetchRows({ page: newPage + 1, perPage, id }) : fetchRows(newPage + 1, perPage);
   };
 
   const handleChangeRowsPerPage = (
