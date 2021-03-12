@@ -465,7 +465,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     fetchMe();
   }, [fetchMe]);
 
-  if (bestError || myError || cropsError || cropParamsError) {
+  if (error || bestError || myError || cropsError || cropParamsError) {
     setTimeout(() => {
       window.location.reload();
     }, 10000);
