@@ -411,8 +411,6 @@ const BidForm: React.FC<IProps> = ({
         .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       price: Yup.number()
-        // .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-        // .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       location: Yup.object({
         text: Yup.string().required(
@@ -582,7 +580,6 @@ const BidForm: React.FC<IProps> = ({
                 onPress={() => {
                   !values.location.text ||
                   !values.volume ||
-                  !values.price ||
                   !values.crop_id ||
                   (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
                     ? setFormikErrored(true)
@@ -1578,7 +1575,6 @@ const BidForm: React.FC<IProps> = ({
                 onPress={() => {
                   !values.location.text ||
                   !values.volume ||
-                  !values.price ||
                   !values.crop_id ||
                   (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
                     ? setFormikErrored(true)
