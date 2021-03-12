@@ -119,6 +119,11 @@ const BidTable: React.FC<IProps> = ({
                     <FormattedMessage id="BIDSLIST.TABLE.CROP" />
                   </TopTableCell>
                 )}
+                {bestAllMyMode === "edit" && (
+                  <TopTableCell>
+                    <FormattedMessage id="BIDSLIST.TABLE.CROP" />
+                  </TopTableCell>
+                )}
                 <TopTableCell>
                   <FormattedMessage
                     id={
@@ -128,6 +133,7 @@ const BidTable: React.FC<IProps> = ({
                     }
                   />
                 </TopTableCell>
+
                 {bestAllMyMode !== "my-bids" && hasActivePoints && (
                   <TopTableCell>
                     {bestAllMyMode !== "edit" ? (
@@ -135,6 +141,7 @@ const BidTable: React.FC<IProps> = ({
                     ) : null}
                   </TopTableCell>
                 )}
+
                 {bestAllMyMode !== "my-bids" &&
                   accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
                     <TopTableCell>
@@ -184,8 +191,6 @@ const BidTable: React.FC<IProps> = ({
                   </TopTableCell>
                 )}
 
-                {bestAllMyMode === "edit" && <TopTableCell>Культура</TopTableCell>}
-
                 <TopTableCell></TopTableCell>
               </TableRow>
             </TableHead>
@@ -205,6 +210,13 @@ const BidTable: React.FC<IProps> = ({
                       {crops?.find(crop => crop.id === bid.crop_id)?.name || ""}
                     </TableCell>
                   )}
+
+                  {bestAllMyMode === "edit" && bids && crops && (
+                    <TableCell>
+                      {crops?.find(crop => crop.id === bid.crop_id)?.name || ""}
+                    </TableCell>
+                  )}
+
                   <TableCell>
                     <div style={{ display: "flex", flexDirection: "row", flexWrap: "nowrap" }}>
                       {bestAllMyMode === "my-bids" && bid?.vendor_use_vat !== bid?.vendor?.use_vat && (
@@ -244,6 +256,7 @@ const BidTable: React.FC<IProps> = ({
                       )}
                     </div>
                   </TableCell>
+
                   {bestAllMyMode !== "my-bids" && hasActivePoints && (
                     <TableCell>
                       {bestAllMyMode !== "edit"
@@ -253,6 +266,7 @@ const BidTable: React.FC<IProps> = ({
                         : null}
                     </TableCell>
                   )}
+
                   {bestAllMyMode !== "my-bids" &&
                     accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
                       <TableCell>
@@ -344,12 +358,6 @@ const BidTable: React.FC<IProps> = ({
 
                   {salePurchaseMode === "purchase" && (
                     <TableCell>{bid.payment_term || "-"}</TableCell>
-                  )}
-
-                  {bestAllMyMode === "edit" && bids && crops && (
-                    <TableCell>
-                      {crops?.find(crop => crop.id === bid.crop_id)?.name || ""}
-                    </TableCell>
                   )}
 
                   <TableCell align="right">
