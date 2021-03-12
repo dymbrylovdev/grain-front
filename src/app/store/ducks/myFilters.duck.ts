@@ -52,6 +52,9 @@ const POST_FILTER = "myFilters/POST_FILTER";
 const POST_SUCCESS = "myFilters/POST_SUCCESS";
 const POST_ERROR = "myFilters/POST_ERROR";
 
+const SET_POINT_PRICES = "myFilters/SET_POINT_PRICES";
+const CLEAR_POINT_PRICES = "myFiters/CLEAR_POINT_PRICES";
+
 export interface IInitialState {
   selectedFilterId: number | undefined;
   openInfoAlert: boolean;
@@ -61,6 +64,8 @@ export interface IInitialState {
   loading: boolean;
   success: boolean;
   error: string | null;
+
+  pointPrices: any[] | undefined;
 
   currentSaleFilters: { [crop: string]: { [x: string]: any } };
   currentPurchaseFilters: { [crop: string]: { [x: string]: any } };
@@ -95,6 +100,8 @@ const initialState: IInitialState = {
   success: false,
   error: null,
 
+  pointPrices: [],
+
   currentSaleFilters: {},
   currentPurchaseFilters: {},
 
@@ -120,7 +127,7 @@ const initialState: IInitialState = {
   postError: null,
 };
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
-  { storage, key: "filters", whitelist: ["currentSaleFilters", "currentPurchaseFilters"] },
+  { storage, key: "filters", whitelist: ["currentSaleFilters", "currentPurchaseFilters", "pointPrices"] },
   (state = initialState, action) => {
     switch (action.type) {
       case SET_SELECTED_FILTER_ID: {
@@ -338,6 +345,14 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, postLoading: false, postError: action.payload };
       }
 
+      case SET_POINT_PRICES: {
+        return { ...state, pointPrices: action.payload }
+      }
+
+      case CLEAR_POINT_PRICES: {
+        return { ...state, pointPrices: [] }
+      }
+
       default:
         return state;
     }
@@ -381,6 +396,9 @@ export const actions = {
   postFilter: (payload: number) => createAction(POST_FILTER, payload),
   postSucces: (payload: IMyFilterItem) => createAction(POST_SUCCESS, payload),
   postFail: (payload: string) => createAction(POST_ERROR, payload),
+
+  setPointPrices: (payload: any) => createAction(SET_POINT_PRICES, payload),
+  clearPointPrices: () => createAction(CLEAR_POINT_PRICES),
 };
 
 export type TActions = ActionsUnion<typeof actions>;

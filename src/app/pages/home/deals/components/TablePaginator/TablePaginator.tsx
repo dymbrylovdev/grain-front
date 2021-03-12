@@ -9,7 +9,7 @@ interface IProps {
   realPerPage: number;
   perPage: number;
   total: number;
-  fetchRows: (page: number, perPage: number) => void;
+  fetchRows: any;
 }
 
 const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
@@ -21,12 +21,15 @@ const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
   total,
   fetchRows,
 }) => {
-  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) =>
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     fetchRows(newPage + 1, perPage);
+  }
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => fetchRows(1, parseInt(event.target.value, 10));
+  ) => {
+    fetchRows(1, parseInt(event.target.value, 10));
+  }
 
   return (
     <TablePagination

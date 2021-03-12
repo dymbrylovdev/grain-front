@@ -13,9 +13,11 @@ import {
   editUser,
   editContactViewContact,
   getUserActivate,
+  getUsersCrops,
 } from "../../crud/users.crud";
 import { IUser, IUserForCreate, IUserForEdit, TRole } from "../../interfaces/users";
 import { IBid } from "../../interfaces/bids";
+import { ICrop } from "../../interfaces/crops";
 
 const CLEAR_FETCH = "users/CLEAR_FETCH";
 const FETCH_REQUEST = "users/FETCH_REQUEST";
@@ -58,7 +60,6 @@ const CLEAR_USER_BIDS = "users/CLEAR_USER_BIDS";
 const USER_BIDS_REQUEST = "users/USER_BIDS_REQUEST";
 const USER_BIDS_SUCCESS = "users/USER_BIDS_SUCCESS";
 const USER_BIDS_FAIL = "users/USER_BIDS_FAIL";
-
 export interface IInitialState {
   page: number;
   per_page: number;

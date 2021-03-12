@@ -60,7 +60,8 @@ export const filterForBids = (
     [x: string]: any;
   },
   enumParams: IFilterParam[],
-  numberParams: IFilterParam[]
+  numberParams: IFilterParam[],
+  pointPrices: any[],
 ): IFilterForBids => {
   let filter: IFilterForBids = {
     filter: {
@@ -70,7 +71,7 @@ export const filterForBids = (
       min_full_price: +data.min_full_price || 0,
       min_prepayment_amount: +data.min_prepayment_amount || 0,
       max_distance: +data.max_destination || 0,
-      point_prices: data.point_prices,
+      point_prices: pointPrices,
     },
   };
   const parameter_values: {

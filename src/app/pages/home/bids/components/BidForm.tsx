@@ -85,13 +85,13 @@ const getInitialValues = (
   }
   if (editMode === "create") {
     if (vendorId) {
-      if (user && user.crops.length >= 1) {
+      if (user && user.crops.length === 1) {
         newCropId = user.crops[0].id;
       } else {
         newCropId = "";
       }
     } else {
-      if (me && me.crops.length >= 1) {
+      if (me && me.crops.length === 1) {
         newCropId = me.crops[0].id;
       } else {
         newCropId = "";
@@ -182,7 +182,9 @@ interface IProps {
   clearLocations: () => Action<"yaLocations/CLEAR">;
   clearBidsPair: () => Action<"bids/CLEAR_BIDS_PAIR">;
   fetchBidsPair: any;
+  bidsPairSuccess: boolean;
   bidsPairError: string | null;
+  bidsPairLoading: boolean;
   clearCropParams: () => Action<"crops2/CLEAR_CROP_PARAMS">;
   fetchCropParams: (
     cropId: number
@@ -268,7 +270,9 @@ const BidForm: React.FC<IProps> = ({
   bidsPair,
   clearBidsPair,
   fetchBidsPair,
+  bidsPairSuccess,
   bidsPairError,
+  bidsPairLoading,
 
   clearCropParams,
   fetchCropParams,
@@ -338,7 +342,9 @@ const BidForm: React.FC<IProps> = ({
     //@ts-ignore
     if (contactViewCount > 0 || ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
       history.push(
-        me?.id === (!!bid && bid.vendor && bid.vendor.id)
+        me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
+          ? `/user/edit/${!!bid && bid.vendor && bid.vendor.id}`
+          : me?.id === (!!bid && bid.vendor && bid.vendor.id)
           ? "/user/profile"
           : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
       );
@@ -405,8 +411,8 @@ const BidForm: React.FC<IProps> = ({
         .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       price: Yup.number()
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-        .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
+        // .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+        // .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       location: Yup.object({
         text: Yup.string().required(
@@ -597,18 +603,23 @@ const BidForm: React.FC<IProps> = ({
         <Skeleton width="100%" height={127} animation="wave" />
       ) : (
         bid?.vendor &&
-        bid?.author && (
+        bid?.author &&
+        me && (
           <>
             {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
               <div>
                 <Link
                   to={
-                    me?.id === bid?.author?.id ? "/user/profile" : `/user/view/${bid?.author?.id}`
+                    ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
+                      ? `/user/edit/${bid?.author?.id}`
+                      : me?.id === bid?.author?.id
+                      ? "/user/profile"
+                      : `/user/view/${bid?.author?.id}`
                   }
                 >
                   <div className={innerClasses.authorText}>
                     {intl.formatMessage({ id: "BID.FORM.AUTHOR" })}{" "}
-                    {bid.author.fio || bid.author.login}
+                    {bid.author.fio || bid.author.login || `ID ${bid.author.id}`}
                   </div>
                 </Link>
               </div>
@@ -630,7 +641,7 @@ const BidForm: React.FC<IProps> = ({
                     bid.type === "sale"
                       ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
                       : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
-                  }: ${bid.vendor.fio || bid.vendor.login}`}
+                  }: ${bid.vendor.fio || bid.vendor.login || `ID ${bid.vendor.id}`}`}
                 </div>
               </div>
 
@@ -728,7 +739,7 @@ const BidForm: React.FC<IProps> = ({
           noOptionsText={intl.formatMessage({
             id: "ALL.AUTOCOMPLIT.EMPTY",
           })}
-          value={vendor?.crops?.find(item => item.id === values.crop_id) || null}
+          value={vendor?.crops?.find(item => item.id === values.crop_id) || crops?.find(item => item.id === values.crop_id)}
           onChange={(e: any, val: ICrop | null) => {
             setFieldValue("crop_id", val?.id || "");
             !!val?.id ? fetchCropParams(val.id) : clearCropParams();
@@ -820,43 +831,51 @@ const BidForm: React.FC<IProps> = ({
 
       {editMode === "create" && bidsPair && (
         <>
-          {!bidsPairError ? (
+          {bidsPairLoading ? (
+            <Skeleton width="100%" height={70} animation="wave" />
+          ) : (
             <>
-              {bidsPair.price_with_delivery ? (
+              {bidsPairError && (
                 <Alert
                   className={classes.infoAlert}
-                  severity="info"
-                  color="info"
+                  severity="warning"
+                  color="error"
                   style={{ marginTop: 15 }}
                 >
-                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
-                    bidsPair.price_with_delivery
-                  } ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
-                </Alert>
-              ) : (
-                <Alert
-                  className={classes.infoAlert}
-                  severity="info"
-                  color="info"
-                  style={{ marginTop: 15 }}
-                >
-                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
-                    bidsPair.price
-                  } ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
+                  {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${intl.formatMessage({
+                    id: "BID.CREATE.NOT.FOUND",
+                  })}`}
                 </Alert>
               )}
+
+              {bidsPairSuccess && (
+                <>
+                  {bidsPair.price_with_delivery ? (
+                    <Alert
+                      className={classes.infoAlert}
+                      severity="info"
+                      color="info"
+                      style={{ marginTop: 15 }}
+                    >
+                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
+                        bidsPair.price_with_delivery
+                      } ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
+                    </Alert>
+                  ) : (
+                    <Alert
+                      className={classes.infoAlert}
+                      severity="info"
+                      color="info"
+                      style={{ marginTop: 15 }}
+                    >
+                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
+                        bidsPair.price
+                      } ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
+                    </Alert>
+                  )}
+                </>
+              )}
             </>
-          ) : (
-            <Alert
-              className={classes.infoAlert}
-              severity="warning"
-              color="error"
-              style={{ marginTop: 15 }}
-            >
-              {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${intl.formatMessage({
-                id: "BID.CREATE.NOT.FOUND",
-              })}`}
-            </Alert>
           )}
         </>
       )}
@@ -1624,6 +1643,7 @@ const BidForm: React.FC<IProps> = ({
             behavior: "smooth",
           });
           setMoreBidOpen(false);
+          clearBidsPair();
         }}
       />
     </div>

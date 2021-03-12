@@ -36,6 +36,10 @@ export const getUserBids = id => {
   return axios.get(`api/user/${id}/bids`);
 };
 
+export const getUsersCrops = id => {
+  return axios.get(`api/user/${id}/crops`);
+};
+
 export function getStatuses() {
   return axios.get(GET_STATUSES_URL);
 }

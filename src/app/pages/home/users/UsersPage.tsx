@@ -263,18 +263,6 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           >
                             {roles.find(role => role.id === item.roles[0])?.value}
                           </div>
-                          {/* <IconButton
-                            size="medium"
-                            color="primary"
-                            onClick={() => {
-                              setInfoText(
-                                intl.formatMessage({ id: "FUNNEL_STATES.DIALOGS.INFO.ADMIN_TEXT" })
-                              );
-                              setInfoOpen(true);
-                            }}
-                          >
-                            <HelpOutlineIcon />
-                          </IconButton> */}
                         </div>
                       ) : !item.funnel_state ? (
                         <div className={classes.flexRow}>
@@ -424,7 +412,11 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   realPerPage={users.length}
                   perPage={perPage}
                   total={total}
-                  fetchRows={fetch}
+                  fetchRows={(page, perPage) =>
+                    fetch({
+                      page, perPage
+                    })
+                  }
                 />
               </TableRow>
             </TableFooter>

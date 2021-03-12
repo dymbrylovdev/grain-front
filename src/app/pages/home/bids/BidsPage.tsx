@@ -149,6 +149,8 @@ const BidsPage: React.FC<TPropsFromRedux &
   // editSuccess,
   // editError,
   setProfit,
+
+  pointPrices,
 }) => {
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
   if (match.url.indexOf("best-bids") !== -1) bestAllMyMode = "best-bids";
@@ -211,7 +213,7 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   const fetchAll = () => {
     if (!!me) {
-      if (["ROLE_ADMIN"].includes(me.roles[0])) {
+      if (["ROLE_ADMIN"].includes(me.roles[0]) && filter.minDate && filter.maxDate) {
         fetch(
           +cropId,
           salePurchaseMode,
@@ -329,13 +331,14 @@ const BidsPage: React.FC<TPropsFromRedux &
       switch (bestAllMyMode) {
         case "best-bids":
           if (salePurchaseMode === "sale") {
-            if (currentSaleFilters[cropId] && cropParams) {
+            if (currentSaleFilters[cropId] && cropParams && pointPrices) {
               fetchBestBids(
                 salePurchaseMode,
                 filterForBids(
                   currentSaleFilters[cropId] || {},
                   cropParams.filter(item => item.type === "enum"),
-                  cropParams.filter(item => item.type === "number")
+                  cropParams.filter(item => item.type === "number"),
+                  pointPrices,
                 )
               );
             }
@@ -343,13 +346,14 @@ const BidsPage: React.FC<TPropsFromRedux &
               fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
           }
           if (salePurchaseMode === "purchase") {
-            if (currentPurchaseFilters[cropId] && cropParams) {
+            if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
               fetchBestBids(
                 salePurchaseMode,
                 filterForBids(
                   currentPurchaseFilters[cropId] || {},
                   cropParams.filter(item => item.type === "enum"),
-                  cropParams.filter(item => item.type === "number")
+                  cropParams.filter(item => item.type === "number"),
+                  pointPrices
                 )
               );
             }
@@ -382,6 +386,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     page,
     perPage,
     salePurchaseMode,
+    pointPrices,
   ]);
 
   useEffect(() => {
@@ -401,13 +406,14 @@ const BidsPage: React.FC<TPropsFromRedux &
       switch (bestAllMyMode) {
         case "best-bids":
           if (salePurchaseMode === "sale") {
-            if (currentSaleFilters[cropId] && cropParams) {
+            if (currentSaleFilters[cropId] && cropParams && pointPrices) {
               fetchBestBids(
                 salePurchaseMode,
                 filterForBids(
                   currentSaleFilters[cropId] || {},
                   cropParams.filter(item => item.type === "enum"),
-                  cropParams.filter(item => item.type === "number")
+                  cropParams.filter(item => item.type === "number"),
+                  pointPrices
                 )
               );
             }
@@ -415,13 +421,14 @@ const BidsPage: React.FC<TPropsFromRedux &
               fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
           }
           if (salePurchaseMode === "purchase") {
-            if (currentPurchaseFilters[cropId] && cropParams) {
+            if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
               fetchBestBids(
                 salePurchaseMode,
                 filterForBids(
                   currentPurchaseFilters[cropId] || {},
                   cropParams.filter(item => item.type === "enum"),
-                  cropParams.filter(item => item.type === "number")
+                  cropParams.filter(item => item.type === "number"),
+                  pointPrices
                 )
               );
             }
@@ -451,13 +458,14 @@ const BidsPage: React.FC<TPropsFromRedux &
     perPage,
     salePurchaseMode,
     filter,
+    pointPrices,
   ]);
 
   useEffect(() => {
     fetchMe();
   }, [fetchMe]);
 
-  if (error || bestError || myError || cropsError || cropParamsError) {
+  if (bestError || myError || cropsError || cropParamsError) {
     setTimeout(() => {
       window.location.reload();
     }, 10000);
@@ -701,6 +709,8 @@ const connector = connect(
     delLoading: state.bids.delLoading,
     delSuccess: state.bids.delSuccess,
     delError: state.bids.delError,
+
+    pointPrices: state.myFilters.pointPrices,
   }),
   {
     fetchMe: authActions.fetchRequest,

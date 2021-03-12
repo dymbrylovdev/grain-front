@@ -113,6 +113,13 @@ const BidEditPage: React.FC<TPropsFromRedux &
 
   fetchFilters,
   filterCount,
+
+  usersCropsLoading,
+  usersCropsSuccess,
+  usersCropsError,
+
+  clearUsersCrops,
+  fetchUsersCrops,
 }) => {
   const isNoModerate = !vendorId && !+bidId && me?.status === "На модерации";
   const classes = useStyles();
@@ -174,8 +181,12 @@ const BidEditPage: React.FC<TPropsFromRedux &
   }, [clearEdit, editError, editSuccess, enqueueSnackbar, history, intl]);
 
   useEffect(() => {
-    fetchCrops();
-  }, [fetchCrops]);
+    if (vendorId) {
+      fetchUsersCrops(+vendorId);
+    } else {
+      fetchCrops();
+    }
+  }, [fetchCrops, fetchUsersCrops, vendorId]);
 
   useEffect(() => {
     if (+bidId) fetch(+bidId, { filter: { point_prices: pointPrices } });
@@ -248,7 +259,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
   )
     return <ErrorPage />;
 
-  if (error || userError || cropsError || cropParamsError) {
+  if (error || userError || cropsError || usersCropsError || cropParamsError) {
     setTimeout(() => {
       window.location.reload();
     }, 10000);
@@ -282,7 +293,9 @@ const BidEditPage: React.FC<TPropsFromRedux &
             locations={locations}
             clearBidsPair={clearBidsPair}
             fetchBidsPair={fetchBidsPair}
+            bidsPairSuccess={bidsPairSuccess}
             bidsPairError={bidsPairError}
+            bidsPairLoading={bidsPairLoading}
             loadingLocations={loadingLocations}
             clearLocations={clearLocations}
             clearCropParams={clearCropParams}
@@ -357,6 +370,10 @@ const connector = connect(
     cropParamsLoading: state.crops2.cropParamsLoading,
     cropParamsError: state.crops2.cropParamsError,
 
+    usersCropsLoading: state.crops2.usersCropsLoading,
+    usersCropsSuccess: state.crops2.usersCropsSuccess,
+    usersCropsError: state.crops2.usersCropsError,
+
     createLoading: state.bids.createLoading,
     createSuccess: state.bids.createSuccess,
     createError: state.bids.createError,
@@ -418,6 +435,9 @@ const connector = connect(
 
     fetchLocations: yaLocationsActions.fetchRequest,
     clearLocations: yaLocationsActions.clear,
+
+    clearUsersCrops: crops2Actions.clearUserCrops,
+    fetchUsersCrops: crops2Actions.userCropsRequest,
 
     setOpenInfoAlert: bidsActions.setOpenInfoAlert,
   }
