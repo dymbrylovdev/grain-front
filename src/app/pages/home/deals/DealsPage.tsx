@@ -138,6 +138,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     }, 10000);
   }
 
+  console.log(deals)
+
   return (
     <Paper className={classes.paperWithTable} style={{ paddingTop: 16 }}>
       <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />

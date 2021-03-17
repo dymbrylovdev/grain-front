@@ -185,7 +185,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     company_id: user && user.company ? user.company.id : 0,
   });
 
-  const validationSchema = {
+  const validationSchema = Yup.object().shape({
     role: Yup.string()
       .test("role", intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }), value =>
         roles.find(el => el.id === value) ? true : false
@@ -201,13 +201,17 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         ? Yup.string()
             .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
             .matches(/^(\d{1}|\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
+            .when(["email"], {
+              is: email => !email,
+              then: Yup.string().matches(/^(\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
+            })
         : Yup.string()
             .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
             .matches(/^(\d{3}|\d{13})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
     fio: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-  };
+  }, [["email", "phone"]]);
 
-  const validationSchemaPassword = {
+  const validationSchemaPassword = Yup.object().shape({
     password: Yup.string(),
     repeatPassword: Yup.string().test(
       "passwords-match",
@@ -216,7 +220,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         return this.parent.password === value;
       }
     ),
-  };
+  });
 
   const {
     values,
@@ -252,8 +256,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       }
     },
     validationSchema: isPasswordChange
-      ? Yup.object().shape(validationSchemaPassword)
-      : Yup.object().shape(validationSchema),
+      ? validationSchemaPassword
+      : validationSchema,
   });
 
   const onEmailConfirm = () => {
