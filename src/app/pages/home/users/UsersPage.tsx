@@ -148,8 +148,6 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     }, 10000);
   }
 
-  console.log(funnelStateEditId);
-
   return (
     <Paper className={classes.paperWithTable}>
       <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.USER.LIST" })} />

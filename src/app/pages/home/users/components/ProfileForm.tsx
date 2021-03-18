@@ -135,6 +135,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   openInfoAlert,
   setOpenInfoAlert,
   editNoNoti,
+
+  cropsLoading,
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
@@ -486,7 +488,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   return (
     <>
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+        {meLoading || userLoading || cropsLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -1178,6 +1180,8 @@ const connector = connect(
     openInfoAlert: state.users.openInfoAlert,
 
     editNoNoti: state.auth.editNoNoti,
+
+    cropsLoading: state.crops2.loading
   }),
   {
     fetchFunnelStates: funnelStatesActions.fetchRequest,
