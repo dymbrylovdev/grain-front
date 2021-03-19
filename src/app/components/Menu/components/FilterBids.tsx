@@ -359,8 +359,6 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               clearAction={formik.setFieldValue}
               handleSubmit={filterSubmit}
             />
-            {/* {index !== numberParams.length - 1 && <Divider />} */}
-            {/* <Divider /> */}
           </div>
         ))}
 

@@ -17,7 +17,7 @@ import { Alert, Skeleton } from "@material-ui/lab";
 import { Link, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { useFormik } from "formik";
+import { useFormik, validateYupSchema } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import isEqual from "lodash.isequal";
@@ -134,7 +134,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   openInfoAlert,
   setOpenInfoAlert,
-  editNoNoti
+  editNoNoti,
+
+  cropsLoading,
 }) => {
   const innerClasses = innerStyles();
   const classes = useStyles();
@@ -150,6 +152,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const [isChangePasswordModalOpen, setChangePasswordModalOpen] = useState<boolean>(false);
   const [countryCode, setCountryCode] = useState(countries[0].code);
   const [countryName, setCountryName] = useState(phoneCountryCodes[0]);
+  const [isPasswordChange, setPasswordChange] = useState<boolean>(false);
 
   const handleCountryNameChange = (e: any) => {
     setCountryName(e.target.value);
@@ -182,6 +185,43 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     company_confirmed_by_payment: user ? user.company_confirmed_by_payment : false,
     company_name: user && user.company ? user.company.short_name : "",
     company_id: user && user.company ? user.company.id : 0,
+  });
+
+  const validationSchema = Yup.object().shape({
+    role: Yup.string()
+      .test("role", intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }), value =>
+        roles.find(el => el.id === value) ? true : false
+      )
+      .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+    status:
+      editMode !== "create"
+        ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+        : Yup.string(),
+    email: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
+    phone:
+      countryCode.length === 1
+        ? Yup.string()
+            .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+            .matches(/^(\d{1}|\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
+            .when(["email"], {
+              is: email => !email,
+              then: Yup.string().matches(/^(\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
+            })
+        : Yup.string()
+            .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+            .matches(/^(\d{3}|\d{13})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+    fio: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+  }, [["email", "phone"]]);
+
+  const validationSchemaPassword = Yup.object().shape({
+    password: Yup.string(),
+    repeatPassword: Yup.string().test(
+      "passwords-match",
+      intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
+      function(value) {
+        return this.parent.password === value;
+      }
+    ),
   });
 
   const {
@@ -217,35 +257,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         editUser({ id: user.id, data: params });
       }
     },
-    validationSchema: Yup.object().shape({
-      role: Yup.string()
-        .test("role", intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }), value =>
-          roles.find(el => el.id === value) ? true : false
-        )
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-      status:
-        editMode !== "create"
-          ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-          : Yup.string(),
-      email: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
-      password: Yup.string(),
-      phone:
-        countryCode.length === 1
-          ? Yup.string()
-              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-              .matches(/^(\d{1}|\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
-          : Yup.string()
-              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-              .matches(/^(\d{3}|\d{13})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
-      repeatPassword: Yup.string().test(
-        "passwords-match",
-        intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
-        function(value) {
-          return this.parent.password === value;
-        }
-      ),
-      fio: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-    }),
+    validationSchema: isPasswordChange
+      ? validationSchemaPassword
+      : validationSchema,
   });
 
   const onEmailConfirm = () => {
@@ -263,7 +277,18 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       setEditNoNoti(false);
       setOldUserValues(values);
     }
-  }, [clearMe, editMode, me, meSuccess, userSuccess, oldValues, oldUserValues, setEditNoNoti, user, values]);
+  }, [
+    clearMe,
+    editMode,
+    me,
+    meSuccess,
+    userSuccess,
+    oldValues,
+    oldUserValues,
+    setEditNoNoti,
+    user,
+    values,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -401,7 +426,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     fetchUser,
     intl,
     setEditNoNoti,
-    userId
+    userId,
   ]);
 
   useEffect(() => {
@@ -463,7 +488,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   return (
     <>
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+        {meLoading || userLoading || cropsLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -962,7 +987,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               <ButtonWithLoader
                 loading={editMeLoading || createLoading || editLoading}
                 disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
-                onPress={() => setChangePasswordModalOpen(true)}
+                onPress={() => {
+                  setPasswordChange(true);
+                  setChangePasswordModalOpen(true);
+                }}
               >
                 {intl.formatMessage({ id: "ALL.BUTTONS.CHANGE.PASSWORD" })}
               </ButtonWithLoader>
@@ -1007,7 +1035,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       <Dialog
         open={isChangePasswordModalOpen}
-        onClose={() => setChangePasswordModalOpen(false)}
+        onClose={() => {
+          setPasswordChange(false);
+          setChangePasswordModalOpen(false);
+        }}
         maxWidth="sm"
         fullWidth
       >
@@ -1090,6 +1121,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 }
                 onPress={() => {
                   handleSubmit();
+                  setPasswordChange(false);
                   setChangePasswordModalOpen(false);
                 }}
               >
@@ -1148,6 +1180,8 @@ const connector = connect(
     openInfoAlert: state.users.openInfoAlert,
 
     editNoNoti: state.auth.editNoNoti,
+
+    cropsLoading: state.crops2.loading
   }),
   {
     fetchFunnelStates: funnelStatesActions.fetchRequest,
