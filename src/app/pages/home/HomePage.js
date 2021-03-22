@@ -48,9 +48,9 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
             to={
               !user.fio || !user.phone || user.points.length < 1
                 ? "/user/profile"
-                : user.is_buyer
-                ? "purchase/my-bids"
-                : "sale/my-bids"
+                : user.is_buyer || user.is_vendor
+                ? `purchase/best-bids/${user.crops[0].id}`
+                : `sale/best-bids/${user.crops[0].id}`
             }
           />
         }

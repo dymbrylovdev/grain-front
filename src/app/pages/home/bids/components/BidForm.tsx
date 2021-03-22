@@ -536,7 +536,7 @@ const BidForm: React.FC<IProps> = ({
   }, [currentCropId, fetchCropParams]);
 
   useEffect(() => {
-    if (!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0) {
+    if (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0) {
       setSendingEmail(false);
     }
   }, [me, filterCount]);
@@ -1545,7 +1545,7 @@ const BidForm: React.FC<IProps> = ({
             ) : (
               <div className={classes.button}>
                 {!!me?.tariff_matrix &&
-                me.tariff_matrix.max_filters_count - filterCount <= 0 ? null : (
+                me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
                   <>
                     {me && me.email ? (
                       <FormControlLabel
