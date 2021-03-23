@@ -22,6 +22,7 @@ import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
+import { YMaps, Map } from "react-yandex-maps";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import { IBid, TBidType, IBidToRequest, IProfit, IBidsPair } from "../../../../interfaces/bids";
@@ -442,6 +443,18 @@ const BidForm: React.FC<IProps> = ({
   }, [cropParams, values]);
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const newLocations: number[] = [];
+  const mapState = {center: newLocations, zoom: 9};
+
+  if (bid) {
+    const mapX = bid.location.lat;
+    const mapY = bid.location.lng;
+
+    newLocations.push(mapX);
+    newLocations.push(mapY);
+  }
+
   useEffect(() => {
     if (formikErrored) {
       enqueueSnackbar(intl.formatMessage({ id: "NOTISTACK.ERRORS.EMPTY_FIELDS" }), {
@@ -552,6 +565,8 @@ const BidForm: React.FC<IProps> = ({
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
+
+  console.log(bid);
 
   return (
     <div className={classes.form}>
@@ -1281,27 +1296,35 @@ const BidForm: React.FC<IProps> = ({
         loading ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
-          <AutocompleteLocations
-            options={locations || []}
-            loading={loadingLocations}
-            inputValue={values.location}
-            editable={editMode !== "view"}
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.LOCATION",
-            })}
-            inputClassName={innerClasses.autoLoc}
-            // @ts-ignore
-            inputError={Boolean(touched.location && errors.location && errors.location.text)}
-            // @ts-ignore
-            inputHelperText={touched.location && errors.location && errors.location.text}
-            fetchLocations={fetchLocations}
-            clearLocations={clearLocations}
-            setSelectedLocation={location =>
-              !!location ? setFieldValue("location", location) : setFieldValue("location", {})
-            }
-            handleBlur={handleBlur}
-            disable={true}
-          />
+          <>
+            <AutocompleteLocations
+              options={locations || []}
+              loading={loadingLocations}
+              inputValue={values.location}
+              editable={editMode !== "view"}
+              label={intl.formatMessage({
+                id: "PROFILE.INPUT.LOCATION",
+              })}
+              inputClassName={innerClasses.autoLoc}
+              // @ts-ignore
+              inputError={Boolean(touched.location && errors.location && errors.location.text)}
+              // @ts-ignore
+              inputHelperText={touched.location && errors.location && errors.location.text}
+              fetchLocations={fetchLocations}
+              clearLocations={clearLocations}
+              setSelectedLocation={location =>
+                !!location ? setFieldValue("location", location) : setFieldValue("location", {})
+              }
+              handleBlur={handleBlur}
+              disable={true}
+            />
+
+            <YMaps>
+              <div style={{width: "100%"}}>
+                <Map state={mapState} width={768} />
+              </div>
+            </YMaps>
+          </>
         )
       ) : loading ? (
         <Skeleton width="100%" height={202} animation="wave" />
