@@ -75,14 +75,16 @@ const DealViewPage: React.FC<TPropsFromRedux &
 
   const [isAlertOpen, setAlertOpen] = useState(false);
 
-  const linkToContact = () => {
+  const linkToContact = (dealType: "sale" | "purchase") => {
     if (deal && me) {
       let contactViewCount = me.contact_view_count;
       //@ts-ignore
       if (contactViewCount > 1 || ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
         history.push(
           me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
-            ? `/user/edit/${deal.sale_bid.vendor.id}`
+            ? dealType === "sale"
+              ? `/user/edit/${deal.sale_bid.vendor.id}`
+              : `/user/edit/${deal.purchase_bid.vendor.id}`
             : `/user/view/${deal.sale_bid.vendor.id}`
         );
         //@ts-ignore
@@ -95,6 +97,8 @@ const DealViewPage: React.FC<TPropsFromRedux &
       }
     }
   };
+
+  console.log(deal);
 
   useEffect(() => {
     if (!!dealsFilters && !deals && !loading)
@@ -429,7 +433,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </TableCell>
                       <TableCell style={{ backgroundColor: "#eeeeee" }}>
                         <p>
-                          <div style={{ cursor: "pointer", color: "blue" }} onClick={linkToContact}>
+                          <div style={{ cursor: "pointer", color: "blue" }} onClick={() => linkToContact("sale")}>
                             {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
                           </div>
                         </p>
@@ -464,7 +468,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </TableCell>
                       <TableCell>
                         <p>
-                          <div style={{ cursor: "pointer", color: "blue" }} onClick={linkToContact}>
+                          <div style={{ cursor: "pointer", color: "blue" }} onClick={() => linkToContact("purchase")}>
                             {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
                           </div>
                         </p>
