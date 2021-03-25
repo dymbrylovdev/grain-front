@@ -98,8 +98,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
     }
   };
 
-  console.log(deal);
-
   useEffect(() => {
     if (!!dealsFilters && !deals && !loading)
       fetch(

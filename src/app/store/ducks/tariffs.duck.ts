@@ -9,6 +9,7 @@ import {
   getTariffs,
   editTariff,
   editTariffPeriod,
+  editTariffLimits,
   getTariffsProlongations,
   getFondyCredentials,
 } from "../../crud/tariffs.crud";
@@ -32,6 +33,11 @@ const EDIT_PERIOD_REQUEST = "tariffs/EDIT_PERIOD_REQUEST";
 const EDIT_PERIOD_SUCCESS = "tariffs/EDIT_PERIOD_SUCCESS";
 const EDIT_PERIOD_FAIL = "tariffs/EDIT_PERIOD_FAIL";
 
+const CLEAR_EDIT_LIMITS = "tariffs/CLEAR_EDIT_LIMITS";
+const EDIT_LIMITS_REQUEST = "tariffs/EDIT_LIMITS_REQUEST";
+const EDIT_LIMITS_SUCCESS = "tariffs/EDIT_LIMITS_SUCCESS";
+const EDIT_LIMITS_FAIL = "tariff/EDIT_LIMITS_FAIL";
+
 const CLEAR_FONDY_CREDENTIALS = "tariffs/CLEAR_FONDY_CREDENTIALS";
 const FONDY_CREDENTIALS_REQUEST = "tariffs/FONDY_CREDENTIALS_REQUEST";
 const FONDY_CREDENTIALS_SUCCESS = "tariffs/FONDY_CREDENTIALS_SUCCESS";
@@ -53,6 +59,10 @@ export interface IInitialState {
   editPeriodLoading: boolean;
   editPeriodSuccess: boolean;
   editPeriodError: string | null;
+
+  editLimitsLoading: boolean;
+  editLimitsSuccess: boolean;
+  editLimitsError: string | null;
 
   merchant_id: string | undefined;
   fondyCredentialsLoading: boolean;
@@ -77,6 +87,10 @@ const initialState: IInitialState = {
   editPeriodLoading: false,
   editPeriodSuccess: false,
   editPeriodError: null,
+
+  editLimitsLoading: false,
+  editLimitsSuccess: false,
+  editLimitsError: null,
 
   merchant_id: undefined,
   fondyCredentialsLoading: false,
@@ -230,6 +244,57 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       };
     }
 
+    case CLEAR_EDIT_LIMITS: {
+      return {
+        ...state,
+        tariff: undefined,
+        editLimitsLoading: false,
+        editLimitsSuccess: false,
+        editLimitsError: null,
+      };
+    }
+
+    case EDIT_LIMITS_REQUEST: {
+      return {
+        ...state,
+        editLimitsLoading: true,
+        editLimitsSuccess: false,
+        editLimitsError: null,
+      };
+    }
+
+    case EDIT_LIMITS_SUCCESS: {
+      let newTariffs: ITariff[] = [];
+      state.tariffs?.forEach(item => {
+        if (
+          item.tariff_limits
+            ? item.tariff_limits.id === action.payload.response.data.id
+            : item.tariff_limits === null
+        ) {
+          let newItem = Object.assign({}, item);
+          //@ts-ignore
+          newItem.tariff_limits = action.payload.response.data;
+          newTariffs.push(newItem);
+        } else {
+          newTariffs.push(item);
+        }
+      });
+      return {
+        ...state,
+        tariffs: newTariffs,
+        editLimitsLoading: false,
+        editLimitsSuccess: true,
+      };
+    }
+
+    case EDIT_LIMITS_FAIL: {
+      return {
+        ...state,
+        editLimitsLoading: false,
+        editLimitsError: action.payload.error,
+      };
+    }
+
     case CLEAR_FONDY_CREDENTIALS: {
       return {
         ...state,
@@ -269,8 +334,8 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     case SET_TARIFF_TABLE: {
       return {
         ...state,
-        showTariffTable: action.payload
-      }
+        showTariffTable: action.payload,
+      };
     }
 
     default:
@@ -298,6 +363,13 @@ export const actions = {
   editPeriodSuccess: (response: IServerResponse<ITariff>) =>
     createAction(EDIT_PERIOD_SUCCESS, { response }),
   editPeriodFail: (error: string) => createAction(EDIT_PERIOD_FAIL, { error }),
+
+  clearEditLimits: () => createAction(CLEAR_EDIT_LIMITS),
+  editLimitsRequest: (id: number, data: ITariffToRequest) =>
+    createAction(EDIT_LIMITS_REQUEST, { id, data }),
+  editLimitsSuccess: (response: IServerResponse<ITariff>) =>
+    createAction(EDIT_LIMITS_SUCCESS, { response }),
+  editLimitsFail: (error: string) => createAction(EDIT_LIMITS_FAIL, { error }),
 
   clearFondyCredentials: () => createAction(CLEAR_FONDY_CREDENTIALS),
   fondyCredentialsRequest: () => createAction(FONDY_CREDENTIALS_REQUEST),
@@ -341,6 +413,17 @@ function* editPeriodSaga({ payload }: { payload: { id: number; data: ITariffToRe
   }
 }
 
+function* editLimitsSaga({ payload }: { payload: { id: number; data: ITariffToRequest } }) {
+  try {
+    const { data }: { data: IServerResponse<ITariff> } = yield call(() =>
+      editTariffLimits(payload.id, payload.data)
+    );
+    yield put(actions.editLimitsSuccess(data));
+  } catch (e) {
+    yield put(actions.editLimitsFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
 function* fondyCredentialsSaga() {
   try {
     const { data }: { data: IServerResponse<any> } = yield call(() => getFondyCredentials());
@@ -356,6 +439,10 @@ export function* saga() {
   yield takeLatest<ReturnType<typeof actions.editPeriodRequest>>(
     EDIT_PERIOD_REQUEST,
     editPeriodSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.editLimitsRequest>>(
+    EDIT_LIMITS_REQUEST,
+    editLimitsSaga
   );
   yield takeLatest<ReturnType<typeof actions.fondyCredentialsRequest>>(
     FONDY_CREDENTIALS_REQUEST,
