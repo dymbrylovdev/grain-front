@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   Checkbox,
   Divider,
+  Tooltip,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
@@ -22,6 +23,7 @@ import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import { YMaps, Map } from "react-yandex-maps";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
@@ -411,8 +413,7 @@ const BidForm: React.FC<IProps> = ({
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
         .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
-      price: Yup.number()
-        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+      price: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       location: Yup.object({
         text: Yup.string().required(
           intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
@@ -445,7 +446,7 @@ const BidForm: React.FC<IProps> = ({
   const { enqueueSnackbar } = useSnackbar();
 
   const newLocations: number[] = [];
-  const mapState = {center: newLocations, zoom: 9};
+  const mapState = { center: newLocations, zoom: 9 };
 
   if (bid) {
     const mapX = bid.location.lat;
@@ -549,7 +550,10 @@ const BidForm: React.FC<IProps> = ({
   }, [currentCropId, fetchCropParams]);
 
   useEffect(() => {
-    if (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0) {
+    if (
+      !!me?.tariff_matrix &&
+      me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0
+    ) {
       setSendingEmail(false);
     }
   }, [me, filterCount]);
@@ -749,9 +753,10 @@ const BidForm: React.FC<IProps> = ({
           noOptionsText={intl.formatMessage({
             id: "ALL.AUTOCOMPLIT.EMPTY",
           })}
-          value={editMode === "create" 
-            ? vendor?.crops?.find(item => item.id === values.crop_id) || null 
-            : crops?.find(item => item.id === bid?.crop_id) || null 
+          value={
+            editMode === "create"
+              ? vendor?.crops?.find(item => item.id === values.crop_id) || null
+              : crops?.find(item => item.id === bid?.crop_id) || null
           }
           onChange={(e: any, val: ICrop | null) => {
             setFieldValue("crop_id", val?.id || "");
@@ -1318,7 +1323,7 @@ const BidForm: React.FC<IProps> = ({
             />
 
             <YMaps>
-              <div style={{width: "100%"}}>
+              <div style={{ width: "100%" }}>
                 <Map state={mapState} width={768} />
               </div>
             </YMaps>
@@ -1564,32 +1569,48 @@ const BidForm: React.FC<IProps> = ({
                 </ButtonWithLoader>
               </div>
             ) : (
-              <div className={classes.button}>
-                {!!me?.tariff_matrix &&
-                me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
-                  <>
-                    {me && me.email ? (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={isSendingEmail}
-                            onChange={e => onCheckboxChange(e, 1)}
-                          />
-                        }
-                        label={"Подписка по e-mail"}
-                      />
-                    ) : null}
-                    {me && me.phone ? (
-                      <FormControlLabel
-                        control={
-                          <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
-                        }
-                        label={"Подписка по смс"}
-                      />
-                    ) : null}
-                  </>
-                )}
-              </div>
+              <>
+                <div className={classes.button}>
+                  {!!me?.tariff_matrix &&
+                  me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
+                    <>
+                      <Tooltip
+                        style={{fontSize: 20}}
+                        title={intl.formatMessage({
+                          id: "BID.CREATE.TOOLIP.TEXT",
+                        })}
+                      >
+                        <ReportProblemIcon
+                          color="secondary"
+                          style={{ marginTop: -6, marginRight: 10 }}
+                        />
+                      </Tooltip>
+                      {me && me.email ? (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={isSendingEmail}
+                              onChange={e => onCheckboxChange(e, 1)}
+                            />
+                          }
+                          label={"Подписка по e-mail"}
+                        />
+                      ) : null}
+                      {me && me.phone ? (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={isSendingSms}
+                              onChange={e => onCheckboxChange(e, 2)}
+                            />
+                          }
+                          label={"Подписка по смс"}
+                        />
+                      ) : null}
+                    </>
+                  )}
+                </div>
+              </>
             )}
 
             <div className={classes.button}>

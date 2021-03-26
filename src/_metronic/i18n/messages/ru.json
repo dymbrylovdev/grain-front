@@ -10,7 +10,7 @@
   "ALL.BUTTONS.BID_CREATE": "Опубликовать объявление",
   "ALL.BUTTONS.CLEAR": "Очистить",
   "ALL.BUTTONS.SUBMIT": "Применить",
-  "ALL.BUTTONS.CREATE_FILTER": "Добавить подписку",
+  "ALL.BUTTONS.CREATE_FILTER": "Подписаться на объявления",
   "ALL_BUTTONS.DOWNLOAD": "Скачать договор",
   "ALL_BUTTONS.REQUSITES": "Реквизиты",
 
@@ -322,6 +322,7 @@
   "BID.CREATE.NOT.FOUND": "заявок с указанными параметрами не найдено",
   "BID.CREATE.WITH.DELIVIRY": "(с учётом доставки)",
   "BID.CREATE.WITHOUT.DELIVIRY": "(без учёта доставки)",
+  "BID.CREATE.TOOLIP.TEXT": "На вашу электронную почту будет приходить автоматическая рассылка с лучшими предложениями на данное объявление",
 
   "USERDOC.BUTTON.SAVE": "Сохранить",
   "USERDOC.BUTTON.CREATE": "Создать",
@@ -371,7 +372,7 @@
   "FILTER.FORM.MIN.PREPAYMENT": "Мин. предоплата, %",
   "FILTER.FORM.MAX_DESTINATION": "Макс. расстояние",
   "FILTER.FORM.BUTTON.SAVE": "Сохранить",
-  "FILTER.FORM.BUTTON.ADD": "Добавить подписку",
+  "FILTER.FORM.BUTTON.ADD": "Подписаться на объявления",
   "FILTER.FORM.BUTTON.SAVE.TOOLTIP": "Сохранить и подписаться",
   "FILTER.FORM.BUTTON.SUBMIT": "Применить фильтр",
   "FILTER.FORM.BUTTON.RESET": "Отключить фильтр",
