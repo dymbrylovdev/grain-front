@@ -28,13 +28,13 @@ release-web:
     - docker tag $TEST_IMAGE $RELEASE_IMAGE
     - docker push $RELEASE_IMAGE
   only:
-    - "1.8"
+    - "1.7.5"
 
 deploy:
   stage: deploy
   image: gitlab/dind:latest
   only:
-    - "1.8"
+    - "1.7.5"
   environment: production
   services:
     - docker:dind
