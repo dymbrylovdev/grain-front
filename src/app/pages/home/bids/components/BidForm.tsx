@@ -23,7 +23,7 @@ import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { YMaps, Map } from "react-yandex-maps";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
@@ -1575,14 +1575,13 @@ const BidForm: React.FC<IProps> = ({
                   me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
                     <>
                       <Tooltip
-                        style={{fontSize: 20}}
                         title={intl.formatMessage({
                           id: "BID.CREATE.TOOLIP.TEXT",
                         })}
                       >
-                        <ReportProblemIcon
+                        <HelpOutlineIcon
                           color="secondary"
-                          style={{ marginTop: -6, marginRight: 10 }}
+                          style={{ marginRight: 15 }}
                         />
                       </Tooltip>
                       {me && me.email ? (
