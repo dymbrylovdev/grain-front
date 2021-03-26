@@ -8,6 +8,7 @@ import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
 import { IAppState } from "../../store/rootDuck";
 
 import { LeftMenu } from ".";
+import UsersFilterMenu from "./UsersFilterMenu";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -83,6 +84,10 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         setLeftMenuOpen={setLeftMenuOpen}
         enumParams={cropParams && cropParams.filter(item => item.type === "enum")}
       />
+
+      {location.pathname === "/user-list" && (
+        <UsersFilterMenu intl={intl} />
+      )}
     </Wrapper>
   );
 };

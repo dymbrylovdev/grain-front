@@ -19,7 +19,7 @@ import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
-import { TTariffField, ITariff } from "../../../interfaces/tariffs";
+import { TTariffField, ITariff, ITariffLimits } from "../../../interfaces/tariffs";
 import EditableCell from "./components/EditableCell";
 
 const useInnerStyles = makeStyles(theme =>
@@ -79,6 +79,8 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       window.location.reload();
     }, 10000);
   }
+
+  // console.log("tariffs: ", tariffs);
 
   return (
     <Paper className={classes.paperWithTable}>
@@ -162,27 +164,21 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
               <TableRow>
                 <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT11" })}</TableCell>
-                {/* <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-                </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 2) as ITariff}
+                    tariff={tariffs.find(item => item.id === 2)?.tariff_limits as any}
                     realCell={{ id: 2, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
-                {/* <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
-                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-                </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 6) as ITariff}
+                    tariff={tariffs.find(item => item.id === 6)?.tariff_limits as any}
                     realCell={{ id: 6, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
@@ -191,7 +187,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 22) as ITariff}
+                    tariff={tariffs.find(item => item.id === 22)?.tariff_limits as any}
                     realCell={{ id: 22, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
@@ -200,7 +196,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 10) as ITariff}
+                    tariff={tariffs.find(item => item.id === 10)?.tariff_limits as any}
                     realCell={{ id: 10, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
@@ -209,7 +205,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 14) as ITariff}
+                    tariff={tariffs.find(item => item.id === 14)?.tariff_limits as any}
                     realCell={{ id: 14, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
@@ -218,7 +214,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 18) as ITariff}
+                    tariff={tariffs.find(item => item.id === 18)?.tariff_limits as any}
                     realCell={{ id: 18, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
@@ -227,7 +223,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 100) as ITariff}
+                    tariff={tariffs.find(item => item.id === 100)?.tariff_limits as any}
                     realCell={{ id: 100, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
@@ -236,7 +232,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 101) as ITariff}
+                    tariff={tariffs.find(item => item.id === 101)?.tariff_limits as any}
                     realCell={{ id: 101, field: "priority_places_bids_count" }}
                   />
                 </TableCell>
@@ -244,27 +240,21 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
               <TableRow>
                 <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT12" })}</TableCell>
-                {/* <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-                </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 2) as ITariff}
+                    tariff={tariffs.find(item => item.id === 2)?.tariff_limits as any}
                     realCell={{ id: 2, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
-                {/* <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
-                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-                </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 6) as ITariff}
+                    tariff={tariffs.find(item => item.id === 6)?.tariff_limits as any}
                     realCell={{ id: 6, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
@@ -273,7 +263,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 22) as ITariff}
+                    tariff={tariffs.find(item => item.id === 22)?.tariff_limits as any}
                     realCell={{ id: 22, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
@@ -282,7 +272,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 10) as ITariff}
+                    tariff={tariffs.find(item => item.id === 10)?.tariff_limits as any}
                     realCell={{ id: 10, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
@@ -291,7 +281,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 14) as ITariff}
+                    tariff={tariffs.find(item => item.id === 14)?.tariff_limits as any}
                     realCell={{ id: 14, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
@@ -300,7 +290,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 18) as ITariff}
+                    tariff={tariffs.find(item => item.id === 18)?.tariff_limits as any}
                     realCell={{ id: 18, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
@@ -309,7 +299,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 100) as ITariff}
+                    tariff={tariffs.find(item => item.id === 100)?.tariff_limits as any}
                     realCell={{ id: 100, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
@@ -318,7 +308,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 101) as ITariff}
+                    tariff={tariffs.find(item => item.id === 101)?.tariff_limits as any}
                     realCell={{ id: 101, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
@@ -345,7 +335,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 2) as ITariff}
+                    tariff={tariffs.find(item => item.id === 2)?.tariff_limits as any}
                     realCell={{ id: 2, field: "max_filters_count" }}
                   />
                 </TableCell>
@@ -354,7 +344,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 6) as ITariff}
+                    tariff={tariffs.find(item => item.id === 6)?.tariff_limits as any}
                     realCell={{ id: 6, field: "max_filters_count" }}
                   />
                 </TableCell>
@@ -363,7 +353,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 22) as ITariff}
+                    tariff={tariffs.find(item => item.id === 22)?.tariff_limits as any}
                     realCell={{ id: 22, field: "max_filters_count" }}
                   />
                 </TableCell>
@@ -372,7 +362,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 10) as ITariff}
+                    tariff={tariffs.find(item => item.id === 10)?.tariff_limits as any}
                     realCell={{ id: 10, field: "max_filters_count" }}
                   />
                 </TableCell>
@@ -381,7 +371,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 14) as ITariff}
+                    tariff={tariffs.find(item => item.id === 14)?.tariff_limits as any}
                     realCell={{ id: 14, field: "max_filters_count" }}
                   />
                 </TableCell>
@@ -390,7 +380,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 18) as ITariff}
+                    tariff={tariffs.find(item => item.id === 18)?.tariff_limits as any}
                     realCell={{ id: 18, field: "max_filters_count" }}
                   />
                 </TableCell>
@@ -399,7 +389,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 100) as ITariff}
+                    tariff={tariffs.find(item => item.id === 100)?.tariff_limits as any}
                     realCell={{ id: 100, field: "max_filters_count" }}
                   />
                 </TableCell>
@@ -408,7 +398,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 101) as ITariff}
+                    tariff={tariffs.find(item => item.id === 101)?.tariff_limits as any}
                     realCell={{ id: 101, field: "max_filters_count" }}
                   />
                 </TableCell>
@@ -421,7 +411,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 2) as ITariff}
+                    tariff={tariffs.find(item => item.id === 2)?.tariff_limits as any}
                     realCell={{ id: 2, field: "max_sms_count" }}
                   />
                 </TableCell>
@@ -430,7 +420,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 6) as ITariff}
+                    tariff={tariffs.find(item => item.id === 6)?.tariff_limits as any}
                     realCell={{ id: 6, field: "max_sms_count" }}
                   />
                 </TableCell>
@@ -439,7 +429,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 22) as ITariff}
+                    tariff={tariffs.find(item => item.id === 22)?.tariff_limits as any}
                     realCell={{ id: 22, field: "max_sms_count" }}
                   />
                 </TableCell>
@@ -448,7 +438,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 10) as ITariff}
+                    tariff={tariffs.find(item => item.id === 10)?.tariff_limits as any}
                     realCell={{ id: 10, field: "max_sms_count" }}
                   />
                 </TableCell>
@@ -457,7 +447,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 14) as ITariff}
+                    tariff={tariffs.find(item => item.id === 14)?.tariff_limits as any}
                     realCell={{ id: 14, field: "max_sms_count" }}
                   />
                 </TableCell>
@@ -466,7 +456,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 18) as ITariff}
+                    tariff={tariffs.find(item => item.id === 18)?.tariff_limits as any}
                     realCell={{ id: 18, field: "max_sms_count" }}
                   />
                 </TableCell>
@@ -475,7 +465,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 100) as ITariff}
+                    tariff={tariffs.find(item => item.id === 100)?.tariff_limits as any}
                     realCell={{ id: 100, field: "max_sms_count" }}
                   />
                 </TableCell>
@@ -484,7 +474,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 101) as ITariff}
+                    tariff={tariffs.find(item => item.id === 101)?.tariff_limits as any}
                     realCell={{ id: 101, field: "max_sms_count" }}
                   />
                 </TableCell>
@@ -511,7 +501,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 2) as ITariff}
+                    tariff={tariffs.find(item => item.id === 2)?.tariff_limits as any}
                     realCell={{ id: 2, field: "max_crops_count" }}
                   />
                 </TableCell>
@@ -520,7 +510,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 6) as ITariff}
+                    tariff={tariffs.find(item => item.id === 6)?.tariff_limits as any}
                     realCell={{ id: 6, field: "max_crops_count" }}
                   />
                 </TableCell>
@@ -529,7 +519,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 22) as ITariff}
+                    tariff={tariffs.find(item => item.id === 22)?.tariff_limits as any}
                     realCell={{ id: 22, field: "max_crops_count" }}
                   />
                 </TableCell>
@@ -538,7 +528,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 10) as ITariff}
+                    tariff={tariffs.find(item => item.id === 10)?.tariff_limits as any}
                     realCell={{ id: 10, field: "max_crops_count" }}
                   />
                 </TableCell>
@@ -547,7 +537,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 14) as ITariff}
+                    tariff={tariffs.find(item => item.id === 14)?.tariff_limits as any}
                     realCell={{ id: 14, field: "max_crops_count" }}
                   />
                 </TableCell>
@@ -556,7 +546,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 18) as ITariff}
+                    tariff={tariffs.find(item => item.id === 18)?.tariff_limits as any}
                     realCell={{ id: 18, field: "max_crops_count" }}
                   />
                 </TableCell>
@@ -565,7 +555,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 100) as ITariff}
+                    tariff={tariffs.find(item => item.id === 100)?.tariff_limits as any}
                     realCell={{ id: 100, field: "max_crops_count" }}
                   />
                 </TableCell>
@@ -574,7 +564,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 101) as ITariff}
+                    tariff={tariffs.find(item => item.id === 101)?.tariff_limits as any}
                     realCell={{ id: 101, field: "max_crops_count" }}
                   />
                 </TableCell>
@@ -603,7 +593,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 2) as ITariff}
+                    tariff={tariffs.find(item => item.id === 2)?.tariff_limits as any}
                     realCell={{ id: 2, field: "contact_view_limit" }}
                   />
                 </TableCell>
@@ -612,7 +602,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 6) as ITariff}
+                    tariff={tariffs.find(item => item.id === 6)?.tariff_limits as any}
                     realCell={{ id: 6, field: "contact_view_limit" }}
                   />
                 </TableCell>
@@ -621,7 +611,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 22) as ITariff}
+                    tariff={tariffs.find(item => item.id === 22)?.tariff_limits as any}
                     realCell={{ id: 22, field: "contact_view_limit" }}
                   />
                 </TableCell>
@@ -630,7 +620,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 10) as ITariff}
+                    tariff={tariffs.find(item => item.id === 10)?.tariff_limits as any}
                     realCell={{ id: 10, field: "contact_view_limit" }}
                   />
                 </TableCell>
@@ -639,7 +629,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 14) as ITariff}
+                    tariff={tariffs.find(item => item.id === 14)?.tariff_limits as any}
                     realCell={{ id: 14, field: "contact_view_limit" }}
                   />
                 </TableCell>
@@ -648,7 +638,7 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     useInnerStyles={useInnerStyles}
                     cell={cell}
                     setCell={setCell}
-                    tariff={tariffs.find(item => item.id === 18) as ITariff}
+                    tariff={tariffs.find(item => item.id === 18)?.tariff_limits as any}
                     realCell={{ id: 18, field: "contact_view_limit" }}
                   />
                 </TableCell>

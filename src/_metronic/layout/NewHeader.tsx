@@ -153,6 +153,27 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               <a style={{color: "#e1e9ff"}} href="mailto:info@kupit-zerno.com">info@kupit-zerno.com</a>
             </div>
 
+            <div style={{ display: "flex", alignItems: "center" }}>
+                {!!me && !me.company_confirmed_by_payment && !me.company_confirmed_by_email ? (
+                  <Tooltip
+                    title={intl.formatMessage({
+                      id: "COMPANY.CONFIRM.NO_CONFIRM",
+                    })}
+                    onClick={() => history.push('/user/profile')}
+                  >
+                    <ReportProblemIcon
+                      color="error"
+                      style={{ marginRight: 8, width: 20, height: 20 }}
+                    />
+                  </Tooltip>
+                ) : (
+                  <PersonPinOutlinedIcon
+                    color="inherit"
+                    style={{ marginRight: 8, width: 20, height: 20 }}
+                  />
+                )}
+              </div>
+
             <div
               className={classes.btn}
               onClick={(event: React.MouseEvent<HTMLDivElement>) => {
@@ -186,26 +207,6 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         >
           <MenuItem onClick={() => handleClick("/user/profile")}>
             <div className={classes.info}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {!!me && !me.company_confirmed_by_payment && !me.company_confirmed_by_email ? (
-                  <Tooltip
-                    title={intl.formatMessage({
-                      id: "COMPANY.CONFIRM.NO_CONFIRM",
-                    })}
-                    onClick={() => console.log("click")}
-                  >
-                    <ReportProblemIcon
-                      color="error"
-                      style={{ marginRight: 8, width: 20, height: 20 }}
-                    />
-                  </Tooltip>
-                ) : (
-                  <PersonPinOutlinedIcon
-                    color="inherit"
-                    style={{ marginRight: 8, width: 20, height: 20 }}
-                  />
-                )}
-              </div>
               <div>
                 <div style={{ fontWeight: "bold", color: "#000000" }}>{me.email}</div>
                 <div style={{ color: "gray" }}>

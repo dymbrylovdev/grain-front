@@ -53,11 +53,19 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
   editPeriodLoading,
   editPeriodSuccess,
   editPeriodError,
+
+  clearEditLimits,
+  editLimits,
+  editLimitsLoading,
+  editLimitsSuccess,
+  editLimitsError,
 }) => {
   const innerClasses = useInnerStyles();
 
+  console.log("tariff: ", tariff);
+
   const { values, handleSubmit, handleChange, resetForm } = useFormik({
-    initialValues: { value: tariff[realCell.field] },
+    initialValues: { value: tariff[realCell.field], idForLimit: tariff.id },
     onSubmit: values => {
       let realValue = +values.value;
       if (+values.value <= 0) {
@@ -69,13 +77,12 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
       if (realCell.field === "priority_places_bids_on_mailing_count" && +values.value > 5) {
         realValue = 5;
       }
-      // if (+values.value > 1000) {
-      //   realValue = 1000;
-      // }
       if (+values.value !== tariff[realCell.field]) {
         realCell.field === "period"
           ? editPeriod(realCell.id, { [realCell.field]: realValue })
-          : edit(realCell.id, { [realCell.field]: realValue });
+          : realCell.field === "price"
+            ? edit(realCell.id, { [realCell.field]: realValue })
+            : editLimits(values.idForLimit, { [realCell.field]: realValue });
       } else {
         setCell({ id: 0, field: undefined });
       }
@@ -83,7 +90,7 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
   });
 
   useEffect(() => {
-    resetForm({ values: { value: tariff[realCell.field] } });
+    resetForm({ values: { value: tariff[realCell.field], idForLimit: tariff.id } });
   }, [realCell.field, resetForm, tariff]);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -129,11 +136,28 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
         setCell({ id: 0, field: undefined });
       }
     }
+  }, [cell, clearEdit, editError, editSuccess, enqueueSnackbar, intl, realCell, setCell]);
+
+  useEffect(() => {
+    if (cell.id === realCell.id && cell.field === realCell.field) {
+      if (editLimitsSuccess || editLimitsError) {
+        enqueueSnackbar(
+          editLimitsSuccess
+            ? intl.formatMessage({ id: "NOTISTACK.TARIFF.EDIT" })
+            : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editLimitsError}`,
+          {
+            variant: editLimitsSuccess ? "success" : "error",
+          }
+        );
+        clearEditLimits();
+        setCell({ id: 0, field: undefined });
+      }
+    }
   }, [
     cell,
-    clearEdit,
-    editError,
-    editSuccess,
+    clearEditLimits,
+    editLimitsError,
+    editLimitsSuccess,
     enqueueSnackbar,
     intl,
     realCell,
@@ -144,6 +168,7 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
     <div className={innerClasses.tabCell}>
       {editLoading &&
       editPeriodLoading &&
+      editLimitsLoading &&
       cell.id === realCell.id &&
       cell.field === realCell.field ? (
         <CircularProgress color="inherit" size={30} />
@@ -193,12 +218,18 @@ const connector = connect(
     editPeriodLoading: state.tariffs.editPeriodLoading,
     editPeriodSuccess: state.tariffs.editPeriodSuccess,
     editPeriodError: state.tariffs.editPeriodError,
+
+    editLimitsLoading: state.tariffs.editLimitsLoading,
+    editLimitsSuccess: state.tariffs.editLimitsSuccess,
+    editLimitsError: state.tariffs.editLimitsError,
   }),
   {
     clearEdit: tariffsActions.clearEdit,
     edit: tariffsActions.editRequest,
     clearEditPeriod: tariffsActions.clearEditPeriod,
     editPeriod: tariffsActions.editPeriodRequest,
+    clearEditLimits: tariffsActions.clearEditLimits,
+    editLimits: tariffsActions.editLimitsRequest,
   }
 );
 
