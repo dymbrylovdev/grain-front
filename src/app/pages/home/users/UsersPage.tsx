@@ -98,8 +98,6 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [funnelStateEditId, setFunnelStateEditId] = useState(0);
   const [tariffId, setTariffId] = useState<number | undefined>(undefined);
 
-  console.log("TARIFF ID", tariffId);
-
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (editSuccess || editError) {

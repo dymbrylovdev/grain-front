@@ -72,3 +72,7 @@ export const editBid = (id: number, data: IBidToRequest) => {
 export const deleteBid = (id: number) => {
   return axios.delete(`${AD_URL}/${id}`);
 };
+
+export const getBidsXlsUrl = (id: number) => {
+  return axios.get(`/api/crop/${id}/bids/xls`, { responseType: 'arraybuffer' });
+};

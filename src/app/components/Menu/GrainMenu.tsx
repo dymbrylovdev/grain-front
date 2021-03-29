@@ -74,8 +74,6 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   if (!me) return null;
 
-  console.log("tariff types", tariffsTypes);
-
   return (
     <Wrapper
       isMinWidthQuery={isMinWidthQuery}

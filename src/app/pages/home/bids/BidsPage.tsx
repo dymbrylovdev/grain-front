@@ -27,6 +27,8 @@ import { LayoutSubheader } from "../../../../_metronic";
 import { accessByRoles } from "../../../utils/utils";
 import { IBid } from "../../../interfaces/bids";
 
+import fileSaver from "file-saver";
+
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
     flexDirection: "row",
@@ -149,6 +151,14 @@ const BidsPage: React.FC<TPropsFromRedux &
   setProfit,
 
   pointPrices,
+
+  clearBidsXlsUrl,
+  fetchBidsXlsUrl,
+
+  bidsXlsUrl,
+  bidsXlsUrlLoading,
+  bidsXlsUrlSuccess,
+  bidsXlsUrlError
 }) => {
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
   if (match.url.indexOf("best-bids") !== -1) bestAllMyMode = "best-bids";
@@ -294,7 +304,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                   currentSaleFilters[cropId] || {},
                   cropParams.filter(item => item.type === "enum"),
                   cropParams.filter(item => item.type === "number"),
-                  pointPrices,
+                  pointPrices
                 )
               );
             }
@@ -421,7 +431,18 @@ const BidsPage: React.FC<TPropsFromRedux &
     fetchMe();
   }, [fetchMe]);
 
-  if (error || bestError || myError || cropsError || cropParamsError) {
+  useEffect(() => {
+    if (cropId) fetchBidsXlsUrl(+cropId);
+  }, [fetchBidsXlsUrl, cropId]);
+
+  const exportFileToXlsx = () => {
+    if (bidsXlsUrl) {
+      const blob = new Blob([bidsXlsUrl], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      fileSaver.saveAs(blob, 'fixi.xlsx');
+    }
+  }
+
+  if (error || bestError || myError || cropsError || cropParamsError || bidsXlsUrlError) {
     setTimeout(() => {
       window.location.reload();
     }, 10000);
@@ -435,25 +456,36 @@ const BidsPage: React.FC<TPropsFromRedux &
         <div className={innerClasses.topContainer}>
           <div className={innerClasses.leftButtonBlock}>
             {me && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() =>
-                  history.push(
-                    `/bid/create/${
-                      (!!me &&
-                        ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) ||
-                      bestAllMyMode === "my-bids"
-                        ? salePurchaseMode
-                        : salePurchaseMode === "sale"
-                        ? "purchase"
-                        : "sale"
-                    }/0${!!cropId ? "/" + cropId : ""}`
-                  )
-                }
-              >
-                {intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
-              </Button>
+              <div>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() =>
+                    history.push(
+                      `/bid/create/${
+                        (!!me &&
+                          ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) ||
+                        bestAllMyMode === "my-bids"
+                          ? salePurchaseMode
+                          : salePurchaseMode === "sale"
+                          ? "purchase"
+                          : "sale"
+                      }/0${!!cropId ? "/" + cropId : ""}`
+                    )
+                  }
+                >
+                  {intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
+                </Button>
+
+                <Button
+                  style={{marginLeft: 15}}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => exportFileToXlsx()}
+                >
+                  Экспорт в Excel
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -667,6 +699,11 @@ const connector = connect(
     delError: state.bids.delError,
 
     pointPrices: state.myFilters.pointPrices,
+
+    bidsXlsUrl: state.bids.bidsXlsUrl,
+    bidsXlsUrlLoading: state.bids.bidsXlsLoading,
+    bidsXlsUrlSuccess: state.bids.bidsXlsSuccess,
+    bidsXlsUrlError: state.bids.bidsXlsError,
   }),
   {
     fetchMe: authActions.fetchRequest,
@@ -694,6 +731,9 @@ const connector = connect(
 
     fetchFilters: myFiltersActions.fetchRequest,
     clearEditFilters: myFiltersActions.clearEdit,
+
+    clearBidsXlsUrl: bidsActions.clearBidsXlsUrl,
+    fetchBidsXlsUrl: bidsActions.bidsXlsUrlRequest,
   }
 );
 
