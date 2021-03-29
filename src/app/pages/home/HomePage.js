@@ -45,13 +45,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
           <Redirect
             exact
             from="/"
-            to={
-              user.crops.length < 1
-                ? "/user/profile"
-                : user.is_buyer || user.is_vendor
-                ? `purchase/best-bids/${user.crops[0].id}`
-                : `sale/best-bids/${user.crops[0].id}`
-            }
+            to={"/user/profile"}
           />
         }
         <Route path="/userDocs/legacy" component={UserDocPage} />
