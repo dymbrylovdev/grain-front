@@ -94,7 +94,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         enumParams={cropParams && cropParams.filter(item => item.type === "enum")}
       />
 
-      {location.pathname === "/user-list" && (
+      {/* {location.pathname === "/user-list" && (
         <UsersFilterMenu
           intl={intl}
           funnelStates={funnelStates}
@@ -102,7 +102,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           usersFilterTariff={usersFilterTariff}
           setUsersFilterTariff={setUsersFilterTariff}
         />
-      )}
+      )} */}
     </Wrapper>
   );
 };
