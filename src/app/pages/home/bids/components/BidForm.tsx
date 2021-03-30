@@ -23,7 +23,7 @@ import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import { YMaps, Map } from "react-yandex-maps";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
@@ -343,6 +343,10 @@ const BidForm: React.FC<IProps> = ({
   const linkToContact = () => {
     let contactViewCount = me?.contact_view_count;
     //@ts-ignore
+    if (bid && bid.author.id === me.id) {
+      history.push("/user/profile");
+    }
+    //@ts-ignore
     if (contactViewCount > 0 || ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
       history.push(
         me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
@@ -570,6 +574,9 @@ const BidForm: React.FC<IProps> = ({
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
 
+  //@ts-ignore
+  console.log(bid?.author.id === me.id);
+
   return (
     <div className={classes.form}>
       <div className={classes.topButtonsContainer}>
@@ -660,16 +667,20 @@ const BidForm: React.FC<IProps> = ({
               </div>
 
               {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
-                <Alert
-                  className={classes.infoAlert}
-                  severity="warning"
-                  color="error"
-                  style={{ marginTop: 8, marginBottom: 8 }}
-                >
-                  {`Сегодня вам доступен просмотр ${
-                    me?.contact_view_count
-                  } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
-                </Alert>
+                <>
+                  {bid?.author.id === me.id ? null : (
+                    <Alert
+                      className={classes.infoAlert}
+                      severity="warning"
+                      color="error"
+                      style={{ marginTop: 8, marginBottom: 8 }}
+                    >
+                      {`Сегодня вам доступен просмотр ${
+                        me?.contact_view_count
+                      } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
+                    </Alert>
+                  )}
+                </>
               )}
 
               {!!bid.vendor.company && (
@@ -1579,10 +1590,7 @@ const BidForm: React.FC<IProps> = ({
                           id: "BID.CREATE.TOOLIP.TEXT",
                         })}
                       >
-                        <HelpOutlineIcon
-                          color="secondary"
-                          style={{ marginRight: 15 }}
-                        />
+                        <HelpOutlineIcon color="secondary" style={{ marginRight: 15 }} />
                       </Tooltip>
                       {me && me.email ? (
                         <FormControlLabel
