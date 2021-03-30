@@ -73,6 +73,9 @@ export const deleteBid = (id: number) => {
   return axios.delete(`${AD_URL}/${id}`);
 };
 
-export const getBidsXlsUrl = (id: number) => {
-  return axios.get(`/api/crop/${id}/bids/xls`, { responseType: 'arraybuffer' });
+export const getBidsXlsUrl = (id: number, type?: string, minDate?: string, maxDate?: string) => {
+  return axios.get(
+    `/api/crop/${id}/bids/xls?type=${type}&min_date=${minDate}&max_date=${maxDate}`,
+    { responseType: "arraybuffer" }
+  );
 };

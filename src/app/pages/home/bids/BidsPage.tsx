@@ -435,9 +435,13 @@ const BidsPage: React.FC<TPropsFromRedux &
   }, [fetchMe]);
 
   useEffect(() => {
-    if (cropId && me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]))
-      fetchBidsXlsUrl(+cropId);
-  }, [fetchBidsXlsUrl, cropId, me]);
+    if (cropId && me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && filter.minDate && filter.maxDate) {
+      let formattedMinDate = format(filter.minDate, "dd.MM.yyyy");
+      let formattedMaxDate = format(filter.maxDate, "dd.MM.yyyy");
+
+      fetchBidsXlsUrl(+cropId, salePurchaseMode, formattedMinDate, formattedMaxDate);
+    }
+  }, [fetchBidsXlsUrl, cropId, salePurchaseMode, me, filter]);
 
   const exportFileToXlsx = () => {
     if (bidsXlsUrl) {
