@@ -5,6 +5,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Button, makeStyles, Paper } from "@material-ui/core";
 import { useSnackbar } from "notistack";
+import { format } from "date-fns";
 
 import { actions as bidsActions } from "../../../store/ducks/bids.duck";
 import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
@@ -169,6 +170,8 @@ const BidsPage: React.FC<TPropsFromRedux &
   let salePurchaseMode: "sale" | "purchase" = "sale";
   if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
   if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
+
+  const dateForExcel = format(new Date(), "dd.MM.yyyy");
 
   let pageTitle = "";
 
@@ -432,15 +435,16 @@ const BidsPage: React.FC<TPropsFromRedux &
   }, [fetchMe]);
 
   useEffect(() => {
-    if (cropId) fetchBidsXlsUrl(+cropId);
-  }, [fetchBidsXlsUrl, cropId]);
+    if (cropId && me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]))
+      fetchBidsXlsUrl(+cropId);
+  }, [fetchBidsXlsUrl, cropId, me]);
 
   const exportFileToXlsx = () => {
     if (bidsXlsUrl) {
       const blob = new Blob([bidsXlsUrl], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-      fileSaver.saveAs(blob, "fixi.xlsx");
+      fileSaver.saveAs(blob, `Выгрузка объявлений ${dateForExcel}.xlsx`);
     }
   };
 
