@@ -158,7 +158,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   bidsXlsUrl,
   bidsXlsUrlLoading,
   bidsXlsUrlSuccess,
-  bidsXlsUrlError
+  bidsXlsUrlError,
 }) => {
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
   if (match.url.indexOf("best-bids") !== -1) bestAllMyMode = "best-bids";
@@ -437,10 +437,12 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   const exportFileToXlsx = () => {
     if (bidsXlsUrl) {
-      const blob = new Blob([bidsXlsUrl], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      fileSaver.saveAs(blob, 'fixi.xlsx');
+      const blob = new Blob([bidsXlsUrl], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      fileSaver.saveAs(blob, "fixi.xlsx");
     }
-  }
+  };
 
   if (error || bestError || myError || cropsError || cropParamsError || bidsXlsUrlError) {
     setTimeout(() => {
@@ -477,14 +479,16 @@ const BidsPage: React.FC<TPropsFromRedux &
                   {intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
                 </Button>
 
-                <Button
-                  style={{marginLeft: 15}}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => exportFileToXlsx()}
-                >
-                  Экспорт в Excel
-                </Button>
+                {["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && (
+                  <Button
+                    style={{ marginLeft: 15 }}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => exportFileToXlsx()}
+                  >
+                    Экспорт в Excel
+                  </Button>
+                )}
               </div>
             )}
           </div>
