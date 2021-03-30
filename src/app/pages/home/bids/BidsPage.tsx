@@ -487,7 +487,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                   {intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
                 </Button>
 
-                {["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && (
+                {["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && bestAllMyMode === "all-bids" && (
                   <Button
                     style={{ marginLeft: 15 }}
                     variant="contained"
