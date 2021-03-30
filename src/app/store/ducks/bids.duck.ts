@@ -526,7 +526,7 @@ export const actions = {
     createAction(SET_FILTER, { filter }),
 
   clearBidsXlsUrl: () => createAction(CLEAR_BIDS_XLS_URL),
-  bidsXlsUrlRequest: (id: number, type?: string, minDate?: string, maxDate?: string) => createAction(BIDS_XLS_URL_REQUEST, { id, type, minDate, maxDate }),
+  bidsXlsUrlRequest: (id: number, type?: string, minDate?: string, maxDate?: string, authorId?: string) => createAction(BIDS_XLS_URL_REQUEST, { id, type, minDate, maxDate, authorId }),
   bidsXlsUrlSuccess: (payload: string) => createAction(BIDS_XLS_URL_SUCCESS, payload),
   bidsXlsUrlFail: (payload: string) => createAction(BIDS_XLS_URL_FAIL, payload),
 };
@@ -655,9 +655,9 @@ function* delSaga({ payload }: { payload: { id: number } }) {
   }
 }
 
-function* bidsXlsUrlSaga({ payload }: { payload: { id: number, type?: string, minDate?: string, maxDate?: string } }) {
+function* bidsXlsUrlSaga({ payload }: { payload: { id: number, type?: string, minDate?: string, maxDate?: string, authorId?: string } }) {
   try {
-    const { data }: { data: string } = yield call(() => getBidsXlsUrl(payload.id, payload?.type, payload?.minDate, payload?.maxDate));
+    const { data }: { data: string } = yield call(() => getBidsXlsUrl(payload.id, payload?.type, payload?.minDate, payload?.maxDate, payload?.authorId));
     yield put(actions.bidsXlsUrlSuccess(data));
   } catch (e) {
     yield put(actions.bidsXlsUrlFail(e?.response?.data?.message || "Ошибка соединения."));
