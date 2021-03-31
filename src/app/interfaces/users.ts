@@ -109,3 +109,9 @@ export interface IRegSuccessData {
   roles: TRole[];
   login: string;
 }
+
+export interface IUserRoles {
+  id: number;
+  label: string;
+  role: string;
+}
