@@ -436,8 +436,8 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   useEffect(() => {
     if (cropId && me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && filter.minDate && filter.maxDate) {
-      let formattedMinDate = format(filter.minDate, "yyyy-mm-dd");
-      let formattedMaxDate = format(filter.maxDate, "yyyy-mm-dd");
+      let formattedMinDate = format(filter.minDate, "yyyy-MM-dd");
+      let formattedMaxDate = format(filter.maxDate, "yyyy-MM-dd");
 
       fetchBidsXlsUrl(+cropId, salePurchaseMode, formattedMinDate, formattedMaxDate, filter.authorId);
     }
