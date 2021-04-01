@@ -116,15 +116,15 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE9" })}{" "}
 
               {accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 2) return item.common_bids_count
+                if (item.id === 2) return item.tariff_limits.common_bids_count
               })}
 
               {accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                if (item.id === 6) return item.common_bids_count
+                if (item.id === 6) return item.tariff_limits.common_bids_count
               })}
 
               {accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 22) return item.common_bids_count
+                if (item.id === 22) return item.tariff_limits.common_bids_count
               })}
             </TableCell>
           </TableRow>
@@ -134,15 +134,15 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE10" })}{" "}
 
               {accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 2) return item.max_crops_count
+                if (item.id === 2) return item.tariff_limits.max_crops_count
               })}
 
               {accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                if (item.id === 6) return item.max_crops_count
+                if (item.id === 6) return item.tariff_limits.max_crops_count
               })}
 
               {accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 22) return item.max_crops_count
+                if (item.id === 22) return item.tariff_limits.max_crops_count
               })}
             </TableCell>
           </TableRow>
@@ -152,15 +152,15 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "}
 
               {accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 2) return item.max_filters_count
+                if (item.id === 2) return item.tariff_limits.max_filters_count
               })}
 
               {accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                if (item.id === 6) return item.max_filters_count
+                if (item.id === 6) return item.tariff_limits.max_filters_count
               })}
 
               {accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 22) return item.max_filters_count
+                if (item.id === 22) return item.tariff_limits.max_filters_count
               })}
             </TableCell>
           </TableRow>
@@ -170,15 +170,15 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "}
 
               {accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 2) return item.contact_view_limit
+                if (item.id === 2) return item.tariff_limits.contact_view_limit
               })}
 
               {accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                if (item.id === 6) return item.contact_view_limit
+                if (item.id === 6) return item.tariff_limits.contact_view_limit
               })}
 
               {accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 22) return item.contact_view_limit
+                if (item.id === 22) return item.tariff_limits.contact_view_limit
               })}
             </TableCell>
           </TableRow>
@@ -283,11 +283,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE9" })}{" "}
 
                 <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 10) return item.common_bids_count
+                  if (item.id === 10) return item.tariff_limits.common_bids_count
                 })}</b>
 
                 <b>{accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 14) return item.common_bids_count
+                  if (item.id === 14) return item.tariff_limits.common_bids_count
                 })}</b>
               </TableCell>
             </TableRow>
@@ -297,11 +297,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE10" })}{" "}
 
                 <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 10) return item.max_crops_count
+                  if (item.id === 10) return item.tariff_limits.max_crops_count
                 })}</b>
 
                 <b>{accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 14) return item.max_crops_count
+                  if (item.id === 14) return item.tariff_limits.max_crops_count
                 })}</b>
               </TableCell>
             </TableRow>
@@ -311,11 +311,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "}
 
                 <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 10) return item.max_filters_count
+                  if (item.id === 10) return item.tariff_limits.max_filters_count
                 })}</b>
 
                 <b>{accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 14) return item.max_filters_count
+                  if (item.id === 14) return item.tariff_limits.max_filters_count
                 })}</b>
               </TableCell>
             </TableRow>
@@ -325,11 +325,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "}
 
                 <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 10) return item.contact_view_limit
+                  if (item.id === 10) return item.tariff_limits.contact_view_limit
                 })}</b>
 
                 <b>{accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 14) return item.contact_view_limit
+                  if (item.id === 14) return item.tariff_limits.contact_view_limit
                 })}</b>
               </TableCell>
             </TableRow>
@@ -445,11 +445,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE9" })}{" "}
 
                 <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.common_bids_count
+                  if (item.id === 18) return item.tariff_limits.common_bids_count
                 })}</b>
 
                 <b>{accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.common_bids_count
+                  if (item.id === 18) return item.tariff_limits.common_bids_count
                 })}</b>
               </TableCell>
             </TableRow>
@@ -459,11 +459,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE10" })}{" "}
 
                 <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.common_bids_count
+                  if (item.id === 18) return item.tariff_limits.common_bids_count
                 })}</b>
 
                 <b>{accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.max_crops_count
+                  if (item.id === 18) return item.tariff_limits.max_crops_count
                 })}</b>
               </TableCell>
             </TableRow>
@@ -473,11 +473,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "}
 
                 <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.max_filters_count
+                  if (item.id === 18) return item.tariff_limits.max_filters_count
                 })}</b>
 
                 <b>{accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.max_filters_count
+                  if (item.id === 18) return item.tariff_limits.max_filters_count
                 })}</b>
               </TableCell>
             </TableRow>
@@ -487,11 +487,11 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "}
 
                 <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.contact_view_limit
+                  if (item.id === 18) return item.tariff_limits.contact_view_limit
                 })}</b>
 
                 <b>{accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.contact_view_limit
+                  if (item.id === 18) return item.tariff_limits.contact_view_limit
                 })}</b>
               </TableCell>
             </TableRow>

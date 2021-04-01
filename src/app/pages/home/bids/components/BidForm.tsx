@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   Checkbox,
   Divider,
+  Tooltip,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
@@ -22,6 +23,8 @@ import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import { YMaps, Map } from "react-yandex-maps";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import { IBid, TBidType, IBidToRequest, IProfit, IBidsPair } from "../../../../interfaces/bids";
@@ -340,6 +343,10 @@ const BidForm: React.FC<IProps> = ({
   const linkToContact = () => {
     let contactViewCount = me?.contact_view_count;
     //@ts-ignore
+    if (bid && bid.author.id === me.id) {
+      history.push("/user/profile");
+    }
+    //@ts-ignore
     if (contactViewCount > 0 || ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
       history.push(
         me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
@@ -410,8 +417,7 @@ const BidForm: React.FC<IProps> = ({
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
         .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
-      price: Yup.number()
-        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+      price: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       location: Yup.object({
         text: Yup.string().required(
           intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
@@ -442,6 +448,18 @@ const BidForm: React.FC<IProps> = ({
   }, [cropParams, values]);
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const newLocations: number[] = [];
+  const mapState = { center: newLocations, zoom: 9 };
+
+  if (bid) {
+    const mapX = bid.location.lat;
+    const mapY = bid.location.lng;
+
+    newLocations.push(mapX);
+    newLocations.push(mapY);
+  }
+
   useEffect(() => {
     if (formikErrored) {
       enqueueSnackbar(intl.formatMessage({ id: "NOTISTACK.ERRORS.EMPTY_FIELDS" }), {
@@ -536,7 +554,10 @@ const BidForm: React.FC<IProps> = ({
   }, [currentCropId, fetchCropParams]);
 
   useEffect(() => {
-    if (!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0) {
+    if (
+      !!me?.tariff_matrix &&
+      me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0
+    ) {
       setSendingEmail(false);
     }
   }, [me, filterCount]);
@@ -643,16 +664,20 @@ const BidForm: React.FC<IProps> = ({
               </div>
 
               {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
-                <Alert
-                  className={classes.infoAlert}
-                  severity="warning"
-                  color="error"
-                  style={{ marginTop: 8, marginBottom: 8 }}
-                >
-                  {`Сегодня вам доступен просмотр ${
-                    me?.contact_view_count
-                  } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
-                </Alert>
+                <>
+                  {bid?.author.id === me.id ? null : (
+                    <Alert
+                      className={classes.infoAlert}
+                      severity="warning"
+                      color="error"
+                      style={{ marginTop: 8, marginBottom: 8 }}
+                    >
+                      {`Сегодня вам доступен просмотр ${
+                        me?.contact_view_count
+                      } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
+                    </Alert>
+                  )}
+                </>
               )}
 
               {!!bid.vendor.company && (
@@ -736,7 +761,11 @@ const BidForm: React.FC<IProps> = ({
           noOptionsText={intl.formatMessage({
             id: "ALL.AUTOCOMPLIT.EMPTY",
           })}
-          value={vendor?.crops?.find(item => item.id === values.crop_id) || null}
+          value={
+            editMode === "create"
+              ? vendor?.crops?.find(item => item.id === values.crop_id) || null
+              : crops?.find(item => item.id === bid?.crop_id) || null
+          }
           onChange={(e: any, val: ICrop | null) => {
             setFieldValue("crop_id", val?.id || "");
             !!val?.id ? fetchCropParams(val.id) : clearCropParams();
@@ -1278,27 +1307,35 @@ const BidForm: React.FC<IProps> = ({
         loading ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
-          <AutocompleteLocations
-            options={locations || []}
-            loading={loadingLocations}
-            inputValue={values.location}
-            editable={editMode !== "view"}
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.LOCATION",
-            })}
-            inputClassName={innerClasses.autoLoc}
-            // @ts-ignore
-            inputError={Boolean(touched.location && errors.location && errors.location.text)}
-            // @ts-ignore
-            inputHelperText={touched.location && errors.location && errors.location.text}
-            fetchLocations={fetchLocations}
-            clearLocations={clearLocations}
-            setSelectedLocation={location =>
-              !!location ? setFieldValue("location", location) : setFieldValue("location", {})
-            }
-            handleBlur={handleBlur}
-            disable={true}
-          />
+          <>
+            <AutocompleteLocations
+              options={locations || []}
+              loading={loadingLocations}
+              inputValue={values.location}
+              editable={editMode !== "view"}
+              label={intl.formatMessage({
+                id: "PROFILE.INPUT.LOCATION",
+              })}
+              inputClassName={innerClasses.autoLoc}
+              // @ts-ignore
+              inputError={Boolean(touched.location && errors.location && errors.location.text)}
+              // @ts-ignore
+              inputHelperText={touched.location && errors.location && errors.location.text}
+              fetchLocations={fetchLocations}
+              clearLocations={clearLocations}
+              setSelectedLocation={location =>
+                !!location ? setFieldValue("location", location) : setFieldValue("location", {})
+              }
+              handleBlur={handleBlur}
+              disable={true}
+            />
+
+            <YMaps>
+              <div style={{ width: "100%" }}>
+                <Map state={mapState} width={768} />
+              </div>
+            </YMaps>
+          </>
         )
       ) : loading ? (
         <Skeleton width="100%" height={202} animation="wave" />
@@ -1540,32 +1577,44 @@ const BidForm: React.FC<IProps> = ({
                 </ButtonWithLoader>
               </div>
             ) : (
-              <div className={classes.button}>
-                {!!me?.tariff_matrix &&
-                me.tariff_matrix.max_filters_count - filterCount <= 0 ? null : (
-                  <>
-                    {me && me.email ? (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={isSendingEmail}
-                            onChange={e => onCheckboxChange(e, 1)}
-                          />
-                        }
-                        label={"Подписка по e-mail"}
-                      />
-                    ) : null}
-                    {me && me.phone ? (
-                      <FormControlLabel
-                        control={
-                          <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
-                        }
-                        label={"Подписка по смс"}
-                      />
-                    ) : null}
-                  </>
-                )}
-              </div>
+              <>
+                <div className={classes.button}>
+                  {!!me?.tariff_matrix &&
+                  me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
+                    <>
+                      <Tooltip
+                        title={intl.formatMessage({
+                          id: "BID.CREATE.TOOLIP.TEXT",
+                        })}
+                      >
+                        <HelpOutlineIcon color="secondary" style={{ marginRight: 15 }} />
+                      </Tooltip>
+                      {me && me.email ? (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={isSendingEmail}
+                              onChange={e => onCheckboxChange(e, 1)}
+                            />
+                          }
+                          label={"Подписка по e-mail"}
+                        />
+                      ) : null}
+                      {me && me.phone ? (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={isSendingSms}
+                              onChange={e => onCheckboxChange(e, 2)}
+                            />
+                          }
+                          label={"Подписка по смс"}
+                        />
+                      ) : null}
+                    </>
+                  )}
+                </div>
+              </>
             )}
 
             <div className={classes.button}>

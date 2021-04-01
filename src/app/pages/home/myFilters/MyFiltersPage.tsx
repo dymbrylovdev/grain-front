@@ -162,9 +162,9 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
           onClick={() => history.push(`/${salePurchaseMode}/filters/edit/new`)}
           disabled={
             !myFilters ||
-            (!!me?.tariff_matrix.max_filters_count &&
+            (!!me?.tariff_matrix.tariff_limits.max_filters_count &&
               !!myFilters &&
-              me.tariff_matrix.max_filters_count - myFilters?.length <= 0)
+              me.tariff_matrix.tariff_limits.max_filters_count - myFilters?.length <= 0)
           }
         >
           {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
@@ -217,15 +217,15 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                 {
                   count:
                     !me?.tariff_matrix ||
-                    (!!me?.tariff_matrix && me.tariff_matrix.max_filters_count - filterCount <= 0)
+                    (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0)
                       ? "0"
-                      : me?.tariff_matrix?.max_filters_count - filterCount,
-                  word: declOfNum(me?.tariff_matrix?.max_filters_count - filterCount, [
+                      : me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount,
+                  word: declOfNum(me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount, [
                     "подписка",
                     "подписки",
                     "подписок",
                   ]),
-                  fullCount: me?.tariff_matrix?.max_filters_count,
+                  fullCount: me?.tariff_matrix?.tariff_limits.max_filters_count,
                 }
               )}
             </div>

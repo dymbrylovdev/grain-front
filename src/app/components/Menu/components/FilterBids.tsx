@@ -110,7 +110,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     initialValues: getInitialValues(currentFilter),
     onSubmit: values => {
       let params = { ...values };
-      params.name = values.name.trim();
+      params.name = values.name && values.name.trim();
       delete params.point_prices;
       params.cropId = cropId;
       params.bid_type = salePurchaseMode;
@@ -133,7 +133,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   const filterSubmit = () => {
     let params = { ...values };
-    params.name = values.name.trim();
+    params.name = values.name && values.name.trim();
     if (params.min_prepayment_amount === '100') params.max_payment_term = '';
     params.cropId = cropId;
     setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
@@ -359,8 +359,6 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               clearAction={formik.setFieldValue}
               handleSubmit={filterSubmit}
             />
-            {/* {index !== numberParams.length - 1 && <Divider />} */}
-            {/* <Divider /> */}
           </div>
         ))}
 
@@ -378,7 +376,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             createLoading ||
             (me?.tariff_matrix &&
               myFilters &&
-              me.tariff_matrix.max_filters_count - myFilters?.length <= 0)
+              me.tariff_matrix.tariff_limits.max_filters_count - myFilters?.length <= 0)
           }
           onPress={() => {
             if (!!currentFilter && currentFilter.name === formik.values.name) {

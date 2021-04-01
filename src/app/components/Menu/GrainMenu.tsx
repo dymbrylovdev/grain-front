@@ -4,10 +4,12 @@ import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Paper, useMediaQuery, makeStyles, Drawer } from "@material-ui/core";
 
+import { actions as tariffsActions } from "../../store/ducks/tariffs.duck";
 import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
 import { IAppState } from "../../store/rootDuck";
 
 import { LeftMenu } from ".";
+import UsersFilterMenu from "./UsersFilterMenu";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -48,6 +50,12 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   leftMenuOpen,
   salePurchaseMode,
   cropParams,
+
+  funnelStates,
+
+  tariffsTypes,
+  usersFilterTariff,
+  setUsersFilterTariff,
 }) => {
   const classes = useStyles();
   const isMinWidthQuery = useMediaQuery("(min-width:1025px)");
@@ -83,6 +91,16 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         setLeftMenuOpen={setLeftMenuOpen}
         enumParams={cropParams && cropParams.filter(item => item.type === "enum")}
       />
+
+      {/* {location.pathname === "/user-list" && (
+        <UsersFilterMenu
+          intl={intl}
+          funnelStates={funnelStates}
+          tariffsTypes={tariffsTypes}
+          usersFilterTariff={usersFilterTariff}
+          setUsersFilterTariff={setUsersFilterTariff}
+        />
+      )} */}
     </Wrapper>
   );
 };
@@ -93,8 +111,16 @@ const connector = connect(
     leftMenuOpen: state.leftMenu.leftMenuOpen,
     salePurchaseMode: state.leftMenu.salePurchaseMode,
     cropParams: state.crops2.cropParams,
+
+    funnelStates: state.funnelStates.funnelStates,
+
+    tariffsTypes: state.tariffs.tariffsTypes,
+    usersFilterTariff: state.tariffs.usersFilterTariff,
   }),
-  { ...leftMenuActions }
+  {
+    ...leftMenuActions,
+    setUsersFilterTariff: tariffsActions.setUsersFilterTariff,
+  }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;
 

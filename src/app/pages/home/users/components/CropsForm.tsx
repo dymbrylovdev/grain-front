@@ -124,9 +124,9 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
         values.tariff_period_id &&
         tariffs &&
         realSelectedTariff &&
-        values.crop_ids.length > realSelectedTariff.max_crops_count
+        values.crop_ids.length > realSelectedTariff.tariff_limits.max_crops_count
       ) {
-        newCropIds.splice(realSelectedTariff.max_crops_count);
+        newCropIds.splice(realSelectedTariff.tariff_limits.max_crops_count);
       }
       if (
         realSelectedTariff?.id &&
@@ -136,7 +136,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
         crops
       ) {
         newCropIds = Array.from(crops, x => x.id);
-        newCropIds.splice(realSelectedTariff.max_crops_count);
+        newCropIds.splice(realSelectedTariff.tariff_limits.max_crops_count);
       }
       if (realUser && values.tariff_id) {
         if (editMode === "profile") {
@@ -295,7 +295,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
             {!!crops &&
             !!realUser?.crops &&
             !!realUser?.tariff_matrix &&
-            realUser?.crops?.length < realUser?.tariff_matrix?.max_crops_count &&
+            realUser?.crops?.length < realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
             realUser?.crops?.length < crops.length ? (
               <div>{intl.formatMessage({ id: "TARIFFS.MORE_CROPS" })}</div>
             ) : (
@@ -306,7 +306,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
         {!!crops &&
           !!realUser?.crops &&
           !!realUser?.tariff_matrix &&
-          realUser?.crops?.length < realUser?.tariff_matrix?.max_crops_count &&
+          realUser?.crops?.length < realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
           realUser?.crops?.length < crops.length && (
             <div className={classes.textFieldContainer}>
               {!addingCrop ? (

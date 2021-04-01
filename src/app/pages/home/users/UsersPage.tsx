@@ -27,6 +27,7 @@ import { useSnackbar } from "notistack";
 import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as funnelStatesActions } from "../../../store/ducks/funnelStates.duck";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
+import { actions as tariffsActions } from "../../../store/ducks/tariffs.duck";
 
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
@@ -64,16 +65,27 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   createLoading,
   createSuccess,
   createError,
+
   clearDel,
   del,
   delLoading,
   delSuccess,
   delError,
+
   clearEdit,
   edit,
   editLoading,
   editSuccess,
   editError,
+
+  clearTariffsTypes,
+  fetchTariffsTypes,
+  tariffsTypes,
+  tariffsTypesLoading,
+  tariffsTypesSuccess,
+  tariffsTypesError,
+
+  usersFilterTariff,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -84,6 +96,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [isInfoOpen, setInfoOpen] = useState(false);
   const [infoText, setInfoText] = useState("");
   const [funnelStateEditId, setFunnelStateEditId] = useState(0);
+  const [tariffId, setTariffId] = useState<number | undefined>(undefined);
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -99,9 +112,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEdit();
     }
     if (editSuccess) {
-      fetch({ page, perPage });
+      fetch({ page, perPage, tariffId });
     }
-  }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage]);
+  }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage, tariffId]);
 
   useEffect(() => {
     if (delSuccess || delError) {
@@ -115,7 +128,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       );
       setAlertOpen(false);
       clearDel();
-      fetch({ page, perPage });
+      fetch({ page, perPage, tariffId });
       fetchFunnelStates();
     }
   }, [
@@ -128,11 +141,12 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     intl,
     page,
     perPage,
+    tariffId,
   ]);
 
   useEffect(() => {
-    fetch({ page, perPage });
-  }, [fetch, page, perPage]);
+    fetch({ page, perPage, tariffId });
+  }, [fetch, page, perPage, tariffId]);
 
   useEffect(() => {
     fetchFunnelStates();
@@ -142,7 +156,17 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetchMe();
   }, [fetchMe]);
 
-  if (error || meError || funnelStatesError) {
+  useEffect(() => {
+    fetchTariffsTypes();
+  }, [fetchTariffsTypes]);
+
+  useEffect(() => {
+    if (tariffsTypesSuccess) tariffsTypes.find(item => {
+      if (item.name === usersFilterTariff) setTariffId(item.id);
+    });
+  }, [tariffsTypes, tariffsTypesSuccess, usersFilterTariff]);
+
+  if (error || meError || funnelStatesError || tariffsTypesError) {
     setTimeout(() => {
       window.location.reload();
     }, 10000);
@@ -414,7 +438,8 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   total={total}
                   fetchRows={(page, perPage) =>
                     fetch({
-                      page, perPage
+                      page,
+                      perPage,
                     })
                   }
                 />
@@ -478,17 +503,31 @@ const connector = connect(
     delLoading: state.users.delLoading,
     delSuccess: state.users.delSuccess,
     delError: state.users.delError,
+
+    tariffsTypes: state.tariffs.tariffsTypes,
+    tariffsTypesLoading: state.tariffs.tariffsTypesLoading,
+    tariffsTypesSuccess: state.tariffs.tariffsTypesSuccess,
+    tariffsTypesError: state.tariffs.tariffsTypesError,
+
+    usersFilterTariff: state.tariffs.usersFilterTariff,
   }),
   {
     fetchMe: authActions.fetchRequest,
     fetch: usersActions.fetchRequest,
+
     fetchFunnelStates: funnelStatesActions.fetchRequest,
+
     clearCreate: usersActions.clearCreate,
     create: usersActions.createRequest,
+
     clearEdit: usersActions.clearEdit,
     edit: usersActions.editRequest,
+
     clearDel: usersActions.clearDel,
     del: usersActions.delRequest,
+
+    clearTariffsTypes: tariffsActions.clearTariffTypes,
+    fetchTariffsTypes: tariffsActions.tariffsTypesRequest,
   }
 );
 

@@ -1,24 +1,34 @@
 import { TRole } from "./users";
 export interface ITariff {
   id: number;
-  priority_places_bids_count: number;
-  priority_places_bids_on_mailing_count: number;
-  common_bids_count: number;
-  max_filters_count: number;
-  max_sms_count: number;
-  max_crops_count: number;
-  tariff_period: ITariffPeriod;
-  tariff_expired_at: Date;
+  is_default: boolean;
   price: number;
-  period: number;
-  role: any;
+  role: ITariffRole;
   tariff: ITariffType;
-  contact_view_limit: number;
+  tariff_limits: ITariffLimits
+  tariff_period: ITariffPeriod;
+  period: any;
 }
 
 export interface ITariffType {
   id: number;
   name: string;
+}
+
+export interface ITariffRole {
+  id: number;
+  name: string;
+}
+
+export interface ITariffLimits {
+  common_bids_count: number;
+  contact_view_limit: number;
+  id: number;
+  max_crops_count: number;
+  max_filters_count: number;
+  max_sms_count: number;
+  priority_places_bids_count: number;
+  priority_places_bids_on_mailing_count: number;
 }
 
 export interface ITariffPeriod {

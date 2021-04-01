@@ -76,7 +76,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     if (editFilterSuccess || editFilterError) {
       enqueueSnackbar(
         editFilterSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.EDIT_FILTER" })
+          ? intl.formatMessage({ id: "NOTISTACK.EDIT_DEAL_PARAMS" })
           : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editFilterError}`,
         {
           variant: editFilterSuccess ? "success" : "error",
@@ -137,6 +137,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       window.location.reload();
     }, 10000);
   }
+
+  console.log(deals)
 
   return (
     <Paper className={classes.paperWithTable} style={{ paddingTop: 16 }}>
