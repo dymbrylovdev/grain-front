@@ -1,6 +1,6 @@
 const {
   REACT_APP_API_DOMAIN = "grain15-api.me-interactive.net",
-  REACT_APP_GOOGLE_API_KEY = "c1170a31-17b7-4be1-8db7-e068998ee7cd",
+  REACT_APP_GOOGLE_API_KEY = "590dce10-c096-4079-bf75-8fe5e204f67c",
 } = process.env;
 
 const { protocol } = window.location;
