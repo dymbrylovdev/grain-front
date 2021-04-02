@@ -28,7 +28,7 @@ release-web:
     - docker tag $TEST_IMAGE $RELEASE_IMAGE
     - docker push $RELEASE_IMAGE
   only:
-    - "master"
+    - "1.7"
 
 deploy:
   stage: deploy
