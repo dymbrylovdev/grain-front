@@ -168,7 +168,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   // const [showTariffTable, setShowTariffTable] = useState(0);
 
   const goToTariffPurchase = () => {
-    history.push("/user/profile/tariffs/payment");
+    me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
+      ? history.push(`/user/profile/tariffs/payment/${userId}`)
+      : history.push(`/user/profile/tariffs/payment-form`);
   };
 
   const { values, resetForm, handleSubmit } = useFormik({

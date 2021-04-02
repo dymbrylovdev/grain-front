@@ -4,7 +4,7 @@ import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
 import { makeStyles } from "@material-ui/styles";
 import { connect, ConnectedProps } from "react-redux";
 import { Skeleton } from "@material-ui/lab";
-import { useHistory } from "react-router-dom";
+import { RouteComponentProps, useHistory } from "react-router-dom";
 
 import { TabPanel, a11yProps } from "../../../components/ui/Table/TabPanel";
 
@@ -14,6 +14,7 @@ import PaymentByCard from "./components/TariffForm/components/PaymentByCard";
 import { actions as tariffsActions } from "../../../store/ducks/tariffs.duck";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
 import { actions as trialActions } from "../../../store/ducks/trial.duck";
+import { actions as usersActions } from "../../../store/ducks/users.duck";
 
 import { IAppState } from "../../../store/rootDuck";
 
@@ -45,9 +46,16 @@ interface IProps {
   trial: any;
 }
 
-const PaymentPage: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
+const PaymentPage: React.FC<IProps &
+  TPropsFromRedux &
+  WrappedComponentProps &
+  RouteComponentProps<{ id: string }>> = ({
+  match: {
+    params: { id },
+  },
   intl,
   me,
+  match,
   loadingMe,
   selectedTariff,
   selectedDate,
@@ -56,9 +64,24 @@ const PaymentPage: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   fetchMe,
   merchant,
   trial,
+  user,
+  loadingUser,
+  errorUser,
+  fetchUser,
 }) => {
   const innerClasses = useStyles();
   const history = useHistory();
+
+  let editMode: "profile" | "create" | "edit" | "view" = "create";
+  if (match.url.indexOf("profile") !== -1) editMode = "profile";
+  if (match.url.indexOf("create") !== -1) editMode = "create";
+  if (match.url.indexOf("edit") !== -1) editMode = "edit";
+  if (match.url.indexOf("view") !== -1) editMode = "view";
+
+  let realUser: IUser | undefined = undefined;
+  if (editMode === "profile" && me) realUser = me;
+  if ((editMode === "edit" || editMode === "view") && user) realUser = user;
+  if (user) realUser = user;
 
   const [valueTabs, setValueTabs] = useState(0);
 
@@ -66,8 +89,12 @@ const PaymentPage: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     setValueTabs(newValue);
   };
 
+  console.log(editMode);
+  console.log(id);
+  console.log("USER", user);
+
   useEffect(() => {
-    if (!selectedTariff || !selectedDate) history.push("/user/profile/tariffs");
+    if (!selectedTariff || !selectedDate) history.push("/user/profile");
   }, [history, selectedDate, selectedTariff]);
 
   useEffect(() => {
@@ -77,6 +104,12 @@ const PaymentPage: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   useEffect(() => {
     fetchMe();
   }, [fetchMe]);
+
+  useEffect(() => {
+    me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
+      ? fetchUser({ id: +id })
+      : console.log("123");
+  }, [fetchUser, id, me]);
 
   useEffect(() => {
     return () => {
@@ -111,7 +144,7 @@ const PaymentPage: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       <TabPanel value={valueTabs} index={0}>
         <CashlessPayment
-          realUser={me}
+          realUser={realUser}
           selectedTariff={selectedTariff}
           selectedDate={selectedDate}
         />
@@ -120,7 +153,7 @@ const PaymentPage: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       {me && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && (
         <TabPanel value={valueTabs} index={1}>
           <PaymentByCard
-            realUser={me}
+            realUser={realUser}
             selectedTariff={selectedTariff}
             selectedDate={selectedDate}
             merchant={merchant}
@@ -146,12 +179,17 @@ const connector = connect(
     trialLoading: state.trial.loading,
     trialSuccess: state.trial.success,
     trialError: state.trial.error,
+
+    user: state.users.user,
+    loadingUser: state.users.byIdLoading,
+    errorUser: state.users.byIdError,
   }),
   {
     fetchMe: authActions.fetchRequest,
     fetchMerchant: tariffsActions.clearFondyCredentials,
     fetchTrial: trialActions.fetchRequest,
     clearSelectedTariff: tariffsActions.clearSelectedTariff,
+    fetchUser: usersActions.fetchByIdRequest,
   }
 );
 
