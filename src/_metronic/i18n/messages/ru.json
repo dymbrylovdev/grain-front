@@ -47,6 +47,8 @@
   "SUBMENU.GRAIN.CREATE_AD": "Добавить объявление",
   "SUBMENU.USER.LIST": "Список пользователей",
   "SUBMENU.USER.CREATE_USER": "Добавить пользователя",
+  "SUBMENU.USER.FILTERS.TARIFF": "Тариф",
+  "SUBMENU.USER.FILTERS.STATUS": "Статус",
   "SUBMENU.COMPANY.LIST": "Список компаний",
   "SUBMENU.COMPANY.CREATE": "Добавить компанию",
   "SUBMENU.PROFILE": "Мой профиль",

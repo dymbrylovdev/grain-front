@@ -27,6 +27,7 @@ import { useSnackbar } from "notistack";
 import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as funnelStatesActions } from "../../../store/ducks/funnelStates.duck";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
+import { actions as tariffActions } from "../../../store/ducks/tariffs.duck";
 
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
@@ -74,6 +75,11 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   editLoading,
   editSuccess,
   editError,
+
+  fetchTariffTypes,
+  tariffsTypesLoading,
+  tariffsTypesSuccess,
+  tariffsTypesError,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -142,7 +148,11 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetchMe();
   }, [fetchMe]);
 
-  if (error || meError || funnelStatesError) {
+  useEffect(() => {
+    fetchTariffTypes()
+  }, [fetchTariffTypes]);
+
+  if (error || meError || funnelStatesError || tariffsTypesError) {
     setTimeout(() => {
       window.location.reload();
     }, 10000);
@@ -478,6 +488,10 @@ const connector = connect(
     delLoading: state.users.delLoading,
     delSuccess: state.users.delSuccess,
     delError: state.users.delError,
+
+    tariffsTypesLoading: state.tariffs.tariffsTypesLoading,
+    tariffsTypesSuccess: state.tariffs.tariffsTypesSuccess,
+    tariffsTypesError: state.tariffs.tariffsTypesError
   }),
   {
     fetchMe: authActions.fetchRequest,
@@ -489,6 +503,7 @@ const connector = connect(
     edit: usersActions.editRequest,
     clearDel: usersActions.clearDel,
     del: usersActions.delRequest,
+    fetchTariffTypes: tariffActions.tariffsTypesRequest
   }
 );
 

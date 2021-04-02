@@ -15,9 +15,17 @@ export const editTariffPeriod = (id: number, data: ITariffToRequest) => {
   return axios.put(`${TARIFF_URL}_period/${id}`, data);
 };
 
+export const editTariffLimits = (id: number, data: ITariffToRequest) => {
+  return axios.put(`${TARIFF_URL}_limits/${id}`, data);
+};
+
 export const getTariffsProlongations = (id: number) => {
   return axios.get(`${TARIFF_URL}_prolongation/${id}`);
 };
+
+export const getTariffsTypes = () => {
+  return axios.get(`${TARIFF_URL}_types`);
+}
 
 export const getFondyCredentials = () => {
   return axios.get("/api/fondy/credentials");
