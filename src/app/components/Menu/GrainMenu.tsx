@@ -85,9 +85,9 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         enumParams={cropParams && cropParams.filter(item => item.type === "enum")}
       />
 
-      {location.pathname === "/user-list" && (
+      {/* {location.pathname === "/user-list" && (
         <UsersFilterMenu intl={intl} />
-      )}
+      )} */}
     </Wrapper>
   );
 };
@@ -98,6 +98,7 @@ const connector = connect(
     leftMenuOpen: state.leftMenu.leftMenuOpen,
     salePurchaseMode: state.leftMenu.salePurchaseMode,
     cropParams: state.crops2.cropParams,
+    funnelStates: state.funnelStates.funnelStates,
   }),
   { ...leftMenuActions }
 );
