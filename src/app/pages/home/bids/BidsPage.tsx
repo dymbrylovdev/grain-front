@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { compose } from "redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
@@ -211,7 +211,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [pricesModalOpen, setPricesModalOpen] = useState(false);
 
-  const fetchAll = () => {
+  const fetchAll = useCallback(() => {
     if (!!me) {
       if (["ROLE_ADMIN"].includes(me.roles[0]) && filter.minDate && filter.maxDate) {
         fetch(
@@ -227,48 +227,7 @@ const BidsPage: React.FC<TPropsFromRedux &
         fetch(+cropId, salePurchaseMode, page, perPage);
       }
     }
-  };
-
-  // const filterTitle =
-  // salePurchaseMode === "sale"
-  // ? !currentSaleFilters[cropId]
-  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
-  // : !currentSaleFilters[cropId]?.id
-  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
-  // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
-  // : salePurchaseMode === "purchase"
-  // ? !currentPurchaseFilters[cropId]
-  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
-  // : !currentPurchaseFilters[cropId]?.id
-  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
-  // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
-  // : "";
-
-  // const filterName =
-  // salePurchaseMode === "sale"
-  // ? currentSaleFilters[cropId] &&
-  // currentSaleFilters[cropId]?.id &&
-  // currentSaleFilters[cropId]?.name
-  // ? currentSaleFilters[cropId]?.name
-  // : ""
-  // : salePurchaseMode === "purchase"
-  // ? currentPurchaseFilters[cropId] &&
-  // currentPurchaseFilters[cropId]?.id &&
-  // currentPurchaseFilters[cropId]?.name
-  // ? currentPurchaseFilters[cropId]?.name
-  // : ""
-  // : "";
-
-  // const filterIconPath =
-  // salePurchaseMode === "sale"
-  // ? !currentSaleFilters[cropId]
-  // ? "/media/filter/filter.svg"
-  // : "/media/filter/filter_full.svg"
-  // : salePurchaseMode === "purchase"
-  // ? !currentPurchaseFilters[cropId]
-  // ? "/media/filter/filter.svg"
-  // : "/media/filter/filter_full.svg"
-  // : "";
+  }, [cropId, fetch, filter, me, page, perPage, salePurchaseMode]);
 
   const isHaveRules = (user: IUser, id: number) => {
     return accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id;
@@ -387,6 +346,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     perPage,
     salePurchaseMode,
     pointPrices,
+    fetchAll
   ]);
 
   useEffect(() => {
@@ -459,6 +419,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     salePurchaseMode,
     filter,
     pointPrices,
+    fetchAll
   ]);
 
   useEffect(() => {
