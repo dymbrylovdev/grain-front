@@ -77,9 +77,12 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   editError,
 
   fetchTariffTypes,
+  tariffsTypes,
   tariffsTypesLoading,
   tariffsTypesSuccess,
   tariffsTypesError,
+
+  usersFilterTariff,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -90,6 +93,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [isInfoOpen, setInfoOpen] = useState(false);
   const [infoText, setInfoText] = useState("");
   const [funnelStateEditId, setFunnelStateEditId] = useState(0);
+  const [tariffId, setTariffId] = useState<number | undefined>();
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -151,6 +155,12 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     fetchTariffTypes()
   }, [fetchTariffTypes]);
+
+  useEffect(() => {
+    if (tariffsTypesSuccess) tariffsTypes.find(item => {
+      if (item.name === usersFilterTariff) setTariffId(item.id);
+    });
+  }, [tariffsTypes, tariffsTypesSuccess, usersFilterTariff]);
 
   if (error || meError || funnelStatesError || tariffsTypesError) {
     setTimeout(() => {
@@ -491,7 +501,10 @@ const connector = connect(
 
     tariffsTypesLoading: state.tariffs.tariffsTypesLoading,
     tariffsTypesSuccess: state.tariffs.tariffsTypesSuccess,
-    tariffsTypesError: state.tariffs.tariffsTypesError
+    tariffsTypesError: state.tariffs.tariffsTypesError,
+
+    tariffsTypes: state.tariffs.tariffsTypes,
+    usersFilterTariff: state.tariffs.usersFilterTariff,
   }),
   {
     fetchMe: authActions.fetchRequest,

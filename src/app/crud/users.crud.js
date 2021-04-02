@@ -22,7 +22,7 @@ export function deleteUser(id) {
   return axios.delete(`${USER_URL}${id}`);
 }
 
-export function getUsers(page, perPage, roles = []) {
+export function getUsers(page, perPage, tariffId, funnelStateId, roles = []) {
   let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}`;
 
   if (roles.length) {
