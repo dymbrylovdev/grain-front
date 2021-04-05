@@ -70,9 +70,12 @@ const SEND_CODE_REQUEST = "auth/SEND_CODE_REQUEST";
 const SEND_CODE_SUCCESS = "auth/SEND_CODE_SUCCESS";
 const SEND_CODE_FAIL = "auth/SEND_CODE_FAIL";
 
+const SET_JWT_TOKEN = "auth/SET_AUTH_TOKEN";
+
 export interface IInitialState {
   user: IUser | undefined;
   authToken: string | undefined;
+  jwtToken: string | undefined;
   email: string | undefined;
   loading: boolean;
   success: boolean;
@@ -113,6 +116,7 @@ export interface IInitialState {
 const initialState: IInitialState = {
   user: undefined,
   authToken: undefined,
+  jwtToken: undefined,
   email: undefined,
   loading: false,
   success: false,
@@ -151,7 +155,7 @@ const initialState: IInitialState = {
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
-  { storage, key: "auth", whitelist: ["user", "authToken"] },
+  { storage, key: "auth", whitelist: ["user", "authToken", "jwtToken"] },
   (state = initialState, action) => {
     switch (action.type) {
       case CLEAR_FETCH: {
@@ -413,6 +417,13 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         };
       }
 
+      case SET_JWT_TOKEN: {
+        return {
+          ...state,
+          jwtToken: action.payload
+        }
+      }
+
       default:
         return state;
     }
@@ -420,6 +431,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 );
 
 export const actions = {
+  setJwtToken: (payload: string) => createAction(SET_JWT_TOKEN, payload),
   clearFetch: () => createAction(CLEAR_FETCH),
   fetchRequest: () => createAction(FETCH_REQUEST),
   fetchSuccess: (payload: IServerResponse<IUser>) => createAction(FETCH_SUCCESS, payload),

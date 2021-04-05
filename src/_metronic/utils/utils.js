@@ -15,13 +15,17 @@ export function setupAxios(axios, store) {
   axios.defaults.baseURL = API_DOMAIN;
   axios.interceptors.request.use(
     config => {
-      const {
-        auth: { authToken },
-      } = store.getState();
 
+      const {auth: { authToken }} = store.getState();
       if (authToken) {
         config.headers.common["X-AUTH-TOKEN"] = authToken;
       }
+
+      const {auth: { jwtToken }} = store.getState();
+      if (jwtToken) {
+        config.headers.common["Authorization"] = `Bearer ${jwtToken}`;
+      }
+
       return config;
     },
     err => Promise.reject(err)
