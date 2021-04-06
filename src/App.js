@@ -9,8 +9,22 @@ import { PersistGate } from "redux-persist/integration/react";
 import { LastLocationProvider } from "react-router-last-location";
 import { Routes } from "./app/router/Routes";
 import { I18nProvider, LayoutSplashScreen, ThemeProvider} from "./_metronic";
+import { SnackbarProvider } from "notistack";
+import { makeStyles, createStyles } from "@material-ui/core";
+
+const useStyles = makeStyles(theme =>
+  createStyles({
+    success: {
+      backgroundColor: theme.palette.success.main,
+    },
+    error: {
+      backgroundColor: theme.palette.error.main,
+    },
+  })
+);
 
 export default function App({ store, persistor, basename }) {
+  const classes = useStyles();
   return (
     /* Provide Redux store */
     <Provider store={store}>
@@ -27,7 +41,19 @@ export default function App({ store, persistor, basename }) {
                 {/* Provide `react-intl` context synchronized with Redux state.  */}
                 <I18nProvider>
                   {/* Render routes with provided `Layout`. */}
-                  <Routes />
+                  <SnackbarProvider
+                    maxSnack={3}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "center",
+                    }}
+                    classes={{
+                      variantSuccess: classes.success,
+                      variantError: classes.error,
+                    }}
+                  >
+                    <Routes />
+                  </SnackbarProvider>
                 </I18nProvider>
               </ThemeProvider>
             </LastLocationProvider>

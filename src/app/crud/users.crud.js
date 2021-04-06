@@ -14,7 +14,7 @@ export function editUser(id, data) {
   return axios.put(`${USER_URL}${id}/edit`, data);
 }
 
-export function  editContactViewContact(data) {
+export function editContactViewContact(data) {
   return axios.put(`${USER_URL}me`, data);
 }
 

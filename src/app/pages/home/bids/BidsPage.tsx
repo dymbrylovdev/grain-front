@@ -152,14 +152,8 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   pointPrices,
 
-  setJwtToken
+  // setJwtToken
 }) => {
-
-  useEffect(() => {
-    let url = new URL(window.location.href);
-    let jwtToken = url.searchParams.get('bearer');
-    jwtToken && setJwtToken(jwtToken);
-  }, [])
 
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
   if (match.url.indexOf("best-bids") !== -1) bestAllMyMode = "best-bids";

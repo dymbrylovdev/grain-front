@@ -24,6 +24,7 @@ import {
   requestPassword,
   changePassword,
   sendCodeConfirm,
+  loginByJwt,
 } from "../../crud/auth.crud";
 
 const CLEAR_REG = "auth/CLEAR_REG";
@@ -70,12 +71,14 @@ const SEND_CODE_REQUEST = "auth/SEND_CODE_REQUEST";
 const SEND_CODE_SUCCESS = "auth/SEND_CODE_SUCCESS";
 const SEND_CODE_FAIL = "auth/SEND_CODE_FAIL";
 
-const SET_JWT_TOKEN = "auth/SET_AUTH_TOKEN";
+const CLEAR_LOGIN_BY_JWT = "auth/CLEAR_LOGIN_BY_JWT";
+const LOGIN_BY_JWT_REQUEST = "auth/LOGIN_BY_JWT_REQUEST";
+const LOGIN_BY_JWT_SUCCESS = "auth/LOGIN_BY_JWT_SUCCESS";
+const LOGIN_BY_JWT_FAIL = "auth/LOGIN_BY_JWT_FAIL";
 
 export interface IInitialState {
   user: IUser | undefined;
   authToken: string | undefined;
-  jwtToken: string | undefined;
   email: string | undefined;
   loading: boolean;
   success: boolean;
@@ -111,12 +114,15 @@ export interface IInitialState {
   sendCodeConfirmError: string | null;
 
   emailRequested: string;
+
+  loginByJwtLoading: boolean;
+  loginByJwtSuccess: boolean;
+  loginByJwtError: string | null;
 }
 
 const initialState: IInitialState = {
   user: undefined,
   authToken: undefined,
-  jwtToken: undefined,
   email: undefined,
   loading: false,
   success: false,
@@ -150,6 +156,10 @@ const initialState: IInitialState = {
   sendCodeConfirmLoading: false,
   sendCodeConfirmSuccess: false,
   sendCodeConfirmError: null,
+
+  loginByJwtLoading: false,
+  loginByJwtSuccess: false,
+  loginByJwtError: null,
 
   emailRequested: "",
 };
@@ -383,6 +393,44 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         };
       }
 
+      case CLEAR_LOGIN_BY_JWT: {
+        return {
+          ...state,
+          loginByJwtLoading: false,
+          loginByJwtSuccess: false,
+          loginByJwtError: null,
+        };
+      }
+
+      case LOGIN_BY_JWT_REQUEST: {
+        return {
+          ...state,
+          user: undefined,
+          authToken: undefined,
+          loginByJwtLoading: true,
+          loginByJwtSuccess: false,
+          loginByJwtError: null,
+        };
+      }
+
+      case LOGIN_BY_JWT_SUCCESS: {
+        return {
+          ...state,
+          user: action.payload.data,
+          authToken: action.payload.data.api_token,
+          loginByJwtLoading: false,
+          loginByJwtSuccess: true,
+        };
+      }
+
+      case LOGIN_BY_JWT_FAIL: {
+        return {
+          ...state,
+          loginByJwtLoading: false,
+          loginByJwtError: action.payload,
+        };
+      }
+
       case CLEAR_SEND_CODE: {
         return {
           ...state,
@@ -417,13 +465,6 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         };
       }
 
-      case SET_JWT_TOKEN: {
-        return {
-          ...state,
-          jwtToken: action.payload
-        }
-      }
-
       default:
         return state;
     }
@@ -431,7 +472,6 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 );
 
 export const actions = {
-  setJwtToken: (payload: string) => createAction(SET_JWT_TOKEN, payload),
   clearFetch: () => createAction(CLEAR_FETCH),
   fetchRequest: () => createAction(FETCH_REQUEST),
   fetchSuccess: (payload: IServerResponse<IUser>) => createAction(FETCH_SUCCESS, payload),
@@ -484,6 +524,13 @@ export const actions = {
   sendCodeRequest: (payload: { phone: string }) => createAction(SEND_CODE_REQUEST, payload),
   sendCodeSuccess: () => createAction(SEND_CODE_SUCCESS),
   sendCodeFail: (payload: string) => createAction(SEND_CODE_FAIL, payload),
+
+  clearLoginByJwt: () => createAction(CLEAR_LOGIN_BY_JWT),
+  loginByJwtRequest: (payload: { jwt: string }) =>
+    createAction(LOGIN_BY_JWT_REQUEST, payload),
+  loginByJwtSuccess: (payload: IServerResponse<ILoginSuccessData>) =>
+    createAction(LOGIN_BY_JWT_SUCCESS, payload),
+  loginByJwtFail: (payload: string) => createAction(LOGIN_BY_JWT_FAIL, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -574,6 +621,17 @@ function* sendCodeConfigrmSaga({ payload }: { payload: { phone: string } }) {
   }
 }
 
+function* loginByJwtSaga({ payload }: { payload: { jwt: string } }) {
+  try {
+    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() =>
+      loginByJwt(payload.jwt)
+    );
+    yield put(actions.loginByJwtSuccess(data));
+  } catch (e) {
+    yield put(actions.loginByJwtFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
@@ -594,5 +652,9 @@ export function* saga() {
   yield takeLatest<ReturnType<typeof actions.sendCodeRequest>>(
     SEND_CODE_REQUEST,
     sendCodeConfigrmSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.loginByJwtRequest>>(
+    LOGIN_BY_JWT_REQUEST,
+    loginByJwtSaga
   );
 }
