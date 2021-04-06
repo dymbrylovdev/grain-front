@@ -151,8 +151,6 @@ const BidsPage: React.FC<TPropsFromRedux &
   setProfit,
 
   pointPrices,
-
-  // setJwtToken
 }) => {
 
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
@@ -678,7 +676,6 @@ const connector = connect(
   }),
   {
     fetchMe: authActions.fetchRequest,
-    setJwtToken: authActions.setJwtToken,
 
     fetch: bidsActions.fetchRequest,
     fetchBestBids: bidsActions.fetchBestRequest,
