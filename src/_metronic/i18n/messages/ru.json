@@ -68,6 +68,9 @@
   "SUBMENU.TARIFFS.PREMIUM": "Перейти на премиум",
   "SUBMENU.TARIFFS.BUSINESS": "Перейти на бизнес",
   "SUBMENU.PROFILE.CROPS": "Изменить культуры",
+  "SUBMENU.USER.FILTERS.ROLE": "Роль",
+  "SUBMENU.USER.FILTERS.STATUS": "Статус",
+  "SUBMENU.USER.FILTERS.TARIFF": "Тариф",
 
   "SUBHEADER.PARTS.EDIT": "Редактирование",
   "SUBHEADER.PARTS.CREATE": "Добавление",
@@ -269,6 +272,7 @@
   "BIDSLIST.DIALOGS.LOADING_TEXT": "Удаление объявление",
   "BIDSLIST.BUTTON.CREATE_BID": "Добавить объявление",
   "BIDSLIST.BUTTON.EDIT_BID": "Сохранить объявление",
+  "BIDLIST.BUTTON.DOWNLOAD": "Скачать",
   "BIDLIST.FILTER.STATUS.EMPTY": "Параметры фильтра объявлений не заданы.",
   "BIDLIST.FILTER.STATUS.FULL": "Заданы параметры фильтрации. Вы можете просмотреть или изменить их по кнопке 'Настроить фильтр'",
   "BIDLIST.FILTER.STATUS.WITH_NAME": "Применен фильтр:",

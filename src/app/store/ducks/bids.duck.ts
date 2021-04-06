@@ -23,6 +23,7 @@ import {
   createBid,
   editBid,
   deleteBid,
+  getBidsXlsUrl,
 } from "../../crud/bids.crud";
 import persistReducer, { PersistPartial } from "redux-persist/es/persistReducer";
 import { ILocation } from "../../interfaces/locations";
@@ -70,6 +71,10 @@ const SET_OPEN_INFO_ALERT = "bids/SET_OPEN_INFO_ALERT";
 
 const SET_FILTER = "bids/SET_FILTER";
 
+const CLEAR_BIDS_XLS_URL = "bids/CLEAR_BIDS_XLS_URL";
+const BIDS_XLS_URL_REQUEST = "bids/BIDS_XLS_URL_REQUEST";
+const BIDS_XLS_URL_SUCCESS = "bids/BIDS_XLS_URL_SUCCESS";
+const BIDS_XLS_URL_FAIL = "bids/BIDS_XLS_URL_FAIL";
 export interface IInitialState {
   page: number;
   per_page: number;
@@ -118,6 +123,11 @@ export interface IInitialState {
 
   profit: IProfit;
   openInfoAlert: boolean;
+
+  bidsXlsUrl: string | undefined;
+  bidsXlsLoading: boolean;
+  bidsXlsSuccess: boolean;
+  bidsXlsError: string | null;
 }
 
 const initialState: IInitialState = {
@@ -168,6 +178,11 @@ const initialState: IInitialState = {
 
   profit: { bid_id: 0, value: 0 },
   openInfoAlert: true,
+
+  bidsXlsUrl: undefined,
+  bidsXlsLoading: false,
+  bidsXlsSuccess: false,
+  bidsXlsError: null,
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
@@ -402,6 +417,42 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         };
       }
 
+      case CLEAR_BIDS_XLS_URL: {
+        return {
+          ...state,
+          bidsXlsUrl: undefined,
+          bidsXlsLoading: false,
+          bidsXlsSuccess: false,
+          bidsXlsError: null,
+        }
+      }
+
+      case BIDS_XLS_URL_REQUEST: {
+        return {
+          ...state,
+          bidsXlsLoading: true,
+          bidsXlsSuccess: false,
+          bidsXlsError: null,
+        }
+      }
+
+      case BIDS_XLS_URL_SUCCESS: {
+        return {
+          ...state,
+          bidsXlsUrl: action.payload,
+          bidsXlsLoading: false,
+          bidsXlsSuccess: true,
+        }
+      }
+
+      case BIDS_XLS_URL_FAIL: {
+        return {
+          ...state,
+          bidsXlsLoading: false,
+          bidsXlsError: action.payload,
+        }
+      }
+
       default:
         return state;
     }
@@ -473,6 +524,11 @@ export const actions = {
     createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
   setFilter: (filter: { minDate?: Date | null; maxDate?: Date | null; authorId?: string }) =>
     createAction(SET_FILTER, { filter }),
+
+  clearBidsXlsUrl: () => createAction(CLEAR_BIDS_XLS_URL),
+  bidsXlsUrlRequest: (id: number, type?: string, minDate?: string, maxDate?: string, authorId?: string) => createAction(BIDS_XLS_URL_REQUEST, { id, type, minDate, maxDate, authorId }),
+  bidsXlsUrlSuccess: (payload: string) => createAction(BIDS_XLS_URL_SUCCESS, payload),
+  bidsXlsUrlFail: (payload: string) => createAction(BIDS_XLS_URL_FAIL, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -599,6 +655,15 @@ function* delSaga({ payload }: { payload: { id: number } }) {
   }
 }
 
+function* bidsXlsUrlSaga({ payload }: { payload: { id: number, type?: string, minDate?: string, maxDate?: string, authorId?: string } }) {
+  try {
+    const { data }: { data: string } = yield call(() => getBidsXlsUrl(payload.id, payload?.type, payload?.minDate, payload?.maxDate, payload?.authorId));
+    yield put(actions.bidsXlsUrlSuccess(data));
+  } catch (e) {
+    yield put(actions.bidsXlsUrlFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.fetchMyRequest>>(FETCH_MY_REQUEST, fetchMySaga);
@@ -608,4 +673,5 @@ export function* saga() {
   yield takeLatest<ReturnType<typeof actions.createRequest>>(CREATE_REQUEST, createSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
   yield takeLatest<ReturnType<typeof actions.delRequest>>(DEL_REQUEST, delSaga);
+  yield takeLatest<ReturnType<typeof actions.bidsXlsUrlRequest>>(BIDS_XLS_URL_REQUEST, bidsXlsUrlSaga);
 }

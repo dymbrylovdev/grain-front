@@ -4,13 +4,14 @@ import { put, takeLatest, call } from "redux-saga/effects";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
-import { ITariff, ITariffToRequest } from "../../interfaces/tariffs";
+import { ITariff, ITariffToRequest, ITariffType } from "../../interfaces/tariffs";
 import {
   getTariffs,
   editTariff,
   editTariffPeriod,
   editTariffLimits,
   getTariffsProlongations,
+  getTariffsTypes,
   getFondyCredentials,
 } from "../../crud/tariffs.crud";
 
@@ -33,10 +34,19 @@ const EDIT_PERIOD_REQUEST = "tariffs/EDIT_PERIOD_REQUEST";
 const EDIT_PERIOD_SUCCESS = "tariffs/EDIT_PERIOD_SUCCESS";
 const EDIT_PERIOD_FAIL = "tariffs/EDIT_PERIOD_FAIL";
 
+const CLEAR_TARIFFS_TYPES = "tariffs/CLEAR_TARIFFS_TYPES";
+const TARIFFS_TYPES_REQUEST = "tariffs/TARIFFS_TYPES_REQUEST";
+const TARIFFS_TYPES_SUCCESS = "tariffs/TARIFFS_TYPES_SUCCESS";
+const TARIFFS_TYPES_FAIL = "tariffs/TARIFFS_TYPES_FAIL";
+
+const USERS_FILTER_SET_TARIFF = "users/USERS_FILTER_SET_TARIFF";
+const USERS_FILTER_SET_TARIFF_ID = "users/USERS_FILTER_SET_TARIFF_ID";
+
 const CLEAR_EDIT_LIMITS = "tariffs/CLEAR_EDIT_LIMITS";
 const EDIT_LIMITS_REQUEST = "tariffs/EDIT_LIMITS_REQUEST";
 const EDIT_LIMITS_SUCCESS = "tariffs/EDIT_LIMITS_SUCCESS";
 const EDIT_LIMITS_FAIL = "tariff/EDIT_LIMITS_FAIL";
+
 
 const CLEAR_FONDY_CREDENTIALS = "tariffs/CLEAR_FONDY_CREDENTIALS";
 const FONDY_CREDENTIALS_REQUEST = "tariffs/FONDY_CREDENTIALS_REQUEST";
@@ -59,6 +69,14 @@ export interface IInitialState {
   editPeriodLoading: boolean;
   editPeriodSuccess: boolean;
   editPeriodError: string | null;
+
+  tariffsTypes: any | undefined;
+  tariffsTypesLoading: boolean;
+  tariffsTypesSuccess: boolean;
+  tariffsTypesError: string | null;
+
+  usersFilterTariff: string;
+  usersFilterTariffId: number | undefined;
 
   editLimitsLoading: boolean;
   editLimitsSuccess: boolean;
@@ -87,6 +105,14 @@ const initialState: IInitialState = {
   editPeriodLoading: false,
   editPeriodSuccess: false,
   editPeriodError: null,
+
+  tariffsTypes: undefined,
+  tariffsTypesLoading: false,
+  tariffsTypesSuccess: false,
+  tariffsTypesError: null,
+
+  usersFilterTariff: "",
+  usersFilterTariffId: undefined,
 
   editLimitsLoading: false,
   editLimitsSuccess: false,
@@ -244,6 +270,59 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       };
     }
 
+    case CLEAR_TARIFFS_TYPES: {
+      return {
+        ...state,
+        tariffsTypes: undefined,
+        tariffsTypesLoading: false,
+        tariffsTypesSuccess: false,
+        tariffsTypesError: null,
+      };
+    }
+
+    case TARIFFS_TYPES_REQUEST: {
+      return {
+        ...state,
+        tariffsTypesLoading: true,
+        tariffsTypesSuccess: false,
+        tariffsTypesError: null,
+      };
+    }
+
+    case TARIFFS_TYPES_SUCCESS: {
+      return {
+        ...state,
+        tariffsTypes: action.payload.response.data,
+        tariffsTypesLoading: false,
+        tariffsTypesSuccess: true,
+      };
+    }
+
+    case TARIFFS_TYPES_FAIL: {
+      return {
+        ...state,
+        tariffsTypesLoading: false,
+        tariffsTypesError: action.payload.error,
+      };
+    }
+
+    case USERS_FILTER_SET_TARIFF: {
+      return {
+        ...state,
+        usersFilterTariff: action.payload
+      }
+    }
+
+    case CLEAR_FONDY_CREDENTIALS: {
+      return {
+        ...state,
+        merchant_id: undefined,
+        fondyCredentialsLoading: false,
+        fondyCredentialsSuccess: false,
+        fondyCredentialsError: null,
+      };
+    }
+
     case CLEAR_EDIT_LIMITS: {
       return {
         ...state,
@@ -292,16 +371,6 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
         ...state,
         editLimitsLoading: false,
         editLimitsError: action.payload.error,
-      };
-    }
-
-    case CLEAR_FONDY_CREDENTIALS: {
-      return {
-        ...state,
-        merchant_id: undefined,
-        fondyCredentialsLoading: false,
-        fondyCredentialsSuccess: false,
-        fondyCredentialsError: null,
       };
     }
 
@@ -364,6 +433,14 @@ export const actions = {
     createAction(EDIT_PERIOD_SUCCESS, { response }),
   editPeriodFail: (error: string) => createAction(EDIT_PERIOD_FAIL, { error }),
 
+  clearTariffTypes: () => createAction(CLEAR_TARIFFS_TYPES),
+  tariffsTypesRequest: () => createAction(TARIFFS_TYPES_REQUEST),
+  tariffsTypesSuccess: (response: IServerResponse<ITariffType>) =>
+    createAction(TARIFFS_TYPES_SUCCESS, { response }),
+  tariffsTypesFail: (error: string) => createAction(TARIFFS_TYPES_FAIL, { error }),
+
+  setUsersFilterTariff: (payload: string) => createAction(USERS_FILTER_SET_TARIFF, payload),
+
   clearEditLimits: () => createAction(CLEAR_EDIT_LIMITS),
   editLimitsRequest: (id: number, data: ITariffToRequest) =>
     createAction(EDIT_LIMITS_REQUEST, { id, data }),
@@ -413,6 +490,15 @@ function* editPeriodSaga({ payload }: { payload: { id: number; data: ITariffToRe
   }
 }
 
+function* getTariffsTypesSaga() {
+  try {
+    const { data }: { data: IServerResponse<ITariffType> } = yield call(() => getTariffsTypes());
+    yield put(actions.tariffsTypesSuccess(data));
+  } catch (e) {
+    yield put(actions.tariffsTypesFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
 function* editLimitsSaga({ payload }: { payload: { id: number; data: ITariffToRequest } }) {
   try {
     const { data }: { data: IServerResponse<ITariff> } = yield call(() =>
@@ -440,6 +526,7 @@ export function* saga() {
     EDIT_PERIOD_REQUEST,
     editPeriodSaga
   );
+  yield takeLatest<ReturnType<typeof actions.tariffsTypesRequest>>(TARIFFS_TYPES_REQUEST, getTariffsTypesSaga);
   yield takeLatest<ReturnType<typeof actions.editLimitsRequest>>(
     EDIT_LIMITS_REQUEST,
     editLimitsSaga
