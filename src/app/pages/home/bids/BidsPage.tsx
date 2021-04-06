@@ -238,7 +238,7 @@ const BidsPage: React.FC<TPropsFromRedux &
         fetch(+cropId, salePurchaseMode, page, perPage);
       }
     }
-  };
+  }, [cropId, fetch, filter, me, page, perPage, salePurchaseMode]);
 
   const isHaveRules = (user: IUser, id: number) => {
     return accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id;
