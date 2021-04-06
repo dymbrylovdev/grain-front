@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { compose } from "redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
@@ -161,6 +161,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   bidsXlsUrlSuccess,
   bidsXlsUrlError,
 }) => {
+
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
   if (match.url.indexOf("best-bids") !== -1) bestAllMyMode = "best-bids";
   if (match.url.indexOf("all-bids") !== -1) bestAllMyMode = "all-bids";
@@ -221,7 +222,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [pricesModalOpen, setPricesModalOpen] = useState(false);
 
-  const fetchAll = () => {
+  const fetchAll = useCallback(() => {
     if (!!me) {
       if (["ROLE_ADMIN"].includes(me.roles[0]) && filter.minDate && filter.maxDate) {
         fetch(
@@ -356,6 +357,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     perPage,
     salePurchaseMode,
     pointPrices,
+    fetchAll
   ]);
 
   useEffect(() => {
@@ -428,6 +430,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     salePurchaseMode,
     filter,
     pointPrices,
+    fetchAll
   ]);
 
   useEffect(() => {

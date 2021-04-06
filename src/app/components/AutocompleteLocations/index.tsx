@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Autocomplete as MaterialAutocomplete } from "@material-ui/lab";
 import { TextField, CircularProgress, IconButton, makeStyles } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
@@ -22,7 +22,6 @@ interface IProps {
   label: string;
   inputClassName: any;
   editable: boolean;
-  loading: boolean;
   inputError: boolean;
   inputHelperText: any;
   disable: boolean;
@@ -32,6 +31,7 @@ interface IProps {
   setSelectedLocation: (location: any) => {} | void;
   prompterRunning?: boolean;
   prompterStep?: number;
+  loading?: boolean;
 }
 
 const Autocomplete: React.FC<IProps> = ({
@@ -39,10 +39,10 @@ const Autocomplete: React.FC<IProps> = ({
   options,
   inputValue,
   label,
+  loading,
   inputClassName,
   handleBlur,
   editable,
-  loading,
   inputError,
   inputHelperText,
   fetchLocations,
@@ -54,6 +54,7 @@ const Autocomplete: React.FC<IProps> = ({
 }) => {
   const [editableLocation, setEditableLocation] = useState(editable);
   const [location, setLocation] = useState<string>("");
+  const [loadingLocal, setLoadingLocal] = useState(loading);
   const innerClasses = innerStyles();
 
   useEffect(() => {
@@ -61,12 +62,28 @@ const Autocomplete: React.FC<IProps> = ({
   }, [clearLocations]);
 
   useEffect(() => {
-    fetchLocations(location);
-  }, [fetchLocations, location]);
+    if (location.length > 5) {
+      console.log(location);
 
-  // useEffect(() => {
-  //   setLocation(defaultValue.text);
-  // }, [setLocation, defaultValue.text]);
+      const loadingDelay = setTimeout(() => {
+        setLoadingLocal(true);
+      }, 500)
+
+      const fetchDelay = setTimeout(() => {
+        console.log('fetch for:', location);
+        fetchLocations(location);
+        setLoadingLocal(false);
+      }, 8000)
+
+      return () => {
+        clearTimeout(fetchDelay);
+        clearTimeout(loadingDelay);
+      }
+
+    } else {
+      setLoadingLocal(false);
+    }
+  }, [fetchLocations, location]);
 
   useEffect(() => {
     if (inputValue.text === "") setEditableLocation(true);
@@ -78,9 +95,9 @@ const Autocomplete: React.FC<IProps> = ({
       id={`autocomplete${id}`}
       noOptionsText="Введите место"
       options={options}
-      loading={loading}
+      loading={loading || loadingLocal}
       getOptionLabel={option => option.text}
-      onChange={(e: any, val: any) => {
+      onChange={(_: any, val: any) => {
         if (val) {
           setSelectedLocation(val);
           setEditableLocation(false);
@@ -117,7 +134,7 @@ const Autocomplete: React.FC<IProps> = ({
               ...params.InputProps,
               endAdornment: (
                 <>
-                  {loading && <CircularProgress color="inherit" size={20} />}
+                  {(loading || loadingLocal) && <CircularProgress color="inherit" size={20} />}
                   {!editableLocation && !disable && (
                     <IconButton
                       onClick={() => {

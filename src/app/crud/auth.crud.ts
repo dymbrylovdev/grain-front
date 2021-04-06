@@ -45,3 +45,7 @@ export const changePassword = (data: IChangePasswordData) => {
 export const sendCodeConfirm = (phone: string) => {
   return axios.post(`${SEND_CODE}?phone=${phone}`);
 };
+
+export const loginByJwt = (jwt: string) => {
+  return axios.get(`api/_p/login_from_link?token=${jwt}`);
+};

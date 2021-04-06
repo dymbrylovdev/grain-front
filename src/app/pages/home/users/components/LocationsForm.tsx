@@ -282,7 +282,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       <AutocompleteLocations
                         id={item.id.toString()}
                         options={googleLocations || []}
-                        loading={false}
                         inputValue={item}
                         label={
                           accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
@@ -370,7 +369,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
               <div className={classes.textField}>
                 <AutocompleteLocations
                   options={googleLocations || []}
-                  loading={false}
                   inputValue={autoLocation}
                   label={
                     accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])

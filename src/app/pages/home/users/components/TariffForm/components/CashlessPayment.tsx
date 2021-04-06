@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 
 interface IProps {
   intl: IntlShape;
-  realUser: IUser;
+  realUser: IUser | undefined;
   selectedTariff: ITariff | undefined;
   selectedDate: Date;
 }
@@ -51,6 +51,8 @@ const CashlessPayment: React.FC<IProps & WrappedComponentProps> = ({
   selectedDate,
 }) => {
   const innerClasses = useStyles();
+
+  console.log(realUser);
 
   return (
     <div>

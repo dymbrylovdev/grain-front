@@ -109,7 +109,7 @@ const BidTable: React.FC<IProps> = ({
           <Table aria-label="simple table">
             <TableHead>
               <TableRow className={classes.mobileHide}>
-                {clientWidth > 1024 && (
+                {(clientWidth > 1024 && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"])) && (
                   <TopTableCell>
                     <FormattedMessage id="BIDSLIST.TABLE.ID" />
                   </TopTableCell>
@@ -204,7 +204,7 @@ const BidTable: React.FC<IProps> = ({
                     }`,
                   }}
                 >
-                  {clientWidth > 1024 && <TableCell>{bid.id}</TableCell>}
+                  {(clientWidth > 1024 && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"])) && <TableCell>{bid.id}</TableCell>}
                   {bestAllMyMode === "my-bids" && (
                     <TableCell>
                       {crops?.find(crop => crop.id === bid.crop_id)?.name || ""}
