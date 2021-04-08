@@ -494,7 +494,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                     color="primary"
                     onClick={() => exportFileToXlsx()}
                   >
-                    Экспорт в Excel
+                    {intl.formatMessage({ id: "BID.EXPORT.EXCEL" })}
                   </Button>
                 )}
               </div>

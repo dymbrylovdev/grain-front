@@ -329,6 +329,7 @@
   "BID.CREATE.WITH.DELIVIRY": "(с учётом доставки)",
   "BID.CREATE.WITHOUT.DELIVIRY": "(без учёта доставки)",
   "BID.CREATE.TOOLIP.TEXT": "На вашу электронную почту будет приходить автоматическая рассылка с лучшими предложениями на данное объявление",
+  "BID.EXPORT.EXCEL": "Экспорт в Excel",
 
   "USERDOC.BUTTON.SAVE": "Сохранить",
   "USERDOC.BUTTON.CREATE": "Создать",
@@ -563,7 +564,7 @@
   "TARIFFS.PAYMENT.SET_PREMIUM": "Установить премиум",
   "TARIFFS.PAYMENT.GET_BUSINESS": "Перейти на бизнес",
   "TARIFFS.PAYMENT.SET_BUSINESS": "Установить бизнес",
-  "TARIFFS.PAYMENT.FORM.TITLE": "Данные для оплаты:",
+  "TARIFFS.PAYMENT.FORM.TITLE": "Счёт на оплату",
   "TARIFFS.PAYMENT.COST": "Сумма платежа:",
   "TARIFFS.PAYMENT.REQUISITES": "Реквизиты для оплаты:",
   "TARIFFS.PAYMENT.PURPOSE": "Назначение платежа:",
