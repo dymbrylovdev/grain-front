@@ -80,6 +80,8 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     }, 10000);
   }
 
+  // console.log("tariffs: ", tariffs);
+
   return (
     <Paper className={classes.paperWithTable}>
       <LayoutSubheader title={intl.formatMessage({ id: "TARIFFS.MAIN_TITLE" })} />
@@ -238,9 +240,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
               <TableRow>
                 <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT12" })}</TableCell>
-                {/* <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-                </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
                     useInnerStyles={useInnerStyles}
@@ -250,9 +249,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realCell={{ id: 2, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
-                {/* <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
-                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-                </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
                     useInnerStyles={useInnerStyles}

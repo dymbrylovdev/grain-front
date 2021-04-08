@@ -65,11 +65,13 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   createLoading,
   createSuccess,
   createError,
+
   clearDel,
   del,
   delLoading,
   delSuccess,
   delError,
+
   clearEdit,
   edit,
   editLoading,
@@ -95,6 +97,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [funnelStateEditId, setFunnelStateEditId] = useState(0);
   const [tariffId, setTariffId] = useState<number | undefined>();
 
+
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     if (editSuccess || editError) {
@@ -109,9 +112,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEdit();
     }
     if (editSuccess) {
-      fetch({ page, perPage });
+      fetch({ page, perPage, tariffId });
     }
-  }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage]);
+  }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage, tariffId]);
 
   useEffect(() => {
     if (delSuccess || delError) {
@@ -125,7 +128,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       );
       setAlertOpen(false);
       clearDel();
-      fetch({ page, perPage });
+      fetch({ page, perPage, tariffId });
       fetchFunnelStates();
     }
   }, [
@@ -138,6 +141,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     intl,
     page,
     perPage,
+    tariffId,
   ]);
 
   useEffect(() => {
@@ -159,11 +163,13 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   //TODO: Убрать сравнение по строкам
 
   useEffect(() => {
-    if (tariffsTypesSuccess) tariffsTypes.find(item => {
-      if (usersFilterTariff === "Все") setTariffId(undefined);
-      if (item.name === usersFilterTariff) setTariffId(item.id);
-    });
-  }, [tariffsTypes, tariffsTypesSuccess, usersFilterTariff]);
+    if (tariffsTypesSuccess) {
+      tariffsTypes.find(item => {
+        if (usersFilterTariff === "Все") setTariffId(undefined);
+        if (item.name === usersFilterTariff) setTariffId(item.id);
+      })
+    }
+  }, [usersFilterTariff, tariffId]);
 
   if (error || meError || funnelStatesError || tariffsTypesError) {
     setTimeout(() => {
@@ -437,7 +443,8 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   total={total}
                   fetchRows={({page, perPage}) =>
                     fetch({
-                      page, perPage
+                      page,
+                      perPage,
                     })
                   }
                 />
@@ -502,23 +509,29 @@ const connector = connect(
     delSuccess: state.users.delSuccess,
     delError: state.users.delError,
 
+
+    tariffsTypes: state.tariffs.tariffsTypes,
     tariffsTypesLoading: state.tariffs.tariffsTypesLoading,
     tariffsTypesSuccess: state.tariffs.tariffsTypesSuccess,
     tariffsTypesError: state.tariffs.tariffsTypesError,
 
-    tariffsTypes: state.tariffs.tariffsTypes,
     usersFilterTariff: state.tariffs.usersFilterTariff,
   }),
   {
     fetchMe: authActions.fetchRequest,
     fetch: usersActions.fetchRequest,
+
     fetchFunnelStates: funnelStatesActions.fetchRequest,
+
     clearCreate: usersActions.clearCreate,
     create: usersActions.createRequest,
+
     clearEdit: usersActions.clearEdit,
     edit: usersActions.editRequest,
+
     clearDel: usersActions.clearDel,
     del: usersActions.delRequest,
+
     fetchTariffTypes: tariffActions.tariffsTypesRequest
   }
 );

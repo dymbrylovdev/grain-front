@@ -13,6 +13,7 @@ import {
   FormControlLabel,
   Checkbox,
   Divider,
+  Tooltip,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
@@ -22,6 +23,7 @@ import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import { YMaps, Map } from "react-yandex-maps";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
@@ -343,6 +345,10 @@ const BidForm: React.FC<IProps> = ({
 
   const linkToContact = () => {
     let contactViewCount = me?.contact_view_count;
+    //@ts-ignore
+    if (bid && bid.author.id === me.id) {
+      history.push("/user/profile");
+    }
     //@ts-ignore
     if (contactViewCount > 0 || ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
       history.push(
@@ -670,16 +676,20 @@ const BidForm: React.FC<IProps> = ({
               </div>
 
               {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
-                <Alert
-                  className={classes.infoAlert}
-                  severity="warning"
-                  color="error"
-                  style={{ marginTop: 8, marginBottom: 8 }}
-                >
-                  {`Сегодня вам доступен просмотр ${
-                    me?.contact_view_count
-                  } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
-                </Alert>
+                <>
+                  {bid?.author.id === me.id ? null : (
+                    <Alert
+                      className={classes.infoAlert}
+                      severity="warning"
+                      color="error"
+                      style={{ marginTop: 8, marginBottom: 8 }}
+                    >
+                      {`Сегодня вам доступен просмотр ${
+                        me?.contact_view_count
+                      } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
+                    </Alert>
+                  )}
+                </>
               )}
 
               {!!bid.vendor.company && (
@@ -1579,6 +1589,7 @@ const BidForm: React.FC<IProps> = ({
                 </ButtonWithLoader>
               </div>
             ) : (
+
               <div className={classes.button}>
                 {!!me?.tariff_matrix &&
                 me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (

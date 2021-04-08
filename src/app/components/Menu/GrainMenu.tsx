@@ -4,6 +4,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Paper, useMediaQuery, makeStyles, Drawer } from "@material-ui/core";
 
+import { actions as tariffsActions } from "../../store/ducks/tariffs.duck";
 import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
 import { actions as tariffActions } from "../../store/ducks/tariffs.duck";
 import { IAppState } from "../../store/rootDuck";
@@ -50,7 +51,9 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   leftMenuOpen,
   salePurchaseMode,
   cropParams,
+
   funnelStates,
+
   tariffsTypes,
   usersFilterTariff,
   setUsersFilterTariff,
@@ -109,11 +112,13 @@ const connector = connect(
     leftMenuOpen: state.leftMenu.leftMenuOpen,
     salePurchaseMode: state.leftMenu.salePurchaseMode,
     cropParams: state.crops2.cropParams,
+
     funnelStates: state.funnelStates.funnelStates,
     tariffsTypes: state.tariffs.tariffsTypes,
     usersFilterTariff: state.tariffs.usersFilterTariff,
   }),
   { ...leftMenuActions, setUsersFilterTariff: tariffActions.setUsersFilterTariff }
+
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;
 

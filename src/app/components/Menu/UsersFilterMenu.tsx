@@ -18,6 +18,7 @@ interface IUsersFilterMenu {
 const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
   intl,
   funnelStates,
+
   tariffsTypes,
   usersFilterTariff,
   setUsersFilterTariff,

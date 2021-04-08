@@ -361,40 +361,42 @@ const BidTable: React.FC<IProps> = ({
                   )}
 
                   <TableCell align="right">
-                    <IconButton
-                      size="medium"
-                      color="primary"
-                      onClick={() => {
-                        let maxProfit = 0;
-                        if (bid?.point_prices && bid?.point_prices.length) {
-                          maxProfit = bid?.point_prices[0]?.profit;
-                          bid.point_prices.forEach(item => {
-                            if (item.profit && item.profit > maxProfit) {
-                              maxProfit = item.profit;
-                            }
+                    {bestAllMyMode !== "my-bids" && (
+                      <IconButton
+                        size="medium"
+                        color="primary"
+                        onClick={() => {
+                          let maxProfit = 0;
+                          if (bid?.point_prices && bid?.point_prices.length) {
+                            maxProfit = bid?.point_prices[0]?.profit;
+                            bid.point_prices.forEach(item => {
+                              if (item.profit && item.profit > maxProfit) {
+                                maxProfit = item.profit;
+                              }
+                            });
+                          }
+                          maxProfit = Math.round(maxProfit);
+                          setProfit({
+                            bid_id: bid.id,
+                            value: maxProfit || 0,
                           });
-                        }
-                        maxProfit = Math.round(maxProfit);
-                        setProfit({
-                          bid_id: bid.id,
-                          value: maxProfit || 0,
-                        });
-                        history.push(
-                          ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
-                            bestAllMyMode === "edit"
-                            ? `/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`
-                            : `/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`
-                        );
-                      }}
-                    >
-                      {user &&
-                      ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
-                      bestAllMyMode === "edit" ? (
-                        <EditIcon />
-                      ) : (
-                        <VisibilityIcon />
-                      )}
-                    </IconButton>
+                          history.push(
+                            ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
+                              bestAllMyMode === "edit"
+                              ? `/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`
+                              : `/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`
+                          );
+                        }}
+                      >
+                        {user &&
+                        ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
+                        bestAllMyMode === "edit" ? (
+                          <EditIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
+                    )}
                     {isHaveRules && isHaveRules(user, bid.vendor.id) && (
                       <>
                         <IconButton
