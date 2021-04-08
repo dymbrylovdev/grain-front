@@ -141,8 +141,8 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   ]);
 
   useEffect(() => {
-    fetch({ page, perPage });
-  }, [fetch, page, perPage]);
+    fetch({ page, perPage, tariffId });
+  }, [fetch, page, perPage, tariffId]);
 
   useEffect(() => {
     fetchFunnelStates();
@@ -156,8 +156,11 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetchTariffTypes()
   }, [fetchTariffTypes]);
 
+  //TODO: Убрать сравнение по строкам
+
   useEffect(() => {
     if (tariffsTypesSuccess) tariffsTypes.find(item => {
+      if (usersFilterTariff === "Все") setTariffId(undefined);
       if (item.name === usersFilterTariff) setTariffId(item.id);
     });
   }, [tariffsTypes, tariffsTypesSuccess, usersFilterTariff]);
@@ -432,7 +435,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   realPerPage={users.length}
                   perPage={perPage}
                   total={total}
-                  fetchRows={(page, perPage) =>
+                  fetchRows={({page, perPage}) =>
                     fetch({
                       page, perPage
                     })

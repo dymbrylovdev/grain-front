@@ -310,6 +310,9 @@ const BidForm: React.FC<IProps> = ({
   const [isContactAlertOpen, setContactAlertOpen] = useState(false);
   const [fullPrepayment, setFullPrepayment] = useState(false);
 
+  console.log("EMAIL: ", isSendingEmail);
+  console.log("SMS: ", isSendingSms);
+
   const createFilter = (id: number) => {
     if (editMode === "edit") post(id);
   };
@@ -411,8 +414,7 @@ const BidForm: React.FC<IProps> = ({
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
         .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
-      price: Yup.number()
-        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+      price: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       location: Yup.object({
         text: Yup.string().required(
           intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
@@ -445,7 +447,7 @@ const BidForm: React.FC<IProps> = ({
   const { enqueueSnackbar } = useSnackbar();
 
   const newLocations: number[] = [];
-  const mapState = {center: newLocations, zoom: 9};
+  const mapState = { center: newLocations, zoom: 9 };
 
   if (bid) {
     const mapX = bid.location.lat;
@@ -549,7 +551,10 @@ const BidForm: React.FC<IProps> = ({
   }, [currentCropId, fetchCropParams]);
 
   useEffect(() => {
-    if (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0) {
+    if (
+      !!me?.tariff_matrix &&
+      me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0
+    ) {
       setSendingEmail(false);
     }
   }, [me, filterCount]);
@@ -562,9 +567,18 @@ const BidForm: React.FC<IProps> = ({
     if (fullPrepayment) setFieldValue("payment_term", "");
   }, [fullPrepayment]);
 
+  useEffect(() => {
+    if (me) {
+      me?.email ? setSendingEmail(true) : setSendingEmail(false);
+      me?.phone && me?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false)
+    }
+  }, [me]);
+
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
+
+  console.log(me);
 
   return (
     <div className={classes.form}>
@@ -749,9 +763,10 @@ const BidForm: React.FC<IProps> = ({
           noOptionsText={intl.formatMessage({
             id: "ALL.AUTOCOMPLIT.EMPTY",
           })}
-          value={editMode === "create" 
-            ? vendor?.crops?.find(item => item.id === values.crop_id) || null 
-            : crops?.find(item => item.id === bid?.crop_id) || null 
+          value={
+            editMode === "create"
+              ? vendor?.crops?.find(item => item.id === values.crop_id) || null
+              : crops?.find(item => item.id === bid?.crop_id) || null
           }
           onChange={(e: any, val: ICrop | null) => {
             setFieldValue("crop_id", val?.id || "");
@@ -1318,7 +1333,7 @@ const BidForm: React.FC<IProps> = ({
             />
 
             <YMaps>
-              <div style={{width: "100%"}}>
+              <div style={{ width: "100%" }}>
                 <Map state={mapState} width={768} />
               </div>
             </YMaps>
@@ -1579,7 +1594,7 @@ const BidForm: React.FC<IProps> = ({
                         label={"Подписка по e-mail"}
                       />
                     ) : null}
-                    {me && me.phone ? (
+                    {me && me.phone && me.phone.length > 4 ? (
                       <FormControlLabel
                         control={
                           <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
