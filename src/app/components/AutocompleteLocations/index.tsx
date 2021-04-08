@@ -70,10 +70,10 @@ const Autocomplete: React.FC<IProps> = ({
       }, 500)
 
       const fetchDelay = setTimeout(() => {
-        console.log('fetch for:', location);
+        // console.log('fetch for:', location);
         fetchLocations(location);
         setLoadingLocal(false);
-      }, 8000)
+      }, 4000)
 
       return () => {
         clearTimeout(fetchDelay);
