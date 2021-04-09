@@ -62,8 +62,8 @@ const Autocomplete: React.FC<IProps> = ({
   }, [clearLocations]);
 
   useEffect(() => {
-    if (location.length > 5) {
-      console.log(location);
+    if (location.length > 2) {
+      // console.log(location);
 
       const loadingDelay = setTimeout(() => {
         setLoadingLocal(true);
