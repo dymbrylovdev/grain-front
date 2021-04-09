@@ -6,6 +6,7 @@ import { Paper, useMediaQuery, makeStyles, Drawer } from "@material-ui/core";
 
 import { actions as tariffsActions } from "../../store/ducks/tariffs.duck";
 import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
+import { actions as tariffActions } from "../../store/ducks/tariffs.duck";
 import { IAppState } from "../../store/rootDuck";
 
 import { LeftMenu } from ".";
@@ -113,14 +114,11 @@ const connector = connect(
     cropParams: state.crops2.cropParams,
 
     funnelStates: state.funnelStates.funnelStates,
-
     tariffsTypes: state.tariffs.tariffsTypes,
     usersFilterTariff: state.tariffs.usersFilterTariff,
   }),
-  {
-    ...leftMenuActions,
-    setUsersFilterTariff: tariffsActions.setUsersFilterTariff,
-  }
+  { ...leftMenuActions, setUsersFilterTariff: tariffActions.setUsersFilterTariff }
+
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;
 

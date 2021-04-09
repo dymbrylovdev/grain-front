@@ -59,14 +59,12 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
     // editMode,
     editSuccess,
     enqueueSnackbar,
-    intl
+    intl,
   ]);
 
   return (
     <div style={{ marginTop: 20, marginBottom: 20 }}>
-      {me && !me.points.length && (
-        <h6>У вас ещё нет точек отгрузки / погрузки</h6>
-      )}
+      {me && !me.points.length && <h6>У вас ещё нет точек отгрузки / погрузки</h6>}
 
       {me &&
         me.points.map(point => (
@@ -93,7 +91,11 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
         color="primary"
         style={{ width: "100%", marginTop: 10 }}
       >
-        {intl.formatMessage({ id: "BID.LOCATION.BUTTON" })}
+        {["ROLE_BUYER"].includes(me.roles[0])
+          ? intl.formatMessage({ id: "LOCATIONS.PRICES.BUYER" })
+          : ["ROLE_VENDOR"].includes(me.roles[0])
+          ? intl.formatMessage({ id: "LOCATIONS.PRICES.VENDOR" })
+          : intl.formatMessage({ id: "LOCATIONS.PRICES.MODAL_NAME" })}
       </Button>
 
       <LocationDialog

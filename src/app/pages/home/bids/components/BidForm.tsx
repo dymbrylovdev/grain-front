@@ -312,6 +312,9 @@ const BidForm: React.FC<IProps> = ({
   const [isContactAlertOpen, setContactAlertOpen] = useState(false);
   const [fullPrepayment, setFullPrepayment] = useState(false);
 
+  console.log("EMAIL: ", isSendingEmail);
+  console.log("SMS: ", isSendingSms);
+
   const createFilter = (id: number) => {
     if (editMode === "edit") post(id);
   };
@@ -570,9 +573,18 @@ const BidForm: React.FC<IProps> = ({
     if (fullPrepayment) setFieldValue("payment_term", "");
   }, [fullPrepayment]);
 
+  useEffect(() => {
+    if (me) {
+      me?.email ? setSendingEmail(true) : setSendingEmail(false);
+      me?.phone && me?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false)
+    }
+  }, [me]);
+
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
+
+  console.log(me);
 
   return (
     <div className={classes.form}>
@@ -1577,44 +1589,33 @@ const BidForm: React.FC<IProps> = ({
                 </ButtonWithLoader>
               </div>
             ) : (
-              <>
-                <div className={classes.button}>
-                  {!!me?.tariff_matrix &&
-                  me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
-                    <>
-                      <Tooltip
-                        title={intl.formatMessage({
-                          id: "BID.CREATE.TOOLIP.TEXT",
-                        })}
-                      >
-                        <HelpOutlineIcon color="secondary" style={{ marginRight: 15 }} />
-                      </Tooltip>
-                      {me && me.email ? (
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={isSendingEmail}
-                              onChange={e => onCheckboxChange(e, 1)}
-                            />
-                          }
-                          label={"Подписка по e-mail"}
-                        />
-                      ) : null}
-                      {me && me.phone ? (
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={isSendingSms}
-                              onChange={e => onCheckboxChange(e, 2)}
-                            />
-                          }
-                          label={"Подписка по смс"}
-                        />
-                      ) : null}
-                    </>
-                  )}
-                </div>
-              </>
+
+              <div className={classes.button}>
+                {!!me?.tariff_matrix &&
+                me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
+                  <>
+                    {me && me.email ? (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={isSendingEmail}
+                            onChange={e => onCheckboxChange(e, 1)}
+                          />
+                        }
+                        label={"Подписка по e-mail"}
+                      />
+                    ) : null}
+                    {me && me.phone && me.phone.length > 4 ? (
+                      <FormControlLabel
+                        control={
+                          <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
+                        }
+                        label={"Подписка по смс"}
+                      />
+                    ) : null}
+                  </>
+                )}
+              </div>
             )}
 
             <div className={classes.button}>

@@ -1,14 +1,8 @@
-import React, { ReactElement } from "react";
+import React from "react";
 
-interface IFilterByRole {
-
-}
-
-const FilterByRole: React.FC<IFilterByRole> = (): ReactElement => {
+const FilterByRole = () => {
   return (
-    <div style={{marginTop: 10}}>
-      123
-    </div>
+    <div>123</div>
   );
 }
 

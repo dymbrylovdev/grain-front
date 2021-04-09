@@ -27,7 +27,7 @@ import { useSnackbar } from "notistack";
 import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as funnelStatesActions } from "../../../store/ducks/funnelStates.duck";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
-import { actions as tariffsActions } from "../../../store/ducks/tariffs.duck";
+import { actions as tariffActions } from "../../../store/ducks/tariffs.duck";
 
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
@@ -78,8 +78,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   editSuccess,
   editError,
 
-  clearTariffsTypes,
-  fetchTariffsTypes,
+  fetchTariffTypes,
   tariffsTypes,
   tariffsTypesLoading,
   tariffsTypesSuccess,
@@ -96,7 +95,8 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [isInfoOpen, setInfoOpen] = useState(false);
   const [infoText, setInfoText] = useState("");
   const [funnelStateEditId, setFunnelStateEditId] = useState(0);
-  const [tariffId, setTariffId] = useState<number | undefined>(undefined);
+  const [tariffId, setTariffId] = useState<number | undefined>();
+
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -157,14 +157,19 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchMe]);
 
   useEffect(() => {
-    fetchTariffsTypes();
-  }, [fetchTariffsTypes]);
+    fetchTariffTypes()
+  }, [fetchTariffTypes]);
+
+  //TODO: Убрать сравнение по строкам
 
   useEffect(() => {
-    if (tariffsTypesSuccess) tariffsTypes.find(item => {
-      if (item.name === usersFilterTariff) setTariffId(item.id);
-    });
-  }, [tariffsTypes, tariffsTypesSuccess, usersFilterTariff]);
+    if (tariffsTypesSuccess) {
+      tariffsTypes.find(item => {
+        if (usersFilterTariff === "Все") setTariffId(undefined);
+        if (item.name === usersFilterTariff) setTariffId(item.id);
+      })
+    }
+  }, [usersFilterTariff, tariffId]);
 
   if (error || meError || funnelStatesError || tariffsTypesError) {
     setTimeout(() => {
@@ -436,7 +441,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   realPerPage={users.length}
                   perPage={perPage}
                   total={total}
-                  fetchRows={(page, perPage) =>
+                  fetchRows={({page, perPage}) =>
                     fetch({
                       page,
                       perPage,
@@ -504,6 +509,7 @@ const connector = connect(
     delSuccess: state.users.delSuccess,
     delError: state.users.delError,
 
+
     tariffsTypes: state.tariffs.tariffsTypes,
     tariffsTypesLoading: state.tariffs.tariffsTypesLoading,
     tariffsTypesSuccess: state.tariffs.tariffsTypesSuccess,
@@ -526,8 +532,7 @@ const connector = connect(
     clearDel: usersActions.clearDel,
     del: usersActions.delRequest,
 
-    clearTariffsTypes: tariffsActions.clearTariffTypes,
-    fetchTariffsTypes: tariffsActions.tariffsTypesRequest,
+    fetchTariffTypes: tariffActions.tariffsTypesRequest
   }
 );
 

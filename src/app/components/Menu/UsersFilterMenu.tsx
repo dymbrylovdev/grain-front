@@ -6,7 +6,6 @@ import { ActionWithPayload } from "../../utils/action-helper";
 import { IFunnelState } from "../../interfaces/funnelStates";
 import { ITariffType } from "../../interfaces/tariffs";
 import FitlerByRole from "./components/FilterByRole";
-import { userRoles } from "../../models/users";
 
 interface IUsersFilterMenu {
   intl: IntlShape;
@@ -24,8 +23,6 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
   usersFilterTariff,
   setUsersFilterTariff,
 }): ReactElement => {
-
-  console.log(usersFilterTariff);
 
   return (
     <div>

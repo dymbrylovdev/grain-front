@@ -22,10 +22,10 @@ export function deleteUser(id) {
   return axios.delete(`${USER_URL}${id}`);
 }
 
-export function getUsers(page, perPage, tariffId, funnelState, roles = []) {
+export function getUsers(page, perPage, tariffId, funnelStateId, roles = []) {
   let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}${
-    !!tariffId ? `&tariff=${tariffId}` : ""
-  }${!!funnelState ? `&funnel_state=${funnelState}` : ""}`;
+    tariffId ? `tariff_id=${tariffId}` : ""
+  }${funnelStateId ? `funnel_state_id=${funnelStateId}` : ""}`;
 
   if (roles.length) {
     url += `&roles=${roles.join(",")}`;
