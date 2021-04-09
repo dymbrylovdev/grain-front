@@ -441,7 +441,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   realPerPage={users.length}
                   perPage={perPage}
                   total={total}
-                  fetchRows={({page, perPage}) =>
+                  fetchRows={(page, perPage) =>
                     fetch({
                       page,
                       perPage,

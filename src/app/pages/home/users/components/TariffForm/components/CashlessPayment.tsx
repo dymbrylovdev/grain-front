@@ -54,8 +54,6 @@ const CashlessPayment: React.FC<IProps & WrappedComponentProps> = ({
   const innerClasses = useStyles();
   const date = format(new Date(), "dd.MM.yyyy")
 
-  console.log(realUser);
-
   return (
     <div>
       {!selectedTariff || !realUser ? (
@@ -69,7 +67,7 @@ const CashlessPayment: React.FC<IProps & WrappedComponentProps> = ({
               </div>
             </div>
             <div className={innerClasses.subTitle}>
-              {intl.formatMessage({ id: "TARIFFS.PAYMENT.COST" })} {selectedTariff.price} (без НДС)
+              {intl.formatMessage({ id: "TARIFFS.PAYMENT.COST" })} {selectedTariff.price} руб. (без НДС)
             </div>
             <div>
               {intl.formatMessage({ id: "TARIFFS.PAYMENT.PURPOSE" })} Тариф{" "}

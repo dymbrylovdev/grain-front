@@ -312,9 +312,6 @@ const BidForm: React.FC<IProps> = ({
   const [isContactAlertOpen, setContactAlertOpen] = useState(false);
   const [fullPrepayment, setFullPrepayment] = useState(false);
 
-  console.log("EMAIL: ", isSendingEmail);
-  console.log("SMS: ", isSendingSms);
-
   const createFilter = (id: number) => {
     if (editMode === "edit") post(id);
   };
@@ -583,8 +580,6 @@ const BidForm: React.FC<IProps> = ({
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
-
-  console.log(me);
 
   return (
     <div className={classes.form}>

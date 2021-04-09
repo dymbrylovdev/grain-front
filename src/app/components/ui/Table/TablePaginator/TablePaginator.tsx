@@ -31,8 +31,8 @@ const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     id
-      ? fetchRows({ page: 1, perPage: parseInt(event.target.value, 10), id })
-      : fetchRows({ page: 1, perPage: parseInt(event.target.value, 10) });
+      ? fetchRows( 1, parseInt(event.target.value, 10), id )
+      : fetchRows( 1, parseInt(event.target.value, 10) );
   };
 
   return (
