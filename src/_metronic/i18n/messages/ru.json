@@ -531,6 +531,8 @@
   "LOCATIONS.INPUT.NAME.YUP": "Введите название точки",
   "LOCATIONS.MODAL_NAME": "Точки отгрузки/приемки",
   "LOCATIONS.PRICES.MODAL_NAME": "Цены по точкам",
+  "LOCATIONS.PRICES.BUYER": "Изменить адрес доставки",
+  "LOCATIONS.PRICES.VENDOR": "Изменить адрес отгрузки",
   "LOCATIONS.MORE": "Добавить ещё одну точку",
 
   "TARIFFS.MAIN_TITLE": "Тарифы • Ограничения",
