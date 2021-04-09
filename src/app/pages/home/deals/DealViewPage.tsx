@@ -85,7 +85,9 @@ const DealViewPage: React.FC<TPropsFromRedux &
             ? dealType === "sale"
               ? `/user/edit/${deal.sale_bid.vendor.id}`
               : `/user/edit/${deal.purchase_bid.vendor.id}`
-            : `/user/view/${deal.sale_bid.vendor.id}`
+            : dealType === "sale"
+              ? `/user/view/${deal.sale_bid.vendor.id}`
+              : `/user/view/${deal.purchase_bid.vendor.id}`
         );
         //@ts-ignore
         editContactViewCount({ data: { contact_view_count: contactViewCount - 2 } });
@@ -431,7 +433,10 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </TableCell>
                       <TableCell style={{ backgroundColor: "#eeeeee" }}>
                         <p>
-                          <div style={{ cursor: "pointer", color: "blue" }} onClick={() => linkToContact("sale")}>
+                          <div
+                            style={{ cursor: "pointer", color: "blue" }}
+                            onClick={() => linkToContact("sale")}
+                          >
                             {deal.sale_bid.vendor.fio || deal.sale_bid.vendor.login}
                           </div>
                         </p>
@@ -466,7 +471,10 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       </TableCell>
                       <TableCell>
                         <p>
-                          <div style={{ cursor: "pointer", color: "blue" }} onClick={() => linkToContact("purchase")}>
+                          <div
+                            style={{ cursor: "pointer", color: "blue" }}
+                            onClick={() => linkToContact("purchase")}
+                          >
                             {deal.purchase_bid.vendor.fio || deal.purchase_bid.vendor.login}
                           </div>
                         </p>
