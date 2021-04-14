@@ -614,8 +614,9 @@ const BidsPage: React.FC<TPropsFromRedux &
               loading={!bids || (!cropParams && cropId !== "0")}
               paginationData={{ page, perPage, total }}
               fetcher={(newPage: number, newPerPage: number) =>
-                fetch(+cropId, salePurchaseMode, newPage, newPerPage)
+                fetch(+cropId, salePurchaseMode, newPage, newPerPage, filter.minDate, filter.maxDate)
               }
+              filter={filter}
               addUrl={"fromAdmin"}
               salePurchaseMode={salePurchaseMode}
               bestAllMyMode={bestAllMyMode}
