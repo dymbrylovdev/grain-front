@@ -99,6 +99,6 @@ deploy-grain.me:
     - ssh-add ~/.ssh/id_rsa
     - ssh-keyscan -H $DEPLOYMENT_SERVER_IP >> ~/.ssh/known_hosts
   script:
-    - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
+    - printf "NODE_PATH=src/\nREACT_APP_API_DOMAIN=${REACT_APP_API_DOMAIN}\n" > web-environment.env #envariment varibles
     - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
     - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD;docker stop $ME_CONTAINER;docker rm $ME_CONTAINER --force;docker pull $ME_IMAGE;docker run --restart always -p 0.0.0.0:$ME_PORT:3000 --name $ME_CONTAINER --env-file web-environment.env -d $ME_IMAGE"
