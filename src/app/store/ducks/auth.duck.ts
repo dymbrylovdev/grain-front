@@ -76,6 +76,8 @@ const LOGIN_BY_JWT_REQUEST = "auth/LOGIN_BY_JWT_REQUEST";
 const LOGIN_BY_JWT_SUCCESS = "auth/LOGIN_BY_JWT_SUCCESS";
 const LOGIN_BY_JWT_FAIL = "auth/LOGIN_BY_JWT_FAIL";
 
+const CLEAR_USER = "auth/CLEAR_USER";
+
 export interface IInitialState {
   user: IUser | undefined;
   authToken: string | undefined;
@@ -465,6 +467,14 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         };
       }
 
+      case CLEAR_USER: {
+        return {
+          ...state,
+          authToken: undefined,
+          user: undefined
+        };
+      }
+
       default:
         return state;
     }
@@ -531,6 +541,8 @@ export const actions = {
   loginByJwtSuccess: (payload: IServerResponse<ILoginSuccessData>) =>
     createAction(LOGIN_BY_JWT_SUCCESS, payload),
   loginByJwtFail: (payload: string) => createAction(LOGIN_BY_JWT_FAIL, payload),
+
+  clearAuthToken: () => createAction(CLEAR_USER),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
