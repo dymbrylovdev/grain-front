@@ -171,7 +171,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
         </>
       ) : (
         <>
-          {userBidFilters?.filters.length > 0 && (
+          {userBidFilters?.filters.length > 0 ? (
             <div className={classes.table}>
               <Table aria-label="simple table">
                 <TableHead>
@@ -240,6 +240,8 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
                 </TableBody>
               </Table>
             </div>
+          ) : (
+            <div>Подписок не найдено</div>
           )}
         </>
       )}
