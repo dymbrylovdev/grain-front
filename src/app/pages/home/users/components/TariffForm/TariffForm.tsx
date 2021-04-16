@@ -173,11 +173,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       : history.push(`/user/profile/tariffs/payment-form`);
   };
 
-  const a = new Date();
-  console.log("a", a);
-  const b = a.toString().replace(/\([^]+\)/g, "");
-  console.log("b", b)
-
   const { values, resetForm, handleSubmit } = useFormik({
     initialValues: {
       tariff_id: realUser?.tariff_matrix.id,

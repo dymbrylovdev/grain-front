@@ -31,7 +31,7 @@ const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial
         server_callback_url: "https://api.kupit-zerno.com/api/fondy/callback",
         lang: "ru",
         product_id: selectedTariff.id,
-        custom: { start_date: selectedDate.toString(), user_id: realUser.id },
+        custom: { start_date: selectedDate.toString().replace(/\([^]+\)/g, ""), user_id: realUser.id },
       },
     };
     //@ts-ignore
