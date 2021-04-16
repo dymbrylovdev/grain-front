@@ -6,8 +6,8 @@ import { format } from "date-fns";
 
 const AD_URL = "/api/bid";
 
-export const getBestBids = (type: TBidType, filter: IFilterForBids) => {
-  return axios.post(`/api/bids/${type}/best`, filter);
+export const getBestBids = (type: TBidType, page: number, perPage: number, filter?: IFilterForBids) => {
+  return axios.post(`/api/bids/${type}/best?page=${page}&per_page=${perPage}`, filter ? filter : null);
 };
 
 export const getMyBids = (type: TBidType, page: number, perPage: number) => {

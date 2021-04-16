@@ -239,6 +239,7 @@
   "USER.EDIT_FORM.TARIFFS": "Тариф",
   "USER.EDIT_FORM.CROPS": "Культуры",
   "USER.EDIT_FORM.BIDS": "Объявления",
+  "USER.EDIT_FORM.FILTERS": "Подписки",
   "USER.EDIT_FORM.USE_VAT": "Работаю с НДС.",
   "USER.EDIT_FORM.ATTENTION": "Внимание! Если вы работаете с НДС, поставьте галочку в это поле.",
   "USER.EDIT_FORM.ACTIVATE": "Письмо об активации",
@@ -402,7 +403,7 @@
   "FILTER.SOMETHING.CHECKBOX": "Подписаться на предложения",
 
   "FILTERS.TABLE.HEADER.CROP": "Культура",
-  "FILTERS.TABLE.HEADER.NAME": "Название фильтра",
+  "FILTERS.TABLE.HEADER.NAME": "Название подписки",
   "FILTERS.TABLE.HEADER.SUBSCRIPTION": "Рассылка на e-mail",
   "FILTERS.TABLE.HEADER.SMS.SENDING": "Рассылка на sms",
   "FILTERS.TABLE.HEADER.ACTIONS": "Действия",

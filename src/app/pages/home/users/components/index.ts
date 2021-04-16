@@ -7,4 +7,5 @@ export { default as CompanyConfirmDialog } from "./CompanyConfirmDialog";
 export { default as UserActivity } from "./UserActivity";
 export { default as ColorDot } from "./ColorDot";
 export { default as TrafficLight } from "./TrafficLight";
+export { default as FilterForm } from "./FilterForm";
 

@@ -479,8 +479,8 @@ export const actions = {
   fetchMyFail: (payload: string) => createAction(FETCH_MY_FAIL, payload),
 
   clearBestRequest: () => createAction(CLEAR_BEST_REQUEST),
-  fetchBestRequest: (bidType: TBidType, filter: IFilterForBids) =>
-    createAction(FETCH_BEST_REQUEST, { bidType, filter }),
+  fetchBestRequest: (bidType: TBidType, page: number, perPage: number, filter?: IFilterForBids) =>
+    createAction(FETCH_BEST_REQUEST, { bidType, page, perPage, filter }),
   fetchBestSuccess: (payload: IServerResponse<IBestBids>) =>
     createAction(FETCH_BEST_SUCCESS, payload),
   fetchBestFail: (payload: string) => createAction(FETCH_BEST_FAIL, payload),
@@ -579,10 +579,10 @@ function* fetchMySaga({
   }
 }
 
-function* fetchBestSaga({ payload }: { payload: { bidType: TBidType; filter: IFilterForBids } }) {
+function* fetchBestSaga({ payload }: { payload: { bidType: TBidType; page: number; perPage: number; filter?: IFilterForBids } }) {
   try {
     const { data }: { data: IServerResponse<IBestBids> } = yield call(() =>
-      getBestBids(payload.bidType, payload.filter)
+      getBestBids(payload.bidType, payload.page, payload.perPage, payload.filter)
     );
     yield put(actions.fetchBestSuccess(data));
   } catch (e) {

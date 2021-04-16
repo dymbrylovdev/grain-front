@@ -14,8 +14,9 @@ import {
   editContactViewContact,
   getUserActivate,
   getUsersCrops,
+  getUserBidFilters,
 } from "../../crud/users.crud";
-import { IUser, IUserForCreate, IUserForEdit, TRole } from "../../interfaces/users";
+import { IUser, IUserForCreate, IUserForEdit, TRole, IUserBidFilters } from "../../interfaces/users";
 import { IBid } from "../../interfaces/bids";
 import { ICrop } from "../../interfaces/crops";
 
@@ -60,6 +61,11 @@ const CLEAR_USER_BIDS = "users/CLEAR_USER_BIDS";
 const USER_BIDS_REQUEST = "users/USER_BIDS_REQUEST";
 const USER_BIDS_SUCCESS = "users/USER_BIDS_SUCCESS";
 const USER_BIDS_FAIL = "users/USER_BIDS_FAIL";
+
+const CLEAR_USER_BID_FILTERS = "users/CLEAR_USER_BID_FILTERS";
+const USER_BID_FILTERS_REQUEST = "users/USER_BID_FILTERS_REQUEST";
+const USER_BID_FILTERS_SUCCESS = "users/USER_BID_FILTERS_SUCCESS";
+const USER_BID_FILTERS_FAIL = "users/USER_BID_FILTERS_FAIL";
 export interface IInitialState {
   page: number;
   per_page: number;
@@ -102,6 +108,11 @@ export interface IInitialState {
   userBidsError: string | null;
 
   openInfoAlert: boolean;
+
+  userBidFilters: IUserBidFilters | undefined;
+  userBidFiltersLoading: boolean;
+  userBidFiltersSuccess: boolean;
+  userBidFiltersError: string | null;
 }
 
 const initialState: IInitialState = {
@@ -146,6 +157,11 @@ const initialState: IInitialState = {
   userBidsError: null,
 
   openInfoAlert: true,
+
+  userBidFilters: undefined,
+  userBidFiltersLoading: false,
+  userBidFiltersSuccess: false,
+  userBidFiltersError: null
 };
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
@@ -369,6 +385,42 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return { ...state, userBidsLoading: false, userBidsError: action.payload };
     }
 
+    case CLEAR_USER_BID_FILTERS: {
+      return {
+        ...state,
+        userBidFilters: undefined,
+        userBidFiltersLoading: false,
+        userBidFiltersSuccess: false,
+        userBidFiltersError: null
+      }
+    }
+
+    case USER_BID_FILTERS_REQUEST: {
+      return {
+        ...state,
+        userBidFiltersLoading: true,
+        userBidFiltersSuccess: false,
+        userBidFiltersError: null
+      }
+    }
+
+    case USER_BID_FILTERS_SUCCESS: {
+      return {
+        ...state,
+        userBidFilters: action.payload.data,
+        userBidFiltersLoading: false,
+        userBidFiltersSuccess: true,
+      }
+    }
+
+    case USER_BID_FILTERS_FAIL: {
+      return {
+        ...state,
+        userBidFiltersLoading: false,
+        userBidFiltersError: action.payload
+      }
+    }
+
     default:
       return state;
   }
@@ -419,6 +471,11 @@ export const actions = {
 
   setOpenInfoAlert: (openInfoAlert: boolean) =>
     createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
+
+  clearUserBidFilters: () => createAction(CLEAR_USER_BID_FILTERS),
+  userBidFiltersRequest: (payload: { id: number, type: string }) => createAction(USER_BID_FILTERS_REQUEST, payload),
+  userBidFiltersSuccess: (payload: IServerResponse<IUserBidFilters>) => createAction(USER_BID_FILTERS_SUCCESS, payload),
+  userBidFiltersFail: (payload: string) => createAction(USER_BID_FILTERS_FAIL, payload)
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -499,6 +556,15 @@ function* userBidsSaga({ payload }: { payload: number }) {
   }
 }
 
+function* userBidFiltersSaga({ payload }: { payload: { id: number; type: string; } }) {
+  try {
+    const { data }: { data: IServerResponse<IUserBidFilters> } = yield call(() => getUserBidFilters(payload));
+    yield put(actions.userBidFiltersSuccess(data));
+  } catch (e) {
+    yield put(actions.userBidFiltersFail(e?.response?.data?.message) || "Ошибка соединения.");
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.fetchByIdRequest>>(FETCH_BY_ID_REQUEST, fetchByIdSaga);
@@ -514,4 +580,5 @@ export function* saga() {
     userActivateSaga
   );
   yield takeLatest<ReturnType<typeof actions.userBidsRequest>>(USER_BIDS_REQUEST, userBidsSaga);
+  yield takeLatest<ReturnType<typeof actions.userBidFiltersRequest>>(USER_BID_FILTERS_REQUEST, userBidFiltersSaga);
 }

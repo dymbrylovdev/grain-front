@@ -304,6 +304,8 @@ const BidsPage: React.FC<TPropsFromRedux &
             if (currentSaleFilters[cropId] && cropParams && pointPrices) {
               fetchBestBids(
                 salePurchaseMode,
+                page,
+                perPage,
                 filterForBids(
                   currentSaleFilters[cropId] || {},
                   cropParams.filter(item => item.type === "enum"),
@@ -313,12 +315,14 @@ const BidsPage: React.FC<TPropsFromRedux &
               );
             }
             if (cropId && !currentSaleFilters[cropId])
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+              fetchBestBids(salePurchaseMode, page, perPage, { filter: { cropId: +cropId } });
           }
           if (salePurchaseMode === "purchase") {
             if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
               fetchBestBids(
                 salePurchaseMode,
+                page,
+                perPage,
                 filterForBids(
                   currentPurchaseFilters[cropId] || {},
                   cropParams.filter(item => item.type === "enum"),
@@ -328,7 +332,7 @@ const BidsPage: React.FC<TPropsFromRedux &
               );
             }
             if (cropId && !currentPurchaseFilters[cropId])
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+              fetchBestBids(salePurchaseMode, page, perPage, { filter: { cropId: +cropId } });
           }
           break;
         case "my-bids":
@@ -380,6 +384,8 @@ const BidsPage: React.FC<TPropsFromRedux &
             if (currentSaleFilters[cropId] && cropParams && pointPrices) {
               fetchBestBids(
                 salePurchaseMode,
+                page,
+                perPage,
                 filterForBids(
                   currentSaleFilters[cropId] || {},
                   cropParams.filter(item => item.type === "enum"),
@@ -389,12 +395,14 @@ const BidsPage: React.FC<TPropsFromRedux &
               );
             }
             if (cropId && !currentSaleFilters[cropId])
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+              fetchBestBids(salePurchaseMode, page, perPage, { filter: { cropId: +cropId } });
           }
           if (salePurchaseMode === "purchase") {
             if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
               fetchBestBids(
                 salePurchaseMode,
+                page,
+                perPage,
                 filterForBids(
                   currentPurchaseFilters[cropId] || {},
                   cropParams.filter(item => item.type === "enum"),
@@ -404,7 +412,7 @@ const BidsPage: React.FC<TPropsFromRedux &
               );
             }
             if (cropId && !currentPurchaseFilters[cropId])
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+              fetchBestBids(salePurchaseMode, page, perPage, { filter: { cropId: +cropId } });
           }
           break;
         case "my-bids":
@@ -522,6 +530,10 @@ const BidsPage: React.FC<TPropsFromRedux &
                   setDeleteBidId(id);
                   setAlertOpen(true);
                 }}
+                paginationData={{ page, perPage, total }}
+                fetcher={(newPage: number, newPerPage: number) => 
+                  fetchBestBids(salePurchaseMode, newPage, newPerPage, { filter: { cropId: +cropId } })
+                }
                 user={me as IUser}
                 title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
                 loading={!bestBids || !cropParams}

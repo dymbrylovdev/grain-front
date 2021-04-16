@@ -312,7 +312,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   ) : null}
                 </div>
 
-                {realUser.tariff_prolongations.length ? (
+                {!!realUser.tariff_prolongations.length ? (
                   <Alert className={classes.infoAlert} severity="info" color="info">
                     Вам будет доступен тариф{" "}
                     {realUser.tariff_prolongations[0].tariff_matrix.tariff.name} на{" "}
