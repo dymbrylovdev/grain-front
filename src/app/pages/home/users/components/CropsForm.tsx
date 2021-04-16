@@ -241,7 +241,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
     fetchCrops();
   }, [fetchCrops]);
 
-  console.log(editMode)
+  // console.log(editMode)
 
   return (
     <>
