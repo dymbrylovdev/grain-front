@@ -1,4 +1,5 @@
 import { API_DOMAIN } from "../../app/constants";
+import {actions} from '../../app/store/ducks/auth.duck';
 
 export function removeCSSClass(ele, cls) {
   const reg = new RegExp("(\\s|^)" + cls + "(\\s|$)");
@@ -12,21 +13,29 @@ export function addCSSClass(ele, cls) {
 export const toAbsoluteUrl = pathname => process.env.PUBLIC_URL + pathname;
 
 export function setupAxios(axios, store) {
+
   axios.defaults.baseURL = API_DOMAIN;
+
   axios.interceptors.request.use(
     config => {
       const {auth: { authToken }} = store.getState();
       if (authToken) {
         config.headers.common["X-AUTH-TOKEN"] = authToken;
       }
-      // const {auth: { jwtToken }} = store.getState();
-      // if (jwtToken) {
-        // config.headers.common["Authorization"] = `Bearer ${jwtToken}`;
-      // }
       return config;
     },
     err => Promise.reject(err)
   );
+
+  axios.interceptors.response.use(null, (error) => {
+    if (error.response.status === 403) {
+      setTimeout(() => {
+        store.dispatch(actions.clearAuthToken());
+      }, 2000)
+    }
+    return Promise.reject(error);
+  });
+
 }
 
 /*  removeStorage: removes a key from localStorage and its sibling expiracy key

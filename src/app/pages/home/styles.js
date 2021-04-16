@@ -61,7 +61,7 @@ const useStyles = makeStyles(theme => ({
   },
   textFieldContainer: {
     display: "flex",
-    minHeight: 70,
+    // minHeight: 70,
     alignItems: "center",
   },
   textField: {

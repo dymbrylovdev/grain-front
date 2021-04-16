@@ -681,7 +681,8 @@ const BidForm: React.FC<IProps> = ({
                     >
                       {`Сегодня вам доступен просмотр ${
                         me?.contact_view_count
-                      } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
+                      } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`} <Link to={"/user/profile/tariffs"}>Снять ограничения</Link>
+                      
                     </Alert>
                   )}
                 </>

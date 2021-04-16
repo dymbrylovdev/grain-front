@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { compose } from "redux";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import React, { ReactElement, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import {
   IconButton,
@@ -18,37 +17,36 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import { useSnackbar } from "notistack";
 
-import { actions as myFiltersActions } from "../../../store/ducks/myFilters.duck";
-import { actions as authActions } from "../../../store/ducks/auth.duck";
-import { actions as tariffsActions } from "../../../store/ducks/tariffs.duck";
+import { actions as myFiltersActions } from "../../../../store/ducks/myFilters.duck";
+import { actions as authActions } from "../../../../store/ducks/auth.duck";
+import { actions as tariffsActions } from "../../../../store/ducks/tariffs.duck";
+import { actions as userActions } from "../../../../store/ducks/users.duck";
 
-import { IAppState } from "../../../store/rootDuck";
-import useStyles from "../styles";
-import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
-import TopTableCell from "../../../components/ui/Table/TopTableCell";
-import StatusIndicator from "../../../components/ui/Table/StatusIndicator";
+import { IAppState } from "../../../../store/rootDuck";
+import useStyles from "../../styles";
+import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
+import TopTableCell from "../../../../components/ui/Table/TopTableCell";
+import StatusIndicator from "../../../../components/ui/Table/StatusIndicator";
 import { Skeleton } from "@material-ui/lab";
-import { LayoutSubheader } from "../../../../_metronic";
-import { declOfNum } from "../../../utils";
-import { accessByRoles } from "../../../utils/utils";
+import { LayoutSubheader } from "../../../../../_metronic";
+import { declOfNum } from "../../../../utils";
+import { accessByRoles } from "../../../../utils/utils";
 
-const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps> = ({
+interface IFilterForm {
+  match: any;
+  userId: number | undefined;
+}
+
+const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps> = ({
   match,
   intl,
-
   fetchMe,
   me,
   meError,
-  fetch,
-  myFilters,
+  userId,
   filterCount,
   loading,
   error,
-  clearCreate,
-  create,
-  createLoading,
-  createSuccess,
-  createError,
   clearDel,
   del,
   delLoading,
@@ -66,8 +64,14 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
   currentPurchaseFilters,
 
   setTariffTable,
+
   userBidFilters,
-}) => {
+  userBidFiltersLoading,
+  userBidFiltersSuccess,
+  userBidFiltersError,
+  clearUserBidFilters,
+  fetchUserBidFilters,
+}): ReactElement => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -112,7 +116,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
           }
         }
 
-        fetch(salePurchaseMode);
+        if (userId) fetchUserBidFilters({ id: +userId, type: salePurchaseMode })
       }
     }
   }, [
@@ -124,17 +128,18 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
     deleteFilterCropId,
     deleteFilterId,
     enqueueSnackbar,
-    fetch,
     intl,
     me,
     salePurchaseMode,
     setCurrentPurchaseFilter,
     setCurrentSaleFilter,
+    fetchUserBidFilters,
+    userId
   ]);
 
   useEffect(() => {
-    fetch(salePurchaseMode);
-  }, [fetch, salePurchaseMode]);
+    if (userId) fetchUserBidFilters({ id: +userId, type: salePurchaseMode })
+  }, [fetchUserBidFilters, userId, salePurchaseMode]);
 
   useEffect(() => {
     fetchMe();
@@ -155,52 +160,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
             : intl.formatMessage({ id: "FILTERS.MY.PURCHASE" })
         }
       />
-      <div className={classes.topButtonsContainer}>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="primary"
-          onClick={() => history.push(`/${salePurchaseMode}/filters/edit/new`)}
-          disabled={
-            !myFilters ||
-            (!!me?.tariff_matrix.tariff_limits.max_filters_count &&
-              !!myFilters &&
-              me.tariff_matrix.tariff_limits.max_filters_count - myFilters?.length <= 0)
-          }
-        >
-          {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
-        </Button>
-
-        {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
-          me &&
-          me.tariff_matrix.tariff.name === "Бесплатный" && (
-            <Button
-              className={classes.button}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                setTariffTable(1);
-                history.push(`/user/profile/tariffs`);
-              }}
-              disabled={!myFilters}
-            >
-              {intl.formatMessage({ id: "BID.PRICES.GET.PREMIUM" })}
-            </Button>
-          )}
-
-        {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-          <Button
-            className={classes.button}
-            variant="contained"
-            color="primary"
-            onClick={() => history.push(`/${salePurchaseMode}/filters/prices`)}
-            disabled={!myFilters}
-          >
-            {intl.formatMessage({ id: "BID.PRICES.BUTTON" })}
-          </Button>
-        )}
-      </div>
-      {!myFilters ? (
+      {!userBidFilters?.filters ? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />
           <Skeleton width="100%" height={77} animation="wave" />
@@ -211,27 +171,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
         </>
       ) : (
         <>
-          {!!me && !!myFilters && (
-            <div className={classes.bottomMargin1} style={{ fontWeight: "bold" }}>
-              {intl.formatMessage(
-                { id: "FILTER.FORM.LIMIT" },
-                {
-                  count:
-                    !me?.tariff_matrix ||
-                    (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0)
-                      ? "0"
-                      : me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount,
-                  word: declOfNum(me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount, [
-                    "подписка",
-                    "подписки",
-                    "подписок",
-                  ]),
-                  fullCount: me?.tariff_matrix?.tariff_limits.max_filters_count,
-                }
-              )}
-            </div>
-          )}
-          {myFilters.length > 0 && (
+          {userBidFilters?.filters.length > 0 ? (
             <div className={classes.table}>
               <Table aria-label="simple table">
                 <TableHead>
@@ -252,7 +192,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {myFilters
+                  {userBidFilters?.filters
                     .sort((a, b) => a.crop.id - b.crop.id)
                     .map(item => (
                       <TableRow key={item.id}>
@@ -269,7 +209,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                             size="medium"
                             color="primary"
                             onClick={() =>
-                              history.push(`/${salePurchaseMode}/filters/view/${item.id}`)
+                              history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/view/${item.id}`)
                             }
                           >
                             <VisibilityIcon />
@@ -278,7 +218,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                             size="medium"
                             color="primary"
                             onClick={() =>
-                              history.push(`/${salePurchaseMode}/filters/edit/${item.id}`)
+                              history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/edit/${item.id}`)
                             }
                           >
                             <EditIcon />
@@ -300,6 +240,8 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                 </TableBody>
               </Table>
             </div>
+          ) : (
+            <div>Подписок не найдено</div>
           )}
         </>
       )}
@@ -349,6 +291,9 @@ const connector = connect(
     currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
 
     userBidFilters: state.users.userBidFilters,
+    userBidFiltersLoading: state.users.userBidFiltersLoading,
+    userBidFiltersSuccess: state.users.userBidFiltersSuccess,
+    userBidFiltersError: state.users.userBidFiltersError,
   }),
   {
     fetch: myFiltersActions.fetchRequest,
@@ -362,9 +307,11 @@ const connector = connect(
     setCurrentSaleFilter: myFiltersActions.setCurrentSaleFilter,
     setCurrentPurchaseFilter: myFiltersActions.setCurrentPurchaseFilter,
     setTariffTable: tariffsActions.setTariffTable,
+    clearUserBidFilters: userActions.clearUserBidFilters,
+    fetchUserBidFilters: userActions.userBidFiltersRequest,
   }
 );
 
 type TPropsFromRedux = ConnectedProps<typeof connector>;
 
-export default compose(connector, injectIntl)(MyFiltersPage);
+export default connector(injectIntl(FilterForm));

@@ -40,6 +40,7 @@ interface IProps {
   title?: string;
   paginationData?: { page: number; perPage: number; total: number };
   fetcher?: (page: number, perPage: number) => void;
+  filter?: any;
   loading: boolean;
   addUrl?: string;
   salePurchaseMode?: "sale" | "purchase";
@@ -66,6 +67,7 @@ const BidTable: React.FC<IProps> = ({
   paginationData,
   loading,
   fetcher,
+  filter,
   salePurchaseMode,
   bestAllMyMode,
   crops,

@@ -33,7 +33,9 @@ export const getAllBids = (
     max_date = format(maxDate, "yyyy-MM-dd");
   }
 
-  let url = `/api/crop/${cropId}/bids?type=${type}&page=${page}&per_page=${perPage}&min_date=${min_date}&max_date=${max_date}`;
+  let url = `/api/crop/${cropId}/bids?type=${type}&page=${page}&per_page=${perPage}${
+    min_date ? `&min_date=${min_date}` : ""
+  }${max_date ? `&max_date=${max_date}` : ""}`;
 
   if (authorId) {
     url += `&author_id=${authorId}`;
@@ -73,9 +75,17 @@ export const deleteBid = (id: number) => {
   return axios.delete(`${AD_URL}/${id}`);
 };
 
-export const getBidsXlsUrl = (id: number, type?: string, minDate?: string, maxDate?: string, authorId?: string) => {
+export const getBidsXlsUrl = (
+  id: number,
+  type?: string,
+  minDate?: string,
+  maxDate?: string,
+  authorId?: string
+) => {
   return axios.get(
-    `/api/crop/${id}/bids/xls?type=${type}&min_date=${minDate}&max_date=${maxDate}${!!authorId ? `&author_id=${authorId}` : "" }`,
+    `/api/crop/${id}/bids/xls?type=${type}&min_date=${minDate}&max_date=${maxDate}${
+      !!authorId ? `&author_id=${authorId}` : ""
+    }`,
     { responseType: "arraybuffer" }
   );
 };

@@ -115,3 +115,8 @@ export interface IUserRoles {
   label: string;
   role: string;
 }
+
+export interface IUserBidFilters {
+  filter_count: number;
+  filters: any[];
+}

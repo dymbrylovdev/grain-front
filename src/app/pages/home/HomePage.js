@@ -20,6 +20,7 @@ import { DealsPage, DealViewPage } from "./deals";
 import Error404Page from "../../components/ErrorPage/Error404Page";
 import { TariffsEditPage } from "./tariffs";
 import { TrialEditPage } from "./trial";
+import UserBidFiltersEdit from "./users/components/UserBidFiltersEdit";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { user } = useSelector(({ auth }) => ({ user: auth.user }), shallowEqual);
@@ -62,6 +63,8 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
 
         <Route path="/sale/filters/view/:id" component={MyFiltersEditPage} />
         <Route path="/sale/filters/edit/:id" component={MyFiltersEditPage} />
+        <Route path="/sale/user/:userId/filters/view/:id" component={UserBidFiltersEdit} />
+        <Route path="/sale/user/:userId/filters/edit/:id" component={UserBidFiltersEdit} />
         <Route path="/sale/filters/prices" component={MyFiltersMoneyPage} />
         <Route path="/sale/filters" component={MyFiltersPage} />
 

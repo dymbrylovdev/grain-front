@@ -17,7 +17,7 @@ import useStyles from '../styles';
 import {IAppState} from '../../../store/rootDuck';
 import {LayoutSubheader} from '../../../../_metronic/layout/LayoutContext';
 import {a11yProps, TabPanel} from '../../../components/ui/Table/TabPanel';
-import {BidsForm, CropsForm, LocationsForm, ProfileForm} from './components';
+import {BidsForm, CropsForm, LocationsForm, ProfileForm, FilterForm} from './components';
 import ScrollToTop from '../../../components/ui/ScrollToTop';
 import TariffForm from './components/TariffForm/TariffForm';
 import {accessByRoles} from '../../../utils/utils';
@@ -252,7 +252,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
             <Tabs
               value={valueTabs}
               onChange={handleTabsChange}
-              variant="fullWidth"
+              variant="scrollable"
               indicatorColor="primary"
               textColor="primary"
               aria-label="tabs"
@@ -299,6 +299,9 @@ const UserEditPage: React.FC<TPropsFromRedux &
               {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
                 <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(4)} />
               )}
+              {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
+                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.FILTERS" })} {...a11yProps(5)} />
+              )}
             </Tabs>
           </AppBar>
           <Divider />
@@ -342,6 +345,15 @@ const UserEditPage: React.FC<TPropsFromRedux &
               index={["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]) ? 4 : 3}
             >
               <BidsForm userId={+id || undefined} classes={classes} isBuyer={user.is_buyer} />
+            </TabPanel>
+          )}
+
+          {user && (
+            <TabPanel
+              value={valueTabs}
+              index={5}
+            >
+              <FilterForm userId={+id || undefined} match={match} />
             </TabPanel>
           )}
         </div>
