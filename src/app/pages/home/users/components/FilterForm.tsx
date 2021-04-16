@@ -160,51 +160,6 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
             : intl.formatMessage({ id: "FILTERS.MY.PURCHASE" })
         }
       />
-      <div className={classes.topButtonsContainer}>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="primary"
-          onClick={() => history.push(`/${salePurchaseMode}/filters/edit/new`)}
-          disabled={
-            !userBidFilters ||
-            (!!me?.tariff_matrix.tariff_limits.max_filters_count &&
-              !!userBidFilters &&
-              me.tariff_matrix.tariff_limits.max_filters_count - userBidFilters?.filters?.length <= 0)
-          }
-        >
-          {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
-        </Button>
-
-        {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
-          me &&
-          me.tariff_matrix.tariff.name === "Бесплатный" && (
-            <Button
-              className={classes.button}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                setTariffTable(1);
-                history.push(`/user/profile/tariffs`);
-              }}
-              disabled={!userBidFilters?.filters}
-            >
-              {intl.formatMessage({ id: "BID.PRICES.GET.PREMIUM" })}
-            </Button>
-          )}
-
-        {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-          <Button
-            className={classes.button}
-            variant="contained"
-            color="primary"
-            onClick={() => history.push(`/${salePurchaseMode}/filters/prices`)}
-            disabled={!userBidFilters?.filters}
-          >
-            {intl.formatMessage({ id: "BID.PRICES.BUTTON" })}
-          </Button>
-        )}
-      </div>
       {!userBidFilters?.filters ? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />
@@ -216,26 +171,6 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
         </>
       ) : (
         <>
-          {!!me && !!userBidFilters?.filters && (
-            <div className={classes.bottomMargin1} style={{ fontWeight: "bold" }}>
-              {intl.formatMessage(
-                { id: "FILTER.FORM.LIMIT" },
-                {
-                  count:
-                    !me?.tariff_matrix ||
-                    (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0)
-                      ? "0"
-                      : me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount,
-                  word: declOfNum(me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount, [
-                    "подписка",
-                    "подписки",
-                    "подписок",
-                  ]),
-                  fullCount: me?.tariff_matrix?.tariff_limits.max_filters_count,
-                }
-              )}
-            </div>
-          )}
           {userBidFilters?.filters.length > 0 && (
             <div className={classes.table}>
               <Table aria-label="simple table">

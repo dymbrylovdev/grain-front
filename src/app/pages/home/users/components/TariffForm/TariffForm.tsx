@@ -173,6 +173,11 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       : history.push(`/user/profile/tariffs/payment-form`);
   };
 
+  const a = new Date();
+  console.log("a", a);
+  const b = a.toString().replace(/\([^]+\)/g, "");
+  console.log("b", b)
+
   const { values, resetForm, handleSubmit } = useFormik({
     initialValues: {
       tariff_id: realUser?.tariff_matrix.id,
@@ -185,10 +190,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     onSubmit: () => {
       let params: any = {};
       let tariff_matrix_id = selectedTariff && selectedTariff.id;
-
-      //* timestamp нужен для конвертации типа date в js в тип dateTime php
-      let timestamp = "@" + Math.round(selectedDate.getTime() / 1000);
-      let tariff_start_date = timestamp;
+      let tariff_start_date = selectedDate.toString().replace(/\([^]+\)/g, "");
 
       params = { tariff_matrix_id, tariff_start_date };
 
