@@ -196,7 +196,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
           setCurrentPurchaseFilter(deleteFilterCropId, undefined);
         }
       }
-      history.push(`/${salePurchaseMode}/filters`);
+      history.push(`/${salePurchaseMode}/user/${userId}/filters`);
     }
   }, [
     currentPurchaseFilters,
@@ -208,6 +208,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
     salePurchaseMode,
     setCurrentPurchaseFilter,
     setCurrentSaleFilter,
+    userId,
   ]);
 
   useEffect(() => {
