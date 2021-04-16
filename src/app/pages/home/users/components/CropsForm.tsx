@@ -241,6 +241,8 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
     fetchCrops();
   }, [fetchCrops]);
 
+  console.log(editMode)
+
   return (
     <>
       <div className={classes.box}>
@@ -291,6 +293,8 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
             <Skeleton width="100%" height={51.5} animation="wave" />
           </>
         ) : (
+          <>
+        {editMode !== 'view' && (
           <div className={innerClasses.crop}>
             {!!crops &&
             !!realUser?.crops &&
@@ -303,24 +307,32 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
             )}
           </div>
         )}
+          </>
+        )}
         {!!crops &&
           !!realUser?.crops &&
           !!realUser?.tariff_matrix &&
-          realUser?.crops?.length < realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
           realUser?.crops?.length < crops.length && (
             <div className={classes.textFieldContainer}>
               {!addingCrop ? (
                 <>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setAddingCrop(true)}
-                    disabled={loadingMe || loadingUser || editLoading}
-                  >
-                    {intl.formatMessage({ id: "CROPSLIST.BUTTON.CREATE" })}
-                  </Button>
+                  {(realUser?.crops?.length < realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
+                    editMode === 'view' && accessByRoles(me, ["ROLE_ADMIN", 'ROLE_MANAGER']))
+                    || (realUser?.crops?.length < realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
+                        editMode === 'edit' || editMode === 'profile')
+                    &&
+                    (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => setAddingCrop(true)}
+                      disabled={loadingMe || loadingUser || editLoading}
+                    >
+                      {intl.formatMessage({ id: "CROPSLIST.BUTTON.CREATE" })}
+                    </Button>
+                  )}
 
-                  {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
+                  {editMode !== 'view' && accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
                     me &&
                     me.tariff_matrix.tariff.name === "Бесплатный" && (
                       <Button

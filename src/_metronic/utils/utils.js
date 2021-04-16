@@ -29,7 +29,9 @@ export function setupAxios(axios, store) {
 
   axios.interceptors.response.use(null, (error) => {
     if (error.response.status === 403) {
-      store.dispatch(actions.clearAuthToken());
+      setTimeout(() => {
+        store.dispatch(actions.clearAuthToken());
+      }, 2000)
     }
     return Promise.reject(error);
   });
