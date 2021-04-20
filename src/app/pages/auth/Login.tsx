@@ -1,29 +1,18 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { compose } from "redux";
-import { connect, ConnectedProps } from "react-redux";
-import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
-import {
-  TextField,
-  Tabs,
-  Tab,
-  Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from "@material-ui/core";
-import { Link } from "react-router-dom";
-import { Formik, useFormik } from "formik";
-import * as Yup from "yup";
-import { useSnackbar } from "notistack";
+import React, {useCallback, useEffect} from 'react';
+import {compose} from 'redux';
+import {connect, ConnectedProps} from 'react-redux';
+import {FormattedMessage, injectIntl, WrappedComponentProps} from 'react-intl';
+import {TextField} from '@material-ui/core';
+import {Link, useHistory} from 'react-router-dom';
+import {useFormik} from 'formik';
+import * as Yup from 'yup';
+import {useSnackbar} from 'notistack';
 
-import { actions as authActions } from "../../store/ducks/auth.duck";
+import {actions as authActions} from '../../store/ducks/auth.duck';
 
-import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
-import { TabPanel, a11yProps } from "../../components/ui/Table/TabPanel";
-import NumberFormatForRegister from "../../components/NumberFormatCustom/NumberFormatForRegister";
-import { phoneCountryCodes, countries } from "./phoneCountryCodes";
-import { IAppState } from "../../store/rootDuck";
+import ButtonWithLoader from '../../components/ui/Buttons/ButtonWithLoader';
+import {IAppState} from '../../store/rootDuck';
+import Preloader from '../../components/ui/Loaders/Preloader';
 
 const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -47,85 +36,69 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   sendCodeLoading,
   sendCodeSuccess,
   sendCodeError,
+
+  clearFindInSystem,
+  findInSystemSuccess,
+
+  authData,
 }) => {
-  const [valueTabs, setValueTabs] = useState(0);
-  const [phoneLoginPhase, setPhoneLoginPhase] = useState(0);
-  const [countryCode, setCountryCode] = useState(countries[0].code);
-  const [countryName, setCountryName] = useState(phoneCountryCodes[0]);
-
-  const handleTabsChange = (e: any, newValue: number) => {
-    setValueTabs(newValue);
-  };
-
-  const sendCodeSetPhase = values => {
-    sendCodeConfirm({ phone: values.phone });
-    setPhoneLoginPhase(1);
-  };
-
-  const handleCountryNameChange = (e: any) => {
-    setCountryName(e.target.value);
-  };
-
-  const handleCountryCodeChange = (e: any) => {
-    const countryName = e.target.value;
-
-    countries.forEach(country => {
-      if (country.country === countryName) {
-        setCountryCode(country.code);
-      }
-    });
-  };
+  const history = useHistory();
 
   let validationSchema = {};
 
-  if (valueTabs === 0) {
+  if (authData && authData.type === "email") {
     validationSchema = {
-      email: Yup.string()
-        .email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" }))
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
       password: Yup.string().required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
     };
   }
-  if (valueTabs === 1) {
-    if (phoneLoginPhase === 0) {
-      validationSchema = {
-        phone: Yup.string().required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
-      };
-    }
-    if (phoneLoginPhase === 1) {
-      validationSchema = {
-        codeConfirm: Yup.string().required(
-          intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })
-        ),
-      };
-    }
+  if (authData && authData.type === "phone") {
+    validationSchema = {
+      codeConfirm: Yup.string().required(
+        intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })
+      ),
+    };
   }
+
+  const backHandler = useCallback(() => {
+    clearFindInSystem();
+
+    history.push("/auth");
+  }, [clearFindInSystem, history]);
 
   const { values, errors, touched, resetForm, handleChange, handleBlur, handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: {
-      email: "",
       password: "",
-      phone: `${countryCode}`,
       codeConfirm: "",
     },
     onSubmit: values => {
-      if (valueTabs === 0) {
-        login({ login: values.email, password: values.password });
+      if (authData && authData.type === "email") {
+        login({ login: authData?.value || "", password: values.password });
       }
-      if (valueTabs === 1) {
-        !phoneLoginPhase
-          ? sendCodeSetPhase(values)
-          : loginByPhone({
-              phone: values.phone,
-              code: values.codeConfirm,
-            });
+      if (authData && authData.type === "phone") {
+        loginByPhone({
+          phone: authData?.value || "",
+          code: values.codeConfirm,
+        });
       }
     },
     validationSchema: Yup.object().shape(validationSchema),
   });
 
   const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    if (!findInSystemSuccess) {
+      history.push("/auth");
+    } else if (authData && authData.type === "phone") {
+      sendCodeConfirm({ phone: authData.value });
+    }
+
+    return () => {
+      clearFindInSystem();
+      clearSendCode();
+    };
+  }, []);
 
   useEffect(() => {
     if (sendCodeSuccess || sendCodeError) {
@@ -172,18 +145,10 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     }
   }, [clearLoginByPhone, clearLogin, fetch, loginSuccess, loginByPhoneSuccess]);
 
+  if (sendCodeLoading) return <Preloader />;
+
   return (
     <>
-      <div className="kt-login__head">
-        <span className="kt-login__signup-label">
-          {intl.formatMessage({ id: "AUTH.GENERAL.NO_ACCOUNT" })}
-        </span>
-        &nbsp;&nbsp;
-        <Link to="/auth/registration" className="kt-link kt-login__signup-link">
-          {intl.formatMessage({ id: "AUTH.GENERAL.SIGNUP_BUTTON" })}
-        </Link>
-      </div>
-
       <div className="kt-login__body">
         <div className="kt-login__form">
           <div className="kt-login__title">
@@ -191,175 +156,91 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           </div>
 
           <form noValidate={true} autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
-            <Tabs
-              value={valueTabs}
-              onChange={handleTabsChange}
-              variant="scrollable"
-              indicatorColor="primary"
-              textColor="primary"
-              aria-label="tabs"
-            >
-              <Tab label="По email" {...a11yProps(0)} />
-              <Tab label="По телефону" {...a11yProps(1)} />
-            </Tabs>
+            {authData && authData.type === "email" && (
+              <>
+                <div className="form-group">
+                  <TextField
+                    type="password"
+                    margin="normal"
+                    label={intl.formatMessage({
+                      id: "AUTH.INPUT.PASSWORD",
+                    })}
+                    className="kt-width-full"
+                    name="password"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.password}
+                    helperText={touched.password && errors.password}
+                    error={Boolean(touched.password && errors.password)}
+                  />
+                </div>
 
-            <TabPanel value={valueTabs} index={0}>
+                <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                  <div className="kt-login__actions" style={{ marginRight: 30 }}>
+                    <button
+                      onClick={backHandler}
+                      type="button"
+                      className="btn btn-secondary btn-elevate kt-login__btn-secondary"
+                    >
+                      {intl.formatMessage({ id: "AUTH.GENERAL.BACK_BUTTON" })}
+                    </button>
+                  </div>
+
+                  <div className="kt-login__actions">
+                    <ButtonWithLoader
+                      onPress={handleSubmit}
+                      disabled={fetchLoading || loginLoading}
+                      loading={fetchLoading || loginLoading}
+                    >
+                      <FormattedMessage id="AUTH.LOGIN.BUTTON" />
+                    </ButtonWithLoader>
+                  </div>
+                </div>
+
+                <Link to="/auth/forgot-password" className="kt-link kt-login__link-forgot">
+                  <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
+                </Link>
+              </>
+            )}
+
+            {authData && authData.type === "phone" && (
               <div className="form-group">
                 <TextField
-                  type="email"
+                  type="text"
                   label={intl.formatMessage({
-                    id: "AUTH.INPUT.EMAIL",
+                    id: "AUTH.INPUT.CODE",
                   })}
                   margin="normal"
                   className="kt-width-full"
-                  name="email"
+                  name="codeConfirm"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.email}
-                  helperText={touched.email && errors.email}
-                  error={Boolean(touched.email && errors.email)}
+                  value={values.codeConfirm}
+                  helperText={touched.codeConfirm && errors.codeConfirm}
+                  error={Boolean(touched.codeConfirm && errors.codeConfirm)}
                 />
-              </div>
 
-              <div className="form-group">
-                <TextField
-                  type="password"
-                  margin="normal"
-                  label={intl.formatMessage({
-                    id: "AUTH.INPUT.PASSWORD",
-                  })}
-                  className="kt-width-full"
-                  name="password"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.password}
-                  helperText={touched.password && errors.password}
-                  error={Boolean(touched.password && errors.password)}
-                />
-              </div>
-
-              <div className="kt-login__actions">
-                <div>
-                  <ButtonWithLoader
-                    onPress={handleSubmit}
-                    disabled={
-                      fetchLoading || loginLoading || loginByPhoneLoading || sendCodeLoading
-                    }
-                    loading={fetchLoading || loginLoading}
+                <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                  <button
+                    onClick={backHandler}
+                    type="button"
+                    className="btn btn-secondary btn-elevate kt-login__btn-secondary"
                   >
-                    <FormattedMessage id="AUTH.LOGIN.BUTTON" />
-                  </ButtonWithLoader>
-                  <div style={{ marginTop: 16 }}>
-                    <Link to="/auth/forgot-password" className="kt-link kt-login__link-forgot">
-                      <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />
-                    </Link>
+                    {intl.formatMessage({ id: "AUTH.GENERAL.BACK_BUTTON" })}
+                  </button>
+
+                  <div className="kt-login__actions">
+                    <ButtonWithLoader
+                      onPress={handleSubmit}
+                      disabled={fetchLoading || loginLoading || loginByPhoneLoading}
+                      loading={fetchLoading || loginLoading || loginByPhoneLoading}
+                    >
+                      <FormattedMessage id="AUTH.LOGIN.BUTTON" />
+                    </ButtonWithLoader>
                   </div>
                 </div>
               </div>
-            </TabPanel>
-
-            <TabPanel value={valueTabs} index={1}>
-              <div className="form-group">
-                {phoneLoginPhase === 0 && (
-                  <>
-                    <TextField
-                      select
-                      type="country"
-                      label={intl.formatMessage({
-                        id: "AUTH.INPUT.COUNTRIES",
-                      })}
-                      margin="normal"
-                      className="kt-width-full"
-                      name="country"
-                      onBlur={handleBlur}
-                      //@ts-ignore
-                      onChange={e => {
-                        handleCountryNameChange(e);
-                        handleCountryCodeChange(e);
-                      }}
-                      value={countryName}
-                    >
-                      {countries.map(item => (
-                        <MenuItem key={item.id} value={item.country}>
-                          {item.country}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-
-                    <div style={{width: '100%', display: 'flex', alignItems: 'center'}}>
-                      <div style={{fontSize: '16px', marginTop: '16px', marginRight: '3px', color: '#000'}}>+</div>
-                      <TextField
-                        type="phone"
-                        label={intl.formatMessage({
-                          id: "AUTH.INPUT.PHONE",
-                        })}
-                        margin="normal"
-                        className="kt-width-full"
-                        name="phone"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        value={values.phone}
-                        helperText={touched.phone && errors.phone}
-                        error={Boolean(touched.phone && errors.phone)}
-                      />
-                    </div>
-
-                    <div className="kt-login__actions">
-                      <ButtonWithLoader
-                        onPress={handleSubmit}
-                        disabled={
-                          fetchLoading || loginLoading || loginByPhoneLoading || sendCodeLoading
-                        }
-                        loading={fetchLoading || loginLoading}
-                      >
-                        <FormattedMessage id="AUTH.LOGIN.PHONE" />
-                      </ButtonWithLoader>
-                    </div>
-                  </>
-                )}
-
-                {phoneLoginPhase === 1 && (
-                  <>
-                    <TextField
-                      type="text"
-                      label={intl.formatMessage({
-                        id: "AUTH.INPUT.CODE",
-                      })}
-                      margin="normal"
-                      className="kt-width-full"
-                      name="codeConfirm"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.codeConfirm}
-                      helperText={touched.codeConfirm && errors.codeConfirm}
-                      error={Boolean(touched.codeConfirm && errors.codeConfirm)}
-                    />
-
-                    <div style={{ display: "flex", justifyContent: "flex-start" }}>
-                      <div className="kt-login__actions" style={{ marginRight: 30 }}>
-                        <ButtonWithLoader
-                          onPress={() => setPhoneLoginPhase(0)}
-                          disabled={fetchLoading || loginLoading}
-                          loading={fetchLoading || loginLoading}
-                        >
-                          <FormattedMessage id="AUTH.GENERAL.BACK_BUTTON" />
-                        </ButtonWithLoader>
-                      </div>
-
-                      <div className="kt-login__actions">
-                        <ButtonWithLoader
-                          onPress={handleSubmit}
-                          disabled={fetchLoading || loginLoading}
-                          loading={fetchLoading || loginLoading}
-                        >
-                          <FormattedMessage id="AUTH.LOGIN.BUTTON" />
-                        </ButtonWithLoader>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </TabPanel>
+            )}
           </form>
         </div>
       </div>
@@ -382,6 +263,12 @@ const connector = connect(
     sendCodeLoading: state.auth.sendCodeConfirmLoading,
     sendCodeSuccess: state.auth.sendCodeConfirmSuccess,
     sendCodeError: state.auth.sendCodeConfirmError,
+
+    findInSystemLoading: state.auth.findInSystemLoading,
+    findInSystemSuccess: state.auth.findInSystemSuccess,
+    findInSystemError: state.auth.findInSystemError,
+
+    authData: state.auth.authData,
   }),
   {
     fetch: authActions.fetchRequest,
@@ -393,6 +280,9 @@ const connector = connect(
 
     sendCodeConfirm: authActions.sendCodeRequest,
     clearSendCode: authActions.clearSendCode,
+
+    findInSystem: authActions.findInSystemRequest,
+    clearFindInSystem: authActions.clearFindInSystem,
   }
 );
 

@@ -120,3 +120,5 @@ export interface IUserBidFilters {
   filter_count: number;
   filters: any[];
 }
+
+export type LoginType = "email" | "phone"

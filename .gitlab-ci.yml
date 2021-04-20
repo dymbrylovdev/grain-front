@@ -15,20 +15,20 @@ before_script:
   - docker info
   - docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD
 
-# jobs for grain-fx.me-interactive.net (branch 1.7.9):
+# jobs for grain-fx.me-interactive.net (branch 1.7.10):
 build-grain-fx:
   stage: build
   script:
     - docker build --pull -t $FX_IMAGE .
     - docker push $FX_IMAGE
   only:
-    - '1.7.9'
+    - '1.7.10'
 
 deploy-grain-fx:
   stage: deploy
   image: gitlab/dind:latest
   only:
-    - '1.7.9'
+    - '1.7.10'
   environment: production
   services:
     - docker:dind
