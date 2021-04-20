@@ -114,10 +114,10 @@ const getInitialValues = (
     location:
       editMode === "create"
         ? !!vendorId
-        ? !!user && user.points.length === 1
-          ? user.points[0]
-          : { text: "" }
-        : !!me && me.points.length === 1
+          ? !!user && user.points.length === 1
+            ? user.points[0]
+            : { text: "" }
+          : !!me && me.points.length === 1
           ? me.points[0]
           : { text: "" }
         : bid?.location || { text: "" },
@@ -131,7 +131,7 @@ const getInitialValues = (
       values[`parameter${item.parameter_id}`] = item.value;
     });
   }
-  
+
   return values;
 };
 
@@ -199,7 +199,7 @@ interface IProps {
     {
       cropId: number;
     }
-    >;
+  >;
   cropParams: ICropParam[] | undefined;
   cropParamsLoading: boolean;
   buttonLoading: boolean;
@@ -217,7 +217,7 @@ interface IProps {
       is_sending_email: number;
       is_sending_sms: number;
     }
-    >;
+  >;
   edit: (
     id: number,
     data: IBidToRequest
@@ -227,7 +227,7 @@ interface IProps {
       id: number;
       data: IBidToRequest;
     }
-    >;
+  >;
   createSuccess: boolean;
   createError: string | null;
   clearCreate: () => Action<"bids/CLEAR_CREATE">;
@@ -244,69 +244,69 @@ interface IProps {
     {
       openInfoAlert: boolean;
     }
-    >;
+  >;
   openInfoAlert: boolean;
   fetchFilters: any;
   filterCount: number;
 }
 
 const BidForm: React.FC<IProps> = ({
-                                     intl,
-                                     vendorId,
-                                     user,
-                                     salePurchaseMode,
-                                     editMode,
-                                     cropId,
-                                     crops,
-                                     bid,
-  
-                                     fetchMe,
-                                     me,
-  
-                                     create,
-                                     edit,
-                                     post,
-                                     editContactViewCount,
-  
-                                     fetchLocations,
-                                     locations,
-                                     loadingLocations,
-                                     clearLocations,
-  
-                                     bidsPair,
-                                     clearBidsPair,
-                                     fetchBidsPair,
-                                     bidsPairSuccess,
-                                     bidsPairError,
-                                     bidsPairLoading,
-  
-                                     clearCropParams,
-                                     fetchCropParams,
-                                     cropParams,
-                                     cropParamsLoading,
-  
-                                     buttonLoading,
-                                     setAlertOpen,
-  
-                                     createSuccess,
-                                     createError,
-                                     clearCreate,
-  
-                                     postSuccess,
-                                     postError,
-                                     clearPost,
-  
-                                     profit,
-                                     openInfoAlert,
-                                     setOpenInfoAlert,
-  
-                                     fetchFilters,
-                                     filterCount,
-                                   }) => {
+  intl,
+  vendorId,
+  user,
+  salePurchaseMode,
+  editMode,
+  cropId,
+  crops,
+  bid,
+
+  fetchMe,
+  me,
+
+  create,
+  edit,
+  post,
+  editContactViewCount,
+
+  fetchLocations,
+  locations,
+  loadingLocations,
+  clearLocations,
+
+  bidsPair,
+  clearBidsPair,
+  fetchBidsPair,
+  bidsPairSuccess,
+  bidsPairError,
+  bidsPairLoading,
+
+  clearCropParams,
+  fetchCropParams,
+  cropParams,
+  cropParamsLoading,
+
+  buttonLoading,
+  setAlertOpen,
+
+  createSuccess,
+  createError,
+  clearCreate,
+
+  postSuccess,
+  postError,
+  clearPost,
+
+  profit,
+  openInfoAlert,
+  setOpenInfoAlert,
+
+  fetchFilters,
+  filterCount,
+}) => {
   const history = useHistory();
   const classes = useStyles();
   const innerClasses = useInnerStyles();
-  
+
   const inputEl = useRef<HTMLButtonElement>(null);
   const [goToRef, setGoToRef] = useState(false);
   const [isMoreBidOpen, setMoreBidOpen] = useState(false);
@@ -314,18 +314,18 @@ const BidForm: React.FC<IProps> = ({
   const [isSendingSms, setSendingSms] = useState(false);
   const [isContactAlertOpen, setContactAlertOpen] = useState(false);
   const [fullPrepayment, setFullPrepayment] = useState(false);
-  
+
   const createFilter = (id: number) => {
     if (editMode === "edit") post(id);
   };
-  
+
   useEffect(() => {
     if (goToRef) {
       inputEl.current?.focus();
       setGoToRef(false);
     }
   }, [goToRef]);
-  
+
   const bidId: number = !!bid ? bid.id : 0;
   const vendor_id =
     (!bid && +vendorId) || (bid && bid.vendor && bid.vendor.id) || (me?.id as number);
@@ -333,16 +333,16 @@ const BidForm: React.FC<IProps> = ({
   const currentCropId: number = !!bid
     ? bid.crop_id
     : !!cropId
-      ? cropId
-      : vendor?.crops.length === 1
-        ? vendor.crops[0].id
-        : 0;
-  
+    ? cropId
+    : vendor?.crops.length === 1
+    ? vendor.crops[0].id
+    : 0;
+
   const onCheckboxChange = (e: any, val: number) => {
     if (val === 1) setSendingEmail(!isSendingEmail);
     if (val === 2) setSendingSms(!isSendingSms);
   };
-  
+
   const linkToContact = () => {
     let contactViewCount = me?.contact_view_count;
     //@ts-ignore
@@ -360,14 +360,14 @@ const BidForm: React.FC<IProps> = ({
         !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) &&
         history.location.pathname !== "/user/profile"
       )
-      //@ts-ignore
+        //@ts-ignore
         editContactViewCount({ data: { contact_view_count: contactViewCount - 1 } });
     } else {
       setContactAlertOpen(!isContactAlertOpen);
       setTimeout(() => setContactAlertOpen(false), 5000);
     }
   };
-  
+
   const {
     values,
     errors,
@@ -393,7 +393,7 @@ const BidForm: React.FC<IProps> = ({
       const is_sending_email = isSendingEmail ? 1 : 0;
       const is_sending_sms = isSendingSms ? 1 : 0;
       const newParamValues = initializeParamValues();
-      
+
       const params: { [x: string]: any } = {
         ...values,
         vendor_id,
@@ -432,9 +432,9 @@ const BidForm: React.FC<IProps> = ({
           : Yup.string(),
     }),
   });
-  
+
   const [formikErrored, setFormikErrored] = useState(false);
-  
+
   const initializeParamValues = useCallback(() => {
     const paramValues: IParamValue[] = [];
     cropParams?.forEach(param => {
@@ -443,25 +443,25 @@ const BidForm: React.FC<IProps> = ({
         paramValues.push({ parameter_id: id, value: values[`parameter${id}`].toString() });
       }
     });
-    
+
     return paramValues;
   }, [cropParams, values]);
-  
+
   const { enqueueSnackbar } = useSnackbar();
-  
+
   // * yandex map --------------->
-  
+
   const [ymaps, setYmaps] = useState<any>();
   const [map, setMap] = useState<any>();
   const [routeLoading, setRouteLoading] = useState(false);
   const routeRef = useRef();
-  
+
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
-  
+
   useEffect(() => {
     setMySelectedMapPoint(me?.points.filter(el => el.active)[0] || null)
   }, [me])
-  
+
   const mapState = useMemo(() => {
     if (bid && bid.location) {
       return {center: [bid.location.lat, bid.location.lng], zoom: 7, margin: [10, 10, 10, 10]};
@@ -469,7 +469,7 @@ const BidForm: React.FC<IProps> = ({
       return null;
     }
   }, [bid])
-  
+
   const addRoute = useCallback(async (pointA: any, pointB: any) => {
     map.geoObjects.remove(routeRef.current);
     const route = await ymaps.route([
@@ -480,17 +480,17 @@ const BidForm: React.FC<IProps> = ({
     map.geoObjects.add(route);
     setRouteLoading(false);
   }, [ymaps, map, routeRef])
-  
+
   useEffect(() => {
     if (ymaps && map && bid && bid.location && mySelectedMapPoint) {
       setRouteLoading(true);
       addRoute(bid.location, mySelectedMapPoint);
     }
   }, [ymaps, map, bid, mySelectedMapPoint])
-  
-  
+
+
   // <--------------- yandex map *
-  
+
   useEffect(() => {
     if (formikErrored) {
       enqueueSnackbar(intl.formatMessage({ id: "NOTISTACK.ERRORS.EMPTY_FIELDS" }), {
@@ -499,7 +499,7 @@ const BidForm: React.FC<IProps> = ({
       setFormikErrored(false);
     }
   }, [enqueueSnackbar, formikErrored, intl]);
-  
+
   useEffect(() => {
     if (createSuccess || createError) {
       enqueueSnackbar(
@@ -529,7 +529,7 @@ const BidForm: React.FC<IProps> = ({
     fetchMe,
     fetchFilters,
   ]);
-  
+
   useEffect(() => {
     if (postSuccess || postError) {
       enqueueSnackbar(
@@ -543,7 +543,7 @@ const BidForm: React.FC<IProps> = ({
       clearPost();
     }
   }, [clearPost, postError, postSuccess, enqueueSnackbar, history, intl, salePurchaseMode]);
-  
+
   useEffect(() => {
     resetForm({
       values: getInitialValues(
@@ -559,51 +559,51 @@ const BidForm: React.FC<IProps> = ({
       ),
     });
   }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
-  
+
   useEffect(() => {
     if (editMode === "create" && me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
       let params = {};
       const newParamsValues = initializeParamValues();
-      
+
       params = {
         crop_id: values.crop_id,
         parameter_values: newParamsValues,
         location: values.location,
       };
-      
+
       //@ts-ignore
       if (params.crop_id !== "") fetchBidsPair(values.bid_type, params);
     }
   }, [values.bid_type, values.crop_id, values.location, initializeParamValues, fetchBidsPair]);
-  
+
   useEffect(() => {
     clearBidsPair();
   }, [history, clearBidsPair]);
-  
+
   useEffect(() => {
     if (currentCropId) fetchCropParams(currentCropId);
   }, [currentCropId, fetchCropParams]);
-  
+
   useEffect(() => {
     if (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0) {
       setSendingEmail(false);
     }
   }, [me, filterCount]);
-  
+
   useEffect(() => {
     if (values.prepayment_amount === 100) setFullPrepayment(true);
   }, [values.prepayment_amount]);
-  
+
   useEffect(() => {
     if (fullPrepayment) setFieldValue("payment_term", "");
   }, [fullPrepayment]);
-  
+
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
-  
+
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
-  
+
   // console.log(bid);
-  
+
   return (
     <div className={classes.form}>
       <div className={classes.topButtonsContainer}>
@@ -646,7 +646,7 @@ const BidForm: React.FC<IProps> = ({
           )}
         </div>
       </div>
-      
+
       {loading ? (
         <Skeleton width="100%" height={127} animation="wave" />
       ) : (
@@ -689,10 +689,10 @@ const BidForm: React.FC<IProps> = ({
                     bid.type === "sale"
                       ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
                       : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
-                    }: ${bid.vendor.fio || bid.vendor.login || `ID ${bid.vendor.id}`}`}
+                  }: ${bid.vendor.fio || bid.vendor.login || `ID ${bid.vendor.id}`}`}
                 </div>
               </div>
-              
+
               {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
                 <Alert
                   className={classes.infoAlert}
@@ -702,10 +702,10 @@ const BidForm: React.FC<IProps> = ({
                 >
                   {`Сегодня вам доступен просмотр ${
                     me?.contact_view_count
-                    } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
+                  } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
                 </Alert>
               )}
-              
+
               {!!bid.vendor.company && (
                 <div className={classes.bottomMargin1}>{bid.vendor.company.short_name}</div>
               )}
@@ -726,57 +726,57 @@ const BidForm: React.FC<IProps> = ({
           </>
         )
       )}
-      
+
       {!!bid &&
-      (loading ? (
-        <Skeleton width="100%" height={20} animation="wave" />
-      ) : (
-        <p>
-          {intl.formatMessage({ id: "DEALS.DEAL.DATE" })}:{" "}
-          {`${bid.modified_at.slice(8, 10)}.${bid.modified_at.slice(
-            5,
-            7
-          )}.${bid.modified_at.slice(0, 4)}`}
-        </p>
-      ))}
-      
+        (loading ? (
+          <Skeleton width="100%" height={20} animation="wave" />
+        ) : (
+          <p>
+            {intl.formatMessage({ id: "DEALS.DEAL.DATE" })}:{" "}
+            {`${bid.modified_at.slice(8, 10)}.${bid.modified_at.slice(
+              5,
+              7
+            )}.${bid.modified_at.slice(0, 4)}`}
+          </p>
+        ))}
+
       {!!bid?.vendor?.company?.colors && !!bid?.vendor?.company_confirmed_by_payment && (
         <TrafficLight intl={intl} colors={bid.vendor.company.colors} />
       )}
-      
+
       {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
-      (loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <TextField
-          select
-          type="text"
-          label={intl.formatMessage({
-            id: "BIDSLIST.TABLE.BID_TYPE",
-          })}
-          margin="normal"
-          name="bid_type"
-          value={values.bid_type}
-          variant="outlined"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          disabled={
-            editMode !== "create" ||
-            (!!me && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])) ||
-            (!!me &&
-              accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
-              !!vendorId &&
-              !!user &&
-              !accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]))
-          }
-        >
-          <MenuItem value={"sale"}>{intl.formatMessage({ id: "BID.TYPE.SALE" })}</MenuItem>
-          <MenuItem value={"purchase"}>
-            {intl.formatMessage({ id: "BID.TYPE.PURCHASE" })}
-          </MenuItem>
-        </TextField>
-      ))}
-      
+        (loading ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            select
+            type="text"
+            label={intl.formatMessage({
+              id: "BIDSLIST.TABLE.BID_TYPE",
+            })}
+            margin="normal"
+            name="bid_type"
+            value={values.bid_type}
+            variant="outlined"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            disabled={
+              editMode !== "create" ||
+              (!!me && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])) ||
+              (!!me &&
+                accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+                !!vendorId &&
+                !!user &&
+                !accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]))
+            }
+          >
+            <MenuItem value={"sale"}>{intl.formatMessage({ id: "BID.TYPE.SALE" })}</MenuItem>
+            <MenuItem value={"purchase"}>
+              {intl.formatMessage({ id: "BID.TYPE.PURCHASE" })}
+            </MenuItem>
+          </TextField>
+        ))}
+
       {loading ? (
         <Skeleton width="100%" height={70} animation="wave" />
       ) : (
@@ -811,36 +811,36 @@ const BidForm: React.FC<IProps> = ({
           )}
         />
       )}
-      
+
       {editMode === "edit" &&
-      bid?.vendor_use_vat !== bid?.vendor?.use_vat &&
-      (loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <Collapse in={openInfoAlert}>
-          <Alert
-            className={classes.infoAlert}
-            severity="warning"
-            color="error"
-            style={{ marginTop: 8, marginBottom: 8 }}
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  setOpenInfoAlert(false);
-                }}
-              >
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
-          >
-            {intl.formatMessage({ id: "BID.PRICE.WARNING" })}
-          </Alert>
-        </Collapse>
-      ))}
-      
+        bid?.vendor_use_vat !== bid?.vendor?.use_vat &&
+        (loading ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <Collapse in={openInfoAlert}>
+            <Alert
+              className={classes.infoAlert}
+              severity="warning"
+              color="error"
+              style={{ marginTop: 8, marginBottom: 8 }}
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setOpenInfoAlert(false);
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              {intl.formatMessage({ id: "BID.PRICE.WARNING" })}
+            </Alert>
+          </Collapse>
+        ))}
+
       {loading ? (
         <Skeleton width="100%" height={70} animation="wave" />
       ) : (
@@ -860,26 +860,26 @@ const BidForm: React.FC<IProps> = ({
           InputProps={
             editMode !== "view"
               ? {
-                style:
-                  editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
-                    ? {
-                      color: "#fd397a",
-                    }
-                    : {},
-                inputComponent: NumberFormatCustom as any,
-                endAdornment: (
-                  <IconButton onClick={() => setFieldValue("price", "")}>
-                    <CloseIcon />
-                  </IconButton>
-                ),
-              }
+                  style:
+                    editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
+                      ? {
+                          color: "#fd397a",
+                        }
+                      : {},
+                  inputComponent: NumberFormatCustom as any,
+                  endAdornment: (
+                    <IconButton onClick={() => setFieldValue("price", "")}>
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }
               : undefined
           }
           disabled={editMode === "view"}
           autoComplete="off"
         />
       )}
-      
+
       {editMode === "create" && bidsPair && (
         <>
           {bidsPairLoading ? (
@@ -898,7 +898,7 @@ const BidForm: React.FC<IProps> = ({
                   })}`}
                 </Alert>
               )}
-              
+
               {bidsPairSuccess && (
                 <>
                   {bidsPair.price_with_delivery ? (
@@ -910,7 +910,7 @@ const BidForm: React.FC<IProps> = ({
                     >
                       {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
                         bidsPair.price_with_delivery
-                        } ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
+                      } ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
                     </Alert>
                   ) : (
                     <Alert
@@ -921,7 +921,7 @@ const BidForm: React.FC<IProps> = ({
                     >
                       {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
                         bidsPair.price
-                        } ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
+                      } ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
                     </Alert>
                   )}
                 </>
@@ -930,7 +930,7 @@ const BidForm: React.FC<IProps> = ({
           )}
         </>
       )}
-      
+
       {loading ? (
         <Skeleton width="100%" height={70} animation="wave" />
       ) : (
@@ -950,351 +950,351 @@ const BidForm: React.FC<IProps> = ({
           )}
         </>
       )}
-      
+
       {!!me &&
-      me.use_vat &&
-      values.bid_type === "sale" &&
-      !!bid &&
-      !!bid.vat &&
-      !vendorUseVat &&
-      (loading ? (
-        <>
+        me.use_vat &&
+        values.bid_type === "sale" &&
+        !!bid &&
+        !!bid.vat &&
+        !vendorUseVat &&
+        (loading ? (
+          <>
+            <Skeleton width="100%" height={70} animation="wave" />
+            <Skeleton width="100%" height={37} animation="wave" />
+          </>
+        ) : (
+          <>
+            <TextField
+              type="text"
+              label={intl.formatMessage({ id: "BIDSLIST.TABLE.COST_WITH_VAT" }, { vat: bid.vat })}
+              margin="normal"
+              name="price"
+              value={thousands(Math.round(+values.price * (+bid.vat / 100 + 1)).toString())}
+              variant="outlined"
+              disabled
+            />
+            <p>
+              {intl.formatMessage(
+                { id: "BIDSLIST.TABLE.COST_WITH_VAT.ABOUT" },
+                { vat: Math.round((+values.price * +bid.vat) / 100) }
+              )}
+            </p>
+          </>
+        ))}
+
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+        editMode === "view" &&
+        !!bid &&
+        !!bid.point_prices &&
+        bid.point_prices.length > 0 &&
+        (loading ? (
           <Skeleton width="100%" height={70} animation="wave" />
-          <Skeleton width="100%" height={37} animation="wave" />
-        </>
-      ) : (
-        <>
+        ) : (
           <TextField
             type="text"
-            label={intl.formatMessage({ id: "BIDSLIST.TABLE.COST_WITH_VAT" }, { vat: bid.vat })}
+            label={intl.formatMessage({ id: "DEALS.TABLE.PROFIT_BY_TONN" })}
             margin="normal"
-            name="price"
-            value={thousands(Math.round(+values.price * (+bid.vat / 100 + 1)).toString())}
+            value={thousands(Math.round(bid.point_prices[0].profit).toString())}
             variant="outlined"
             disabled
           />
-          <p>
-            {intl.formatMessage(
-              { id: "BIDSLIST.TABLE.COST_WITH_VAT.ABOUT" },
-              { vat: Math.round((+values.price * +bid.vat) / 100) }
-            )}
-          </p>
-        </>
-      ))}
-      
+        ))}
+
       {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
-      editMode === "view" &&
-      !!bid &&
-      !!bid.point_prices &&
-      bid.point_prices.length > 0 &&
-      (loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <TextField
-          type="text"
-          label={intl.formatMessage({ id: "DEALS.TABLE.PROFIT_BY_TONN" })}
-          margin="normal"
-          value={thousands(Math.round(bid.point_prices[0].profit).toString())}
-          variant="outlined"
-          disabled
-        />
-      ))}
-      
-      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
-      editMode === "view" &&
-      !!bid &&
-      !!bid.point_prices &&
-      bid.point_prices.length > 0 &&
-      (loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <TextField
-          type="text"
-          label={intl.formatMessage({ id: "DEALS.TABLE.TOTAL_PROFIT" })}
-          margin="normal"
-          value={thousands(Math.round(bid.point_prices[0].profit * values.volume).toString())}
-          variant="outlined"
-          disabled
-        />
-      ))}
-      
+        editMode === "view" &&
+        !!bid &&
+        !!bid.point_prices &&
+        bid.point_prices.length > 0 &&
+        (loading ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            type="text"
+            label={intl.formatMessage({ id: "DEALS.TABLE.TOTAL_PROFIT" })}
+            margin="normal"
+            value={thousands(Math.round(bid.point_prices[0].profit * values.volume).toString())}
+            variant="outlined"
+            disabled
+          />
+        ))}
+
       {salePurchaseMode === "purchase" &&
-      (loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <TextField
-          type="text"
-          label={intl.formatMessage({
-            id: "BIDSLIST.TABLE.PAYMENT_TERM",
-          })}
-          margin="normal"
-          name="payment_term"
-          value={values.payment_term}
-          variant="outlined"
-          onBlur={handleBlur}
-          onChange={e => {
-            let newValue = e.target.value;
-            if (+newValue < 0) {
-              newValue = "0";
-            }
-            if (+newValue > 999) {
-              newValue = "999";
-            }
-            setFieldValue("payment_term", newValue);
-          }}
-          helperText={touched.payment_term && errors.payment_term}
-          error={Boolean(touched.payment_term && errors.payment_term)}
-          InputProps={
-            editMode !== "view"
-              ? {
-                inputComponent: NumberFormatCustom as any,
-                endAdornment: (
-                  <IconButton
-                    onClick={() => setFieldValue("payment_term", "")}
-                    disabled={fullPrepayment}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                ),
-              }
-              : undefined
-          }
-          disabled={editMode === "view" || fullPrepayment}
-          autoComplete="off"
-        />
-      ))}
-      
-      {editMode === "view" &&
-      accessByRoles(me, [
-        "ROLE_ADMIN",
-        "ROLE_MANAGER",
-        "ROLE_TRADER",
-        "ROLE_BUYER",
-        "ROLE_VENDOR",
-      ]) &&
-      me?.id !== bid?.vendor.id &&
-      (loading ? (
-        <Skeleton width="100%" height={225} animation="wave" />
-      ) : (
-        <div className={classes.box}>
-          <div className={innerClasses.calcTitle}>
-            {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
-          </div>
-          {/* //* HERE */}
+        (loading ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
           <TextField
             type="text"
             label={intl.formatMessage({
-              id: "BID.CALCULATOR.PRICE_PER_KM",
+              id: "BIDSLIST.TABLE.PAYMENT_TERM",
             })}
             margin="normal"
-            name="pricePerKm"
-            value={values.pricePerKm}
+            name="payment_term"
+            value={values.payment_term}
             variant="outlined"
             onBlur={handleBlur}
-            onChange={handleChange}
-            InputProps={{
-              inputComponent: NumberFormatCustom as any,
+            onChange={e => {
+              let newValue = e.target.value;
+              if (+newValue < 0) {
+                newValue = "0";
+              }
+              if (+newValue > 999) {
+                newValue = "999";
+              }
+              setFieldValue("payment_term", newValue);
             }}
+            helperText={touched.payment_term && errors.payment_term}
+            error={Boolean(touched.payment_term && errors.payment_term)}
+            InputProps={
+              editMode !== "view"
+                ? {
+                    inputComponent: NumberFormatCustom as any,
+                    endAdornment: (
+                      <IconButton
+                        onClick={() => setFieldValue("payment_term", "")}
+                        disabled={fullPrepayment}
+                      >
+                        <CloseIcon />
+                      </IconButton>
+                    ),
+                  }
+                : undefined
+            }
+            disabled={editMode === "view" || fullPrepayment}
             autoComplete="off"
-            autoFocus={true}
           />
-          <div className={innerClasses.calcDescription}>
-            {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
-              ? intl.formatMessage(
-                { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" },
-                { vat: bid.vat }
-              )
-              : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
+        ))}
+
+      {editMode === "view" &&
+        accessByRoles(me, [
+          "ROLE_ADMIN",
+          "ROLE_MANAGER",
+          "ROLE_TRADER",
+          "ROLE_BUYER",
+          "ROLE_VENDOR",
+        ]) &&
+        me?.id !== bid?.vendor.id &&
+        (loading ? (
+          <Skeleton width="100%" height={225} animation="wave" />
+        ) : (
+          <div className={classes.box}>
+            <div className={innerClasses.calcTitle}>
+              {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
+            </div>
+            {/* //* HERE */}
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "BID.CALCULATOR.PRICE_PER_KM",
+              })}
+              margin="normal"
+              name="pricePerKm"
+              value={values.pricePerKm}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              InputProps={{
+                inputComponent: NumberFormatCustom as any,
+              }}
+              autoComplete="off"
+              autoFocus={true}
+            />
+            <div className={innerClasses.calcDescription}>
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
+                ? intl.formatMessage(
+                    { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" },
+                    { vat: bid.vat }
+                  )
+                : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
+            </div>
+            <div style={{ height: 8 }}></div>
+            <Grid container direction="column" justify="center" alignItems="flex-start">
+              {!!bid?.point_prices &&
+                (bid.point_prices.length > 0 ? (
+                  bid.point_prices.map((item, i) => (
+                    <div key={i}>
+                      {!!me &&
+                      me.use_vat &&
+                      values.bid_type === "sale" &&
+                      !!bid &&
+                      !!bid.vat &&
+                      !vendorUseVat ? (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
+                            ).toString()
+                          )}
+                        </b>
+                      ) : (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
+                            ).toString()
+                          )}
+                        </b>
+                      )}
+                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
+                    </div>
+                  ))
+                ) : (
+                  <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
+                ))}
+            </Grid>
+
+            <div style={{ height: 8 }}></div>
+
+            <div className={innerClasses.calcDescription}>
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
+                ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })
+                : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })}
+            </div>
+            <div style={{ height: 8 }}></div>
+            <Grid container direction="column" justify="center" alignItems="flex-start">
+              {bid &&
+                bid.point_prices &&
+                (bid.point_prices.length > 0 ? (
+                  bid.point_prices.map((item, i) => (
+                    <div key={i}>
+                      {!!me &&
+                      me.use_vat &&
+                      values.bid_type === "sale" &&
+                      !!bid &&
+                      !!bid.vat &&
+                      !vendorUseVat ? (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              getDeliveryPrice(
+                                bid,
+                                i,
+                                values.pricePerKm,
+                                salePurchaseMode,
+                                +bid.vat
+                              )
+                            ).toString()
+                          )}
+                        </b>
+                      ) : (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
+                            ).toString()
+                          )}
+                        </b>
+                      )}
+                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
+                    </div>
+                  ))
+                ) : (
+                  <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
+                ))}
+            </Grid>
+
+            <div style={{ height: 8 }}></div>
+
+            <div className={innerClasses.calcDescription}>
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
+                ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY_ALL" })
+                : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY_ALL" })}
+            </div>
+            <div style={{ height: 8 }}></div>
+            <Grid container direction="column" justify="center" alignItems="flex-start">
+              {bid &&
+                bid.point_prices &&
+                (bid.point_prices.length > 0 ? (
+                  bid.point_prices.map((item, i) => (
+                    <div key={i}>
+                      {!!me &&
+                      me.use_vat &&
+                      values.bid_type === "sale" &&
+                      !!bid &&
+                      !!bid.vat &&
+                      !vendorUseVat ? (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              values.volume *
+                                getDeliveryPrice(
+                                  bid,
+                                  i,
+                                  values.pricePerKm,
+                                  salePurchaseMode,
+                                  +bid.vat
+                                )
+                            ).toString()
+                          )}
+                        </b>
+                      ) : (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              values.volume *
+                                getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
+                            ).toString()
+                          )}
+                        </b>
+                      )}
+                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
+                    </div>
+                  ))
+                ) : (
+                  <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
+                ))}
+            </Grid>
+
+            <div style={{ height: 8 }}></div>
+
+            <div className={innerClasses.calcDescription}>
+              {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
+                ? intl.formatMessage(
+                    { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT_ALL" },
+                    { vat: bid.vat }
+                  )
+                : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_ALL" })}
+            </div>
+            <div style={{ height: 8 }}></div>
+            <Grid container direction="column" justify="center" alignItems="flex-start">
+              {bid &&
+                bid.point_prices &&
+                (bid.point_prices.length > 0 ? (
+                  bid.point_prices.map((item, i) => (
+                    <div key={i}>
+                      {!!me &&
+                      me.use_vat &&
+                      values.bid_type === "sale" &&
+                      !!bid &&
+                      !!bid.vat &&
+                      !vendorUseVat ? (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              values.volume *
+                                getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
+                            ).toString()
+                          )}
+                        </b>
+                      ) : (
+                        <b>
+                          {thousands(
+                            Math.round(
+                              values.volume *
+                                getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
+                            ).toString()
+                          )}
+                        </b>
+                      )}
+                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
+                    </div>
+                  ))
+                ) : (
+                  <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
+                ))}
+            </Grid>
           </div>
-          <div style={{ height: 8 }}></div>
-          <Grid container direction="column" justify="center" alignItems="flex-start">
-            {!!bid?.point_prices &&
-            (bid.point_prices.length > 0 ? (
-              bid.point_prices.map((item, i) => (
-                <div key={i}>
-                  {!!me &&
-                  me.use_vat &&
-                  values.bid_type === "sale" &&
-                  !!bid &&
-                  !!bid.vat &&
-                  !vendorUseVat ? (
-                    <b>
-                      {thousands(
-                        Math.round(
-                          getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
-                        ).toString()
-                      )}
-                    </b>
-                  ) : (
-                    <b>
-                      {thousands(
-                        Math.round(
-                          getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
-                        ).toString()
-                      )}
-                    </b>
-                  )}
-                  {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                </div>
-              ))
-            ) : (
-              <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
-            ))}
-          </Grid>
-          
-          <div style={{ height: 8 }}></div>
-          
-          <div className={innerClasses.calcDescription}>
-            {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
-              ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })
-              : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })}
-          </div>
-          <div style={{ height: 8 }}></div>
-          <Grid container direction="column" justify="center" alignItems="flex-start">
-            {bid &&
-            bid.point_prices &&
-            (bid.point_prices.length > 0 ? (
-              bid.point_prices.map((item, i) => (
-                <div key={i}>
-                  {!!me &&
-                  me.use_vat &&
-                  values.bid_type === "sale" &&
-                  !!bid &&
-                  !!bid.vat &&
-                  !vendorUseVat ? (
-                    <b>
-                      {thousands(
-                        Math.round(
-                          getDeliveryPrice(
-                            bid,
-                            i,
-                            values.pricePerKm,
-                            salePurchaseMode,
-                            +bid.vat
-                          )
-                        ).toString()
-                      )}
-                    </b>
-                  ) : (
-                    <b>
-                      {thousands(
-                        Math.round(
-                          getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
-                        ).toString()
-                      )}
-                    </b>
-                  )}
-                  {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                </div>
-              ))
-            ) : (
-              <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
-            ))}
-          </Grid>
-          
-          <div style={{ height: 8 }}></div>
-          
-          <div className={innerClasses.calcDescription}>
-            {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
-              ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY_ALL" })
-              : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY_ALL" })}
-          </div>
-          <div style={{ height: 8 }}></div>
-          <Grid container direction="column" justify="center" alignItems="flex-start">
-            {bid &&
-            bid.point_prices &&
-            (bid.point_prices.length > 0 ? (
-              bid.point_prices.map((item, i) => (
-                <div key={i}>
-                  {!!me &&
-                  me.use_vat &&
-                  values.bid_type === "sale" &&
-                  !!bid &&
-                  !!bid.vat &&
-                  !vendorUseVat ? (
-                    <b>
-                      {thousands(
-                        Math.round(
-                          values.volume *
-                          getDeliveryPrice(
-                            bid,
-                            i,
-                            values.pricePerKm,
-                            salePurchaseMode,
-                            +bid.vat
-                          )
-                        ).toString()
-                      )}
-                    </b>
-                  ) : (
-                    <b>
-                      {thousands(
-                        Math.round(
-                          values.volume *
-                          getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
-                        ).toString()
-                      )}
-                    </b>
-                  )}
-                  {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                </div>
-              ))
-            ) : (
-              <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
-            ))}
-          </Grid>
-          
-          <div style={{ height: 8 }}></div>
-          
-          <div className={innerClasses.calcDescription}>
-            {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
-              ? intl.formatMessage(
-                { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT_ALL" },
-                { vat: bid.vat }
-              )
-              : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_ALL" })}
-          </div>
-          <div style={{ height: 8 }}></div>
-          <Grid container direction="column" justify="center" alignItems="flex-start">
-            {bid &&
-            bid.point_prices &&
-            (bid.point_prices.length > 0 ? (
-              bid.point_prices.map((item, i) => (
-                <div key={i}>
-                  {!!me &&
-                  me.use_vat &&
-                  values.bid_type === "sale" &&
-                  !!bid &&
-                  !!bid.vat &&
-                  !vendorUseVat ? (
-                    <b>
-                      {thousands(
-                        Math.round(
-                          values.volume *
-                          getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
-                        ).toString()
-                      )}
-                    </b>
-                  ) : (
-                    <b>
-                      {thousands(
-                        Math.round(
-                          values.volume *
-                          getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
-                        ).toString()
-                      )}
-                    </b>
-                  )}
-                  {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                </div>
-              ))
-            ) : (
-              <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
-            ))}
-          </Grid>
-        </div>
-      ))}
-      
+        ))}
+
       {loading ? (
         <Skeleton width="100%" height={70} animation="wave" />
       ) : (
@@ -1314,20 +1314,20 @@ const BidForm: React.FC<IProps> = ({
           InputProps={
             editMode !== "view"
               ? {
-                inputComponent: NumberFormatCustom as any,
-                endAdornment: (
-                  <IconButton onClick={() => setFieldValue("volume", "")}>
-                    <CloseIcon />
-                  </IconButton>
-                ),
-              }
+                  inputComponent: NumberFormatCustom as any,
+                  endAdornment: (
+                    <IconButton onClick={() => setFieldValue("volume", "")}>
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }
               : undefined
           }
           disabled={editMode === "view"}
           autoComplete="off"
         />
       )}
-      
+
       {editMode === "view" ? (
         loading ? (
           <Skeleton width="100%" height={70} animation="wave" />
@@ -1355,7 +1355,7 @@ const BidForm: React.FC<IProps> = ({
               handleBlur={handleBlur}
               disable={true}
             />
-            
+
             {mapState && (
               <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
                 <div style={{width: "100%", marginTop: 5}}>
@@ -1370,7 +1370,7 @@ const BidForm: React.FC<IProps> = ({
                 </div>
               </YMaps>
             )}
-            
+
             {(me?.points && mySelectedMapPoint && editMode == 'view' && bid) && (
               <FormControl
                 variant="outlined"
@@ -1405,7 +1405,7 @@ const BidForm: React.FC<IProps> = ({
                 </Select>
               </FormControl>
             )}
-          
+
           </>
         )
       ) : loading ? (
@@ -1541,101 +1541,101 @@ const BidForm: React.FC<IProps> = ({
           </Button>
         </div>
       )}
-      
+
       {!loading &&
-      !!values.crop_id &&
-      (cropParamsLoading ? (
-        <>
-          <Skeleton width="100%" height={70} animation="wave" />
-          <Skeleton width="100%" height={70} animation="wave" />
-          <Skeleton width="100%" height={70} animation="wave" />
-          <Skeleton width="100%" height={70} animation="wave" />
-          <Skeleton width="100%" height={70} animation="wave" />
-        </>
-      ) : (
-        !!cropParams &&
-        cropParams.map(
-          cropParam =>
-            ((editMode === "view" &&
-              bid?.parameter_values.find(item => item.parameter_id === cropParam.id)) ||
-              editMode !== "view") &&
-            (cropParam.type === "number" ? (
-              <TextField
-                key={cropParam.id}
-                type="text"
-                label={cropParam.name}
-                margin="normal"
-                name={`parameter${cropParam.id}`}
-                value={values[`parameter${cropParam.id}`] || ""}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                InputProps={
-                  editMode !== "view"
-                    ? {
-                      inputComponent: NumberFormatCustom as any,
-                      endAdornment: (
-                        <IconButton
-                          onClick={() => setFieldValue(`parameter${cropParam.id}`, "")}
-                        >
-                          <CloseIcon />
-                        </IconButton>
-                      ),
-                    }
-                    : undefined
-                }
-                disabled={editMode === "view"}
-                autoComplete="off"
-              />
-            ) : (
-              <Autocomplete
-                key={cropParam.id}
-                id={`parameter${cropParam.id}`}
-                options={cropParam.enum}
-                getOptionLabel={option => option}
-                noOptionsText={intl.formatMessage({
-                  id: "ALL.AUTOCOMPLIT.EMPTY",
-                })}
-                value={values[`parameter${cropParam.id}`] || null}
-                onChange={(e: any, val: string | null) => {
-                  setFieldValue(`parameter${cropParam.id}`, val || "");
-                }}
-                disabled={editMode === "view"}
-                renderInput={params => (
-                  <TextField
-                    {...params}
-                    margin="normal"
-                    label={cropParam.name}
-                    variant="outlined"
-                    onBlur={handleBlur}
-                  />
-                )}
-              />
-            ))
-        )
-      ))}
-      
+        !!values.crop_id &&
+        (cropParamsLoading ? (
+          <>
+            <Skeleton width="100%" height={70} animation="wave" />
+            <Skeleton width="100%" height={70} animation="wave" />
+            <Skeleton width="100%" height={70} animation="wave" />
+            <Skeleton width="100%" height={70} animation="wave" />
+            <Skeleton width="100%" height={70} animation="wave" />
+          </>
+        ) : (
+          !!cropParams &&
+          cropParams.map(
+            cropParam =>
+              ((editMode === "view" &&
+                bid?.parameter_values.find(item => item.parameter_id === cropParam.id)) ||
+                editMode !== "view") &&
+              (cropParam.type === "number" ? (
+                <TextField
+                  key={cropParam.id}
+                  type="text"
+                  label={cropParam.name}
+                  margin="normal"
+                  name={`parameter${cropParam.id}`}
+                  value={values[`parameter${cropParam.id}`] || ""}
+                  variant="outlined"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  InputProps={
+                    editMode !== "view"
+                      ? {
+                          inputComponent: NumberFormatCustom as any,
+                          endAdornment: (
+                            <IconButton
+                              onClick={() => setFieldValue(`parameter${cropParam.id}`, "")}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          ),
+                        }
+                      : undefined
+                  }
+                  disabled={editMode === "view"}
+                  autoComplete="off"
+                />
+              ) : (
+                <Autocomplete
+                  key={cropParam.id}
+                  id={`parameter${cropParam.id}`}
+                  options={cropParam.enum}
+                  getOptionLabel={option => option}
+                  noOptionsText={intl.formatMessage({
+                    id: "ALL.AUTOCOMPLIT.EMPTY",
+                  })}
+                  value={values[`parameter${cropParam.id}`] || null}
+                  onChange={(e: any, val: string | null) => {
+                    setFieldValue(`parameter${cropParam.id}`, val || "");
+                  }}
+                  disabled={editMode === "view"}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      margin="normal"
+                      label={cropParam.name}
+                      variant="outlined"
+                      onBlur={handleBlur}
+                    />
+                  )}
+                />
+              ))
+          )
+        ))}
+
       {((editMode === "view" && bid?.description === "") || editMode !== "view") &&
-      (loading ? (
-        <Skeleton width="100%" height={127} animation="wave" />
-      ) : (
-        <TextField
-          type="text"
-          label={intl.formatMessage({
-            id: "BIDSLIST.TABLE.DESCRIPTION",
-          })}
-          margin="normal"
-          name="description"
-          value={values.description}
-          variant="outlined"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          rows="6"
-          multiline
-          disabled={editMode === "view"}
-        />
-      ))}
-      
+        (loading ? (
+          <Skeleton width="100%" height={127} animation="wave" />
+        ) : (
+          <TextField
+            type="text"
+            label={intl.formatMessage({
+              id: "BIDSLIST.TABLE.DESCRIPTION",
+            })}
+            margin="normal"
+            name="description"
+            value={values.description}
+            variant="outlined"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            rows="6"
+            multiline
+            disabled={editMode === "view"}
+          />
+        ))}
+
       <div className={classes.bottomButtonsContainer}>
         {me && editMode !== "view" && (
           <>
@@ -1673,7 +1673,7 @@ const BidForm: React.FC<IProps> = ({
                 )}
               </div>
             )}
-            
+
             <div className={classes.button}>
               <ButtonWithLoader
                 loading={buttonLoading}
