@@ -6,6 +6,7 @@ import { Paper, useMediaQuery, makeStyles, Drawer } from "@material-ui/core";
 
 import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
 import { actions as tariffActions } from "../../store/ducks/tariffs.duck";
+import { actions as funnelStatesActions } from "../../store/ducks/funnelStates.duck";
 import { IAppState } from "../../store/rootDuck";
 
 import { LeftMenu } from ".";
@@ -50,6 +51,8 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   leftMenuOpen,
   salePurchaseMode,
   cropParams,
+  currentFunnelState,
+  setFunnelState,
   funnelStates,
   tariffsTypes,
   usersFilterTariff,
@@ -93,7 +96,9 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       {location.pathname === "/user-list" && (
         <UsersFilterMenu
           intl={intl}
+          currentFunnelState={currentFunnelState}
           funnelStates={funnelStates}
+          setFunnelState={setFunnelState}
           tariffsTypes={tariffsTypes}
           usersFilterTariff={usersFilterTariff}
           setUsersFilterTariff={setUsersFilterTariff}
@@ -109,11 +114,12 @@ const connector = connect(
     leftMenuOpen: state.leftMenu.leftMenuOpen,
     salePurchaseMode: state.leftMenu.salePurchaseMode,
     cropParams: state.crops2.cropParams,
+    currentFunnelState: state.funnelStates.currentFunnelState,
     funnelStates: state.funnelStates.funnelStates,
     tariffsTypes: state.tariffs.tariffsTypes,
     usersFilterTariff: state.tariffs.usersFilterTariff,
   }),
-  { ...leftMenuActions, setUsersFilterTariff: tariffActions.setUsersFilterTariff }
+  { ...leftMenuActions, setUsersFilterTariff: tariffActions.setUsersFilterTariff, setFunnelState: funnelStatesActions.setFunnelState }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;
 

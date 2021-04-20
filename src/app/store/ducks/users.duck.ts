@@ -17,7 +17,6 @@ import {
 } from "../../crud/users.crud";
 import { IUser, IUserForCreate, IUserForEdit, TRole } from "../../interfaces/users";
 import { IBid } from "../../interfaces/bids";
-import { ICrop } from "../../interfaces/crops";
 
 const CLEAR_FETCH = "users/CLEAR_FETCH";
 const FETCH_REQUEST = "users/FETCH_REQUEST";
@@ -376,7 +375,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 
 export const actions = {
   clearFetch: () => createAction(CLEAR_FETCH),
-  fetchRequest: (payload: { page: number; perPage: number; roles?: TRole[] }) =>
+  fetchRequest: (payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; roles?: TRole[] }) =>
     createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
@@ -423,10 +422,10 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga({ payload }: { payload: { page: number; perPage: number; roles?: TRole[] } }) {
+function* fetchSaga({ payload }: { payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; roles?: TRole[] } }) {
   try {
     const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
-      getUsers(payload.page, payload.perPage, payload.roles)
+      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.roles)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {

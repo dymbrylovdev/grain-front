@@ -14,7 +14,7 @@ export function editUser(id, data) {
   return axios.put(`${USER_URL}${id}/edit`, data);
 }
 
-export function  editContactViewContact(data) {
+export function editContactViewContact(data) {
   return axios.put(`${USER_URL}me`, data);
 }
 
@@ -23,7 +23,9 @@ export function deleteUser(id) {
 }
 
 export function getUsers(page, perPage, tariffId, funnelStateId, roles = []) {
-  let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}`;
+  let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}${
+    tariffId ? `&tariff=${tariffId}` : ""
+  }${funnelStateId ? `$funnel_state=${funnelStateId}` : ""}`;
 
   if (roles.length) {
     url += `&roles=${roles.join(",")}`;

@@ -57,8 +57,10 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   fetchFunnelStates,
   funnelStates,
+  funnelStateSuccess,
   funnelStatesLoading,
   funnelStatesError,
+  currentFunnelState,
 
   clearCreate,
   create,
@@ -94,6 +96,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [infoText, setInfoText] = useState("");
   const [funnelStateEditId, setFunnelStateEditId] = useState(0);
   const [tariffId, setTariffId] = useState<number | undefined>();
+  const [funnelStateId, setFunnelStateId] = useState<number | undefined>();
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -109,9 +112,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEdit();
     }
     if (editSuccess) {
-      fetch({ page, perPage });
+      fetch({ page, perPage, tariffId });
     }
-  }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage]);
+  }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage, tariffId]);
 
   useEffect(() => {
     if (delSuccess || delError) {
@@ -125,7 +128,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       );
       setAlertOpen(false);
       clearDel();
-      fetch({ page, perPage });
+      fetch({ page, perPage, tariffId });
       fetchFunnelStates();
     }
   }, [
@@ -138,11 +141,12 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     intl,
     page,
     perPage,
+    tariffId,
   ]);
 
   useEffect(() => {
-    fetch({ page, perPage });
-  }, [fetch, page, perPage]);
+    fetch({ page, perPage, tariffId });
+  }, [fetch, page, perPage, tariffId]);
 
   useEffect(() => {
     fetchFunnelStates();
@@ -156,11 +160,23 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetchTariffTypes()
   }, [fetchTariffTypes]);
 
+  console.log(tariffId);
+
   useEffect(() => {
     if (tariffsTypesSuccess) tariffsTypes.find(item => {
+      if (usersFilterTariff === "Все") setTariffId(undefined);
       if (item.name === usersFilterTariff) setTariffId(item.id);
     });
   }, [tariffsTypes, tariffsTypesSuccess, usersFilterTariff]);
+
+  console.log('funnel states', funnelStates);
+
+  useEffect(() => {
+    if (funnelStateSuccess) funnelStates?.find(item => {
+      if (currentFunnelState === "Все") setFunnelStateId(undefined);
+      if (item.name === currentFunnelState) setFunnelStateId(item.id);
+    });
+  }, [funnelStateSuccess, currentFunnelState, funnelStates]);
 
   if (error || meError || funnelStatesError || tariffsTypesError) {
     setTimeout(() => {
@@ -485,7 +501,9 @@ const connector = connect(
 
     funnelStates: state.funnelStates.funnelStates,
     funnelStatesLoading: state.funnelStates.loading,
+    funnelStateSuccess: state.funnelStates.success,
     funnelStatesError: state.funnelStates.error,
+    currentFunnelState: state.funnelStates.currentFunnelState,
 
     createLoading: state.users.createLoading,
     createSuccess: state.users.createSuccess,

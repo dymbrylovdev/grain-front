@@ -42,8 +42,11 @@ const DEL_REQUEST = "funnelStates/DEL_REQUEST";
 const DEL_SUCCESS = "funnelStates/DEL_SUCCESS";
 const DEL_FAIL = "funnelStates/DEL_FAIL";
 
+const SET_FUNNEL_STATE = "funnelStates/SET_FUNNEL_STATE";
+
 export interface IInitialState {
   tab: number;
+  currentFunnelState: string | undefined;
   funnelStates: IFunnelState[] | undefined;
   loading: boolean;
   success: boolean;
@@ -70,6 +73,7 @@ export interface IInitialState {
 
 const initialState: IInitialState = {
   tab: 0,
+  currentFunnelState: undefined,
   funnelStates: undefined,
   loading: false,
   success: false,
@@ -211,6 +215,13 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return { ...state, delLoading: false, delError: action.payload.error };
     }
 
+    case SET_FUNNEL_STATE: {
+      return {
+        ...state,
+        currentFunnelState: action.payload,
+      }
+    }
+
     default:
       return state;
   }
@@ -243,6 +254,8 @@ export const actions = {
   delRequest: (id: number) => createAction(DEL_REQUEST, { id }),
   delSuccess: () => createAction(DEL_SUCCESS),
   delFail: (error: string) => createAction(DEL_FAIL, { error }),
+
+  setFunnelState: (payload: string) => createAction(SET_FUNNEL_STATE, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
