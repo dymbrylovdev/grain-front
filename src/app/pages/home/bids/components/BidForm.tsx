@@ -417,7 +417,7 @@ const BidForm: React.FC<IProps> = ({
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
         .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
-      price: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+      price: Yup.number().min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }, { min: 1000 })).typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       location: Yup.object({
         text: Yup.string().required(
           intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })

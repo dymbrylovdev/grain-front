@@ -116,7 +116,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
           }
         }
 
-        if (userId) fetchUserBidFilters({ id: +userId, type: salePurchaseMode })
+        if (userId) fetchUserBidFilters({ id: +userId })
       }
     }
   }, [
@@ -138,7 +138,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
   ]);
 
   useEffect(() => {
-    if (userId) fetchUserBidFilters({ id: +userId, type: salePurchaseMode })
+    if (userId) fetchUserBidFilters({ id: +userId })
   }, [fetchUserBidFilters, userId, salePurchaseMode]);
 
   useEffect(() => {

@@ -473,7 +473,7 @@ export const actions = {
     createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
 
   clearUserBidFilters: () => createAction(CLEAR_USER_BID_FILTERS),
-  userBidFiltersRequest: (payload: { id: number, type: string }) => createAction(USER_BID_FILTERS_REQUEST, payload),
+  userBidFiltersRequest: (payload: { id: number }) => createAction(USER_BID_FILTERS_REQUEST, payload),
   userBidFiltersSuccess: (payload: IServerResponse<IUserBidFilters>) => createAction(USER_BID_FILTERS_SUCCESS, payload),
   userBidFiltersFail: (payload: string) => createAction(USER_BID_FILTERS_FAIL, payload)
 };
@@ -556,7 +556,7 @@ function* userBidsSaga({ payload }: { payload: number }) {
   }
 }
 
-function* userBidFiltersSaga({ payload }: { payload: { id: number; type: string; } }) {
+function* userBidFiltersSaga({ payload }: { payload: { id: number; } }) {
   try {
     const { data }: { data: IServerResponse<IUserBidFilters> } = yield call(() => getUserBidFilters(payload));
     yield put(actions.userBidFiltersSuccess(data));
