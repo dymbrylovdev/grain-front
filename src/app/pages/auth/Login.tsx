@@ -1,18 +1,18 @@
-import React, {useCallback, useEffect} from 'react';
-import {compose} from 'redux';
-import {connect, ConnectedProps} from 'react-redux';
-import {FormattedMessage, injectIntl, WrappedComponentProps} from 'react-intl';
-import {TextField} from '@material-ui/core';
-import {Link, useHistory} from 'react-router-dom';
-import {useFormik} from 'formik';
-import * as Yup from 'yup';
-import {useSnackbar} from 'notistack';
+import React, { useCallback, useEffect } from "react";
+import { compose } from "redux";
+import { connect, ConnectedProps } from "react-redux";
+import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
+import { TextField } from "@material-ui/core";
+import { Link, useHistory } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useSnackbar } from "notistack";
 
-import {actions as authActions} from '../../store/ducks/auth.duck';
+import { actions as authActions } from "../../store/ducks/auth.duck";
 
-import ButtonWithLoader from '../../components/ui/Buttons/ButtonWithLoader';
-import {IAppState} from '../../store/rootDuck';
-import Preloader from '../../components/ui/Loaders/Preloader';
+import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
+import { IAppState } from "../../store/rootDuck";
+import Preloader from "../../components/ui/Loaders/Preloader";
 
 const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -175,7 +175,9 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   />
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                <div
+                  style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}
+                >
                   <div className="kt-login__actions" style={{ marginRight: 30 }}>
                     <button
                       onClick={backHandler}
@@ -204,42 +206,46 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             )}
 
             {authData && authData.type === "phone" && (
-              <div className="form-group">
-                <TextField
-                  type="text"
-                  label={intl.formatMessage({
-                    id: "AUTH.INPUT.CODE",
-                  })}
-                  margin="normal"
-                  className="kt-width-full"
-                  name="codeConfirm"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.codeConfirm}
-                  helperText={touched.codeConfirm && errors.codeConfirm}
-                  error={Boolean(touched.codeConfirm && errors.codeConfirm)}
-                />
+              <>
+                <div className="form-group">
+                  <TextField
+                    type="text"
+                    label={intl.formatMessage({
+                      id: "AUTH.INPUT.CODE",
+                    })}
+                    margin="normal"
+                    className="kt-width-full"
+                    name="codeConfirm"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.codeConfirm}
+                    helperText={touched.codeConfirm && errors.codeConfirm}
+                    error={Boolean(touched.codeConfirm && errors.codeConfirm)}
+                  />
+                </div>
 
-                <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                <div
+                  className="kt-login__actions"
+                  style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}
+                >
                   <button
                     onClick={backHandler}
                     type="button"
                     className="btn btn-secondary btn-elevate kt-login__btn-secondary"
+                    style={{ marginRight: 30 }}
                   >
                     {intl.formatMessage({ id: "AUTH.GENERAL.BACK_BUTTON" })}
                   </button>
 
-                  <div className="kt-login__actions">
-                    <ButtonWithLoader
-                      onPress={handleSubmit}
-                      disabled={fetchLoading || loginLoading || loginByPhoneLoading}
-                      loading={fetchLoading || loginLoading || loginByPhoneLoading}
-                    >
-                      <FormattedMessage id="AUTH.LOGIN.BUTTON" />
-                    </ButtonWithLoader>
-                  </div>
+                  <ButtonWithLoader
+                    onPress={handleSubmit}
+                    disabled={fetchLoading || loginLoading || loginByPhoneLoading}
+                    loading={fetchLoading || loginLoading || loginByPhoneLoading}
+                  >
+                    <FormattedMessage id="AUTH.LOGIN.BUTTON" />
+                  </ButtonWithLoader>
                 </div>
-              </div>
+              </>
             )}
           </form>
         </div>

@@ -253,11 +253,15 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </div>
             )}
 
-            <div className="kt-login__actions">
+            <div
+              className="kt-login__actions"
+              style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}
+            >
               <button
                 onClick={backHandler}
                 type="button"
                 className="btn btn-secondary btn-elevate kt-login__btn-secondary"
+                style={{ marginRight: 30 }}
               >
                 {intl.formatMessage({ id: "AUTH.GENERAL.BACK_BUTTON" })}
               </button>
