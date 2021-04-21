@@ -146,6 +146,8 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
     }, 10000);
   }
 
+  console.log(myFilters);
+
   return (
     <Paper className={classes.paperWithTable}>
       <LayoutSubheader
@@ -165,7 +167,8 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
             !myFilters ||
             (!!me?.tariff_matrix.tariff_limits.max_filters_count &&
               !!myFilters &&
-              me.tariff_matrix.tariff_limits.max_filters_count - myFilters?.length <= 0)
+              me.tariff_matrix.tariff_limits.max_filters_count - myFilters?.length <= 0) ||
+            me?.available_filter_count === 0
           }
         >
           {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
@@ -218,14 +221,14 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                 {
                   count:
                     !me?.tariff_matrix ||
-                    (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0)
+                    (!!me?.tariff_matrix &&
+                      me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0)
                       ? "0"
                       : me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount,
-                  word: declOfNum(me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount, [
-                    "подписка",
-                    "подписки",
-                    "подписок",
-                  ]),
+                  word: declOfNum(
+                    me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount,
+                    ["подписка", "подписки", "подписок"]
+                  ),
                   fullCount: me?.tariff_matrix?.tariff_limits.max_filters_count,
                 }
               )}
