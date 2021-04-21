@@ -25,7 +25,7 @@ export function deleteUser(id) {
 export function getUsers(page, perPage, tariffId, funnelStateId, roles = []) {
   let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}${
     tariffId ? `&tariff=${tariffId}` : ""
-  }${funnelStateId ? `$funnel_state=${funnelStateId}` : ""}`;
+  }${funnelStateId ? `&funnel_state=${funnelStateId}` : ""}`;
 
   if (roles.length) {
     url += `&roles=${roles.join(",")}`;

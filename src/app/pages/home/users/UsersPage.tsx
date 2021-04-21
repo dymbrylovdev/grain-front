@@ -112,9 +112,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEdit();
     }
     if (editSuccess) {
-      fetch({ page, perPage, tariffId });
+      fetch({ page, perPage, tariffId, funnelStateId });
     }
-  }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage, tariffId]);
+  }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage, tariffId, funnelStateId]);
 
   useEffect(() => {
     if (delSuccess || delError) {
@@ -128,7 +128,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       );
       setAlertOpen(false);
       clearDel();
-      fetch({ page, perPage, tariffId });
+      fetch({ page, perPage, tariffId, funnelStateId });
       fetchFunnelStates();
     }
   }, [
@@ -142,11 +142,12 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     page,
     perPage,
     tariffId,
+    funnelStateId,
   ]);
 
   useEffect(() => {
-    fetch({ page, perPage, tariffId });
-  }, [fetch, page, perPage, tariffId]);
+    fetch({ page, perPage, tariffId, funnelStateId });
+  }, [fetch, page, perPage, tariffId, funnelStateId]);
 
   useEffect(() => {
     fetchFunnelStates();
@@ -160,8 +161,6 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetchTariffTypes()
   }, [fetchTariffTypes]);
 
-  console.log(tariffId);
-
   useEffect(() => {
     if (tariffsTypesSuccess) tariffsTypes.find(item => {
       if (usersFilterTariff === "Все") setTariffId(undefined);
@@ -169,12 +168,11 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     });
   }, [tariffsTypes, tariffsTypesSuccess, usersFilterTariff]);
 
-  console.log('funnel states', funnelStates);
-
   useEffect(() => {
     if (funnelStateSuccess) funnelStates?.find(item => {
       if (currentFunnelState === "Все") setFunnelStateId(undefined);
-      if (item.name === currentFunnelState) setFunnelStateId(item.id);
+      // @ts-ignore
+      if (item.id === +currentFunnelState) setFunnelStateId(item.id);
     });
   }, [funnelStateSuccess, currentFunnelState, funnelStates]);
 

@@ -45,7 +45,7 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
             Все
           </MenuItem>
         {tariffsTypes && tariffsTypes.map((tariffType) => (
-          <MenuItem key={tariffType.id} value={tariffType.name}>
+          <MenuItem key={tariffType.id} value={tariffType.id}>
             {tariffType.name}
           </MenuItem>
         ))}
@@ -65,7 +65,7 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
         </MenuItem>
         {funnelStates &&
           funnelStates.map((funnelState, index) => (
-            <MenuItem key={`${funnelState.id}+${index}`} value={funnelState.name}>
+            <MenuItem key={`${funnelState.id}+${index}`} value={funnelState.id}>
               {funnelState.name}
             </MenuItem>
           ))}
