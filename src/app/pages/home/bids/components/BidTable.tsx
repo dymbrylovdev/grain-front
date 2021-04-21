@@ -96,8 +96,6 @@ const BidTable: React.FC<IProps> = ({
     }
   }, [user.points]);
 
-  console.log(user);
-
   return (
     <>
       <div className={classes.tableTitle}>{title || ""}</div>
