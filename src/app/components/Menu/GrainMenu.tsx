@@ -62,7 +62,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const isMinWidthQuery = useMediaQuery("(min-width:1025px)");
   const location = useLocation();
 
-  let bestAllMyDealsMode: "deals" | "best-bids" | "all-bids" | "my-bids" | undefined = undefined;
+  let bestAllMyDealsMode: "deals" | "best-bids" | "all-bids" | "my-bids" | "edit" | undefined = undefined;
 
   const [, , route, cropId] = location.pathname.split("/");
   if (location.pathname === "/deals") {
@@ -71,6 +71,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     if (route === "best-bids") bestAllMyDealsMode = "best-bids";
     if (route === "my-bids") bestAllMyDealsMode = "my-bids";
     if (route === "all-bids") bestAllMyDealsMode = "all-bids";
+    if (route === "edit") bestAllMyDealsMode = "edit";
   }
 
   if (!me) return null;

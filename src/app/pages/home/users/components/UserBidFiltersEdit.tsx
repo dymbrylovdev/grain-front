@@ -61,7 +61,7 @@ const useInnerStyles = makeStyles(theme => ({
 
 const UserBidFiltersEdit: React.FC<TPropsFromRedux &
   WrappedComponentProps &
-  RouteComponentProps<{ id: string, userId: string }>> = ({
+  RouteComponentProps<{ id: string; userId: string }>> = ({
   match: {
     params: { id, userId },
   },
@@ -71,6 +71,9 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
   fetchMe,
   me,
   meError,
+
+  fetchUser,
+  user,
 
   fetchCrops,
   crops,
@@ -112,15 +115,23 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
   userBidFiltersError,
   clearUserBidFilters,
   fetchUserBidFilters,
+
+  clearCreateUserFilter,
+  createUserFilter,
+  createUserFilterLoading,
+  createUserFilterSuccess,
+  createUserFilterError,
+
+  salePurchaseMode,
 }) => {
   const innerClasses = useInnerStyles();
   const classes = useStyles();
   const history = useHistory();
   const isEditable = match.url.indexOf("view") === -1;
   const isNew = match.url.indexOf("new") !== -1;
-  let salePurchaseMode: "sale" | "purchase" = "sale";
-  if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
-  if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
+  // let salePurchaseMode: "sale" | "purchase" = "sale";
+  // if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
+  // if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
 
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [formikErrored, setFormikErrored] = useState(false);
@@ -139,18 +150,24 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
   }, [enqueueSnackbar, formikErrored, intl]);
 
   useEffect(() => {
-    if (createSuccess || createError) {
+    if (createUserFilterSuccess || createUserFilterError) {
       enqueueSnackbar(
-        createSuccess
+        createUserFilterSuccess
           ? intl.formatMessage({ id: "NOTISTACK.ERRORS.CREATE_FILTER" })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${createError}`,
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${createUserFilterError}`,
         {
-          variant: createSuccess ? "success" : "error",
+          variant: createUserFilterSuccess ? "success" : "error",
         }
       );
-      clearCreateFilter();
+      clearCreateUserFilter();
     }
-  }, [clearCreateFilter, createError, createSuccess, enqueueSnackbar, intl]);
+  }, [
+    clearCreateUserFilter,
+    createUserFilterError,
+    createUserFilterSuccess,
+    enqueueSnackbar,
+    intl,
+  ]);
 
   useEffect(() => {
     if (delError) {
@@ -212,8 +229,8 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
   ]);
 
   useEffect(() => {
-    if (createSuccess || editSuccess) history.push(`/${salePurchaseMode}/filters`);
-  }, [createSuccess, editSuccess, history, salePurchaseMode]);
+    if (createUserFilterSuccess || editSuccess) history.push(`/user/edit/${userId}`);
+  }, [createUserFilterSuccess, editSuccess, history, userId]);
 
   useEffect(() => {
     fetchUserBidFilters({ id: +userId });
@@ -227,7 +244,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
 
   useEffect(() => {
     if (userBidFilters?.filters && +id) {
-      const userFilter =userBidFilters?.filters.find(item => item.id === +id);
+      const userFilter = userBidFilters?.filters.find(item => item.id === +id);
       if (userFilter) fetchCropParams(userFilter.crop.id);
     }
     return () => {
@@ -263,16 +280,19 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
       <Formik
         initialValues={
           +id
-            ? fromApiToFilter(userBidFilters?.filters.find(item => item.id === +id) as IMyFilterItem)
+            ? fromApiToFilter(
+                userBidFilters?.filters.find(item => item.id === +id) as IMyFilterItem
+              )
             : { name: "" }
         }
         onSubmit={(values, { setStatus, setSubmitting }) => {
           let params: { [x: string]: any } = { ...values };
           params.name = values.name.trim();
           params.point_prices = [];
-          if (userBidFilters) itemById(userBidFilters?.filters, +id)?.point_prices.forEach(item => {
-            params.point_prices.push({ point_id: item.point.id, price: item.price });
-          });
+          if (userBidFilters)
+            itemById(userBidFilters?.filters, +id)?.point_prices.forEach(item => {
+              params.point_prices.push({ point_id: item.point.id, price: item.price });
+            });
           params.bid_type = salePurchaseMode;
           cropParams &&
             (+id
@@ -284,13 +304,14 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
                     cropParams.filter(item => item.type === "number")
                   ),
                 })
-              : createFilter(
-                  filterForCreate(
+              : createUserFilter({
+                  id: +userId,
+                  data: filterForCreate(
                     params,
                     cropParams.filter(item => item.type === "enum"),
                     cropParams.filter(item => item.type === "number")
-                  )
-                ));
+                  ),
+                }));
         }}
         validationSchema={Yup.object().shape({
           name: Yup.string()
@@ -580,7 +601,9 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
 
                         <FormControlLabel
                           className={classes.switcher}
-                          control={<Checkbox checked={values.is_sending_sms} onChange={handleChange} />}
+                          control={
+                            <Checkbox checked={values.is_sending_sms} onChange={handleChange} />
+                          }
                           label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SMS.SENDING" })}
                           name="is_sending_sms"
                           disabled={!isEditable || !me?.phone}
@@ -673,6 +696,7 @@ const connector = connect(
   (state: IAppState) => ({
     me: state.auth.user,
     meError: state.auth.error,
+    user: state.users.user,
 
     userBidFilters: state.users.userBidFilters,
     userBidFiltersLoading: state.users.userBidFiltersLoading,
@@ -699,9 +723,16 @@ const connector = connect(
 
     currentSaleFilters: state.myFilters.currentSaleFilters,
     currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
+
+    createUserFilterLoading: state.users.createUserFilterLoading,
+    createUserFilterSuccess: state.users.createUserFilterSuccess,
+    createUserFilterError: state.users.createUserFilterError,
+
+    salePurchaseMode: state.leftMenu.salePurchaseMode,
   }),
   {
     fetchMe: authActions.fetchRequest,
+    fetchUser: userActions.fetchByIdRequest,
     fetchFilters: myFiltersActions.fetchRequest,
     fetchCrops: cropsActions.fetchRequest,
     clearCropParams: cropsActions.clearCropParams,
@@ -717,6 +748,9 @@ const connector = connect(
 
     setCurrentSaleFilter: myFiltersActions.setCurrentSaleFilter,
     setCurrentPurchaseFilter: myFiltersActions.setCurrentPurchaseFilter,
+
+    clearCreateUserFilter: userActions.clearCreateUserFilter,
+    createUserFilter: userActions.createUserFilterRequest,
   }
 );
 

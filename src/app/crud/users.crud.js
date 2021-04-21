@@ -57,3 +57,7 @@ export function getUserActivate(email) {
 export function getUserBidFilters({ id }) {
   return axios.get(`${USER_URL}${id}/bid_filters`)
 }
+
+export function createUserBidFilter( id, data ) {
+  return axios.post(`${USER_URL}${id}/bid_filter`, data);
+}
