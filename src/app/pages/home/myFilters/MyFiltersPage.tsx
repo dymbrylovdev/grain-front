@@ -146,8 +146,6 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
     }, 10000);
   }
 
-  console.log(myFilters);
-
   return (
     <Paper className={classes.paperWithTable}>
       <LayoutSubheader

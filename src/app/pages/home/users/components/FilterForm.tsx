@@ -226,7 +226,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux &
                             color="primary"
                             onClick={() =>
                               history.push(
-                                `/${item.bid_type}/user/${userId ? +userId : null}/filters/view/${
+                                `/user/${userId ? +userId : null}/filters/view/${
                                   item.id
                                 }`
                               )
@@ -239,7 +239,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux &
                             color="primary"
                             onClick={() =>
                               history.push(
-                                `/${item.bid_type}/user/${userId ? +userId : null}/filters/edit/${
+                                `/user/${userId ? +userId : null}/filters/edit/${
                                   item.id
                                 }`
                               )

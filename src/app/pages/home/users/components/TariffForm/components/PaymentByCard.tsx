@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 
 const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial }) => {
-  console.log(realUser)
 
   useEffect(() => {
     const Options = {
