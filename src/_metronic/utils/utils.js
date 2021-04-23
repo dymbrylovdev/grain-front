@@ -28,11 +28,11 @@ export function setupAxios(axios, store) {
   );
 
   axios.interceptors.response.use(null, (error) => {
-    if (error.response.status === 403) {
-      setTimeout(() => {
-        store.dispatch(actions.clearAuthToken());
-      }, 2000)
-    }
+    // if (error.response.status === 403) {
+      // setTimeout(() => {
+        // store.dispatch(actions.clearAuthToken());
+      // }, 2000)
+    // }
     return Promise.reject(error);
   });
 
