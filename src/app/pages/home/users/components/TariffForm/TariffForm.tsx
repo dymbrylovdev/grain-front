@@ -264,8 +264,13 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   }, [me, setMenuConfig]);
 
   useEffect(() => {
-    fetchTariffs();
-  }, [fetchTariffs]);
+    // Отправляет 1 если ползователь переходит в свои тарифы (для аналитики)
+    if (editMode === "profile" && realUser && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(realUser?.roles[0])) {
+      fetchTariffs(1);
+    } else {
+      fetchTariffs();
+    };
+  }, [fetchTariffs, realUser, editMode]);
 
   useEffect(() => {
     fetchCrops();

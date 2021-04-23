@@ -414,7 +414,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 
 export const actions = {
   clearFetch: () => createAction(CLEAR_FETCH),
-  fetchRequest: () => createAction(FETCH_REQUEST),
+  fetchRequest: (userView?: number) => createAction(FETCH_REQUEST, { userView }),
   fetchSuccess: (response: IServerResponse<ITariff[]>) => createAction(FETCH_SUCCESS, { response }),
   fetchFail: (error: string) => createAction(FETCH_FAIL, { error }),
   setSelectedTariff: (id: number) => createAction(SET_TARIFF, { id }),
@@ -459,9 +459,9 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga() {
+function* fetchSaga({ payload }: { payload: { userView?: number } }) {
   try {
-    const { data }: { data: IServerResponse<ITariff[]> } = yield call(() => getTariffs());
+    const { data }: { data: IServerResponse<ITariff[]> } = yield call(() => getTariffs(payload.userView));
     yield put(actions.fetchSuccess(data));
   } catch (e) {
     yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));

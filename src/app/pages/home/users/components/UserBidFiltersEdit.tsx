@@ -589,27 +589,25 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
                       autoComplete="off"
                     />
 
-                    {!isNew && (
-                      <>
-                        <FormControlLabel
-                          className={classes.switcher}
-                          control={<Checkbox checked={values.subscribed} onChange={handleChange} />}
-                          label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SUBSCRIPTION" })}
-                          name="subscribed"
-                          disabled={!isEditable || !me?.email}
-                        />
+                    <>
+                      <FormControlLabel
+                        className={classes.switcher}
+                        control={<Checkbox checked={values.subscribed} onChange={handleChange} />}
+                        label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SUBSCRIPTION" })}
+                        name="subscribed"
+                        disabled={!isEditable || !me?.email}
+                      />
 
-                        <FormControlLabel
-                          className={classes.switcher}
-                          control={
-                            <Checkbox checked={values.is_sending_sms} onChange={handleChange} />
-                          }
-                          label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SMS.SENDING" })}
-                          name="is_sending_sms"
-                          disabled={!isEditable || !me?.phone}
-                        />
-                      </>
-                    )}
+                      <FormControlLabel
+                        className={classes.switcher}
+                        control={
+                          <Checkbox checked={values.is_sending_sms} onChange={handleChange} />
+                        }
+                        label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SMS.SENDING" })}
+                        name="is_sending_sms"
+                        disabled={!isEditable || !me?.phone}
+                      />
+                    </>
 
                     <Grid
                       container

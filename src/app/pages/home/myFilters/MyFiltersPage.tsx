@@ -218,11 +218,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                 { id: "FILTER.FORM.LIMIT" },
                 {
                   count:
-                    !me?.tariff_matrix ||
-                    (!!me?.tariff_matrix &&
-                      me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0)
-                      ? "0"
-                      : me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount,
+                    me.available_filter_count,
                   word: declOfNum(
                     me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount,
                     ["подписка", "подписки", "подписок"]
