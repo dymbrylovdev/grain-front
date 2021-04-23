@@ -81,7 +81,7 @@ const useStyles = makeStyles(theme => ({
 interface IProps {
   intl: IntlShape;
   me: IUser;
-  bestAllMyDealsMode?: "deals" | "best-bids" | "all-bids" | "my-bids";
+  bestAllMyDealsMode?: "deals" | "best-bids" | "all-bids" | "my-bids" | "edit";
   cropId?: string;
   salePurchaseMode: "sale" | "purchase" | undefined;
   setSalePurchaseMode: (
@@ -173,7 +173,7 @@ const LeftMenu: React.FC<IProps> = ({
       <Divider style={{ margin: "6px 0" }} />
 
       {/* Продажа-Покупка меню */}
-      {((!!bestAllMyDealsMode && bestAllMyDealsMode !== "deals") || mySubscriptionsMode) &&
+      {((!!bestAllMyDealsMode && bestAllMyDealsMode !== "deals" && bestAllMyDealsMode !== "edit") || mySubscriptionsMode) &&
         accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
           <>
             <MenuItem
@@ -206,6 +206,31 @@ const LeftMenu: React.FC<IProps> = ({
                 } else if (mySubscriptionsMode) {
                   handleClick("/purchase/filters");
                 }
+              }}
+            >
+              • {intl.formatMessage({ id: "DEALS.TABLE.PURCHASE" })}
+            </MenuItem>
+            <Divider style={{ margin: "6px 0" }} />
+          </>
+        )}
+
+      {/* Покупка продажа для настройки фильтра при создании подписки админом юзеру */}
+
+      {bestAllMyDealsMode === "edit" &&
+        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+          <>
+            <MenuItem
+              className={salePurchaseMode === "sale" ? classes.selected : ""}
+              onClick={() => {
+                setSalePurchaseMode("sale");
+              }}
+            >
+              • {intl.formatMessage({ id: "DEALS.TABLE.SALE" })}
+            </MenuItem>
+            <MenuItem
+              className={salePurchaseMode === "purchase" ? classes.selected : ""}
+              onClick={() => {
+                setSalePurchaseMode("purchase");
               }}
             >
               • {intl.formatMessage({ id: "DEALS.TABLE.PURCHASE" })}

@@ -15,10 +15,12 @@ import {
   getUserActivate,
   getUsersCrops,
   getUserBidFilters,
+  createUserBidFilter,
 } from "../../crud/users.crud";
 import { IUser, IUserForCreate, IUserForEdit, TRole, IUserBidFilters } from "../../interfaces/users";
 import { IBid } from "../../interfaces/bids";
 import { ICrop } from "../../interfaces/crops";
+import { IFilterForCreate, IMyFilterItem, IMyFilters } from "../../interfaces/filters";
 
 const CLEAR_FETCH = "users/CLEAR_FETCH";
 const FETCH_REQUEST = "users/FETCH_REQUEST";
@@ -66,6 +68,11 @@ const CLEAR_USER_BID_FILTERS = "users/CLEAR_USER_BID_FILTERS";
 const USER_BID_FILTERS_REQUEST = "users/USER_BID_FILTERS_REQUEST";
 const USER_BID_FILTERS_SUCCESS = "users/USER_BID_FILTERS_SUCCESS";
 const USER_BID_FILTERS_FAIL = "users/USER_BID_FILTERS_FAIL";
+
+const CLEAR_CREATE_USER_FILTER = "users/CLEAR_CREATE_USER_FILTER";
+const CREATE_USER_FILTER_REQUEST = "users/CREATE_USER_FILTER_REQUEST";
+const CREATE_USER_FILTER_SUCCESS = "users/CREATE_USER_FILTER_SUCCESS";
+const CREATE_USER_FILTER_FAIL = "users/CREATE_USER_FILTER_FAIL";
 export interface IInitialState {
   page: number;
   per_page: number;
@@ -113,6 +120,10 @@ export interface IInitialState {
   userBidFiltersLoading: boolean;
   userBidFiltersSuccess: boolean;
   userBidFiltersError: string | null;
+
+  createUserFilterLoading: boolean;
+  createUserFilterSuccess: boolean;
+  createUserFilterError: string | null;
 }
 
 const initialState: IInitialState = {
@@ -161,7 +172,11 @@ const initialState: IInitialState = {
   userBidFilters: undefined,
   userBidFiltersLoading: false,
   userBidFiltersSuccess: false,
-  userBidFiltersError: null
+  userBidFiltersError: null,
+
+  createUserFilterLoading: false,
+  createUserFilterSuccess: false,
+  createUserFilterError: null,
 };
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
@@ -421,6 +436,40 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       }
     }
 
+    case CLEAR_CREATE_USER_FILTER: {
+      return {
+        ...state,
+        createUserFilterLoading: false,
+        createUserFilterSuccess: false,
+        createUserFilterError: null,
+      }
+    }
+
+    case CREATE_USER_FILTER_REQUEST: {
+      return {
+        ...state,
+        createUserFilterLoading: true,
+        createUserFilterSuccess: false,
+        createUserFilterError: null,
+      }
+    }
+
+    case CREATE_USER_FILTER_SUCCESS: {
+      return {
+        ...state,
+        createUserFilterLoading: false,
+        createUserFilterSuccess: true,
+      }
+    }
+
+    case CREATE_USER_FILTER_FAIL: {
+      return {
+        ...state,
+        createUserFilterLoading: false,
+        createUserFilterError: action.payload,
+      }
+    }
+
     default:
       return state;
   }
@@ -473,9 +522,14 @@ export const actions = {
     createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
 
   clearUserBidFilters: () => createAction(CLEAR_USER_BID_FILTERS),
-  userBidFiltersRequest: (payload: { id: number, type: string }) => createAction(USER_BID_FILTERS_REQUEST, payload),
+  userBidFiltersRequest: (payload: { id: number }) => createAction(USER_BID_FILTERS_REQUEST, payload),
   userBidFiltersSuccess: (payload: IServerResponse<IUserBidFilters>) => createAction(USER_BID_FILTERS_SUCCESS, payload),
-  userBidFiltersFail: (payload: string) => createAction(USER_BID_FILTERS_FAIL, payload)
+  userBidFiltersFail: (payload: string) => createAction(USER_BID_FILTERS_FAIL, payload),
+
+  clearCreateUserFilter: () => createAction(CLEAR_CREATE_USER_FILTER),
+  createUserFilterRequest: (payload: any) => createAction(CREATE_USER_FILTER_REQUEST, payload),
+  createUserFilterSuccess: (payload: any) => createAction(CREATE_USER_FILTER_SUCCESS),
+  createUserFilterFail: (payload: string) => createAction(CREATE_USER_FILTER_FAIL, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -556,12 +610,23 @@ function* userBidsSaga({ payload }: { payload: number }) {
   }
 }
 
-function* userBidFiltersSaga({ payload }: { payload: { id: number; type: string; } }) {
+function* userBidFiltersSaga({ payload }: { payload: { id: number; } }) {
   try {
     const { data }: { data: IServerResponse<IUserBidFilters> } = yield call(() => getUserBidFilters(payload));
     yield put(actions.userBidFiltersSuccess(data));
   } catch (e) {
     yield put(actions.userBidFiltersFail(e?.response?.data?.message) || "Ошибка соединения.");
+  }
+}
+
+function* createUserFilterSaga({ payload }: { payload: { id: number; data: IFilterForCreate } }) {
+  try {
+    const { data }: { data: IServerResponse<IMyFilters> } = yield call(() =>
+      createUserBidFilter(payload.id, payload.data)
+    );
+    yield put(actions.createUserFilterSuccess(data));
+  } catch (e) {
+    yield put(actions.createUserFilterFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -581,4 +646,5 @@ export function* saga() {
   );
   yield takeLatest<ReturnType<typeof actions.userBidsRequest>>(USER_BIDS_REQUEST, userBidsSaga);
   yield takeLatest<ReturnType<typeof actions.userBidFiltersRequest>>(USER_BID_FILTERS_REQUEST, userBidFiltersSaga);
+  yield takeLatest<ReturnType<typeof actions.createUserFilterRequest>>(CREATE_USER_FILTER_REQUEST, createUserFilterSaga);
 }

@@ -75,7 +75,7 @@ const CashlessPayment: React.FC<IProps & WrappedComponentProps> = ({
                 "{selectedTariff.tariff.name}{" "}
                 {selectedTariff.tariff_period ? selectedTariff.tariff_period.period : 0}"
               </span>{" "}
-              для <span className={innerClasses.span}>{realUser.email}</span>
+              для <span className={innerClasses.span}>{realUser.email || realUser.fio}</span>
             </div>
             <div>
               {intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })} {intl.formatDate(selectedDate)}

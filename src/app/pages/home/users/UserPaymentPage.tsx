@@ -89,10 +89,6 @@ const PaymentPage: React.FC<IProps &
     setValueTabs(newValue);
   };
 
-  console.log(editMode);
-  console.log(id);
-  console.log("USER", user);
-
   useEffect(() => {
     if (!selectedTariff || !selectedDate) history.push("/user/profile");
   }, [history, selectedDate, selectedTariff]);

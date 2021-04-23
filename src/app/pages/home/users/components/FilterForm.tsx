@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import {
   IconButton,
@@ -34,16 +34,20 @@ import { accessByRoles } from "../../../../utils/utils";
 
 interface IFilterForm {
   match: any;
-  userId: number | undefined;
+  userId: any;
 }
 
-const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps> = ({
+const FilterForm: React.FC<IFilterForm & TPropsFromRedux &
+  WrappedComponentProps> = ({
+  // match: {
+  //   params: { id, userId },
+  // },
   match,
   intl,
   fetchMe,
+  userId,
   me,
   meError,
-  userId,
   filterCount,
   loading,
   error,
@@ -116,7 +120,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
           }
         }
 
-        if (userId) fetchUserBidFilters({ id: +userId, type: salePurchaseMode })
+        if (userId) fetchUserBidFilters({ id: +userId });
       }
     }
   }, [
@@ -134,11 +138,11 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
     setCurrentPurchaseFilter,
     setCurrentSaleFilter,
     fetchUserBidFilters,
-    userId
+    userId,
   ]);
 
   useEffect(() => {
-    if (userId) fetchUserBidFilters({ id: +userId, type: salePurchaseMode })
+    if (userId) fetchUserBidFilters({ id: +userId });
   }, [fetchUserBidFilters, userId, salePurchaseMode]);
 
   useEffect(() => {
@@ -160,6 +164,18 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
             : intl.formatMessage({ id: "FILTERS.MY.PURCHASE" })
         }
       />
+
+      <div style={{ width: 200, marginBottom: 15, marginTop: 15 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => history.push(`/user/${userId}/filters/edit/new`)}
+          disabled={userBidFiltersLoading}
+        >
+          Добавить подписку
+        </Button>
+      </div>
+
       {!userBidFilters?.filters ? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />
@@ -209,7 +225,11 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
                             size="medium"
                             color="primary"
                             onClick={() =>
-                              history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/view/${item.id}`)
+                              history.push(
+                                `/user/${userId ? +userId : null}/filters/view/${
+                                  item.id
+                                }`
+                              )
                             }
                           >
                             <VisibilityIcon />
@@ -218,7 +238,11 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
                             size="medium"
                             color="primary"
                             onClick={() =>
-                              history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/edit/${item.id}`)
+                              history.push(
+                                `/user/${userId ? +userId : null}/filters/edit/${
+                                  item.id
+                                }`
+                              )
                             }
                           >
                             <EditIcon />

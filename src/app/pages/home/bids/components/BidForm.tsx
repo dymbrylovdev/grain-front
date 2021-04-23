@@ -417,7 +417,9 @@ const BidForm: React.FC<IProps> = ({
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
         .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
-      price: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
+      price: Yup.number()
+        .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }, { min: 1000 }))
+        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       location: Yup.object({
         text: Yup.string().required(
           intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
@@ -573,7 +575,7 @@ const BidForm: React.FC<IProps> = ({
   useEffect(() => {
     if (me) {
       me?.email ? setSendingEmail(true) : setSendingEmail(false);
-      me?.phone && me?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false)
+      me?.phone && me?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false);
     }
   }, [me]);
 
@@ -681,8 +683,8 @@ const BidForm: React.FC<IProps> = ({
                     >
                       {`Сегодня вам доступен просмотр ${
                         me?.contact_view_count
-                      } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`} <Link to={"/user/profile/tariffs"}>Снять ограничения</Link>
-                      
+                      } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}{" "}
+                      <Link to={"/user/profile/tariffs"}>Снять ограничения</Link>
                     </Alert>
                   )}
                 </>
@@ -1578,41 +1580,35 @@ const BidForm: React.FC<IProps> = ({
       <div className={classes.bottomButtonsContainer}>
         {me && editMode !== "view" && (
           <>
-            {editMode === "edit" ? (
-              <div className={classes.button}>
-                <ButtonWithLoader onPress={() => createFilter(bidId)}>
-                  {intl.formatMessage({ id: "ALL.BUTTONS.CREATE_FILTER" })}
-                </ButtonWithLoader>
-              </div>
-            ) : (
+            <div className={classes.button}>
+              {!!me?.tariff_matrix &&
+              me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
+                <>
+                  {me && me.email ? (
+                    <FormControlLabel
+                      control={
+                        <Checkbox checked={isSendingEmail} onChange={e => onCheckboxChange(e, 1)} />
+                      }
+                      label={"Подписка по e-mail"}
+                    />
+                  ) : null}
+                  {me && me.phone && me.phone.length > 4 ? (
+                    <FormControlLabel
+                      control={
+                        <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
+                      }
+                      label={"Подписка по смс"}
+                    />
+                  ) : null}
+                </>
+              )}
+            </div>
 
-              <div className={classes.button}>
-                {!!me?.tariff_matrix &&
-                me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
-                  <>
-                    {me && me.email ? (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={isSendingEmail}
-                            onChange={e => onCheckboxChange(e, 1)}
-                          />
-                        }
-                        label={"Подписка по e-mail"}
-                      />
-                    ) : null}
-                    {me && me.phone && me.phone.length > 4 ? (
-                      <FormControlLabel
-                        control={
-                          <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
-                        }
-                        label={"Подписка по смс"}
-                      />
-                    ) : null}
-                  </>
-                )}
-              </div>
-            )}
+            {/* <div className={classes.button}>
+              <ButtonWithLoader onPress={() => createFilter(bidId)}>
+                {intl.formatMessage({ id: "ALL.BUTTONS.CREATE_FILTER" })}
+              </ButtonWithLoader>
+            </div> */}
 
             <div className={classes.button}>
               <ButtonWithLoader

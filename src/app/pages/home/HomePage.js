@@ -21,6 +21,7 @@ import Error404Page from "../../components/ErrorPage/Error404Page";
 import { TariffsEditPage } from "./tariffs";
 import { TrialEditPage } from "./trial";
 import UserBidFiltersEdit from "./users/components/UserBidFiltersEdit";
+import FilterForm from "./users/components/FilterForm";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { user } = useSelector(({ auth }) => ({ user: auth.user }), shallowEqual);
@@ -63,13 +64,17 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
 
         <Route path="/sale/filters/view/:id" component={MyFiltersEditPage} />
         <Route path="/sale/filters/edit/:id" component={MyFiltersEditPage} />
-        <Route path="/sale/user/:userId/filters/view/:id" component={UserBidFiltersEdit} />
-        <Route path="/sale/user/:userId/filters/edit/:id" component={UserBidFiltersEdit} />
+        <Route path="/user/:userId/filters/view/:id" component={UserBidFiltersEdit} />
+        <Route path="/user/:userId/filters/edit/:id" component={UserBidFiltersEdit} />
+        <Route path="/user/:userId/filters" component={FilterForm} />
         <Route path="/sale/filters/prices" component={MyFiltersMoneyPage} />
         <Route path="/sale/filters" component={MyFiltersPage} />
 
         <Route path="/purchase/filters/view/:id" component={MyFiltersEditPage} />
         <Route path="/purchase/filters/edit/:id" component={MyFiltersEditPage} />
+        <Route path="/user/:userId/filters/view/:id" component={UserBidFiltersEdit} />
+        <Route path="/user/:userId/filters/edit/:id" component={UserBidFiltersEdit} />
+        <Route path="/user/:userId/filters" component={FilterForm} />
         <Route path="/purchase/filters/prices" component={MyFiltersMoneyPage} />
         <Route path="/purchase/filters" component={MyFiltersPage} />
 

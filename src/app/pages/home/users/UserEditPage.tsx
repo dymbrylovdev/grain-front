@@ -353,7 +353,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
               value={valueTabs}
               index={5}
             >
-              <FilterForm userId={+id || undefined} match={match} />
+              <FilterForm match={match} userId={+id || undefined} />
             </TabPanel>
           )}
         </div>

@@ -111,7 +111,7 @@ const BidTable: React.FC<IProps> = ({
           <Table aria-label="simple table">
             <TableHead>
               <TableRow className={classes.mobileHide}>
-                {(clientWidth > 1024 && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"])) && (
+                {clientWidth > 1024 && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
                   <TopTableCell>
                     <FormattedMessage id="BIDSLIST.TABLE.ID" />
                   </TopTableCell>
@@ -129,9 +129,11 @@ const BidTable: React.FC<IProps> = ({
                 <TopTableCell>
                   <FormattedMessage
                     id={
-                      bestAllMyMode === "my-bids" || "edit"
-                        ? "BIDSLIST.TABLE.COST"
-                        : "BIDSLIST.TABLE.COST." + salePurchaseMode
+                      user.is_buyer
+                        ? "BIDSLIST.TABLE.COST.sale"
+                        : user.is_vendor
+                        ? "BIDSLIST.TABLE.COST.purchase"
+                        : "BIDSLIST.TABLE.COST"
                     }
                   />
                 </TopTableCell>
@@ -206,7 +208,9 @@ const BidTable: React.FC<IProps> = ({
                     }`,
                   }}
                 >
-                  {(clientWidth > 1024 && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"])) && <TableCell>{bid.id}</TableCell>}
+                  {clientWidth > 1024 && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+                    <TableCell>{bid.id}</TableCell>
+                  )}
                   {bestAllMyMode === "my-bids" && (
                     <TableCell>
                       {crops?.find(crop => crop.id === bid.crop_id)?.name || ""}

@@ -3,8 +3,8 @@ import { ITariffToRequest } from "../interfaces/tariffs";
 
 export const TARIFF_URL = "/api/tariff";
 
-export const getTariffs = () => {
-  return axios.get(`${TARIFF_URL}s`);
+export const getTariffs = (userView?: number) => {
+  return axios.get(`${TARIFF_URL}s${userView ? `?user_view=${userView}` : ""} `);
 };
 
 export const editTariff = (id: number, data: ITariffToRequest) => {
