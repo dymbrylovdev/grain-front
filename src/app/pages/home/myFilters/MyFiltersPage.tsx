@@ -113,6 +113,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
         }
 
         fetch(salePurchaseMode);
+        fetchMe();
       }
     }
   }, [
@@ -125,6 +126,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
     deleteFilterId,
     enqueueSnackbar,
     fetch,
+    fetchMe,
     intl,
     me,
     salePurchaseMode,
