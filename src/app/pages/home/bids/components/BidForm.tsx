@@ -1604,11 +1604,11 @@ const BidForm: React.FC<IProps> = ({
               )}
             </div>
 
-            {/* <div className={classes.button}>
+            <div className={classes.button}>
               <ButtonWithLoader onPress={() => createFilter(bidId)}>
                 {intl.formatMessage({ id: "ALL.BUTTONS.CREATE_FILTER" })}
               </ButtonWithLoader>
-            </div> */}
+            </div>
 
             <div className={classes.button}>
               <ButtonWithLoader
