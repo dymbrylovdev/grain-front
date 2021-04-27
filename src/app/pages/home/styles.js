@@ -61,7 +61,7 @@ const useStyles = makeStyles(theme => ({
   },
   textFieldContainer: {
     display: "flex",
-    minHeight: 70,
+    // minHeight: 70,
     alignItems: "center",
   },
   textField: {
@@ -223,6 +223,10 @@ const useStyles = makeStyles(theme => ({
       marginLeft: -theme.spacing(2),
       marginRight: -theme.spacing(2),
     },
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
   },
 }));
 

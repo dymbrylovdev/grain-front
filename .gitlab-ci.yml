@@ -4,37 +4,31 @@ services:
 
 stages:
   - build
-  - release
   - deploy
 
 variables:
-  TEST_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME_DEV_CURRENT:$CI_BUILD_REF_NAME
-  RELEASE_IMAGE: $CI_DOCKERHUB_LOGIN/$CONTAINER_NAME:latest
+  FX_IMAGE: $CI_DOCKERHUB_LOGIN/grain-fx
+  DEV_IMAGE: $CI_DOCKERHUB_LOGIN/grain-dev
+  ME_IMAGE: $CI_DOCKERHUB_LOGIN/grain-me
 
 before_script:
   - docker info
   - docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD
 
-build-web:
+# jobs for grain-fx.me-interactive.net (branch 1.7.10):
+build-grain-fx:
   stage: build
   script:
-    - docker build --pull -t $TEST_IMAGE .
-    - docker push $TEST_IMAGE
-
-release-web:
-  stage: release
-  script:
-    - docker pull $TEST_IMAGE
-    - docker tag $TEST_IMAGE $RELEASE_IMAGE
-    - docker push $RELEASE_IMAGE
+    - docker build --pull -t $FX_IMAGE .
+    - docker push $FX_IMAGE
   only:
-    - "1.8"
+    - '1.7.10'
 
-deploy:
+deploy-grain-fx:
   stage: deploy
   image: gitlab/dind:latest
   only:
-    - "1.8"
+    - '1.7.10'
   environment: production
   services:
     - docker:dind
@@ -46,6 +40,65 @@ deploy:
     - ssh-add ~/.ssh/id_rsa
     - ssh-keyscan -H $DEPLOYMENT_SERVER_IP >> ~/.ssh/known_hosts
   script:
-    - printf "NODE_PATH=src/\nREACT_APP_API_DOMAIN=${REACT_APP_API_DOMAIN_CURRENT}\n" > web-environment.env #envariment varibles
+    - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
     - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
-    - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD $CONTAINER_NAME_DEV_CURRENT:latest;docker stop $CONTAINER_NAME_DEV_CURRENT;docker rm $CONTAINER_NAME_DEV_CURRENT --force;docker pull $RELEASE_IMAGE;docker run --rm -p 0.0.0.0:$DEPLOYMENT_PORT_DEV_CURRENT:3000 --name $CONTAINER_NAME_DEV_CURRENT --env-file web-environment.env -d $RELEASE_IMAGE"
+    - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD;docker stop $FX_CONTAINER;docker rm $FX_CONTAINER --force;docker pull $FX_IMAGE;docker run --restart always -p 0.0.0.0:$FX_PORT:3000 --name $FX_CONTAINER --env-file web-environment.env -d $FX_IMAGE"
+
+
+# jobs for grain-dev.me-interactive.net (branch 1.8):
+build-grain-dev:
+  stage: build
+  script:
+    - docker build --pull -t $DEV_IMAGE .
+    - docker push $DEV_IMAGE
+  only:
+    - '1.8'
+
+deploy-grain-dev:
+  stage: deploy
+  image: gitlab/dind:latest
+  only:
+    - '1.8'
+  environment: production
+  services:
+    - docker:dind
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DEPLOYMENT_SERVER_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEPLOYMENT_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
+    - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
+    - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD;docker stop $DEV_CONTAINER;docker rm $DEV_CONTAINER --force;docker pull $DEV_IMAGE;docker run --restart always -p 0.0.0.0:$DEV_PORT:3000 --name $DEV_CONTAINER --env-file web-environment.env -d $DEV_IMAGE"
+
+# jobs for grain.me-interactive.net (branch master):
+build-grain.me:
+  stage: build
+  script:
+    - docker build --pull -t $ME_IMAGE .
+    - docker push $ME_IMAGE
+  only:
+    - 'master'
+
+deploy-grain.me:
+  stage: deploy
+  image: gitlab/dind:latest
+  only:
+    - 'master'
+  environment: production
+  services:
+    - docker:dind
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DEPLOYMENT_SERVER_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEPLOYMENT_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
+    - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
+    - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD;docker stop $ME_CONTAINER;docker rm $ME_CONTAINER --force;docker pull $ME_IMAGE;docker run --restart always -p 0.0.0.0:$ME_PORT:3000 --name $ME_CONTAINER --env-file web-environment.env -d $ME_IMAGE"

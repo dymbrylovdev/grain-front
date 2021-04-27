@@ -28,7 +28,6 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
   tariffsTypes,
   usersFilterTariff,
   setUsersFilterTariff,
-
   userRoles,
   setCurrentRoles,
 }): ReactElement => {

@@ -40,6 +40,11 @@ export interface IUser {
   tariff_start_date?: Date;
   crops: ICrop[];
   available_filter_count: number;
+  main_crop: {
+    id: number;
+    name: string;
+    vat: number;
+  };
 }
 
 export interface IUserForRegister {
@@ -87,6 +92,7 @@ export interface IUserForEdit {
   tariff_period_id?: number;
   tariff_expired_at?: Date;
   crop_ids?: number[];
+  main_crop_id?: number;
 }
 
 export interface IChangePasswordData {
@@ -109,3 +115,16 @@ export interface IRegSuccessData {
   roles: TRole[];
   login: string;
 }
+
+export interface IUserRoles {
+  id: number;
+  label: string;
+  role: string;
+}
+
+export interface IUserBidFilters {
+  filter_count: number;
+  filters: any[];
+}
+
+export type LoginType = "email" | "phone";

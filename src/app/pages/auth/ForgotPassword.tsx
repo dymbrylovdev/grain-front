@@ -18,6 +18,7 @@ const ForgotPassword: React.FC<WrappedComponentProps & TPropsFromRedux> = ({
   recoveryPasswordLoading,
   recoveryPasswordSuccess,
   recoveryPasswordError,
+
 }) => {
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();

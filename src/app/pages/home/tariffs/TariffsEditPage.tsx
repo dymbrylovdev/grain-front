@@ -80,6 +80,8 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     }, 10000);
   }
 
+  // console.log("tariffs: ", tariffs);
+
   return (
     <Paper className={classes.paperWithTable}>
       <LayoutSubheader title={intl.formatMessage({ id: "TARIFFS.MAIN_TITLE" })} />
@@ -238,9 +240,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
               <TableRow>
                 <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT12" })}</TableCell>
-                {/* <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-                </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
                   <EditableCell
                     useInnerStyles={useInnerStyles}
@@ -250,9 +249,6 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     realCell={{ id: 2, field: "priority_places_bids_on_mailing_count" }}
                   />
                 </TableCell>
-                {/* <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
-                  {intl.formatMessage({ id: "TARIFFS.GENERAL_TERMS" })}
-                </TableCell> */}
                 <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
                   <EditableCell
                     useInnerStyles={useInnerStyles}
@@ -317,6 +313,84 @@ const TariffsEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   />
                 </TableCell>
               </TableRow>
+
+              {/*=========================*/}
+              <TableRow>
+                <TableCell>{intl.formatMessage({ id: "TARIFFS.TEXT13" })}</TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 2)?.tariff_limits as any}
+                    realCell={{ id: 2, field: "days_to_bid_archiving" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 6)?.tariff_limits as any}
+                    realCell={{ id: 6, field: "days_to_bid_archiving" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 22)?.tariff_limits as any}
+                    realCell={{ id: 22, field: "days_to_bid_archiving" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 10)?.tariff_limits as any}
+                    realCell={{ id: 10, field: "days_to_bid_archiving" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 14)?.tariff_limits as any}
+                    realCell={{ id: 14, field: "days_to_bid_archiving" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 18)?.tariff_limits as any}
+                    realCell={{ id: 18, field: "days_to_bid_archiving" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 100)?.tariff_limits as any}
+                    realCell={{ id: 100, field: "days_to_bid_archiving" }}
+                  />
+                </TableCell>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <EditableCell
+                    useInnerStyles={useInnerStyles}
+                    cell={cell}
+                    setCell={setCell}
+                    tariff={tariffs.find(item => item.id === 101)?.tariff_limits as any}
+                    realCell={{ id: 101, field: "days_to_bid_archiving" }}
+                  />
+                </TableCell>
+              </TableRow>
+              {/*=========================*/}
 
               <TableRow>
                 <TableCell>

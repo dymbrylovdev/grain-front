@@ -168,7 +168,9 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   // const [showTariffTable, setShowTariffTable] = useState(0);
 
   const goToTariffPurchase = () => {
-    history.push("/user/profile/tariffs/payment");
+    me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
+      ? history.push(`/user/profile/tariffs/payment/${userId}`)
+      : history.push(`/user/profile/tariffs/payment-form`);
   };
 
   const { values, resetForm, handleSubmit } = useFormik({
@@ -183,10 +185,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     onSubmit: () => {
       let params: any = {};
       let tariff_matrix_id = selectedTariff && selectedTariff.id;
-
-      //* timestamp нужен для конвертации типа date в js в тип dateTime php
-      let timestamp = "@" + Math.round(selectedDate.getTime() / 1000);
-      let tariff_start_date = timestamp;
+      let tariff_start_date = selectedDate.toString().replace(/\([^]+\)/g, "");
 
       params = { tariff_matrix_id, tariff_start_date };
 
@@ -276,6 +275,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchTrial();
   }, [fetchTrial]);
 
+  console.log(tariffs);
+
   return (
     <>
       <div>
@@ -310,7 +311,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                   ) : null}
                 </div>
 
-                {realUser.tariff_prolongations.length ? (
+                {!!realUser.tariff_prolongations.length ? (
                   <Alert className={classes.infoAlert} severity="info" color="info">
                     Вам будет доступен тариф{" "}
                     {realUser.tariff_prolongations[0].tariff_matrix.tariff.name} на{" "}

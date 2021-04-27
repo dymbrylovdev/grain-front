@@ -38,6 +38,7 @@ const { PUBLIC_URL } = process.env;
  *
  * @see https://github.com/axios/axios#interceptors
  */
+
 setupAxios(axios, store);
 
 Sentry.init({ dsn: "https://79385bc9032e4d4a8d85a414cef052c8@o405508.ingest.sentry.io/5271260" });

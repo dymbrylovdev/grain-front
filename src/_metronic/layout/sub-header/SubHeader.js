@@ -117,6 +117,17 @@ class SubHeader extends React.Component {
                 Добавить объявление
               </Button>
             )}
+
+            {me && accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
+              <Button
+                style={{marginLeft: 15}}
+                variant="contained"
+                color="secondary"
+                onClick={() => history.push(`/user/profile/tariffs`)}
+              >
+                Купить тариф
+              </Button>
+            )}
           </div>
         </div>
       </div>

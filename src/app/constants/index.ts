@@ -8,4 +8,4 @@ const API_DOMAIN = `${protocol}//${REACT_APP_API_DOMAIN}`;
 
 const API_SEARCH_LOCATION_URI = `https://geocode-maps.yandex.ru/1.x/?apikey=${REACT_APP_GOOGLE_API_KEY}`;
 
-export { API_DOMAIN, API_SEARCH_LOCATION_URI };
+export { API_DOMAIN, API_SEARCH_LOCATION_URI, REACT_APP_GOOGLE_API_KEY };

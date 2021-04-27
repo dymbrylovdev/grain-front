@@ -4,6 +4,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Paper, useMediaQuery, makeStyles, Drawer } from "@material-ui/core";
 
+import { actions as tariffsActions } from "../../store/ducks/tariffs.duck";
 import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
 import { actions as tariffActions } from "../../store/ducks/tariffs.duck";
 import { actions as funnelStatesActions } from "../../store/ducks/funnelStates.duck";
@@ -55,6 +56,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   currentFunnelState,
   setFunnelState,
   funnelStates,
+
   tariffsTypes,
   usersFilterTariff,
   setUsersFilterTariff,
@@ -131,7 +133,8 @@ const connector = connect(
     setFunnelState: funnelStatesActions.setFunnelState,
     setCurrentRoles: usersActions.setCurrentRoles,
   }
-);
+)
+
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 export default injectIntl(connector(GrainMenu));

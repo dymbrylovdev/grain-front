@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { compose } from "redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Button, makeStyles, Paper } from "@material-ui/core";
-// import { IconButton } from "@material-ui/core";
-// import CustomIcon from "../../../components/ui/Images/CustomIcon";
 import { useSnackbar } from "notistack";
+import { format } from "date-fns";
 
 import { actions as bidsActions } from "../../../store/ducks/bids.duck";
 import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
@@ -28,6 +27,8 @@ import { filterForBids } from "../myFilters/utils";
 import { LayoutSubheader } from "../../../../_metronic";
 import { accessByRoles } from "../../../utils/utils";
 import { IBid } from "../../../interfaces/bids";
+
+import fileSaver from "file-saver";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -151,6 +152,19 @@ const BidsPage: React.FC<TPropsFromRedux &
   setProfit,
 
   pointPrices,
+
+  clearBidsXlsUrl,
+  fetchBidsXlsUrl,
+
+  bidsXlsUrl,
+  bidsXlsUrlLoading,
+  bidsXlsUrlSuccess,
+  bidsXlsUrlError,
+
+  archiveBid,
+  archiveLoading,
+  archiveSuccess,
+  archiveError,
 }) => {
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
   if (match.url.indexOf("best-bids") !== -1) bestAllMyMode = "best-bids";
@@ -161,6 +175,8 @@ const BidsPage: React.FC<TPropsFromRedux &
   let salePurchaseMode: "sale" | "purchase" = "sale";
   if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
   if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
+
+  const dateForExcel = format(new Date(), "dd.MM.yyyy");
 
   let pageTitle = "";
 
@@ -207,11 +223,10 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
-  // const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [pricesModalOpen, setPricesModalOpen] = useState(false);
 
-  const fetchAll = () => {
+  const fetchAll = useCallback(() => {
     if (!!me) {
       if (["ROLE_ADMIN"].includes(me.roles[0]) && filter.minDate && filter.maxDate) {
         fetch(
@@ -227,54 +242,14 @@ const BidsPage: React.FC<TPropsFromRedux &
         fetch(+cropId, salePurchaseMode, page, perPage);
       }
     }
-  };
-
-  // const filterTitle =
-  // salePurchaseMode === "sale"
-  // ? !currentSaleFilters[cropId]
-  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
-  // : !currentSaleFilters[cropId]?.id
-  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
-  // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
-  // : salePurchaseMode === "purchase"
-  // ? !currentPurchaseFilters[cropId]
-  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.EMPTY" })
-  // : !currentPurchaseFilters[cropId]?.id
-  // ? intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.FULL" })
-  // : `${intl.formatMessage({ id: "BIDLIST.FILTER.STATUS.WITH_NAME" })}`
-  // : "";
-
-  // const filterName =
-  // salePurchaseMode === "sale"
-  // ? currentSaleFilters[cropId] &&
-  // currentSaleFilters[cropId]?.id &&
-  // currentSaleFilters[cropId]?.name
-  // ? currentSaleFilters[cropId]?.name
-  // : ""
-  // : salePurchaseMode === "purchase"
-  // ? currentPurchaseFilters[cropId] &&
-  // currentPurchaseFilters[cropId]?.id &&
-  // currentPurchaseFilters[cropId]?.name
-  // ? currentPurchaseFilters[cropId]?.name
-  // : ""
-  // : "";
-
-  // const filterIconPath =
-  // salePurchaseMode === "sale"
-  // ? !currentSaleFilters[cropId]
-  // ? "/media/filter/filter.svg"
-  // : "/media/filter/filter_full.svg"
-  // : salePurchaseMode === "purchase"
-  // ? !currentPurchaseFilters[cropId]
-  // ? "/media/filter/filter.svg"
-  // : "/media/filter/filter_full.svg"
-  // : "";
+  }, [cropId, fetch, filter, me, page, perPage, salePurchaseMode]);
 
   const isHaveRules = (user: IUser, id: number) => {
     return accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id;
   };
 
   const newInexactBid: IBid[] = [];
+
   if (bestBids?.equal && bestBids.equal.length < 10) {
     if (bestBids.inexact && bestBids.inexact.length > 0) {
       for (let i = 0; i < 10 - bestBids.equal.length; i++) {
@@ -338,7 +313,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                   currentSaleFilters[cropId] || {},
                   cropParams.filter(item => item.type === "enum"),
                   cropParams.filter(item => item.type === "number"),
-                  pointPrices,
+                  pointPrices
                 )
               );
             }
@@ -387,6 +362,83 @@ const BidsPage: React.FC<TPropsFromRedux &
     perPage,
     salePurchaseMode,
     pointPrices,
+    fetchAll,
+  ]);
+
+  useEffect(() => {
+    if (archiveSuccess || archiveError) {
+      enqueueSnackbar(
+        archiveSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.BIDS.EDIT" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${archiveError}`,
+        {
+          variant: archiveSuccess ? "success" : "error",
+        }
+      );
+      setAlertOpen(false);
+      clearDel();
+    }
+    if (archiveSuccess) {
+      switch (bestAllMyMode) {
+        case "best-bids":
+          if (salePurchaseMode === "sale") {
+            if (currentSaleFilters[cropId] && cropParams && pointPrices) {
+              fetchBestBids(
+                salePurchaseMode,
+                filterForBids(
+                  currentSaleFilters[cropId] || {},
+                  cropParams.filter(item => item.type === "enum"),
+                  cropParams.filter(item => item.type === "number"),
+                  pointPrices
+                )
+              );
+            }
+            if (cropId && !currentSaleFilters[cropId])
+              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+          }
+          if (salePurchaseMode === "purchase") {
+            if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
+              fetchBestBids(
+                salePurchaseMode,
+                filterForBids(
+                  currentPurchaseFilters[cropId] || {},
+                  cropParams.filter(item => item.type === "enum"),
+                  cropParams.filter(item => item.type === "number"),
+                  pointPrices
+                )
+              );
+            }
+            if (cropId && !currentPurchaseFilters[cropId])
+              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+          }
+          break;
+        case "my-bids":
+          fetchMyBids(salePurchaseMode, page, perPage);
+          break;
+        case "all-bids":
+          fetchAll();
+          break;
+      }
+    }
+  }, [
+    bestAllMyMode,
+    clearDel,
+    cropId,
+    cropParams,
+    currentPurchaseFilters,
+    currentSaleFilters,
+    archiveError,
+    archiveSuccess,
+    enqueueSnackbar,
+    fetch,
+    fetchBestBids,
+    fetchMyBids,
+    intl,
+    page,
+    perPage,
+    salePurchaseMode,
+    pointPrices,
+    fetchAll,
   ]);
 
   useEffect(() => {
@@ -459,13 +511,44 @@ const BidsPage: React.FC<TPropsFromRedux &
     salePurchaseMode,
     filter,
     pointPrices,
+    fetchAll,
   ]);
 
   useEffect(() => {
     fetchMe();
   }, [fetchMe]);
 
-  if (error || bestError || myError || cropsError || cropParamsError) {
+  useEffect(() => {
+    if (
+      cropId &&
+      me &&
+      ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) &&
+      filter.minDate &&
+      filter.maxDate
+    ) {
+      let formattedMinDate = format(filter.minDate, "yyyy-MM-dd");
+      let formattedMaxDate = format(filter.maxDate, "yyyy-MM-dd");
+
+      fetchBidsXlsUrl(
+        +cropId,
+        salePurchaseMode,
+        formattedMinDate,
+        formattedMaxDate,
+        filter.authorId
+      );
+    }
+  }, [fetchBidsXlsUrl, cropId, salePurchaseMode, me, filter]);
+
+  const exportFileToXlsx = () => {
+    if (bidsXlsUrl) {
+      const blob = new Blob([bidsXlsUrl], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      fileSaver.saveAs(blob, `Выгрузка объявлений ${dateForExcel}.xlsx`);
+    }
+  };
+
+  if (error || bestError || myError || cropsError || cropParamsError || bidsXlsUrlError) {
     setTimeout(() => {
       window.location.reload();
     }, 10000);
@@ -479,25 +562,39 @@ const BidsPage: React.FC<TPropsFromRedux &
         <div className={innerClasses.topContainer}>
           <div className={innerClasses.leftButtonBlock}>
             {me && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() =>
-                  history.push(
-                    `/bid/create/${
-                      (!!me &&
-                        ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) ||
-                      bestAllMyMode === "my-bids"
-                        ? salePurchaseMode
-                        : salePurchaseMode === "sale"
-                        ? "purchase"
-                        : "sale"
-                    }/0${!!cropId ? "/" + cropId : ""}`
-                  )
-                }
-              >
-                {intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
-              </Button>
+              <div>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() =>
+                    history.push(
+                      `/bid/create/${
+                        (!!me &&
+                          ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) ||
+                        bestAllMyMode === "my-bids"
+                          ? salePurchaseMode
+                          : salePurchaseMode === "sale"
+                          ? "purchase"
+                          : "sale"
+                      }/0${!!cropId ? "/" + cropId : ""}`
+                    )
+                  }
+                >
+                  {intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
+                </Button>
+
+                {["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) &&
+                  bestAllMyMode === "all-bids" && (
+                    <Button
+                      style={{ marginLeft: 15 }}
+                      variant="contained"
+                      color="primary"
+                      onClick={() => exportFileToXlsx()}
+                    >
+                      {intl.formatMessage({ id: "BID.EXPORT.EXCEL" })}
+                    </Button>
+                  )}
+              </div>
             )}
           </div>
         </div>
@@ -521,7 +618,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 }}
                 user={me as IUser}
                 title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
-                loading={!bestBids || !cropParams}
+                loading={!bestBids || !cropParams || archiveLoading}
                 salePurchaseMode={salePurchaseMode}
                 bestAllMyMode={bestAllMyMode}
                 crops={crops}
@@ -540,7 +637,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                   }}
                   user={me as IUser}
                   title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
-                  loading={!bestBids || !cropParams}
+                  loading={!bestBids || !cropParams || archiveLoading}
                   salePurchaseMode={salePurchaseMode}
                   bestAllMyMode={bestAllMyMode}
                   crops={crops}
@@ -588,6 +685,7 @@ const BidsPage: React.FC<TPropsFromRedux &
               bestAllMyMode={bestAllMyMode}
               crops={crops}
               setProfit={setProfit}
+              archive={archiveBid}
             />
             {!!myBids && !!myBids.length && (
               <div className={innerClasses.text}>
@@ -611,8 +709,16 @@ const BidsPage: React.FC<TPropsFromRedux &
               loading={!bids || (!cropParams && cropId !== "0")}
               paginationData={{ page, perPage, total }}
               fetcher={(newPage: number, newPerPage: number) =>
-                fetch(+cropId, salePurchaseMode, newPage, newPerPage)
+                fetch(
+                  +cropId,
+                  salePurchaseMode,
+                  newPage,
+                  newPerPage,
+                  filter.minDate,
+                  filter.maxDate
+                )
               }
+              filter={filter}
               addUrl={"fromAdmin"}
               salePurchaseMode={salePurchaseMode}
               bestAllMyMode={bestAllMyMode}
@@ -711,6 +817,15 @@ const connector = connect(
     delError: state.bids.delError,
 
     pointPrices: state.myFilters.pointPrices,
+
+    bidsXlsUrl: state.bids.bidsXlsUrl,
+    bidsXlsUrlLoading: state.bids.bidsXlsLoading,
+    bidsXlsUrlSuccess: state.bids.bidsXlsSuccess,
+    bidsXlsUrlError: state.bids.bidsXlsError,
+
+    archiveLoading: state.bids.archiveLoading,
+    archiveSuccess: state.bids.archiveSuccess,
+    archiveError: state.bids.archiveError,
   }),
   {
     fetchMe: authActions.fetchRequest,
@@ -738,6 +853,11 @@ const connector = connect(
 
     fetchFilters: myFiltersActions.fetchRequest,
     clearEditFilters: myFiltersActions.clearEdit,
+
+    clearBidsXlsUrl: bidsActions.clearBidsXlsUrl,
+    fetchBidsXlsUrl: bidsActions.bidsXlsUrlRequest,
+
+    archiveBid: bidsActions.archiveRequest,
   }
 );
 

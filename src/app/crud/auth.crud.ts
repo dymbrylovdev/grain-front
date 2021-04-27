@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IUserForEdit, IUserForRegister, IChangePasswordData } from "../interfaces/users";
+import { IUserForEdit, IUserForRegister, IChangePasswordData, LoginType } from "../interfaces/users";
 
 export const LOGIN_URL = "api/user/login";
 export const REQUEST_PASSWORD_URL = "/api/_p/reset_password/send_code";
@@ -24,7 +24,7 @@ export const login = (login: string, password: string) => {
 
 export const loginByPhone = (phone: string, code: string) => {
   return axios.post(`${LOGIN_BY_PHONE}?phone=${phone}&code=${code}`);
-}
+};
 
 export const getMe = () => {
   return axios.get(GET_USER_URL);
@@ -44,4 +44,12 @@ export const changePassword = (data: IChangePasswordData) => {
 
 export const sendCodeConfirm = (phone: string) => {
   return axios.post(`${SEND_CODE}?phone=${phone}`);
+};
+
+export const loginByJwt = (jwt: string) => {
+  return axios.get(`api/_p/login_from_link?token=${jwt}`);
+};
+
+export const findInSystem = ({ value, type }: { value: string; type: LoginType }) => {
+  return axios.get(`api/_p/user/find_in_system?${type}=${value}`);
 };

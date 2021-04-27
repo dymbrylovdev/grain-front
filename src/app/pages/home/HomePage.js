@@ -20,6 +20,7 @@ import { DealsPage, DealViewPage } from "./deals";
 import Error404Page from "../../components/ErrorPage/Error404Page";
 import { TariffsEditPage } from "./tariffs";
 import { TrialEditPage } from "./trial";
+import UserBidFiltersEdit from "./users/components/UserBidFiltersEdit";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { user } = useSelector(({ auth }) => ({ user: auth.user }), shallowEqual);
@@ -45,13 +46,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
           <Redirect
             exact
             from="/"
-            to={
-              user.crops.length < 1
-                ? "/user/profile"
-                : user.is_buyer || user.is_vendor
-                ? `purchase/best-bids/${user.crops[0].id}`
-                : `sale/best-bids/${user.crops[0].id}`
-            }
+            to={"/user/profile"}
           />
         }
         <Route path="/userDocs/legacy" component={UserDocPage} />
@@ -60,13 +55,16 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/user/profile/points" component={UserEditPage} />
         <Route path="/user/profile/crops" component={UserEditPage} />
         <Route path="/user/profile/tariffs" exact component={UserEditPage} />
-        <Route path="/user/profile/tariffs/payment" component={UserPaymentPage} />
+        <Route path="/user/profile/tariffs/payment/:id" component={UserPaymentPage} />
+        <Route path="/user/profile/tariffs/payment-form" component={UserPaymentPage} />
         <Route path="/user-list" component={UsersPage} />
         <Route path="/user/create" component={UserEditPage} />
         <Route path="/user/edit/:id" component={UserEditPage} />
 
         <Route path="/sale/filters/view/:id" component={MyFiltersEditPage} />
         <Route path="/sale/filters/edit/:id" component={MyFiltersEditPage} />
+        <Route path="/sale/user/:userId/filters/view/:id" component={UserBidFiltersEdit} />
+        <Route path="/sale/user/:userId/filters/edit/:id" component={UserBidFiltersEdit} />
         <Route path="/sale/filters/prices" component={MyFiltersMoneyPage} />
         <Route path="/sale/filters" component={MyFiltersPage} />
 

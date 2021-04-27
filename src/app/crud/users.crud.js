@@ -58,3 +58,7 @@ export function getUserActivate(email) {
 export function getUserRoles() {
   return axios.get(GET_USER_ROLES);
 }
+
+export function getUserBidFilters({ id, type }) {
+  return axios.get(`${USER_URL}${id}/bid_filters?type=${type}`)
+}

@@ -15,8 +15,9 @@ import {
   getUserActivate,
   getUsersCrops,
   getUserRoles,
+  getUserBidFilters,
 } from "../../crud/users.crud";
-import { IUser, IUserForCreate, IUserForEdit, TRole } from "../../interfaces/users";
+import { IUser, IUserForCreate, IUserForEdit, TRole, IUserBidFilters } from "../../interfaces/users";
 import { IBid } from "../../interfaces/bids";
 
 const CLEAR_FETCH = "users/CLEAR_FETCH";
@@ -67,6 +68,11 @@ const USER_ROLES_SUCCESS = "users/USER_ROLES_SUCCESS";
 const USER_ROLES_FAIL = "users/USER_ROLES_FAIL";
 
 const SET_CURRENT_ROLES = "users/SET_CURRENT_ROLES";
+
+const CLEAR_USER_BID_FILTERS = "users/CLEAR_USER_BID_FILTERS";
+const USER_BID_FILTERS_REQUEST = "users/USER_BID_FILTERS_REQUEST";
+const USER_BID_FILTERS_SUCCESS = "users/USER_BID_FILTERS_SUCCESS";
+const USER_BID_FILTERS_FAIL = "users/USER_BID_FILTERS_FAIL";
 export interface IInitialState {
   page: number;
   per_page: number;
@@ -110,12 +116,18 @@ export interface IInitialState {
 
   openInfoAlert: boolean;
 
+
   roles: any[] | undefined;
   userRolesLoading: boolean;
   userRolesSuccess: boolean;
   userRolesError: string | null;
 
   currentRoles: any[] | undefined;
+
+  userBidFilters: IUserBidFilters | undefined;
+  userBidFiltersLoading: boolean;
+  userBidFiltersSuccess: boolean;
+  userBidFiltersError: string | null;
 }
 
 const initialState: IInitialState = {
@@ -167,6 +179,12 @@ const initialState: IInitialState = {
   userRolesError: null,
 
   currentRoles: undefined,
+
+  userBidFilters: undefined,
+  userBidFiltersLoading: false,
+  userBidFiltersSuccess: false,
+  userBidFiltersError: null
+
 };
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
@@ -433,6 +451,42 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       }
     }
 
+    case CLEAR_USER_BID_FILTERS: {
+      return {
+        ...state,
+        userBidFilters: undefined,
+        userBidFiltersLoading: false,
+        userBidFiltersSuccess: false,
+        userBidFiltersError: null
+      }
+    }
+
+    case USER_BID_FILTERS_REQUEST: {
+      return {
+        ...state,
+        userBidFiltersLoading: true,
+        userBidFiltersSuccess: false,
+        userBidFiltersError: null
+      }
+    }
+
+    case USER_BID_FILTERS_SUCCESS: {
+      return {
+        ...state,
+        userBidFilters: action.payload.data,
+        userBidFiltersLoading: false,
+        userBidFiltersSuccess: true,
+      }
+    }
+
+    case USER_BID_FILTERS_FAIL: {
+      return {
+        ...state,
+        userBidFiltersLoading: false,
+        userBidFiltersError: action.payload
+      }
+    }
+
     default:
       return state;
   }
@@ -490,6 +544,11 @@ export const actions = {
   userRolesFail: (payload: string) => createAction(USER_ROLES_FAIL, payload),
 
   setCurrentRoles: (payload: any) => createAction(SET_CURRENT_ROLES, payload),
+
+  clearUserBidFilters: () => createAction(CLEAR_USER_BID_FILTERS),
+  userBidFiltersRequest: (payload: { id: number, type: string }) => createAction(USER_BID_FILTERS_REQUEST, payload),
+  userBidFiltersSuccess: (payload: IServerResponse<IUserBidFilters>) => createAction(USER_BID_FILTERS_SUCCESS, payload),
+  userBidFiltersFail: (payload: string) => createAction(USER_BID_FILTERS_FAIL, payload)
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -497,8 +556,7 @@ export type TActions = ActionsUnion<typeof actions>;
 function* fetchSaga({ payload }: { payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: any[] } }) {
   try {
     const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
-      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId)
-    );
+      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId))
     yield put(actions.fetchSuccess(data));
   } catch (e) {
     yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -579,6 +637,15 @@ function* userRolesSaga() {
   }
 }
 
+function* userBidFiltersSaga({ payload }: { payload: { id: number; type: string; } }) {
+  try {
+    const { data }: { data: IServerResponse<IUserBidFilters> } = yield call(() => getUserBidFilters(payload));
+    yield put(actions.userBidFiltersSuccess(data));
+  } catch (e) {
+    yield put(actions.userBidFiltersFail(e?.response?.data?.message) || "Ошибка соединения.");
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.fetchByIdRequest>>(FETCH_BY_ID_REQUEST, fetchByIdSaga);
@@ -595,4 +662,5 @@ export function* saga() {
   );
   yield takeLatest<ReturnType<typeof actions.userBidsRequest>>(USER_BIDS_REQUEST, userBidsSaga);
   yield takeLatest<ReturnType<typeof actions.userRolesRequest>>(USER_ROLES_REQUEST, userRolesSaga);
+  yield takeLatest<ReturnType<typeof actions.userBidFiltersRequest>>(USER_BID_FILTERS_REQUEST, userBidFiltersSaga);
 }

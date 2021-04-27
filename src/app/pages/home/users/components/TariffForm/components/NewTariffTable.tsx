@@ -36,9 +36,8 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
   realUser,
   showTariffTable,
   setShowTariffTable,
-  tariffs
+  tariffs,
 }) => {
-
   return (
     <TableContainer style={{ display: "flex", justifyContent: "space-between" }}>
       <Table>
@@ -114,72 +113,107 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
           <TableRow>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE9" })}{" "}
-
-              {accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 2) return item.tariff_limits.common_bids_count
-              })}
-
-              {accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                if (item.id === 6) return item.tariff_limits.common_bids_count
-              })}
-
-              {accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 22) return item.tariff_limits.common_bids_count
-              })}
+              {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 2) return item.tariff_limits.common_bids_count;
+                })}
+              {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 6) return item.tariff_limits.common_bids_count;
+                })}
+              {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 22) return item.tariff_limits.common_bids_count;
+                })}
             </TableCell>
           </TableRow>
 
           <TableRow>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE10" })}{" "}
-
-              {accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 2) return item.tariff_limits.max_crops_count
-              })}
-
-              {accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                if (item.id === 6) return item.tariff_limits.max_crops_count
-              })}
-
-              {accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 22) return item.tariff_limits.max_crops_count
-              })}
+              {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 2) return item.tariff_limits.max_crops_count;
+                })}
+              {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 6) return item.tariff_limits.max_crops_count;
+                })}
+              {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 22) return item.tariff_limits.max_crops_count;
+                })}
             </TableCell>
           </TableRow>
 
           <TableRow>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "}
-
-              {accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 2) return item.tariff_limits.max_filters_count
-              })}
-
-              {accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                if (item.id === 6) return item.tariff_limits.max_filters_count
-              })}
-
-              {accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 22) return item.tariff_limits.max_filters_count
-              })}
+              {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 2) return item.tariff_limits.max_filters_count;
+                })}
+              {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 6) return item.tariff_limits.max_filters_count;
+                })}
+              {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 22) return item.tariff_limits.max_filters_count;
+                })}
             </TableCell>
           </TableRow>
+
+          {/*===================*/}
+          <TableRow>
+            <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE16" })}{" "}
+              {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 2) return item.tariff_limits.days_to_bid_archiving;
+                })}
+              {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 6) return item.tariff_limits.days_to_bid_archiving;
+                })}
+              {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 22) return item.tariff_limits.days_to_bid_archiving;
+                })}
+            </TableCell>
+          </TableRow>
+          {/*===================*/}
 
           <TableRow>
             <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "}
-
-              {accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 2) return item.tariff_limits.contact_view_limit
-              })}
-
-              {accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                if (item.id === 6) return item.tariff_limits.contact_view_limit
-              })}
-
-              {accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                if (item.id === 22) return item.tariff_limits.contact_view_limit
-              })}
+              {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 2) return item.tariff_limits.contact_view_limit;
+                })}
+              {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 6) return item.tariff_limits.contact_view_limit;
+                })}
+              {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                tariffs &&
+                tariffs.map(item => {
+                  if (item.id === 22) return item.tariff_limits.contact_view_limit;
+                })}
             </TableCell>
           </TableRow>
 
@@ -281,56 +315,102 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE9" })}{" "}
-
-                <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 10) return item.tariff_limits.common_bids_count
-                })}</b>
-
-                <b>{accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 14) return item.tariff_limits.common_bids_count
-                })}</b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 10) return item.tariff_limits.common_bids_count;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 14) return item.tariff_limits.common_bids_count;
+                    })}
+                </b>
               </TableCell>
             </TableRow>
 
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE10" })}{" "}
-
-                <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 10) return item.tariff_limits.max_crops_count
-                })}</b>
-
-                <b>{accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 14) return item.tariff_limits.max_crops_count
-                })}</b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 10) return item.tariff_limits.max_crops_count;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 14) return item.tariff_limits.max_crops_count;
+                    })}
+                </b>
               </TableCell>
             </TableRow>
 
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "}
-
-                <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 10) return item.tariff_limits.max_filters_count
-                })}</b>
-
-                <b>{accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 14) return item.tariff_limits.max_filters_count
-                })}</b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 10) return item.tariff_limits.max_filters_count;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 14) return item.tariff_limits.max_filters_count;
+                    })}
+                </b>
               </TableCell>
             </TableRow>
+
+            {/*===================*/}
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE16" })}{" "}
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 10) return item.tariff_limits.days_to_bid_archiving;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 14) return item.tariff_limits.days_to_bid_archiving;
+                    })}
+                </b>
+              </TableCell>
+            </TableRow>
+            {/*===================*/}
 
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "}
-
-                <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 10) return item.tariff_limits.contact_view_limit
-                })}</b>
-
-                <b>{accessByRoles(realUser, ["ROLE_VENDOR"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 14) return item.tariff_limits.contact_view_limit
-                })}</b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 10) return item.tariff_limits.contact_view_limit;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 14) return item.tariff_limits.contact_view_limit;
+                    })}
+                </b>
               </TableCell>
             </TableRow>
 
@@ -443,56 +523,102 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE9" })}{" "}
-
-                <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.tariff_limits.common_bids_count
-                })}</b>
-
-                <b>{accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.tariff_limits.common_bids_count
-                })}</b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 18) return item.tariff_limits.common_bids_count;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 18) return item.tariff_limits.common_bids_count;
+                    })}
+                </b>
               </TableCell>
             </TableRow>
 
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE10" })}{" "}
-
-                <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.tariff_limits.common_bids_count
-                })}</b>
-
-                <b>{accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.tariff_limits.max_crops_count
-                })}</b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 18) return item.tariff_limits.common_bids_count;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 18) return item.tariff_limits.max_crops_count;
+                    })}
+                </b>
               </TableCell>
             </TableRow>
 
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "}
-
-                <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.tariff_limits.max_filters_count
-                })}</b>
-
-                <b>{accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.tariff_limits.max_filters_count
-                })}</b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 18) return item.tariff_limits.max_filters_count;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 18) return item.tariff_limits.max_filters_count;
+                    })}
+                </b>
               </TableCell>
             </TableRow>
+
+            {/*===================*/}
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE16" })}{" "}
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 18) return item.tariff_limits.days_to_bid_archiving;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 18) return item.tariff_limits.days_to_bid_archiving;
+                    })}
+                </b>
+              </TableCell>
+            </TableRow>
+            {/*===================*/}
 
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
                 {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "}
-
-                <b>{accessByRoles(realUser, ["ROLE_BUYER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.tariff_limits.contact_view_limit
-                })}</b>
-
-                <b>{accessByRoles(realUser, ["ROLE_TRADER"]) && tariffs && tariffs.map(item => {
-                  if (item.id === 18) return item.tariff_limits.contact_view_limit
-                })}</b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 18) return item.tariff_limits.contact_view_limit;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                    tariffs &&
+                    tariffs.map(item => {
+                      if (item.id === 18) return item.tariff_limits.contact_view_limit;
+                    })}
+                </b>
               </TableCell>
             </TableRow>
 
@@ -502,8 +628,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                 align="center"
                 style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
               >
-                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE13" })}{" "}
-                <br />
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE13" })} <br />
                 <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8" })}</b>
                 <br /> <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8_1" })}</b>
               </TableCell>
@@ -540,7 +665,6 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                 </TableCell>
               </TableRow>
             )}
-
           </TableBody>
         </Table>
       )}

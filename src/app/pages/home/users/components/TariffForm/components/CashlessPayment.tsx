@@ -2,6 +2,7 @@ import React from "react";
 import { Grid as div } from "@material-ui/core";
 import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
 import { Skeleton } from "@material-ui/lab";
+import { format } from "date-fns";
 
 import { makeStyles } from "@material-ui/styles";
 
@@ -39,7 +40,7 @@ const useStyles = makeStyles({
 
 interface IProps {
   intl: IntlShape;
-  realUser: IUser;
+  realUser: IUser | undefined;
   selectedTariff: ITariff | undefined;
   selectedDate: Date;
 }
@@ -51,6 +52,7 @@ const CashlessPayment: React.FC<IProps & WrappedComponentProps> = ({
   selectedDate,
 }) => {
   const innerClasses = useStyles();
+  const date = format(new Date(), "dd.MM.yyyy")
 
   return (
     <div>
@@ -61,11 +63,11 @@ const CashlessPayment: React.FC<IProps & WrappedComponentProps> = ({
           <div className={innerClasses.textContain}>
             <div className={innerClasses.titleContain}>
               <div className={innerClasses.title}>
-                {intl.formatMessage({ id: "TARIFFS.PAYMENT.FORM.TITLE" })}
+                {intl.formatMessage({ id: "TARIFFS.PAYMENT.FORM.TITLE" })} №{realUser.id} от {date}
               </div>
             </div>
             <div className={innerClasses.subTitle}>
-              {intl.formatMessage({ id: "TARIFFS.PAYMENT.COST" })} {selectedTariff.price}
+              {intl.formatMessage({ id: "TARIFFS.PAYMENT.COST" })} {selectedTariff.price} руб. (без НДС)
             </div>
             <div>
               {intl.formatMessage({ id: "TARIFFS.PAYMENT.PURPOSE" })} Тариф{" "}
@@ -73,8 +75,7 @@ const CashlessPayment: React.FC<IProps & WrappedComponentProps> = ({
                 "{selectedTariff.tariff.name}{" "}
                 {selectedTariff.tariff_period ? selectedTariff.tariff_period.period : 0}"
               </span>{" "}
-              для <span className={innerClasses.span}>{realUser.email}</span>, id ={" "}
-              <span className={innerClasses.span}>{realUser.id}</span>{" "}
+              для <span className={innerClasses.span}>{realUser.email}</span>
             </div>
             <div>
               {intl.formatMessage({ id: "TARIFFS.DATE.PICKER" })} {intl.formatDate(selectedDate)}

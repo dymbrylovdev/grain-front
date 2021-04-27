@@ -67,11 +67,13 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   createLoading,
   createSuccess,
   createError,
+
   clearDel,
   del,
   delLoading,
   delSuccess,
   delError,
+
   clearEdit,
   edit,
   editLoading,
@@ -107,6 +109,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [tariffId, setTariffId] = useState<number | undefined>();
   const [funnelStateId, setFunnelStateId] = useState<number | undefined>();
   const [userRolesId, setUserRolesId] = useState<number[] | undefined>([]);
+
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -171,6 +174,8 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     fetchTariffTypes()
   }, [fetchTariffTypes]);
+
+  //TODO: Убрать сравнение по строкам
 
   useEffect(() => {
     fetchUserRoles()
@@ -477,7 +482,8 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   total={total}
                   fetchRows={(page, perPage) =>
                     fetch({
-                      page, perPage
+                      page,
+                      perPage,
                     })
                   }
                 />
@@ -544,11 +550,12 @@ const connector = connect(
     delSuccess: state.users.delSuccess,
     delError: state.users.delError,
 
+
+    tariffsTypes: state.tariffs.tariffsTypes,
     tariffsTypesLoading: state.tariffs.tariffsTypesLoading,
     tariffsTypesSuccess: state.tariffs.tariffsTypesSuccess,
     tariffsTypesError: state.tariffs.tariffsTypesError,
 
-    tariffsTypes: state.tariffs.tariffsTypes,
     usersFilterTariff: state.tariffs.usersFilterTariff,
 
     userRoles: state.users.roles,
@@ -561,11 +568,15 @@ const connector = connect(
   {
     fetchMe: authActions.fetchRequest,
     fetch: usersActions.fetchRequest,
+
     fetchFunnelStates: funnelStatesActions.fetchRequest,
+
     clearCreate: usersActions.clearCreate,
     create: usersActions.createRequest,
+
     clearEdit: usersActions.clearEdit,
     edit: usersActions.editRequest,
+
     clearDel: usersActions.clearDel,
     del: usersActions.delRequest,
     fetchTariffTypes: tariffActions.tariffsTypesRequest,
