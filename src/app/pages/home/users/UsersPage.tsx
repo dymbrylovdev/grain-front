@@ -85,6 +85,15 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   tariffsTypesError,
 
   usersFilterTariff,
+
+  clearUserRoles,
+  fetchUserRoles,
+  userRoles,
+  userRolesLoading,
+  userRolesSuccess,
+  userRolesError,
+
+  currentUserRoles,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -97,6 +106,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [funnelStateEditId, setFunnelStateEditId] = useState(0);
   const [tariffId, setTariffId] = useState<number | undefined>();
   const [funnelStateId, setFunnelStateId] = useState<number | undefined>();
+  const [userRolesId, setUserRolesId] = useState<number[] | undefined>([]);
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -128,7 +138,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       );
       setAlertOpen(false);
       clearDel();
-      fetch({ page, perPage, tariffId, funnelStateId });
+      fetch({ page, perPage, tariffId, funnelStateId, userRolesId });
       fetchFunnelStates();
     }
   }, [
@@ -143,11 +153,12 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     perPage,
     tariffId,
     funnelStateId,
+    userRolesId
   ]);
 
   useEffect(() => {
-    fetch({ page, perPage, tariffId, funnelStateId });
-  }, [fetch, page, perPage, tariffId, funnelStateId]);
+    fetch({ page, perPage, tariffId, funnelStateId, userRolesId });
+  }, [fetch, page, perPage, tariffId, funnelStateId, userRolesId]);
 
   useEffect(() => {
     fetchFunnelStates();
@@ -162,9 +173,13 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchTariffTypes]);
 
   useEffect(() => {
+    fetchUserRoles()
+  }, [fetchUserRoles]);
+
+  useEffect(() => {
     if (tariffsTypesSuccess) tariffsTypes.find(item => {
       if (usersFilterTariff === "Все") setTariffId(undefined);
-      if (item.name === usersFilterTariff) setTariffId(item.id);
+      if (item.id === usersFilterTariff) setTariffId(item.id);
     });
   }, [tariffsTypes, tariffsTypesSuccess, usersFilterTariff]);
 
@@ -175,6 +190,20 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       if (item.id === +currentFunnelState) setFunnelStateId(item.id);
     });
   }, [funnelStateSuccess, currentFunnelState, funnelStates]);
+
+  console.log('userRolesId', userRolesId);
+
+  useEffect(() => {
+    if (userRolesSuccess) {
+      currentUserRoles?.map(role => {
+        userRoles?.find(item => {
+          if (item.name === role.key) {
+            setUserRolesId([item.id]);
+          } 
+        })
+      });
+    }
+  }, [currentUserRoles, userRoles, userRolesSuccess]);
 
   if (error || meError || funnelStatesError || tariffsTypesError) {
     setTimeout(() => {
@@ -521,6 +550,13 @@ const connector = connect(
 
     tariffsTypes: state.tariffs.tariffsTypes,
     usersFilterTariff: state.tariffs.usersFilterTariff,
+
+    userRoles: state.users.roles,
+    userRolesLoading: state.users.userRolesLoading,
+    userRolesSuccess: state.users.userRolesSuccess,
+    userRolesError: state.users.userRolesError,
+
+    currentUserRoles: state.users.currentRoles,
   }),
   {
     fetchMe: authActions.fetchRequest,
@@ -532,7 +568,9 @@ const connector = connect(
     edit: usersActions.editRequest,
     clearDel: usersActions.clearDel,
     del: usersActions.delRequest,
-    fetchTariffTypes: tariffActions.tariffsTypesRequest
+    fetchTariffTypes: tariffActions.tariffsTypesRequest,
+    clearUserRoles: usersActions.clearUserRoles,
+    fetchUserRoles: usersActions.userRolesRequest,
   }
 );
 

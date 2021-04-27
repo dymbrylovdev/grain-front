@@ -7,6 +7,7 @@ import { Paper, useMediaQuery, makeStyles, Drawer } from "@material-ui/core";
 import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
 import { actions as tariffActions } from "../../store/ducks/tariffs.duck";
 import { actions as funnelStatesActions } from "../../store/ducks/funnelStates.duck";
+import { actions as usersActions } from "../../store/ducks/users.duck";
 import { IAppState } from "../../store/rootDuck";
 
 import { LeftMenu } from ".";
@@ -57,6 +58,8 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   tariffsTypes,
   usersFilterTariff,
   setUsersFilterTariff,
+  userRoles,
+  setCurrentRoles,
 }) => {
   const classes = useStyles();
   const isMinWidthQuery = useMediaQuery("(min-width:1025px)");
@@ -102,6 +105,8 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           tariffsTypes={tariffsTypes}
           usersFilterTariff={usersFilterTariff}
           setUsersFilterTariff={setUsersFilterTariff}
+          userRoles={userRoles}
+          setCurrentRoles={setCurrentRoles}
         />
       )}
     </Wrapper>
@@ -118,8 +123,14 @@ const connector = connect(
     funnelStates: state.funnelStates.funnelStates,
     tariffsTypes: state.tariffs.tariffsTypes,
     usersFilterTariff: state.tariffs.usersFilterTariff,
+    userRoles: state.users.roles,
   }),
-  { ...leftMenuActions, setUsersFilterTariff: tariffActions.setUsersFilterTariff, setFunnelState: funnelStatesActions.setFunnelState }
+  {
+    ...leftMenuActions,
+    setUsersFilterTariff: tariffActions.setUsersFilterTariff,
+    setFunnelState: funnelStatesActions.setFunnelState,
+    setCurrentRoles: usersActions.setCurrentRoles,
+  }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;
 

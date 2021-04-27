@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { FormControlLabel, Checkbox, TextField, Divider, MenuItem } from "@material-ui/core";
+import { TextField, Divider, MenuItem } from "@material-ui/core";
 import { IntlShape } from "react-intl";
 import { ActionWithPayload } from "../../utils/action-helper";
 
@@ -15,6 +15,8 @@ interface IUsersFilterMenu {
   tariffsTypes: ITariffType[] | undefined;
   usersFilterTariff: string;
   setUsersFilterTariff: (payload: string) => ActionWithPayload<"tariffs/USERS_FILTER_SET_TARIFF", string>;
+  userRoles: any[] | undefined;
+  setCurrentRoles: (payload: any) => ActionWithPayload<"users/SET_CURRENT_ROLES", any>;
 }
 
 const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
@@ -26,9 +28,10 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
   tariffsTypes,
   usersFilterTariff,
   setUsersFilterTariff,
-}): ReactElement => {
 
-  console.log('currentFunnelState: ', currentFunnelState)
+  userRoles,
+  setCurrentRoles,
+}): ReactElement => {
 
   return (
     <div>
@@ -73,13 +76,8 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
 
       <Divider style={{ marginTop: 10, marginBottom: 5 }} />
 
-      <FitlerByRole />
+      <FitlerByRole userRoles={userRoles} setCurrentRoles={setCurrentRoles} />
 
-      <FormControlLabel
-        control={<Checkbox checked={true} onChange={e => console.log(e)} />}
-        label={"Только с предоплатой"}
-        name="fullPrepayment"
-      />
     </div>
   );
 };

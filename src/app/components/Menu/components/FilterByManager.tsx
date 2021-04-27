@@ -16,7 +16,7 @@ const FilterByManager: React.FC<PropsFromRedux &
     salePurchaseMode: TBidType | undefined;
   }> = ({ intl, setFilter, filter, fetchUsers, users, clearFetch }) => {
   useEffect(() => {
-    fetchUsers({ page: 1, perPage: 999, roles: ["ROLE_MANAGER"] });
+    fetchUsers({ page: 1, perPage: 999, userRolesId: [5] });
 
     return () => {
       clearFetch();
