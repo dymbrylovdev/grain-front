@@ -177,6 +177,9 @@
 
   "PROFILE.INPUT.FIO": "ФИО",
   "PROFILE.INPUT.LOCATION.SALE": "Точка отгрузки",
+  "PROFILE.INPUT.STATUS.HEADER": "Статус",
+  "PROFILE.INPUT.STATUS_ARCHIVED": "В архиве",
+  "PROFILE.INPUT.STATUS_ACTIVE": "Активное",
   "PROFILE.INPUT.LOCATION.PURCHASE": "Точка приемки",
   "PROFILE.INPUT.LOCATION": "Точка отгрузки/приемки",
   "PROFILE.INPUT.EMAIL": "Email",
@@ -540,6 +543,7 @@
   "TARIFFS.TITLE1": "Публикация объявлений",
   "TARIFFS.TEXT11": "Отображение объявлений на портале, приоритетных мест, не более 10",
   "TARIFFS.TEXT12": "Отображение объявлений в рассылках, приоритетных мест, не более 5",
+  "TARIFFS.TEXT13": "Количество дней до архивации",
   "TARIFFS.TITLE2": "Поиск встречных объявлений",
   "TARIFFS.TEXT21": "Общее количество отображаемых объявлений (лучших заявок)",
   "TARIFFS.TITLE3": "Фильтры и подписки",
@@ -603,6 +607,7 @@
   "TARIFFS.TABLE.TITLE13": "Обращение в службу поддержки:",
   "TARIFFS.TABLE.TITLE14": "Доступ к просмотру сделок в системе с расчетом их прибыли и окупаемости:",
   "TARIFFS.TABLE.TITLE15": "Универсальная роль продавца и покупателя:",
+  "TARIFFS.TABLE.TITLE16": "Количество дней до архивации:",
   "TARIFFS.TABLE.TEXT1": "Неограниченно",
   "TARIFFS.TABLE.TEXT2": "14 дней",
   "TARIFFS.TABLE.TEXT3": "1 раз в неделю (среда)",
@@ -686,7 +691,8 @@
   "NOTISTACK.TARIFF.EDIT": "Тариф изменен",
   "NOTISTACK.CROP.DEL": "Культура удалена",
   "NOTISTACK.CROP_PARAM.DEL": "Параметр удален",
-  "NOTISTACK.CONTACT.LIMIT.ERROR": "Вы посмотрели максимальное количество контактов пользователей на сегодня",
+  "NOTISTACK.BIDS.ARCHIVE.OK": "Объявление изменено",
+
 
   "NOTISTACK.ERRORS.ERROR": "Ошибка: "
 }

@@ -62,8 +62,6 @@ const EditableCell: React.FC<TProps & TPropsFromRedux & WrappedComponentProps> =
 }) => {
   const innerClasses = useInnerStyles();
 
-  console.log("tariff: ", tariff);
-
   const { values, handleSubmit, handleChange, resetForm } = useFormik({
     initialValues: { value: tariff[realCell.field], idForLimit: tariff.id },
     onSubmit: values => {

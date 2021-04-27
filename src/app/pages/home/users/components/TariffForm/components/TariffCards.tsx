@@ -104,7 +104,7 @@ const TariffCards: React.FC<IProps & WrappedComponentProps> = ({
   const innerClasses = useStyles();
 
   const handleSubmit = tariff => {
-    setSelectedTariff(tariff.id)
+    setSelectedTariff(tariff.id);
     !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) ? goToTariffPurchase() : edit();
   };
 

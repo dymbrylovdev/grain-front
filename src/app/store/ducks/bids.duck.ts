@@ -24,6 +24,7 @@ import {
   editBid,
   deleteBid,
   getBidsXlsUrl,
+  archiveBid,
 } from "../../crud/bids.crud";
 import persistReducer, { PersistPartial } from "redux-persist/es/persistReducer";
 import { ILocation } from "../../interfaces/locations";
@@ -75,6 +76,12 @@ const CLEAR_BIDS_XLS_URL = "bids/CLEAR_BIDS_XLS_URL";
 const BIDS_XLS_URL_REQUEST = "bids/BIDS_XLS_URL_REQUEST";
 const BIDS_XLS_URL_SUCCESS = "bids/BIDS_XLS_URL_SUCCESS";
 const BIDS_XLS_URL_FAIL = "bids/BIDS_XLS_URL_FAIL";
+
+const CLEAR_ARCHIVE = "bids/CLEAR_ARCHIVE";
+const ARCHIVE_REQUEST = "bids/ARCHIVE_REQUEST";
+const ARCHIVE_SUCCESS = "bids/ARCHIVE_SUCCESS";
+const ARCHIVE_FAIL = "bids/ARCHIVE_FAIL";
+
 export interface IInitialState {
   page: number;
   per_page: number;
@@ -128,6 +135,10 @@ export interface IInitialState {
   bidsXlsLoading: boolean;
   bidsXlsSuccess: boolean;
   bidsXlsError: string | null;
+
+  archiveLoading: boolean;
+  archiveSuccess: boolean;
+  archiveError: string | null;
 }
 
 const initialState: IInitialState = {
@@ -183,6 +194,10 @@ const initialState: IInitialState = {
   bidsXlsLoading: false,
   bidsXlsSuccess: false,
   bidsXlsError: null,
+
+  archiveLoading: false,
+  archiveSuccess: false,
+  archiveError: null,
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
@@ -424,7 +439,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
           bidsXlsLoading: false,
           bidsXlsSuccess: false,
           bidsXlsError: null,
-        }
+        };
       }
 
       case BIDS_XLS_URL_REQUEST: {
@@ -433,7 +448,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
           bidsXlsLoading: true,
           bidsXlsSuccess: false,
           bidsXlsError: null,
-        }
+        };
       }
 
       case BIDS_XLS_URL_SUCCESS: {
@@ -442,7 +457,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
           bidsXlsUrl: action.payload,
           bidsXlsLoading: false,
           bidsXlsSuccess: true,
-        }
+        };
       }
 
       case BIDS_XLS_URL_FAIL: {
@@ -450,7 +465,23 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
           ...state,
           bidsXlsLoading: false,
           bidsXlsError: action.payload,
-        }
+        };
+      }
+
+      case CLEAR_ARCHIVE: {
+        return { ...state, archiveLoading: false, archiveSuccess: false, archiveError: null };
+      }
+
+      case ARCHIVE_REQUEST: {
+        return { ...state, archiveLoading: true, archiveSuccess: false, archiveError: null };
+      }
+
+      case ARCHIVE_SUCCESS: {
+        return { ...state, archiveLoading: false, archiveSuccess: true };
+      }
+
+      case ARCHIVE_FAIL: {
+        return { ...state, archiveLoading: false, archiveError: action.payload };
       }
 
       default:
@@ -468,8 +499,7 @@ export const actions = {
     minDate?: Date | null,
     maxDate?: Date | null,
     authorId?: string
-  ) =>
-    createAction(FETCH_REQUEST, { bidType, cropId, page, perPage, minDate, maxDate, authorId }),
+  ) => createAction(FETCH_REQUEST, { bidType, cropId, page, perPage, minDate, maxDate, authorId }),
   fetchSuccess: (payload: IServerResponse<IBid[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
@@ -526,9 +556,21 @@ export const actions = {
     createAction(SET_FILTER, { filter }),
 
   clearBidsXlsUrl: () => createAction(CLEAR_BIDS_XLS_URL),
-  bidsXlsUrlRequest: (id: number, type?: string, minDate?: string, maxDate?: string, authorId?: string) => createAction(BIDS_XLS_URL_REQUEST, { id, type, minDate, maxDate, authorId }),
+  bidsXlsUrlRequest: (
+    id: number,
+    type?: string,
+    minDate?: string,
+    maxDate?: string,
+    authorId?: string
+  ) => createAction(BIDS_XLS_URL_REQUEST, { id, type, minDate, maxDate, authorId }),
   bidsXlsUrlSuccess: (payload: string) => createAction(BIDS_XLS_URL_SUCCESS, payload),
   bidsXlsUrlFail: (payload: string) => createAction(BIDS_XLS_URL_FAIL, payload),
+
+  clearArchvie: () => createAction(CLEAR_ARCHIVE),
+  archiveRequest: (payload: { id: number; is_archived: 0 | 1 }) =>
+    createAction(ARCHIVE_REQUEST, payload),
+  archiveSuccess: () => createAction(ARCHIVE_SUCCESS),
+  archiveFail: (payload: string) => createAction(ARCHIVE_FAIL, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -655,12 +697,34 @@ function* delSaga({ payload }: { payload: { id: number } }) {
   }
 }
 
-function* bidsXlsUrlSaga({ payload }: { payload: { id: number, type?: string, minDate?: string, maxDate?: string, authorId?: string } }) {
+function* bidsXlsUrlSaga({
+  payload,
+}: {
+  payload: { id: number; type?: string; minDate?: string; maxDate?: string; authorId?: string };
+}) {
   try {
-    const { data }: { data: string } = yield call(() => getBidsXlsUrl(payload.id, payload?.type, payload?.minDate, payload?.maxDate, payload?.authorId));
+    const { data }: { data: string } = yield call(() =>
+      getBidsXlsUrl(
+        payload.id,
+        payload?.type,
+        payload?.minDate,
+        payload?.maxDate,
+        payload?.authorId
+      )
+    );
     yield put(actions.bidsXlsUrlSuccess(data));
   } catch (e) {
     yield put(actions.bidsXlsUrlFail(e?.response?.data?.message || "Ошибка соединения."));
+  }
+}
+
+function* archiveSaga({ payload }: { payload: { id: number; is_archived: 0 | 1 } }) {
+  try {
+    yield call(() => archiveBid(payload.id, payload.is_archived));
+    yield put(actions.archiveSuccess());
+    yield put(actions.clearArchvie());
+  } catch (e) {
+    yield put(actions.archiveFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
@@ -673,5 +737,9 @@ export function* saga() {
   yield takeLatest<ReturnType<typeof actions.createRequest>>(CREATE_REQUEST, createSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
   yield takeLatest<ReturnType<typeof actions.delRequest>>(DEL_REQUEST, delSaga);
-  yield takeLatest<ReturnType<typeof actions.bidsXlsUrlRequest>>(BIDS_XLS_URL_REQUEST, bidsXlsUrlSaga);
+  yield takeLatest<ReturnType<typeof actions.bidsXlsUrlRequest>>(
+    BIDS_XLS_URL_REQUEST,
+    bidsXlsUrlSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.archiveRequest>>(ARCHIVE_REQUEST, archiveSaga);
 }

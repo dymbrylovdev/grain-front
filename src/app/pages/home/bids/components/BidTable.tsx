@@ -13,13 +13,14 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
-import { useSnackbar } from "notistack";
 import { useHistory } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
+import ArchiveIcon from "@material-ui/icons/Archive";
+import UnarchiveIcon from "@material-ui/icons/Unarchive";
 
 import TopTableCell from "../../../../components/ui/Table/TopTableCell";
 import { IBid, IProfit } from "../../../../interfaces/bids";
@@ -54,6 +55,7 @@ interface IProps {
       profit: IProfit;
     }
   >;
+  archive?: ({ id: number, is_archived: boolean }) => void;
 }
 
 const BidTable: React.FC<IProps> = ({
@@ -72,6 +74,7 @@ const BidTable: React.FC<IProps> = ({
   bestAllMyMode,
   crops,
   setProfit,
+  archive,
 }) => {
   const history = useHistory();
   const [clientWidth, setClientWidth] = useState(document.body.clientWidth);
@@ -111,7 +114,7 @@ const BidTable: React.FC<IProps> = ({
           <Table aria-label="simple table">
             <TableHead>
               <TableRow className={classes.mobileHide}>
-                {(clientWidth > 1024 && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"])) && (
+                {clientWidth > 1024 && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
                   <TopTableCell>
                     <FormattedMessage id="BIDSLIST.TABLE.ID" />
                   </TopTableCell>
@@ -169,13 +172,19 @@ const BidTable: React.FC<IProps> = ({
                   </TopTableCell>
                 )}
                 {bestAllMyMode === "my-bids" && (
-                  <TopTableCell>
-                    {salePurchaseMode === "sale" ? (
-                      <FormattedMessage id="PROFILE.INPUT.LOCATION.SALE" />
-                    ) : (
-                      <FormattedMessage id="PROFILE.INPUT.LOCATION.PURCHASE" />
-                    )}
-                  </TopTableCell>
+                  <>
+                    <TopTableCell>
+                      {salePurchaseMode === "sale" ? (
+                        <FormattedMessage id="PROFILE.INPUT.LOCATION.SALE" />
+                      ) : (
+                        <FormattedMessage id="PROFILE.INPUT.LOCATION.PURCHASE" />
+                      )}
+                    </TopTableCell>
+
+                    <TopTableCell>
+                      <FormattedMessage id="PROFILE.INPUT.STATUS.HEADER" />
+                    </TopTableCell>
+                  </>
                 )}
                 {bestAllMyMode !== "my-bids" &&
                   (clientWidth > 1024 ||
@@ -206,7 +215,9 @@ const BidTable: React.FC<IProps> = ({
                     }`,
                   }}
                 >
-                  {(clientWidth > 1024 && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"])) && <TableCell>{bid.id}</TableCell>}
+                  {clientWidth > 1024 && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+                    <TableCell>{bid.id}</TableCell>
+                  )}
                   {bestAllMyMode === "my-bids" && (
                     <TableCell>
                       {crops?.find(crop => crop.id === bid.crop_id)?.name || ""}
@@ -358,6 +369,16 @@ const BidTable: React.FC<IProps> = ({
 
                   {bestAllMyMode === "my-bids" && <TableCell>{bid?.location?.text}</TableCell>}
 
+                  {bestAllMyMode === "my-bids" && (
+                    <TableCell>
+                      {intl.formatMessage({
+                        id: !!bid?.is_archived
+                          ? "PROFILE.INPUT.STATUS_ACTIVE"
+                          : "PROFILE.INPUT.STATUS_ARCHIVED",
+                      })}
+                    </TableCell>
+                  )}
+
                   {salePurchaseMode === "purchase" && (
                     <TableCell>{bid.payment_term || "-"}</TableCell>
                   )}
@@ -397,6 +418,19 @@ const BidTable: React.FC<IProps> = ({
                         ) : (
                           <VisibilityIcon />
                         )}
+                      </IconButton>
+                    )}
+                    {bestAllMyMode === "my-bids" && (
+                      <IconButton
+                        size="medium"
+                        color={!!bid.is_archived ? "secondary" : "primary"}
+                        onClick={() => {
+                          if (archive) {
+                            archive({ id: bid.id, is_archived: !!bid.is_archived ? 0 : 1 });
+                          }
+                        }}
+                      >
+                        {!!bid.is_archived ? <ArchiveIcon /> : <UnarchiveIcon />}
                       </IconButton>
                     )}
                     {isHaveRules && isHaveRules(user, bid.vendor.id) && (

@@ -5,7 +5,7 @@ export interface ITariff {
   price: number;
   role: ITariffRole;
   tariff: ITariffType;
-  tariff_limits: ITariffLimits
+  tariff_limits: ITariffLimits;
   tariff_period: ITariffPeriod;
   period: any;
 }
@@ -29,6 +29,7 @@ export interface ITariffLimits {
   max_sms_count: number;
   priority_places_bids_count: number;
   priority_places_bids_on_mailing_count: number;
+  days_to_bid_archiving: number;
 }
 
 export interface ITariffPeriod {
@@ -55,5 +56,5 @@ export type TTariffField =
   | "max_sms_count"
   | "contact_view_limit"
   | "price"
-  | "period";
-  
+  | "period"
+  | "days_to_bid_archiving";
