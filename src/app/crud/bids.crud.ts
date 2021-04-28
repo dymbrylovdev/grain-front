@@ -42,9 +42,9 @@ export const getAllBids = (
   }
 
   if (authorId === 'only_users') {
-    url += '&only_users=true';
+    url += '&only_users=1';
   } else {
-    url += '&only_users=false';
+    url += '&only_users=0';
   }
 
   return axios.get(url);
