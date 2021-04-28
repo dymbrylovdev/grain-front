@@ -141,33 +141,15 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
         newCropIds.splice(realSelectedTariff.tariff_limits.max_crops_count);
       }
       if (realUser && values.tariff_id) {
-        // Старая основная культура
-        let mainCropId = values.main_crop_id;
-        // Проверка, удаляется ли старая основная культура
-        const isMainBidDeleted = !newCropIds.includes(mainCropId);
-
-        if (isMainBidDeleted) {
-          // Id Пшеницы
-          const wheatBidId =
-            realUser?.crops.find(bid => bid.name.toLowerCase() === "пшеница")?.id || 0;
-
-          // Проверка, есть ли ппшеница в новом списку культуры
-          const isWheatInNewCrop = newCropIds.includes(wheatBidId);
-
-          // если есть то ставим основной пшеницу, если
-          mainCropId = isWheatInNewCrop ? wheatBidId : newCropIds[0];
-        }
-
         if (editMode === "profile") {
           editMe({
-            data: { crop_ids: newCropIds, main_crop_id: mainCropId },
+            data: { crop_ids: newCropIds },
           });
         } else {
           edit({
             id: realUser?.id,
             data: {
               crop_ids: newCropIds,
-              main_crop_id: mainCropId,
             },
           });
         }

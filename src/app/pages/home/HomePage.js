@@ -21,6 +21,7 @@ import Error404Page from "../../components/ErrorPage/Error404Page";
 import { TariffsEditPage } from "./tariffs";
 import { TrialEditPage } from "./trial";
 import UserBidFiltersEdit from "./users/components/UserBidFiltersEdit";
+import * as VoxImplant from "voximplant-websdk";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { user } = useSelector(({ auth }) => ({ user: auth.user }), shallowEqual);
@@ -38,16 +39,26 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
     setMenuConfig(getMenuConfig(user.crops, user));
   }, [setMenuConfig, user]);
 
+  useEffect(async () => {
+    const voximplant = VoxImplant.getInstance();
+
+    const config = {
+      username: "holdar@grain.holdar.n4.voximplant.com",
+      password: "StartMobile55!",
+    };
+
+    voximplant
+      .init()
+      .then(_ => voximplant.connect(false))
+      .then(_ => voximplant.login(config.username, config.password));
+  }, []);
+
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>
         {
           /* Redirect from root URL to /dashboard. */
-          <Redirect
-            exact
-            from="/"
-            to={"/user/profile"}
-          />
+          <Redirect exact from="/" to={"/user/profile"} />
         }
         <Route path="/userDocs/legacy" component={UserDocPage} />
         <Route path="/user/view/:id" exact component={UserEditPage} />
@@ -124,7 +135,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         }
 
         {/*<Route path="/myBidsList" exact component={MyBidsListPage} />
-        <Route path="/bidsList/:cropId" exact component={BidsListPage} /> 
+        <Route path="/bidsList/:cropId" exact component={BidsListPage} />
         <Route path="/allBidsList/:cropId" component={AllBidsPage} /> */}
 
         {user.is_buyer ? (
@@ -147,7 +158,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   );
 }
 
-export default connect(null, {
+export default connect(state => {}, {
   ...builder.actions,
   ...crops.actions,
   ...users.actions,
