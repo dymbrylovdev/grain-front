@@ -37,8 +37,14 @@ export const getAllBids = (
     min_date ? `&min_date=${min_date}` : ""
   }${max_date ? `&max_date=${max_date}` : ""}`;
 
-  if (authorId) {
+  if (authorId && authorId !== 'only_users') {
     url += `&author_id=${authorId}`;
+  }
+
+  if (authorId === 'only_users') {
+    url += '&only_users=true';
+  } else {
+    url += '&only_users=false';
   }
 
   return axios.get(url);

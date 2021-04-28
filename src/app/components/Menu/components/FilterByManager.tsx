@@ -15,9 +15,9 @@ const FilterByManager: React.FC<PropsFromRedux &
     cropId: string | undefined;
     salePurchaseMode: TBidType | undefined;
   }> = ({ intl, setFilter, filter, fetchUsers, users, clearFetch }) => {
+
   useEffect(() => {
     fetchUsers({ page: 1, perPage: 999, userRolesId: [5] });
-
     return () => {
       clearFetch();
     };
@@ -32,6 +32,10 @@ const FilterByManager: React.FC<PropsFromRedux &
       value: "",
       label: "Все авторы объявлений",
     },
+    {
+      value: "only_users",
+      label: "Только пользователи",
+    },
     ...(users?.map(user => ({
       label: user.login || user.phone?.toString() || "",
       value: user.id.toString(),
@@ -42,7 +46,7 @@ const FilterByManager: React.FC<PropsFromRedux &
     <div>
       <MenuItem>
         <RadioParamGroup
-          name={intl.formatMessage({ id: "BIDLIST.FILTTER.MANAGERS" })}
+          name={'Авторы объявлений'}
           data={data}
           value={filter.authorId}
           handleChange={handleChange}

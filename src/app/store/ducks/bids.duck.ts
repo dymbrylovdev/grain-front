@@ -550,10 +550,11 @@ export const actions = {
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
 
   setProfit: (profit: IProfit) => createAction(SET_PROFIT, { profit }),
-  setOpenInfoAlert: (openInfoAlert: boolean) =>
-    createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
-  setFilter: (filter: { minDate?: Date | null; maxDate?: Date | null; authorId?: string }) =>
-    createAction(SET_FILTER, { filter }),
+  setOpenInfoAlert: (openInfoAlert: boolean) => createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
+
+  setFilter: (filter: { minDate?: Date | null; maxDate?: Date | null; authorId?: string; only_users?: boolean }) => (
+    createAction(SET_FILTER, { filter })
+  ),
 
   clearBidsXlsUrl: () => createAction(CLEAR_BIDS_XLS_URL),
   bidsXlsUrlRequest: (
