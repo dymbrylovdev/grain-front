@@ -40,14 +40,17 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   }, [setMenuConfig, user]);
 
   useEffect(() => {
-    const voximplant = VoxImplant.getInstance();
+    const doSmth = async () => {
+      const voximplant = VoxImplant.getInstance();
 
-    const config = {
-      username: "holdar@grain.holdar.n4.voximplant.com",
-      password: "StartMobile55!",
-    };
+      const config = {
+        username: "holdar@grain.holdar.n4.voximplant.com",
+        password: "StartMobile55!",
+      };
 
-    voximplant.init().then(_ => voximplant.connect(false)).then(_ => voximplant.login(config.username, config.password));
+      voximplant.init().then(_ => voximplant.connect(false)).then(_ => voximplant.login(config.username, config.password));
+    }
+    doSmth();
   }, []);
 
   return (
