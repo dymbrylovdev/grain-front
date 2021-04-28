@@ -384,6 +384,7 @@ const BidTable: React.FC<IProps> = ({
                   )}
 
                   <TableCell align="right">
+                    <div style={{minWidth: 150}}>
                     {bestAllMyMode !== "my-bids" && (
                       <IconButton
                         size="medium"
@@ -457,6 +458,7 @@ const BidTable: React.FC<IProps> = ({
                         </IconButton>
                       </>
                     )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

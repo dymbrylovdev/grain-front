@@ -265,6 +265,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                           <StatusIndicator isActive={item.is_sending_sms} />
                         </TableCell>
                         <TableCell align="right">
+                          <div style={{minWidth: 150}}>
                           <IconButton
                             size="medium"
                             color="primary"
@@ -294,6 +295,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                           >
                             <DeleteIcon />
                           </IconButton>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}

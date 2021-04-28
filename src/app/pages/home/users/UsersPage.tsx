@@ -416,6 +416,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       )}
                     </TableCell>
                     <TableCell align="right">
+                      <div style={{minWidth: 150}}>
                       {!(accessByRoles(item, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !me?.is_admin) && (
                         <Tooltip
                           title={intl.formatMessage({
@@ -469,6 +470,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           </IconButton>
                         </Tooltip>
                       )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
