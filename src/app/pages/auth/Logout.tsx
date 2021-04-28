@@ -18,6 +18,7 @@ const Logout: React.FC<TPropsFromRedux> = ({
   stopPrompter,
   setSalePurchaseMode,
 }) => {
+
   useEffect(() => {
     clearCurrentSaleFilter();
     clearCurrentPurchaseFilter();
@@ -32,6 +33,7 @@ const Logout: React.FC<TPropsFromRedux> = ({
     stopPrompter,
   ]);
 
+  console.log(hasAuthToken)
   return hasAuthToken ? <LayoutSplashScreen /> : <Redirect to="/auth" />;
 };
 

@@ -39,7 +39,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
     setMenuConfig(getMenuConfig(user.crops, user));
   }, [setMenuConfig, user]);
 
-  useEffect(async () => {
+  useEffect(() => {
     const voximplant = VoxImplant.getInstance();
 
     const config = {
@@ -47,10 +47,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
       password: "StartMobile55!",
     };
 
-    voximplant
-      .init()
-      .then(_ => voximplant.connect(false))
-      .then(_ => voximplant.login(config.username, config.password));
+    voximplant.init().then(_ => voximplant.connect(false)).then(_ => voximplant.login(config.username, config.password));
   }, []);
 
   return (
