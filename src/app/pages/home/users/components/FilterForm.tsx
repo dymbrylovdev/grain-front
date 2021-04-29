@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import {
   IconButton,
@@ -34,20 +34,16 @@ import { accessByRoles } from "../../../../utils/utils";
 
 interface IFilterForm {
   match: any;
-  userId: any;
+  userId: number | undefined;
 }
 
-const FilterForm: React.FC<IFilterForm & TPropsFromRedux &
-  WrappedComponentProps> = ({
-  // match: {
-  //   params: { id, userId },
-  // },
+const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps> = ({
   match,
   intl,
   fetchMe,
-  userId,
   me,
   meError,
+  userId,
   filterCount,
   loading,
   error,
@@ -120,7 +116,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux &
           }
         }
 
-        if (userId) fetchUserBidFilters({ id: +userId });
+        if (userId) fetchUserBidFilters({ id: +userId, type: salePurchaseMode })
       }
     }
   }, [
@@ -142,7 +138,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux &
   ]);
 
   useEffect(() => {
-    if (userId) fetchUserBidFilters({ id: +userId });
+    if (userId) fetchUserBidFilters({ id: +userId, type: salePurchaseMode })
   }, [fetchUserBidFilters, userId, salePurchaseMode]);
 
   useEffect(() => {

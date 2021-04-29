@@ -233,8 +233,8 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
   }, [createUserFilterSuccess, editSuccess, history, userId]);
 
   useEffect(() => {
-    fetchUserBidFilters({ id: +userId });
-  }, [fetchUserBidFilters, userId]);
+    salePurchaseMode && fetchUserBidFilters({ id: +userId, type: salePurchaseMode});
+  }, [fetchUserBidFilters, userId, salePurchaseMode]);
 
   useEffect(() => {
     if (!crops && !cropsLoading) {
