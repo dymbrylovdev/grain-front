@@ -5,7 +5,7 @@
  * components (e.g: `src/pages/auth/AuthPage`, `src/pages/home/HomePage`).
  */
 
-import React, {useEffect} from "react";
+import React, {useEffect, useMemo} from "react";
 import { Redirect, Route, Switch, withRouter } from "react-router-dom";
 import { shallowEqual, useSelector, useDispatch } from "react-redux";
 import { useSnackbar } from "notistack";
@@ -35,10 +35,8 @@ export const Routes = withRouter(({ history }) => {
     user,
     loginByJwtLoading,
     loginByJwtError,
-    clearLoginByJwt,
-    loginByJwtSuccess
   } = useSelector(
-    ({ auth, urls, builder: { menuConfig }, builder }) => {
+    ({ auth, builder: { menuConfig } }) => {
       return {
         menuConfig,
         isAuthorized: auth.user != null,
@@ -61,11 +59,17 @@ export const Routes = withRouter(({ history }) => {
     }
   }, [loginByJwtError, enqueueSnackbar])
 
-  // useEffect(() => {
-    // if (loginByJwtSuccess && !loginByJwtLoading) {
-      // window.location.href = window.location.href.replace(`${jwtToken}`, '');;     
-    // }
-  // }, [loginByJwtSuccess, loginByJwtLoading])
+  const redirectFromAuth = useMemo(() => {
+    // console.log(user);
+    if (isAuthorized && user) {
+      if (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_MANAGER') || user.roles.includes('ROLE_TRADER')) {
+        return `/sale/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
+      } else {
+        return `/purchase/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
+      }
+    }
+    return '/auth';
+  }, [isAuthorized, user])
 
   if (((!user && jwtToken) || loginByJwtLoading) && !loginByJwtError) {
     return <Preloader/>;
@@ -78,7 +82,7 @@ export const Routes = withRouter(({ history }) => {
         <Switch>
           {isAuthorized ? (
             /* Otherwise redirect to root page (`/`) */
-            <Redirect from="/auth" to={userLastLocation} />
+            <Redirect from="/auth" to={redirectFromAuth} />
           ) : (
             /* Render auth page when user at `/auth` and not authorized. */
             <AuthPage />

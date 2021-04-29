@@ -4,6 +4,7 @@ import { FormattedMessage } from "react-intl";
 import { Link } from "@material-ui/core";
 import { toAbsoluteUrl } from "../../../_metronic";
 import "../../../_metronic/_assets/sass/pages/login/login-1.scss";
+import CheckInSystem from "./CheckInSystem";
 import Login from "./Login";
 import Registration from "./Registration";
 import ForgotPassword from "./ForgotPassword";
@@ -56,7 +57,7 @@ export default function AuthPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                      <FormattedMessage id="AUTH.CREATOR.COMPANY" />
+                        <FormattedMessage id="AUTH.CREATOR.COMPANY" />
                       </a>
                     </div>
                   </div>
@@ -65,7 +66,11 @@ export default function AuthPage() {
                       <FormattedMessage id="SUBMENU.LEGAL" />
                     </Link>
                     <div>
-                      <TermDialog isOpen={openUserAgreement} response={response} handleClose={closeUserAgreement}/>
+                      <TermDialog
+                        isOpen={openUserAgreement}
+                        response={response}
+                        handleClose={closeUserAgreement}
+                      />
                     </div>
                   </div>
                 </div>
@@ -74,14 +79,15 @@ export default function AuthPage() {
 
             <div className="kt-grid__item kt-grid__item--fluid  kt-grid__item--order-tablet-and-mobile-1  kt-login__wrapper">
               <Switch>
+                <Route path="/auth/main" component={CheckInSystem} />
                 <Route path="/auth/login" component={Login} />
                 <Route path="/auth/registration" component={Registration} />
                 <Route path="/auth/forgot-password" component={ForgotPassword} />
-                <Route path="/auth/email-sent/forgot" component={EmailSentPage}/>
-                <Route path="/auth/email-sent/registration" component={EmailSentPage}/>
-                <Route path="/auth/change_password/:code" component={ChangePassword}/>
-                <Redirect from="/auth" exact={true} to="/auth/login" />
-                <Redirect to="/auth/login" />
+                <Route path="/auth/email-sent/forgot" component={EmailSentPage} />
+                <Route path="/auth/email-sent/registration" component={EmailSentPage} />
+                <Route path="/auth/change_password/:code" component={ChangePassword} />
+                <Redirect from="/auth" exact={true} to="/auth/main" />
+                <Redirect to="/auth/main" />
               </Switch>
             </div>
           </div>

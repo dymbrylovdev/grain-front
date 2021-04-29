@@ -5,6 +5,7 @@ export const USER_CREATE_URL = "/api/user/create";
 export const GET_USERS_URL = "/api/users";
 export const GET_STATUSES_URL = "/api/users/statuses";
 export const GET_USER_ACTIVATE = "api/user_activate/send";
+export const GET_USER_ROLES ="api/roles";
 
 export function createUser(data) {
   return axios.post(USER_CREATE_URL, data);
@@ -22,13 +23,13 @@ export function deleteUser(id) {
   return axios.delete(`${USER_URL}${id}`);
 }
 
-export function getUsers(page, perPage, tariffId, funnelStateId, roles = []) {
+export function getUsers(page, perPage, tariffId, funnelStateId, userRolesId) {
   let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}${
-    tariffId ? `tariff_id=${tariffId}` : ""
-  }${funnelStateId ? `funnel_state_id=${funnelStateId}` : ""}`;
+    tariffId ? `&tariff=${tariffId}` : ""
+  }${funnelStateId ? `&funnel_state=${funnelStateId}` : ""}`;
 
-  if (roles.length) {
-    url += `&roles=${roles.join(",")}`;
+  if (userRolesId.length) {
+    url += `&roles=${userRolesId.join(",")}`;
   }
 
   return axios.get(url);
@@ -54,10 +55,13 @@ export function getUserActivate(email) {
   return axios.get(`${GET_USER_ACTIVATE}?email=${email}`);
 }
 
-export function getUserBidFilters({ id }) {
-  return axios.get(`${USER_URL}${id}/bid_filters`)
+export function getUserRoles() {
+  return axios.get(GET_USER_ROLES);
 }
 
+export function getUserBidFilters({ id, type }) {
+  return axios.get(`${USER_URL}${id}/bid_filters?type=${type}`)
+}
 export function createUserBidFilter( id, data ) {
   return axios.post(`${USER_URL}${id}/bid_filter`, data);
 }
