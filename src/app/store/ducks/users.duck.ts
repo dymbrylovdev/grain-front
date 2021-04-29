@@ -14,6 +14,7 @@ import {
   editContactViewContact,
   getUserActivate,
   getUsersCrops,
+  getUserRoles,
   getUserBidFilters,
   createUserBidFilter,
 } from "../../crud/users.crud";
@@ -63,6 +64,13 @@ const CLEAR_USER_BIDS = "users/CLEAR_USER_BIDS";
 const USER_BIDS_REQUEST = "users/USER_BIDS_REQUEST";
 const USER_BIDS_SUCCESS = "users/USER_BIDS_SUCCESS";
 const USER_BIDS_FAIL = "users/USER_BIDS_FAIL";
+
+const CLEAR_USER_ROLES = "users/CLEAR_USER_ROLES";
+const USER_ROLES_REQUEST = "users/USER_ROLES_REQUEST";
+const USER_ROLES_SUCCESS = "users/USER_ROLES_SUCCESS";
+const USER_ROLES_FAIL = "users/USER_ROLES_FAIL";
+
+const SET_CURRENT_ROLES = "users/SET_CURRENT_ROLES";
 
 const CLEAR_USER_BID_FILTERS = "users/CLEAR_USER_BID_FILTERS";
 const USER_BID_FILTERS_REQUEST = "users/USER_BID_FILTERS_REQUEST";
@@ -116,6 +124,14 @@ export interface IInitialState {
 
   openInfoAlert: boolean;
 
+
+  roles: any[] | undefined;
+  userRolesLoading: boolean;
+  userRolesSuccess: boolean;
+  userRolesError: string | null;
+
+  currentRoles: any[] | undefined;
+
   userBidFilters: IUserBidFilters | undefined;
   userBidFiltersLoading: boolean;
   userBidFiltersSuccess: boolean;
@@ -168,6 +184,13 @@ const initialState: IInitialState = {
   userBidsError: null,
 
   openInfoAlert: true,
+
+  roles: undefined,
+  userRolesLoading: false,
+  userRolesSuccess: false,
+  userRolesError: null,
+
+  currentRoles: undefined,
 
   userBidFilters: undefined,
   userBidFiltersLoading: false,
@@ -400,6 +423,49 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return { ...state, userBidsLoading: false, userBidsError: action.payload };
     }
 
+    case CLEAR_USER_ROLES: {
+      return {
+        ...state,
+        roles: undefined,
+        userRolesLoading: false,
+        userRolesSuccess: false,
+        userRolesError: null
+      }
+    }
+
+    case USER_ROLES_REQUEST: {
+      return {
+        ...state,
+        userRolesLoading: true,
+        userRolesSuccess: false,
+        userRolesError: null
+      }
+    }
+
+    case USER_ROLES_SUCCESS: {
+      return {
+        ...state,
+        roles: action.payload.data,
+        userRolesLoading: false,
+        userRolesSuccess: true,
+      }
+    }
+
+    case USER_ROLES_FAIL: {
+      return {
+        ...state,
+        userRolesLoading: false,
+        userRolesError: action.payload,
+      }
+    }
+
+    case SET_CURRENT_ROLES: {
+      return {
+        ...state,
+        currentRoles: action.payload
+      }
+    }
+
     case CLEAR_USER_BID_FILTERS: {
       return {
         ...state,
@@ -477,7 +543,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 
 export const actions = {
   clearFetch: () => createAction(CLEAR_FETCH),
-  fetchRequest: (payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; roles?: TRole[] }) =>
+  fetchRequest: (payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: any[] }) =>
     createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
@@ -521,8 +587,15 @@ export const actions = {
   setOpenInfoAlert: (openInfoAlert: boolean) =>
     createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
 
+  clearUserRoles: () => createAction(CLEAR_USER_ROLES),
+  userRolesRequest: () => createAction(USER_ROLES_REQUEST),
+  userRolesSuccess: (payload: any) => createAction(USER_ROLES_SUCCESS, payload),
+  userRolesFail: (payload: string) => createAction(USER_ROLES_FAIL, payload),
+
+  setCurrentRoles: (payload: any) => createAction(SET_CURRENT_ROLES, payload),
+
   clearUserBidFilters: () => createAction(CLEAR_USER_BID_FILTERS),
-  userBidFiltersRequest: (payload: { id: number }) => createAction(USER_BID_FILTERS_REQUEST, payload),
+  userBidFiltersRequest: (payload: { id: number; type: string }) => createAction(USER_BID_FILTERS_REQUEST, payload),
   userBidFiltersSuccess: (payload: IServerResponse<IUserBidFilters>) => createAction(USER_BID_FILTERS_SUCCESS, payload),
   userBidFiltersFail: (payload: string) => createAction(USER_BID_FILTERS_FAIL, payload),
 
@@ -534,11 +607,10 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga({ payload }: { payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; roles?: TRole[] } }) {
+function* fetchSaga({ payload }: { payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: any[] } }) {
   try {
     const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
-      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.roles)
-    );
+      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId))
     yield put(actions.fetchSuccess(data));
   } catch (e) {
     yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -610,7 +682,16 @@ function* userBidsSaga({ payload }: { payload: number }) {
   }
 }
 
-function* userBidFiltersSaga({ payload }: { payload: { id: number; } }) {
+function* userRolesSaga() {
+  try {
+    const { data }: { data: any } = yield call(() => getUserRoles());
+    yield put(actions.userRolesSuccess(data));
+  } catch (e) {
+    yield put(actions.userRolesFail(e?.response?.data?.message) || "Ошибка соединения.");
+  }
+}
+
+function* userBidFiltersSaga({ payload }: { payload: { id: number; type: string; } }) {
   try {
     const { data }: { data: IServerResponse<IUserBidFilters> } = yield call(() => getUserBidFilters(payload));
     yield put(actions.userBidFiltersSuccess(data));
@@ -645,6 +726,7 @@ export function* saga() {
     userActivateSaga
   );
   yield takeLatest<ReturnType<typeof actions.userBidsRequest>>(USER_BIDS_REQUEST, userBidsSaga);
+  yield takeLatest<ReturnType<typeof actions.userRolesRequest>>(USER_ROLES_REQUEST, userRolesSaga);
   yield takeLatest<ReturnType<typeof actions.userBidFiltersRequest>>(USER_BID_FILTERS_REQUEST, userBidFiltersSaga);
   yield takeLatest<ReturnType<typeof actions.createUserFilterRequest>>(CREATE_USER_FILTER_REQUEST, createUserFilterSaga);
 }

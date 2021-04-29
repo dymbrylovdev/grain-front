@@ -17,7 +17,7 @@ import useStyles from '../styles';
 import {IAppState} from '../../../store/rootDuck';
 import {LayoutSubheader} from '../../../../_metronic/layout/LayoutContext';
 import {a11yProps, TabPanel} from '../../../components/ui/Table/TabPanel';
-import {BidsForm, CropsForm, LocationsForm, ProfileForm, FilterForm} from './components';
+import {BidsForm, CropsForm, FilterForm, LocationsForm, ProfileForm} from './components';
 import ScrollToTop from '../../../components/ui/ScrollToTop';
 import TariffForm from './components/TariffForm/TariffForm';
 import {accessByRoles} from '../../../utils/utils';

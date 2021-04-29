@@ -37,8 +37,14 @@ export const getAllBids = (
     min_date ? `&min_date=${min_date}` : ""
   }${max_date ? `&max_date=${max_date}` : ""}`;
 
-  if (authorId) {
+  if (authorId && authorId !== 'only_users') {
     url += `&author_id=${authorId}`;
+  }
+
+  if (authorId === 'only_users') {
+    url += '&only_users=1';
+  } else {
+    url += '&only_users=0';
   }
 
   return axios.get(url);
@@ -73,6 +79,10 @@ export const editBid = (id: number, data: IBidToRequest) => {
 
 export const deleteBid = (id: number) => {
   return axios.delete(`${AD_URL}/${id}`);
+};
+
+export const archiveBid = (id: number, is_archived: 0 | 1) => {
+  return axios.put(`${AD_URL}/${id}`, { is_archived });
 };
 
 export const getBidsXlsUrl = (

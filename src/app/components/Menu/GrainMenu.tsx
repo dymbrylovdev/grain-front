@@ -7,6 +7,8 @@ import { Paper, useMediaQuery, makeStyles, Drawer } from "@material-ui/core";
 import { actions as tariffsActions } from "../../store/ducks/tariffs.duck";
 import { leftMenuActions } from "../../store/ducks/leftMenu.duck";
 import { actions as tariffActions } from "../../store/ducks/tariffs.duck";
+import { actions as funnelStatesActions } from "../../store/ducks/funnelStates.duck";
+import { actions as usersActions } from "../../store/ducks/users.duck";
 import { IAppState } from "../../store/rootDuck";
 
 import { LeftMenu } from ".";
@@ -51,12 +53,15 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   leftMenuOpen,
   salePurchaseMode,
   cropParams,
-
+  currentFunnelState,
+  setFunnelState,
   funnelStates,
 
   tariffsTypes,
   usersFilterTariff,
   setUsersFilterTariff,
+  userRoles,
+  setCurrentRoles,
 }) => {
   const classes = useStyles();
   const isMinWidthQuery = useMediaQuery("(min-width:1025px)");
@@ -94,15 +99,19 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         enumParams={cropParams && cropParams.filter(item => item.type === "enum")}
       />
 
-      {/* {location.pathname === "/user-list" && (
+      {location.pathname === "/user-list" && (
         <UsersFilterMenu
           intl={intl}
+          currentFunnelState={currentFunnelState}
           funnelStates={funnelStates}
+          setFunnelState={setFunnelState}
           tariffsTypes={tariffsTypes}
           usersFilterTariff={usersFilterTariff}
           setUsersFilterTariff={setUsersFilterTariff}
+          userRoles={userRoles}
+          setCurrentRoles={setCurrentRoles}
         />
-      )} */}
+      )}
     </Wrapper>
   );
 };
@@ -113,14 +122,20 @@ const connector = connect(
     leftMenuOpen: state.leftMenu.leftMenuOpen,
     salePurchaseMode: state.leftMenu.salePurchaseMode,
     cropParams: state.crops2.cropParams,
-
+    currentFunnelState: state.funnelStates.currentFunnelState,
     funnelStates: state.funnelStates.funnelStates,
     tariffsTypes: state.tariffs.tariffsTypes,
     usersFilterTariff: state.tariffs.usersFilterTariff,
+    userRoles: state.users.roles,
   }),
-  { ...leftMenuActions, setUsersFilterTariff: tariffActions.setUsersFilterTariff }
+  {
+    ...leftMenuActions,
+    setUsersFilterTariff: tariffActions.setUsersFilterTariff,
+    setFunnelState: funnelStatesActions.setFunnelState,
+    setCurrentRoles: usersActions.setCurrentRoles,
+  }
+)
 
-);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 export default injectIntl(connector(GrainMenu));

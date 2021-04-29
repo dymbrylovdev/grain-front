@@ -8,6 +8,8 @@ import {
   IUserForEdit,
   IUserForRegister,
   IRegSuccessData,
+  LoginType,
+  TRole,
 } from "../../interfaces/users";
 import { Reducer } from "redux";
 import { PersistPartial } from "redux-persist/es/persistReducer";
@@ -25,7 +27,13 @@ import {
   changePassword,
   sendCodeConfirm,
   loginByJwt,
+  findInSystem,
 } from "../../crud/auth.crud";
+
+interface AuthData {
+  value: string;
+  type: LoginType;
+}
 
 const CLEAR_REG = "auth/CLEAR_REG";
 const REG_REQUEST = "auth/REG_REQUEST";
@@ -76,6 +84,11 @@ const LOGIN_BY_JWT_REQUEST = "auth/LOGIN_BY_JWT_REQUEST";
 const LOGIN_BY_JWT_SUCCESS = "auth/LOGIN_BY_JWT_SUCCESS";
 const LOGIN_BY_JWT_FAIL = "auth/LOGIN_BY_JWT_FAIL";
 
+const CLEAR_FIND_IN_SYSTEM = "auth/CLEAR_FIND_IN_SYSTEM";
+const FIND_IN_SYSTEM_REQUEST = "auth/FIND_IN_SYSTEM_REQUEST";
+const FIND_IN_SYSTEM_SUCCESS = "auth/FIND_IN_SYSTEM_SUCCESS";
+const FIND_IN_SYSTEM_FAIL = "auth/FIND_IN_SYSTEM_FAIL";
+
 const CLEAR_USER = "auth/CLEAR_USER";
 
 export interface IInitialState {
@@ -120,6 +133,12 @@ export interface IInitialState {
   loginByJwtLoading: boolean;
   loginByJwtSuccess: boolean;
   loginByJwtError: string | null;
+
+  findInSystemLoading: boolean;
+  findInSystemSuccess: boolean;
+  findInSystemError: boolean;
+
+  authData: AuthData | null;
 }
 
 const initialState: IInitialState = {
@@ -162,6 +181,12 @@ const initialState: IInitialState = {
   loginByJwtLoading: false,
   loginByJwtSuccess: false,
   loginByJwtError: null,
+
+  findInSystemLoading: false,
+  findInSystemSuccess: false,
+  findInSystemError: false,
+
+  authData: null,
 
   emailRequested: "",
 };
@@ -471,7 +496,44 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return {
           ...state,
           authToken: undefined,
-          user: undefined
+          user: undefined,
+        };
+      }
+
+      case CLEAR_FIND_IN_SYSTEM: {
+        return {
+          ...state,
+          findInSystemLoading: false,
+          findInSystemSuccess: false,
+          findInSystemError: false,
+          loginData: null,
+        };
+      }
+
+      case FIND_IN_SYSTEM_REQUEST: {
+        return {
+          ...state,
+          findInSystemLoading: true,
+          findInSystemSuccess: false,
+          findInSystemError: false,
+        };
+      }
+
+      case FIND_IN_SYSTEM_SUCCESS: {
+        return {
+          ...state,
+          findInSystemLoading: false,
+          findInSystemSuccess: true,
+          authData: action.payload,
+        };
+      }
+
+      case FIND_IN_SYSTEM_FAIL: {
+        return {
+          ...state,
+          findInSystemLoading: false,
+          findInSystemError: true,
+          authData: action.payload,
         };
       }
 
@@ -536,11 +598,18 @@ export const actions = {
   sendCodeFail: (payload: string) => createAction(SEND_CODE_FAIL, payload),
 
   clearLoginByJwt: () => createAction(CLEAR_LOGIN_BY_JWT),
-  loginByJwtRequest: (payload: { jwt: string }) =>
-    createAction(LOGIN_BY_JWT_REQUEST, payload),
+  loginByJwtRequest: (payload: { jwt: string }) => createAction(LOGIN_BY_JWT_REQUEST, payload),
   loginByJwtSuccess: (payload: IServerResponse<ILoginSuccessData>) =>
     createAction(LOGIN_BY_JWT_SUCCESS, payload),
   loginByJwtFail: (payload: string) => createAction(LOGIN_BY_JWT_FAIL, payload),
+
+  clearFindInSystem: () => createAction(CLEAR_FIND_IN_SYSTEM),
+  findInSystemRequest: (payload: { value: string; type: LoginType }) =>
+    createAction(FIND_IN_SYSTEM_REQUEST, payload),
+  findInSystemSuccess: (payload: { value: string; type: LoginType }) =>
+    createAction(FIND_IN_SYSTEM_SUCCESS, payload),
+  findInSystemFail: (payload: { value: string; type: LoginType }) =>
+    createAction(FIND_IN_SYSTEM_FAIL, payload),
 
   clearAuthToken: () => createAction(CLEAR_USER),
 };
@@ -644,6 +713,15 @@ function* loginByJwtSaga({ payload }: { payload: { jwt: string } }) {
   }
 }
 
+function* findInSystemSaga({ payload }: { payload: { value: string; type: LoginType } }) {
+  try {
+    yield call(() => findInSystem(payload));
+    yield put(actions.findInSystemSuccess(payload));
+  } catch (e) {
+    yield put(actions.findInSystemFail(payload));
+  }
+}
+
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
@@ -668,5 +746,9 @@ export function* saga() {
   yield takeLatest<ReturnType<typeof actions.loginByJwtRequest>>(
     LOGIN_BY_JWT_REQUEST,
     loginByJwtSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.findInSystemRequest>>(
+    FIND_IN_SYSTEM_REQUEST,
+    findInSystemSaga
   );
 }

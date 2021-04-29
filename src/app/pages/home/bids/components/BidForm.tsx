@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { IntlShape } from "react-intl";
 import { Link } from "react-router-dom";
 import {
@@ -12,9 +12,12 @@ import {
   Collapse,
   FormControlLabel,
   Checkbox,
-  Divider,
-  Tooltip,
+  FormControl,
+  InputLabel,
+  Select,
+  CircularProgress
 } from "@material-ui/core";
+
 import CloseIcon from "@material-ui/icons/Close";
 import { useHistory } from "react-router-dom";
 import { Skeleton, Autocomplete, Alert } from "@material-ui/lab";
@@ -23,7 +26,6 @@ import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import { YMaps, Map } from "react-yandex-maps";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
@@ -41,6 +43,7 @@ import { accessByRoles, getConfirmCompanyString } from "../../../../utils/utils"
 import { TrafficLight } from "../../users/components";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { thousands } from "../../deals/utils/utils";
+import {REACT_APP_GOOGLE_API_KEY} from '../../../../constants';
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
@@ -343,10 +346,6 @@ const BidForm: React.FC<IProps> = ({
   const linkToContact = () => {
     let contactViewCount = me?.contact_view_count;
     //@ts-ignore
-    if (bid && bid.author.id === me.id) {
-      history.push("/user/profile");
-    }
-    //@ts-ignore
     if (contactViewCount > 0 || ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) {
       history.push(
         me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
@@ -451,16 +450,47 @@ const BidForm: React.FC<IProps> = ({
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const newLocations: number[] = [];
-  const mapState = { center: newLocations, zoom: 9 };
+  // * yandex map --------------->
 
-  if (bid) {
-    const mapX = bid.location.lat;
-    const mapY = bid.location.lng;
+  const [ymaps, setYmaps] = useState<any>();
+  const [map, setMap] = useState<any>();
+  const [routeLoading, setRouteLoading] = useState(false);
+  const routeRef = useRef();
 
-    newLocations.push(mapX);
-    newLocations.push(mapY);
-  }
+  const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
+
+  useEffect(() => {
+    setMySelectedMapPoint(me?.points.filter(el => el.active)[0] || null)
+  }, [me])
+
+  const mapState = useMemo(() => {
+    if (bid && bid.location) {
+      return {center: [bid.location.lat, bid.location.lng], zoom: 7, margin: [10, 10, 10, 10]};
+    } else {
+      return null;
+    }
+  }, [bid])
+
+  const addRoute = useCallback(async (pointA: any, pointB: any) => {
+    map.geoObjects.remove(routeRef.current);
+    const route = await ymaps.route([
+      pointA.text,
+      pointB.text
+    ], { multiRoute: true, mapStateAutoApply: true });
+    routeRef.current = route;
+    map.geoObjects.add(route);
+    setRouteLoading(false);
+  }, [ymaps, map, routeRef])
+
+  useEffect(() => {
+    if (ymaps && map && bid && bid.location && mySelectedMapPoint) {
+      setRouteLoading(true);
+      addRoute(bid.location, mySelectedMapPoint);
+    }
+  }, [ymaps, map, bid, mySelectedMapPoint])
+
+
+  // <--------------- yandex map *
 
   useEffect(() => {
     if (formikErrored) {
@@ -556,10 +586,7 @@ const BidForm: React.FC<IProps> = ({
   }, [currentCropId, fetchCropParams]);
 
   useEffect(() => {
-    if (
-      !!me?.tariff_matrix &&
-      me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0
-    ) {
+    if (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0) {
       setSendingEmail(false);
     }
   }, [me, filterCount]);
@@ -582,6 +609,8 @@ const BidForm: React.FC<IProps> = ({
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
+
+  // console.log(bid);
 
   return (
     <div className={classes.form}>
@@ -771,10 +800,9 @@ const BidForm: React.FC<IProps> = ({
           noOptionsText={intl.formatMessage({
             id: "ALL.AUTOCOMPLIT.EMPTY",
           })}
-          value={
-            editMode === "create"
-              ? vendor?.crops?.find(item => item.id === values.crop_id) || null
-              : crops?.find(item => item.id === bid?.crop_id) || null
+          value={editMode === "create"
+            ? vendor?.crops?.find(item => item.id === values.crop_id) || null
+            : crops?.find(item => item.id === bid?.crop_id) || null
           }
           onChange={(e: any, val: ICrop | null) => {
             setFieldValue("crop_id", val?.id || "");
@@ -1323,9 +1351,10 @@ const BidForm: React.FC<IProps> = ({
               loading={loadingLocations}
               inputValue={values.location}
               editable={editMode !== "view"}
-              label={intl.formatMessage({
-                id: "PROFILE.INPUT.LOCATION",
-              })}
+              label={values.bid_type === "sale"
+                ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
+              }
               inputClassName={innerClasses.autoLoc}
               // @ts-ignore
               inputError={Boolean(touched.location && errors.location && errors.location.text)}
@@ -1340,11 +1369,56 @@ const BidForm: React.FC<IProps> = ({
               disable={true}
             />
 
-            <YMaps>
-              <div style={{ width: "100%" }}>
-                <Map state={mapState} width={768} />
-              </div>
-            </YMaps>
+            {mapState && (
+              <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
+                <div style={{width: "100%", marginTop: 5}}>
+                  <Map
+                    state={mapState}
+                    instanceRef={ref => setMap(ref)}
+                    width={768}
+                    height={400}
+                    onLoad={ymaps => setYmaps(ymaps)}
+                    modules={["templateLayoutFactory", "route"]}
+                  />
+                </div>
+              </YMaps>
+            )}
+
+            {(me?.points && mySelectedMapPoint && editMode == 'view' && bid) && (
+              <FormControl
+                variant="outlined"
+                className={classes.formControl}
+                style={{width: '100%', marginLeft: 0, marginTop: 15}}
+              >
+                <InputLabel id="demo-simple-select-outlined-label">
+                  {bid.type === "sale"
+                    ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
+                    : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                  }
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={mySelectedMapPoint}
+                  onChange={(e: any) => setMySelectedMapPoint(e.target.value)}
+                  label={bid.type === "sale"
+                    ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
+                    : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                  }
+                  disabled={routeLoading}
+                  endAdornment={routeLoading && (
+                    <div style={{backgroundColor: 'white', zIndex: 1, marginRight: 10}}>
+                      <CircularProgress color="inherit" size={20} />
+                    </div>
+                  )}
+                >
+                  {me.points.filter(el => el.active).map((el: any) => (
+                    <MenuItem value={el} key={el.id}>{el.text}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+
           </>
         )
       ) : loading ? (
@@ -1376,9 +1450,7 @@ const BidForm: React.FC<IProps> = ({
               <TextField
                 select
                 margin="normal"
-                label={intl.formatMessage({
-                  id: "BIDSLIST.TABLE.MY_POINT",
-                })}
+                label={intl.formatMessage({ id: "BIDSLIST.TABLE.MY_POINT" })}
                 value={""}
                 onBlur={handleBlur}
                 onChange={event => {
@@ -1580,35 +1652,40 @@ const BidForm: React.FC<IProps> = ({
       <div className={classes.bottomButtonsContainer}>
         {me && editMode !== "view" && (
           <>
-            <div className={classes.button}>
-              {!!me?.tariff_matrix &&
-              me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
-                <>
-                  {me && me.email ? (
-                    <FormControlLabel
-                      control={
-                        <Checkbox checked={isSendingEmail} onChange={e => onCheckboxChange(e, 1)} />
-                      }
-                      label={"Подписка по e-mail"}
-                    />
-                  ) : null}
-                  {me && me.phone && me.phone.length > 4 ? (
-                    <FormControlLabel
-                      control={
-                        <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
-                      }
-                      label={"Подписка по смс"}
-                    />
-                  ) : null}
-                </>
-              )}
-            </div>
-
-            <div className={classes.button}>
-              <ButtonWithLoader onPress={() => createFilter(bidId)}>
-                {intl.formatMessage({ id: "ALL.BUTTONS.CREATE_FILTER" })}
-              </ButtonWithLoader>
-            </div>
+            {editMode === "edit" ? (
+              <div className={classes.button}>
+                <ButtonWithLoader onPress={() => createFilter(bidId)}>
+                  {intl.formatMessage({ id: "ALL.BUTTONS.CREATE_FILTER" })}
+                </ButtonWithLoader>
+              </div>
+            ) : (
+              <div className={classes.button}>
+                {!!me?.tariff_matrix &&
+                me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
+                  <>
+                    {me && me.email ? (
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={isSendingEmail}
+                            onChange={e => onCheckboxChange(e, 1)}
+                          />
+                        }
+                        label={"Подписка по e-mail"}
+                      />
+                    ) : null}
+                    {me && me.phone ? (
+                      <FormControlLabel
+                        control={
+                          <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
+                        }
+                        label={"Подписка по смс"}
+                      />
+                    ) : null}
+                  </>
+                )}
+              </div>
+            )}
 
             <div className={classes.button}>
               <ButtonWithLoader

@@ -18,6 +18,7 @@ const Logout: React.FC<TPropsFromRedux> = ({
   stopPrompter,
   setSalePurchaseMode,
 }) => {
+
   useEffect(() => {
     clearCurrentSaleFilter();
     clearCurrentPurchaseFilter();
