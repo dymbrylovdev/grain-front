@@ -15,7 +15,7 @@ import {
   FormControl,
   InputLabel,
   Select,
-  CircularProgress,
+  CircularProgress
 } from "@material-ui/core";
 
 import CloseIcon from "@material-ui/icons/Close";
@@ -43,7 +43,7 @@ import { accessByRoles, getConfirmCompanyString } from "../../../../utils/utils"
 import { TrafficLight } from "../../users/components";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { thousands } from "../../deals/utils/utils";
-import { REACT_APP_GOOGLE_API_KEY } from "../../../../constants";
+import {REACT_APP_GOOGLE_API_KEY} from '../../../../constants';
 
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
@@ -417,9 +417,8 @@ const BidForm: React.FC<IProps> = ({
         .min(1, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       price: Yup.number()
-        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" }))
-        .min(1000, intl.formatMessage({ id: "YUP.NUMBERS.MIN" }, { min: 1000 })),
+        .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }, { min: 1000 }))
+        .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       location: Yup.object({
         text: Yup.string().required(
           intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
@@ -461,37 +460,35 @@ const BidForm: React.FC<IProps> = ({
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
 
   useEffect(() => {
-    setMySelectedMapPoint(me?.points.filter(el => el.active)[0] || null);
-  }, [me]);
+    setMySelectedMapPoint(me?.points.filter(el => el.active)[0] || null)
+  }, [me])
 
   const mapState = useMemo(() => {
     if (bid && bid.location) {
-      return { center: [bid.location.lat, bid.location.lng], zoom: 7, margin: [10, 10, 10, 10] };
+      return {center: [bid.location.lat, bid.location.lng], zoom: 7, margin: [10, 10, 10, 10]};
     } else {
       return null;
     }
-  }, [bid]);
+  }, [bid])
 
-  const addRoute = useCallback(
-    async (pointA: any, pointB: any) => {
-      map.geoObjects.remove(routeRef.current);
-      const route = await ymaps.route([pointA.text, pointB.text], {
-        multiRoute: true,
-        mapStateAutoApply: true,
-      });
-      routeRef.current = route;
-      map.geoObjects.add(route);
-      setRouteLoading(false);
-    },
-    [ymaps, map, routeRef]
-  );
+  const addRoute = useCallback(async (pointA: any, pointB: any) => {
+    map.geoObjects.remove(routeRef.current);
+    const route = await ymaps.route([
+      pointA.text,
+      pointB.text
+    ], { multiRoute: true, mapStateAutoApply: true });
+    routeRef.current = route;
+    map.geoObjects.add(route);
+    setRouteLoading(false);
+  }, [ymaps, map, routeRef])
 
   useEffect(() => {
     if (ymaps && map && bid && bid.location && mySelectedMapPoint) {
       setRouteLoading(true);
       addRoute(bid.location, mySelectedMapPoint);
     }
-  }, [ymaps, map, bid, mySelectedMapPoint]);
+  }, [ymaps, map, bid, mySelectedMapPoint])
+
 
   // <--------------- yandex map *
 
@@ -589,10 +586,7 @@ const BidForm: React.FC<IProps> = ({
   }, [currentCropId, fetchCropParams]);
 
   useEffect(() => {
-    if (
-      !!me?.tariff_matrix &&
-      me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0
-    ) {
+    if (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0) {
       setSendingEmail(false);
     }
   }, [me, filterCount]);
@@ -604,6 +598,13 @@ const BidForm: React.FC<IProps> = ({
   useEffect(() => {
     if (fullPrepayment) setFieldValue("payment_term", "");
   }, [fullPrepayment]);
+
+  useEffect(() => {
+    if (me) {
+      me?.email ? setSendingEmail(true) : setSendingEmail(false);
+      me?.phone && me?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false);
+    }
+  }, [me]);
 
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
@@ -701,16 +702,21 @@ const BidForm: React.FC<IProps> = ({
               </div>
 
               {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
-                <Alert
-                  className={classes.infoAlert}
-                  severity="warning"
-                  color="error"
-                  style={{ marginTop: 8, marginBottom: 8 }}
-                >
-                  {`Сегодня вам доступен просмотр ${
-                    me?.contact_view_count
-                  } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}
-                </Alert>
+                <>
+                  {bid?.author.id === me.id ? null : (
+                    <Alert
+                      className={classes.infoAlert}
+                      severity="warning"
+                      color="error"
+                      style={{ marginTop: 8, marginBottom: 8 }}
+                    >
+                      {`Сегодня вам доступен просмотр ${
+                        me?.contact_view_count
+                      } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}{" "}
+                      <Link to={"/user/profile/tariffs"}>Снять ограничения</Link>
+                    </Alert>
+                  )}
+                </>
               )}
 
               {!!bid.vendor.company && (
@@ -794,10 +800,9 @@ const BidForm: React.FC<IProps> = ({
           noOptionsText={intl.formatMessage({
             id: "ALL.AUTOCOMPLIT.EMPTY",
           })}
-          value={
-            editMode === "create"
-              ? vendor?.crops?.find(item => item.id === values.crop_id) || null
-              : crops?.find(item => item.id === bid?.crop_id) || null
+          value={editMode === "create"
+            ? vendor?.crops?.find(item => item.id === values.crop_id) || null
+            : crops?.find(item => item.id === bid?.crop_id) || null
           }
           onChange={(e: any, val: ICrop | null) => {
             setFieldValue("crop_id", val?.id || "");
@@ -1346,10 +1351,9 @@ const BidForm: React.FC<IProps> = ({
               loading={loadingLocations}
               inputValue={values.location}
               editable={editMode !== "view"}
-              label={
-                values.bid_type === "sale"
-                  ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
-                  : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
+              label={values.bid_type === "sale"
+                ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
               }
               inputClassName={innerClasses.autoLoc}
               // @ts-ignore
@@ -1367,7 +1371,7 @@ const BidForm: React.FC<IProps> = ({
 
             {mapState && (
               <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
-                <div style={{ width: "100%", marginTop: 5 }}>
+                <div style={{width: "100%", marginTop: 5}}>
                   <Map
                     state={mapState}
                     instanceRef={ref => setMap(ref)}
@@ -1380,46 +1384,41 @@ const BidForm: React.FC<IProps> = ({
               </YMaps>
             )}
 
-            {me?.points && mySelectedMapPoint && editMode == "view" && bid && (
+            {(me?.points && mySelectedMapPoint && editMode == 'view' && bid) && (
               <FormControl
                 variant="outlined"
                 className={classes.formControl}
-                style={{ width: "100%", marginLeft: 0, marginTop: 15 }}
+                style={{width: '100%', marginLeft: 0, marginTop: 15}}
               >
                 <InputLabel id="demo-simple-select-outlined-label">
                   {bid.type === "sale"
                     ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
-                    : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })}
+                    : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                  }
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   value={mySelectedMapPoint}
                   onChange={(e: any) => setMySelectedMapPoint(e.target.value)}
-                  label={
-                    bid.type === "sale"
-                      ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
-                      : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                  label={bid.type === "sale"
+                    ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
+                    : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
                   }
                   disabled={routeLoading}
-                  endAdornment={
-                    routeLoading && (
-                      <div style={{ backgroundColor: "white", zIndex: 1, marginRight: 10 }}>
-                        <CircularProgress color="inherit" size={20} />
-                      </div>
-                    )
-                  }
+                  endAdornment={routeLoading && (
+                    <div style={{backgroundColor: 'white', zIndex: 1, marginRight: 10}}>
+                      <CircularProgress color="inherit" size={20} />
+                    </div>
+                  )}
                 >
-                  {me.points
-                    .filter(el => el.active)
-                    .map((el: any) => (
-                      <MenuItem value={el} key={el.id}>
-                        {el.text}
-                      </MenuItem>
-                    ))}
+                  {me.points.filter(el => el.active).map((el: any) => (
+                    <MenuItem value={el} key={el.id}>{el.text}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             )}
+
           </>
         )
       ) : loading ? (

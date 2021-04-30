@@ -26,7 +26,7 @@ export function deleteUser(id) {
 export function getUsers(page, perPage, tariffId, funnelStateId, userRolesId) {
   let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}${
     tariffId ? `&tariff=${tariffId}` : ""
-  }${funnelStateId ? `&funnel_state=${funnelStateId}` : ""}`;
+    }${funnelStateId ? `&funnel_state=${funnelStateId}` : ""}`;
 
   if (userRolesId.length) {
     url += `&roles=${userRolesId.join(",")}`;
@@ -55,13 +55,14 @@ export function getUserActivate(email) {
   return axios.get(`${GET_USER_ACTIVATE}?email=${email}`);
 }
 
+export function createUserBidFilter( id, data ) {
+  return axios.post(`${USER_URL}${id}/bid_filter`, data);
+}
+
 export function getUserRoles() {
   return axios.get(GET_USER_ROLES);
 }
 
 export function getUserBidFilters({ id, type }) {
   return axios.get(`${USER_URL}${id}/bid_filters?type=${type}`)
-}
-export function createUserBidFilter( id, data ) {
-  return axios.post(`${USER_URL}${id}/bid_filter`, data);
 }
