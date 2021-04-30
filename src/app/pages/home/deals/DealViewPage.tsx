@@ -86,8 +86,8 @@ const DealViewPage: React.FC<TPropsFromRedux &
               ? `/user/edit/${deal.sale_bid.vendor.id}`
               : `/user/edit/${deal.purchase_bid.vendor.id}`
             : dealType === "sale"
-              ? `/user/view/${deal.sale_bid.vendor.id}`
-              : `/user/view/${deal.purchase_bid.vendor.id}`
+            ? `/user/view/${deal.sale_bid.vendor.id}`
+            : `/user/view/${deal.purchase_bid.vendor.id}`
         );
         //@ts-ignore
         editContactViewCount({ data: { contact_view_count: contactViewCount - 2 } });
@@ -195,7 +195,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
       ) : (
         !!deal && (
           <>
-            {!deal.sale_bid.vendor_use_vat && deal.purchase_bid.vendor_use_vat && (
+            {!deal.sale_bid.vendor.use_vat && deal.purchase_bid.vendor.use_vat && (
               <p>
                 {intl.formatMessage(
                   { id: "DEALS.TABLE.ABOUT_VAT" },
@@ -309,9 +309,9 @@ const DealViewPage: React.FC<TPropsFromRedux &
                     </TableCell>
                     <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
                       {/* {thousands(deal.sale_bid.price.toString())} */}
-                      {!!deal?.purchase_bid?.vendor_use_vat &&
+                      {!!deal?.purchase_bid?.vendor.use_vat &&
                       !!deal?.sale_bid?.vat &&
-                      !deal.sale_bid.vendor_use_vat ? (
+                      !deal.sale_bid.vendor.use_vat ? (
                         !deal.sale_bid.price ? (
                           "-"
                         ) : (
@@ -337,7 +337,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       )}
                     </TableCell>
                     <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.1)" }}>
-                      {thousands(deal.purchase_bid.price.toString())}
+                      {thousands(deal.purchase_bid.price)}
                     </TableCell>
                   </TableRow>
 
@@ -358,12 +358,12 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       <strong>{intl.formatMessage({ id: "DEALS.DEAL.WORK_WITH_VAT" })}</strong>
                     </TableCell>
                     <TableCell style={{ backgroundColor: "#eeeeee" }}>
-                      {!!deal.sale_bid.vat && !!deal.sale_bid.vendor_use_vat
+                      {!!deal.sale_bid.vat && !!deal.sale_bid.vendor.use_vat
                         ? `${intl.formatMessage({ id: "ALL.YES" })}, ${deal.sale_bid.vat}%`
                         : intl.formatMessage({ id: "ALL.NO" })}
                     </TableCell>
                     <TableCell>
-                      {!!deal.purchase_bid.vat && !!deal.purchase_bid.vendor_use_vat
+                      {!!deal.purchase_bid.vat && !!deal.purchase_bid.vendor.use_vat
                         ? `${intl.formatMessage({ id: "ALL.YES" })}, ${deal.purchase_bid.vat}%`
                         : intl.formatMessage({ id: "ALL.NO" })}
                     </TableCell>

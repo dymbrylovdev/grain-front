@@ -40,19 +40,6 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
     setMenuConfig(getMenuConfig(user.crops, user));
   }, [setMenuConfig, user]);
 
-  useEffect(() => {
-    const voximplant = VoxImplant.getInstance();
-
-    const config = {
-      username: "holdar@grain.holdar.n4.voximplant.com",
-      password: "StartMobile55!",
-    };
-
-    if (!voximplant._connected) {
-      voximplant.init().then(_ => voximplant.connect(false)).then(_ => voximplant.login(config.username, config.password));
-    }
-  }, []);
-
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>

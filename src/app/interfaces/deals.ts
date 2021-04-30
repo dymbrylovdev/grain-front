@@ -4,6 +4,7 @@ export interface IDeal {
   purchase_bid: {
     id: number;
     price: number;
+    price_with_vat: number;
     volume: number;
     description: string;
     author: IUser;
@@ -62,6 +63,7 @@ export interface IDeal {
   sale_bid: {
     id: number;
     price: number;
+    price_with_vat: number;
     volume: number;
     description: string;
     author: IUser;
