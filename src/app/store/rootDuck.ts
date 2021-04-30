@@ -21,7 +21,6 @@ import * as deals from "./ducks/deals.duck";
 import * as tariffs from "./ducks/tariffs.duck";
 import * as trial from "./ducks/trial.duck";
 import * as leftMenu from "./ducks/leftMenu.duck";
-import * as voximplant from "./ducks/voximplant.duck";
 
 import * as prompter from "./ducks/prompter.duck";
 
@@ -40,8 +39,7 @@ export type TAppActions =
   | deals.TActions
   | tariffs.TActions
   | trial.TActions
-  | leftMenu.TActions
-  | voximplant.TActions;
+  | leftMenu.TActions;
 
 export interface IAppState {
   i18n: typeof metronic.i18n.reducer;
@@ -64,7 +62,6 @@ export interface IAppState {
   tariffs: tariffs.IInitialState;
   trial: trial.IInitialState;
   leftMenu: leftMenu.TInitialState;
-  voximplant: voximplant.IInitialState;
 }
 
 export const rootReducer: Reducer<IAppState, TAppActions> = combineReducers<IAppState, TAppActions>(
@@ -89,7 +86,6 @@ export const rootReducer: Reducer<IAppState, TAppActions> = combineReducers<IApp
     tariffs: tariffs.reducer,
     trial: trial.reducer,
     leftMenu: leftMenu.reducer,
-    voximplant: voximplant.reducer,
   }
 );
 
@@ -111,7 +107,6 @@ export function* rootSaga() {
       deals.saga,
       tariffs.saga,
       trial.saga,
-      voximplant.saga,
     ].map(saga => fork(saga))
   );
 }

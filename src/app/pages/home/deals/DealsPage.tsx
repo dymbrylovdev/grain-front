@@ -28,11 +28,16 @@ import { LayoutSubheader } from "../../../../_metronic";
 import { FilterModal } from "./components";
 import MiniTrafficLight from "../users/components/miniTrafficLight/MiniTrafficLight";
 import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
+import { thousands } from "./utils/utils";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
 
   me,
+  loadingMe,
+  fetchMe,
+  clearMe,
 
   page,
   perPage,
@@ -72,6 +77,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [filterModalOpen, setFilterModalOpen] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
+
   useEffect(() => {
     if (editFilterSuccess || editFilterError) {
       enqueueSnackbar(
@@ -110,6 +116,14 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   ]);
 
   useEffect(() => {
+    fetchMe();
+
+    return () => {
+      clearMe();
+    };
+  }, []);
+
+  useEffect(() => {
     fetchCrops();
   }, [fetchCrops]);
 
@@ -141,7 +155,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   return (
     <Paper className={classes.paperWithTable} style={{ paddingTop: 16 }}>
       <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />
-      {!deals || !crops || !dealsFilters || !allCropParams ? (
+      {!deals || !crops || !dealsFilters || !allCropParams || loadingMe || loading ? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />
           <Skeleton width="100%" height={77} animation="wave" />
@@ -188,9 +202,44 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     </TableCell>
                     <TableCell>
                       <div className={classes.flexColumn}>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                          <strong>{item.sale_bid.price}</strong>
+                        <div style={{ display: "flex" }}>
+                          <strong style={{ marginRight: 5 }}>
+                            {intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}
+                          </strong>
+                          <strong>
+                            {!!item?.purchase_bid?.vendor.use_vat &&
+                            !!item?.sale_bid?.vat &&
+                            !item.sale_bid.vendor.use_vat ? (
+                              !item.sale_bid.price ? (
+                                "-"
+                              ) : (
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                  <p style={{ marginBottom: "1px", marginRight: 10 }}>
+                                    {!!item.sale_bid &&
+                                      thousands(
+                                        Math.round(
+                                          item.sale_bid.price * (item.sale_bid.vat / 100 + 1)
+                                        )
+                                      )}
+                                  </p>
+                                  <p
+                                    style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}
+                                  >
+                                    (
+                                    {`${item.sale_bid.price &&
+                                      thousands(Math.round(item.sale_bid.price))} + ${
+                                      item.sale_bid.vat
+                                    }% НДС`}
+                                    )
+                                  </p>
+                                </div>
+                              )
+                            ) : item.sale_bid.price ? (
+                              thousands(Math.round(item.sale_bid.price))
+                            ) : (
+                              "-"
+                            )}
+                          </strong>
                         </div>
                         <div>
                           <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
@@ -342,6 +391,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 const connector = connect(
   (state: IAppState) => ({
     me: state.auth.user,
+    loadingMe: state.auth.loading,
+
     page: state.deals.page,
     perPage: state.deals.per_page,
     total: state.deals.total,
@@ -376,6 +427,9 @@ const connector = connect(
     setWeeks: dealsActions.setWeeks,
     setTerm: dealsActions.setTerm,
     setPrepayment: dealsActions.setPrepayment,
+
+    fetchMe: authActions.fetchRequest,
+    clearMe: authActions.clearFetch,
   }
 );
 
