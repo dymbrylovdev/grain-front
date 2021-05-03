@@ -138,6 +138,7 @@ export interface IInitialState {
 
   archiveLoading: boolean;
   archiveSuccess: boolean;
+  archiveSuccessType: 0 | 1;
   archiveError: string | null;
 }
 
@@ -197,6 +198,7 @@ const initialState: IInitialState = {
 
   archiveLoading: false,
   archiveSuccess: false,
+  archiveSuccessType: 0,
   archiveError: null,
 };
 
@@ -477,7 +479,12 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case ARCHIVE_SUCCESS: {
-        return { ...state, archiveLoading: false, archiveSuccess: true };
+        return {
+          ...state,
+          archiveLoading: false,
+          archiveSuccess: true,
+          archiveSuccessType: action.payload,
+        };
       }
 
       case ARCHIVE_FAIL: {
@@ -550,11 +557,15 @@ export const actions = {
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
 
   setProfit: (profit: IProfit) => createAction(SET_PROFIT, { profit }),
-  setOpenInfoAlert: (openInfoAlert: boolean) => createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
+  setOpenInfoAlert: (openInfoAlert: boolean) =>
+    createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
 
-  setFilter: (filter: { minDate?: Date | null; maxDate?: Date | null; authorId?: string; only_users?: boolean }) => (
-    createAction(SET_FILTER, { filter })
-  ),
+  setFilter: (filter: {
+    minDate?: Date | null;
+    maxDate?: Date | null;
+    authorId?: string;
+    only_users?: boolean;
+  }) => createAction(SET_FILTER, { filter }),
 
   clearBidsXlsUrl: () => createAction(CLEAR_BIDS_XLS_URL),
   bidsXlsUrlRequest: (
@@ -570,7 +581,7 @@ export const actions = {
   clearArchvie: () => createAction(CLEAR_ARCHIVE),
   archiveRequest: (payload: { id: number; is_archived: 0 | 1 }) =>
     createAction(ARCHIVE_REQUEST, payload),
-  archiveSuccess: () => createAction(ARCHIVE_SUCCESS),
+  archiveSuccess: (payload: 0 | 1) => createAction(ARCHIVE_SUCCESS, payload),
   archiveFail: (payload: string) => createAction(ARCHIVE_FAIL, payload),
 };
 
@@ -722,7 +733,7 @@ function* bidsXlsUrlSaga({
 function* archiveSaga({ payload }: { payload: { id: number; is_archived: 0 | 1 } }) {
   try {
     yield call(() => archiveBid(payload.id, payload.is_archived));
-    yield put(actions.archiveSuccess());
+    yield put(actions.archiveSuccess(payload.is_archived));
     yield put(actions.clearArchvie());
   } catch (e) {
     yield put(actions.archiveFail(e?.response?.data?.message || "Ошибка соединения."));
