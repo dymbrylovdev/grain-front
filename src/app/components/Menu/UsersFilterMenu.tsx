@@ -78,7 +78,7 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
         {userRoles &&
           userRoles.map(userRole => (
             <MenuItem key={userRole.id} value={userRole.name}>
-              {userRole.name}
+              {userRole.label}
             </MenuItem>
           ))}
       </TextField>
