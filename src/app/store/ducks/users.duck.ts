@@ -130,7 +130,7 @@ export interface IInitialState {
   userRolesSuccess: boolean;
   userRolesError: string | null;
 
-  currentRoles: any[] | undefined;
+  currentRoles: string | undefined;
 
   userBidFilters: IUserBidFilters | undefined;
   userBidFiltersLoading: boolean;
@@ -543,7 +543,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 
 export const actions = {
   clearFetch: () => createAction(CLEAR_FETCH),
-  fetchRequest: (payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: any[] }) =>
+  fetchRequest: (payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: string }) =>
     createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
@@ -607,7 +607,7 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga({ payload }: { payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: any[] } }) {
+function* fetchSaga({ payload }: { payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: string } }) {
   try {
     const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
       getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId))

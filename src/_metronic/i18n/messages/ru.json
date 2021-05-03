@@ -71,8 +71,9 @@
   "SUBMENU.TARIFFS.BUSINESS": "Перейти на бизнес",
   "SUBMENU.PROFILE.CROPS": "Изменить культуры",
   "SUBMENU.USER.FILTERS.ROLE": "Роль",
-  "SUBMENU.USER.FILTERS.STATUS": "Статус",
-  "SUBMENU.USER.FILTERS.TARIFF": "Тариф",
+  "SUBMENU.USER.FILTERS_STATUS": "Статус",
+  "SUBMENU.USER.FILTERS_TARIFF": "Тариф",
+  "SUBMENU.USER.FILTERS_ROLE": "Роль",
 
   "SUBHEADER.PARTS.EDIT": "Редактирование",
   "SUBHEADER.PARTS.CREATE": "Добавление",

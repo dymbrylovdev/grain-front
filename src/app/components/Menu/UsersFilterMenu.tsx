@@ -1,11 +1,10 @@
 import React, { ReactElement } from "react";
-import { TextField, Divider, MenuItem } from "@material-ui/core";
+import { TextField, MenuItem } from "@material-ui/core";
 import { IntlShape } from "react-intl";
 import { ActionWithPayload } from "../../utils/action-helper";
 
 import { IFunnelState } from "../../interfaces/funnelStates";
 import { ITariffType } from "../../interfaces/tariffs";
-import FitlerByRole from "./components/FilterByRole";
 
 interface IUsersFilterMenu {
   intl: IntlShape;
@@ -17,6 +16,7 @@ interface IUsersFilterMenu {
   setUsersFilterTariff: (payload: string) => ActionWithPayload<"tariffs/USERS_FILTER_SET_TARIFF", string>;
   userRoles: any[] | undefined;
   setCurrentRoles: (payload: any) => ActionWithPayload<"users/SET_CURRENT_ROLES", any>;
+  currentRoles: string | undefined;
 }
 
 const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
@@ -30,6 +30,7 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
   setUsersFilterTariff,
   userRoles,
   setCurrentRoles,
+  currentRoles
 }): ReactElement => {
 
   return (
@@ -37,7 +38,26 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
       <TextField
         select
         margin="normal"
-        label={intl.formatMessage({ id: "SUBMENU.USER.FILTERS.TARIFF" })}
+        label={intl.formatMessage({ id: "SUBMENU.USER.FILTERS_ROLE" })}
+        value={currentRoles}
+        onChange={e => setCurrentRoles(e.target.value)}
+        name="roles"
+        variant="outlined"
+      >
+        <MenuItem value={"Все"}>
+            Все
+          </MenuItem>
+        {userRoles && userRoles.map((userRole) => (
+          <MenuItem key={userRole.id} value={userRole.name}>
+            {userRole.name}
+          </MenuItem>
+        ))}
+      </TextField>
+
+      <TextField
+        select
+        margin="normal"
+        label={intl.formatMessage({ id: "SUBMENU.USER.FILTERS_TARIFF" })}
         value={usersFilterTariff}
         onChange={e => setUsersFilterTariff(e.target.value)}
         name="tariff"
@@ -56,7 +76,7 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
       <TextField
         select
         margin="normal"
-        label={intl.formatMessage({ id: "SUBMENU.USER.FILTERS.STATUS" })}
+        label={intl.formatMessage({ id: "SUBMENU.USER.FILTERS_STATUS" })}
         value={currentFunnelState}
         onChange={e => setFunnelState(e.target.value)}
         name="status"
@@ -72,10 +92,6 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
             </MenuItem>
           ))}
       </TextField>
-
-      <Divider style={{ marginTop: 10, marginBottom: 5 }} />
-
-      <FitlerByRole userRoles={userRoles} setCurrentRoles={setCurrentRoles} />
 
     </div>
   );

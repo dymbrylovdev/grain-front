@@ -108,7 +108,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [funnelStateEditId, setFunnelStateEditId] = useState(0);
   const [tariffId, setTariffId] = useState<number | undefined>();
   const [funnelStateId, setFunnelStateId] = useState<number | undefined>();
-  const [userRolesId, setUserRolesId] = useState<number[] | undefined>([]);
+  const [userRolesId, setUserRolesId] = useState<string | undefined>('');
 
 
   const { enqueueSnackbar } = useSnackbar();
@@ -197,17 +197,13 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [funnelStateSuccess, currentFunnelState, funnelStates]);
 
   console.log('userRolesId', userRolesId);
+  console.log('currentUserRoles', currentUserRoles)
 
   useEffect(() => {
-    if (userRolesSuccess) {
-      currentUserRoles?.map(role => {
-        userRoles?.find(item => {
-          if (item.name === role.key) {
-            setUserRolesId([item.id]);
-          } 
-        })
-      });
-    }
+    if (userRolesSuccess) userRoles?.find(item => {
+      if (currentUserRoles === "Все") setUserRolesId(undefined);
+      if (item.name === currentUserRoles) setUserRolesId(item.name);
+    })
   }, [currentUserRoles, userRoles, userRolesSuccess]);
 
   if (error || meError || funnelStatesError || tariffsTypesError) {

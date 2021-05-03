@@ -26,11 +26,7 @@ export function deleteUser(id) {
 export function getUsers(page, perPage, tariffId, funnelStateId, userRolesId) {
   let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}${
     tariffId ? `&tariff=${tariffId}` : ""
-    }${funnelStateId ? `&funnel_state=${funnelStateId}` : ""}`;
-
-  if (userRolesId.length) {
-    url += `&roles=${userRolesId.join(",")}`;
-  }
+    }${funnelStateId ? `&funnel_state=${funnelStateId}` : ""}${userRolesId ? `&roles=${userRolesId}` : ""}`;
 
   return axios.get(url);
 }

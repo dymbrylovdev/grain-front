@@ -17,7 +17,7 @@ const FilterByManager: React.FC<PropsFromRedux &
   }> = ({ intl, setFilter, filter, fetchUsers, users, clearFetch }) => {
 
   useEffect(() => {
-    fetchUsers({ page: 1, perPage: 999, userRolesId: [5] });
+    fetchUsers({ page: 1, perPage: 999, userRolesId: "ROLE_MANAGER" });
     return () => {
       clearFetch();
     };

@@ -62,6 +62,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   setUsersFilterTariff,
   userRoles,
   setCurrentRoles,
+  currentRoles,
 }) => {
   const classes = useStyles();
   const isMinWidthQuery = useMediaQuery("(min-width:1025px)");
@@ -109,6 +110,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           usersFilterTariff={usersFilterTariff}
           setUsersFilterTariff={setUsersFilterTariff}
           userRoles={userRoles}
+          currentRoles={currentRoles}
           setCurrentRoles={setCurrentRoles}
         />
       )}
@@ -127,6 +129,7 @@ const connector = connect(
     tariffsTypes: state.tariffs.tariffsTypes,
     usersFilterTariff: state.tariffs.usersFilterTariff,
     userRoles: state.users.roles,
+    currentRoles: state.users.currentRoles,
   }),
   {
     ...leftMenuActions,
