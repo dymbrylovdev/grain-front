@@ -62,3 +62,7 @@ export function getUserRoles() {
 export function getUserBidFilters({ id, type }) {
   return axios.get(`${USER_URL}${id}/bid_filters?type=${type}`)
 }
+
+export function getUserFilters( email, phone ) {
+  return axios.get(`/api/users/search${email ? `?email=${email}` : ""}${phone ? `?phone=${phone}` : ""}`)
+}
