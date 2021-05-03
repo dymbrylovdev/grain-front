@@ -51,7 +51,6 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
   const [isSearchEmail, setSearchEmail] = useState("phone");
 
   const handleChange = (e) => {
-    console.log(e.target.value)
     setSearchEmail(e.target.value)
   }
 

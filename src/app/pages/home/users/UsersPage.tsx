@@ -196,9 +196,6 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     });
   }, [funnelStateSuccess, currentFunnelState, funnelStates]);
 
-  console.log('userRolesId', userRolesId);
-  console.log('currentUserRoles', currentUserRoles)
-
   useEffect(() => {
     if (userRolesSuccess) userRoles?.find(item => {
       if (currentUserRoles === "Все") setUserRolesId(undefined);
