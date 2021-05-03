@@ -692,9 +692,11 @@
   "NOTISTACK.BIDS.ADD": "Объявление добавлено",
   "NOTISTACK.BIDS.EDIT": "Объявление изменено",
   "NOTISTACK.TARIFF.EDIT": "Тариф изменен",
+  "NOTISTACK.TARIFF.EDIT.MAIN_CROP": "Основная культура изменена",
   "NOTISTACK.CROP.DEL": "Культура удалена",
   "NOTISTACK.CROP_PARAM.DEL": "Параметр удален",
-  "NOTISTACK.BIDS.ARCHIVE.OK": "Объявление изменено",
+  "NOTISTACK.BIDS.ARCHIVE.OK": "Объявление помещено в архив",
+  "NOTISTACK.BIDS.UNARCHIVE.OK": "Объявление восстановлено из архива",
 
 
   "NOTISTACK.ERRORS.ERROR": "Ошибка: "

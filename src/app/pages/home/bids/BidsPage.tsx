@@ -164,6 +164,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   archiveBid,
   archiveLoading,
   archiveSuccess,
+  archiveSuccessType,
   archiveError,
 }) => {
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
@@ -369,7 +370,9 @@ const BidsPage: React.FC<TPropsFromRedux &
     if (archiveSuccess || archiveError) {
       enqueueSnackbar(
         archiveSuccess
-          ? intl.formatMessage({ id: "NOTISTACK.BIDS.EDIT" })
+          ? intl.formatMessage({
+              id: archiveSuccessType ? "NOTISTACK.BIDS.ARCHIVE.OK" : "NOTISTACK.BIDS.UNARCHIVE.OK",
+            })
           : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${archiveError}`,
         {
           variant: archiveSuccess ? "success" : "error",
@@ -439,6 +442,7 @@ const BidsPage: React.FC<TPropsFromRedux &
     salePurchaseMode,
     pointPrices,
     fetchAll,
+    archiveSuccessType,
   ]);
 
   useEffect(() => {
@@ -825,6 +829,7 @@ const connector = connect(
 
     archiveLoading: state.bids.archiveLoading,
     archiveSuccess: state.bids.archiveSuccess,
+    archiveSuccessType: state.bids.archiveSuccessType,
     archiveError: state.bids.archiveError,
   }),
   {

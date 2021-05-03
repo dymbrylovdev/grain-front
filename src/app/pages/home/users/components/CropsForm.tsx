@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { TextField, Theme, IconButton, Grid as div, Button, Divider } from "@material-ui/core";
+import { Button, Divider, Grid as div, IconButton, TextField, Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import StarIcon from "@material-ui/icons/Star";
+import StarOutlineIcon from "@material-ui/icons/StarBorder";
 import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 
@@ -17,9 +18,9 @@ import { actions as crops2Actions } from "../../../../store/ducks/crops2.duck";
 
 import useStyles from "../../styles";
 import { IAppState } from "../../../../store/rootDuck";
-import { Skeleton, Autocomplete } from "@material-ui/lab";
+import { Autocomplete, Skeleton } from "@material-ui/lab";
 import { IUser } from "../../../../interfaces/users";
-import { ITariff, ITariffType, ITariffPeriod } from "../../../../interfaces/tariffs";
+import { ITariff } from "../../../../interfaces/tariffs";
 import { ICrop } from "../../../../interfaces/crops";
 import getMenuConfig from "../../../../router/MenuConfig";
 import { accessByRoles } from "../../../../utils/utils";
@@ -300,7 +301,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
                       onClick={() => changeMainBidHandler(item.id)}
                       color={values.main_crop_id === item.id ? "primary" : "inherit"}
                     >
-                      <StarIcon />
+                      {values.main_crop_id === item.id ? <StarIcon /> : <StarOutlineIcon />}
                     </IconButton>
                   </div>
                 )}

@@ -21,7 +21,6 @@ import TermDialog from "./components/TermDialog";
 import { IAppState } from "../../store/rootDuck";
 import { TRole } from "../../interfaces/users";
 import { roles } from "../home/users/utils/profileForm";
-import Preloader from "../../components/ui/Loaders/Preloader";
 
 const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
