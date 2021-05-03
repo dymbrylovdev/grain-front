@@ -529,13 +529,13 @@ const BidsPage: React.FC<TPropsFromRedux &
       let formattedMinDate = format(filter.minDate, "yyyy-MM-dd");
       let formattedMaxDate = format(filter.maxDate, "yyyy-MM-dd");
 
-      // fetchBidsXlsUrl(
-      //   +cropId,
-      //   salePurchaseMode,
-      //   formattedMinDate,
-      //   formattedMaxDate,
-      //   filter.authorId
-      // );
+      fetchBidsXlsUrl(
+        +cropId,
+        salePurchaseMode,
+        formattedMinDate,
+        formattedMaxDate,
+        filter.authorId
+      );
     }
   }, [fetchBidsXlsUrl, cropId, salePurchaseMode, me, filter]);
 
