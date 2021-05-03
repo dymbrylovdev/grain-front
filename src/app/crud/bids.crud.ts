@@ -92,10 +92,13 @@ export const getBidsXlsUrl = (
   maxDate?: string,
   authorId?: string
 ) => {
-  return axios.get(
-    `/api/crop/${id}/bids/xls?type=${type}&min_date=${minDate}&max_date=${maxDate}${
-      !!authorId ? `&author_id=${authorId}` : ""
-    }`,
-    { responseType: "arraybuffer" }
-  );
+  let uri = `/api/crop/${id}/bids/xls?type=${type}&min_date=${minDate}&max_date=${maxDate}`;
+  if (!!authorId) {
+    if (authorId === 'only_users') {
+      uri += '&only_users=1';
+    } else {
+      uri += `&author_id=${authorId}`
+    }
+  }
+  return axios.get(uri, { responseType: "arraybuffer" });
 };
