@@ -371,7 +371,7 @@ const BidsPage: React.FC<TPropsFromRedux &
       enqueueSnackbar(
         archiveSuccess
           ? intl.formatMessage({
-              id: archiveSuccessType ? "NOTISTACK.BIDS.UNARCHIVE.OK" : "NOTISTACK.BIDS.ARCHIVE.OK",
+              id: archiveSuccessType ? "NOTISTACK.BIDS.ARCHIVE.OK" : "NOTISTACK.BIDS.UNARCHIVE.OK",
             })
           : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${archiveError}`,
         {
