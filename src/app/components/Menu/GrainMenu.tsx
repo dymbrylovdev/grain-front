@@ -63,12 +63,20 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   userRoles,
   setCurrentRoles,
   currentRoles,
+
+  setUserFiltersEmail,
+  setUserFiltersPhone,
+  clearUserFilters,
+  fetchUserFilters,
+
+  userFiltersEmail,
+  userFiltersPhone,
 }) => {
   const classes = useStyles();
   const isMinWidthQuery = useMediaQuery("(min-width:1025px)");
   const location = useLocation();
 
-  let bestAllMyDealsMode: "deals" | "best-bids" | "all-bids" | "my-bids" | "edit" | undefined = undefined;
+  let bestAllMyDealsMode: "deals" | "best-bids" | "all-bids" | "my-bids" | undefined = undefined;
 
   const [, , route, cropId] = location.pathname.split("/");
   if (location.pathname === "/deals") {
@@ -77,7 +85,6 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     if (route === "best-bids") bestAllMyDealsMode = "best-bids";
     if (route === "my-bids") bestAllMyDealsMode = "my-bids";
     if (route === "all-bids") bestAllMyDealsMode = "all-bids";
-    if (route === "edit") bestAllMyDealsMode = "edit";
   }
 
   if (!me) return null;
@@ -110,8 +117,14 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           usersFilterTariff={usersFilterTariff}
           setUsersFilterTariff={setUsersFilterTariff}
           userRoles={userRoles}
-          currentRoles={currentRoles}
           setCurrentRoles={setCurrentRoles}
+          currentRoles={currentRoles}
+          setUserFiltersEmail={setUserFiltersEmail}
+          setUserFiltersPhone={setUserFiltersPhone}
+          fetchUserFilters={fetchUserFilters}
+          clearUserFilters={clearUserFilters}
+          userFiltersEmail={userFiltersEmail}
+          userFiltersPhone={userFiltersPhone}
         />
       )}
     </Wrapper>
@@ -129,6 +142,8 @@ const connector = connect(
     tariffsTypes: state.tariffs.tariffsTypes,
     usersFilterTariff: state.tariffs.usersFilterTariff,
     userRoles: state.users.roles,
+    userFiltersEmail: state.users.userFiltersEmail,
+    userFiltersPhone: state.users.userFiltersPhone,
     currentRoles: state.users.currentRoles,
   }),
   {
@@ -136,6 +151,12 @@ const connector = connect(
     setUsersFilterTariff: tariffActions.setUsersFilterTariff,
     setFunnelState: funnelStatesActions.setFunnelState,
     setCurrentRoles: usersActions.setCurrentRoles,
+
+    setUserFiltersEmail: usersActions.setUserFiltersEmail,
+    setUserFiltersPhone: usersActions.setUserFiltersPhone,
+
+    clearUserFilters: usersActions.clearUserFilters,
+    fetchUserFilters: usersActions.userFiltersRequest,
   }
 )
 

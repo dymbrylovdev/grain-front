@@ -13,10 +13,18 @@ interface IUsersFilterMenu {
   setFunnelState: (payload: string) => ActionWithPayload<"funnelStates/SET_FUNNEL_STATE", string>;
   tariffsTypes: ITariffType[] | undefined;
   usersFilterTariff: string;
-  setUsersFilterTariff: (payload: string) => ActionWithPayload<"tariffs/USERS_FILTER_SET_TARIFF", string>;
+  setUsersFilterTariff: (
+    payload: string
+  ) => ActionWithPayload<"tariffs/USERS_FILTER_SET_TARIFF", string>;
   userRoles: any[] | undefined;
   setCurrentRoles: (payload: any) => ActionWithPayload<"users/SET_CURRENT_ROLES", any>;
   currentRoles: string | undefined;
+  setUserFiltersEmail: any;
+  setUserFiltersPhone: any;
+  fetchUserFilters: any;
+  clearUserFilters: any;
+  userFiltersEmail: string | undefined;
+  userFiltersPhone: string | undefined;
 }
 
 const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
