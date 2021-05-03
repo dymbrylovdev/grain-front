@@ -74,6 +74,8 @@
   "SUBMENU.USER.FILTERS_STATUS": "Статус",
   "SUBMENU.USER.FILTERS_TARIFF": "Тариф",
   "SUBMENU.USER.FILTERS_ROLE": "Роль",
+  "SUBMENU.USER.FILTERS_SEARCH_EMAIL": "Поиск по email",
+  "SUBMENU.USER.FILTERS_SEARCH_PHONE": "Поиск по номеру",
 
   "SUBHEADER.PARTS.EDIT": "Редактирование",
   "SUBHEADER.PARTS.CREATE": "Добавление",

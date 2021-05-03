@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { TextField, MenuItem } from "@material-ui/core";
+import React, { ReactElement, useState, useEffect } from "react";
+import { TextField, MenuItem, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
 import { IntlShape } from "react-intl";
 import { ActionWithPayload } from "../../utils/action-helper";
 
@@ -38,8 +38,30 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
   setUsersFilterTariff,
   userRoles,
   setCurrentRoles,
-  currentRoles
+  currentRoles,
+
+  setUserFiltersEmail,
+  setUserFiltersPhone,
+  userFiltersEmail,
+  userFiltersPhone,
+
+  clearUserFilters,
+  fetchUserFilters,
 }): ReactElement => {
+  const [isSearchEmail, setSearchEmail] = useState("phone");
+
+  const handleChange = (e) => {
+    console.log(e.target.value)
+    setSearchEmail(e.target.value)
+  }
+
+  useEffect(() => {
+    if (isSearchEmail) {
+      fetchUserFilters({ email: userFiltersEmail });
+    } else {
+      fetchUserFilters({ phone: userFiltersPhone });
+    }
+  }, [userFiltersPhone, userFiltersEmail, fetchUserFilters, isSearchEmail]);
 
   return (
     <div>
@@ -52,14 +74,13 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
         name="roles"
         variant="outlined"
       >
-        <MenuItem value={"Все"}>
-            Все
-          </MenuItem>
-        {userRoles && userRoles.map((userRole) => (
-          <MenuItem key={userRole.id} value={userRole.name}>
-            {userRole.name}
-          </MenuItem>
-        ))}
+        <MenuItem value={"Все"}>Все</MenuItem>
+        {userRoles &&
+          userRoles.map(userRole => (
+            <MenuItem key={userRole.id} value={userRole.name}>
+              {userRole.name}
+            </MenuItem>
+          ))}
       </TextField>
 
       <TextField
@@ -70,15 +91,15 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
         onChange={e => setUsersFilterTariff(e.target.value)}
         name="tariff"
         variant="outlined"
+        disabled={!currentRoles || currentRoles === "Все"}
       >
-        <MenuItem value={"Все"}>
-            Все
-          </MenuItem>
-        {tariffsTypes && tariffsTypes.map((tariffType) => (
-          <MenuItem key={tariffType.id} value={tariffType.id}>
-            {tariffType.name}
-          </MenuItem>
-        ))}
+        <MenuItem value={"Все"}>Все</MenuItem>
+        {tariffsTypes &&
+          tariffsTypes.map(tariffType => (
+            <MenuItem key={tariffType.id} value={tariffType.id}>
+              {tariffType.name}
+            </MenuItem>
+          ))}
       </TextField>
 
       <TextField
@@ -89,10 +110,9 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
         onChange={e => setFunnelState(e.target.value)}
         name="status"
         variant="outlined"
+        disabled={!currentRoles || currentRoles === "Все"}
       >
-        <MenuItem value={"Все"}>
-          Все
-        </MenuItem>
+        <MenuItem value={"Все"}>Все</MenuItem>
         {funnelStates &&
           funnelStates.map((funnelState, index) => (
             <MenuItem key={`${funnelState.id}+${index}`} value={funnelState.id}>
@@ -101,6 +121,34 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
           ))}
       </TextField>
 
+      <RadioGroup name="emailSender" value={isSearchEmail} onChange={handleChange}>
+        <FormControlLabel value="phone" label="Поиск по телефону" control={<Radio />} />
+        <FormControlLabel value="email" label="Поиск по email" control={<Radio />} />
+      </RadioGroup>
+
+      {isSearchEmail === "email" ? (
+        <TextField
+          margin="normal"
+          label={intl.formatMessage({ id: "SUBMENU.USER.FILTERS_SEARCH_EMAIL" })}
+          value={userFiltersEmail}
+          onChange={e => {
+            setUserFiltersEmail(e.target.value);
+          }}
+          name={userFiltersEmail}
+          variant="outlined"
+        />
+      ) : (
+        <TextField
+          margin="normal"
+          label={intl.formatMessage({ id: "SUBMENU.USER.FILTERS_SEARCH_PHONE" })}
+          value={userFiltersPhone}
+          onChange={e => {
+            setUserFiltersPhone(e.target.value);
+          }}
+          name="searchPhone"
+          variant="outlined"
+        />
+      )}
     </div>
   );
 };
