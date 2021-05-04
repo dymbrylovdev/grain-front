@@ -26,7 +26,7 @@ import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
-import { YMaps, Map } from "react-yandex-maps";
+import { YMaps, Map, Placemark } from "react-yandex-maps";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import { IBid, TBidType, IBidToRequest, IProfit, IBidsPair } from "../../../../interfaces/bids";
@@ -477,6 +477,8 @@ const BidForm: React.FC<IProps> = ({
   const [routeLoading, setRouteLoading] = useState(false);
   const routeRef = useRef();
 
+  const [showPlacemark, setShowPlacemark] = useState(false);
+
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
 
   useEffect(() => {
@@ -497,6 +499,11 @@ const BidForm: React.FC<IProps> = ({
       pointA.text,
       pointB.text
     ], { multiRoute: true, mapStateAutoApply: true });
+    // route.events.add('activeroutechange', (e) => {
+      // console.log(route.getActiveRoute())
+    // })
+    // console.log(route.getLength())
+    // console.log(route.getHumanJamsTime())
     routeRef.current = route;
     map.geoObjects.add(route);
     setRouteLoading(false);
@@ -504,8 +511,11 @@ const BidForm: React.FC<IProps> = ({
 
   useEffect(() => {
     if (ymaps && map && bid && bid.location && mySelectedMapPoint) {
+      setShowPlacemark(false);
       setRouteLoading(true);
       addRoute(bid.location, mySelectedMapPoint);
+    } else if (ymaps && map && bid && bid.location) {
+      setShowPlacemark(true);
     }
   }, [ymaps, map, bid, mySelectedMapPoint])
 
@@ -1389,7 +1399,7 @@ const BidForm: React.FC<IProps> = ({
               disable={true}
             />
 
-            {mapState && (
+            {(mapState && bid) && (
               <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
                 <div style={{width: "100%", marginTop: 5}}>
                   <Map
@@ -1397,9 +1407,20 @@ const BidForm: React.FC<IProps> = ({
                     instanceRef={ref => setMap(ref)}
                     width={768}
                     height={400}
-                    onLoad={ymaps => setYmaps(ymaps)}
-                    modules={["templateLayoutFactory", "route"]}
-                  />
+                    onLoad={ymaps => {
+                      // setBalloonContent(ymaps.templateLayoutFactory.createClass('<h3>Hello from custom template!</h3>'))
+                      setYmaps(ymaps);
+                    }}
+                    modules={["templateLayoutFactory", "route", 'geoObject.addon.balloon']}
+                  >
+                    {showPlacemark && (
+                      <Placemark
+                        geometry={mapState.center}
+                        properties={{iconCaption: bid.location.text}}
+                        modules={['geoObject.addon.balloon']}
+                      />
+                    )}
+                  </Map>
                 </div>
               </YMaps>
             )}
