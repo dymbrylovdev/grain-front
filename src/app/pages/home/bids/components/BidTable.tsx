@@ -374,9 +374,9 @@ const BidTable: React.FC<IProps> = ({
                   {bestAllMyMode === "my-bids" && (
                     <TableCell>
                       {intl.formatMessage({
-                        id: !!bid?.is_archived
-                          ? "PROFILE.INPUT.STATUS_ACTIVE"
-                          : "PROFILE.INPUT.STATUS_ARCHIVED",
+                        id: bid?.is_archived
+                          ? "PROFILE.INPUT.STATUS_ARCHIVED"
+                          : "PROFILE.INPUT.STATUS_ACTIVE",
                       })}
                     </TableCell>
                   )}
@@ -386,80 +386,80 @@ const BidTable: React.FC<IProps> = ({
                   )}
 
                   <TableCell align="right">
-                    <div style={{minWidth: 150}}>
-                    {bestAllMyMode !== "my-bids" && (
-                      <IconButton
-                        size="medium"
-                        color="primary"
-                        onClick={() => {
-                          let maxProfit = 0;
-                          if (bid?.point_prices && bid?.point_prices.length) {
-                            maxProfit = bid?.point_prices[0]?.profit;
-                            bid.point_prices.forEach(item => {
-                              if (item.profit && item.profit > maxProfit) {
-                                maxProfit = item.profit;
-                              }
-                            });
-                          }
-                          maxProfit = Math.round(maxProfit);
-                          setProfit({
-                            bid_id: bid.id,
-                            value: maxProfit || 0,
-                          });
-                          history.push(
-                            ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
-                              bestAllMyMode === "edit"
-                              ? `/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`
-                              : `/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`
-                          );
-                        }}
-                      >
-                        {user &&
-                        ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
-                        bestAllMyMode === "edit" ? (
-                          <EditIcon />
-                        ) : (
-                          <VisibilityIcon />
-                        )}
-                      </IconButton>
-                    )}
-                    {bestAllMyMode === "my-bids" && (
-                      <IconButton
-                        size="medium"
-                        color={!!bid.is_archived ? "secondary" : "primary"}
-                        onClick={() => {
-                          if (archive) {
-                            archive({ id: bid.id, is_archived: !!bid.is_archived ? 0 : 1 });
-                          }
-                        }}
-                      >
-                        {!!bid.is_archived ? <ArchiveIcon /> : <UnarchiveIcon />}
-                      </IconButton>
-                    )}
-                    {isHaveRules && isHaveRules(user, bid.vendor.id) && (
-                      <>
+                    <div style={{ minWidth: 150 }}>
+                      {bestAllMyMode !== "my-bids" && (
                         <IconButton
                           size="medium"
                           color="primary"
-                          onClick={() =>
-                            history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`)
-                          }
+                          onClick={() => {
+                            let maxProfit = 0;
+                            if (bid?.point_prices && bid?.point_prices.length) {
+                              maxProfit = bid?.point_prices[0]?.profit;
+                              bid.point_prices.forEach(item => {
+                                if (item.profit && item.profit > maxProfit) {
+                                  maxProfit = item.profit;
+                                }
+                              });
+                            }
+                            maxProfit = Math.round(maxProfit);
+                            setProfit({
+                              bid_id: bid.id,
+                              value: maxProfit || 0,
+                            });
+                            history.push(
+                              ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
+                                bestAllMyMode === "edit"
+                                ? `/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`
+                                : `/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`
+                            );
+                          }}
                         >
-                          {isHaveRules && isHaveRules(user, bid.vendor.id) ? (
+                          {user &&
+                          ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
+                          bestAllMyMode === "edit" ? (
                             <EditIcon />
                           ) : (
                             <VisibilityIcon />
                           )}
                         </IconButton>
+                      )}
+                      {bestAllMyMode === "my-bids" && (
                         <IconButton
                           size="medium"
-                          onClick={() => handleDeleteDialiog(bid.id)}
-                          color="secondary"
+                          color={!!bid.is_archived ? "secondary" : "primary"}
+                          onClick={() => {
+                            if (archive) {
+                              archive({ id: bid.id, is_archived: !!bid.is_archived ? 0 : 1 });
+                            }
+                          }}
                         >
-                          <DeleteIcon />
+                          {!!bid.is_archived ? <ArchiveIcon /> : <UnarchiveIcon />}
                         </IconButton>
-                      </>
-                    )}
+                      )}
+                      {isHaveRules && isHaveRules(user, bid.vendor.id) && (
+                        <>
+                          <IconButton
+                            size="medium"
+                            color="primary"
+                            onClick={() =>
+                              history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`)
+                            }
+                          >
+                            {isHaveRules && isHaveRules(user, bid.vendor.id) ? (
+                              <EditIcon />
+                            ) : (
+                              <VisibilityIcon />
+                            )}
+                          </IconButton>
+                          <IconButton
+                            size="medium"
+                            onClick={() => handleDeleteDialiog(bid.id)}
+                            color="secondary"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
