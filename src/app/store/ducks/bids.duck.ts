@@ -138,7 +138,7 @@ export interface IInitialState {
 
   archiveLoading: boolean;
   archiveSuccess: boolean;
-  archiveSuccessType: 0 | 1;
+  archiveSuccessType: boolean;
   archiveError: string | null;
 }
 
@@ -198,7 +198,7 @@ const initialState: IInitialState = {
 
   archiveLoading: false,
   archiveSuccess: false,
-  archiveSuccessType: 0,
+  archiveSuccessType: false,
   archiveError: null,
 };
 
@@ -579,9 +579,9 @@ export const actions = {
   bidsXlsUrlFail: (payload: string) => createAction(BIDS_XLS_URL_FAIL, payload),
 
   clearArchvie: () => createAction(CLEAR_ARCHIVE),
-  archiveRequest: (payload: { id: number; is_archived: 0 | 1 }) =>
+  archiveRequest: (payload: { id: number; is_archived: boolean }) =>
     createAction(ARCHIVE_REQUEST, payload),
-  archiveSuccess: (payload: 0 | 1) => createAction(ARCHIVE_SUCCESS, payload),
+  archiveSuccess: (payload: boolean) => createAction(ARCHIVE_SUCCESS, payload),
   archiveFail: (payload: string) => createAction(ARCHIVE_FAIL, payload),
 };
 
@@ -730,7 +730,7 @@ function* bidsXlsUrlSaga({
   }
 }
 
-function* archiveSaga({ payload }: { payload: { id: number; is_archived: 0 | 1 } }) {
+function* archiveSaga({ payload }: { payload: { id: number; is_archived: boolean } }) {
   try {
     yield call(() => archiveBid(payload.id, payload.is_archived));
     yield put(actions.archiveSuccess(payload.is_archived));

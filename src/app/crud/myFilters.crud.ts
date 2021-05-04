@@ -20,6 +20,8 @@ export const deleteMyFilter = (id: number) => {
   return axios.delete(`${MY_FILTERS_URL}/${id}`);
 };
 
-export const postMyFilter = (id: number) => {
-  return axios.post(`${MY_FILTERS_URL}/by_bid/${id}`);
-}
+export const postMyFilter = (id: number, is_sending_email: 0 | 1, is_sending_sms: 0 | 1) => {
+  return axios.post(
+    `${MY_FILTERS_URL}/by_bid/${id}?is_sending_email=${is_sending_email}&is_sending_sms=${is_sending_sms}`
+  );
+};

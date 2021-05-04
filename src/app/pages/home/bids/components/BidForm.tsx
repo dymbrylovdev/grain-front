@@ -231,7 +231,18 @@ interface IProps {
   createSuccess: boolean;
   createError: string | null;
   clearCreate: () => Action<"bids/CLEAR_CREATE">;
-  post: (id: number) => ActionWithPayload<"myFilters/POST_FILTER", number>;
+  post: (id: {
+    id: number;
+    is_sending_email: 0 | 1;
+    is_sending_sms: 0 | 1;
+  }) => ActionWithPayload<
+    "myFilters/POST_FILTER",
+    {
+      id: number;
+      is_sending_email: 0 | 1;
+      is_sending_sms: 0 | 1;
+    }
+  >;
   postSuccess: boolean;
   postError: string | null;
   clearPost: () => Action<"myFilters/CLEAR_POST">;
@@ -315,9 +326,18 @@ const BidForm: React.FC<IProps> = ({
   const [isContactAlertOpen, setContactAlertOpen] = useState(false);
   const [fullPrepayment, setFullPrepayment] = useState(false);
 
-  const createFilter = (id: number) => {
-    if (editMode === "edit") post(id);
-  };
+  const createFilter = useCallback(
+    (id: number) => {
+      if (editMode === "edit") {
+        post({
+          id,
+          is_sending_email: isSendingEmail ? 1 : 0,
+          is_sending_sms: isSendingSms ? 1 : 0,
+        });
+      }
+    },
+    [isSendingEmail, isSendingSms, editMode]
+  );
 
   useEffect(() => {
     if (goToRef) {
