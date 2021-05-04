@@ -538,6 +538,7 @@ const BidTable: React.FC<IProps> = ({
                     setSubDialogOpen(false);
                     setOpenedSubBidId(null);
                   }}
+                  disabledSubmit={!isSendingEmail && !isSendingSms}
                 >
                   <FormControlLabel
                     control={

@@ -3,7 +3,7 @@ import { Dialog, DialogContent, Grid, IconButton, DialogTitle } from "@material-
 import CloseIcon from "@material-ui/icons/Close";
 import ButtonWithLoader from "../Buttons/ButtonWithLoader";
 
-export default function SubDialog({ handleClose, isOpen, children, handleSubmit }) {
+export default function SubDialog({ handleClose, isOpen, children, handleSubmit, disabledSubmit }) {
   return (
     <Dialog open={isOpen} onClose={handleClose} maxWidth={"sm"} fullWidth>
       <div style={{padding: 10}}>
@@ -19,9 +19,9 @@ export default function SubDialog({ handleClose, isOpen, children, handleSubmit 
           </Grid>
         </Grid>
       </DialogTitle>
-      <DialogContent style={{textAlign: 'right', marginBottom: 8, marginTop: 10, display: 'flex', justifyContent: 'space-around'}}>
+      <DialogContent style={{textAlign: 'right', marginBottom: 8, marginTop: 10, display: 'flex', justifyContent: 'space-between'}}>
         <div>{children}</div>
-        <ButtonWithLoader onPress={handleSubmit}>
+        <ButtonWithLoader onPress={handleSubmit} disabled={disabledSubmit}>
           Подписать
         </ButtonWithLoader>
       </DialogContent>
