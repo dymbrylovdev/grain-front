@@ -81,7 +81,7 @@ export const deleteBid = (id: number) => {
   return axios.delete(`${AD_URL}/${id}`);
 };
 
-export const archiveBid = (id: number, is_archived: 0 | 1) => {
+export const archiveBid = (id: number, is_archived: boolean) => {
   return axios.put(`${AD_URL}/${id}`, { is_archived });
 };
 

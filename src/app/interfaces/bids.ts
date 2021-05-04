@@ -83,7 +83,7 @@ export interface IBid {
   payment_term: number;
   prepayment_amount: number;
   vendor_use_vat: boolean;
-  is_archived: 0 | 1;
+  is_archived: boolean;
 }
 
 export interface IBidToRequest {

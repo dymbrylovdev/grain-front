@@ -62,11 +62,11 @@ interface IProps {
   >;
   archive?: ({ id: number, is_archived: boolean }) => void;
 
-  post?: any,
-  clearPost?: any,
-  postLoading?: boolean,
-  postSuccess?: boolean,
-  postError?: string | null,
+  post?: any;
+  clearPost?: any;
+  postLoading?: boolean;
+  postSuccess?: boolean;
+  postError?: string | null;
 }
 
 const BidTable: React.FC<IProps> = ({
@@ -416,9 +416,9 @@ const BidTable: React.FC<IProps> = ({
                   {bestAllMyMode === "my-bids" && (
                     <TableCell>
                       {intl.formatMessage({
-                        id: !!bid?.is_archived
-                          ? "PROFILE.INPUT.STATUS_ACTIVE"
-                          : "PROFILE.INPUT.STATUS_ARCHIVED",
+                        id: bid?.is_archived
+                          ? "PROFILE.INPUT.STATUS_ARCHIVED"
+                          : "PROFILE.INPUT.STATUS_ACTIVE",
                       })}
                     </TableCell>
                   )}
@@ -428,131 +428,130 @@ const BidTable: React.FC<IProps> = ({
                   )}
 
                   <TableCell align="right">
-                    <div style={{minWidth: 150}}>
-                    {bestAllMyMode !== "my-bids" && (
-                      <>
-                        {(user &&
-                          ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
-                          bestAllMyMode === "edit") && (
-                            <IconButton
-                              size="medium"
-                              color="primary"
-                            >
-                              <EmailIcon onClick={() => {
-                                setSubDialogOpen(true);
-                                setOpenedSubBidId(bid.id);
-                              }}/>
-                            </IconButton>
-                        )}
-                        <IconButton
-                          size="medium"
-                          color="primary"
-                          onClick={() => {
-                            let maxProfit = 0;
-                            if (bid?.point_prices && bid?.point_prices.length) {
-                              maxProfit = bid?.point_prices[0]?.profit;
-                              bid.point_prices.forEach(item => {
-                                if (item.profit && item.profit > maxProfit) {
-                                  maxProfit = item.profit;
-                                }
+                    <div style={{ minWidth: 150 }}>
+                      {bestAllMyMode !== "my-bids" && (
+                        <>
+                          {user &&
+                            ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
+                            bestAllMyMode === "edit" && (
+                              <IconButton size="medium" color="primary">
+                                <EmailIcon
+                                  onClick={() => {
+                                    setSubDialogOpen(true);
+                                    setOpenedSubBidId(bid.id);
+                                  }}
+                                />
+                              </IconButton>
+                            )}
+                          <IconButton
+                            size="medium"
+                            color="primary"
+                            onClick={() => {
+                              let maxProfit = 0;
+                              if (bid?.point_prices && bid?.point_prices.length) {
+                                maxProfit = bid?.point_prices[0]?.profit;
+                                bid.point_prices.forEach(item => {
+                                  if (item.profit && item.profit > maxProfit) {
+                                    maxProfit = item.profit;
+                                  }
+                                });
+                              }
+                              maxProfit = Math.round(maxProfit);
+                              setProfit({
+                                bid_id: bid.id,
+                                value: maxProfit || 0,
                               });
-                            }
-                            maxProfit = Math.round(maxProfit);
-                            setProfit({
-                              bid_id: bid.id,
-                              value: maxProfit || 0,
-                            });
-                            history.push(
-                              ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
-                                bestAllMyMode === "edit"
+                              history.push(
+                                ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
+                                  bestAllMyMode === "edit"
                                   ? `/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`
                                   : `/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`
-                            );
-                          }}
-                        >
-                          {user &&
+                              );
+                            }}
+                          >
+                            {user &&
                             ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
                             bestAllMyMode === "edit" ? (
                               <EditIcon />
-                          ) : (
-                            <VisibilityIcon />
-                          )}
-                        </IconButton>
-                      </>
-                    )}
-                    {bestAllMyMode === "my-bids" && (
-                      <IconButton
-                        size="medium"
-                        color={!!bid.is_archived ? "secondary" : "primary"}
-                        onClick={() => {
-                          if (archive) {
-                            archive({ id: bid.id, is_archived: !!bid.is_archived ? 0 : 1 });
-                          }
-                        }}
-                      >
-                        {!!bid.is_archived ? <ArchiveIcon /> : <UnarchiveIcon />}
-                      </IconButton>
-                    )}
-                    {isHaveRules && isHaveRules(user, bid.vendor.id) && (
-                      <>
+                            ) : (
+                              <VisibilityIcon />
+                            )}
+                          </IconButton>
+                        </>
+                      )}
+                      {bestAllMyMode === "my-bids" && (
                         <IconButton
                           size="medium"
-                          color="primary"
-                          onClick={() =>
-                            history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`)
-                          }
+                          color={bid.is_archived ? "secondary" : "primary"}
+                          onClick={() => {
+                            if (archive) {
+                              archive({ id: bid.id, is_archived: !bid.is_archived });
+                            }
+                          }}
                         >
-                          {isHaveRules && isHaveRules(user, bid.vendor.id) ? (
-                            <EditIcon />
-                          ) : (
-                            <VisibilityIcon />
-                          )}
+                          {bid.is_archived ? <ArchiveIcon /> : <UnarchiveIcon />}
                         </IconButton>
-                        <IconButton
-                          size="medium"
-                          onClick={() => handleDeleteDialiog(bid.id)}
-                          color="secondary"
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </>
-                    )}
+                      )}
+                      {isHaveRules && isHaveRules(user, bid.vendor.id) && (
+                        <>
+                          <IconButton
+                            size="medium"
+                            color="primary"
+                            onClick={() =>
+                              history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`)
+                            }
+                          >
+                            {isHaveRules && isHaveRules(user, bid.vendor.id) ? (
+                              <EditIcon />
+                            ) : (
+                              <VisibilityIcon />
+                            )}
+                          </IconButton>
+                          <IconButton
+                            size="medium"
+                            onClick={() => handleDeleteDialiog(bid.id)}
+                            color="secondary"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
               ))}
-                <SubDialog
-                  handleClose={() => {
-                    setSubDialogOpen(false);
-                    setOpenedSubBidId(null);
-                  }}
-                  isOpen={subDialogOpen}
-                  handleSubmit={() => {
-                    if (openedSubBidId) {
-                      post({
-                        id: openedSubBidId,
-                        is_sending_email: isSendingEmail ? 1 : 0,
-                        is_sending_sms: isSendingSms ? 1 : 0
-                      });
-                    }
-                    setSubDialogOpen(false);
-                    setOpenedSubBidId(null);
-                  }}
-                  disabledSubmit={!isSendingEmail && !isSendingSms}
-                >
-                  <FormControlLabel
-                    control={
-                      <Checkbox checked={isSendingEmail} onChange={e => onCheckboxChange(e, 1)} />
-                    }
-                    label={"Подписка по e-mail"}
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
-                    }
-                    label={"Подписка по смс"}
-                  />
-                </SubDialog>
+              <SubDialog
+                handleClose={() => {
+                  setSubDialogOpen(false);
+                  setOpenedSubBidId(null);
+                }}
+                isOpen={subDialogOpen}
+                handleSubmit={() => {
+                  if (openedSubBidId) {
+                    post({
+                      id: openedSubBidId,
+                      is_sending_email: isSendingEmail ? 1 : 0,
+                      is_sending_sms: isSendingSms ? 1 : 0,
+                    });
+                  }
+                  setSubDialogOpen(false);
+                  setOpenedSubBidId(null);
+                }}
+                disabledSubmit={!isSendingEmail && !isSendingSms}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox checked={isSendingEmail} onChange={e => onCheckboxChange(e, 1)} />
+                  }
+                  label={"Подписка по e-mail"}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
+                  }
+                  label={"Подписка по смс"}
+                />
+              </SubDialog>
             </TableBody>
             {!!paginationData && !!fetcher && (
               <TableFooter>
