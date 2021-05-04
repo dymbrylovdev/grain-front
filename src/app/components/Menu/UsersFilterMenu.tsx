@@ -50,9 +50,9 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
 }): ReactElement => {
   const [isSearchEmail, setSearchEmail] = useState("phone");
 
-  const handleChange = (e) => {
-    setSearchEmail(e.target.value)
-  }
+  const handleChange = e => {
+    setSearchEmail(e.target.value);
+  };
 
   useEffect(() => {
     if (isSearchEmail === "email") {
@@ -91,7 +91,12 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
         onChange={e => setUsersFilterTariff(e.target.value)}
         name="tariff"
         variant="outlined"
-        disabled={!currentRoles || currentRoles === "Все"}
+        disabled={
+          !currentRoles ||
+          currentRoles === "Все" ||
+          currentRoles === "ROLE_ADMIN" ||
+          currentRoles === "ROLE_MANAGER"
+        }
       >
         <MenuItem value={"Все"}>Все</MenuItem>
         {tariffsTypes &&
@@ -110,7 +115,12 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
         onChange={e => setFunnelState(e.target.value)}
         name="status"
         variant="outlined"
-        disabled={!currentRoles || currentRoles === "Все"}
+        disabled={
+          !currentRoles ||
+          currentRoles === "Все" ||
+          currentRoles === "ROLE_ADMIN" ||
+          currentRoles === "ROLE_MANAGER"
+        }
       >
         <MenuItem value={"Все"}>Все</MenuItem>
         {funnelStates &&
