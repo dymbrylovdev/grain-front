@@ -116,7 +116,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
           }
         }
 
-        if (userId) fetchUserBidFilters({ id: +userId, type: salePurchaseMode })
+        if (userId) fetchUserBidFilters({ id: +userId })
       }
     }
   }, [
@@ -138,8 +138,8 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
   ]);
 
   useEffect(() => {
-    if (userId) fetchUserBidFilters({ id: +userId, type: salePurchaseMode })
-  }, [fetchUserBidFilters, userId, salePurchaseMode]);
+    if (userId) fetchUserBidFilters({ id: +userId })
+  }, [fetchUserBidFilters, userId]);
 
   useEffect(() => {
     fetchMe();
@@ -205,35 +205,37 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
                           <StatusIndicator isActive={item.is_sending_sms} />
                         </TableCell>
                         <TableCell align="right">
-                          <IconButton
-                            size="medium"
-                            color="primary"
-                            onClick={() =>
-                              history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/view/${item.id}`)
-                            }
-                          >
-                            <VisibilityIcon />
-                          </IconButton>
-                          <IconButton
-                            size="medium"
-                            color="primary"
-                            onClick={() =>
-                              history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/edit/${item.id}`)
-                            }
-                          >
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            size="medium"
-                            onClick={() => {
-                              setDeleteFilterCropId(item.crop.id);
-                              setDeleteFilterId(item.id || 0);
-                              setAlertOpen(true);
-                            }}
-                            color="secondary"
-                          >
-                            <DeleteIcon />
-                          </IconButton>
+                          <div style={{minWidth: 150}}>
+                            <IconButton
+                              size="medium"
+                              color="primary"
+                              onClick={() =>
+                                history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/view/${item.id}`)
+                              }
+                            >
+                              <VisibilityIcon />
+                            </IconButton>
+                            <IconButton
+                              size="medium"
+                              color="primary"
+                              onClick={() =>
+                                history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/edit/${item.id}`)
+                              }
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              size="medium"
+                              onClick={() => {
+                                setDeleteFilterCropId(item.crop.id);
+                                setDeleteFilterId(item.id || 0);
+                                setAlertOpen(true);
+                              }}
+                              color="secondary"
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
