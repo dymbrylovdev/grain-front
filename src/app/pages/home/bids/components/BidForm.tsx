@@ -26,7 +26,7 @@ import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
-import { YMaps, Map } from "react-yandex-maps";
+import { YMaps, Map, Placemark } from "react-yandex-maps";
 
 import AutocompleteLocations from "../../../../components/AutocompleteLocations";
 import { IBid, TBidType, IBidToRequest, IProfit, IBidsPair } from "../../../../interfaces/bids";
@@ -231,7 +231,18 @@ interface IProps {
   createSuccess: boolean;
   createError: string | null;
   clearCreate: () => Action<"bids/CLEAR_CREATE">;
-  post: (id: number) => ActionWithPayload<"myFilters/POST_FILTER", number>;
+  post: (id: {
+    id: number;
+    is_sending_email: 0 | 1;
+    is_sending_sms: 0 | 1;
+  }) => ActionWithPayload<
+    "myFilters/POST_FILTER",
+    {
+      id: number;
+      is_sending_email: 0 | 1;
+      is_sending_sms: 0 | 1;
+    }
+  >;
   postSuccess: boolean;
   postError: string | null;
   clearPost: () => Action<"myFilters/CLEAR_POST">;
@@ -315,9 +326,18 @@ const BidForm: React.FC<IProps> = ({
   const [isContactAlertOpen, setContactAlertOpen] = useState(false);
   const [fullPrepayment, setFullPrepayment] = useState(false);
 
-  const createFilter = (id: number) => {
-    if (editMode === "edit") post(id);
-  };
+  const createFilter = useCallback(
+    (id: number) => {
+      if (editMode === "edit") {
+        post({
+          id,
+          is_sending_email: isSendingEmail ? 1 : 0,
+          is_sending_sms: isSendingSms ? 1 : 0,
+        });
+      }
+    },
+    [isSendingEmail, isSendingSms, editMode]
+  );
 
   useEffect(() => {
     if (goToRef) {
@@ -457,6 +477,8 @@ const BidForm: React.FC<IProps> = ({
   const [routeLoading, setRouteLoading] = useState(false);
   const routeRef = useRef();
 
+  const [showPlacemark, setShowPlacemark] = useState(false);
+
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
 
   useEffect(() => {
@@ -469,26 +491,31 @@ const BidForm: React.FC<IProps> = ({
     } else {
       return null;
     }
-  }, [bid]);
+  }, [bid])
 
-  const addRoute = useCallback(
-    async (pointA: any, pointB: any) => {
-      map.geoObjects.remove(routeRef.current);
-      const route = await ymaps.route([pointA.text, pointB.text], {
-        multiRoute: true,
-        mapStateAutoApply: true,
-      });
-      routeRef.current = route;
-      map.geoObjects.add(route);
-      setRouteLoading(false);
-    },
-    [ymaps, map, routeRef]
-  );
+  const addRoute = useCallback(async (pointA: any, pointB: any) => {
+    map.geoObjects.remove(routeRef.current);
+    const route = await ymaps.route([
+      pointA.text,
+      pointB.text
+    ], { multiRoute: true, mapStateAutoApply: true });
+    // route.events.add('activeroutechange', (e) => {
+      // console.log(route.getActiveRoute())
+    // })
+    // console.log(route.getLength())
+    // console.log(route.getHumanJamsTime())
+    routeRef.current = route;
+    map.geoObjects.add(route);
+    setRouteLoading(false);
+  }, [ymaps, map, routeRef])
 
   useEffect(() => {
     if (ymaps && map && bid && bid.location && mySelectedMapPoint) {
+      setShowPlacemark(false);
       setRouteLoading(true);
       addRoute(bid.location, mySelectedMapPoint);
+    } else if (ymaps && map && bid && bid.location) {
+      setShowPlacemark(true);
     }
   }, [ymaps, map, bid, mySelectedMapPoint]);
 
@@ -1376,7 +1403,7 @@ const BidForm: React.FC<IProps> = ({
               disable={true}
             />
 
-            {mapState && (
+            {(mapState && bid) && (
               <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
                 <div style={{ width: "100%", marginTop: 5 }}>
                   <Map
@@ -1384,9 +1411,20 @@ const BidForm: React.FC<IProps> = ({
                     instanceRef={ref => setMap(ref)}
                     width={768}
                     height={400}
-                    onLoad={ymaps => setYmaps(ymaps)}
-                    modules={["templateLayoutFactory", "route"]}
-                  />
+                    onLoad={ymaps => {
+                      // setBalloonContent(ymaps.templateLayoutFactory.createClass('<h3>Hello from custom template!</h3>'))
+                      setYmaps(ymaps);
+                    }}
+                    modules={["templateLayoutFactory", "route", 'geoObject.addon.balloon']}
+                  >
+                    {showPlacemark && (
+                      <Placemark
+                        geometry={mapState.center}
+                        properties={{iconCaption: bid.location.text}}
+                        modules={['geoObject.addon.balloon']}
+                      />
+                    )}
+                  </Map>
                 </div>
               </YMaps>
             )}
