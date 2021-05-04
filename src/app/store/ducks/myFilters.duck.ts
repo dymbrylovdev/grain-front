@@ -127,7 +127,11 @@ const initialState: IInitialState = {
   postError: null,
 };
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
-  { storage, key: "filters", whitelist: ["currentSaleFilters", "currentPurchaseFilters", "pointPrices"] },
+  {
+    storage,
+    key: "filters",
+    whitelist: ["currentSaleFilters", "currentPurchaseFilters", "pointPrices"],
+  },
   (state = initialState, action) => {
     switch (action.type) {
       case SET_SELECTED_FILTER_ID: {
@@ -393,7 +397,8 @@ export const actions = {
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
 
   clearPost: () => createAction(CLEAR_POST),
-  postFilter: (payload: number) => createAction(POST_FILTER, payload),
+  postFilter: (payload: { id: number; is_sending_email: 0 | 1; is_sending_sms: 0 | 1 }) =>
+    createAction(POST_FILTER, payload),
   postSucces: (payload: IMyFilterItem) => createAction(POST_SUCCESS, payload),
   postFail: (payload: string) => createAction(POST_ERROR, payload),
 
@@ -447,10 +452,14 @@ function* delSaga({ payload }: { payload: number }) {
   }
 }
 
-function* postSaga({ payload }: { payload: number }) {
+function* postSaga({
+  payload,
+}: {
+  payload: { id: number; is_sending_email: 0 | 1; is_sending_sms: 0 | 1 };
+}) {
   try {
-    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() => 
-      postMyFilter(payload)
+    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() =>
+      (postMyFilter(payload.id, payload.is_sending_email, payload.is_sending_sms))
     );
     yield put(actions.postSucces(data.data));
   } catch (e) {

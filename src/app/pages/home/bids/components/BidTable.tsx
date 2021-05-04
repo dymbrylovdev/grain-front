@@ -11,6 +11,8 @@ import {
   Grid,
   TableFooter,
   Tooltip,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
@@ -32,6 +34,7 @@ import { ICrop } from "../../../../interfaces/crops";
 import { ActionWithPayload } from "../../../../utils/action-helper";
 import EmailIcon from "@material-ui/icons/Email";
 import { useSnackbar } from "notistack";
+import SubDialog from "../../../../components/ui/Dialogs/SubscribeDialog";
 
 interface IProps {
   intl: any;
@@ -94,6 +97,7 @@ const BidTable: React.FC<IProps> = ({
   const { enqueueSnackbar } = useSnackbar();
   const [clientWidth, setClientWidth] = useState(document.body.clientWidth);
   const [hasActivePoints, setHasActivePoints] = useState(false);
+  const [subDialogOpen, setSubDialogOpen] = useState(false);
 
   const updateWindowDimensions = () => {
     setClientWidth(window.innerWidth);
@@ -127,6 +131,15 @@ const BidTable: React.FC<IProps> = ({
       clearPost();
     }
   }, [clearPost, postError, postSuccess, enqueueSnackbar]);
+
+  const [isSendingEmail, setSendingEmail] = useState(true);
+  const [isSendingSms, setSendingSms] = useState(false);
+  const [openedSubBidId, setOpenedSubBidId] = useState<number | null>(null);
+
+  const onCheckboxChange = (e: any, val: number) => {
+    if (val === 1) setSendingEmail(!isSendingEmail);
+    if (val === 2) setSendingSms(!isSendingSms);
+  };
 
   return (
     <>
@@ -425,7 +438,10 @@ const BidTable: React.FC<IProps> = ({
                               size="medium"
                               color="primary"
                             >
-                              <EmailIcon onClick={() => post(bid.id)}/>
+                              <EmailIcon onClick={() => {
+                                setSubDialogOpen(true);
+                                setOpenedSubBidId(bid.id);
+                              }}/>
                             </IconButton>
                         )}
                         <IconButton
@@ -505,6 +521,37 @@ const BidTable: React.FC<IProps> = ({
                   </TableCell>
                 </TableRow>
               ))}
+                <SubDialog
+                  handleClose={() => {
+                    setSubDialogOpen(false);
+                    setOpenedSubBidId(null);
+                  }}
+                  isOpen={subDialogOpen}
+                  handleSubmit={() => {
+                    if (openedSubBidId) {
+                      post({
+                        id: openedSubBidId,
+                        is_sending_email: isSendingEmail ? 1 : 0,
+                        is_sending_sms: isSendingSms ? 1 : 0
+                      });
+                    }
+                    setSubDialogOpen(false);
+                    setOpenedSubBidId(null);
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox checked={isSendingEmail} onChange={e => onCheckboxChange(e, 1)} />
+                    }
+                    label={"Подписка по e-mail"}
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
+                    }
+                    label={"Подписка по смс"}
+                  />
+                </SubDialog>
             </TableBody>
             {!!paginationData && !!fetcher && (
               <TableFooter>
