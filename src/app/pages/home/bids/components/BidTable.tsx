@@ -30,6 +30,8 @@ import { accessByRoles } from "../../../../utils/utils";
 import MiniTrafficLight from "../../users/components/miniTrafficLight/MiniTrafficLight";
 import { ICrop } from "../../../../interfaces/crops";
 import { ActionWithPayload } from "../../../../utils/action-helper";
+import EmailIcon from "@material-ui/icons/Email";
+import { useSnackbar } from "notistack";
 
 interface IProps {
   intl: any;
@@ -56,6 +58,12 @@ interface IProps {
     }
   >;
   archive?: ({ id: number, is_archived: boolean }) => void;
+
+  post?: any,
+  clearPost?: any,
+  postLoading?: boolean,
+  postSuccess?: boolean,
+  postError?: string | null,
 }
 
 const BidTable: React.FC<IProps> = ({
@@ -75,8 +83,15 @@ const BidTable: React.FC<IProps> = ({
   crops,
   setProfit,
   archive,
+
+  post,
+  clearPost,
+  postLoading,
+  postSuccess,
+  postError,
 }) => {
   const history = useHistory();
+  const { enqueueSnackbar } = useSnackbar();
   const [clientWidth, setClientWidth] = useState(document.body.clientWidth);
   const [hasActivePoints, setHasActivePoints] = useState(false);
 
@@ -98,6 +113,20 @@ const BidTable: React.FC<IProps> = ({
       setHasActivePoints(false);
     }
   }, [user.points]);
+
+  useEffect(() => {
+    if (postSuccess || postError) {
+      enqueueSnackbar(
+        postSuccess
+          ? intl.formatMessage({ id: "NOTISTACK.ERRORS.SAVE_FILTER" })
+          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${postError}`,
+        {
+          variant: postSuccess ? "success" : "error",
+        }
+      );
+      clearPost();
+    }
+  }, [clearPost, postError, postSuccess, enqueueSnackbar]);
 
   return (
     <>
@@ -388,40 +417,52 @@ const BidTable: React.FC<IProps> = ({
                   <TableCell align="right">
                     <div style={{minWidth: 150}}>
                     {bestAllMyMode !== "my-bids" && (
-                      <IconButton
-                        size="medium"
-                        color="primary"
-                        onClick={() => {
-                          let maxProfit = 0;
-                          if (bid?.point_prices && bid?.point_prices.length) {
-                            maxProfit = bid?.point_prices[0]?.profit;
-                            bid.point_prices.forEach(item => {
-                              if (item.profit && item.profit > maxProfit) {
-                                maxProfit = item.profit;
-                              }
-                            });
-                          }
-                          maxProfit = Math.round(maxProfit);
-                          setProfit({
-                            bid_id: bid.id,
-                            value: maxProfit || 0,
-                          });
-                          history.push(
-                            ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
-                              bestAllMyMode === "edit"
-                              ? `/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`
-                              : `/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`
-                          );
-                        }}
-                      >
-                        {user &&
-                        ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
-                        bestAllMyMode === "edit" ? (
-                          <EditIcon />
-                        ) : (
-                          <VisibilityIcon />
+                      <>
+                        {(user &&
+                          ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
+                          bestAllMyMode === "edit") && (
+                            <IconButton
+                              size="medium"
+                              color="primary"
+                            >
+                              <EmailIcon onClick={() => post(bid.id)}/>
+                            </IconButton>
                         )}
-                      </IconButton>
+                        <IconButton
+                          size="medium"
+                          color="primary"
+                          onClick={() => {
+                            let maxProfit = 0;
+                            if (bid?.point_prices && bid?.point_prices.length) {
+                              maxProfit = bid?.point_prices[0]?.profit;
+                              bid.point_prices.forEach(item => {
+                                if (item.profit && item.profit > maxProfit) {
+                                  maxProfit = item.profit;
+                                }
+                              });
+                            }
+                            maxProfit = Math.round(maxProfit);
+                            setProfit({
+                              bid_id: bid.id,
+                              value: maxProfit || 0,
+                            });
+                            history.push(
+                              ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
+                                bestAllMyMode === "edit"
+                                  ? `/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`
+                                  : `/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`
+                            );
+                          }}
+                        >
+                          {user &&
+                            ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) &&
+                            bestAllMyMode === "edit" ? (
+                              <EditIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
+                        </IconButton>
+                      </>
                     )}
                     {bestAllMyMode === "my-bids" && (
                       <IconButton

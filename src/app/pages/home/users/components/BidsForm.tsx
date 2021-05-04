@@ -12,6 +12,8 @@ import { actions as userActions } from "../../../../store/ducks/users.duck";
 import { actions as crops2Actions } from "../../../../store/ducks/crops2.duck";
 import { actions as bidsActions } from "../../../../store/ducks/bids.duck";
 
+import { actions as myFiltersActions } from "../../../../store/ducks/myFilters.duck";
+
 interface IProps {
   intl: IntlShape;
   classes: any;
@@ -37,6 +39,12 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   userBidsLoading,
   userBidsSuccess,
   userBidsError,
+
+  post,
+  clearPost,
+  postLoading,
+  postSuccess,
+  postError,
 }) => {
   const history = useHistory();
 
@@ -69,6 +77,12 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
         loading={!userBids}
         crops={crops}
         setProfit={setProfit}
+
+        post={post}
+        clearPost={clearPost}
+        postLoading={postLoading}
+        postSuccess={postSuccess}
+        postError={postError}
       />
 
       <div style={{display: "flex", justifyContent: "flex-end", marginTop: 15}}>
@@ -94,6 +108,10 @@ const connector = connect(
     userBidsLoading: state.users.userBidsLoading,
     userBidsSuccess: state.users.userBidsSuccess,
     userBidsError: state.users.userBidsError,
+
+    postLoading: state.myFilters.postLoading,
+    postSuccess: state.myFilters.postSuccess,
+    postError: state.myFilters.postError,
   }),
   {
     clearUserBids: userActions.clearUserBids,
@@ -102,6 +120,9 @@ const connector = connect(
     fetchCrops: crops2Actions.fetchRequest,
 
     setProfit: bidsActions.setProfit,
+
+    clearPost: myFiltersActions.clearPost,
+    post: myFiltersActions.postFilter,
   }
 );
 
