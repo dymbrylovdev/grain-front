@@ -71,6 +71,9 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   userFiltersEmail,
   userFiltersPhone,
+
+  boughtTariff,
+  setUserBoughtTariff,
 }) => {
   const classes = useStyles();
   const isMinWidthQuery = useMediaQuery("(min-width:1025px)");
@@ -125,6 +128,8 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           clearUserFilters={clearUserFilters}
           userFiltersEmail={userFiltersEmail}
           userFiltersPhone={userFiltersPhone}
+          boughtTariff={boughtTariff}
+          setUserBoughtTariff={setUserBoughtTariff}
         />
       )}
     </Wrapper>
@@ -145,6 +150,7 @@ const connector = connect(
     userFiltersEmail: state.users.userFiltersEmail,
     userFiltersPhone: state.users.userFiltersPhone,
     currentRoles: state.users.currentRoles,
+    boughtTariff: state.users.boughtTariff
   }),
   {
     ...leftMenuActions,
@@ -157,6 +163,8 @@ const connector = connect(
 
     clearUserFilters: usersActions.clearUserFilters,
     fetchUserFilters: usersActions.userFiltersRequest,
+
+    setUserBoughtTariff: usersActions.setUserBoughtTariff,
   }
 )
 
