@@ -172,8 +172,8 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchMe]);
 
   useEffect(() => {
-    fetchTariffTypes()
-  }, [fetchTariffTypes]);
+    fetchTariffTypes(currentUserRoles)
+  }, [fetchTariffTypes, currentUserRoles]);
 
   //TODO: Убрать сравнение по строкам
 
