@@ -698,6 +698,6 @@
   "NOTISTACK.BIDS.ARCHIVE.OK": "Объявление помещено в архив",
   "NOTISTACK.BIDS.UNARCHIVE.OK": "Объявление восстановлено из архива",
 
-
-  "NOTISTACK.ERRORS.ERROR": "Ошибка: "
+  "NOTISTACK.ERRORS.ERROR": "Ошибка: ",
+  "PHONE_MASK_HELPER_TEXT": "Добавочный номер {userId}#"
 }
