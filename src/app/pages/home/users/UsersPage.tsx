@@ -164,8 +164,8 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetch, page, perPage, tariffId, funnelStateId, userRolesId]);
 
   useEffect(() => {
-    fetchFunnelStates();
-  }, [fetchFunnelStates]);
+    fetchFunnelStates(currentUserRoles);
+  }, [fetchFunnelStates, currentUserRoles]);
 
   useEffect(() => {
     fetchMe();
@@ -178,7 +178,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   //TODO: Убрать сравнение по строкам
 
   useEffect(() => {
-    fetchUserRoles()
+    fetchUserRoles();
   }, [fetchUserRoles]);
 
   useEffect(() => {

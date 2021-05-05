@@ -56,7 +56,7 @@ export function createUserBidFilter( id, data ) {
 }
 
 export function getUserRoles() {
-  return axios.get(GET_USER_ROLES);
+  return axios.get(`${GET_USER_ROLES}`);
 }
 
 export function getUserBidFilters({ id, type }) {

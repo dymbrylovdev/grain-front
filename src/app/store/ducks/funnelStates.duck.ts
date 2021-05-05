@@ -229,7 +229,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 
 export const actions = {
   setTab: (id: number) => createAction(SET_TAB, { id }),
-  fetchRequest: () => createAction(FETCH_REQUEST),
+  fetchRequest: (payload?: string) => createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IFunnelState[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (error: string) => createAction(FETCH_FAIL, { error }),
 
@@ -260,9 +260,9 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga() {
+function* fetchSaga({ payload }: { payload?: string } ) {
   try {
-    const { data }: { data: IServerResponse<IFunnelState[]> } = yield call(() => getFunnelStates());
+    const { data }: { data: IServerResponse<IFunnelState[]> } = yield call(() => getFunnelStates(payload));
     yield put(actions.fetchSuccess(data));
   } catch (e) {
     yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
