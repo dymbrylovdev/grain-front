@@ -166,7 +166,7 @@ const connector = connect(
 
     setUserBoughtTariff: usersActions.setUserBoughtTariff,
   }
-)
+);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
