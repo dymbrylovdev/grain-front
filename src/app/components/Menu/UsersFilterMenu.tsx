@@ -120,11 +120,11 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
           ))}
       </TextField>
 
-      <FormControlLabel
+      {/*<FormControlLabel
         label="Покупал тариф"
         name="boughtTariff"
         control={<Checkbox checked={boughtTariff} onChange={e => setUserBoughtTariff(!boughtTariff)} />}
-      />
+      />*/}
 
       <TextField
         select
