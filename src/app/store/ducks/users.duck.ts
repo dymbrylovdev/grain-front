@@ -90,6 +90,8 @@ const USER_FILTERS_FAIL = "users/USER_FILTERS_FAIL";
 
 const SET_USER_FILTERS_EMAIL = "users/SET_USER_FILTERS_EMAIL";
 const SET_USER_FILTERS_PHONE = "users/SET_USER_FILTERS_PHONE";
+
+const SET_USER_BOUGHT_TARIFF = "users/SET_USER_BOUGHT_TARIFF";
 export interface IInitialState {
   page: number;
   per_page: number;
@@ -156,6 +158,8 @@ export interface IInitialState {
 
   userFiltersEmail: string | undefined;
   userFiltersPhone: string | undefined;
+
+  boughtTariff: boolean;
 }
 
 const initialState: IInitialState = {
@@ -223,6 +227,8 @@ const initialState: IInitialState = {
 
   userFiltersEmail: undefined,
   userFiltersPhone: undefined,
+
+  boughtTariff: false,
 };
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
@@ -609,6 +615,13 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       }
     }
 
+    case SET_USER_BOUGHT_TARIFF: {
+      return {
+        ...state,
+        boughtTariff: action.payload
+      }
+    }
+
     default:
       return state;
   }
@@ -616,7 +629,7 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
 
 export const actions = {
   clearFetch: () => createAction(CLEAR_FETCH),
-  fetchRequest: (payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: string }) =>
+  fetchRequest: (payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: string, boughtTariff?: boolean }) =>
     createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
@@ -684,14 +697,16 @@ export const actions = {
 
   setUserFiltersEmail: (payload: string) => createAction(SET_USER_FILTERS_EMAIL, payload),
   setUserFiltersPhone: (payload: string) => createAction(SET_USER_FILTERS_PHONE, payload),
+
+  setUserBoughtTariff: (payload: boolean) => createAction(SET_USER_BOUGHT_TARIFF, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga({ payload }: { payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: string } }) {
+function* fetchSaga({ payload }: { payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: string, boughtTariff?: boolean } }) {
   try {
     const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
-      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId))
+      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId, payload.boughtTariff))
     yield put(actions.fetchSuccess(data));
   } catch (e) {
     yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));

@@ -1,10 +1,18 @@
 import React, { ReactElement, useState, useEffect } from "react";
-import { TextField, MenuItem, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
+import {
+  TextField,
+  MenuItem,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Checkbox,
+} from "@material-ui/core";
 import { IntlShape } from "react-intl";
 import { ActionWithPayload } from "../../utils/action-helper";
 
 import { IFunnelState } from "../../interfaces/funnelStates";
 import { ITariffType } from "../../interfaces/tariffs";
+import { setUser } from "@sentry/minimal";
 
 interface IUsersFilterMenu {
   intl: IntlShape;
@@ -25,6 +33,8 @@ interface IUsersFilterMenu {
   clearUserFilters: any;
   userFiltersEmail: string | undefined;
   userFiltersPhone: string | undefined;
+  setUserBoughtTariff: any;
+  boughtTariff: boolean;
 }
 
 const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
@@ -47,6 +57,9 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
 
   clearUserFilters,
   fetchUserFilters,
+
+  boughtTariff,
+  setUserBoughtTariff,
 }): ReactElement => {
   const [isSearchEmail, setSearchEmail] = useState("phone");
 
@@ -106,6 +119,12 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
             </MenuItem>
           ))}
       </TextField>
+
+      {/*<FormControlLabel
+        label="Покупал тариф"
+        name="boughtTariff"
+        control={<Checkbox checked={boughtTariff} onChange={e => setUserBoughtTariff(!boughtTariff)} />}
+      />*/}
 
       <TextField
         select

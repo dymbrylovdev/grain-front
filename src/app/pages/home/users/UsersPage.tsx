@@ -96,6 +96,8 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   userRolesError,
 
   currentUserRoles,
+
+  boughtTariff,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -125,9 +127,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEdit();
     }
     if (editSuccess) {
-      fetch({ page, perPage, tariffId, funnelStateId });
+      fetch({ page, perPage, tariffId, funnelStateId, boughtTariff });
     }
-  }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage, tariffId, funnelStateId]);
+  }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage, tariffId, funnelStateId, boughtTariff]);
 
   useEffect(() => {
     if (delSuccess || delError) {
@@ -141,7 +143,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       );
       setAlertOpen(false);
       clearDel();
-      fetch({ page, perPage, tariffId, funnelStateId, userRolesId });
+      fetch({ page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff });
       fetchFunnelStates();
     }
   }, [
@@ -156,29 +158,30 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     perPage,
     tariffId,
     funnelStateId,
-    userRolesId
+    userRolesId,
+    boughtTariff
   ]);
 
   useEffect(() => {
-    fetch({ page, perPage, tariffId, funnelStateId, userRolesId });
-  }, [fetch, page, perPage, tariffId, funnelStateId, userRolesId]);
+    fetch({ page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff });
+  }, [fetch, page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff]);
 
   useEffect(() => {
-    fetchFunnelStates();
-  }, [fetchFunnelStates]);
+    fetchFunnelStates(currentUserRoles);
+  }, [fetchFunnelStates, currentUserRoles]);
 
   useEffect(() => {
     fetchMe();
   }, [fetchMe]);
 
   useEffect(() => {
-    fetchTariffTypes()
-  }, [fetchTariffTypes]);
+    fetchTariffTypes(currentUserRoles)
+  }, [fetchTariffTypes, currentUserRoles]);
 
   //TODO: Убрать сравнение по строкам
 
   useEffect(() => {
-    fetchUserRoles()
+    fetchUserRoles();
   }, [fetchUserRoles]);
 
   useEffect(() => {
@@ -559,6 +562,8 @@ const connector = connect(
     userRolesError: state.users.userRolesError,
 
     currentUserRoles: state.users.currentRoles,
+
+    boughtTariff: state.users.boughtTariff,
   }),
   {
     fetchMe: authActions.fetchRequest,

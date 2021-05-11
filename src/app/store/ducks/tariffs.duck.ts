@@ -434,7 +434,7 @@ export const actions = {
   editPeriodFail: (error: string) => createAction(EDIT_PERIOD_FAIL, { error }),
 
   clearTariffTypes: () => createAction(CLEAR_TARIFFS_TYPES),
-  tariffsTypesRequest: () => createAction(TARIFFS_TYPES_REQUEST),
+  tariffsTypesRequest: (payload?: string) => createAction(TARIFFS_TYPES_REQUEST, payload),
   tariffsTypesSuccess: (response: IServerResponse<ITariffType>) =>
     createAction(TARIFFS_TYPES_SUCCESS, { response }),
   tariffsTypesFail: (error: string) => createAction(TARIFFS_TYPES_FAIL, { error }),
@@ -490,9 +490,9 @@ function* editPeriodSaga({ payload }: { payload: { id: number; data: ITariffToRe
   }
 }
 
-function* getTariffsTypesSaga() {
+function* getTariffsTypesSaga({ payload }: { payload?: string }) {
   try {
-    const { data }: { data: IServerResponse<ITariffType> } = yield call(() => getTariffsTypes());
+    const { data }: { data: IServerResponse<ITariffType> } = yield call(() => getTariffsTypes(payload));
     yield put(actions.tariffsTypesSuccess(data));
   } catch (e) {
     yield put(actions.tariffsTypesFail(e?.response?.data?.message || "Ошибка соединения."));

@@ -45,6 +45,7 @@ import CompanyConfirmBlock from "../../companies/components/CompanyConfirmBlock"
 import CompanySearchForm from "../../companies/components/CompanySearchForm";
 import CompanyConfirmDialog from "./CompanyConfirmDialog";
 import { phoneCountryCodes, countries } from "../../../auth/phoneCountryCodes";
+import PhoneButton from "../../../../components/PhoneButton";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   companyContainer: {
@@ -187,31 +188,37 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     company_id: user && user.company ? user.company.id : 0,
   });
 
-  const validationSchema = Yup.object().shape({
-    role: Yup.string()
-      .test("role", intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }), value =>
-        roles.find(el => el.id === value) ? true : false
-      )
-      .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-    status:
-      editMode !== "create"
-        ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-        : Yup.string(),
-    email: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
-    phone:
-      countryCode.length === 1
-        ? Yup.string()
-            .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-            .matches(/^(\d{1}|\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
-            .when(["email"], {
-              is: email => !email,
-              then: Yup.string().matches(/^(\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
-            })
-        : Yup.string()
-            .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-            .matches(/^(\d{3}|\d{13})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
-    fio: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-  }, [["email", "phone"]]);
+  const validationSchema = Yup.object().shape(
+    {
+      role: Yup.string()
+        .test("role", intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }), value =>
+          roles.find(el => el.id === value) ? true : false
+        )
+        .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+      status:
+        editMode !== "create"
+          ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+          : Yup.string(),
+      email: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
+      phone:
+        countryCode.length === 1
+          ? Yup.string()
+              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+              .matches(/^(\d{1}|\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
+              .when(["email"], {
+                is: email => !email,
+                then: Yup.string().matches(
+                  /^(\d{11})$/,
+                  intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })
+                ),
+              })
+          : Yup.string()
+              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+              .matches(/^(\d{3}|\d{13})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+      fio: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+    },
+    [["email", "phone"]]
+  );
 
   const validationSchemaPassword = Yup.object().shape({
     password: Yup.string(),
@@ -257,9 +264,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         editUser({ id: user.id, data: params });
       }
     },
-    validationSchema: isPasswordChange
-      ? validationSchemaPassword
-      : validationSchema,
+    validationSchema: isPasswordChange ? validationSchemaPassword : validationSchema,
   });
 
   const onEmailConfirm = () => {
@@ -488,7 +493,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   return (
     <>
       <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || cropsLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+        {meLoading ||
+        userLoading ||
+        cropsLoading ||
+        (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -752,38 +760,45 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
-      <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-          <Skeleton width="100%" height={70} animation="wave" />
-        ) : (
-          <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
-            <div style={{ fontSize: "26px", marginTop: "3px", marginRight: "5px" }}>+</div>
-            <TextField
-              type="tel"
-              label={intl.formatMessage({
-                id: "PROFILE.INPUT.PHONE",
-              })}
-              margin="normal"
-              className={classes.textField}
-              classes={
-                prompterRunning && prompterStep === 0 && !!values.fio && !values.phone
-                  ? { root: innerClasses.pulseRoot }
-                  : {}
-              }
-              name="phone"
-              value={values.phone}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              helperText={touched.phone && errors.phone}
-              error={Boolean(touched.phone && errors.phone)}
-              disabled={editMode === "view"}
-              InputLabelProps={{ shrink: true }}
-              autoComplete="off"
-            />
-          </div>
-        )}
-      </div>
+      {editMode === "view" && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) ? null : (
+        <div className={classes.textFieldContainer}>
+          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+            <Skeleton width="100%" height={70} animation="wave" />
+          ) : (
+            <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
+              <div style={{ fontSize: "26px", marginTop: "3px", marginRight: "5px" }}>+</div>
+              <TextField
+                type="tel"
+                label={intl.formatMessage({
+                  id: "PROFILE.INPUT.PHONE",
+                })}
+                margin="normal"
+                className={classes.textField}
+                classes={
+                  prompterRunning && prompterStep === 0 && !!values.fio && !values.phone
+                    ? { root: innerClasses.pulseRoot }
+                    : {}
+                }
+                name="phone"
+                value={values.phone}
+                variant="outlined"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.phone && errors.phone}
+                error={Boolean(touched.phone && errors.phone)}
+                InputLabelProps={{ shrink: true }}
+                autoComplete="off"
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {user && (editMode === "view" || editMode === "edit") && (
+        <div style={{ marginTop: 15, marginBottom: 15 }}>
+          <PhoneButton userId={user?.id || 0} realNumber={values.phone} />
+        </div>
+      )}
 
       {editMode !== "create" && (
         <div>
@@ -960,6 +975,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             </ButtonWithLoader>
           </div>
         )}
+
         <div className={classes.flexRow} style={{ marginTop: 4, marginBottom: 4 }}>
           {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
             <div className={classes.button}>
@@ -1181,7 +1197,7 @@ const connector = connect(
 
     editNoNoti: state.auth.editNoNoti,
 
-    cropsLoading: state.crops2.loading
+    cropsLoading: state.crops2.loading,
   }),
   {
     fetchFunnelStates: funnelStatesActions.fetchRequest,

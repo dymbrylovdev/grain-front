@@ -489,7 +489,7 @@ const BidTable: React.FC<IProps> = ({
                             }
                           }}
                         >
-                          {bid.is_archived ? <ArchiveIcon /> : <UnarchiveIcon />}
+                          {bid.is_archived ? <UnarchiveIcon /> : <ArchiveIcon />}
                         </IconButton>
                       )}
                       {isHaveRules && isHaveRules(user, bid.vendor.id) && (
