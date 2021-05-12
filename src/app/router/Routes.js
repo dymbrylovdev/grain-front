@@ -62,7 +62,7 @@ export const Routes = withRouter(({ history }) => {
   const redirectFromAuth = useMemo(() => {
     // console.log(user);
     if (isAuthorized && user) {
-      if (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_MANAGER') || user.roles.includes('ROLE_TRADER')) {
+      if (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_MANAGER') || user.roles.includes('ROLE_TRADER') || user.roles.includes('ROLE_BUYER')) {
         return `/sale/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
       } else {
         return `/purchase/best-bids/${user.main_crop ? user.main_crop.id : 0}`;

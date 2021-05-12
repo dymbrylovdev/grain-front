@@ -794,6 +794,12 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
+      {user && (editMode === "view" || editMode === "edit") && (
+        <div style={{ marginTop: 15, marginBottom: 15 }}>
+          <PhoneButton userId={user?.id || 0} realNumber={values.phone} />
+        </div>
+      )}
+
       {editMode !== "create" && (
         <div>
           {currentUser && currentUser.company ? (
@@ -953,12 +959,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             })}
             isLoading={editMeLoading || editLoading}
           />
-        </div>
-      )}
-
-      {user && (editMode === "view" || editMode === "edit") && (
-        <div style={{ marginTop: 15 }}>
-          <PhoneButton userId={user?.id || 0} realNumber={values.phone} />
         </div>
       )}
 
