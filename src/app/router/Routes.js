@@ -5,7 +5,7 @@
  * components (e.g: `src/pages/auth/AuthPage`, `src/pages/home/HomePage`).
  */
 
-import React, {useEffect, useMemo} from "react";
+import React, { useEffect, useMemo } from "react";
 import { Redirect, Route, Switch, withRouter } from "react-router-dom";
 import { shallowEqual, useSelector, useDispatch } from "react-redux";
 import { useSnackbar } from "notistack";
@@ -22,11 +22,11 @@ import { actions as authActions } from "../store/ducks/auth.duck";
 export const Routes = withRouter(({ history }) => {
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  
-  const jwtToken = new URL(window.location.href).searchParams.get('bearer');
+
+  const jwtToken = new URL(window.location.href).searchParams.get("bearer");
   useEffect(() => {
-    if (jwtToken) dispatch(authActions.loginByJwtRequest({jwt: jwtToken}));
-  }, [dispatch])
+    if (jwtToken) dispatch(authActions.loginByJwtRequest({ jwt: jwtToken }));
+  }, [dispatch]);
 
   const {
     isAuthorized,
@@ -35,21 +35,18 @@ export const Routes = withRouter(({ history }) => {
     user,
     loginByJwtLoading,
     loginByJwtError,
-  } = useSelector(
-    ({ auth, builder: { menuConfig } }) => {
-      return {
-        menuConfig,
-        isAuthorized: auth.user != null,
-        userLastLocation: routerHelpers.getLastLocation(),
-        user: auth.user,
-        loginByJwtLoading: auth.loginByJwtLoading,
-        loginByJwtError: auth.loginByJwtError,
-        loginByJwtSuccess: auth.loginByJwtSuccess,
-        clearLoginByJwt: auth.clearLoginByJwt,
-      };
-    },
-    shallowEqual
-  );
+  } = useSelector(({ auth, builder: { menuConfig } }) => {
+    return {
+      menuConfig,
+      isAuthorized: auth.user != null,
+      userLastLocation: routerHelpers.getLastLocation(),
+      user: auth.user,
+      loginByJwtLoading: auth.loginByJwtLoading,
+      loginByJwtError: auth.loginByJwtError,
+      loginByJwtSuccess: auth.loginByJwtSuccess,
+      clearLoginByJwt: auth.clearLoginByJwt,
+    };
+  }, shallowEqual);
 
   useEffect(() => {
     if (loginByJwtError) {
@@ -57,22 +54,26 @@ export const Routes = withRouter(({ history }) => {
         variant: "error",
       });
     }
-  }, [loginByJwtError, enqueueSnackbar])
+  }, [loginByJwtError, enqueueSnackbar]);
 
   const redirectFromAuth = useMemo(() => {
     // console.log(user);
     if (isAuthorized && user) {
-      if (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ROLE_MANAGER') || user.roles.includes('ROLE_TRADER')) {
+      if (
+        user.roles.includes("ROLE_ADMIN") ||
+        user.roles.includes("ROLE_MANAGER") ||
+        user.roles.includes("ROLE_TRADER")
+      ) {
         return `/sale/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
       } else {
         return `/purchase/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
       }
     }
-    return '/auth';
-  }, [isAuthorized, user])
+    return "/auth";
+  }, [isAuthorized, user]);
 
   if (((!user && jwtToken) || loginByJwtLoading) && !loginByJwtError) {
-    return <Preloader/>;
+    return <Preloader />;
   }
 
   return (
