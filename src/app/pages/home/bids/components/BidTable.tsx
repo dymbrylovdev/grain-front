@@ -480,17 +480,21 @@ const BidTable: React.FC<IProps> = ({
                         </>
                       )}
                       {bestAllMyMode === "my-bids" && (
-                        <IconButton
-                          size="medium"
-                          color={bid.is_archived ? "secondary" : "primary"}
-                          onClick={() => {
-                            if (archive) {
-                              archive({ id: bid.id, is_archived: !bid.is_archived });
-                            }
-                          }}
+                        <Tooltip
+                          title={bid.is_archived ? "убрать с архива" : "добавить в архив"}
                         >
-                          {bid.is_archived ? <UnarchiveIcon /> : <ArchiveIcon />}
-                        </IconButton>
+                          <IconButton
+                            size="medium"
+                            color={bid.is_archived ? "secondary" : "primary"}
+                            onClick={() => {
+                              if (archive) {
+                                archive({ id: bid.id, is_archived: !bid.is_archived });
+                              }
+                            }}
+                          >
+                            {bid.is_archived ? <UnarchiveIcon /> : <ArchiveIcon />}
+                          </IconButton>
+                        </Tooltip>
                       )}
                       {isHaveRules && isHaveRules(user, bid.vendor.id) && (
                         <>

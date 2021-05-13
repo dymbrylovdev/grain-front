@@ -2,7 +2,15 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Button, Divider, Grid as div, IconButton, TextField, Theme } from "@material-ui/core";
+import {
+  Button,
+  Divider,
+  Grid as div,
+  IconButton,
+  TextField,
+  Theme,
+  Tooltip,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import StarIcon from "@material-ui/icons/Star";
@@ -296,13 +304,15 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
                       <DeleteIcon />
                     </IconButton>
 
-                    <IconButton
-                      size={"medium"}
-                      onClick={() => changeMainBidHandler(item.id)}
-                      color={values.main_crop_id === item.id ? "primary" : "inherit"}
-                    >
-                      {values.main_crop_id === item.id ? <StarIcon /> : <StarOutlineIcon />}
-                    </IconButton>
+                    <Tooltip title={"сделать основной культурой"}>
+                      <IconButton
+                        size={"medium"}
+                        onClick={() => changeMainBidHandler(item.id)}
+                        color={values.main_crop_id === item.id ? "primary" : "inherit"}
+                      >
+                        {values.main_crop_id === item.id ? <StarIcon /> : <StarOutlineIcon />}
+                      </IconButton>
+                    </Tooltip>
                   </div>
                 )}
               </div>
