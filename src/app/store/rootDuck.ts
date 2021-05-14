@@ -45,7 +45,7 @@ export interface IAppState {
   i18n: typeof metronic.i18n.reducer;
   builder: typeof metronic.builder.reducer;
   auth: auth.IInitialState & PersistPartial;
-  users: users.IInitialState;
+  users: users.IInitialState & PersistPartial;
   statuses: statuses.IInitialState;
   locations: locations.IInitialState;
   yaLocations: yaLocations.IInitialState;
@@ -59,7 +59,7 @@ export interface IAppState {
   funnelStates: funnelStates.IInitialState;
   prompter: prompter.IInitialState & PersistPartial;
   deals: deals.IInitialState & PersistPartial;
-  tariffs: tariffs.IInitialState;
+  tariffs: tariffs.IInitialState & PersistPartial;
   trial: trial.IInitialState;
   leftMenu: leftMenu.TInitialState;
 }

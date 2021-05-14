@@ -1,6 +1,8 @@
 import { Reducer } from "redux";
 import { TAppActions } from "../rootDuck";
 import { put, takeLatest, call } from "redux-saga/effects";
+import { persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
@@ -19,10 +21,17 @@ import {
   createUserBidFilter,
   getUserFilters,
 } from "../../crud/users.crud";
-import { IUser, IUserForCreate, IUserForEdit, TRole, IUserBidFilters } from "../../interfaces/users";
+import {
+  IUser,
+  IUserForCreate,
+  IUserForEdit,
+  TRole,
+  IUserBidFilters,
+} from "../../interfaces/users";
 import { IBid } from "../../interfaces/bids";
 import { ICrop } from "../../interfaces/crops";
 import { IFilterForCreate, IMyFilterItem, IMyFilters } from "../../interfaces/filters";
+import { PersistPartial } from "redux-persist/es/persistReducer";
 
 const CLEAR_FETCH = "users/CLEAR_FETCH";
 const FETCH_REQUEST = "users/FETCH_REQUEST";
@@ -135,7 +144,6 @@ export interface IInitialState {
 
   openInfoAlert: boolean;
 
-
   roles: any[] | undefined;
   userRolesLoading: boolean;
   userRolesSuccess: boolean;
@@ -231,406 +239,423 @@ const initialState: IInitialState = {
   boughtTariff: false,
 };
 
-export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
-  switch (action.type) {
-    case CLEAR_FETCH: {
-      //console.log("CLEAR_FETCH");
-      return {
-        ...state,
-        page: 1,
-        per_page: 20,
-        total: 0,
-        prevUsersCount: 5,
-        users: undefined,
-        loading: true,
-        success: false,
-        error: null,
-      };
-    }
-
-    case FETCH_REQUEST: {
-      return {
-        ...state,
-        users: undefined,
-        loading: true,
-        success: false,
-        error: null,
-      };
-    }
-
-    case FETCH_SUCCESS: {
-      // console.log("Fetch users: ", action.payload);
-      return {
-        ...state,
-        page: action.payload.page,
-        per_page: action.payload.per_page,
-        total: action.payload.total,
-        prevUsersCount: action.payload.data.length,
-        users: action.payload.data,
-        loading: false,
-        success: true,
-      };
-    }
-
-    case FETCH_FAIL: {
-      return { ...state, loading: false, error: action.payload };
-    }
-
-    case CLEAR_FETCH_BY_ID: {
-      //console.log("CLEAR_FETCH_BY_ID");
-      return {
-        ...state,
-        user: undefined,
-        byIdLoading: false,
-        byIdSuccess: false,
-        byIdError: null,
-      };
-    }
-
-    case FETCH_BY_ID_REQUEST: {
-      //console.log("FETCH_BY_ID_REQUEST");
-      return {
-        ...state,
-        user: undefined,
-        byIdLoading: true,
-        byIdSuccess: false,
-        byIdError: null,
-      };
-    }
-
-    case FETCH_BY_ID_SUCCESS: {
-      // console.log("Fetch User: ", action.payload);
-      return {
-        ...state,
-        user: action.payload.data,
-        byIdLoading: false,
-        byIdSuccess: true,
-      };
-    }
-
-    case FETCH_BY_ID_FAIL: {
-      return { ...state, user: undefined, byIdLoading: false, byIdError: action.payload };
-    }
-
-    case CLEAR_CREATE: {
-      return { ...state, createLoading: false, createSuccess: false, createError: null };
-    }
-
-    case CREATE_REQUEST: {
-      return { ...state, createLoading: true, createSuccess: false, createError: null };
-    }
-
-    case CREATE_SUCCESS: {
-      return {
-        ...state,
-        users: undefined,
-        createdUserId: action.payload.data.id,
-        createLoading: false,
-        createSuccess: true,
-      };
-    }
-
-    case CREATE_FAIL: {
-      return { ...state, createLoading: false, createError: action.payload };
-    }
-
-    case CLEAR_EDIT: {
-      return { ...state, editLoading: false, editSuccess: false, editError: null };
-    }
-
-    case EDIT_REQUEST: {
-      return { ...state, editLoading: true, editSuccess: false, editError: null };
-    }
-
-    case EDIT_SUCCESS: {
-      return {
-        ...state,
-        user: action.payload.data,
-        loading: true,
-        editLoading: false,
-        editSuccess: true,
-      };
-    }
-
-    case EDIT_FAIL: {
-      return { ...state, editLoading: false, editError: action.payload };
-    }
-
-    case CLEAR_DEL: {
-      return { ...state, delLoading: false, delSuccess: false, delError: null };
-    }
-
-    case DEL_REQUEST: {
-      return { ...state, delLoading: true, delSuccess: false, delError: null };
-    }
-
-    case DEL_SUCCESS: {
-      return { ...state, users: undefined, delLoading: false, delSuccess: true };
-    }
-
-    case DEL_FAIL: {
-      return { ...state, delLoading: false, delError: action.payload };
-    }
-
-    case CLEAR_CONTACT_VIEW_COUNT: {
-      return {
-        ...state,
-        contactViewCountLoading: false,
-        contactViewCountSuccess: false,
-        contactViewCountError: null,
-      };
-    }
-
-    case CONTACT_VIEW_COUNT_REQUEST: {
-      return {
-        ...state,
-        contactViewCountLoading: true,
-        contactViewCountSuccess: false,
-        contactViewCountError: null,
-      };
-    }
-
-    case CONTACT_VIEW_COUNT_SUCCESS: {
-      return { ...state, contactViewCountLoading: false, contactViewCountSuccess: true };
-    }
-
-    case CONTACT_VIEW_COUNT_FAIL: {
-      return { ...state, contactViewCountLoading: false, contactViewCountError: action.payload };
-    }
-
-    case SET_OPEN_INFO_ALERT: {
-      return {
-        ...state,
-        openInfoAlert: action.payload.openInfoAlert,
-      };
-    }
-
-    case CLEAR_USER_ACTIVATE: {
-      return {
-        ...state,
-        userActivateLoading: false,
-        userActivateSuccess: false,
-        userActivateError: null,
-      };
-    }
-
-    case USER_ACTIVATE_REQUEST: {
-      return {
-        ...state,
-        userActivateLoading: true,
-        userActivateSuccess: false,
-        userActivateError: null,
-      };
-    }
-
-    case USER_ACTIVATE_SUCCESS: {
-      return { ...state, userActivateLoading: false, userActivateSuccess: true };
-    }
-
-    case USER_ACTIVATE_FAIL: {
-      return { ...state, userActivateLoading: false, userActivateError: action.payload };
-    }
-
-    case CLEAR_USER_BIDS: {
-      return { ...state, userBidsLoading: false, userBidsSuccess: false, userBidsError: null };
-    }
-
-    case USER_BIDS_REQUEST: {
-      return { ...state, userBidsLoading: true, userBidsSuccess: false, userBidsError: null };
-    }
-
-    case USER_BIDS_SUCCESS: {
-      return {
-        ...state,
-        userBids: action.payload.data,
-        userBidsLoading: false,
-        userBidsSuccess: true,
-      };
-    }
-
-    case USER_BIDS_FAIL: {
-      return { ...state, userBidsLoading: false, userBidsError: action.payload };
-    }
-
-    case CLEAR_USER_ROLES: {
-      return {
-        ...state,
-        roles: undefined,
-        userRolesLoading: false,
-        userRolesSuccess: false,
-        userRolesError: null
+export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
+  {
+    storage,
+    key: "userFilters",
+    whitelist: ["currentRoles", "userFiltersEmail", "userFiltersPhone", "boughtTariff"],
+  },
+  (state = initialState, action) => {
+    switch (action.type) {
+      case CLEAR_FETCH: {
+        //console.log("CLEAR_FETCH");
+        return {
+          ...state,
+          page: 1,
+          per_page: 20,
+          total: 0,
+          prevUsersCount: 5,
+          users: undefined,
+          loading: true,
+          success: false,
+          error: null,
+        };
       }
-    }
 
-    case USER_ROLES_REQUEST: {
-      return {
-        ...state,
-        userRolesLoading: true,
-        userRolesSuccess: false,
-        userRolesError: null
+      case FETCH_REQUEST: {
+        return {
+          ...state,
+          users: undefined,
+          loading: true,
+          success: false,
+          error: null,
+        };
       }
-    }
 
-    case USER_ROLES_SUCCESS: {
-      return {
-        ...state,
-        roles: action.payload.data,
-        userRolesLoading: false,
-        userRolesSuccess: true,
+      case FETCH_SUCCESS: {
+        // console.log("Fetch users: ", action.payload);
+        return {
+          ...state,
+          page: action.payload.page,
+          per_page: action.payload.per_page,
+          total: action.payload.total,
+          prevUsersCount: action.payload.data.length,
+          users: action.payload.data,
+          loading: false,
+          success: true,
+        };
       }
-    }
 
-    case USER_ROLES_FAIL: {
-      return {
-        ...state,
-        userRolesLoading: false,
-        userRolesError: action.payload,
+      case FETCH_FAIL: {
+        return { ...state, loading: false, error: action.payload };
       }
-    }
 
-    case SET_CURRENT_ROLES: {
-      return {
-        ...state,
-        currentRoles: action.payload
+      case CLEAR_FETCH_BY_ID: {
+        //console.log("CLEAR_FETCH_BY_ID");
+        return {
+          ...state,
+          user: undefined,
+          byIdLoading: false,
+          byIdSuccess: false,
+          byIdError: null,
+        };
       }
-    }
 
-    case CLEAR_USER_BID_FILTERS: {
-      return {
-        ...state,
-        userBidFilters: undefined,
-        userBidFiltersLoading: false,
-        userBidFiltersSuccess: false,
-        userBidFiltersError: null
+      case FETCH_BY_ID_REQUEST: {
+        //console.log("FETCH_BY_ID_REQUEST");
+        return {
+          ...state,
+          user: undefined,
+          byIdLoading: true,
+          byIdSuccess: false,
+          byIdError: null,
+        };
       }
-    }
 
-    case USER_BID_FILTERS_REQUEST: {
-      return {
-        ...state,
-        userBidFiltersLoading: true,
-        userBidFiltersSuccess: false,
-        userBidFiltersError: null
+      case FETCH_BY_ID_SUCCESS: {
+        // console.log("Fetch User: ", action.payload);
+        return {
+          ...state,
+          user: action.payload.data,
+          byIdLoading: false,
+          byIdSuccess: true,
+        };
       }
-    }
 
-    case USER_BID_FILTERS_SUCCESS: {
-      return {
-        ...state,
-        userBidFilters: action.payload.data,
-        userBidFiltersLoading: false,
-        userBidFiltersSuccess: true,
+      case FETCH_BY_ID_FAIL: {
+        return { ...state, user: undefined, byIdLoading: false, byIdError: action.payload };
       }
-    }
 
-    case USER_BID_FILTERS_FAIL: {
-      return {
-        ...state,
-        userBidFiltersLoading: false,
-        userBidFiltersError: action.payload
+      case CLEAR_CREATE: {
+        return { ...state, createLoading: false, createSuccess: false, createError: null };
       }
-    }
 
-    case CLEAR_CREATE_USER_FILTER: {
-      return {
-        ...state,
-        createUserFilterLoading: false,
-        createUserFilterSuccess: false,
-        createUserFilterError: null,
+      case CREATE_REQUEST: {
+        return { ...state, createLoading: true, createSuccess: false, createError: null };
       }
-    }
 
-    case CREATE_USER_FILTER_REQUEST: {
-      return {
-        ...state,
-        createUserFilterLoading: true,
-        createUserFilterSuccess: false,
-        createUserFilterError: null,
+      case CREATE_SUCCESS: {
+        return {
+          ...state,
+          users: undefined,
+          createdUserId: action.payload.data.id,
+          createLoading: false,
+          createSuccess: true,
+        };
       }
-    }
 
-    case CREATE_USER_FILTER_SUCCESS: {
-      return {
-        ...state,
-        createUserFilterLoading: false,
-        createUserFilterSuccess: true,
+      case CREATE_FAIL: {
+        return { ...state, createLoading: false, createError: action.payload };
       }
-    }
 
-    case CREATE_USER_FILTER_FAIL: {
-      return {
-        ...state,
-        createUserFilterLoading: false,
-        createUserFilterError: action.payload,
+      case CLEAR_EDIT: {
+        return { ...state, editLoading: false, editSuccess: false, editError: null };
       }
-    }
 
-    case CLEAR_USER_FILTERS: {
-      return {
-        ...state,
-        userFiltersLoading: false,
-        userFiltersSuccess: false,
-        userFitlersError: null
+      case EDIT_REQUEST: {
+        return { ...state, editLoading: true, editSuccess: false, editError: null };
       }
-    }
-  
-    case USER_FILTERS_REQUEST: {
-      return {
-        ...state,
-        users: undefined,
-        userFiltersLoading: true,
-        userFiltersSuccess: false,
-        userFitlersError: null
-      }
-    }
-  
-    case USER_FILTERS_SUCCESS: {
-      return {
-        ...state,
-        users: action.payload.data,
-        userFiltersLoading: false,
-        userFiltersSuccess: true,
-      }
-    }
-  
-    case USER_FILTERS_FAIL: {
-      return {
-        ...state,
-        userFiltersLoading: false,
-        userFiltersError: action.payload,
-      }
-    }
-  
-    case SET_USER_FILTERS_EMAIL: {
-      return {
-        ...state,
-        userFiltersEmail: action.payload
-      }
-    }
-  
-    case SET_USER_FILTERS_PHONE: {
-      return {
-        ...state,
-        userFiltersPhone: action.payload
-      }
-    }
 
-    case SET_USER_BOUGHT_TARIFF: {
-      return {
-        ...state,
-        boughtTariff: action.payload
+      case EDIT_SUCCESS: {
+        return {
+          ...state,
+          user: action.payload.data,
+          loading: true,
+          editLoading: false,
+          editSuccess: true,
+        };
       }
-    }
 
-    default:
-      return state;
+      case EDIT_FAIL: {
+        return { ...state, editLoading: false, editError: action.payload };
+      }
+
+      case CLEAR_DEL: {
+        return { ...state, delLoading: false, delSuccess: false, delError: null };
+      }
+
+      case DEL_REQUEST: {
+        return { ...state, delLoading: true, delSuccess: false, delError: null };
+      }
+
+      case DEL_SUCCESS: {
+        return { ...state, users: undefined, delLoading: false, delSuccess: true };
+      }
+
+      case DEL_FAIL: {
+        return { ...state, delLoading: false, delError: action.payload };
+      }
+
+      case CLEAR_CONTACT_VIEW_COUNT: {
+        return {
+          ...state,
+          contactViewCountLoading: false,
+          contactViewCountSuccess: false,
+          contactViewCountError: null,
+        };
+      }
+
+      case CONTACT_VIEW_COUNT_REQUEST: {
+        return {
+          ...state,
+          contactViewCountLoading: true,
+          contactViewCountSuccess: false,
+          contactViewCountError: null,
+        };
+      }
+
+      case CONTACT_VIEW_COUNT_SUCCESS: {
+        return { ...state, contactViewCountLoading: false, contactViewCountSuccess: true };
+      }
+
+      case CONTACT_VIEW_COUNT_FAIL: {
+        return {
+          ...state,
+          contactViewCountLoading: false,
+          contactViewCountError: action.payload,
+        };
+      }
+
+      case SET_OPEN_INFO_ALERT: {
+        return {
+          ...state,
+          openInfoAlert: action.payload.openInfoAlert,
+        };
+      }
+
+      case CLEAR_USER_ACTIVATE: {
+        return {
+          ...state,
+          userActivateLoading: false,
+          userActivateSuccess: false,
+          userActivateError: null,
+        };
+      }
+
+      case USER_ACTIVATE_REQUEST: {
+        return {
+          ...state,
+          userActivateLoading: true,
+          userActivateSuccess: false,
+          userActivateError: null,
+        };
+      }
+
+      case USER_ACTIVATE_SUCCESS: {
+        return { ...state, userActivateLoading: false, userActivateSuccess: true };
+      }
+
+      case USER_ACTIVATE_FAIL: {
+        return { ...state, userActivateLoading: false, userActivateError: action.payload };
+      }
+
+      case CLEAR_USER_BIDS: {
+        return { ...state, userBidsLoading: false, userBidsSuccess: false, userBidsError: null };
+      }
+
+      case USER_BIDS_REQUEST: {
+        return { ...state, userBidsLoading: true, userBidsSuccess: false, userBidsError: null };
+      }
+
+      case USER_BIDS_SUCCESS: {
+        return {
+          ...state,
+          userBids: action.payload.data,
+          userBidsLoading: false,
+          userBidsSuccess: true,
+        };
+      }
+
+      case USER_BIDS_FAIL: {
+        return { ...state, userBidsLoading: false, userBidsError: action.payload };
+      }
+
+      case CLEAR_USER_ROLES: {
+        return {
+          ...state,
+          roles: undefined,
+          userRolesLoading: false,
+          userRolesSuccess: false,
+          userRolesError: null,
+        };
+      }
+
+      case USER_ROLES_REQUEST: {
+        return {
+          ...state,
+          userRolesLoading: true,
+          userRolesSuccess: false,
+          userRolesError: null,
+        };
+      }
+
+      case USER_ROLES_SUCCESS: {
+        return {
+          ...state,
+          roles: action.payload.data,
+          userRolesLoading: false,
+          userRolesSuccess: true,
+        };
+      }
+
+      case USER_ROLES_FAIL: {
+        return {
+          ...state,
+          userRolesLoading: false,
+          userRolesError: action.payload,
+        };
+      }
+
+      case SET_CURRENT_ROLES: {
+        return {
+          ...state,
+          currentRoles: action.payload,
+        };
+      }
+
+      case CLEAR_USER_BID_FILTERS: {
+        return {
+          ...state,
+          userBidFilters: undefined,
+          userBidFiltersLoading: false,
+          userBidFiltersSuccess: false,
+          userBidFiltersError: null,
+        };
+      }
+
+      case USER_BID_FILTERS_REQUEST: {
+        return {
+          ...state,
+          userBidFiltersLoading: true,
+          userBidFiltersSuccess: false,
+          userBidFiltersError: null,
+        };
+      }
+
+      case USER_BID_FILTERS_SUCCESS: {
+        return {
+          ...state,
+          userBidFilters: action.payload.data,
+          userBidFiltersLoading: false,
+          userBidFiltersSuccess: true,
+        };
+      }
+
+      case USER_BID_FILTERS_FAIL: {
+        return {
+          ...state,
+          userBidFiltersLoading: false,
+          userBidFiltersError: action.payload,
+        };
+      }
+
+      case CLEAR_CREATE_USER_FILTER: {
+        return {
+          ...state,
+          createUserFilterLoading: false,
+          createUserFilterSuccess: false,
+          createUserFilterError: null,
+        };
+      }
+
+      case CREATE_USER_FILTER_REQUEST: {
+        return {
+          ...state,
+          createUserFilterLoading: true,
+          createUserFilterSuccess: false,
+          createUserFilterError: null,
+        };
+      }
+
+      case CREATE_USER_FILTER_SUCCESS: {
+        return {
+          ...state,
+          createUserFilterLoading: false,
+          createUserFilterSuccess: true,
+        };
+      }
+
+      case CREATE_USER_FILTER_FAIL: {
+        return {
+          ...state,
+          createUserFilterLoading: false,
+          createUserFilterError: action.payload,
+        };
+      }
+
+      case CLEAR_USER_FILTERS: {
+        return {
+          ...state,
+          userFiltersLoading: false,
+          userFiltersSuccess: false,
+          userFitlersError: null,
+        };
+      }
+
+      case USER_FILTERS_REQUEST: {
+        return {
+          ...state,
+          users: undefined,
+          userFiltersLoading: true,
+          userFiltersSuccess: false,
+          userFitlersError: null,
+        };
+      }
+
+      case USER_FILTERS_SUCCESS: {
+        return {
+          ...state,
+          users: action.payload.data,
+          userFiltersLoading: false,
+          userFiltersSuccess: true,
+        };
+      }
+
+      case USER_FILTERS_FAIL: {
+        return {
+          ...state,
+          userFiltersLoading: false,
+          userFiltersError: action.payload,
+        };
+      }
+
+      case SET_USER_FILTERS_EMAIL: {
+        return {
+          ...state,
+          userFiltersEmail: action.payload,
+        };
+      }
+
+      case SET_USER_FILTERS_PHONE: {
+        return {
+          ...state,
+          userFiltersPhone: action.payload,
+        };
+      }
+
+      case SET_USER_BOUGHT_TARIFF: {
+        return {
+          ...state,
+          boughtTariff: action.payload,
+        };
+      }
+
+      default:
+        return state;
+    }
   }
-};
+);
 
 export const actions = {
   clearFetch: () => createAction(CLEAR_FETCH),
-  fetchRequest: (payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: string, boughtTariff?: boolean }) =>
-    createAction(FETCH_REQUEST, payload),
+  fetchRequest: (payload: {
+    page: number;
+    perPage: number;
+    tariffId?: number;
+    funnelStateId?: number;
+    userRolesId?: string;
+    boughtTariff?: boolean;
+  }) => createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
@@ -681,8 +706,10 @@ export const actions = {
   setCurrentRoles: (payload: any) => createAction(SET_CURRENT_ROLES, payload),
 
   clearUserBidFilters: () => createAction(CLEAR_USER_BID_FILTERS),
-  userBidFiltersRequest: (payload: { id: number; type?: string }) => createAction(USER_BID_FILTERS_REQUEST, payload),
-  userBidFiltersSuccess: (payload: IServerResponse<IUserBidFilters>) => createAction(USER_BID_FILTERS_SUCCESS, payload),
+  userBidFiltersRequest: (payload: { id: number; type?: string }) =>
+    createAction(USER_BID_FILTERS_REQUEST, payload),
+  userBidFiltersSuccess: (payload: IServerResponse<IUserBidFilters>) =>
+    createAction(USER_BID_FILTERS_SUCCESS, payload),
   userBidFiltersFail: (payload: string) => createAction(USER_BID_FILTERS_FAIL, payload),
 
   clearCreateUserFilter: () => createAction(CLEAR_CREATE_USER_FILTER),
@@ -691,7 +718,8 @@ export const actions = {
   createUserFilterFail: (payload: string) => createAction(CREATE_USER_FILTER_FAIL, payload),
 
   clearUserFilters: () => createAction(CLEAR_USER_FILTERS),
-  userFiltersRequest: (payload: { email?: string, phone?: string }) => createAction(USER_FILTERS_REQUEST, payload),
+  userFiltersRequest: (payload: { email?: string; phone?: string }) =>
+    createAction(USER_FILTERS_REQUEST, payload),
   userFiltersSuccess: (payload: any) => createAction(USER_FILTERS_SUCCESS, payload),
   userFiltersFail: (payload: string) => createAction(USER_FILTERS_FAIL, payload),
 
@@ -703,10 +731,29 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga({ payload }: { payload: { page: number; perPage: number; tariffId?: number; funnelStateId?: number; userRolesId?: string, boughtTariff?: boolean } }) {
+function* fetchSaga({
+  payload,
+}: {
+  payload: {
+    page: number;
+    perPage: number;
+    tariffId?: number;
+    funnelStateId?: number;
+    userRolesId?: string;
+    boughtTariff?: boolean;
+  };
+}) {
   try {
     const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
-      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId, payload.boughtTariff))
+      getUsers(
+        payload.page,
+        payload.perPage,
+        payload.tariffId,
+        payload.funnelStateId,
+        payload.userRolesId,
+        payload.boughtTariff
+      )
+    );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
     yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -787,9 +834,11 @@ function* userRolesSaga() {
   }
 }
 
-function* userBidFiltersSaga({ payload }: { payload: { id: number; type?: string; } }) {
+function* userBidFiltersSaga({ payload }: { payload: { id: number; type?: string } }) {
   try {
-    const { data }: { data: IServerResponse<IUserBidFilters> } = yield call(() => getUserBidFilters(payload));
+    const { data }: { data: IServerResponse<IUserBidFilters> } = yield call(() =>
+      getUserBidFilters(payload)
+    );
     yield put(actions.userBidFiltersSuccess(data));
   } catch (e) {
     yield put(actions.userBidFiltersFail(e?.response?.data?.message) || "Ошибка соединения.");
@@ -832,7 +881,16 @@ export function* saga() {
   );
   yield takeLatest<ReturnType<typeof actions.userBidsRequest>>(USER_BIDS_REQUEST, userBidsSaga);
   yield takeLatest<ReturnType<typeof actions.userRolesRequest>>(USER_ROLES_REQUEST, userRolesSaga);
-  yield takeLatest<ReturnType<typeof actions.userBidFiltersRequest>>(USER_BID_FILTERS_REQUEST, userBidFiltersSaga);
-  yield takeLatest<ReturnType<typeof actions.createUserFilterRequest>>(CREATE_USER_FILTER_REQUEST, createUserFilterSaga);
-  yield takeLatest<ReturnType<typeof actions.userFiltersRequest>>(USER_FILTERS_REQUEST, userFiltersSaga);
+  yield takeLatest<ReturnType<typeof actions.userBidFiltersRequest>>(
+    USER_BID_FILTERS_REQUEST,
+    userBidFiltersSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.createUserFilterRequest>>(
+    CREATE_USER_FILTER_REQUEST,
+    createUserFilterSaga
+  );
+  yield takeLatest<ReturnType<typeof actions.userFiltersRequest>>(
+    USER_FILTERS_REQUEST,
+    userFiltersSaga
+  );
 }

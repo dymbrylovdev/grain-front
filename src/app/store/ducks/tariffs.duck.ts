@@ -1,6 +1,8 @@
 import { Reducer } from "redux";
 import { TAppActions } from "../rootDuck";
 import { put, takeLatest, call } from "redux-saga/effects";
+import { persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
@@ -14,6 +16,7 @@ import {
   getTariffsTypes,
   getFondyCredentials,
 } from "../../crud/tariffs.crud";
+import { PersistPartial } from "redux-persist/es/persistReducer";
 
 const CLEAR_FETCH = "tariffs/CLEAR_FETCH";
 const FETCH_REQUEST = "tariffs/FETCH_REQUEST";
@@ -46,7 +49,6 @@ const CLEAR_EDIT_LIMITS = "tariffs/CLEAR_EDIT_LIMITS";
 const EDIT_LIMITS_REQUEST = "tariffs/EDIT_LIMITS_REQUEST";
 const EDIT_LIMITS_SUCCESS = "tariffs/EDIT_LIMITS_SUCCESS";
 const EDIT_LIMITS_FAIL = "tariff/EDIT_LIMITS_FAIL";
-
 
 const CLEAR_FONDY_CREDENTIALS = "tariffs/CLEAR_FONDY_CREDENTIALS";
 const FONDY_CREDENTIALS_REQUEST = "tariffs/FONDY_CREDENTIALS_REQUEST";
@@ -126,291 +128,298 @@ const initialState: IInitialState = {
   showTariffTable: 0,
 };
 
-export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
-  switch (action.type) {
-    case CLEAR_SELECTED_TARIFF: {
-      return {
-        ...state,
-        selectedTariff: null,
-      };
-    }
-
-    case SET_TARIFF: {
-      const selectedTariff = state.tariffs?.find(item => item.id === action.payload.id);
-
-      if (!selectedTariff) return { ...state };
-      return {
-        ...state,
-        selectedTariff,
-      };
-    }
-
-    case SET_SELECTED_DATA: {
-      return {
-        ...state,
-        selectedDate: action.payload.selectedDate,
-      };
-    }
-
-    case CLEAR_FETCH: {
-      return {
-        ...state,
-        tariffs: undefined,
-        loading: false,
-        success: false,
-        error: null,
-      };
-    }
-
-    case FETCH_REQUEST: {
-      return {
-        ...state,
-        loading: true,
-        success: false,
-        error: null,
-      };
-    }
-
-    case FETCH_SUCCESS: {
-      // console.log("Fetch tariffs: ", action.payload.response.data);
-      return {
-        ...state,
-        tariffs: action.payload.response.data,
-        loading: false,
-        success: true,
-      };
-    }
-
-    case FETCH_FAIL: {
-      return { ...state, loading: false, error: action.payload.error };
-    }
-
-    case CLEAR_EDIT: {
-      return {
-        ...state,
-        tariff: undefined,
-        editLoading: false,
-        editSuccess: false,
-        editError: null,
-      };
-    }
-
-    case EDIT_REQUEST: {
-      return { ...state, editLoading: true, editSuccess: false, editError: null };
-    }
-
-    case EDIT_SUCCESS: {
-      let newTariffs: ITariff[] = [];
-      state.tariffs?.forEach(item => {
-        if (item.id === action.payload.response.data.id) {
-          newTariffs.push(action.payload.response.data);
-        } else {
-          newTariffs.push(item);
-        }
-      });
-      return {
-        ...state,
-        tariffs: newTariffs,
-        editLoading: false,
-        editSuccess: true,
-      };
-    }
-
-    case EDIT_FAIL: {
-      return { ...state, editLoading: false, editError: action.payload.error };
-    }
-
-    case CLEAR_EDIT_PERIOD: {
-      return {
-        ...state,
-        tariff: undefined,
-        editPeriodLoading: false,
-        editPeriodSuccess: false,
-        editPeriodError: null,
-      };
-    }
-
-    case EDIT_PERIOD_REQUEST: {
-      return {
-        ...state,
-        editPeriodLoading: true,
-        editPeriodSuccess: false,
-        editPeriodError: null,
-      };
-    }
-
-    case EDIT_PERIOD_SUCCESS: {
-      let newTariffs: ITariff[] = [];
-      state.tariffs?.forEach(item => {
-        if (
-          item.tariff_period
-            ? item.tariff_period.id === action.payload.response.data.id
-            : item.tariff_period === null
-        ) {
-          let newItem = Object.assign({}, item);
-          newItem.tariff_period = action.payload.response.data;
-          newTariffs.push(newItem);
-        } else {
-          newTariffs.push(item);
-        }
-      });
-      return {
-        ...state,
-        tariffs: newTariffs,
-        editPeriodLoading: false,
-        editPeriodSuccess: true,
-      };
-    }
-
-    case EDIT_PERIOD_FAIL: {
-      return {
-        ...state,
-        editPeriodLoading: false,
-        editPeriodError: action.payload.error,
-      };
-    }
-
-    case CLEAR_TARIFFS_TYPES: {
-      return {
-        ...state,
-        tariffsTypes: undefined,
-        tariffsTypesLoading: false,
-        tariffsTypesSuccess: false,
-        tariffsTypesError: null,
-      };
-    }
-
-    case TARIFFS_TYPES_REQUEST: {
-      return {
-        ...state,
-        tariffsTypesLoading: true,
-        tariffsTypesSuccess: false,
-        tariffsTypesError: null,
-      };
-    }
-
-    case TARIFFS_TYPES_SUCCESS: {
-      return {
-        ...state,
-        tariffsTypes: action.payload.response.data,
-        tariffsTypesLoading: false,
-        tariffsTypesSuccess: true,
-      };
-    }
-
-    case TARIFFS_TYPES_FAIL: {
-      return {
-        ...state,
-        tariffsTypesLoading: false,
-        tariffsTypesError: action.payload.error,
-      };
-    }
-
-    case USERS_FILTER_SET_TARIFF: {
-      return {
-        ...state,
-        usersFilterTariff: action.payload
+export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
+  {
+    storage,
+    key: "userFilters",
+    whitelist: ["tariffsTypes", "usersFilterTariff"],
+  },
+  (state = initialState, action) => {
+    switch (action.type) {
+      case CLEAR_SELECTED_TARIFF: {
+        return {
+          ...state,
+          selectedTariff: null,
+        };
       }
-    }
 
-    case CLEAR_FONDY_CREDENTIALS: {
-      return {
-        ...state,
-        merchant_id: undefined,
-        fondyCredentialsLoading: false,
-        fondyCredentialsSuccess: false,
-        fondyCredentialsError: null,
-      };
-    }
+      case SET_TARIFF: {
+        const selectedTariff = state.tariffs?.find(item => item.id === action.payload.id);
 
-    case CLEAR_EDIT_LIMITS: {
-      return {
-        ...state,
-        tariff: undefined,
-        editLimitsLoading: false,
-        editLimitsSuccess: false,
-        editLimitsError: null,
-      };
-    }
+        if (!selectedTariff) return { ...state };
+        return {
+          ...state,
+          selectedTariff,
+        };
+      }
 
-    case EDIT_LIMITS_REQUEST: {
-      return {
-        ...state,
-        editLimitsLoading: true,
-        editLimitsSuccess: false,
-        editLimitsError: null,
-      };
-    }
+      case SET_SELECTED_DATA: {
+        return {
+          ...state,
+          selectedDate: action.payload.selectedDate,
+        };
+      }
 
-    case EDIT_LIMITS_SUCCESS: {
-      let newTariffs: ITariff[] = [];
-      state.tariffs?.forEach(item => {
-        if (
-          item.tariff_limits
-            ? item.tariff_limits.id === action.payload.response.data.id
-            : item.tariff_limits === null
-        ) {
-          let newItem = Object.assign({}, item);
-          //@ts-ignore
-          newItem.tariff_limits = action.payload.response.data;
-          newTariffs.push(newItem);
-        } else {
-          newTariffs.push(item);
-        }
-      });
-      return {
-        ...state,
-        tariffs: newTariffs,
-        editLimitsLoading: false,
-        editLimitsSuccess: true,
-      };
-    }
+      case CLEAR_FETCH: {
+        return {
+          ...state,
+          tariffs: undefined,
+          loading: false,
+          success: false,
+          error: null,
+        };
+      }
 
-    case EDIT_LIMITS_FAIL: {
-      return {
-        ...state,
-        editLimitsLoading: false,
-        editLimitsError: action.payload.error,
-      };
-    }
+      case FETCH_REQUEST: {
+        return {
+          ...state,
+          loading: true,
+          success: false,
+          error: null,
+        };
+      }
 
-    case FONDY_CREDENTIALS_REQUEST: {
-      return {
-        ...state,
-        fondyCredentialsLoading: true,
-        fondyCredentialsSuccess: false,
-        fondyCredentialsError: null,
-      };
-    }
+      case FETCH_SUCCESS: {
+        // console.log("Fetch tariffs: ", action.payload.response.data);
+        return {
+          ...state,
+          tariffs: action.payload.response.data,
+          loading: false,
+          success: true,
+        };
+      }
 
-    case FONDY_CREDENTIALS_SUCCESS: {
-      return {
-        ...state,
-        merchant_id: action.payload.response.data,
-        fondyCredentialsLoading: false,
-        fondyCredentialsSuccess: true,
-      };
-    }
+      case FETCH_FAIL: {
+        return { ...state, loading: false, error: action.payload.error };
+      }
 
-    case FONDY_CREDENTIALS_FAIL: {
-      return {
-        ...state,
-        fondyCredentialsLoading: false,
-        fondyCredentialsError: action.payload.error,
-      };
-    }
+      case CLEAR_EDIT: {
+        return {
+          ...state,
+          tariff: undefined,
+          editLoading: false,
+          editSuccess: false,
+          editError: null,
+        };
+      }
 
-    case SET_TARIFF_TABLE: {
-      return {
-        ...state,
-        showTariffTable: action.payload,
-      };
-    }
+      case EDIT_REQUEST: {
+        return { ...state, editLoading: true, editSuccess: false, editError: null };
+      }
 
-    default:
-      return state;
+      case EDIT_SUCCESS: {
+        let newTariffs: ITariff[] = [];
+        state.tariffs?.forEach(item => {
+          if (item.id === action.payload.response.data.id) {
+            newTariffs.push(action.payload.response.data);
+          } else {
+            newTariffs.push(item);
+          }
+        });
+        return {
+          ...state,
+          tariffs: newTariffs,
+          editLoading: false,
+          editSuccess: true,
+        };
+      }
+
+      case EDIT_FAIL: {
+        return { ...state, editLoading: false, editError: action.payload.error };
+      }
+
+      case CLEAR_EDIT_PERIOD: {
+        return {
+          ...state,
+          tariff: undefined,
+          editPeriodLoading: false,
+          editPeriodSuccess: false,
+          editPeriodError: null,
+        };
+      }
+
+      case EDIT_PERIOD_REQUEST: {
+        return {
+          ...state,
+          editPeriodLoading: true,
+          editPeriodSuccess: false,
+          editPeriodError: null,
+        };
+      }
+
+      case EDIT_PERIOD_SUCCESS: {
+        let newTariffs: ITariff[] = [];
+        state.tariffs?.forEach(item => {
+          if (
+            item.tariff_period
+              ? item.tariff_period.id === action.payload.response.data.id
+              : item.tariff_period === null
+          ) {
+            let newItem = Object.assign({}, item);
+            newItem.tariff_period = action.payload.response.data;
+            newTariffs.push(newItem);
+          } else {
+            newTariffs.push(item);
+          }
+        });
+        return {
+          ...state,
+          tariffs: newTariffs,
+          editPeriodLoading: false,
+          editPeriodSuccess: true,
+        };
+      }
+
+      case EDIT_PERIOD_FAIL: {
+        return {
+          ...state,
+          editPeriodLoading: false,
+          editPeriodError: action.payload.error,
+        };
+      }
+
+      case CLEAR_TARIFFS_TYPES: {
+        return {
+          ...state,
+          tariffsTypes: undefined,
+          tariffsTypesLoading: false,
+          tariffsTypesSuccess: false,
+          tariffsTypesError: null,
+        };
+      }
+
+      case TARIFFS_TYPES_REQUEST: {
+        return {
+          ...state,
+          tariffsTypesLoading: true,
+          tariffsTypesSuccess: false,
+          tariffsTypesError: null,
+        };
+      }
+
+      case TARIFFS_TYPES_SUCCESS: {
+        return {
+          ...state,
+          tariffsTypes: action.payload.response.data,
+          tariffsTypesLoading: false,
+          tariffsTypesSuccess: true,
+        };
+      }
+
+      case TARIFFS_TYPES_FAIL: {
+        return {
+          ...state,
+          tariffsTypesLoading: false,
+          tariffsTypesError: action.payload.error,
+        };
+      }
+
+      case USERS_FILTER_SET_TARIFF: {
+        return {
+          ...state,
+          usersFilterTariff: action.payload,
+        };
+      }
+
+      case CLEAR_FONDY_CREDENTIALS: {
+        return {
+          ...state,
+          merchant_id: undefined,
+          fondyCredentialsLoading: false,
+          fondyCredentialsSuccess: false,
+          fondyCredentialsError: null,
+        };
+      }
+
+      case CLEAR_EDIT_LIMITS: {
+        return {
+          ...state,
+          tariff: undefined,
+          editLimitsLoading: false,
+          editLimitsSuccess: false,
+          editLimitsError: null,
+        };
+      }
+
+      case EDIT_LIMITS_REQUEST: {
+        return {
+          ...state,
+          editLimitsLoading: true,
+          editLimitsSuccess: false,
+          editLimitsError: null,
+        };
+      }
+
+      case EDIT_LIMITS_SUCCESS: {
+        let newTariffs: ITariff[] = [];
+        state.tariffs?.forEach(item => {
+          if (
+            item.tariff_limits
+              ? item.tariff_limits.id === action.payload.response.data.id
+              : item.tariff_limits === null
+          ) {
+            let newItem = Object.assign({}, item);
+            //@ts-ignore
+            newItem.tariff_limits = action.payload.response.data;
+            newTariffs.push(newItem);
+          } else {
+            newTariffs.push(item);
+          }
+        });
+        return {
+          ...state,
+          tariffs: newTariffs,
+          editLimitsLoading: false,
+          editLimitsSuccess: true,
+        };
+      }
+
+      case EDIT_LIMITS_FAIL: {
+        return {
+          ...state,
+          editLimitsLoading: false,
+          editLimitsError: action.payload.error,
+        };
+      }
+
+      case FONDY_CREDENTIALS_REQUEST: {
+        return {
+          ...state,
+          fondyCredentialsLoading: true,
+          fondyCredentialsSuccess: false,
+          fondyCredentialsError: null,
+        };
+      }
+
+      case FONDY_CREDENTIALS_SUCCESS: {
+        return {
+          ...state,
+          merchant_id: action.payload.response.data,
+          fondyCredentialsLoading: false,
+          fondyCredentialsSuccess: true,
+        };
+      }
+
+      case FONDY_CREDENTIALS_FAIL: {
+        return {
+          ...state,
+          fondyCredentialsLoading: false,
+          fondyCredentialsError: action.payload.error,
+        };
+      }
+
+      case SET_TARIFF_TABLE: {
+        return {
+          ...state,
+          showTariffTable: action.payload,
+        };
+      }
+
+      default:
+        return state;
+    }
   }
-};
+);
 
 export const actions = {
   clearFetch: () => createAction(CLEAR_FETCH),
@@ -461,7 +470,9 @@ export type TActions = ActionsUnion<typeof actions>;
 
 function* fetchSaga({ payload }: { payload: { userView?: number } }) {
   try {
-    const { data }: { data: IServerResponse<ITariff[]> } = yield call(() => getTariffs(payload.userView));
+    const { data }: { data: IServerResponse<ITariff[]> } = yield call(() =>
+      getTariffs(payload.userView)
+    );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
     yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -492,7 +503,9 @@ function* editPeriodSaga({ payload }: { payload: { id: number; data: ITariffToRe
 
 function* getTariffsTypesSaga({ payload }: { payload?: string }) {
   try {
-    const { data }: { data: IServerResponse<ITariffType> } = yield call(() => getTariffsTypes(payload));
+    const { data }: { data: IServerResponse<ITariffType> } = yield call(() =>
+      getTariffsTypes(payload)
+    );
     yield put(actions.tariffsTypesSuccess(data));
   } catch (e) {
     yield put(actions.tariffsTypesFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -526,7 +539,10 @@ export function* saga() {
     EDIT_PERIOD_REQUEST,
     editPeriodSaga
   );
-  yield takeLatest<ReturnType<typeof actions.tariffsTypesRequest>>(TARIFFS_TYPES_REQUEST, getTariffsTypesSaga);
+  yield takeLatest<ReturnType<typeof actions.tariffsTypesRequest>>(
+    TARIFFS_TYPES_REQUEST,
+    getTariffsTypesSaga
+  );
   yield takeLatest<ReturnType<typeof actions.editLimitsRequest>>(
     EDIT_LIMITS_REQUEST,
     editLimitsSaga

@@ -328,9 +328,9 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           )}
           {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
             <Collapse in={usersOpen} timeout="auto" unmountOnExit>
-              <MenuItem onClick={() => handleClick("/user-list")} className={classes.nested}>
+              {/* <MenuItem onClick={() => handleClick("/user-list")} className={classes.nested}>
                 {intl.formatMessage({ id: "SUBMENU.USER.LIST" })}
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem onClick={() => handleClick("/user/create")} className={classes.nested}>
                 {intl.formatMessage({ id: "SUBMENU.USER.CREATE_USER" })}
               </MenuItem>
