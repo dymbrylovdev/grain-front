@@ -210,12 +210,12 @@ const useStyles = makeStyles(theme => ({
 
   [theme.breakpoints.down("xs")]: {
     paperWithTable: {
-      marginLeft: -15,
-      marginRight: -15,
+      // marginLeft: -15,
+      // marginRight: -15,
     },
     paperWithForm: {
-      marginLeft: -15,
-      marginRight: -15,
+      // marginLeft: -15,
+      // marginRight: -15,
       paddingLeft: 0,
       paddingRight: 0,
     },

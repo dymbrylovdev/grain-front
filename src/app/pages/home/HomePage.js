@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { LayoutSplashScreen } from "../../../_metronic";
 import getMenuConfig from "../../router/MenuConfig";
@@ -40,12 +40,27 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
     setMenuConfig(getMenuConfig(user.crops, user));
   }, [setMenuConfig, user]);
 
+  const redirectUrl = useMemo(() => {
+    if (user) {
+      if (
+        user.roles.includes("ROLE_ADMIN") ||
+        user.roles.includes("ROLE_MANAGER") ||
+        user.roles.includes("ROLE_TRADER")
+      ) {
+        return `/sale/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
+      } else {
+        return `/purchase/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
+      }
+    }
+    return "/auth";
+  }, [user]);
+
   return (
     <Suspense fallback={<LayoutSplashScreen />}>
       <Switch>
         {
           /* Redirect from root URL to /dashboard. */
-          <Redirect exact from="/" to={"/user/profile"} />
+          <Redirect exact from="/" to={redirectUrl} />
         }
         <Route path="/userDocs/legacy" component={UserDocPage} />
         <Route path="/user/view/:id" exact component={UserEditPage} />

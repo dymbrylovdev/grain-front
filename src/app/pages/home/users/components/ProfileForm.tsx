@@ -760,45 +760,45 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
-      {editMode === "view" && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) ? null : (
-        <div className={classes.textFieldContainer}>
-          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
-              <div style={{ fontSize: "26px", marginTop: "3px", marginRight: "5px" }}>+</div>
-              <TextField
-                type="tel"
-                label={intl.formatMessage({
-                  id: "PROFILE.INPUT.PHONE",
-                })}
-                margin="normal"
-                className={classes.textField}
-                classes={
-                  prompterRunning && prompterStep === 0 && !!values.fio && !values.phone
-                    ? { root: innerClasses.pulseRoot }
-                    : {}
-                }
-                name="phone"
-                value={values.phone}
-                variant="outlined"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                helperText={touched.phone && errors.phone}
-                error={Boolean(touched.phone && errors.phone)}
-                InputLabelProps={{ shrink: true }}
-                autoComplete="off"
-              />
-            </div>
-          )}
-        </div>
-      )}
+      {/*{editMode === "view" && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) ? null : (*/}
+      <div className={classes.textFieldContainer}>
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
+            <div style={{ fontSize: "26px", marginTop: "3px", marginRight: "5px" }}>+</div>
+            <TextField
+              type="tel"
+              label={intl.formatMessage({
+                id: "PROFILE.INPUT.PHONE",
+              })}
+              margin="normal"
+              className={classes.textField}
+              classes={
+                prompterRunning && prompterStep === 0 && !!values.fio && !values.phone
+                  ? { root: innerClasses.pulseRoot }
+                  : {}
+              }
+              name="phone"
+              value={values.phone}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={touched.phone && errors.phone}
+              error={Boolean(touched.phone && errors.phone)}
+              InputLabelProps={{ shrink: true }}
+              autoComplete="off"
+            />
+          </div>
+        )}
+      </div>
+      {/*)}*/}
 
-      {user && (editMode === "view" || editMode === "edit") && (
+      {/*{user && (editMode === "view" || editMode === "edit") && (
         <div style={{ marginTop: 15, marginBottom: 15 }}>
           <PhoneButton userId={user?.id || 0} realNumber={values.phone} />
         </div>
-      )}
+      )}*/}
 
       {editMode !== "create" && (
         <div>
