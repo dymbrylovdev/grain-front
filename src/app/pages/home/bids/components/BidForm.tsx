@@ -118,8 +118,8 @@ const getInitialValues = (
             ? user.points[0]
             : { text: "" }
           : !!me && me.points.length === 1
-          ? me.points[0]
-          : { text: "" }
+            ? me.points[0]
+            : { text: "" }
         : bid?.location || { text: "" },
     pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: !!bid ? bid.type : salePurchaseMode,
@@ -353,10 +353,10 @@ const BidForm: React.FC<IProps> = ({
   const currentCropId: number = !!bid
     ? bid.crop_id
     : !!cropId
-    ? cropId
-    : vendor?.crops.length === 1
-    ? vendor.crops[0].id
-    : 0;
+      ? cropId
+      : vendor?.crops.length === 1
+        ? vendor.crops[0].id
+        : 0;
 
   const onCheckboxChange = (e: any, val: number) => {
     if (val === 1) setSendingEmail(!isSendingEmail);
@@ -371,8 +371,8 @@ const BidForm: React.FC<IProps> = ({
         me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
           ? `/user/edit/${!!bid && bid.vendor && bid.vendor.id}`
           : me?.id === (!!bid && bid.vendor && bid.vendor.id)
-          ? "/user/profile"
-          : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
+            ? "/user/profile"
+            : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
       );
       //@ts-ignore
       if (
@@ -679,9 +679,9 @@ const BidForm: React.FC<IProps> = ({
                 disabled={buttonLoading}
                 onPress={() => {
                   !values.location.text ||
-                  !values.volume ||
-                  !values.crop_id ||
-                  (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
+                    !values.volume ||
+                    !values.crop_id ||
+                    (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
                     ? setFormikErrored(true)
                     : setFormikErrored(false);
                   handleSubmit();
@@ -710,8 +710,8 @@ const BidForm: React.FC<IProps> = ({
                     ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
                       ? `/user/edit/${bid?.author?.id}`
                       : me?.id === bid?.author?.id
-                      ? "/user/profile"
-                      : `/user/view/${bid?.author?.id}`
+                        ? "/user/profile"
+                        : `/user/view/${bid?.author?.id}`
                   }
                 >
                   <div className={innerClasses.authorText}>
@@ -734,11 +734,10 @@ const BidForm: React.FC<IProps> = ({
                   style={{ cursor: "pointer", color: "blue" }}
                   onClick={linkToContact}
                 >
-                  {`${
-                    bid.type === "sale"
+                  {`${bid.type === "sale"
                       ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
                       : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
-                  }: ${bid.vendor.fio || bid.vendor.login || `ID ${bid.vendor.id}`}`}
+                    }: ${bid.vendor.fio || bid.vendor.login || `ID ${bid.vendor.id}`}`}
                 </div>
               </div>
 
@@ -751,9 +750,8 @@ const BidForm: React.FC<IProps> = ({
                       color="error"
                       style={{ marginTop: 8, marginBottom: 8 }}
                     >
-                      {`Сегодня вам доступен просмотр ${
-                        me?.contact_view_count
-                      } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}{" "}
+                      {`Сегодня вам доступен просмотр ${me?.contact_view_count
+                        } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}{" "}
                       <Link to={"/user/profile/tariffs"}>Снять ограничения</Link>
                     </Alert>
                   )}
@@ -767,7 +765,7 @@ const BidForm: React.FC<IProps> = ({
                 {!!bid?.vendor?.company && (
                   <div className={classes.rightMargin1}>
                     {!bid?.vendor?.company_confirmed_by_payment &&
-                    !bid?.vendor?.company_confirmed_by_email ? (
+                      !bid?.vendor?.company_confirmed_by_email ? (
                       <ReportProblemIcon color="error" />
                     ) : (
                       <CheckCircleOutlineIcon color="secondary" />
@@ -915,19 +913,19 @@ const BidForm: React.FC<IProps> = ({
           InputProps={
             editMode !== "view"
               ? {
-                  style:
-                    editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
-                      ? {
-                          color: "#fd397a",
-                        }
-                      : {},
-                  inputComponent: NumberFormatCustom as any,
-                  endAdornment: (
-                    <IconButton onClick={() => setFieldValue("price", "")}>
-                      <CloseIcon />
-                    </IconButton>
-                  ),
-                }
+                style:
+                  editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
+                    ? {
+                      color: "#fd397a",
+                    }
+                    : {},
+                inputComponent: NumberFormatCustom as any,
+                endAdornment: (
+                  <IconButton onClick={() => setFieldValue("price", "")}>
+                    <CloseIcon />
+                  </IconButton>
+                ),
+              }
               : undefined
           }
           disabled={editMode === "view"}
@@ -963,9 +961,8 @@ const BidForm: React.FC<IProps> = ({
                       color="info"
                       style={{ marginTop: 15 }}
                     >
-                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
-                        bidsPair.price_with_delivery
-                      } ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
+                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${bidsPair.price_with_delivery
+                        } ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
                     </Alert>
                   ) : (
                     <Alert
@@ -974,9 +971,8 @@ const BidForm: React.FC<IProps> = ({
                       color="info"
                       style={{ marginTop: 15 }}
                     >
-                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${
-                        bidsPair.price
-                      } ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
+                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${bidsPair.price
+                        } ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
                     </Alert>
                   )}
                 </>
@@ -1102,16 +1098,16 @@ const BidForm: React.FC<IProps> = ({
             InputProps={
               editMode !== "view"
                 ? {
-                    inputComponent: NumberFormatCustom as any,
-                    endAdornment: (
-                      <IconButton
-                        onClick={() => setFieldValue("payment_term", "")}
-                        disabled={fullPrepayment}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                    ),
-                  }
+                  inputComponent: NumberFormatCustom as any,
+                  endAdornment: (
+                    <IconButton
+                      onClick={() => setFieldValue("payment_term", "")}
+                      disabled={fullPrepayment}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }
                 : undefined
             }
             disabled={editMode === "view" || fullPrepayment}
@@ -1156,9 +1152,9 @@ const BidForm: React.FC<IProps> = ({
             <div className={innerClasses.calcDescription}>
               {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
                 ? intl.formatMessage(
-                    { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" },
-                    { vat: bid.vat }
-                  )
+                  { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" },
+                  { vat: bid.vat }
+                )
                 : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
             </div>
             <div style={{ height: 8 }}></div>
@@ -1168,11 +1164,11 @@ const BidForm: React.FC<IProps> = ({
                   bid.point_prices.map((item, i) => (
                     <div key={i}>
                       {!!me &&
-                      me.use_vat &&
-                      values.bid_type === "sale" &&
-                      !!bid &&
-                      !!bid.vat &&
-                      !vendorUseVat ? (
+                        me.use_vat &&
+                        values.bid_type === "sale" &&
+                        !!bid &&
+                        !!bid.vat &&
+                        !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(
@@ -1212,11 +1208,11 @@ const BidForm: React.FC<IProps> = ({
                   bid.point_prices.map((item, i) => (
                     <div key={i}>
                       {!!me &&
-                      me.use_vat &&
-                      values.bid_type === "sale" &&
-                      !!bid &&
-                      !!bid.vat &&
-                      !vendorUseVat ? (
+                        me.use_vat &&
+                        values.bid_type === "sale" &&
+                        !!bid &&
+                        !!bid.vat &&
+                        !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(
@@ -1262,22 +1258,22 @@ const BidForm: React.FC<IProps> = ({
                   bid.point_prices.map((item, i) => (
                     <div key={i}>
                       {!!me &&
-                      me.use_vat &&
-                      values.bid_type === "sale" &&
-                      !!bid &&
-                      !!bid.vat &&
-                      !vendorUseVat ? (
+                        me.use_vat &&
+                        values.bid_type === "sale" &&
+                        !!bid &&
+                        !!bid.vat &&
+                        !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(
                               values.volume *
-                                getDeliveryPrice(
-                                  bid,
-                                  i,
-                                  values.pricePerKm,
-                                  salePurchaseMode,
-                                  +bid.vat
-                                )
+                              getDeliveryPrice(
+                                bid,
+                                i,
+                                values.pricePerKm,
+                                salePurchaseMode,
+                                +bid.vat
+                              )
                             ).toString()
                           )}
                         </b>
@@ -1286,7 +1282,7 @@ const BidForm: React.FC<IProps> = ({
                           {thousands(
                             Math.round(
                               values.volume *
-                                getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
+                              getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
                             ).toString()
                           )}
                         </b>
@@ -1304,9 +1300,9 @@ const BidForm: React.FC<IProps> = ({
             <div className={innerClasses.calcDescription}>
               {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
                 ? intl.formatMessage(
-                    { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT_ALL" },
-                    { vat: bid.vat }
-                  )
+                  { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT_ALL" },
+                  { vat: bid.vat }
+                )
                 : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_ALL" })}
             </div>
             <div style={{ height: 8 }}></div>
@@ -1317,16 +1313,16 @@ const BidForm: React.FC<IProps> = ({
                   bid.point_prices.map((item, i) => (
                     <div key={i}>
                       {!!me &&
-                      me.use_vat &&
-                      values.bid_type === "sale" &&
-                      !!bid &&
-                      !!bid.vat &&
-                      !vendorUseVat ? (
+                        me.use_vat &&
+                        values.bid_type === "sale" &&
+                        !!bid &&
+                        !!bid.vat &&
+                        !vendorUseVat ? (
                         <b>
                           {thousands(
                             Math.round(
                               values.volume *
-                                getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
+                              getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
                             ).toString()
                           )}
                         </b>
@@ -1335,7 +1331,7 @@ const BidForm: React.FC<IProps> = ({
                           {thousands(
                             Math.round(
                               values.volume *
-                                getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
+                              getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
                             ).toString()
                           )}
                         </b>
@@ -1369,13 +1365,13 @@ const BidForm: React.FC<IProps> = ({
           InputProps={
             editMode !== "view"
               ? {
-                  inputComponent: NumberFormatCustom as any,
-                  endAdornment: (
-                    <IconButton onClick={() => setFieldValue("volume", "")}>
-                      <CloseIcon />
-                    </IconButton>
-                  ),
-                }
+                inputComponent: NumberFormatCustom as any,
+                endAdornment: (
+                  <IconButton onClick={() => setFieldValue("volume", "")}>
+                    <CloseIcon />
+                  </IconButton>
+                ),
+              }
               : undefined
           }
           disabled={editMode === "view"}
@@ -1429,7 +1425,7 @@ const BidForm: React.FC<IProps> = ({
                     {showPlacemark && (
                       <Placemark
                         geometry={mapState.center}
-                        properties={{iconCaption: bid.location.text}}
+                        properties={{ iconCaption: bid.location.text }}
                         modules={['geoObject.addon.balloon']}
                       />
                     )}
@@ -1501,8 +1497,8 @@ const BidForm: React.FC<IProps> = ({
             </p>
           )}
           {(editMode === "edit" && !!user && user.points.length > 0) ||
-          (editMode !== "edit" && !vendorId && !!me && me.points.length > 0) ||
-          (editMode !== "edit" && !!vendorId && !!user && user.points.length > 0) ? (
+            (editMode !== "edit" && !vendorId && !!me && me.points.length > 0) ||
+            (editMode !== "edit" && !!vendorId && !!user && user.points.length > 0) ? (
             ((editMode === "edit" && !!user && user.points.length > 1) ||
               (editMode !== "edit" && !vendorId && !!me && me.points.length > 1) ||
               (editMode !== "edit" && !!vendorId && !!user && user.points.length > 1)) && (
@@ -1645,15 +1641,15 @@ const BidForm: React.FC<IProps> = ({
                   InputProps={
                     editMode !== "view"
                       ? {
-                          inputComponent: NumberFormatCustom as any,
-                          endAdornment: (
-                            <IconButton
-                              onClick={() => setFieldValue(`parameter${cropParam.id}`, "")}
-                            >
-                              <CloseIcon />
-                            </IconButton>
-                          ),
-                        }
+                        inputComponent: NumberFormatCustom as any,
+                        endAdornment: (
+                          <IconButton
+                            onClick={() => setFieldValue(`parameter${cropParam.id}`, "")}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        ),
+                      }
                       : undefined
                   }
                   disabled={editMode === "view"}
@@ -1713,7 +1709,7 @@ const BidForm: React.FC<IProps> = ({
           <>
             <div className={classes.button}>
               {!!me?.tariff_matrix &&
-              me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
+                me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
                 <>
                   {me && me.email ? (
                     <FormControlLabel
