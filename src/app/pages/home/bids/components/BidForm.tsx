@@ -495,17 +495,26 @@ const BidForm: React.FC<IProps> = ({
 
   const addRoute = useCallback(async (pointA: any, pointB: any) => {
     map.geoObjects.remove(routeRef.current);
-    const route = await ymaps.route([
+
+    // create multiroute and add to the map
+    const multiRoute = await ymaps.route([
       pointA.text,
       pointB.text
     ], { multiRoute: true, mapStateAutoApply: true });
-    // route.events.add('activeroutechange', (e) => {
-      // console.log(route.getActiveRoute())
-    // })
-    // console.log(route.getLength())
-    // console.log(route.getHumanJamsTime())
-    routeRef.current = route;
-    map.geoObjects.add(route);
+    routeRef.current = multiRoute;
+    await map.geoObjects.add(multiRoute);
+
+    // open active route balloon
+    const routes = multiRoute.getRoutes();
+    for (let i = 0, l = routes.getLength(); i < l; i++) {
+      const route = routes.get(i);
+      if (!route.properties.get('blocked')) {
+        multiRoute.setActiveRoute(route);
+        route.balloon.open();
+        break;
+      }
+    }
+
     setRouteLoading(false);
   }, [ymaps, map, routeRef])
 
