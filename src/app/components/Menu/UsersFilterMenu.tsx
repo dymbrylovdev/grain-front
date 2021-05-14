@@ -76,6 +76,11 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
     }
   }, [userFiltersPhone, userFiltersEmail, fetchUserFilters, isSearchEmail]);
 
+  // useEffect(() => {
+  //   setUsersFilterTariff("Все");
+  //   setFunnelState("Все");
+  // }, [currentRoles, setUsersFilterTariff, setFunnelState])
+
   return (
     <div>
       <TextField

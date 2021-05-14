@@ -173,7 +173,8 @@ const LeftMenu: React.FC<IProps> = ({
       <Divider style={{ margin: "6px 0" }} />
 
       {/* Продажа-Покупка меню */}
-      {((!!bestAllMyDealsMode && bestAllMyDealsMode !== "deals" && bestAllMyDealsMode !== "edit") || mySubscriptionsMode) &&
+      {((!!bestAllMyDealsMode && bestAllMyDealsMode !== "deals" && bestAllMyDealsMode !== "edit") ||
+        mySubscriptionsMode) &&
         accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
           <>
             <MenuItem
@@ -216,28 +217,38 @@ const LeftMenu: React.FC<IProps> = ({
 
       {/* Покупка продажа для настройки фильтра при создании подписки админом юзеру */}
 
-      {bestAllMyDealsMode === "edit" &&
-        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-          <>
-            <MenuItem
-              className={salePurchaseMode === "sale" ? classes.selected : ""}
-              onClick={() => {
-                setSalePurchaseMode("sale");
-              }}
-            >
-              • {intl.formatMessage({ id: "DEALS.TABLE.SALE" })}
-            </MenuItem>
-            <MenuItem
-              className={salePurchaseMode === "purchase" ? classes.selected : ""}
-              onClick={() => {
-                setSalePurchaseMode("purchase");
-              }}
-            >
-              • {intl.formatMessage({ id: "DEALS.TABLE.PURCHASE" })}
-            </MenuItem>
-            <Divider style={{ margin: "6px 0" }} />
-          </>
-        )}
+      {bestAllMyDealsMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+        <>
+          <MenuItem
+            className={salePurchaseMode === "sale" ? classes.selected : ""}
+            onClick={() => {
+              setSalePurchaseMode("sale");
+            }}
+          >
+            • {intl.formatMessage({ id: "DEALS.TABLE.SALE" })}
+          </MenuItem>
+          <MenuItem
+            className={salePurchaseMode === "purchase" ? classes.selected : ""}
+            onClick={() => {
+              setSalePurchaseMode("purchase");
+            }}
+          >
+            • {intl.formatMessage({ id: "DEALS.TABLE.PURCHASE" })}
+          </MenuItem>
+          <Divider style={{ margin: "6px 0" }} />
+        </>
+      )}
+
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+        <MenuItem
+          className={location === "/user-list" ? classes.selected : ""}
+          onClick={() => {
+            handleClick(`/user-list`);
+          }}
+        >
+          Список пользователей
+        </MenuItem>
+      )}
 
       <MenuItem
         className={mySubscriptionsMode ? classes.selected : ""}

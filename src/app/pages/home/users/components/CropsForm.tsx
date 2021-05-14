@@ -264,8 +264,6 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
     fetchCrops();
   }, [fetchCrops]);
 
-  // console.log(editMode)
-
   return (
     <>
       <div className={classes.box}>
@@ -360,6 +358,34 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
                         disabled={loadingMe || loadingUser || editLoading}
                       >
                         {intl.formatMessage({ id: "CROPSLIST.BUTTON.CREATE" })}
+                      </Button>
+                    ))}
+
+                  {(realUser?.crops?.length <
+                    realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
+                    editMode === "view" &&
+                    accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])) ||
+                    (((realUser?.crops?.length <
+                      realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
+                      editMode === "edit") ||
+                      editMode === "profile") && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => {
+                          let newCropIds = [...values.crop_ids];
+                          crops.map(item => {
+                            if (!newCropIds.includes(item.id)) {
+                              newCropIds.push(item.id)
+                            }
+                          })
+                          setFieldValue("crop_ids", newCropIds);
+                          handleSubmit();
+                        }}
+                        style={{ marginLeft: 15 }}
+                        disabled={loadingMe || loadingUser || editLoading}
+                      >
+                        {intl.formatMessage({ id: "CROPLIST.BUTTON.ADD_ALL" })}
                       </Button>
                     ))}
 

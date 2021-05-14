@@ -4,7 +4,7 @@ import { IFunnelStateToRequest } from "../interfaces/funnelStates";
 export const FUNNEL_STATE_URL = "/api/funnel_state";
 
 export const getFunnelStates = (role?: string) => {
-  return axios.get(`${FUNNEL_STATE_URL}s?role=${role}`);
+  return axios.get(`${FUNNEL_STATE_URL}s${role ? `?role=${role}` : ""}`);
 };
 
 export const addFunnelState = (data: IFunnelStateToRequest) => {

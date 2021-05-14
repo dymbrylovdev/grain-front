@@ -24,7 +24,7 @@ export const getTariffsProlongations = (id: number) => {
 };
 
 export const getTariffsTypes = (role?: string) => {
-  return axios.get(`${TARIFF_URL}_types?role=${role}`);
+  return axios.get(`${TARIFF_URL}_types${role ? `?role=${role}` : ""}`);
 }
 
 export const getFondyCredentials = () => {

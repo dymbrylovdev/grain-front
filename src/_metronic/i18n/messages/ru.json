@@ -345,6 +345,7 @@
   "CROPSLIST.TABLE.NAME": "Название",
   "CROPSLIST.TABLE.ACTIONS": "Действия",
   "CROPSLIST.BUTTON.CREATE": "Добавить культуру",
+  "CROPLIST.BUTTON.ADD_ALL": "Добавить все культуры",
   "CROPSLIST.DELETED": "Удалена",
 
   "CROP.STATUS.CROP_CREATE": "Культура успешно сохранена",

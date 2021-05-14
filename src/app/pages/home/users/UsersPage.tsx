@@ -98,6 +98,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   currentUserRoles,
 
   boughtTariff,
+
+  setUsersFilterTariff,
+  setFunnelState,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -205,6 +208,14 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       if (item.name === currentUserRoles) setUserRolesId(item.name);
     })
   }, [currentUserRoles, userRoles, userRolesSuccess]);
+
+  useEffect(() => {
+    //Если изменяется роль в селекте, устанавливаем тарифы и статусы на нулевые значения
+    setUsersFilterTariff("Все");
+    setTariffId(undefined);
+    setFunnelState("Все");
+    setFunnelStateId(undefined);
+  }, [currentUserRoles, setUsersFilterTariff, setFunnelState]);
 
   if (error || meError || funnelStatesError || tariffsTypesError) {
     setTimeout(() => {
@@ -582,6 +593,9 @@ const connector = connect(
     fetchTariffTypes: tariffActions.tariffsTypesRequest,
     clearUserRoles: usersActions.clearUserRoles,
     fetchUserRoles: usersActions.userRolesRequest,
+
+    setUsersFilterTariff: tariffActions.setUsersFilterTariff,
+    setFunnelState: funnelStatesActions.setFunnelState,
   }
 );
 
