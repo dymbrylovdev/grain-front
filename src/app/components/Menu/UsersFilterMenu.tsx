@@ -76,11 +76,6 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
     }
   }, [userFiltersPhone, userFiltersEmail, fetchUserFilters, isSearchEmail]);
 
-  // useEffect(() => {
-  //   setUsersFilterTariff("Все");
-  //   setFunnelState("Все");
-  // }, [currentRoles, setUsersFilterTariff, setFunnelState])
-
   return (
     <div>
       <TextField
@@ -88,7 +83,11 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
         margin="normal"
         label={intl.formatMessage({ id: "SUBMENU.USER.FILTERS_ROLE" })}
         value={currentRoles}
-        onChange={e => setCurrentRoles(e.target.value)}
+        onChange={e => {
+          setCurrentRoles(e.target.value);
+          setUsersFilterTariff("Все");
+          setFunnelState("Все");
+        }}
         name="roles"
         variant="outlined"
       >
