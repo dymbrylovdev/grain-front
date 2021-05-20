@@ -626,11 +626,11 @@ const BidForm: React.FC<IProps> = ({
   useEffect(() => {
     if (
       !!me?.tariff_matrix &&
-      me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0
+      me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 && editMode === "create"
     ) {
       setSendingEmail(false);
     }
-  }, [me, filterCount]);
+  }, [me, filterCount, editMode]);
 
   useEffect(() => {
     if (values.prepayment_amount === 100) setFullPrepayment(true);
@@ -641,17 +641,19 @@ const BidForm: React.FC<IProps> = ({
   }, [fullPrepayment]);
 
   useEffect(() => {
-    if (me) {
-      me?.email ? setSendingEmail(true) : setSendingEmail(false);
-      me?.phone && me?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false);
+    let realUser: IUser | undefined = undefined;
+    if (editMode === "create") realUser = me
+    if (editMode === "edit") realUser = user
+
+    if (realUser) {
+      realUser?.email ? setSendingEmail(true) : setSendingEmail(false);
+      realUser?.phone && realUser?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false);
     }
-  }, [me]);
+  }, [me, user, editMode]);
 
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
-
-  // console.log(bid);
 
   return (
     <div className={classes.form}>

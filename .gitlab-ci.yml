@@ -22,13 +22,13 @@ build-grain-fx:
     - docker build --pull -t $FX_IMAGE .
     - docker push $FX_IMAGE
   only:
-    - '1.8.1'
+    - '1.8.2'
 
 deploy-grain-fx:
   stage: deploy
   image: gitlab/dind:latest
   only:
-    - '1.8.1'
+    - '1.8.2'
   environment: production
   services:
     - docker:dind
