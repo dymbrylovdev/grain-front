@@ -209,13 +209,13 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     })
   }, [currentUserRoles, userRoles, userRolesSuccess]);
 
-  useEffect(() => {
-    //Если изменяется роль в селекте, устанавливаем тарифы и статусы на нулевые значения
-    setUsersFilterTariff("Все");
-    setTariffId(undefined);
-    setFunnelState("Все");
-    setFunnelStateId(undefined);
-  }, [currentUserRoles, setUsersFilterTariff, setFunnelState]);
+  // useEffect(() => {
+  //   //Если изменяется роль в селекте, устанавливаем тарифы и статусы на нулевые значения
+  //   setUsersFilterTariff("Все");
+  //   setTariffId(undefined);
+  //   setFunnelState("Все");
+  //   setFunnelStateId(undefined);
+  // }, [currentUserRoles, setUsersFilterTariff, setFunnelState]);
 
   if (error || meError || funnelStatesError || tariffsTypesError) {
     setTimeout(() => {

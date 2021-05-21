@@ -68,18 +68,13 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
   };
 
   useEffect(() => {
-    if (isSearchEmail === "email") {
+    if (isSearchEmail === "email" && userFiltersEmail) {
       fetchUserFilters({ email: userFiltersEmail });
     }
-    if (isSearchEmail === "phone") {
+    if (isSearchEmail === "phone" && userFiltersPhone) {
       fetchUserFilters({ phone: userFiltersPhone });
     }
   }, [userFiltersPhone, userFiltersEmail, fetchUserFilters, isSearchEmail]);
-
-  // useEffect(() => {
-  //   setUsersFilterTariff("Все");
-  //   setFunnelState("Все");
-  // }, [currentRoles, setUsersFilterTariff, setFunnelState])
 
   return (
     <div>
@@ -88,7 +83,11 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
         margin="normal"
         label={intl.formatMessage({ id: "SUBMENU.USER.FILTERS_ROLE" })}
         value={currentRoles}
-        onChange={e => setCurrentRoles(e.target.value)}
+        onChange={e => {
+          setCurrentRoles(e.target.value);
+          setUsersFilterTariff("Все");
+          setFunnelState("Все");
+        }}
         name="roles"
         variant="outlined"
       >
