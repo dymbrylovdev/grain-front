@@ -68,10 +68,10 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
   };
 
   useEffect(() => {
-    if (isSearchEmail === "email") {
+    if (isSearchEmail === "email" && userFiltersEmail) {
       fetchUserFilters({ email: userFiltersEmail });
     }
-    if (isSearchEmail === "phone") {
+    if (isSearchEmail === "phone" && userFiltersPhone) {
       fetchUserFilters({ phone: userFiltersPhone });
     }
   }, [userFiltersPhone, userFiltersEmail, fetchUserFilters, isSearchEmail]);
