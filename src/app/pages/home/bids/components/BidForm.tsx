@@ -135,21 +135,19 @@ const getInitialValues = (
   return values;
 };
 
-const getFinalPrice = (bid: IBid, i: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
-  const distance = !bid.point_prices[i].distance || bid.point_prices[i].distance < 100 ? 100 : bid.point_prices[i].distance;
+const getFinalPrice = (bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
   if (salePurchaseMode === "sale") {
-    return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * distance);
+    return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * distanceKm);
   } else {
-    return Math.round(bid.price * (vat / 100 + 1) - pricePerKm * distance);
+    return Math.round(bid.price * (vat / 100 + 1) - pricePerKm * distanceKm);
   }
 };
 
-const getDeliveryPrice = (bid: IBid, i: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
-  const distance = !bid.point_prices[i].distance || bid.point_prices[i].distance < 100 ? 100 : bid.point_prices[i].distance;
+const getDeliveryPrice = (bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
   if (salePurchaseMode === "sale") {
-    return Math.round(pricePerKm * distance);
+    return Math.round(pricePerKm * distanceKm);
   } else {
-    return Math.round(pricePerKm * distance);
+    return Math.round(pricePerKm * distanceKm);
   }
 };
 interface IProps {
@@ -433,6 +431,11 @@ const BidForm: React.FC<IProps> = ({
 
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
 
+  const [selectedRoute, setSelectedRoute] = useState<any | null>();
+  useEffect(() => {
+    routeLoading && setSelectedRoute(null);
+  }, [routeLoading]);
+
   useEffect(() => {
     setMySelectedMapPoint(me?.points.filter(el => el.active)[0] || null);
   }, [me]);
@@ -467,6 +470,12 @@ const BidForm: React.FC<IProps> = ({
         break;
         // }
       }
+
+      // set selected route, update on change
+      setSelectedRoute(multiRoute.getActiveRoute().properties.getAll());
+      multiRoute.events.add("activeroutechange", () => {
+        setSelectedRoute(multiRoute.getActiveRoute().properties.getAll());
+      });
 
       setRouteLoading(false);
     },
@@ -1041,16 +1050,32 @@ const BidForm: React.FC<IProps> = ({
             <Grid container direction="column" justify="center" alignItems="flex-start">
               {!!bid?.point_prices &&
                 (bid.point_prices.length > 0 ? (
-                  bid.point_prices.map((item, i) => (
-                    <div key={i}>
-                      {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
-                        <b>{thousands(Math.round(getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)).toString())}</b>
-                      ) : (
-                        <b>{thousands(Math.round(getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)).toString())}</b>
-                      )}
-                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                    </div>
-                  ))
+                  <div>
+                    {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                getFinalPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, +bid.vat)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    ) : (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                getFinalPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, 0)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    )}
+                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                    }`}
+                  </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                 ))}
@@ -1068,16 +1093,32 @@ const BidForm: React.FC<IProps> = ({
               {bid &&
                 bid.point_prices &&
                 (bid.point_prices.length > 0 ? (
-                  bid.point_prices.map((item, i) => (
-                    <div key={i}>
-                      {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
-                        <b>{thousands(Math.round(getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)).toString())}</b>
-                      ) : (
-                        <b>{thousands(Math.round(getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)).toString())}</b>
-                      )}
-                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                    </div>
-                  ))
+                  <div>
+                    {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                getDeliveryPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, +bid.vat)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    ) : (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                getDeliveryPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, 0)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    )}
+                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                    }`}
+                  </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                 ))}
@@ -1095,24 +1136,34 @@ const BidForm: React.FC<IProps> = ({
               {bid &&
                 bid.point_prices &&
                 (bid.point_prices.length > 0 ? (
-                  bid.point_prices.map((item, i) => (
-                    <div key={i}>
-                      {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
-                        <b>
-                          {thousands(
-                            Math.round(values.volume * getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)).toString()
-                          )}
-                        </b>
-                      ) : (
-                        <b>
-                          {thousands(
-                            Math.round(values.volume * getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)).toString()
-                          )}
-                        </b>
-                      )}
-                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                    </div>
-                  ))
+                  <div>
+                    {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                values.volume *
+                                  getDeliveryPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, +bid.vat)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    ) : (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                values.volume *
+                                  getDeliveryPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, 0)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    )}
+                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                    }`}
+                  </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                 ))}
@@ -1130,22 +1181,34 @@ const BidForm: React.FC<IProps> = ({
               {bid &&
                 bid.point_prices &&
                 (bid.point_prices.length > 0 ? (
-                  bid.point_prices.map((item, i) => (
-                    <div key={i}>
-                      {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
-                        <b>
-                          {thousands(
-                            Math.round(values.volume * getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)).toString()
-                          )}
-                        </b>
-                      ) : (
-                        <b>
-                          {thousands(Math.round(values.volume * getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)).toString())}
-                        </b>
-                      )}
-                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                    </div>
-                  ))
+                  <div>
+                    {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                values.volume *
+                                  getFinalPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, +bid.vat)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    ) : (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                values.volume *
+                                  getFinalPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, 0)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    )}
+                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                    }`}
+                  </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                 ))}
