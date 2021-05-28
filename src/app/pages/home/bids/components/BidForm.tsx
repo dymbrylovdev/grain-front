@@ -663,13 +663,13 @@ const BidForm: React.FC<IProps> = ({
                   alignItems: "flex-start",
                 }}
               >
-                <div className={innerClasses.authorText} style={{ cursor: "pointer", color: "blue" }} onClick={linkToContact}>
+                <Button variant="outlined" className={innerClasses.authorText} style={{ cursor: "pointer", color: "blue" }} onClick={linkToContact}>
                   {`${
                     bid.type === "sale"
                       ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
                       : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
                   }: ${bid.vendor.fio || bid.vendor.login || `ID ${bid.vendor.id}`}`}
-                </div>
+                </Button>
               </div>
 
               {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
@@ -781,6 +781,39 @@ const BidForm: React.FC<IProps> = ({
               error={Boolean(touched.crop_id && errors.crop_id)}
             />
           )}
+        />
+      )}
+
+{loading ? (
+        <Skeleton width="100%" height={70} animation="wave" />
+      ) : (
+        <TextField
+          type="text"
+          label={intl.formatMessage({
+            id: "BIDSLIST.TABLE.VOLUME",
+          })}
+          margin="normal"
+          name="volume"
+          value={thousands(values.volume.toString())}
+          variant="outlined"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          helperText={touched.volume && errors.volume}
+          error={Boolean(touched.volume && errors.volume)}
+          InputProps={
+            editMode !== "view"
+              ? {
+                  inputComponent: NumberFormatCustom as any,
+                  endAdornment: (
+                    <IconButton onClick={() => setFieldValue("volume", "")}>
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }
+              : undefined
+          }
+          disabled={editMode === "view"}
+          autoComplete="off"
         />
       )}
 
@@ -1211,39 +1244,6 @@ const BidForm: React.FC<IProps> = ({
             </Grid>
           </div>
         ))}
-
-      {loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <TextField
-          type="text"
-          label={intl.formatMessage({
-            id: "BIDSLIST.TABLE.VOLUME",
-          })}
-          margin="normal"
-          name="volume"
-          value={thousands(values.volume.toString())}
-          variant="outlined"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          helperText={touched.volume && errors.volume}
-          error={Boolean(touched.volume && errors.volume)}
-          InputProps={
-            editMode !== "view"
-              ? {
-                  inputComponent: NumberFormatCustom as any,
-                  endAdornment: (
-                    <IconButton onClick={() => setFieldValue("volume", "")}>
-                      <CloseIcon />
-                    </IconButton>
-                  ),
-                }
-              : undefined
-          }
-          disabled={editMode === "view"}
-          autoComplete="off"
-        />
-      )}
 
       {editMode === "view" ? (
         loading ? (
