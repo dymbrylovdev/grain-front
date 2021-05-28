@@ -641,13 +641,9 @@ const BidForm: React.FC<IProps> = ({
   }, [fullPrepayment]);
 
   useEffect(() => {
-    let realUser: IUser | undefined = undefined;
-    if (editMode === "create") realUser = me
-    if (editMode === "edit") realUser = user
-
-    if (realUser) {
-      realUser?.email ? setSendingEmail(true) : setSendingEmail(false);
-      realUser?.phone && realUser?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false);
+    if (user) {
+      user?.email ? setSendingEmail(true) : setSendingEmail(false);
+      user?.phone && user?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false);
     }
   }, [me, user, editMode]);
 
@@ -1710,10 +1706,10 @@ const BidForm: React.FC<IProps> = ({
         {me && editMode !== "view" && (
           <>
             <div className={classes.button}>
-              {!!me?.tariff_matrix &&
-                me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
+              {!!user?.tariff_matrix &&
+                user.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
                 <>
-                  {me && me.email ? (
+                  {user && user.email ? (
                     <FormControlLabel
                       control={
                         <Checkbox checked={isSendingEmail} onChange={e => onCheckboxChange(e, 1)} />
@@ -1721,7 +1717,7 @@ const BidForm: React.FC<IProps> = ({
                       label={"Подписка по e-mail"}
                     />
                   ) : null}
-                  {me && me.phone ? (
+                  {user && user.phone ? (
                     <FormControlLabel
                       control={
                         <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
