@@ -118,8 +118,8 @@ const getInitialValues = (
             ? user.points[0]
             : { text: "" }
           : !!me && me.points.length === 1
-            ? me.points[0]
-            : { text: "" }
+          ? me.points[0]
+          : { text: "" }
         : bid?.location || { text: "" },
     pricePerKm: bid?.price_delivery_per_km || 4,
     bid_type: !!bid ? bid.type : salePurchaseMode,
@@ -135,39 +135,19 @@ const getInitialValues = (
   return values;
 };
 
-const getFinalPrice = (
-  bid: IBid,
-  i: number,
-  pricePerKm: number,
-  salePurchaseMode: string,
-  vat: number
-) => {
-  const distance =
-    !bid.point_prices[i].distance || bid.point_prices[i].distance < 100
-      ? 100
-      : bid.point_prices[i].distance;
+const getFinalPrice = (bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
   if (salePurchaseMode === "sale") {
-    return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * distance);
+    return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * distanceKm);
   } else {
-    return Math.round(bid.price * (vat / 100 + 1) - pricePerKm * distance);
+    return Math.round(bid.price * (vat / 100 + 1) - pricePerKm * distanceKm);
   }
 };
 
-const getDeliveryPrice = (
-  bid: IBid,
-  i: number,
-  pricePerKm: number,
-  salePurchaseMode: string,
-  vat: number
-) => {
-  const distance =
-    !bid.point_prices[i].distance || bid.point_prices[i].distance < 100
-      ? 100
-      : bid.point_prices[i].distance;
+const getDeliveryPrice = (bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
   if (salePurchaseMode === "sale") {
-    return Math.round(pricePerKm * distance);
+    return Math.round(pricePerKm * distanceKm);
   } else {
-    return Math.round(pricePerKm * distance);
+    return Math.round(pricePerKm * distanceKm);
   }
 };
 interface IProps {
@@ -347,16 +327,9 @@ const BidForm: React.FC<IProps> = ({
   }, [goToRef]);
 
   const bidId: number = !!bid ? bid.id : 0;
-  const vendor_id =
-    (!bid && +vendorId) || (bid && bid.vendor && bid.vendor.id) || (me?.id as number);
+  const vendor_id = (!bid && +vendorId) || (bid && bid.vendor && bid.vendor.id) || (me?.id as number);
   const vendor = me?.id === vendor_id ? me : user;
-  const currentCropId: number = !!bid
-    ? bid.crop_id
-    : !!cropId
-      ? cropId
-      : vendor?.crops.length === 1
-        ? vendor.crops[0].id
-        : 0;
+  const currentCropId: number = !!bid ? bid.crop_id : !!cropId ? cropId : vendor?.crops.length === 1 ? vendor.crops[0].id : 0;
 
   const onCheckboxChange = (e: any, val: number) => {
     if (val === 1) setSendingEmail(!isSendingEmail);
@@ -371,8 +344,8 @@ const BidForm: React.FC<IProps> = ({
         me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
           ? `/user/edit/${!!bid && bid.vendor && bid.vendor.id}`
           : me?.id === (!!bid && bid.vendor && bid.vendor.id)
-            ? "/user/profile"
-            : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
+          ? "/user/profile"
+          : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`
       );
       //@ts-ignore
       if (
@@ -388,27 +361,8 @@ const BidForm: React.FC<IProps> = ({
     }
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    resetForm,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    setFieldValue,
-  } = useFormik({
-    initialValues: getInitialValues(
-      bid,
-      currentCropId,
-      salePurchaseMode,
-      editMode,
-      vendorId,
-      user,
-      me,
-      isSendingEmail,
-      isSendingSms
-    ),
+  const { values, errors, touched, resetForm, handleChange, handleBlur, handleSubmit, setFieldValue } = useFormik({
+    initialValues: getInitialValues(bid, currentCropId, salePurchaseMode, editMode, vendorId, user, me, isSendingEmail, isSendingSms),
     onSubmit: values => {
       const is_sending_email = isSendingEmail ? 1 : 0;
       const is_sending_sms = isSendingSms ? 1 : 0;
@@ -440,13 +394,9 @@ const BidForm: React.FC<IProps> = ({
         .min(1000, intl.formatMessage({ id: "YUP.PRICE_OF_1000" }, { min: 1000 }))
         .typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
       location: Yup.object({
-        text: Yup.string().required(
-          intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
-        ),
+        text: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
       }),
-      crop_id: Yup.string().required(
-        intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })
-      ),
+      crop_id: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
       payment_term:
         salePurchaseMode === "purchase" && !fullPrepayment
           ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
@@ -481,6 +431,11 @@ const BidForm: React.FC<IProps> = ({
 
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
 
+  const [selectedRoute, setSelectedRoute] = useState<any | null>();
+  useEffect(() => {
+    routeLoading && setSelectedRoute(null);
+  }, [routeLoading]);
+
   useEffect(() => {
     setMySelectedMapPoint(me?.points.filter(el => el.active)[0] || null);
   }, [me]);
@@ -491,32 +446,41 @@ const BidForm: React.FC<IProps> = ({
     } else {
       return null;
     }
-  }, [bid])
+  }, [bid]);
 
-  const addRoute = useCallback(async (pointA: any, pointB: any) => {
-    map.geoObjects.remove(routeRef.current);
+  const addRoute = useCallback(
+    async (pointA: any, pointB: any) => {
+      map.geoObjects.remove(routeRef.current);
 
-    // create multiroute and add to the map
-    const multiRoute = await ymaps.route([
-      pointA.text,
-      pointB.text
-    ], { multiRoute: true, mapStateAutoApply: true });
-    routeRef.current = multiRoute;
-    await map.geoObjects.add(multiRoute);
+      // create multiroute and add to the map
+      const multiRoute = await ymaps.route([pointA.text, pointB.text], {
+        multiRoute: true,
+        mapStateAutoApply: true,
+      });
+      routeRef.current = multiRoute;
+      await map.geoObjects.add(multiRoute);
 
-    // open active route balloon
-    const routes = multiRoute.getRoutes();
-    for (let i = 0, l = routes.getLength(); i < l; i++) {
-      const route = routes.get(i);
-      if (!route.properties.get('blocked')) {
+      // open active route balloon
+      const routes = multiRoute.getRoutes();
+      for (let i = 0, l = routes.getLength(); i < l; i++) {
+        const route = routes.get(i);
+        // if (!route.properties.get('blocked')) {
         multiRoute.setActiveRoute(route);
         route.balloon.open();
         break;
+        // }
       }
-    }
 
-    setRouteLoading(false);
-  }, [ymaps, map, routeRef])
+      // set selected route, update on change
+      setSelectedRoute(multiRoute.getActiveRoute().properties.getAll());
+      multiRoute.events.add("activeroutechange", () => {
+        setSelectedRoute(multiRoute.getActiveRoute().properties.getAll());
+      });
+
+      setRouteLoading(false);
+    },
+    [ymaps, map, routeRef]
+  );
 
   useEffect(() => {
     if (ymaps && map && bid && bid.location && mySelectedMapPoint) {
@@ -556,18 +520,7 @@ const BidForm: React.FC<IProps> = ({
         fetchFilters();
       }
     }
-  }, [
-    clearCreate,
-    createError,
-    createSuccess,
-    enqueueSnackbar,
-    history,
-    intl,
-    salePurchaseMode,
-    vendorId,
-    fetchMe,
-    fetchFilters,
-  ]);
+  }, [clearCreate, createError, createSuccess, enqueueSnackbar, history, intl, salePurchaseMode, vendorId, fetchMe, fetchFilters]);
 
   useEffect(() => {
     if (postSuccess || postError) {
@@ -585,17 +538,7 @@ const BidForm: React.FC<IProps> = ({
 
   useEffect(() => {
     resetForm({
-      values: getInitialValues(
-        bid,
-        currentCropId,
-        salePurchaseMode,
-        editMode,
-        vendorId,
-        user,
-        me,
-        isSendingEmail,
-        isSendingSms
-      ),
+      values: getInitialValues(bid, currentCropId, salePurchaseMode, editMode, vendorId, user, me, isSendingEmail, isSendingSms),
     });
   }, [bid, currentCropId, editMode, me, resetForm, salePurchaseMode, user, vendorId]);
 
@@ -624,10 +567,7 @@ const BidForm: React.FC<IProps> = ({
   }, [currentCropId, fetchCropParams]);
 
   useEffect(() => {
-    if (
-      !!me?.tariff_matrix &&
-      me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 && editMode === "create"
-    ) {
+    if (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 && editMode === "create") {
       setSendingEmail(false);
     }
   }, [me, filterCount, editMode]);
@@ -641,13 +581,9 @@ const BidForm: React.FC<IProps> = ({
   }, [fullPrepayment]);
 
   useEffect(() => {
-    let realUser: IUser | undefined = undefined;
-    if (editMode === "create") realUser = me
-    if (editMode === "edit") realUser = user
-
-    if (realUser) {
-      realUser?.email ? setSendingEmail(true) : setSendingEmail(false);
-      realUser?.phone && realUser?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false);
+    if (user) {
+      user?.email ? setSendingEmail(true) : setSendingEmail(false);
+      user?.phone && user?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false);
     }
   }, [me, user, editMode]);
 
@@ -658,10 +594,7 @@ const BidForm: React.FC<IProps> = ({
   return (
     <div className={classes.form}>
       <div className={classes.topButtonsContainer}>
-        <div
-          className={classes.flexRow}
-          style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}
-        >
+        <div className={classes.flexRow} style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}>
           <div className={classes.button}>
             <Button
               variant="outlined"
@@ -681,9 +614,9 @@ const BidForm: React.FC<IProps> = ({
                 disabled={buttonLoading}
                 onPress={() => {
                   !values.location.text ||
-                    !values.volume ||
-                    !values.crop_id ||
-                    (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
+                  !values.volume ||
+                  !values.crop_id ||
+                  (salePurchaseMode === "purchase" && !fullPrepayment && !values.payment_term)
                     ? setFormikErrored(true)
                     : setFormikErrored(false);
                   handleSubmit();
@@ -712,13 +645,12 @@ const BidForm: React.FC<IProps> = ({
                     ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me?.roles[0])
                       ? `/user/edit/${bid?.author?.id}`
                       : me?.id === bid?.author?.id
-                        ? "/user/profile"
-                        : `/user/view/${bid?.author?.id}`
+                      ? "/user/profile"
+                      : `/user/view/${bid?.author?.id}`
                   }
                 >
                   <div className={innerClasses.authorText}>
-                    {intl.formatMessage({ id: "BID.FORM.AUTHOR" })}{" "}
-                    {bid.author.fio || bid.author.login || `ID ${bid.author.id}`}
+                    {intl.formatMessage({ id: "BID.FORM.AUTHOR" })} {bid.author.fio || bid.author.login || `ID ${bid.author.id}`}
                   </div>
                 </Link>
               </div>
@@ -731,43 +663,33 @@ const BidForm: React.FC<IProps> = ({
                   alignItems: "flex-start",
                 }}
               >
-                <div
-                  className={innerClasses.authorText}
-                  style={{ cursor: "pointer", color: "blue" }}
-                  onClick={linkToContact}
-                >
-                  {`${bid.type === "sale"
+                <Button variant="outlined" className={innerClasses.authorText} style={{ cursor: "pointer", color: "blue" }} onClick={linkToContact}>
+                  {`${
+                    bid.type === "sale"
                       ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
                       : intl.formatMessage({ id: "AUTH.REGISTER.BUYER" })
-                    }: ${bid.vendor.fio || bid.vendor.login || `ID ${bid.vendor.id}`}`}
-                </div>
+                  }: ${bid.vendor.fio || bid.vendor.login || `ID ${bid.vendor.id}`}`}
+                </Button>
               </div>
 
               {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
                 <>
                   {bid?.author.id === me.id ? null : (
-                    <Alert
-                      className={classes.infoAlert}
-                      severity="warning"
-                      color="error"
-                      style={{ marginTop: 8, marginBottom: 8 }}
-                    >
-                      {`Сегодня вам доступен просмотр ${me?.contact_view_count
-                        } контактов. ${intl.formatMessage({ id: "BID.CONTACTS.LIMIT" })}`}{" "}
+                    <Alert className={classes.infoAlert} severity="warning" color="error" style={{ marginTop: 8, marginBottom: 8 }}>
+                      {`Сегодня вам доступен просмотр ${me?.contact_view_count} контактов. ${intl.formatMessage({
+                        id: "BID.CONTACTS.LIMIT",
+                      })}`}{" "}
                       <Link to={"/user/profile/tariffs"}>Снять ограничения</Link>
                     </Alert>
                   )}
                 </>
               )}
 
-              {!!bid.vendor.company && (
-                <div className={classes.bottomMargin1}>{bid.vendor.company.short_name}</div>
-              )}
+              {!!bid.vendor.company && <div className={classes.bottomMargin1}>{bid.vendor.company.short_name}</div>}
               <div className={`${classes.flexRow} ${classes.bottomMargin1}`}>
                 {!!bid?.vendor?.company && (
                   <div className={classes.rightMargin1}>
-                    {!bid?.vendor?.company_confirmed_by_payment &&
-                      !bid?.vendor?.company_confirmed_by_email ? (
+                    {!bid?.vendor?.company_confirmed_by_payment && !bid?.vendor?.company_confirmed_by_email ? (
                       <ReportProblemIcon color="error" />
                     ) : (
                       <CheckCircleOutlineIcon color="secondary" />
@@ -787,10 +709,7 @@ const BidForm: React.FC<IProps> = ({
         ) : (
           <p>
             {intl.formatMessage({ id: "DEALS.DEAL.DATE" })}:{" "}
-            {`${bid.modified_at.slice(8, 10)}.${bid.modified_at.slice(
-              5,
-              7
-            )}.${bid.modified_at.slice(0, 4)}`}
+            {`${bid.modified_at.slice(8, 10)}.${bid.modified_at.slice(5, 7)}.${bid.modified_at.slice(0, 4)}`}
           </p>
         ))}
 
@@ -825,9 +744,7 @@ const BidForm: React.FC<IProps> = ({
             }
           >
             <MenuItem value={"sale"}>{intl.formatMessage({ id: "BID.TYPE.SALE" })}</MenuItem>
-            <MenuItem value={"purchase"}>
-              {intl.formatMessage({ id: "BID.TYPE.PURCHASE" })}
-            </MenuItem>
+            <MenuItem value={"purchase"}>{intl.formatMessage({ id: "BID.TYPE.PURCHASE" })}</MenuItem>
           </TextField>
         ))}
 
@@ -864,6 +781,39 @@ const BidForm: React.FC<IProps> = ({
               error={Boolean(touched.crop_id && errors.crop_id)}
             />
           )}
+        />
+      )}
+
+{loading ? (
+        <Skeleton width="100%" height={70} animation="wave" />
+      ) : (
+        <TextField
+          type="text"
+          label={intl.formatMessage({
+            id: "BIDSLIST.TABLE.VOLUME",
+          })}
+          margin="normal"
+          name="volume"
+          value={thousands(values.volume.toString())}
+          variant="outlined"
+          onBlur={handleBlur}
+          onChange={handleChange}
+          helperText={touched.volume && errors.volume}
+          error={Boolean(touched.volume && errors.volume)}
+          InputProps={
+            editMode !== "view"
+              ? {
+                  inputComponent: NumberFormatCustom as any,
+                  endAdornment: (
+                    <IconButton onClick={() => setFieldValue("volume", "")}>
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }
+              : undefined
+          }
+          disabled={editMode === "view"}
+          autoComplete="off"
         />
       )}
 
@@ -915,19 +865,19 @@ const BidForm: React.FC<IProps> = ({
           InputProps={
             editMode !== "view"
               ? {
-                style:
-                  editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
-                    ? {
-                      color: "#fd397a",
-                    }
-                    : {},
-                inputComponent: NumberFormatCustom as any,
-                endAdornment: (
-                  <IconButton onClick={() => setFieldValue("price", "")}>
-                    <CloseIcon />
-                  </IconButton>
-                ),
-              }
+                  style:
+                    editMode === "edit" && bid?.vendor_use_vat !== bid?.vendor?.use_vat
+                      ? {
+                          color: "#fd397a",
+                        }
+                      : {},
+                  inputComponent: NumberFormatCustom as any,
+                  endAdornment: (
+                    <IconButton onClick={() => setFieldValue("price", "")}>
+                      <CloseIcon />
+                    </IconButton>
+                  ),
+                }
               : undefined
           }
           disabled={editMode === "view"}
@@ -942,12 +892,7 @@ const BidForm: React.FC<IProps> = ({
           ) : (
             <>
               {bidsPairError && (
-                <Alert
-                  className={classes.infoAlert}
-                  severity="warning"
-                  color="error"
-                  style={{ marginTop: 15 }}
-                >
+                <Alert className={classes.infoAlert} severity="warning" color="error" style={{ marginTop: 15 }}>
                   {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${intl.formatMessage({
                     id: "BID.CREATE.NOT.FOUND",
                   })}`}
@@ -957,24 +902,16 @@ const BidForm: React.FC<IProps> = ({
               {bidsPairSuccess && (
                 <>
                   {bidsPair.price_with_delivery ? (
-                    <Alert
-                      className={classes.infoAlert}
-                      severity="info"
-                      color="info"
-                      style={{ marginTop: 15 }}
-                    >
-                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${bidsPair.price_with_delivery
-                        } ${intl.formatMessage({ id: "BID.CREATE.WITH.DELIVIRY" })}`}
+                    <Alert className={classes.infoAlert} severity="info" color="info" style={{ marginTop: 15 }}>
+                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${bidsPair.price_with_delivery} ${intl.formatMessage({
+                        id: "BID.CREATE.WITH.DELIVIRY",
+                      })}`}
                     </Alert>
                   ) : (
-                    <Alert
-                      className={classes.infoAlert}
-                      severity="info"
-                      color="info"
-                      style={{ marginTop: 15 }}
-                    >
-                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${bidsPair.price
-                        } ${intl.formatMessage({ id: "BID.CREATE.WITHOUT.DELIVIRY" })}`}
+                    <Alert className={classes.infoAlert} severity="info" color="info" style={{ marginTop: 15 }}>
+                      {`${intl.formatMessage({ id: "BID.CREATE.BEST.PRICE" })}${bidsPair.price} ${intl.formatMessage({
+                        id: "BID.CREATE.WITHOUT.DELIVIRY",
+                      })}`}
                     </Alert>
                   )}
                 </>
@@ -991,9 +928,7 @@ const BidForm: React.FC<IProps> = ({
           {values.bid_type === "purchase" && (
             <>
               <FormControlLabel
-                control={
-                  <Checkbox checked={fullPrepayment} onChange={() => setFullPrepayment(s => !s)} />
-                }
+                control={<Checkbox checked={fullPrepayment} onChange={() => setFullPrepayment(s => !s)} />}
                 label={"Предоплата 100%"}
                 name="fullPrepayment"
                 style={{ marginBottom: 10, marginTop: 10 }}
@@ -1026,12 +961,7 @@ const BidForm: React.FC<IProps> = ({
               variant="outlined"
               disabled
             />
-            <p>
-              {intl.formatMessage(
-                { id: "BIDSLIST.TABLE.COST_WITH_VAT.ABOUT" },
-                { vat: Math.round((+values.price * +bid.vat) / 100) }
-              )}
-            </p>
+            <p>{intl.formatMessage({ id: "BIDSLIST.TABLE.COST_WITH_VAT.ABOUT" }, { vat: Math.round((+values.price * +bid.vat) / 100) })}</p>
           </>
         ))}
 
@@ -1100,16 +1030,13 @@ const BidForm: React.FC<IProps> = ({
             InputProps={
               editMode !== "view"
                 ? {
-                  inputComponent: NumberFormatCustom as any,
-                  endAdornment: (
-                    <IconButton
-                      onClick={() => setFieldValue("payment_term", "")}
-                      disabled={fullPrepayment}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                  ),
-                }
+                    inputComponent: NumberFormatCustom as any,
+                    endAdornment: (
+                      <IconButton onClick={() => setFieldValue("payment_term", "")} disabled={fullPrepayment}>
+                        <CloseIcon />
+                      </IconButton>
+                    ),
+                  }
                 : undefined
             }
             disabled={editMode === "view" || fullPrepayment}
@@ -1118,21 +1045,13 @@ const BidForm: React.FC<IProps> = ({
         ))}
 
       {editMode === "view" &&
-        accessByRoles(me, [
-          "ROLE_ADMIN",
-          "ROLE_MANAGER",
-          "ROLE_TRADER",
-          "ROLE_BUYER",
-          "ROLE_VENDOR",
-        ]) &&
+        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER", "ROLE_VENDOR"]) &&
         me?.id !== bid?.vendor.id &&
         (loading ? (
           <Skeleton width="100%" height={225} animation="wave" />
         ) : (
           <div className={classes.box}>
-            <div className={innerClasses.calcTitle}>
-              {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
-            </div>
+            <div className={innerClasses.calcTitle}>{`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}</div>
             {/* //* HERE */}
             <TextField
               type="text"
@@ -1153,43 +1072,39 @@ const BidForm: React.FC<IProps> = ({
             />
             <div className={innerClasses.calcDescription}>
               {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
-                ? intl.formatMessage(
-                  { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" },
-                  { vat: bid.vat }
-                )
+                ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" }, { vat: bid.vat })
                 : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
             </div>
             <div style={{ height: 8 }}></div>
             <Grid container direction="column" justify="center" alignItems="flex-start">
               {!!bid?.point_prices &&
                 (bid.point_prices.length > 0 ? (
-                  bid.point_prices.map((item, i) => (
-                    <div key={i}>
-                      {!!me &&
-                        me.use_vat &&
-                        values.bid_type === "sale" &&
-                        !!bid &&
-                        !!bid.vat &&
-                        !vendorUseVat ? (
-                        <b>
-                          {thousands(
-                            Math.round(
-                              getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
-                            ).toString()
-                          )}
-                        </b>
-                      ) : (
-                        <b>
-                          {thousands(
-                            Math.round(
-                              getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
-                            ).toString()
-                          )}
-                        </b>
-                      )}
-                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                    </div>
-                  ))
+                  <div>
+                    {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                getFinalPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, +bid.vat)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    ) : (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                getFinalPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, 0)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    )}
+                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                    }`}
+                  </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                 ))}
@@ -1207,39 +1122,32 @@ const BidForm: React.FC<IProps> = ({
               {bid &&
                 bid.point_prices &&
                 (bid.point_prices.length > 0 ? (
-                  bid.point_prices.map((item, i) => (
-                    <div key={i}>
-                      {!!me &&
-                        me.use_vat &&
-                        values.bid_type === "sale" &&
-                        !!bid &&
-                        !!bid.vat &&
-                        !vendorUseVat ? (
-                        <b>
-                          {thousands(
-                            Math.round(
-                              getDeliveryPrice(
-                                bid,
-                                i,
-                                values.pricePerKm,
-                                salePurchaseMode,
-                                +bid.vat
-                              )
-                            ).toString()
-                          )}
-                        </b>
-                      ) : (
-                        <b>
-                          {thousands(
-                            Math.round(
-                              getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
-                            ).toString()
-                          )}
-                        </b>
-                      )}
-                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                    </div>
-                  ))
+                  <div>
+                    {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                getDeliveryPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, +bid.vat)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    ) : (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                getDeliveryPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, 0)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    )}
+                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                    }`}
+                  </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                 ))}
@@ -1257,41 +1165,34 @@ const BidForm: React.FC<IProps> = ({
               {bid &&
                 bid.point_prices &&
                 (bid.point_prices.length > 0 ? (
-                  bid.point_prices.map((item, i) => (
-                    <div key={i}>
-                      {!!me &&
-                        me.use_vat &&
-                        values.bid_type === "sale" &&
-                        !!bid &&
-                        !!bid.vat &&
-                        !vendorUseVat ? (
-                        <b>
-                          {thousands(
-                            Math.round(
-                              values.volume *
-                              getDeliveryPrice(
-                                bid,
-                                i,
-                                values.pricePerKm,
-                                salePurchaseMode,
-                                +bid.vat
-                              )
-                            ).toString()
-                          )}
-                        </b>
-                      ) : (
-                        <b>
-                          {thousands(
-                            Math.round(
-                              values.volume *
-                              getDeliveryPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
-                            ).toString()
-                          )}
-                        </b>
-                      )}
-                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                    </div>
-                  ))
+                  <div>
+                    {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                values.volume *
+                                  getDeliveryPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, +bid.vat)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    ) : (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                values.volume *
+                                  getDeliveryPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, 0)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    )}
+                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                    }`}
+                  </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                 ))}
@@ -1301,10 +1202,7 @@ const BidForm: React.FC<IProps> = ({
 
             <div className={innerClasses.calcDescription}>
               {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
-                ? intl.formatMessage(
-                  { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT_ALL" },
-                  { vat: bid.vat }
-                )
+                ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT_ALL" }, { vat: bid.vat })
                 : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_ALL" })}
             </div>
             <div style={{ height: 8 }}></div>
@@ -1312,74 +1210,40 @@ const BidForm: React.FC<IProps> = ({
               {bid &&
                 bid.point_prices &&
                 (bid.point_prices.length > 0 ? (
-                  bid.point_prices.map((item, i) => (
-                    <div key={i}>
-                      {!!me &&
-                        me.use_vat &&
-                        values.bid_type === "sale" &&
-                        !!bid &&
-                        !!bid.vat &&
-                        !vendorUseVat ? (
-                        <b>
-                          {thousands(
-                            Math.round(
-                              values.volume *
-                              getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, +bid.vat)
-                            ).toString()
-                          )}
-                        </b>
-                      ) : (
-                        <b>
-                          {thousands(
-                            Math.round(
-                              values.volume *
-                              getFinalPrice(bid, i, values.pricePerKm, salePurchaseMode, 0)
-                            ).toString()
-                          )}
-                        </b>
-                      )}
-                      {` • ${Math.round(item.distance)} км • ${item.point.name}`}
-                    </div>
-                  ))
+                  <div>
+                    {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                values.volume *
+                                  getFinalPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, +bid.vat)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    ) : (
+                      <b>
+                        {selectedRoute
+                          ? thousands(
+                              Math.round(
+                                values.volume *
+                                  getFinalPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, 0)
+                              ).toString()
+                            ) + " • "
+                          : ""}
+                      </b>
+                    )}
+                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                    }`}
+                  </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                 ))}
             </Grid>
           </div>
         ))}
-
-      {loading ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <TextField
-          type="text"
-          label={intl.formatMessage({
-            id: "BIDSLIST.TABLE.VOLUME",
-          })}
-          margin="normal"
-          name="volume"
-          value={thousands(values.volume.toString())}
-          variant="outlined"
-          onBlur={handleBlur}
-          onChange={handleChange}
-          helperText={touched.volume && errors.volume}
-          error={Boolean(touched.volume && errors.volume)}
-          InputProps={
-            editMode !== "view"
-              ? {
-                inputComponent: NumberFormatCustom as any,
-                endAdornment: (
-                  <IconButton onClick={() => setFieldValue("volume", "")}>
-                    <CloseIcon />
-                  </IconButton>
-                ),
-              }
-              : undefined
-          }
-          disabled={editMode === "view"}
-          autoComplete="off"
-        />
-      )}
 
       {editMode === "view" ? (
         loading ? (
@@ -1403,14 +1267,12 @@ const BidForm: React.FC<IProps> = ({
               inputHelperText={touched.location && errors.location && errors.location.text}
               fetchLocations={fetchLocations}
               clearLocations={clearLocations}
-              setSelectedLocation={location =>
-                !!location ? setFieldValue("location", location) : setFieldValue("location", {})
-              }
+              setSelectedLocation={location => (!!location ? setFieldValue("location", location) : setFieldValue("location", {}))}
               handleBlur={handleBlur}
               disable={true}
             />
 
-            {(mapState && bid) && (
+            {mapState && bid && (
               <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
                 <div style={{ width: "100%", marginTop: 5 }}>
                   <Map
@@ -1422,13 +1284,13 @@ const BidForm: React.FC<IProps> = ({
                       // setBalloonContent(ymaps.templateLayoutFactory.createClass('<h3>Hello from custom template!</h3>'))
                       setYmaps(ymaps);
                     }}
-                    modules={["templateLayoutFactory", "route", 'geoObject.addon.balloon']}
+                    modules={["templateLayoutFactory", "route", "geoObject.addon.balloon"]}
                   >
                     {showPlacemark && (
                       <Placemark
                         geometry={mapState.center}
                         properties={{ iconCaption: bid.location.text }}
-                        modules={['geoObject.addon.balloon']}
+                        modules={["geoObject.addon.balloon"]}
                       />
                     )}
                   </Map>
@@ -1437,11 +1299,7 @@ const BidForm: React.FC<IProps> = ({
             )}
 
             {me?.points && mySelectedMapPoint && editMode == "view" && bid && (
-              <FormControl
-                variant="outlined"
-                className={classes.formControl}
-                style={{ width: "100%", marginLeft: 0, marginTop: 15 }}
-              >
+              <FormControl variant="outlined" className={classes.formControl} style={{ width: "100%", marginLeft: 0, marginTop: 15 }}>
                 <InputLabel id="demo-simple-select-outlined-label">
                   {bid.type === "sale"
                     ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
@@ -1481,10 +1339,7 @@ const BidForm: React.FC<IProps> = ({
       ) : loading ? (
         <Skeleton width="100%" height={202} animation="wave" />
       ) : (
-        <div
-          className={classes.box}
-          style={!!values.location.text ? { borderColor: "#0abb87" } : {}}
-        >
+        <div className={classes.box} style={!!values.location.text ? { borderColor: "#0abb87" } : {}}>
           {!values.location.text ? (
             <p>
               {values.bid_type === "sale"
@@ -1499,8 +1354,8 @@ const BidForm: React.FC<IProps> = ({
             </p>
           )}
           {(editMode === "edit" && !!user && user.points.length > 0) ||
-            (editMode !== "edit" && !vendorId && !!me && me.points.length > 0) ||
-            (editMode !== "edit" && !!vendorId && !!user && user.points.length > 0) ? (
+          (editMode !== "edit" && !vendorId && !!me && me.points.length > 0) ||
+          (editMode !== "edit" && !!vendorId && !!user && user.points.length > 0) ? (
             ((editMode === "edit" && !!user && user.points.length > 1) ||
               (editMode !== "edit" && !vendorId && !!me && me.points.length > 1) ||
               (editMode !== "edit" && !!vendorId && !!user && user.points.length > 1)) && (
@@ -1593,9 +1448,7 @@ const BidForm: React.FC<IProps> = ({
             inputHelperText={touched.location && errors.location && errors.location.text}
             fetchLocations={fetchLocations}
             clearLocations={clearLocations}
-            setSelectedLocation={location =>
-              !!location ? setFieldValue("location", location) : setFieldValue("location", {})
-            }
+            setSelectedLocation={location => (!!location ? setFieldValue("location", location) : setFieldValue("location", {}))}
             handleBlur={handleBlur}
             disable={false}
           />
@@ -1626,9 +1479,7 @@ const BidForm: React.FC<IProps> = ({
           !!cropParams &&
           cropParams.map(
             cropParam =>
-              ((editMode === "view" &&
-                bid?.parameter_values.find(item => item.parameter_id === cropParam.id)) ||
-                editMode !== "view") &&
+              ((editMode === "view" && bid?.parameter_values.find(item => item.parameter_id === cropParam.id)) || editMode !== "view") &&
               (cropParam.type === "number" ? (
                 <TextField
                   key={cropParam.id}
@@ -1643,15 +1494,13 @@ const BidForm: React.FC<IProps> = ({
                   InputProps={
                     editMode !== "view"
                       ? {
-                        inputComponent: NumberFormatCustom as any,
-                        endAdornment: (
-                          <IconButton
-                            onClick={() => setFieldValue(`parameter${cropParam.id}`, "")}
-                          >
-                            <CloseIcon />
-                          </IconButton>
-                        ),
-                      }
+                          inputComponent: NumberFormatCustom as any,
+                          endAdornment: (
+                            <IconButton onClick={() => setFieldValue(`parameter${cropParam.id}`, "")}>
+                              <CloseIcon />
+                            </IconButton>
+                          ),
+                        }
                       : undefined
                   }
                   disabled={editMode === "view"}
@@ -1672,13 +1521,7 @@ const BidForm: React.FC<IProps> = ({
                   }}
                   disabled={editMode === "view"}
                   renderInput={params => (
-                    <TextField
-                      {...params}
-                      margin="normal"
-                      label={cropParam.name}
-                      variant="outlined"
-                      onBlur={handleBlur}
-                    />
+                    <TextField {...params} margin="normal" label={cropParam.name} variant="outlined" onBlur={handleBlur} />
                   )}
                 />
               ))
@@ -1710,22 +1553,18 @@ const BidForm: React.FC<IProps> = ({
         {me && editMode !== "view" && (
           <>
             <div className={classes.button}>
-              {!!me?.tariff_matrix &&
-                me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
+              {!!user?.tariff_matrix &&
+                user.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
                 <>
-                  {me && me.email ? (
+                  {user && user.email ? (
                     <FormControlLabel
-                      control={
-                        <Checkbox checked={isSendingEmail} onChange={e => onCheckboxChange(e, 1)} />
-                      }
+                      control={<Checkbox checked={isSendingEmail} onChange={e => onCheckboxChange(e, 1)} />}
                       label={"Подписка по e-mail"}
                     />
                   ) : null}
-                  {me && me.phone ? (
+                  {user && user.phone ? (
                     <FormControlLabel
-                      control={
-                        <Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />
-                      }
+                      control={<Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />}
                       label={"Подписка по смс"}
                     />
                   ) : null}
@@ -1741,11 +1580,7 @@ const BidForm: React.FC<IProps> = ({
 
             {editMode === "edit" && (
               <div className={classes.button}>
-                <OutlinedRedButton
-                  variant="outlined"
-                  onClick={() => setAlertOpen(true)}
-                  disabled={buttonLoading || loading}
-                >
+                <OutlinedRedButton variant="outlined" onClick={() => setAlertOpen(true)} disabled={buttonLoading || loading}>
                   {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
                 </OutlinedRedButton>
               </div>
@@ -1774,17 +1609,7 @@ const BidForm: React.FC<IProps> = ({
         }}
         handleAgree={() => {
           resetForm({
-            values: getInitialValues(
-              bid,
-              currentCropId,
-              salePurchaseMode,
-              editMode,
-              vendorId,
-              user,
-              me,
-              isSendingEmail,
-              isSendingSms
-            ),
+            values: getInitialValues(bid, currentCropId, salePurchaseMode, editMode, vendorId, user, me, isSendingEmail, isSendingSms),
           });
           window.scrollTo({
             top: 0,
