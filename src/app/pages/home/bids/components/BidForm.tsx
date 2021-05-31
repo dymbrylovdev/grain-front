@@ -1101,7 +1101,7 @@ const BidForm: React.FC<IProps> = ({
                           : ""}
                       </b>
                     )}
-                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                    {`${selectedRoute ? selectedRoute.distance.text + " •"  : ""} ${
                       mySelectedMapPoint ? mySelectedMapPoint.text : ""
                     }`}
                   </div>
@@ -1144,7 +1144,7 @@ const BidForm: React.FC<IProps> = ({
                           : ""}
                       </b>
                     )}
-                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                    {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
                       mySelectedMapPoint ? mySelectedMapPoint.text : ""
                     }`}
                   </div>
@@ -1189,7 +1189,7 @@ const BidForm: React.FC<IProps> = ({
                           : ""}
                       </b>
                     )}
-                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                    {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
                       mySelectedMapPoint ? mySelectedMapPoint.text : ""
                     }`}
                   </div>
@@ -1234,7 +1234,7 @@ const BidForm: React.FC<IProps> = ({
                           : ""}
                       </b>
                     )}
-                    {`${selectedRoute ? Math.round(selectedRoute.distance.value / 1000) + "км •" : ""} ${
+                    {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
                       mySelectedMapPoint ? mySelectedMapPoint.text : ""
                     }`}
                   </div>
@@ -1281,7 +1281,6 @@ const BidForm: React.FC<IProps> = ({
                     width={768}
                     height={400}
                     onLoad={ymaps => {
-                      // setBalloonContent(ymaps.templateLayoutFactory.createClass('<h3>Hello from custom template!</h3>'))
                       setYmaps(ymaps);
                     }}
                     modules={["templateLayoutFactory", "route", "geoObject.addon.balloon"]}
