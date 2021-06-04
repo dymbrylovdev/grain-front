@@ -591,6 +591,8 @@ const BidForm: React.FC<IProps> = ({
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
 
+  console.log("user", user);
+
   return (
     <div className={classes.form}>
       <div className={classes.topButtonsContainer}>
@@ -663,7 +665,12 @@ const BidForm: React.FC<IProps> = ({
                   alignItems: "flex-start",
                 }}
               >
-                <Button variant="outlined" className={innerClasses.authorText} style={{ cursor: "pointer", color: "blue" }} onClick={linkToContact}>
+                <Button
+                  variant="outlined"
+                  className={innerClasses.authorText}
+                  style={{ cursor: "pointer", color: "blue" }}
+                  onClick={linkToContact}
+                >
                   {`${
                     bid.type === "sale"
                       ? intl.formatMessage({ id: "AUTH.REGISTER.VENDOR" })
@@ -784,7 +791,7 @@ const BidForm: React.FC<IProps> = ({
         />
       )}
 
-{loading ? (
+      {loading ? (
         <Skeleton width="100%" height={70} animation="wave" />
       ) : (
         <TextField
@@ -1552,25 +1559,45 @@ const BidForm: React.FC<IProps> = ({
       <div className={classes.bottomButtonsContainer}>
         {me && editMode !== "view" && (
           <>
-            <div className={classes.button}>
-              {!!user?.tariff_matrix &&
-                user.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
-                <>
-                  {user && user.email ? (
-                    <FormControlLabel
-                      control={<Checkbox checked={isSendingEmail} onChange={e => onCheckboxChange(e, 1)} />}
-                      label={"Подписка по e-mail"}
-                    />
-                  ) : null}
-                  {user && user.phone ? (
-                    <FormControlLabel
-                      control={<Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />}
-                      label={"Подписка по смс"}
-                    />
-                  ) : null}
-                </>
-              )}
-            </div>
+            {editMode === "create" && !user ? (
+              <div className={classes.button}>
+                {!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
+                  <>
+                    {me && me.email ? (
+                      <FormControlLabel
+                        control={<Checkbox checked={isSendingEmail} onChange={e => onCheckboxChange(e, 1)} />}
+                        label={"Подписка по e-mail"}
+                      />
+                    ) : null}
+                    {me && me.phone ? (
+                      <FormControlLabel
+                        control={<Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />}
+                        label={"Подписка по смс"}
+                      />
+                    ) : null}
+                  </>
+                )}
+              </div>
+            ) : (
+              <div className={classes.button}>
+                {!!user?.tariff_matrix && user.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 ? null : (
+                  <>
+                    {user && user.email ? (
+                      <FormControlLabel
+                        control={<Checkbox checked={isSendingEmail} onChange={e => onCheckboxChange(e, 1)} />}
+                        label={"Подписка по e-mail"}
+                      />
+                    ) : null}
+                    {user && user.phone ? (
+                      <FormControlLabel
+                        control={<Checkbox checked={isSendingSms} onChange={e => onCheckboxChange(e, 2)} />}
+                        label={"Подписка по смс"}
+                      />
+                    ) : null}
+                  </>
+                )}
+              </div>
+            )}
 
             <div className={classes.button}>
               <ButtonWithLoader onPress={() => createFilter(bidId)}>
