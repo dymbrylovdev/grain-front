@@ -1,5 +1,5 @@
 const {
-  REACT_APP_API_DOMAIN = "grain-apifx.me-interactive.net",
+  REACT_APP_API_DOMAIN = "grain-api.me-interactive.net",
   REACT_APP_GOOGLE_API_KEY = "c1170a31-17b7-4be1-8db7-e068998ee7cd",
 } = process.env;
 
