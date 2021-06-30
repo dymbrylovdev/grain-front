@@ -179,6 +179,9 @@
   "DEALS.WEEKS.BUTTON": "Показать",
 
   "PROFILE.INPUT.FIO": "ФИО",
+  "PROFILE.INPUT.NAME": "Имя",
+  "PROFILE.INPUT.SURNAME": "Фамилия",
+  "PROFILE.INPUT.PATRONYMIC": "Отчество",
   "PROFILE.INPUT.LOCATION.SALE": "Точка отгрузки",
   "PROFILE.INPUT.STATUS.HEADER": "Статус",
   "PROFILE.INPUT.STATUS_ARCHIVED": "В архиве",
