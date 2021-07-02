@@ -172,6 +172,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const getInitialValues = (user: IUser | undefined) => ({
     login: user?.login || "",
     fio: user?.fio || "",
+    name: user?.fio || "",
+    surname: "",
+    patronymic: "",
     phone: user?.phone || `${countryCode}`,
     email: user?.email || "",
     password: "",
@@ -643,7 +646,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
-      <div className={classes.textFieldContainer}>
+      {/* <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
@@ -666,6 +669,93 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             onChange={handleChange}
             helperText={touched.fio && errors.fio}
             error={Boolean(touched.fio && errors.fio)}
+            autoComplete="off"
+            disabled={editMode === "view"}
+          />
+        )}
+      </div> */}
+
+      <div className={classes.textFieldContainer}>
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            type="text"
+            label={intl.formatMessage({
+              id: "PROFILE.INPUT.NAME",
+            })}
+            margin="normal"
+            className={classes.textField}
+            classes={
+              prompterRunning && prompterStep === 0 && !values.name
+                ? { root: innerClasses.pulseRoot }
+                : {}
+            }
+            name="name"
+            value={values.name}
+            variant="outlined"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            helperText={touched.name && errors.name}
+            error={Boolean(touched.name && errors.name)}
+            autoComplete="off"
+            disabled={editMode === "view"}
+          />
+        )}
+      </div>
+
+      <div className={classes.textFieldContainer}>
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            type="text"
+            label={intl.formatMessage({
+              id: "PROFILE.INPUT.SURNAME",
+            })}
+            margin="normal"
+            className={classes.textField}
+            classes={
+              prompterRunning && prompterStep === 0 && !values.surname
+                ? { root: innerClasses.pulseRoot }
+                : {}
+            }
+            name="surname"
+            value={values.surname}
+            variant="outlined"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            helperText={touched.surname && errors.surname}
+            error={Boolean(touched.surname && errors.surname)}
+            autoComplete="off"
+            disabled={editMode === "view"}
+          />
+        )}
+      </div>
+
+      <div className={classes.textFieldContainer}>
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            type="text"
+            label={intl.formatMessage({
+              id: "PROFILE.INPUT.PATRONYMIC",
+            })}
+            margin="normal"
+            className={classes.textField}
+            classes={
+              prompterRunning && prompterStep === 0 && !values.patronymic
+                ? { root: innerClasses.pulseRoot }
+                : {}
+            }
+            name="patronymic"
+            value={values.patronymic}
+            variant="outlined"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            helperText={touched.patronymic && errors.patronymic}
+            error={Boolean(touched.patronymic && errors.patronymic)}
             autoComplete="off"
             disabled={editMode === "view"}
           />
