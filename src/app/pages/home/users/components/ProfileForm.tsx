@@ -172,9 +172,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const getInitialValues = (user: IUser | undefined) => ({
     login: user?.login || "",
     fio: user?.fio || "",
-    name: user?.fio || "",
-    surname: "",
-    patronymic: "",
+    firstname: user?.firstname || "",
+    surname: user?.surname || "",
+    lastname: user?.lastname || "",
     phone: user?.phone || `${countryCode}`,
     email: user?.email || "",
     password: "",
@@ -218,7 +218,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           : Yup.string()
               .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
               .matches(/^(\d{3}|\d{13})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
-      fio: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+      // fio: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
     },
     [["email", "phone"]]
   );
@@ -675,36 +675,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div> */}
 
-      <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-          <Skeleton width="100%" height={70} animation="wave" />
-        ) : (
-          <TextField
-            type="text"
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.NAME",
-            })}
-            margin="normal"
-            className={classes.textField}
-            classes={
-              prompterRunning && prompterStep === 0 && !values.name
-                ? { root: innerClasses.pulseRoot }
-                : {}
-            }
-            name="name"
-            value={values.name}
-            variant="outlined"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            helperText={touched.name && errors.name}
-            error={Boolean(touched.name && errors.name)}
-            autoComplete="off"
-            disabled={editMode === "view"}
-          />
-        )}
-      </div>
-
-      <div className={classes.textFieldContainer}>
+<div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
@@ -740,22 +711,51 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           <TextField
             type="text"
             label={intl.formatMessage({
+              id: "PROFILE.INPUT.NAME",
+            })}
+            margin="normal"
+            className={classes.textField}
+            classes={
+              prompterRunning && prompterStep === 0 && !values.firstname
+                ? { root: innerClasses.pulseRoot }
+                : {}
+            }
+            name="firstname"
+            value={values.firstname}
+            variant="outlined"
+            onBlur={handleBlur}
+            onChange={handleChange}
+            helperText={touched.firstname && errors.firstname}
+            error={Boolean(touched.firstname && errors.firstname)}
+            autoComplete="off"
+            disabled={editMode === "view"}
+          />
+        )}
+      </div>
+
+      <div className={classes.textFieldContainer}>
+        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <TextField
+            type="text"
+            label={intl.formatMessage({
               id: "PROFILE.INPUT.PATRONYMIC",
             })}
             margin="normal"
             className={classes.textField}
             classes={
-              prompterRunning && prompterStep === 0 && !values.patronymic
+              prompterRunning && prompterStep === 0 && !values.lastname
                 ? { root: innerClasses.pulseRoot }
                 : {}
             }
-            name="patronymic"
-            value={values.patronymic}
+            name="lastname"
+            value={values.lastname}
             variant="outlined"
             onBlur={handleBlur}
             onChange={handleChange}
-            helperText={touched.patronymic && errors.patronymic}
-            error={Boolean(touched.patronymic && errors.patronymic)}
+            helperText={touched.lastname && errors.lastname}
+            error={Boolean(touched.lastname && errors.lastname)}
             autoComplete="off"
             disabled={editMode === "view"}
           />

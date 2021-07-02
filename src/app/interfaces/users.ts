@@ -9,6 +9,9 @@ export interface IUser {
   id: number;
   email: string;
   fio?: string;
+  firstname?: string;
+  lastname?: string;
+  surname?: string;
   phone?: string;
   login: string;
   status?: string;
