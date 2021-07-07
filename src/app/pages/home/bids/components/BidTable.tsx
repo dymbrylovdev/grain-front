@@ -269,7 +269,7 @@ const BidTable: React.FC<IProps> = ({
                         )
                       ) : bid.price ? (
                         <div>
-                          {Math.round(bid.price)} <br /> <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>без НДС</p>
+                          {Math.round(bid.price)} <br /> <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>с НДС</p>
                         </div>
                       ) : (
                         "-"
