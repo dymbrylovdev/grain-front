@@ -84,8 +84,8 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
 
         <Route path="/purchase/filters/view/:id" component={MyFiltersEditPage} />
         <Route path="/purchase/filters/edit/:id" component={MyFiltersEditPage} />
-        <Route path="/user/:userId/filters/view/:id" component={UserBidFiltersEdit} />
-        <Route path="/user/:userId/filters/edit/:id" component={UserBidFiltersEdit} />
+        <Route path="/sale/user/:userId/filters/view/:id" component={UserBidFiltersEdit} />
+        <Route path="/sale/user/:userId/filters/edit/:id" component={UserBidFiltersEdit} />
         <Route path="/user/:userId/filters" component={FilterForm} />
         <Route path="/purchase/filters/prices" component={MyFiltersMoneyPage} />
         <Route path="/purchase/filters" component={MyFiltersPage} />
