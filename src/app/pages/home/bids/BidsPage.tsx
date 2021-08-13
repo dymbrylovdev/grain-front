@@ -6,6 +6,7 @@ import { injectIntl, WrappedComponentProps } from "react-intl";
 import { Button, makeStyles, Paper } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import { format } from "date-fns";
+import fileSaver from "file-saver";
 
 import { actions as bidsActions } from "../../../store/ducks/bids.duck";
 import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
@@ -27,8 +28,7 @@ import { filterForBids } from "../myFilters/utils";
 import { LayoutSubheader } from "../../../../_metronic";
 import { accessByRoles } from "../../../utils/utils";
 import { IBid } from "../../../interfaces/bids";
-
-import fileSaver from "file-saver";
+import { useShowErrors } from "../../../hooks/useShowErrors";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -153,19 +153,13 @@ const BidsPage: React.FC<TPropsFromRedux &
 
   pointPrices,
 
-  clearBidsXlsUrl,
+  // clearBidsXlsUrl,
   fetchBidsXlsUrl,
 
   bidsXlsUrl,
-  bidsXlsUrlLoading,
-  bidsXlsUrlSuccess,
+  // bidsXlsUrlLoading,
+  // bidsXlsUrlSuccess,
   bidsXlsUrlError,
-
-  archiveBid,
-  archiveLoading,
-  archiveSuccess,
-  archiveSuccessType,
-  archiveError,
 }) => {
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
   if (match.url.indexOf("best-bids") !== -1) bestAllMyMode = "best-bids";
@@ -250,7 +244,6 @@ const BidsPage: React.FC<TPropsFromRedux &
   };
 
   const newInexactBid: IBid[] = [];
-
   if (bestBids?.equal && bestBids.equal.length < 10) {
     if (bestBids.inexact && bestBids.inexact.length > 0) {
       for (let i = 0; i < 10 - bestBids.equal.length; i++) {
@@ -264,7 +257,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    if (editFilterSuccess || editFilterError) {
+    if (editFilterSuccess) {
       enqueueSnackbar(
         editFilterSuccess
           ? intl.formatMessage({ id: "NOTISTACK.ERRORS.SAVE_FILTER" })
@@ -291,7 +284,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   ]);
 
   useEffect(() => {
-    if (delSuccess || delError) {
+    if (delSuccess) {
       enqueueSnackbar(
         delSuccess
           ? intl.formatMessage({ id: "NOTISTACK.BIDS.DEL.OK" })
@@ -364,85 +357,6 @@ const BidsPage: React.FC<TPropsFromRedux &
     salePurchaseMode,
     pointPrices,
     fetchAll,
-  ]);
-
-  useEffect(() => {
-    if (archiveSuccess || archiveError) {
-      enqueueSnackbar(
-        archiveSuccess
-          ? intl.formatMessage({
-              id: archiveSuccessType ? "NOTISTACK.BIDS.ARCHIVE.OK" : "NOTISTACK.BIDS.UNARCHIVE.OK",
-            })
-          : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${archiveError}`,
-        {
-          variant: archiveSuccess ? "success" : "error",
-        }
-      );
-      setAlertOpen(false);
-      clearDel();
-    }
-    if (archiveSuccess) {
-      switch (bestAllMyMode) {
-        case "best-bids":
-          if (salePurchaseMode === "sale") {
-            if (currentSaleFilters[cropId] && cropParams && pointPrices) {
-              fetchBestBids(
-                salePurchaseMode,
-                filterForBids(
-                  currentSaleFilters[cropId] || {},
-                  cropParams.filter(item => item.type === "enum"),
-                  cropParams.filter(item => item.type === "number"),
-                  pointPrices
-                )
-              );
-            }
-            if (cropId && !currentSaleFilters[cropId])
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
-          }
-          if (salePurchaseMode === "purchase") {
-            if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
-              fetchBestBids(
-                salePurchaseMode,
-                filterForBids(
-                  currentPurchaseFilters[cropId] || {},
-                  cropParams.filter(item => item.type === "enum"),
-                  cropParams.filter(item => item.type === "number"),
-                  pointPrices
-                )
-              );
-            }
-            if (cropId && !currentPurchaseFilters[cropId])
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
-          }
-          break;
-        case "my-bids":
-          fetchMyBids(salePurchaseMode, page, perPage);
-          break;
-        case "all-bids":
-          fetchAll();
-          break;
-      }
-    }
-  }, [
-    bestAllMyMode,
-    clearDel,
-    cropId,
-    cropParams,
-    currentPurchaseFilters,
-    currentSaleFilters,
-    archiveError,
-    archiveSuccess,
-    enqueueSnackbar,
-    fetch,
-    fetchBestBids,
-    fetchMyBids,
-    intl,
-    page,
-    perPage,
-    salePurchaseMode,
-    pointPrices,
-    fetchAll,
-    archiveSuccessType,
   ]);
 
   useEffect(() => {
@@ -552,6 +466,8 @@ const BidsPage: React.FC<TPropsFromRedux &
     }
   };
 
+  useShowErrors([error, bestError, myError, cropsError, cropParamsError, bidsXlsUrlError]);
+
   if (error || bestError || myError || cropsError || cropParamsError || bidsXlsUrlError) {
     setTimeout(() => {
       window.location.reload();
@@ -622,7 +538,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 }}
                 user={me as IUser}
                 title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
-                loading={!bestBids || !cropParams || archiveLoading}
+                loading={!bestBids || !cropParams}
                 salePurchaseMode={salePurchaseMode}
                 bestAllMyMode={bestAllMyMode}
                 crops={crops}
@@ -641,7 +557,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                   }}
                   user={me as IUser}
                   title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
-                  loading={!bestBids || !cropParams || archiveLoading}
+                  loading={!bestBids || !cropParams}
                   salePurchaseMode={salePurchaseMode}
                   bestAllMyMode={bestAllMyMode}
                   crops={crops}
@@ -689,7 +605,6 @@ const BidsPage: React.FC<TPropsFromRedux &
               bestAllMyMode={bestAllMyMode}
               crops={crops}
               setProfit={setProfit}
-              archive={archiveBid}
             />
             {!!myBids && !!myBids.length && (
               <div className={innerClasses.text}>
@@ -826,11 +741,6 @@ const connector = connect(
     bidsXlsUrlLoading: state.bids.bidsXlsLoading,
     bidsXlsUrlSuccess: state.bids.bidsXlsSuccess,
     bidsXlsUrlError: state.bids.bidsXlsError,
-
-    archiveLoading: state.bids.archiveLoading,
-    archiveSuccess: state.bids.archiveSuccess,
-    archiveSuccessType: state.bids.archiveSuccessType,
-    archiveError: state.bids.archiveError,
   }),
   {
     fetchMe: authActions.fetchRequest,
@@ -861,8 +771,6 @@ const connector = connect(
 
     clearBidsXlsUrl: bidsActions.clearBidsXlsUrl,
     fetchBidsXlsUrl: bidsActions.bidsXlsUrlRequest,
-
-    archiveBid: bidsActions.archiveRequest,
   }
 );
 

@@ -256,6 +256,28 @@ const BidTable: React.FC<IProps> = ({
                           <ReportProblemIcon color="error" style={{ marginRight: 4, width: 16, height: 16, alignSelf: "center" }} />
                         </Tooltip>
                       )}
+
+                      {/*Если покупатель работает с НДС, а объявление продавца было установлено, когда он работал с НДС*/}
+                      {user.use_vat && bid.vendor_use_vat && (
+                        <div>
+                          <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>С НДС</p>
+                        </div>
+                      )}
+
+                      {/*Когда покупатель не работает с НДС, а у продавца установлено объявление, когда тот не работал с НДС*/}
+                      {!user.use_vat && !bid.vendor_use_vat && (
+                        <div>
+                          <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>БЕЗ НДС</p>
+                        </div>
+                      )}
+
+                      {/*Когда покупатель не работает с НДС, а у продавец выставил объявление работая с НДС*/}
+                      {!user.use_vat && bid.vendor_use_vat && (
+                        <div>
+                          <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>С НДС</p>
+                        </div>
+                      )}
+
                       {!!user && user.use_vat && salePurchaseMode === "sale" && !!bid && !!bid.vat && !bid.vendor_use_vat ? (
                         !bid.price ? (
                           "-"
