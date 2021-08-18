@@ -62,24 +62,23 @@ const Autocomplete: React.FC<IProps> = ({
   }, [clearLocations]);
 
   useEffect(() => {
-    if (location.length > 2) {
+    if (location.length > 1) {
       // console.log(location);
 
       const loadingDelay = setTimeout(() => {
         setLoadingLocal(true);
-      }, 500)
+      }, 500);
 
       const fetchDelay = setTimeout(() => {
         // console.log('fetch for:', location);
         fetchLocations(location);
         setLoadingLocal(false);
-      }, 4000)
+      }, 4000);
 
       return () => {
         clearTimeout(fetchDelay);
         clearTimeout(loadingDelay);
-      }
-
+      };
     } else {
       setLoadingLocal(false);
     }
@@ -111,9 +110,7 @@ const Autocomplete: React.FC<IProps> = ({
       onInputChange={(_e: any, _val: any, reason: any) => {
         if (reason === "clear") setSelectedLocation({ text: "" });
       }}
-      classes={
-        prompterRunning && prompterStep === 0 && !location ? { root: innerClasses.pulseRoot } : {}
-      }
+      classes={prompterRunning && prompterStep === 0 && !location ? { root: innerClasses.pulseRoot } : {}}
       renderInput={(params: any) => {
         return (
           <TextField

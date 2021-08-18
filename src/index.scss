@@ -11,6 +11,11 @@
 @import "./_metronic/_assets/sass/global/layout/brand/skins/dark.scss";
 @import "./_metronic/_assets/sass/global/layout/aside/skins/dark.scss";
 
+// fix material ui icons in safari
+.MuiSvgIcon-root {
+  transform: scale(1);
+}
+
 // Header Skins
 .kt-header-base-light {
   @import "./_metronic/_assets/sass/global/layout/header/skins/base/light.scss";
