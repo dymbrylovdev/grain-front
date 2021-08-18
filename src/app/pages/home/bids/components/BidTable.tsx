@@ -260,7 +260,7 @@ const BidTable: React.FC<IProps> = ({
                       {salePurchaseMode === "sale" ? (
                         <>
                           {/*Если покупатель работает с НДС, а объявление продавца было установлено без работы с ндс, то мы добавляем +10 процент*/}
-                          {user.use_vat && !!bid.vat && !bid.vendor_use_vat && (
+                          {user.use_vat && !bid.vendor_use_vat && (
                             <div>
                               <p style={{ marginBottom: "1px" }}>{!!bid && Math.round(bid.price * (bid.vat / 100 + 1))}</p>
                               <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
@@ -270,7 +270,7 @@ const BidTable: React.FC<IProps> = ({
                           )}
 
                           {/*Если покупатель работает с НДС, а объявление продавца было установлено, когда он работал с НДС*/}
-                          {user.use_vat && bid.vendor_use_vat && salePurchaseMode === "sale" && (
+                          {user.use_vat && bid.vendor_use_vat && (
                             <div>
                               {Math.round(bid.price)} <br />
                               <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>С НДС</p>
@@ -278,7 +278,7 @@ const BidTable: React.FC<IProps> = ({
                           )}
 
                           {/*Когда покупатель не работает с НДС, а у продавца установлено объявление, когда тот не работал с НДС*/}
-                          {!user.use_vat && !bid.vendor_use_vat && salePurchaseMode === "sale" && (
+                          {!user.use_vat && !bid.vendor_use_vat && (
                             <div>
                               {Math.round(bid.price)} <br />
                               <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>БЕЗ НДС</p>
@@ -286,7 +286,7 @@ const BidTable: React.FC<IProps> = ({
                           )}
 
                           {/*Когда покупатель не работает с НДС, а у продавец выставил объявление работая с НДС*/}
-                          {!user.use_vat && bid.vendor_use_vat && salePurchaseMode === "sale" && (
+                          {!user.use_vat && bid.vendor_use_vat && (
                             <div>
                               {Math.round(bid.price)} <br />
                               <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>С НДС</p>
