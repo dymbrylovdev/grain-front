@@ -262,7 +262,7 @@ const BidTable: React.FC<IProps> = ({
                           {/*Если покупатель работает с НДС, а объявление продавца было установлено без работы с ндс, то мы добавляем +10 процент*/}
                           {user.use_vat && !bid.vendor_use_vat && (
                             <div>
-                              <p style={{ marginBottom: "1px" }}>{!!bid && Math.round(bid.price * (bid.vat / 100 + 1))}</p>
+                              <p style={{ marginBottom: "1px" }}>{!!bid && Math.round(bid.price * ((bid.vat || 0) / 100 + 1))}</p>
                               <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
                                 {`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}
                               </p>
