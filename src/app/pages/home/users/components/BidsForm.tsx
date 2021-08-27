@@ -13,6 +13,7 @@ import { actions as crops2Actions } from "../../../../store/ducks/crops2.duck";
 import { actions as bidsActions } from "../../../../store/ducks/bids.duck";
 
 import { actions as myFiltersActions } from "../../../../store/ducks/myFilters.duck";
+import Preloader from "../../../../components/ui/Loaders/Preloader";
 
 interface IProps {
   intl: IntlShape;
@@ -45,6 +46,10 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   postLoading,
   postSuccess,
   postError,
+
+  page,
+  perPage,
+  total,
 }) => {
   const history = useHistory();
 
@@ -56,12 +61,14 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchCrops]);
 
   useEffect(() => {
-    if (userId) fetchUserBids(userId);
+    if (userId) fetchUserBids({ userId, page, perPage });
   }, [fetchUserBids, userId]);
 
   useEffect(() => {
     clearUserBids();
   }, [clearUserBids]);
+
+  if (userBidsLoading) return <Preloader />;
 
   return (
     <div>
@@ -77,19 +84,26 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
         loading={!userBids}
         crops={crops}
         setProfit={setProfit}
-
         post={post}
         clearPost={clearPost}
         postLoading={postLoading}
         postSuccess={postSuccess}
         postError={postError}
+        paginationData={{ page, perPage, total }}
+        fetcher={(newPage: number, newPerPage: number) => {
+          if (userId) {
+            fetchUserBids({ userId, page: newPage, perPage: newPerPage });
+          }
+        }}
       />
 
-      <div style={{display: "flex", justifyContent: "flex-end", marginTop: 15}}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 15 }}>
         <Button
           color="primary"
           variant="contained"
-          onClick={() => {history.push(`/bid/create/${isBuyer ? "purchase" : "sale"}/0/0/${userId}`)}}
+          onClick={() => {
+            history.push(`/bid/create/${isBuyer ? "purchase" : "sale"}/0/0/${userId}`);
+          }}
         >
           Добавить объявление
         </Button>
@@ -108,6 +122,9 @@ const connector = connect(
     userBidsLoading: state.users.userBidsLoading,
     userBidsSuccess: state.users.userBidsSuccess,
     userBidsError: state.users.userBidsError,
+    page: state.users.bids_page,
+    perPage: state.users.bids_per_page,
+    total: state.users.bids_total,
 
     postLoading: state.myFilters.postLoading,
     postSuccess: state.myFilters.postSuccess,

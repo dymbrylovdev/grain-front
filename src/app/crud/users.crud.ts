@@ -35,8 +35,8 @@ export function getUsers(page, perPage, tariffId, funnelStateId, userRolesId, bo
   return axios.get(url);
 }
 
-export const getUserBids = id => {
-  return axios.get(`api/user/${id}/bids`);
+export const getUserBids = (data: { userId: number; page: number; perPage: number }) => {
+  return axios.get(`api/user/${data.userId}/bids?page=${data.page}&per_page=${data.perPage}`);
 };
 
 export const getUsersCrops = id => {

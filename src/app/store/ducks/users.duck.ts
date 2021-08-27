@@ -21,13 +21,7 @@ import {
   createUserBidFilter,
   getUserFilters,
 } from "../../crud/users.crud";
-import {
-  IUser,
-  IUserForCreate,
-  IUserForEdit,
-  TRole,
-  IUserBidFilters,
-} from "../../interfaces/users";
+import { IUser, IUserForCreate, IUserForEdit, TRole, IUserBidFilters } from "../../interfaces/users";
 import { IBid } from "../../interfaces/bids";
 import { ICrop } from "../../interfaces/crops";
 import { IFilterForCreate, IMyFilterItem, IMyFilters } from "../../interfaces/filters";
@@ -107,7 +101,6 @@ export interface IInitialState {
   total: number;
   prevUsersCount: number;
   users: IUser[] | undefined;
-  userBids: IBid[] | undefined;
   loading: boolean;
   success: boolean;
   error: string | null;
@@ -138,6 +131,10 @@ export interface IInitialState {
   userActivateSuccess: boolean;
   userActivateError: string | null;
 
+  bids_page: number;
+  bids_per_page: number;
+  bids_total: number;
+  userBids: IBid[] | undefined;
   userBidsLoading: boolean;
   userBidsSuccess: boolean;
   userBidsError: string | null;
@@ -176,7 +173,6 @@ const initialState: IInitialState = {
   total: 0,
   prevUsersCount: 5,
   users: undefined,
-  userBids: undefined,
   loading: false,
   success: false,
   error: null,
@@ -207,6 +203,10 @@ const initialState: IInitialState = {
   userActivateSuccess: false,
   userActivateError: null,
 
+  userBids: undefined,
+  bids_page: 1,
+  bids_per_page: 20,
+  bids_total: 0,
   userBidsLoading: false,
   userBidsSuccess: false,
   userBidsError: null,
@@ -450,7 +450,15 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case CLEAR_USER_BIDS: {
-        return { ...state, userBidsLoading: false, userBidsSuccess: false, userBidsError: null };
+        return {
+          ...state,
+          userBidsLoading: false,
+          userBidsSuccess: false,
+          userBidsError: null,
+          bids_page: 1,
+          bids_per_page: 20,
+          bids_total: 0,
+        };
       }
 
       case USER_BIDS_REQUEST: {
@@ -461,6 +469,9 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return {
           ...state,
           userBids: action.payload.data,
+          bids_page: action.payload.page,
+          bids_per_page: action.payload.per_page,
+          bids_total: action.payload.total,
           userBidsLoading: false,
           userBidsSuccess: true,
         };
@@ -680,8 +691,7 @@ export const actions = {
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
 
   clearContactViewCount: () => createAction(CLEAR_CONTACT_VIEW_COUNT),
-  contactViewCountRequest: (payload: { data: number }) =>
-    createAction(CONTACT_VIEW_COUNT_REQUEST, payload),
+  contactViewCountRequest: (payload: { data: number }) => createAction(CONTACT_VIEW_COUNT_REQUEST, payload),
   contactViewCountSuccess: () => createAction(CONTACT_VIEW_COUNT_SUCCESS),
   contactViewCountError: (payload: string) => createAction(CONTACT_VIEW_COUNT_FAIL, payload),
 
@@ -691,12 +701,11 @@ export const actions = {
   useractivateError: (payload: string) => createAction(USER_ACTIVATE_FAIL, payload),
 
   clearUserBids: () => createAction(CLEAR_USER_BIDS),
-  userBidsRequest: (payload: number) => createAction(USER_BIDS_REQUEST, payload),
+  userBidsRequest: (payload: { userId: number; page: number; perPage: number }) => createAction(USER_BIDS_REQUEST, payload),
   userBidsSuccess: (payload: IServerResponse<IBid[]>) => createAction(USER_BIDS_SUCCESS, payload),
   userBidsFail: (payload: string) => createAction(USER_BIDS_FAIL, payload),
 
-  setOpenInfoAlert: (openInfoAlert: boolean) =>
-    createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
+  setOpenInfoAlert: (openInfoAlert: boolean) => createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
 
   clearUserRoles: () => createAction(CLEAR_USER_ROLES),
   userRolesRequest: () => createAction(USER_ROLES_REQUEST),
@@ -706,10 +715,8 @@ export const actions = {
   setCurrentRoles: (payload: any) => createAction(SET_CURRENT_ROLES, payload),
 
   clearUserBidFilters: () => createAction(CLEAR_USER_BID_FILTERS),
-  userBidFiltersRequest: (payload: { id: number; type?: string }) =>
-    createAction(USER_BID_FILTERS_REQUEST, payload),
-  userBidFiltersSuccess: (payload: IServerResponse<IUserBidFilters>) =>
-    createAction(USER_BID_FILTERS_SUCCESS, payload),
+  userBidFiltersRequest: (payload: { id: number; type?: string }) => createAction(USER_BID_FILTERS_REQUEST, payload),
+  userBidFiltersSuccess: (payload: IServerResponse<IUserBidFilters>) => createAction(USER_BID_FILTERS_SUCCESS, payload),
   userBidFiltersFail: (payload: string) => createAction(USER_BID_FILTERS_FAIL, payload),
 
   clearCreateUserFilter: () => createAction(CLEAR_CREATE_USER_FILTER),
@@ -718,8 +725,7 @@ export const actions = {
   createUserFilterFail: (payload: string) => createAction(CREATE_USER_FILTER_FAIL, payload),
 
   clearUserFilters: () => createAction(CLEAR_USER_FILTERS),
-  userFiltersRequest: (payload: { email?: string; phone?: string }) =>
-    createAction(USER_FILTERS_REQUEST, payload),
+  userFiltersRequest: (payload: { email?: string; phone?: string }) => createAction(USER_FILTERS_REQUEST, payload),
   userFiltersSuccess: (payload: any) => createAction(USER_FILTERS_SUCCESS, payload),
   userFiltersFail: (payload: string) => createAction(USER_FILTERS_FAIL, payload),
 
@@ -745,14 +751,7 @@ function* fetchSaga({
 }) {
   try {
     const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
-      getUsers(
-        payload.page,
-        payload.perPage,
-        payload.tariffId,
-        payload.funnelStateId,
-        payload.userRolesId,
-        payload.boughtTariff
-      )
+      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId, payload.boughtTariff)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
@@ -780,9 +779,7 @@ function* createSaga({ payload }: { payload: IUserForCreate }) {
 
 function* editSaga({ payload }: { payload: { id: number; data: IUserForEdit } }) {
   try {
-    const { data }: { data: IServerResponse<IUser> } = yield call(() =>
-      editUser(payload.id, payload.data)
-    );
+    const { data }: { data: IServerResponse<IUser> } = yield call(() => editUser(payload.id, payload.data));
     yield put(actions.editSuccess(data));
   } catch (e) {
     yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -816,7 +813,7 @@ function* userActivateSaga({ payload }: { payload: { email: String } }) {
   }
 }
 
-function* userBidsSaga({ payload }: { payload: number }) {
+function* userBidsSaga({ payload }: { payload:  { userId: number; page: number; perPage: number } }) {
   try {
     const { data }: { data: IServerResponse<IBid[]> } = yield call(() => getUserBids(payload));
     yield put(actions.userBidsSuccess(data));
@@ -836,9 +833,7 @@ function* userRolesSaga() {
 
 function* userBidFiltersSaga({ payload }: { payload: { id: number; type?: string } }) {
   try {
-    const { data }: { data: IServerResponse<IUserBidFilters> } = yield call(() =>
-      getUserBidFilters(payload)
-    );
+    const { data }: { data: IServerResponse<IUserBidFilters> } = yield call(() => getUserBidFilters(payload));
     yield put(actions.userBidFiltersSuccess(data));
   } catch (e) {
     yield put(actions.userBidFiltersFail(e?.response?.data?.message) || "Ошибка соединения.");
@@ -847,9 +842,7 @@ function* userBidFiltersSaga({ payload }: { payload: { id: number; type?: string
 
 function* createUserFilterSaga({ payload }: { payload: { id: number; data: IFilterForCreate } }) {
   try {
-    const { data }: { data: IServerResponse<IMyFilters> } = yield call(() =>
-      createUserBidFilter(payload.id, payload.data)
-    );
+    const { data }: { data: IServerResponse<IMyFilters> } = yield call(() => createUserBidFilter(payload.id, payload.data));
     yield put(actions.createUserFilterSuccess(data));
   } catch (e) {
     yield put(actions.createUserFilterFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -871,26 +864,11 @@ export function* saga() {
   yield takeLatest<ReturnType<typeof actions.createRequest>>(CREATE_REQUEST, createSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
   yield takeLatest<ReturnType<typeof actions.delRequest>>(DEL_REQUEST, delSaga);
-  yield takeLatest<ReturnType<typeof actions.contactViewCountRequest>>(
-    CONTACT_VIEW_COUNT_REQUEST,
-    contactViewCountSaga
-  );
-  yield takeLatest<ReturnType<typeof actions.userActiveRequest>>(
-    USER_ACTIVATE_REQUEST,
-    userActivateSaga
-  );
+  yield takeLatest<ReturnType<typeof actions.contactViewCountRequest>>(CONTACT_VIEW_COUNT_REQUEST, contactViewCountSaga);
+  yield takeLatest<ReturnType<typeof actions.userActiveRequest>>(USER_ACTIVATE_REQUEST, userActivateSaga);
   yield takeLatest<ReturnType<typeof actions.userBidsRequest>>(USER_BIDS_REQUEST, userBidsSaga);
   yield takeLatest<ReturnType<typeof actions.userRolesRequest>>(USER_ROLES_REQUEST, userRolesSaga);
-  yield takeLatest<ReturnType<typeof actions.userBidFiltersRequest>>(
-    USER_BID_FILTERS_REQUEST,
-    userBidFiltersSaga
-  );
-  yield takeLatest<ReturnType<typeof actions.createUserFilterRequest>>(
-    CREATE_USER_FILTER_REQUEST,
-    createUserFilterSaga
-  );
-  yield takeLatest<ReturnType<typeof actions.userFiltersRequest>>(
-    USER_FILTERS_REQUEST,
-    userFiltersSaga
-  );
+  yield takeLatest<ReturnType<typeof actions.userBidFiltersRequest>>(USER_BID_FILTERS_REQUEST, userBidFiltersSaga);
+  yield takeLatest<ReturnType<typeof actions.createUserFilterRequest>>(CREATE_USER_FILTER_REQUEST, createUserFilterSaga);
+  yield takeLatest<ReturnType<typeof actions.userFiltersRequest>>(USER_FILTERS_REQUEST, userFiltersSaga);
 }
