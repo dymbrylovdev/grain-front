@@ -45,6 +45,30 @@ import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { thousands } from "../../deals/utils/utils";
 import { REACT_APP_GOOGLE_API_KEY } from "../../../../constants";
 
+function degToRad(degrees) {
+  var pi = Math.PI;
+  return degrees * (pi / 180);
+}
+
+function distance(position1, position2) {
+  //Haversine formula
+  const lat1 = position1.lat;
+  const lat2 = position2.lat;
+  const lon1 = position1.lng;
+  const lon2 = position2.lng;
+  const R = 6371000; // metres
+  const φ1 = degToRad(lat1);
+  const φ2 = degToRad(lat2);
+  const Δφ = degToRad(lat2 - lat1);
+  const Δλ = degToRad(lon2 - lon1);
+
+  const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const d = R * c;
+  return d;
+}
+
 const useInnerStyles = makeStyles(theme => ({
   calcTitle: {
     fontSize: 16,
@@ -448,6 +472,25 @@ const BidForm: React.FC<IProps> = ({
     }
   }, [bid]);
 
+  useEffect(() => {
+    if (me && bid && bid.location) {
+      const locations = me?.points.filter(el => el.active);
+      const position = bid.location;
+
+      let closest = locations[0];
+      let closestDistance = distance(closest, position);
+
+      for (let i = 1; i < locations.length; i++) {
+        if (distance(locations[i], position) < closestDistance) {
+          closestDistance = distance(locations[i], position);
+          closest = locations[i];
+        }
+      }
+
+      setMySelectedMapPoint(closest);
+    }
+  }, [bid, me]);
+
   const addRoute = useCallback(
     async (pointA: any, pointB: any) => {
       map.geoObjects.remove(routeRef.current);
@@ -471,11 +514,15 @@ const BidForm: React.FC<IProps> = ({
         // }
       }
 
-      // set selected route, update on change
-      setSelectedRoute(multiRoute.getActiveRoute().properties.getAll());
-      multiRoute.events.add("activeroutechange", () => {
-        setSelectedRoute(multiRoute.getActiveRoute().properties.getAll());
-      });
+      const activeProperties = multiRoute.getActiveRoute();
+
+      if (activeProperties) {
+        setSelectedRoute(activeProperties.properties.getAll());
+        // set selected route, update on change
+        multiRoute.events.add("activeroutechange", () => {
+          setSelectedRoute(activeProperties.properties.getAll());
+        });
+      }
 
       setRouteLoading(false);
     },
@@ -1108,9 +1155,7 @@ const BidForm: React.FC<IProps> = ({
                           : ""}
                       </b>
                     )}
-                    {`${selectedRoute ? selectedRoute.distance.text + " •"  : ""} ${
-                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
-                    }`}
+                    {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${mySelectedMapPoint ? mySelectedMapPoint.text : ""}`}
                   </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
@@ -1151,9 +1196,7 @@ const BidForm: React.FC<IProps> = ({
                           : ""}
                       </b>
                     )}
-                    {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
-                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
-                    }`}
+                    {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${mySelectedMapPoint ? mySelectedMapPoint.text : ""}`}
                   </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
@@ -1196,9 +1239,7 @@ const BidForm: React.FC<IProps> = ({
                           : ""}
                       </b>
                     )}
-                    {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
-                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
-                    }`}
+                    {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${mySelectedMapPoint ? mySelectedMapPoint.text : ""}`}
                   </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
@@ -1241,9 +1282,7 @@ const BidForm: React.FC<IProps> = ({
                           : ""}
                       </b>
                     )}
-                    {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
-                      mySelectedMapPoint ? mySelectedMapPoint.text : ""
-                    }`}
+                    {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${mySelectedMapPoint ? mySelectedMapPoint.text : ""}`}
                   </div>
                 ) : (
                   <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
