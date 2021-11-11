@@ -45,20 +45,20 @@ deploy-grain-fx:
     - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD;docker stop $FX_CONTAINER;docker rm $FX_CONTAINER --force;docker pull $FX_IMAGE;docker run --restart always -p 0.0.0.0:$FX_PORT:3000 --name $FX_CONTAINER --env-file web-environment.env -d $FX_IMAGE"
 
 
-# jobs for grain-dev.me-interactive.net (branch 1.8):
+# jobs for grain-dev.me-interactive.net (branch 1.9):
 build-grain-dev:
   stage: build
   script:
     - docker build --pull -t $DEV_IMAGE .
     - docker push $DEV_IMAGE
   only:
-    - '1.8'
+    - '1.9'
 
 deploy-grain-dev:
   stage: deploy
   image: gitlab/dind:latest
   only:
-    - '1.8'
+    - '1.9'
   environment: production
   services:
     - docker:dind
