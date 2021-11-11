@@ -14,6 +14,7 @@ import { actions as bidsActions } from "../../../../store/ducks/bids.duck";
 
 import { actions as myFiltersActions } from "../../../../store/ducks/myFilters.duck";
 import Preloader from "../../../../components/ui/Loaders/Preloader";
+import BidsList from "../../bids/components/BidsList";
 
 interface IProps {
   intl: IntlShape;
@@ -72,7 +73,7 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
 
   return (
     <div>
-      <BidTable
+      <BidsList
         classes={classes}
         bids={userBids}
         handleDeleteDialiog={(id: number) => {

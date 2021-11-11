@@ -29,6 +29,7 @@ import { LayoutSubheader } from "../../../../_metronic";
 import { accessByRoles } from "../../../utils/utils";
 import { IBid } from "../../../interfaces/bids";
 import { useShowErrors } from "../../../hooks/useShowErrors";
+import BidsList from "./components/BidsList";
 
 const useInnerStyles = makeStyles(theme => ({
   topContainer: {
@@ -38,7 +39,13 @@ const useInnerStyles = makeStyles(theme => ({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    backgroundColor: "white",
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    paddingTop: theme.spacing(2),
+    borderRadius: 4,
   },
   leftButtonBlock: {
     flex: 1,
@@ -77,9 +84,7 @@ const useInnerStyles = makeStyles(theme => ({
   },
 }));
 
-const BidsPage: React.FC<TPropsFromRedux &
-  WrappedComponentProps &
-  RouteComponentProps<{ cropId: string }>> = ({
+const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps<{ cropId: string }>> = ({
   match: {
     params: { cropId },
   },
@@ -204,10 +209,8 @@ const BidsPage: React.FC<TPropsFromRedux &
           })}`;
         break;
       case "my-bids":
-        if (salePurchaseMode === "sale")
-          pageTitle = intl.formatMessage({ id: "SUBHEADER.BIDS.MY.SALE" });
-        if (salePurchaseMode === "purchase")
-          pageTitle = intl.formatMessage({ id: "SUBHEADER.BIDS.MY.PURCHASE" });
+        if (salePurchaseMode === "sale") pageTitle = intl.formatMessage({ id: "SUBHEADER.BIDS.MY.SALE" });
+        if (salePurchaseMode === "purchase") pageTitle = intl.formatMessage({ id: "SUBHEADER.BIDS.MY.PURCHASE" });
         break;
     }
   }
@@ -224,15 +227,7 @@ const BidsPage: React.FC<TPropsFromRedux &
   const fetchAll = useCallback(() => {
     if (!!me) {
       if (["ROLE_ADMIN"].includes(me.roles[0]) && filter.minDate && filter.maxDate) {
-        fetch(
-          +cropId,
-          salePurchaseMode,
-          page,
-          perPage,
-          filter.minDate,
-          filter.maxDate,
-          filter.authorId
-        );
+        fetch(+cropId, salePurchaseMode, page, perPage, filter.minDate, filter.maxDate, filter.authorId);
       } else {
         fetch(+cropId, salePurchaseMode, page, perPage);
       }
@@ -272,16 +267,7 @@ const BidsPage: React.FC<TPropsFromRedux &
       setPricesModalOpen(false);
       fetchFilters(salePurchaseMode);
     }
-  }, [
-    clearEditFilters,
-    editFilterError,
-    editFilterSuccess,
-    enqueueSnackbar,
-    fetchFilters,
-    intl,
-    me,
-    salePurchaseMode,
-  ]);
+  }, [clearEditFilters, editFilterError, editFilterSuccess, enqueueSnackbar, fetchFilters, intl, me, salePurchaseMode]);
 
   useEffect(() => {
     if (delSuccess) {
@@ -311,8 +297,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 )
               );
             }
-            if (cropId && !currentSaleFilters[cropId])
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+            if (cropId && !currentSaleFilters[cropId]) fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
           }
           if (salePurchaseMode === "purchase") {
             if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
@@ -326,8 +311,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 )
               );
             }
-            if (cropId && !currentPurchaseFilters[cropId])
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+            if (cropId && !currentPurchaseFilters[cropId]) fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
           }
           break;
         case "my-bids":
@@ -387,8 +371,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 )
               );
             }
-            if (cropId && !currentSaleFilters[cropId])
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+            if (cropId && !currentSaleFilters[cropId]) fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
           }
           if (salePurchaseMode === "purchase") {
             if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
@@ -402,8 +385,7 @@ const BidsPage: React.FC<TPropsFromRedux &
                 )
               );
             }
-            if (cropId && !currentPurchaseFilters[cropId])
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+            if (cropId && !currentPurchaseFilters[cropId]) fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
           }
           break;
         case "my-bids":
@@ -437,23 +419,11 @@ const BidsPage: React.FC<TPropsFromRedux &
   }, [fetchMe]);
 
   useEffect(() => {
-    if (
-      cropId &&
-      me &&
-      ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) &&
-      filter.minDate &&
-      filter.maxDate
-    ) {
+    if (cropId && me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && filter.minDate && filter.maxDate) {
       let formattedMinDate = format(filter.minDate, "yyyy-MM-dd");
       let formattedMaxDate = format(filter.maxDate, "yyyy-MM-dd");
 
-      fetchBidsXlsUrl(
-        +cropId,
-        salePurchaseMode,
-        formattedMinDate,
-        formattedMaxDate,
-        filter.authorId
-      );
+      fetchBidsXlsUrl(+cropId, salePurchaseMode, formattedMinDate, formattedMaxDate, filter.authorId);
     }
   }, [fetchBidsXlsUrl, cropId, salePurchaseMode, me, filter]);
 
@@ -478,66 +448,76 @@ const BidsPage: React.FC<TPropsFromRedux &
     <>
       {/* <Prompter /> */}
       <LayoutSubheader title={pageTitle} />
-      <Paper className={classes.paperWithTable}>
-        <div className={innerClasses.topContainer}>
-          <div className={innerClasses.leftButtonBlock}>
-            {me && (
-              <div>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() =>
-                    history.push(
-                      `/bid/create/${
-                        (!!me &&
-                          ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) ||
-                        bestAllMyMode === "my-bids"
-                          ? salePurchaseMode
-                          : salePurchaseMode === "sale"
-                          ? "purchase"
-                          : "sale"
-                      }/0${!!cropId ? "/" + cropId : ""}`
-                    )
-                  }
-                >
-                  {intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
+      <div className={innerClasses.topContainer}>
+        <div className={innerClasses.leftButtonBlock}>
+          {me && (
+            <div>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() =>
+                  history.push(
+                    `/bid/create/${
+                      (!!me && ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) || bestAllMyMode === "my-bids"
+                        ? salePurchaseMode
+                        : salePurchaseMode === "sale"
+                        ? "purchase"
+                        : "sale"
+                    }/0${!!cropId ? "/" + cropId : ""}`
+                  )
+                }
+              >
+                {intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
+              </Button>
+
+              {["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && bestAllMyMode === "all-bids" && (
+                <Button style={{ marginLeft: 15 }} variant="contained" color="primary" onClick={() => exportFileToXlsx()}>
+                  {intl.formatMessage({ id: "BID.EXPORT.EXCEL" })}
                 </Button>
-
-                {["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) &&
-                  bestAllMyMode === "all-bids" && (
-                    <Button
-                      style={{ marginLeft: 15 }}
-                      variant="contained"
-                      color="primary"
-                      onClick={() => exportFileToXlsx()}
-                    >
-                      {intl.formatMessage({ id: "BID.EXPORT.EXCEL" })}
-                    </Button>
-                  )}
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
+      </div>
 
-        {me && ["ROLE_ADMIN"].includes(me.roles[0]) && bestAllMyMode === "all-bids" && (
-          <div className={innerClasses.totalText}>
-            {intl.formatMessage({ id: "BIDSLIST.TABLE.TOTAL" })}: {total}
+      {me && ["ROLE_ADMIN"].includes(me.roles[0]) && bestAllMyMode === "all-bids" && (
+        <div className={innerClasses.totalText}>
+          {intl.formatMessage({ id: "BIDSLIST.TABLE.TOTAL" })}: {total}
+        </div>
+      )}
+
+      {bestAllMyMode === "best-bids" && (
+        <>
+          <div className={innerClasses.topSpaceContainer}>
+            <BidsList
+              classes={classes}
+              bids={bestBids?.equal}
+              isHaveRules={isHaveRules}
+              handleDeleteDialiog={(id: number) => {
+                setDeleteBidId(id);
+                setAlertOpen(true);
+              }}
+              user={me as IUser}
+              title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
+              loading={!bestBids || !cropParams}
+              salePurchaseMode={salePurchaseMode}
+              bestAllMyMode={bestAllMyMode}
+              crops={crops}
+              setProfit={setProfit}
+            />
           </div>
-        )}
-
-        {bestAllMyMode === "best-bids" && (
-          <>
+          {newInexactBid.length > 0 && (
             <div className={innerClasses.topSpaceContainer}>
-              <BidTable
+              <BidsList
                 classes={classes}
-                bids={bestBids?.equal}
+                bids={newInexactBid}
                 isHaveRules={isHaveRules}
                 handleDeleteDialiog={(id: number) => {
                   setDeleteBidId(id);
                   setAlertOpen(true);
                 }}
                 user={me as IUser}
-                title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
+                title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
                 loading={!bestBids || !cropParams}
                 salePurchaseMode={salePurchaseMode}
                 bestAllMyMode={bestAllMyMode}
@@ -545,142 +525,92 @@ const BidsPage: React.FC<TPropsFromRedux &
                 setProfit={setProfit}
               />
             </div>
-            {newInexactBid.length > 0 && (
-              <div className={innerClasses.topSpaceContainer}>
-                <BidTable
-                  classes={classes}
-                  bids={newInexactBid}
-                  isHaveRules={isHaveRules}
-                  handleDeleteDialiog={(id: number) => {
-                    setDeleteBidId(id);
-                    setAlertOpen(true);
-                  }}
-                  user={me as IUser}
-                  title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
-                  loading={!bestBids || !cropParams}
-                  salePurchaseMode={salePurchaseMode}
-                  bestAllMyMode={bestAllMyMode}
-                  crops={crops}
-                  setProfit={setProfit}
-                />
-              </div>
-            )}
-            {!!bestBids && (!!bestBids.equal.length || !!bestBids.inexact.length) && (
-              <div className={innerClasses.text}>
-                {intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}
-              </div>
-            )}
-            <LocationBlock
-              handleClickLocation={() => {
-                setLocationModalOpen(true);
-              }}
-              handleClickPrices={() => {
-                setPricesModalOpen(true);
-              }}
-              locations={me && me.points}
-              me={me}
-              salePurchaseMode={salePurchaseMode}
-            />
-          </>
-        )}
+          )}
+          {!!bestBids && (!!bestBids.equal.length || !!bestBids.inexact.length) && (
+            <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>
+          )}
+          <LocationBlock
+            handleClickLocation={() => {
+              setLocationModalOpen(true);
+            }}
+            handleClickPrices={() => {
+              setPricesModalOpen(true);
+            }}
+            locations={me && me.points}
+            me={me}
+            salePurchaseMode={salePurchaseMode}
+          />
+        </>
+      )}
 
-        {bestAllMyMode === "my-bids" && (
-          <>
-            <BidTable
-              classes={classes}
-              bids={myBids}
-              isHaveRules={isHaveRules}
-              handleDeleteDialiog={(id: number) => {
-                setDeleteBidId(id);
-                setAlertOpen(true);
-              }}
-              paginationData={{ page, perPage, total }}
-              fetcher={(newPage: number, newPerPage: number) =>
-                fetchMyBids(salePurchaseMode, newPage, newPerPage)
-              }
-              user={me as IUser}
-              loading={!myBids}
-              addUrl={"fromMy"}
-              salePurchaseMode={salePurchaseMode}
-              bestAllMyMode={bestAllMyMode}
-              crops={crops}
-              setProfit={setProfit}
-            />
-            {!!myBids && !!myBids.length && (
-              <div className={innerClasses.text}>
-                {intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}
-              </div>
-            )}
-          </>
-        )}
+      {bestAllMyMode === "my-bids" && (
+        <>
+          <BidsList
+            classes={classes}
+            bids={myBids}
+            isHaveRules={isHaveRules}
+            handleDeleteDialiog={(id: number) => {
+              setDeleteBidId(id);
+              setAlertOpen(true);
+            }}
+            paginationData={{ page, perPage, total }}
+            fetcher={(newPage: number, newPerPage: number) => fetchMyBids(salePurchaseMode, newPage, newPerPage)}
+            user={me as IUser}
+            loading={!myBids}
+            addUrl={"fromMy"}
+            salePurchaseMode={salePurchaseMode}
+            bestAllMyMode={bestAllMyMode}
+            crops={crops}
+            setProfit={setProfit}
+          />
+          {!!myBids && !!myBids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
+        </>
+      )}
 
-        {bestAllMyMode === "all-bids" && (
-          <>
-            <BidTable
-              classes={classes}
-              bids={bids}
-              isHaveRules={isHaveRules}
-              handleDeleteDialiog={(id: number) => {
-                setDeleteBidId(id);
-                setAlertOpen(true);
-              }}
-              user={me as IUser}
-              loading={!bids || (!cropParams && cropId !== "0")}
-              paginationData={{ page, perPage, total }}
-              fetcher={(newPage: number, newPerPage: number) =>
-                fetch(
-                  +cropId,
-                  salePurchaseMode,
-                  newPage,
-                  newPerPage,
-                  filter.minDate,
-                  filter.maxDate
-                )
-              }
-              filter={filter}
-              addUrl={"fromAdmin"}
-              salePurchaseMode={salePurchaseMode}
-              bestAllMyMode={bestAllMyMode}
-              crops={crops}
-              setProfit={setProfit}
-            />
-            {!!bids && !!bids.length && (
-              <div className={innerClasses.text}>
-                {intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}
-              </div>
-            )}
-          </>
-        )}
-        <LocationDialog
-          isOpen={locationModalOpen}
-          handleClose={() => setLocationModalOpen(false)}
-          user={me}
-          classes={classes}
-          intl={intl}
-        />
-        <PricesDialog
-          isOpen={pricesModalOpen}
-          handleClose={() => setPricesModalOpen(false)}
-          intl={intl}
-          cropId={+cropId}
-        />
-        <AlertDialog
-          isOpen={isAlertOpen}
-          text={intl.formatMessage({ id: "BIDSLIST.DIALOGS.DELETE_TEXT" })}
-          okText={intl.formatMessage({
-            id: "USERLIST.DIALOGS.AGREE_TEXT",
-          })}
-          cancelText={intl.formatMessage({
-            id: "USERLIST.DIALOGS.CANCEL_TEXT",
-          })}
-          handleClose={() => setAlertOpen(false)}
-          handleAgree={() => del(deleteBidId)}
-          loadingText={intl.formatMessage({
-            id: "BIDSLIST.DIALOGS.LOADING_TEXT",
-          })}
-          isLoading={delLoading}
-        />
-      </Paper>
+      {bestAllMyMode === "all-bids" && (
+        <>
+          <BidsList
+            classes={classes}
+            bids={bids}
+            isHaveRules={isHaveRules}
+            handleDeleteDialiog={(id: number) => {
+              setDeleteBidId(id);
+              setAlertOpen(true);
+            }}
+            user={me as IUser}
+            loading={!bids || (!cropParams && cropId !== "0")}
+            paginationData={{ page, perPage, total }}
+            fetcher={(newPage: number, newPerPage: number) =>
+              fetch(+cropId, salePurchaseMode, newPage, newPerPage, filter.minDate, filter.maxDate)
+            }
+            filter={filter}
+            addUrl={"fromAdmin"}
+            salePurchaseMode={salePurchaseMode}
+            bestAllMyMode={bestAllMyMode}
+            crops={crops}
+            setProfit={setProfit}
+          />
+          {!!bids && !!bids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
+        </>
+      )}
+      <LocationDialog isOpen={locationModalOpen} handleClose={() => setLocationModalOpen(false)} user={me} classes={classes} intl={intl} />
+      <PricesDialog isOpen={pricesModalOpen} handleClose={() => setPricesModalOpen(false)} intl={intl} cropId={+cropId} />
+      <AlertDialog
+        isOpen={isAlertOpen}
+        text={intl.formatMessage({ id: "BIDSLIST.DIALOGS.DELETE_TEXT" })}
+        okText={intl.formatMessage({
+          id: "USERLIST.DIALOGS.AGREE_TEXT",
+        })}
+        cancelText={intl.formatMessage({
+          id: "USERLIST.DIALOGS.CANCEL_TEXT",
+        })}
+        handleClose={() => setAlertOpen(false)}
+        handleAgree={() => del(deleteBidId)}
+        loadingText={intl.formatMessage({
+          id: "BIDSLIST.DIALOGS.LOADING_TEXT",
+        })}
+        isLoading={delLoading}
+      />
     </>
   );
 };

@@ -60,7 +60,7 @@ const getAdminMenu = (crops: ICrop[]) => ({
             translate: "SUBMENU.BIDS.SALE",
             submenu: [
               {
-                title: "Лучшие объявления",
+                title: "Выбрать культуру",
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
@@ -91,7 +91,7 @@ const getAdminMenu = (crops: ICrop[]) => ({
             translate: "SUBMENU.BIDS.PURCHASE",
             submenu: [
               {
-                title: "Лучшие объявления",
+                title: "Выбрать культуру",
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
@@ -176,21 +176,21 @@ const getAdminMenu = (crops: ICrop[]) => ({
             translate: "SUBMENU.PROFILE",
           },
           // {
-            // title: "Мои фильтры",
-            // page: "",
-            // translate: "SUBMENU.MY_FILTERS",
-            // submenu: [
-              // {
-                // title: "Фильтры на продажу",
-                // page: "sale/filters",
-                // translate: "SUBMENU.BUYER_FILTERS",
-              // },
-              // {
-                // title: "Фильтры на покупку",
-                // page: "purchase/filters",
-                // translate: "SUBMENU.SELLER_FILTERS",
-              // },
-            // ],
+          // title: "Мои фильтры",
+          // page: "",
+          // translate: "SUBMENU.MY_FILTERS",
+          // submenu: [
+          // {
+          // title: "Фильтры на продажу",
+          // page: "sale/filters",
+          // translate: "SUBMENU.BUYER_FILTERS",
+          // },
+          // {
+          // title: "Фильтры на покупку",
+          // page: "purchase/filters",
+          // translate: "SUBMENU.SELLER_FILTERS",
+          // },
+          // ],
           // },
           {
             title: "Настройки каталога",
@@ -278,7 +278,7 @@ const getManagerMenu = (crops: ICrop[]) => ({
             translate: "SUBMENU.BIDS.SALE",
             submenu: [
               {
-                title: "Лучшие объявления",
+                title: "Выбрать культуру",
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
@@ -304,7 +304,7 @@ const getManagerMenu = (crops: ICrop[]) => ({
             translate: "SUBMENU.BIDS.PURCHASE",
             submenu: [
               {
-                title: "Лучшие объявления",
+                title: "Выбрать культуру",
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
@@ -384,21 +384,21 @@ const getManagerMenu = (crops: ICrop[]) => ({
             translate: "SUBMENU.PROFILE",
           },
           // {
-            // title: "Мои фильтры",
-            // page: "",
-            // translate: "SUBMENU.MY_FILTERS",
-            // submenu: [
-              // {
-                // title: "Фильтры на продажу",
-                // page: "sale/filters",
-                // translate: "SUBMENU.BUYER_FILTERS",
-              // },
-              // {
-                // title: "Фильтры на покупку",
-                // page: "purchase/filters",
-                // translate: "SUBMENU.SELLER_FILTERS",
-              // },
-            // ],
+          // title: "Мои фильтры",
+          // page: "",
+          // translate: "SUBMENU.MY_FILTERS",
+          // submenu: [
+          // {
+          // title: "Фильтры на продажу",
+          // page: "sale/filters",
+          // translate: "SUBMENU.BUYER_FILTERS",
+          // },
+          // {
+          // title: "Фильтры на покупку",
+          // page: "purchase/filters",
+          // translate: "SUBMENU.SELLER_FILTERS",
+          // },
+          // ],
           // },
         ],
       },
@@ -443,10 +443,10 @@ const getVendorMenu = (crops: ICrop[]) => ({
         translate: "SUBMENU.PROFILE",
       },
       // {
-        // title: "Мои подписки",
-        // icon: "far fa-bell",
-        // page: "purchase/filters",
-        // translate: "SUBMENU.MY_FILTERS",
+      // title: "Мои подписки",
+      // icon: "far fa-bell",
+      // page: "purchase/filters",
+      // translate: "SUBMENU.MY_FILTERS",
       // },
       {
         title: "Выход",
@@ -489,10 +489,10 @@ const getBuyerMenu = (crops: ICrop[]) => ({
         translate: "SUBMENU.PROFILE",
       },
       // {
-        // title: "Мои подписки",
-        // icon: "far fa-bell",
-        // page: "sale/filters",
-        // translate: "SUBMENU.MY_FILTERS",
+      // title: "Мои подписки",
+      // icon: "far fa-bell",
+      // page: "sale/filters",
+      // translate: "SUBMENU.MY_FILTERS",
       // },
       {
         title: "Выход",
@@ -526,7 +526,7 @@ const getTraderMenu = (crops: ICrop[]) => ({
             translate: "SUBMENU.BIDS.SALE",
             submenu: [
               {
-                title: "Лучшие объявления",
+                title: "Выбрать культуру",
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
@@ -545,7 +545,7 @@ const getTraderMenu = (crops: ICrop[]) => ({
             translate: "SUBMENU.BIDS.PURCHASE",
             submenu: [
               {
-                title: "Лучшие объявления",
+                title: "Выбрать культуру",
                 page: "",
                 translate: "SUBMENU.BIDS.BEST",
                 bullet: "dot",
@@ -572,22 +572,22 @@ const getTraderMenu = (crops: ICrop[]) => ({
         translate: "SUBMENU.PROFILE",
       },
       // {
-        // title: "Мои подписки",
-        // icon: "far fa-bell",
-        // page: "",
-        // translate: "SUBMENU.MY_FILTERS",
-        // submenu: [
-          // {
-            // title: "Подписки на продажу",
-            // page: "sale/filters",
-            // translate: "SUBMENU.BUYER_FILTERS",
-          // },
-          // {
-            // title: "Подписки на покупку",
-            // page: "purchase/filters",
-            // translate: "SUBMENU.SELLER_FILTERS",
-          // },
-        // ],
+      // title: "Мои подписки",
+      // icon: "far fa-bell",
+      // page: "",
+      // translate: "SUBMENU.MY_FILTERS",
+      // submenu: [
+      // {
+      // title: "Подписки на продажу",
+      // page: "sale/filters",
+      // translate: "SUBMENU.BUYER_FILTERS",
+      // },
+      // {
+      // title: "Подписки на покупку",
+      // page: "purchase/filters",
+      // translate: "SUBMENU.SELLER_FILTERS",
+      // },
+      // ],
       // },
       {
         title: "Выход",

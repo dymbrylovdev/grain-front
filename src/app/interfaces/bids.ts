@@ -18,6 +18,9 @@ export interface IBid {
       colors?: string[];
     };
     use_vat: boolean;
+    surname: string | null;
+    firstName: string | null;
+    lastName: string | null;
   };
   createdAt: string;
   created_at: string;
@@ -35,6 +38,10 @@ export interface IBid {
     company_confirmed_by_email?: boolean;
     company_confirmed_by_phone?: boolean;
     company_confirmed_by_payment?: boolean;
+    phone?: string;
+    surname?: string ;
+    firstName?: string;
+    lastName?: string;
   };
   location: {
     lat: number;
