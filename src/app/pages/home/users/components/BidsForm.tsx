@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { Button } from "@material-ui/core";
 
-import BidTable from "../../bids/components/BidTable";
+// import BidTable from "../../bids/components/BidTable";
 
 import { IAppState } from "../../../../store/rootDuck";
 import { IUser } from "../../../../interfaces/users";
@@ -51,12 +51,13 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   page,
   perPage,
   total,
+  cropParams,
 }) => {
   const history = useHistory();
 
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
-
+  const numberParams = useMemo(() => cropParams && cropParams.filter(item => item.type === "number"), [cropParams]);
   useEffect(() => {
     fetchCrops();
   }, [fetchCrops]);
@@ -97,6 +98,7 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
           }
         }}
         points={me?.points}
+        numberParams={numberParams}
       />
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 15 }}>
@@ -119,6 +121,7 @@ const connector = connect(
     me: state.auth.user,
 
     crops: state.crops2.crops,
+    cropParams: state.crops2.cropParams,
 
     userBids: state.users.userBids,
     userBidsLoading: state.users.userBidsLoading,

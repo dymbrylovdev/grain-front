@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { IBid, IProfit } from "../../../../interfaces/bids";
 import { IUser } from "../../../../interfaces/users";
 import { TablePaginator2 } from "../../../../components/ui/Table/TablePaginator2";
-import { ICrop } from "../../../../interfaces/crops";
+import { ICrop, ICropParam } from "../../../../interfaces/crops";
 import { ActionWithPayload } from "../../../../utils/action-helper";
 import { useSnackbar } from "notistack";
 import SubDialog from "../../../../components/ui/Dialogs/SubscribeDialog";
@@ -56,6 +56,7 @@ interface IProps {
   postSuccess?: boolean;
   postError?: string | null;
   points?: ILocation[];
+  numberParams?: ICropParam[];
 }
 
 const BidsList: React.FC<IProps> = ({
@@ -81,6 +82,7 @@ const BidsList: React.FC<IProps> = ({
   postSuccess,
   postError,
   points,
+  numberParams,
 }) => {
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
@@ -328,6 +330,7 @@ const BidsList: React.FC<IProps> = ({
               showsPhones={showsPhones}
               handleOpenMap={handleOpenMap}
               localBids={localBids}
+              numberParams={numberParams}
             />
           ))}
           {!!paginationData && !!fetcher && (

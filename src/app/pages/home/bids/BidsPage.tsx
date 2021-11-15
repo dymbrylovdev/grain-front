@@ -126,6 +126,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
   const [currentFilters, setCurrentFilters] = useState<IFilterForBids | null>(null);
   const dateForExcel = format(new Date(), "dd.MM.yyyy");
+  const numberParams = useMemo(() => cropParams && cropParams.filter(item => item.type === "number"), [cropParams]);
   const currentFilterOnCropId = useMemo(() => (salePurchaseMode === "sale" ? currentSaleFilters[cropId] : currentPurchaseFilters[cropId]), [
     salePurchaseMode,
     currentSaleFilters,
@@ -575,6 +576,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
               crops={crops}
               setProfit={setProfit}
               points={me?.points}
+              numberParams={numberParams}
             />
           </div>
           {newInexactBid.length > 0 && (
@@ -595,6 +597,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 crops={crops}
                 setProfit={setProfit}
                 points={me?.points}
+                numberParams={numberParams}
               />
             </div>
           )}
@@ -635,6 +638,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             crops={crops}
             setProfit={setProfit}
             points={me?.points}
+            numberParams={numberParams}
           />
           {!!myBids && !!myBids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
         </>
@@ -663,6 +667,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             crops={crops}
             setProfit={setProfit}
             points={me?.points}
+            numberParams={numberParams}
           />
           {!!bids && !!bids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
         </>

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { IconButton, Tooltip, CardMedia, Button, useMediaQuery } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
@@ -8,7 +8,7 @@ import UnarchiveIcon from "@material-ui/icons/Unarchive";
 import { IBid } from "../../../../interfaces/bids";
 import { IUser } from "../../../../interfaces/users";
 import { accessByRoles, formatAsThousands, formatPhone } from "../../../../utils/utils";
-import { ICrop } from "../../../../interfaces/crops";
+import { ICrop, ICropParam } from "../../../../interfaces/crops";
 import EmailIcon from "@material-ui/icons/Email";
 import { toAbsoluteUrl } from "../../../../../_metronic/utils/utils";
 import { useBidTableStyles } from "./hooks/useStyles";
@@ -31,6 +31,7 @@ interface IProps {
   showsPhones: number[];
   handleOpenMap: (bid: IBid) => void;
   localBids: ILocalBids[] | null;
+  numberParams?: ICropParam[];
 }
 
 const Bid = React.memo<IProps>(
@@ -51,6 +52,7 @@ const Bid = React.memo<IProps>(
     showsPhones,
     handleOpenMap,
     localBids,
+    numberParams,
   }) => {
     const history = useHistory();
     const isMobile = useMediaQuery("(max-width:1000px)");
@@ -67,6 +69,14 @@ const Bid = React.memo<IProps>(
         );
       }
     }, [localBids, bid, salePurchaseMode, user]);
+
+    const getParametrName = useCallback(
+      (item: { id: number; value: string; parameter_id: number }) => {
+        const nameParam = numberParams?.find(param => param.id === item.parameter_id)?.name;
+        return nameParam ? `${nameParam}: ${item.value}` : `${item.value}`;
+      },
+      [numberParams]
+    );
 
     return (
       <div className={innerClasses.container}>
@@ -289,7 +299,7 @@ const Bid = React.memo<IProps>(
               {currentCrop && <div className={innerClasses.infoText}>{currentCrop.name}</div>}
               <div className={innerClasses.infoTwoText}>
                 {": " +
-                  bid.parameter_values.map(item => item.value).join(" / ") +
+                  bid.parameter_values.map(item => getParametrName(item)).join(" / ") +
                   `${bid.parameter_values.length > 0 ? " / " : ""}${bid.volume} тонн`}
               </div>
             </div>
