@@ -476,18 +476,17 @@ const BidForm: React.FC<IProps> = ({
     if (me && bid && bid.location) {
       const locations = me?.points.filter(el => el.active);
       const position = bid.location;
-
-      let closest = locations[0];
-      let closestDistance = distance(closest, position);
-
-      for (let i = 1; i < locations.length; i++) {
-        if (distance(locations[i], position) < closestDistance) {
-          closestDistance = distance(locations[i], position);
-          closest = locations[i];
+      if (locations.length > 0) {
+        let closest = locations[0];
+        let closestDistance = distance(closest, position);
+        for (let i = 1; i < locations.length; i++) {
+          if (distance(locations[i], position) < closestDistance) {
+            closestDistance = distance(locations[i], position);
+            closest = locations[i];
+          }
         }
+        setMySelectedMapPoint(closest);
       }
-
-      setMySelectedMapPoint(closest);
     }
   }, [bid, me]);
 
