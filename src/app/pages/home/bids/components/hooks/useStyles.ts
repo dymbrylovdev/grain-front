@@ -20,6 +20,10 @@ export const useBidTableStyles = makeStyles(theme => ({
     ["@media (max-width:1220px)"]: {
       flexDirection: "column",
     },
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      display: "block",
+    },
   },
   imageBlock: {
     marginBottom: 8,
@@ -316,4 +320,87 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   imgBtnDetailed: { width: 6, height: 11, marginLeft: 12 },
+  backdrop: {
+    backdropFilter: "blur(3px)",
+    backgroundColor: "rgba(0,0,30,0.4)",
+  },
+}));
+
+export const useBidsPageStyles = makeStyles(theme => ({
+  topContainer: {
+    flexDirection: "row",
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    backgroundColor: "white",
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingTop: theme.spacing(2),
+    borderRadius: 4,
+  },
+  leftButtonBlock: {
+    flex: 1,
+  },
+  filterText: {
+    width: 300,
+    textAlign: "right",
+    paddingRight: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+  },
+  topSpaceContainer: {
+    marginBottom: theme.spacing(2),
+  },
+  calendarBlock: {
+    maxWidth: 250,
+    marginLeft: theme.spacing(2),
+  },
+  text: {
+    marginRight: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    marginLeft: theme.spacing(2),
+  },
+  iconButton: {
+    animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
+  },
+  datesFilterBlock: {
+    flexDirection: "row",
+    display: "flex",
+    alignSelf: "flex-end",
+  },
+  totalText: {
+    marginRight: theme.spacing(1),
+    marginLeft: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
+  },
+  btnAddBid: {
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      width: "100%",
+    },
+  },
+  cropNameText: {
+    fontSize: 36,
+    color: "black",
+    marginRight: 16,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 16,
+    },
+  },
+  wrapperBtnFilters: { marginTop: 16, marginBottom: 12 },
+  btnFilter: { border: "1px solid #EDEEF4", paddingTop: 4, paddingBottom: 4, paddingRight: 8, paddingLeft: 8, margin: 4 },
+  imgBtnFilter: { height: 16, width: 16, marginRight: 4 },
+  btnFilterText: {
+    textTransform: "initial",
+    color: "black",
+    fontSize: 16,
+    fontWeight: 400,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
 }));

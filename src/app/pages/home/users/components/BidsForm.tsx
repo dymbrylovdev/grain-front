@@ -96,6 +96,7 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
             fetchUserBids({ userId, page: newPage, perPage: newPerPage });
           }
         }}
+        points={me?.points}
       />
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 15 }}>

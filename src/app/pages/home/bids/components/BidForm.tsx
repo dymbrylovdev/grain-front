@@ -50,7 +50,7 @@ function degToRad(degrees) {
   return degrees * (pi / 180);
 }
 
-function distance(position1, position2) {
+export function distance(position1, position2) {
   //Haversine formula
   const lat1 = position1.lat;
   const lat2 = position2.lat;

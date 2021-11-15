@@ -12,6 +12,7 @@ import { ICrop } from "../../../../interfaces/crops";
 import EmailIcon from "@material-ui/icons/Email";
 import { toAbsoluteUrl } from "../../../../../_metronic/utils/utils";
 import { useBidTableStyles } from "./hooks/useStyles";
+import { ILocalBids } from "./BidsList";
 
 interface IProps {
   isHaveRules?: (user: any, id: number) => boolean;
@@ -28,6 +29,8 @@ interface IProps {
   handleClickEditOrViewBid: (bid: IBid) => void;
   handleShowPhone: (id: number) => void;
   showsPhones: number[];
+  handleOpenMap: (bid: IBid) => void;
+  localBids: ILocalBids[] | null;
 }
 
 const Bid = React.memo<IProps>(
@@ -46,11 +49,24 @@ const Bid = React.memo<IProps>(
     handleClickEditOrViewBid,
     handleShowPhone,
     showsPhones,
+    handleOpenMap,
+    localBids,
   }) => {
     const history = useHistory();
     const isMobile = useMediaQuery("(max-width:1000px)");
     const innerClasses = useBidTableStyles();
     const currentCrop = useMemo(() => crops?.find(item => item.id === bid.crop_id), [crops, bid]);
+    const newBid = useMemo(() => {
+      if (localBids && localBids.length > 0) {
+        return localBids.find(
+          item =>
+            item.useId === user.id &&
+            item.salePurchaseMode === salePurchaseMode &&
+            item.currentBid.id === bid.id &&
+            item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString()
+        );
+      }
+    }, [localBids, bid, salePurchaseMode, user]);
 
     return (
       <div className={innerClasses.container}>
@@ -114,7 +130,11 @@ const Bid = React.memo<IProps>(
                     {bestAllMyMode !== "edit" && (
                       <div className={innerClasses.wrapperPrice}>
                         <div className={innerClasses.price}>
-                          {bid?.price_with_delivery_with_vat ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat)) : "-"}{" "}
+                          {newBid
+                            ? formatAsThousands(newBid.finalPrice)
+                            : bid?.price_with_delivery_with_vat
+                            ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
+                            : "-"}{" "}
                         </div>
                         <div className={innerClasses.rybl}>₽</div>
                         {/* <div className={innerClasses.nds}>БЕЗ НДС</div> */}
@@ -130,7 +150,11 @@ const Bid = React.memo<IProps>(
                     {bestAllMyMode !== "edit" && (
                       <div className={innerClasses.wrapperPrice}>
                         <div className={innerClasses.price}>
-                          {bid?.price_with_delivery_with_vat ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat)) : "-"}{" "}
+                          {newBid
+                            ? formatAsThousands(newBid.finalPrice)
+                            : bid?.price_with_delivery_with_vat
+                            ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
+                            : "-"}{" "}
                         </div>
                         <div className={innerClasses.rybl}>₽</div>
                         {/* <div className={innerClasses.nds}>БЕЗ НДС</div> */}
@@ -245,7 +269,7 @@ const Bid = React.memo<IProps>(
                 <div className={innerClasses.drop}>Расстояние, км</div>
                 {isMobile && (
                   <div className={innerClasses.textDrop} style={{ fontSize: 18, marginLeft: 8 }}>
-                    {bid.distance || "-"}
+                    {newBid?.distance || bid.distance || "-"}
                   </div>
                 )}
               </div>
@@ -253,8 +277,8 @@ const Bid = React.memo<IProps>(
               <div className={innerClasses.wrapperDrop}>
                 {!isMobile && (
                   <>
-                    <div className={innerClasses.textDrop}>{bid.distance || "-"}</div>
-                    <Button variant="text" color="primary" className={innerClasses.btnCard}>
+                    <div className={innerClasses.textDrop}>{newBid?.distance || bid.distance || "-"}</div>
+                    <Button variant="text" color="primary" className={innerClasses.btnCard} onClick={() => handleOpenMap(bid)}>
                       <div className={innerClasses.textCard}>Посмотреть на карте</div>
                     </Button>
                   </>
@@ -499,6 +523,7 @@ const Bid = React.memo<IProps>(
                     color="primary"
                     className={innerClasses.btnCard}
                     style={{ width: "100%", marginBottom: 4, marginTop: 16 }}
+                    onClick={() => handleOpenMap(bid)}
                   >
                     <div className={innerClasses.textCard}>Посмотреть на карте</div>
                   </Button>

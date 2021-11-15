@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { compose } from "redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import { Button, makeStyles, Paper } from "@material-ui/core";
+import { Button, CardMedia } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import { format } from "date-fns";
 import fileSaver from "file-saver";
@@ -22,67 +22,16 @@ import LocationBlock from "./components/location/LocationBlock";
 import PricesDialog from "./components/prices/PricesDialog";
 import LocationDialog from "./components/location/LocationDialog";
 // import Prompter from "../prompter/Prompter";
-import BidTable from "./components/BidTable";
+// import BidTable from "./components/BidTable";
 import { IUser } from "../../../interfaces/users";
 import { filterForBids } from "../myFilters/utils";
-import { LayoutSubheader } from "../../../../_metronic";
+import { LayoutSubheader, toAbsoluteUrl } from "../../../../_metronic";
 import { accessByRoles } from "../../../utils/utils";
 import { IBid } from "../../../interfaces/bids";
 import { useShowErrors } from "../../../hooks/useShowErrors";
 import BidsList from "./components/BidsList";
-
-const useInnerStyles = makeStyles(theme => ({
-  topContainer: {
-    flexDirection: "row",
-    display: "flex",
-    flexWrap: "wrap",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    marginBottom: theme.spacing(2),
-    backgroundColor: "white",
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    paddingTop: theme.spacing(2),
-    borderRadius: 4,
-  },
-  leftButtonBlock: {
-    flex: 1,
-  },
-  filterText: {
-    width: 300,
-    textAlign: "right",
-    paddingRight: theme.spacing(1),
-    paddingLeft: theme.spacing(1),
-  },
-  topSpaceContainer: {
-    marginBottom: theme.spacing(2),
-  },
-  calendarBlock: {
-    maxWidth: 250,
-    marginLeft: theme.spacing(2),
-  },
-  text: {
-    marginRight: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-    marginLeft: theme.spacing(2),
-  },
-  iconButton: {
-    animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
-  },
-  datesFilterBlock: {
-    flexDirection: "row",
-    display: "flex",
-    alignSelf: "flex-end",
-  },
-  totalText: {
-    marginRight: theme.spacing(1),
-    marginLeft: theme.spacing(1),
-    marginBottom: theme.spacing(2),
-    marginTop: theme.spacing(2),
-  },
-}));
+import { IFilterForBids } from "../../../interfaces/filters";
+import { useBidsPageStyles } from "./components/hooks/useStyles";
 
 const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps<{ cropId: string }>> = ({
   match: {
@@ -98,9 +47,9 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   // prompterRunning,
   // setActiveStep,
   currentSaleFilters,
-  // setCurrentSaleFilter,
+  setCurrentSaleFilter,
   currentPurchaseFilters,
-  // setCurrentPurchaseFilter,
+  setCurrentPurchaseFilter,
 
   page,
   perPage,
@@ -175,8 +124,90 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   let salePurchaseMode: "sale" | "purchase" = "sale";
   if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
   if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
-
+  const [currentFilters, setCurrentFilters] = useState<IFilterForBids | null>(null);
   const dateForExcel = format(new Date(), "dd.MM.yyyy");
+  const currentFilterOnCropId = useMemo(() => (salePurchaseMode === "sale" ? currentSaleFilters[cropId] : currentPurchaseFilters[cropId]), [
+    salePurchaseMode,
+    currentSaleFilters,
+    cropId,
+    currentPurchaseFilters,
+  ]);
+
+  const currentCropName = useMemo(() => crops?.find(item => item.id.toString() === cropId)?.name, [cropId, crops]);
+  const cropParameters = useMemo(() => {
+    const newParams: any[] = [];
+    if (currentFilters && cropParams && currentFilters.filter.parameter_values) {
+      if (currentFilters.filter.max_distance && currentFilters.filter.max_distance > 0) {
+        newParams.push({
+          parameter_id: "max_destination",
+          text: `Макс. расстояние: ${currentFilters.filter.max_distance}`,
+          value: currentFilters.filter.max_distance,
+        });
+      }
+      if (currentFilters.filter.min_full_price && currentFilters.filter.min_full_price > 0) {
+        newParams.push({
+          parameter_id: "min_full_price",
+          text: `Мин. цена: ${currentFilters.filter.min_full_price}`,
+          value: currentFilters.filter.min_full_price,
+        });
+      }
+      if (currentFilters.filter.max_full_price && currentFilters.filter.max_full_price > 0) {
+        newParams.push({
+          parameter_id: "max_full_price",
+          text: `Макс. цена: ${currentFilters.filter.max_full_price}`,
+          value: currentFilters.filter.max_full_price,
+        });
+      }
+      const newArr = currentFilters.filter.parameter_values.reduce((acc: any[], param) => {
+        const cropParam = cropParams.find(item => item.id === param.parameter_id);
+        if (cropParam && cropParam.type === "number") {
+          const text = cropParams.find(item => item.id === param.parameter_id)?.name;
+          if (text && text.length > 0) {
+            acc.push({
+              ...param,
+              text: `${text}: ${param.value}`,
+              type: "number",
+            });
+          }
+        }
+        if (cropParam && cropParam.type === "enum" && Array.isArray(param.value)) {
+          const cropParam = cropParams.find(item => item.id === param.parameter_id);
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          param.value.forEach((item, index) =>
+            newParams.unshift({
+              ...param,
+              text: item,
+              value: param.value[index],
+              index,
+              type: "enum",
+              enum: cropParam?.enum || [],
+            })
+          );
+        }
+
+        return acc;
+      }, []);
+      return [...newParams, ...newArr];
+    }
+  }, [currentFilters, cropParams]);
+
+  const handleBtnFilter = useCallback(
+    (item: any) => {
+      const newFilter = currentFilterOnCropId;
+      if (item.type === "enum" && item.parameter_id && typeof item.index === "number") {
+        const index = item.enum.findIndex(text => text === item.text);
+        if (index > -1) {
+          newFilter[`parameter${item.parameter_id}${item.type}${index}`] = false;
+        }
+      } else if (item.type === "number" && item.parameter_id) {
+        newFilter[`${item.type}${item.parameter_id}`] = "";
+      } else if (item.parameter_id) {
+        newFilter[item.parameter_id] = "";
+      }
+      salePurchaseMode === "sale" ? setCurrentSaleFilter(Number(cropId), newFilter) : setCurrentPurchaseFilter(Number(cropId), newFilter);
+    },
+    [salePurchaseMode, cropId, currentFilterOnCropId, setCurrentSaleFilter, setCurrentPurchaseFilter]
+  );
 
   let pageTitle = "";
 
@@ -217,7 +248,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
 
   const classes = useStyles();
   const history = useHistory();
-  const innerClasses = useInnerStyles();
+  const innerClasses = useBidsPageStyles();
 
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
@@ -287,31 +318,35 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
         case "best-bids":
           if (salePurchaseMode === "sale") {
             if (currentSaleFilters[cropId] && cropParams && pointPrices) {
-              fetchBestBids(
-                salePurchaseMode,
-                filterForBids(
-                  currentSaleFilters[cropId] || {},
-                  cropParams.filter(item => item.type === "enum"),
-                  cropParams.filter(item => item.type === "number"),
-                  pointPrices
-                )
+              const newFilter = filterForBids(
+                currentSaleFilters[cropId] || {},
+                cropParams.filter(item => item.type === "enum"),
+                cropParams.filter(item => item.type === "number"),
+                pointPrices
               );
+              fetchBestBids(salePurchaseMode, newFilter);
+              setCurrentFilters(newFilter);
             }
-            if (cropId && !currentSaleFilters[cropId]) fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+            if (cropId && !currentSaleFilters[cropId]) {
+              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+              setCurrentFilters({ filter: { cropId: +cropId } });
+            }
           }
           if (salePurchaseMode === "purchase") {
             if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
-              fetchBestBids(
-                salePurchaseMode,
-                filterForBids(
-                  currentPurchaseFilters[cropId] || {},
-                  cropParams.filter(item => item.type === "enum"),
-                  cropParams.filter(item => item.type === "number"),
-                  pointPrices
-                )
+              const newFilter = filterForBids(
+                currentPurchaseFilters[cropId] || {},
+                cropParams.filter(item => item.type === "enum"),
+                cropParams.filter(item => item.type === "number"),
+                pointPrices
               );
+              fetchBestBids(salePurchaseMode, newFilter);
+              setCurrentFilters(newFilter);
             }
-            if (cropId && !currentPurchaseFilters[cropId]) fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+            if (cropId && !currentPurchaseFilters[cropId]) {
+              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+              setCurrentFilters({ filter: { cropId: +cropId } });
+            }
           }
           break;
         case "my-bids":
@@ -361,31 +396,35 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
         case "best-bids":
           if (salePurchaseMode === "sale") {
             if (currentSaleFilters[cropId] && cropParams && pointPrices) {
-              fetchBestBids(
-                salePurchaseMode,
-                filterForBids(
-                  currentSaleFilters[cropId] || {},
-                  cropParams.filter(item => item.type === "enum"),
-                  cropParams.filter(item => item.type === "number"),
-                  pointPrices
-                )
+              const newFilter = filterForBids(
+                currentSaleFilters[cropId] || {},
+                cropParams.filter(item => item.type === "enum"),
+                cropParams.filter(item => item.type === "number"),
+                pointPrices
               );
+              fetchBestBids(salePurchaseMode, newFilter);
+              setCurrentFilters(newFilter);
             }
-            if (cropId && !currentSaleFilters[cropId]) fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+            if (cropId && !currentSaleFilters[cropId]) {
+              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+              setCurrentFilters({ filter: { cropId: +cropId } });
+            }
           }
           if (salePurchaseMode === "purchase") {
             if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
-              fetchBestBids(
-                salePurchaseMode,
-                filterForBids(
-                  currentPurchaseFilters[cropId] || {},
-                  cropParams.filter(item => item.type === "enum"),
-                  cropParams.filter(item => item.type === "number"),
-                  pointPrices
-                )
+              const newFilter = filterForBids(
+                currentPurchaseFilters[cropId] || {},
+                cropParams.filter(item => item.type === "enum"),
+                cropParams.filter(item => item.type === "number"),
+                pointPrices
               );
+              fetchBestBids(salePurchaseMode, newFilter);
+              setCurrentFilters(newFilter);
             }
-            if (cropId && !currentPurchaseFilters[cropId]) fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+            if (cropId && !currentPurchaseFilters[cropId]) {
+              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+              setCurrentFilters({ filter: { cropId: +cropId } });
+            }
           }
           break;
         case "my-bids":
@@ -466,6 +505,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                     }/0${!!cropId ? "/" + cropId : ""}`
                   )
                 }
+                className={innerClasses.btnAddBid}
               >
                 {intl.formatMessage({ id: "BIDSLIST.BUTTON.CREATE_BID" })}
               </Button>
@@ -475,6 +515,36 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                   {intl.formatMessage({ id: "BID.EXPORT.EXCEL" })}
                 </Button>
               )}
+            </div>
+          )}
+          {currentCropName && (
+            <div className={innerClasses.wrapperBtnFilters}>
+              <b className={innerClasses.cropNameText}>
+                {cropParameters && cropParameters.length > 0 ? (
+                  <>
+                    {currentCropName}:
+                    {cropParameters.map((item, index) => (
+                      <Button
+                        key={index}
+                        color="primary"
+                        variant="outlined"
+                        onClick={() => handleBtnFilter(item)}
+                        className={innerClasses.btnFilter}
+                      >
+                        <CardMedia
+                          component="img"
+                          title="image"
+                          image={toAbsoluteUrl("/images/Group3.png")}
+                          className={innerClasses.imgBtnFilter}
+                        />
+                        <div className={innerClasses.btnFilterText}>{item.text}</div>
+                      </Button>
+                    ))}
+                  </>
+                ) : (
+                  <>{currentCropName}</>
+                )}
+              </b>
             </div>
           )}
         </div>
@@ -504,6 +574,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
               bestAllMyMode={bestAllMyMode}
               crops={crops}
               setProfit={setProfit}
+              points={me?.points}
             />
           </div>
           {newInexactBid.length > 0 && (
@@ -523,6 +594,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 bestAllMyMode={bestAllMyMode}
                 crops={crops}
                 setProfit={setProfit}
+                points={me?.points}
               />
             </div>
           )}
@@ -562,6 +634,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             bestAllMyMode={bestAllMyMode}
             crops={crops}
             setProfit={setProfit}
+            points={me?.points}
           />
           {!!myBids && !!myBids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
         </>
@@ -589,6 +662,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             bestAllMyMode={bestAllMyMode}
             crops={crops}
             setProfit={setProfit}
+            points={me?.points}
           />
           {!!bids && !!bids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
         </>

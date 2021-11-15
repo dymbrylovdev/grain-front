@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { injectIntl } from "react-intl";
 import { Divider, FormControlLabel, Checkbox } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { useHistory } from "react-router-dom";
-
 import { IBid, IProfit } from "../../../../interfaces/bids";
 import { IUser } from "../../../../interfaces/users";
 import { TablePaginator2 } from "../../../../components/ui/Table/TablePaginator2";
@@ -13,6 +12,17 @@ import { useSnackbar } from "notistack";
 import SubDialog from "../../../../components/ui/Dialogs/SubscribeDialog";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import Bid from "./Bid";
+import { ILocation } from "../../../../interfaces/locations";
+import { distance } from "./BidForm";
+import YaMapDialog from "./YaMapDialog";
+
+export interface ILocalBids {
+  currentBid: IBid;
+  useId: number;
+  finalPrice: number;
+  salePurchaseMode: "sale" | "purchase";
+  distance: any;
+}
 
 interface IProps {
   intl: any;
@@ -45,6 +55,7 @@ interface IProps {
   postLoading?: boolean;
   postSuccess?: boolean;
   postError?: string | null;
+  points?: ILocation[];
 }
 
 const BidsList: React.FC<IProps> = ({
@@ -69,19 +80,61 @@ const BidsList: React.FC<IProps> = ({
   postLoading,
   postSuccess,
   postError,
+  points,
 }) => {
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
+  const routeRef = useRef();
   const [clientWidth, setClientWidth] = useState(document.body.clientWidth);
   const [hasActivePoints, setHasActivePoints] = useState(false);
   const [subDialogOpen, setSubDialogOpen] = useState(false);
   const [showPhoneDialog, setShowPhoneDialog] = useState(false);
+  const [showYaMap, setShowYaMap] = useState(false);
+  const [ymaps, setYmaps] = useState<any>();
+  const [map, setMap] = useState<any>();
+  const [currentBid, setCurrentBid] = useState<IBid | null>(null);
+  const [showPlacemark, setShowPlacemark] = useState(false);
+  const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
+  const [currentMark, setCurrentMark] = useState<ILocalBids | null>(null);
   const isBuyerTariff = useMemo(() => user.tariff_matrix.tariff.id !== 1, [user]);
   const [showsPhones, setShowsPhones] = useState<number[]>([]);
 
   const updateWindowDimensions = () => {
     setClientWidth(window.innerWidth);
   };
+
+  const mapState = useMemo(() => {
+    if (currentBid && currentBid.location) {
+      return { center: [currentBid.location.lat, currentBid.location.lng], zoom: 7, margin: [10, 10, 10, 10] };
+    } else {
+      return null;
+    }
+  }, [currentBid]);
+
+  useEffect(() => {
+    if (currentMark && currentBid) {
+      if (localBids) {
+        const existBidsIndex = localBids.findIndex(
+          item => item.useId === user.id && item.salePurchaseMode === salePurchaseMode && currentBid.id === item.currentBid.id
+        );
+        if (existBidsIndex > -1) {
+          const newArr = localBids;
+          newArr[existBidsIndex] = currentMark;
+          localStorage.setItem("bids", JSON.stringify(newArr));
+        } else {
+          localStorage.setItem("bids", JSON.stringify([...localBids, currentMark]));
+        }
+      } else {
+        localStorage.setItem("bids", JSON.stringify([currentMark]));
+      }
+    }
+  }, [currentMark]);
+
+  const localBids: ILocalBids[] | null = useMemo(() => {
+    const storageBids = localStorage.getItem("bids");
+    return storageBids ? JSON.parse(storageBids) : null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bids, user, crops, showYaMap, currentBid, mySelectedMapPoint, ymaps, map, routeRef, salePurchaseMode]);
 
   useEffect(() => {
     window.addEventListener("resize", updateWindowDimensions);
@@ -111,6 +164,33 @@ const BidsList: React.FC<IProps> = ({
       clearPost();
     }
   }, [clearPost, postError, postSuccess, enqueueSnackbar]);
+
+  useEffect(() => {
+    if (points && currentBid && currentBid.location) {
+      const locations = points && points.filter(el => el.active);
+      const position = currentBid.location;
+      if (locations.length > 0) {
+        let closest = locations[0];
+        let closestDistance = distance(closest, position);
+        for (let i = 1; i < locations.length; i++) {
+          if (distance(locations[i], position) < closestDistance) {
+            closestDistance = distance(locations[i], position);
+            closest = locations[i];
+          }
+        }
+        setMySelectedMapPoint(closest);
+      }
+    }
+  }, [currentBid, points]);
+
+  useEffect(() => {
+    if (ymaps && map && currentBid && currentBid.location && mySelectedMapPoint) {
+      setShowPlacemark(false);
+      addRoute(currentBid.location, mySelectedMapPoint);
+    } else if (ymaps && map && currentBid && currentBid.location) {
+      setShowPlacemark(true);
+    }
+  }, [ymaps, map, currentBid, mySelectedMapPoint]);
 
   const handleClickEditOrViewBid = useCallback(
     (bid: IBid) => {
@@ -145,6 +225,67 @@ const BidsList: React.FC<IProps> = ({
       }
     },
     [showsPhones, isBuyerTariff, setShowsPhones, setShowPhoneDialog]
+  );
+
+  const getFinalPrice = useCallback((bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
+    if (salePurchaseMode === "sale") {
+      return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * distanceKm);
+    } else {
+      return Math.round(bid.price * (vat / 100 + 1) - pricePerKm * distanceKm);
+    }
+  }, []);
+
+  const handleOpenMap = useCallback((bid: IBid) => {
+    setShowYaMap(true);
+    setCurrentBid(bid);
+  }, []);
+
+  const addRoute = useCallback(
+    async (pointA: any, pointB: any) => {
+      map.geoObjects.remove(routeRef.current);
+
+      // create multiroute and add to the map
+      const multiRoute = await ymaps.route([pointA.text, pointB.text], {
+        multiRoute: true,
+        mapStateAutoApply: true,
+      });
+      routeRef.current = multiRoute;
+      await map.geoObjects.add(multiRoute);
+
+      // open active route balloon
+      const routes = multiRoute.getRoutes();
+      for (let i = 0, l = routes.getLength(); i < l; i++) {
+        const route = routes.get(i);
+        // if (!route.properties.get('blocked')) {
+        multiRoute.setActiveRoute(route);
+        route.balloon.open();
+        break;
+        // }
+      }
+
+      const activeProperties = multiRoute.getActiveRoute();
+      if (activeProperties) {
+        const { distance } = activeProperties.properties.getAll();
+        if (distance.value > 0 && currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
+          const finalPrice = getFinalPrice(
+            currentBid,
+            currentBid.distance,
+            currentBid.price_delivery_per_km,
+            salePurchaseMode,
+            +currentBid.vat
+          );
+          const newLocalBid = {
+            currentBid,
+            useId: user.id,
+            finalPrice,
+            salePurchaseMode,
+            distance: distance.text.replace(/\D/g, ""),
+          };
+          setCurrentMark(newLocalBid);
+        }
+      }
+    },
+    [ymaps, map, routeRef, currentBid, salePurchaseMode, user, getFinalPrice]
   );
 
   const [isSendingEmail, setSendingEmail] = useState(true);
@@ -185,6 +326,8 @@ const BidsList: React.FC<IProps> = ({
               handleClickEditOrViewBid={handleClickEditOrViewBid}
               handleShowPhone={handleShowPhone}
               showsPhones={showsPhones}
+              handleOpenMap={handleOpenMap}
+              localBids={localBids}
             />
           ))}
           {!!paginationData && !!fetcher && (
@@ -235,6 +378,15 @@ const BidsList: React.FC<IProps> = ({
         cancelText={"Отмена"}
         handleClose={() => setShowPhoneDialog(false)}
         handleAgree={() => history.push("/user/profile/tariffs")}
+      />
+      <YaMapDialog
+        mapState={mapState}
+        showYaMap={showYaMap}
+        setShowYaMap={setShowYaMap}
+        currentBid={currentBid}
+        setMap={setMap}
+        setYmaps={setYmaps}
+        showPlacemark={showPlacemark}
       />
     </>
   );
