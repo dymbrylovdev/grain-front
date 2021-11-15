@@ -172,12 +172,11 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   ]);
 
   useEffect(() => {
-    setValues(getInitialValues(currentFilter));
     resetForm({ values: getInitialValues(currentFilter) });
   }, [currentFilter, getInitialValues, resetForm]);
 
   useEffect(() => {
-    !isEqual(currentFilter, values) && resetForm({ values: getInitialValues(currentFilter) });
+    !isEqual(currentFilter, values) && Object.keys(currentFilter).length > 1 && resetForm({ values: getInitialValues(currentFilter) });
   }, [currentSaleFilters, currentPurchaseFilters]);
 
   useEffect(() => {
