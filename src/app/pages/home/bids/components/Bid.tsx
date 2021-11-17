@@ -65,7 +65,7 @@ const Bid = React.memo<IProps>(
             item.useId === user.id &&
             item.salePurchaseMode === salePurchaseMode &&
             item.currentBid.id === bid.id &&
-            item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString()
+            (bid.price_delivery_per_km ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString() : false)
         );
       }
     }, [localBids, bid, salePurchaseMode, user]);

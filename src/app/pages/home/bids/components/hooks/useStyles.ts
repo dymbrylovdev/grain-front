@@ -343,6 +343,7 @@ export const useBidsPageStyles = makeStyles(theme => ({
   leftButtonBlock: {
     flex: 1,
   },
+  wrapperAddBid: { marginBottom: 16 },
   filterText: {
     width: 300,
     textAlign: "right",
@@ -390,7 +391,7 @@ export const useBidsPageStyles = makeStyles(theme => ({
       fontSize: 16,
     },
   },
-  wrapperBtnFilters: { marginTop: 16, marginBottom: 12 },
+  wrapperBtnFilters: { marginBottom: 12 },
   btnFilter: { border: "1px solid #EDEEF4", paddingTop: 4, paddingBottom: 4, paddingRight: 8, paddingLeft: 8, margin: 4 },
   imgBtnFilter: { height: 16, width: 16, marginRight: 4 },
   btnFilterText: {
@@ -403,4 +404,362 @@ export const useBidsPageStyles = makeStyles(theme => ({
       fontSize: 14,
     },
   },
+}));
+
+export const useViewBidStyles = makeStyles(theme => ({
+  editor: {
+    boxShadow: "initial !important",
+    padding: "0 !important",
+  },
+  container: {
+    padding: 0,
+    margin: 0,
+  },
+  card: {
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingTop: 26,
+    paddingBottom: 26,
+    margin: 0,
+    display: "flex",
+    flexWrap: "wrap",
+    backgroundColor: "white",
+  },
+  leftCol: {
+    maxWidth: 590,
+    width: "100%",
+  },
+  rightCol: {
+    maxWidth: 750,
+    flex: 1,
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "column",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
+    marginTop: 25,
+    marginBottom: 30,
+    maxWidth: 530,
+  },
+  name: {
+    fontSize: 25,
+
+    fontWeight: "bold",
+    margin: 0,
+
+    [theme.breakpoints.up("md")]: {
+      fontSize: 20,
+    },
+  },
+  whatsAppButton: {
+    width: "100%",
+    height: 42,
+    padding: "12px 0",
+    borderRadius: 4,
+    backgroundColor: "#25d366",
+    marginTop: 15,
+    fontSize: 14,
+    fontWeight: "bold",
+    fontStretch: "normal",
+    fontStyle: "normal",
+    lineHeight: "normal",
+    letterSpacing: "normal",
+    textAlign: "center",
+    color: "#fff",
+
+    "&:hover": {
+      color: "#fff",
+    },
+
+    [theme.breakpoints.up("md")]: {
+      width: 215,
+      marginTop: 0,
+    },
+  },
+  listItem: {
+    marginBottom: 15,
+  },
+  listValue: {
+    fontSize: 19,
+    fontWeight: 600,
+    fontStretch: "normal",
+    fontStyle: "normal",
+    lineHeight: "normal",
+    letterSpacing: "normal",
+    color: "#3f4254",
+    marginBottom: 5,
+  },
+  listKey: {
+    marginBottom: 0,
+  },
+  companyCard: {
+    padding: "25px 30px",
+    borderRadius: "4px",
+    backgroundColor: "#f5f8fa",
+    marginTop: 30,
+  },
+  infoText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "black",
+    marginRight: 5,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
+  wrapperPrice: {
+    display: "flex",
+    flexDirection: "row",
+    marginBottom: 8,
+  },
+  infoTwoText: {
+    fontSize: 16,
+    color: "black",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
+  imgBtnDetailed: { marginLeft: 12, marginRight: 12 },
+  nameCompany: {
+    fontSize: 14,
+    fontWeight: 400,
+    color: "black",
+  },
+  price: {
+    fontWeight: "bold",
+    fontSize: 24,
+    color: "black",
+    marginRight: 14,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 18,
+    },
+  },
+  rybl: {
+    fontSize: 24,
+    color: "#21BA88",
+    marginRight: 21,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 18,
+    },
+  },
+  delivery: {
+    display: "inline-block",
+    fontWeight: "bold",
+    fontSize: 24,
+    color: "black",
+    marginRight: 5,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 18,
+    },
+  },
+  deliveryAddress: {
+    fontSize: 24,
+    color: "black",
+    fontWeight: "normal",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 18,
+    },
+  },
+  btnChangeDelivery: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#6164FFFF",
+    cursor: "pointer",
+    textDecoration: "underline ",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 18,
+    },
+  },
+  nds: {
+    fontSize: 24,
+    color: "black",
+    marginRight: 21,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 18,
+    },
+  },
+  nameParameter: {
+    fontSize: 18,
+    fontWeight: 700,
+    color: "black",
+    marginBottom: 8,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 16,
+    },
+  },
+  parameterValue: {
+    fontSize: 16,
+    fontWeight: 400,
+    color: "black",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
+  vendorCompany: {
+    fontSize: 16,
+    fontWeight: 400,
+    color: "black",
+    marginTop: 8,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
+  modifedAt: {
+    fontSize: 16,
+    fontWeight: 600,
+    color: "black",
+    marginBottom: 8,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
+  btnShowPhone: {
+    height: 56,
+    width: 180,
+    marginBottom: 18,
+    textTransform: "initial",
+    color: "#6164FF",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      marginBottom: 16,
+    },
+  },
+  wrapperTextShowBtn: { display: "flex", flexDirection: "column", justifyContent: "flex-start" },
+  textPhone: {
+    color: "black",
+    fontSize: 16,
+    fontWeight: 400,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
+  btnTextShowPhone: {
+    fontSize: 16,
+    color: "#6164FF",
+    fontWeight: 400,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
+  infoAlert: {
+    whiteSpace: "pre-wrap",
+    marginTop: 8,
+    marginBottom: 26,
+    fontSize: 16,
+    color: "black",
+    fontWeight: 400,
+
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
+  calcParam: {
+    fontSize: 16,
+    fontWeight: 400,
+    color: "black",
+    marginBottom: 8,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
+  calcVal: {
+    fontSize: 16,
+    fontWeight: 400,
+    color: " #6164FF",
+    marginBottom: 26,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
+  imageBlocks: {
+    position: "absolute",
+    marginLeft: 8,
+    marginBottom: 8,
+    marginTop: 60,
+    zIndex: 1,
+  },
+  imageFirstBlock: {
+    paddingLeft: 8,
+    paddingRight: 8,
+    paddingTop: 4,
+    paddingBottom: 4,
+    backgroundColor: "#21BA88FF",
+    borderRadius: 4,
+    marginBottom: 8,
+  },
+  imageTwoBlock: {
+    paddingLeft: 8,
+    paddingRight: 8,
+    paddingTop: 4,
+    paddingBottom: 4,
+    backgroundColor: "#0F7F12FF",
+    borderRadius: 4,
+  },
+  fontImageText: {
+    fontSize: 16,
+    color: "white",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 14,
+    },
+  },
+  wrapperValCalc: { display: "flex", flexDirection: "row", justifyContent: "space-between", flexWrap: "wrap" },
+  wrapperMedia: { display: "flex", alignItems: "center", marginTop: -6 },
+  yaMap: { width: "100%", marginTop: 5 },
+  wrapperParameters: { display: "flex", flexDirection: "row", flexWrap: "wrap" },
+  wrapperParameter: { display: "flex", flexDirection: "column", marginRight: 50, marginBottom: 26 },
+  wrapperCalc: {
+    paddingTop: 16,
+    paddingBottom: 30,
+    paddingRight: 16,
+    paddingLeft: 16,
+    border: "1px solid #EDEEF4",
+    borderRadius: 4,
+    boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.06)",
+  },
+  titleCalc: {
+    marginBottom: 16,
+    fontSize: 18,
+    fontWeight: 700,
+    color: "black",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 16,
+    },
+  },
+  textField: { height: 50, width: 255, margin: 0, marginBottom: 26 },
+  wrapperVendor: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginBottom: 26,
+
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      marginBottom: 16,
+    },
+  },
+  btnGoBack: { width: 40, height: 24, minWidth: 40, marginRight: 8, color: "black", border: "1px solid #000000", padding: 0 },
 }));

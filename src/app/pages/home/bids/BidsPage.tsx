@@ -491,7 +491,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
       <div className={innerClasses.topContainer}>
         <div className={innerClasses.leftButtonBlock}>
           {me && (
-            <div>
+            <div className={innerClasses.wrapperAddBid}>
               <Button
                 variant="contained"
                 color="primary"
