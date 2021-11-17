@@ -17,15 +17,11 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 0,
-    backgroundColor: "black",
   },
   imgContainerSmall: {
     borderRadius: 4,
-    maxHeight: "250px",
+    maxHeight: "311px",
     backgroundColor: "transparent",
-    [theme.breakpoints.up("md")]: {
-      maxHeight: "500px",
-    },
   },
   imgContainerFull: {
     maxHeight: "85vh",
