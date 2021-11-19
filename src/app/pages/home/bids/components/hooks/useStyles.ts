@@ -63,16 +63,53 @@ export const useBidTableStyles = makeStyles(theme => ({
       fontSize: 14,
     },
   },
-  image: {
-    maxHeight: 268,
-    maxWidth: 318,
-    objectFit: "contain",
-    borderRadius: 4,
+  wrapperImage: {
+    width: 318,
+    height: 268,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       maxHeight: 102,
-      maxWidth: "100%",
-      objectFit: "cover",
+      width: "100%",
+    },
+  },
+  image: {
+    objectFit: "cover",
+    borderRadius: 4,
+    width: "100%",
+    height: "100%",
+  },
+  wrapperDot: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    position: "absolute",
+    marginTop: 250,
+    zIndex: 1,
+    width: 318,
+    cursor: "pointer",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      marginTop: 90,
+      width: "100%",
+    },
+  },
+  dot: {
+    width: 58,
+    height: 6,
+    borderRadius: 10,
+    marginRight: 3,
+    marginBottom: 8,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      width: 38,
+    },
+  },
+  wrapperCarusel: {
+    width: 318,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      width: "100%",
     },
   },
   wrapperFirstInfoBlock: {
@@ -697,7 +734,6 @@ export const useViewBidStyles = makeStyles(theme => ({
     marginLeft: 8,
     marginBottom: 8,
     marginTop: 60,
-    zIndex: 1,
   },
   imageFirstBlock: {
     paddingLeft: 8,

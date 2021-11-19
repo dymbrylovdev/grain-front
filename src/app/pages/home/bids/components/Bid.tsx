@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { IconButton, Tooltip, CardMedia, Button, useMediaQuery } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
@@ -13,6 +13,8 @@ import EmailIcon from "@material-ui/icons/Email";
 import { toAbsoluteUrl } from "../../../../../_metronic/utils/utils";
 import { useBidTableStyles } from "./hooks/useStyles";
 import { ILocalBids } from "./BidsList";
+import AliceCarousel from "react-alice-carousel";
+import "react-alice-carousel/lib/alice-carousel.css";
 
 interface IProps {
   isHaveRules?: (user: any, id: number) => boolean;
@@ -55,9 +57,11 @@ const Bid = React.memo<IProps>(
     numberParams,
   }) => {
     const history = useHistory();
+    const caruselRef: any = useRef();
     const isMobile = useMediaQuery("(max-width:1000px)");
     const innerClasses = useBidTableStyles();
     const currentCrop = useMemo(() => crops?.find(item => item.id === bid.crop_id), [crops, bid]);
+    const [currentIndex, setCurrentIndex] = useState(0);
     const newBid = useMemo(() => {
       if (localBids && localBids.length > 0) {
         return localBids.find(
@@ -78,10 +82,41 @@ const Bid = React.memo<IProps>(
       [numberParams]
     );
 
+    const photos = ["/images/defaultImage.jpg", "/images//wheat (1).jpg", "/images//wheat (2).jpg", "/images//wheat (3).jpg"];
+
+    const items = useMemo(() => {
+      const arrImg: any = [];
+      photos.forEach(item =>
+        arrImg.push(
+          <div className={innerClasses.wrapperImage}>
+            <img src={toAbsoluteUrl(item)} className={innerClasses.image} />
+          </div>
+        )
+      );
+      return arrImg;
+    }, []);
+
+    const arrImgIndex = useMemo(() => {
+      if (photos && photos.length > 0) {
+        const arrImg: number[] = [];
+        photos.forEach((_, index) => arrImg.push(index));
+        return arrImg;
+      }
+      return null;
+    }, [photos]);
+
+    const handleDot = useCallback(
+      (index: number) => {
+        setCurrentIndex(index);
+        caruselRef.current.slideTo(index);
+      },
+      [caruselRef]
+    );
+
     return (
       <div className={innerClasses.container}>
         <div className={innerClasses.imageBlock}>
-          <div className={innerClasses.imageBlocks}>
+          <div className={innerClasses.imageBlocks} style={{ zIndex: 1 }}>
             {!!bid?.vendor && (bid.vendor.company_confirmed_by_payment || bid.vendor.company_confirmed_by_email) && (
               <div className={innerClasses.imageFirstBlock}>
                 <div className={innerClasses.fontImageText}>Связь подтверждена</div>
@@ -100,7 +135,29 @@ const Bid = React.memo<IProps>(
               </>
             )}
           </div>
-          <CardMedia component="img" title="image" image={toAbsoluteUrl("/images/defaultImage.jpg")} className={innerClasses.image} />
+          {arrImgIndex && (
+            <div className={innerClasses.wrapperDot}>
+              {arrImgIndex.map(item => (
+                <div
+                  className={innerClasses.dot}
+                  onClick={() => handleDot(item)}
+                  style={{ backgroundColor: currentIndex === item ? "#6164FF" : "white" }}
+                />
+              ))}
+            </div>
+          )}
+          <div className={innerClasses.wrapperCarusel}>
+            <AliceCarousel
+              ref={caruselRef}
+              mouseTracking={isMobile}
+              items={items}
+              disableDotsControls
+              disableButtonsControls
+              onSlideChanged={e => setCurrentIndex(e.item)}
+              infinite
+            />
+          </div>
+          {/* <CardMedia component="img" title="image" image={toAbsoluteUrl("/images/defaultImage.jpg")} className={innerClasses.image} /> */}
         </div>
         <div className={innerClasses.wrapperFirstInfoBlock}>
           <div className={innerClasses.containerInfoBlock}>
