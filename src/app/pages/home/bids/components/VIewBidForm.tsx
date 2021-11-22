@@ -212,39 +212,37 @@ const ViewBidForm: React.FC<IProps> = ({
               />
             </Button>
             <div className={classes.wrapperPrice}>{currentCrop && <div className={classes.infoText}>{currentCrop.name}</div>}</div>
-            {bid.vendor?.company?.short_name && (
-              <>
-                <div className={classes.imageBlocks}>
-                  {!!bid?.vendor && (bid.vendor.company_confirmed_by_payment || bid.vendor.company_confirmed_by_email) && (
-                    <div className={classes.imageFirstBlock}>
-                      <div className={classes.fontImageText}>Связь подтверждена</div>
-                    </div>
-                  )}
-                  {bid.vendor.company && (
-                    <>
-                      {bid?.vendor?.company_confirmed_by_payment &&
-                        !!bid?.vendor?.company?.colors &&
-                        bid.vendor.company.colors.length > 0 &&
-                        bid.vendor.company.colors.find(item => item === "green") && (
-                          <div className={classes.imageTwoBlock}>
-                            <div className={classes.fontImageText}>Надежный контрагент</div>
-                          </div>
-                        )}
-                    </>
-                  )}
-                </div>
-                <div className={classes.wrapperMedia}>
-                  <CardMedia
-                    component="img"
-                    title="image"
-                    image={toAbsoluteUrl("/images/arrorRight.png")}
-                    className={classes.imgBtnDetailed}
-                    style={{ objectFit: "none" }}
-                  />
-                </div>
-                <div className={classes.nameCompany}>{bid.vendor.company.short_name}</div>
-              </>
-            )}
+            <>
+              <div className={classes.imageBlocks}>
+                {!!bid?.vendor && (bid.vendor.company_confirmed_by_payment || bid.vendor.company_confirmed_by_email) && (
+                  <div className={classes.imageFirstBlock}>
+                    <div className={classes.fontImageText}>Связь подтверждена</div>
+                  </div>
+                )}
+                {bid.vendor.company && (
+                  <>
+                    {bid?.vendor?.company_confirmed_by_payment &&
+                      !!bid?.vendor?.company?.colors &&
+                      bid.vendor.company.colors.length > 0 &&
+                      bid.vendor.company.colors.find(item => item === "green") && (
+                        <div className={classes.imageTwoBlock}>
+                          <div className={classes.fontImageText}>Надежный контрагент</div>
+                        </div>
+                      )}
+                  </>
+                )}
+              </div>
+              <div className={classes.wrapperMedia}>
+                <CardMedia
+                  component="img"
+                  title="image"
+                  image={toAbsoluteUrl("/images/arrorRight.png")}
+                  className={classes.imgBtnDetailed}
+                  style={{ objectFit: "none" }}
+                />
+              </div>
+              {bid.vendor?.company?.short_name && <div className={classes.nameCompany}>{bid.vendor.company.short_name}</div>}
+            </>
             <div style={{ width: "100%" }}>
               <Divider style={{ marginBottom: 14 }} />
             </div>

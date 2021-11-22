@@ -188,7 +188,7 @@ const ImageGallery: React.FC<IProps> = () => {
               />
             ) : (
               <Card className={classes.imgContainer} elevation={0}>
-                <img className={classes.img} src={toAbsoluteUrl("/images/defaultImage.jpg")} />
+                <img className={classes.img} src={toAbsoluteUrl("/images/defaultImage.jpg")} alt="imageDefault" />
               </Card>
             )}
           </>
