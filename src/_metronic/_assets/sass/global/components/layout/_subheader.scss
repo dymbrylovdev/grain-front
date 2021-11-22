@@ -205,6 +205,10 @@ $kt-subheader-config: (
     }
   }
 
+  .kt-subheader__btn {
+    margin-left: 15px;
+  }
+
   // Primary button
   .kt-subheader__btn-primary {
     background: #f2f3f7;
@@ -411,14 +415,8 @@ $kt-subheader-config: (
     // Main
     .kt-subheader__main {
       // Mobile Toggler
-      @include kt-burger-icon-build(
-        kt-subheader__mobile-toggle,
-        kt-get($kt-subheader-config, toggle)
-      );
-      @include kt-burger-icon-skin(
-        kt-subheader__mobile-toggle,
-        kt-get($kt-subheader-config, toggle, color)
-      );
+      @include kt-burger-icon-build(kt-subheader__mobile-toggle, kt-get($kt-subheader-config, toggle));
+      @include kt-burger-icon-skin(kt-subheader__mobile-toggle, kt-get($kt-subheader-config, toggle, color));
 
       .kt-subheader__mobile-toggle {
         display: inline-block;
@@ -439,11 +437,24 @@ $kt-subheader-config: (
     // Toolbar
     .kt-subheader__toolbar {
       padding: 0.5rem 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     // Light style
     .kt-subheader--transparent & {
       background-color: transparent;
+    }
+
+    .kt-subheader__btn {
+      margin-top: 8px;
+      margin-left: 0px;
+      width: 100%;
+    }
+
+    .kt-subheader__top-btn {
+      width: 100%;
     }
   }
 }

@@ -136,13 +136,11 @@ const Bid = React.memo<IProps>(
             )}
           </div>
           {arrImgIndex && (
-            <div className={innerClasses.wrapperDot}>
+            <div className={innerClasses.containerDot}>
               {arrImgIndex.map(item => (
-                <div
-                  className={innerClasses.dot}
-                  onClick={() => handleDot(item)}
-                  style={{ backgroundColor: currentIndex === item ? "#6164FF" : "white" }}
-                />
+                <div className={innerClasses.wrapperDot} onClick={() => handleDot(item)}>
+                  <div className={innerClasses.dot} style={{ backgroundColor: currentIndex === item ? "#6164FF" : "white" }} />
+                </div>
               ))}
             </div>
           )}

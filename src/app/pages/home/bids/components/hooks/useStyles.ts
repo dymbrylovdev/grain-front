@@ -78,13 +78,13 @@ export const useBidTableStyles = makeStyles(theme => ({
     width: "100%",
     height: "100%",
   },
-  wrapperDot: {
+  containerDot: {
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
     position: "absolute",
-    marginTop: 250,
+    marginTop: 245,
     zIndex: 1,
     width: 318,
     cursor: "pointer",
@@ -92,14 +92,17 @@ export const useBidTableStyles = makeStyles(theme => ({
     ["@media (max-width:1000px)"]: {
       marginTop: 90,
       width: "100%",
+      marginLeft: -15,
     },
+  },
+  wrapperDot: {
+    paddingRight: 3,
+    paddingBottom: 8,
   },
   dot: {
     width: 58,
     height: 6,
     borderRadius: 10,
-    marginRight: 3,
-    marginBottom: 8,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       width: 38,

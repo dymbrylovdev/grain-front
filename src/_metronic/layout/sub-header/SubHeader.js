@@ -43,10 +43,7 @@ class SubHeader extends React.Component {
         <div className={`kt-container ${subheaderContainerCssClasses}`}>
           <div className="kt-subheader__main">
             {subheaderMobileToggle && (
-              <button
-                className="kt-subheader__mobile-toggle kt-subheader__mobile-toggle--left"
-                id="kt_subheader_mobile_toggle"
-              >
+              <button className="kt-subheader__mobile-toggle kt-subheader__mobile-toggle--left" id="kt_subheader_mobile_toggle">
                 <span />
               </button>
             )}
@@ -98,18 +95,14 @@ class SubHeader extends React.Component {
               </IconButton> */}
             </div>
             {me && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => history.push('/user/create')}
-              >
+              <Button variant="contained" color="primary" onClick={() => history.push("/user/create")} className="kt-subheader__top-btn">
                 Добавить пользователя
               </Button>
             )}
 
             {me && !accessByRoles(me, ["ROLE_MANAGER"]) && (
               <Button
-                style={{marginLeft: 15}}
+                className="kt-subheader__btn"
                 variant="contained"
                 color="primary"
                 onClick={() => history.push(`/bid/create/${me.is_buyer ? "purchase" : "sale"}/0`)}
@@ -120,7 +113,7 @@ class SubHeader extends React.Component {
 
             {me && accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
               <Button
-                style={{marginLeft: 15}}
+                className="kt-subheader__btn"
                 variant="contained"
                 color="secondary"
                 onClick={() => history.push(`/user/profile/tariffs`)}
