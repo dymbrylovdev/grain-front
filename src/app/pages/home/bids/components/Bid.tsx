@@ -86,10 +86,10 @@ const Bid = React.memo<IProps>(
 
     const items = useMemo(() => {
       const arrImg: any = [];
-      photos.forEach(item =>
+      photos.forEach((item, index) =>
         arrImg.push(
           <div className={innerClasses.wrapperImage}>
-            <img src={toAbsoluteUrl(item)} className={innerClasses.image} />
+            <img src={toAbsoluteUrl(item)} className={innerClasses.image} alt={index.toString()} />
           </div>
         )
       );

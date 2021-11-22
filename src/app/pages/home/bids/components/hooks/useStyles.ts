@@ -737,6 +737,7 @@ export const useViewBidStyles = makeStyles(theme => ({
     marginLeft: 8,
     marginBottom: 8,
     marginTop: 60,
+    zIndex: 1,
   },
   imageFirstBlock: {
     paddingLeft: 8,

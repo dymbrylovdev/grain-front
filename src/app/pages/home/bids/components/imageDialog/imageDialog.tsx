@@ -66,7 +66,7 @@ const ImageDialog: React.FC<IProps> = ({ open, handleClose, url, handleArrow }) 
             <ArrowNext style={{ fontSize: 40 }} />
           </IconButton>
         </div>
-        <img className={classes.img} src={url} />
+        <img className={classes.img} src={url} alt="imageDialog" />
       </DialogContent>
     </Dialog>
   );
