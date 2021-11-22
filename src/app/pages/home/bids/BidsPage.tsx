@@ -98,11 +98,11 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   delLoading,
   delSuccess,
   delError,
-  // clearEdit,
-  // edit,
-  // editLoading,
-  // editSuccess,
-  // editError,
+  clearEdit,
+  edit,
+  editLoading,
+  editSuccess,
+  editError,
   setProfit,
 
   pointPrices,
@@ -314,7 +314,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
       setAlertOpen(false);
       clearDel();
     }
-    if (delSuccess) {
+    if (delSuccess || editSuccess) {
       switch (bestAllMyMode) {
         case "best-bids":
           if (salePurchaseMode === "sale") {
@@ -377,6 +377,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
     salePurchaseMode,
     pointPrices,
     fetchAll,
+    editSuccess,
   ]);
 
   useEffect(() => {
@@ -476,7 +477,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
     }
   };
 
-  useShowErrors([error, bestError, myError, cropsError, cropParamsError, bidsXlsUrlError]);
+  useShowErrors([error, bestError, myError, cropsError, cropParamsError, bidsXlsUrlError, editError]);
 
   if (error || bestError || myError || cropsError || cropParamsError || bidsXlsUrlError) {
     setTimeout(() => {
@@ -570,13 +571,14 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
               }}
               user={me as IUser}
               title={intl.formatMessage({ id: "BIDLIST.TITLE.BEST" })}
-              loading={!bestBids || !cropParams}
+              loading={editLoading || !bestBids || !cropParams}
               salePurchaseMode={salePurchaseMode}
               bestAllMyMode={bestAllMyMode}
               crops={crops}
               setProfit={setProfit}
               points={me?.points}
               numberParams={numberParams}
+              archive={({ id, is_archived }) => edit(id, { is_archived })}
             />
           </div>
           {newInexactBid.length > 0 && (
@@ -591,13 +593,14 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 }}
                 user={me as IUser}
                 title={intl.formatMessage({ id: "BIDLIST.TITLE.NO_FULL" })}
-                loading={!bestBids || !cropParams}
+                loading={editLoading || !bestBids || !cropParams}
                 salePurchaseMode={salePurchaseMode}
                 bestAllMyMode={bestAllMyMode}
                 crops={crops}
                 setProfit={setProfit}
                 points={me?.points}
                 numberParams={numberParams}
+                archive={({ id, is_archived }) => edit(id, { is_archived })}
               />
             </div>
           )}
@@ -631,7 +634,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             paginationData={{ page, perPage, total }}
             fetcher={(newPage: number, newPerPage: number) => fetchMyBids(salePurchaseMode, newPage, newPerPage)}
             user={me as IUser}
-            loading={!myBids}
+            loading={editLoading || !myBids}
             addUrl={"fromMy"}
             salePurchaseMode={salePurchaseMode}
             bestAllMyMode={bestAllMyMode}
@@ -639,6 +642,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             setProfit={setProfit}
             points={me?.points}
             numberParams={numberParams}
+            archive={({ id, is_archived }) => edit(id, { is_archived })}
           />
           {!!myBids && !!myBids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
         </>
@@ -655,7 +659,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
               setAlertOpen(true);
             }}
             user={me as IUser}
-            loading={!bids || (!cropParams && cropId !== "0")}
+            loading={editLoading || !bids || (!cropParams && cropId !== "0")}
             paginationData={{ page, perPage, total }}
             fetcher={(newPage: number, newPerPage: number) =>
               fetch(+cropId, salePurchaseMode, newPage, newPerPage, filter.minDate, filter.maxDate)
@@ -668,6 +672,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             setProfit={setProfit}
             points={me?.points}
             numberParams={numberParams}
+            archive={({ id, is_archived }) => edit(id, { is_archived })}
           />
           {!!bids && !!bids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
         </>

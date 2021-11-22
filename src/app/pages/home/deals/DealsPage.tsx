@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter } from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Modal } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import ArchiveIcon from "@material-ui/icons/Archive";
+import UnarchiveIcon from "@material-ui/icons/Unarchive";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import { useSnackbar } from "notistack";
-
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
 
@@ -352,6 +353,10 @@ const connector = connect(
     editFilterLoading: state.deals.editFilterLoading,
     editFilterSuccess: state.deals.editFilterSuccess,
     editFilterError: state.deals.editFilterError,
+
+    editLoading: state.bids.editLoading,
+    editSuccess: state.bids.editSuccess,
+    editError: state.bids.editError,
   }),
   {
     fetch: dealsActions.fetchRequest,
