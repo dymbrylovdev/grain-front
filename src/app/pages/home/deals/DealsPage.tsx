@@ -2,16 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-  Tooltip,
-  TableFooter,
-} from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
@@ -91,13 +82,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEditFilter();
     }
     if (editFilterSuccess) {
-      fetch(
-        1,
-        perPage,
-        weeks,
-        !term ? 999 : +term,
-        min_prepayment_amount ? min_prepayment_amount : undefined
-      );
+      fetch(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
       fetchDealsFilters();
     }
   }, [
@@ -136,14 +121,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchDealsFilters]);
 
   useEffect(() => {
-    if (!!dealsFilters)
-      fetch(
-        page,
-        perPage,
-        weeks,
-        !term ? 999 : +term,
-        min_prepayment_amount ? min_prepayment_amount : undefined
-      );
+    if (!!dealsFilters) fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
   }, [dealsFilters, fetch, page, perPage, term, weeks, min_prepayment_amount]);
 
   if (error || filtersError || cropsError || allCropParamsError) {
@@ -197,40 +175,22 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               {!!deals &&
                 deals.map((item, i) => (
                   <TableRow key={i}>
-                    <TableCell>
-                      {crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}
-                    </TableCell>
+                    <TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>
                     <TableCell>
                       <div className={classes.flexColumn}>
                         <div style={{ display: "flex" }}>
-                          <strong style={{ marginRight: 5 }}>
-                            {intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}
-                          </strong>
+                          <strong style={{ marginRight: 5 }}>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
                           <strong>
-                            {!!item?.purchase_bid?.vendor.use_vat &&
-                            !!item?.sale_bid?.vat &&
-                            !item.sale_bid.vendor.use_vat ? (
+                            {!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat ? (
                               !item.sale_bid.price ? (
                                 "-"
                               ) : (
                                 <div style={{ display: "flex", alignItems: "center" }}>
                                   <p style={{ marginBottom: "1px", marginRight: 10 }}>
-                                    {!!item.sale_bid &&
-                                      thousands(
-                                        Math.round(
-                                          item.sale_bid.price * (item.sale_bid.vat / 100 + 1)
-                                        )
-                                      )}
+                                    {!!item.sale_bid && thousands(Math.round(item.sale_bid.price * (item.sale_bid.vat / 100 + 1)))}
                                   </p>
-                                  <p
-                                    style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}
-                                  >
-                                    (
-                                    {`${item.sale_bid.price &&
-                                      thousands(Math.round(item.sale_bid.price))} + ${
-                                      item.sale_bid.vat
-                                    }% НДС`}
-                                    )
+                                  <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
+                                    ({`${item.sale_bid.price && thousands(Math.round(item.sale_bid.price))} + ${item.sale_bid.vat}% НДС`})
                                   </p>
                                 </div>
                               )
@@ -259,25 +219,18 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                                   id: "USERLIST.TOOLTIP.COMPANY",
                                 })}
                               >
-                                <CheckCircleOutlineIcon
-                                  color="secondary"
-                                  style={{ marginRight: 4, width: 16, height: 16 }}
-                                />
+                                <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
                               </Tooltip>
                             )}
-                            <div>{`${item?.sale_bid.vendor.fio ||
-                              item?.sale_bid.vendor.login ||
-                              ""}`}</div>
+                            <div>{`${item?.sale_bid.vendor.login || ""}`}</div>
                           </div>
+                          <div>{` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor
+                            .lastname || ""}`}</div>
                           {item?.sale_bid.vendor.company && (
                             <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                              {!!item?.sale_bid?.vendor?.company?.colors &&
-                                item?.sale_bid.vendor.company.colors.length > 0 && (
-                                  <MiniTrafficLight
-                                    intl={intl}
-                                    colors={item?.sale_bid.vendor.company.colors}
-                                  />
-                                )}
+                              {!!item?.sale_bid?.vendor?.company?.colors && item?.sale_bid.vendor.company.colors.length > 0 && (
+                                <MiniTrafficLight intl={intl} colors={item?.sale_bid.vendor.company.colors} />
+                              )}
                               <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
                             </div>
                           )}
@@ -308,25 +261,18 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                                   id: "USERLIST.TOOLTIP.COMPANY",
                                 })}
                               >
-                                <CheckCircleOutlineIcon
-                                  color="secondary"
-                                  style={{ marginRight: 4, width: 16, height: 16 }}
-                                />
+                                <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
                               </Tooltip>
                             )}
-                            <div>{`${item?.purchase_bid.vendor.fio ||
-                              item?.purchase_bid.vendor.login ||
-                              ""}`}</div>
+                            <div>{`${item?.purchase_bid.vendor.login || ""}`}</div>
                           </div>
+                          <div>{`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item
+                            ?.purchase_bid.vendor.lastname || ""}`}</div>
                           {item?.purchase_bid.vendor.company && (
                             <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                              {!!item?.purchase_bid?.vendor?.company?.colors &&
-                                item?.purchase_bid.vendor.company.colors.length > 0 && (
-                                  <MiniTrafficLight
-                                    intl={intl}
-                                    colors={item?.purchase_bid.vendor.company.colors}
-                                  />
-                                )}
+                              {!!item?.purchase_bid?.vendor?.company?.colors && item?.purchase_bid.vendor.company.colors.length > 0 && (
+                                <MiniTrafficLight intl={intl} colors={item?.purchase_bid.vendor.company.colors} />
+                              )}
                               <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
                             </div>
                           )}
@@ -340,11 +286,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       <IconButton
                         size="medium"
                         color="primary"
-                        onClick={() =>
-                          history.push(
-                            `/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`
-                          )
-                        }
+                        onClick={() => history.push(`/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`)}
                       >
                         <VisibilityIcon />
                       </IconButton>
@@ -360,13 +302,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   perPage={perPage}
                   total={total}
                   fetchRows={(page, perPage) =>
-                    fetch(
-                      page,
-                      perPage,
-                      weeks,
-                      !term ? 999 : +term,
-                      min_prepayment_amount ? min_prepayment_amount : undefined
-                    )
+                    fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined)
                   }
                 />
               </TableRow>
