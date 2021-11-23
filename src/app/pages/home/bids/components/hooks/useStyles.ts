@@ -269,10 +269,11 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   btnShowPhone: {
-    width: 180,
+    width: 159,
     marginBottom: 18,
     textTransform: "initial",
     color: "#6164FF",
+    padding: 0,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       marginBottom: 16,
@@ -671,10 +672,11 @@ export const useViewBidStyles = makeStyles(theme => ({
   },
   btnShowPhone: {
     height: 56,
-    width: 180,
+    width: 159,
     marginBottom: 18,
     textTransform: "initial",
     color: "#6164FF",
+    padding: 9,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       marginBottom: 16,
