@@ -5,7 +5,7 @@
   "homepage": "http://grain-front.me-interactive.net/",
   "scripts": {
     "serve": "react-scripts build && cp-cli build _site/ && serve -p 3000",
-    "start": "cross-env HTTPS=true react-scripts start",
+    "start": "cross-env HTTPS=false react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

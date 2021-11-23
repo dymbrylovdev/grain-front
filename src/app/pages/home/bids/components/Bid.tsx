@@ -400,7 +400,7 @@ const Bid = React.memo<IProps>(
                     )}
                   </>
                 )}
-                {bestAllMyMode === "my-bids" && (
+                {bestAllMyMode === "my-bids" && archive && (
                   <Tooltip title={bid.is_archived ? "убрать с архива" : "добавить в архив"}>
                     <IconButton
                       size="medium"

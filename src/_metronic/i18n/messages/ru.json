@@ -170,6 +170,7 @@
   "DEALS.TABLE.BUYER": "Покупатель: ",
   "DEALS.TABLE.AGENT": "Контрагент",
   "DEALS.TABLE.EDIT_TEXT": "Редактировать объявление",
+  "DEALS.TABLE.ARCHIVE_TEXT": "Архивироавть объявление",
   "DEALS.TABLE.VIEW_TEXT": "Просмотреть объявление",
   "DEALS.FILTER.NAME": "Фильтр по параметрам",
   "DEALS.FILTER2.NAME": "Фильтр",

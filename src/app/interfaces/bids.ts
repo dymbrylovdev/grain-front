@@ -118,6 +118,8 @@ export interface IBidToRequest {
   payment_term?: number;
   is_sending_email?: number;
   is_sending_sms?: number;
+  is_archived?: boolean;
+  archived_to?: Date
 }
 
 export interface IBestBids {
