@@ -34,6 +34,7 @@ interface IProps {
   handleOpenMap: (bid: IBid) => void;
   localBids: ILocalBids[] | null;
   numberParams?: ICropParam[];
+  toggleLocationsModal?: () => void;
 }
 
 const Bid = React.memo<IProps>(
@@ -55,6 +56,7 @@ const Bid = React.memo<IProps>(
     handleOpenMap,
     localBids,
     numberParams,
+    toggleLocationsModal,
   }) => {
     const history = useHistory();
     const caruselRef: any = useRef();
@@ -184,7 +186,9 @@ const Bid = React.memo<IProps>(
                                 )
                               : "-"}
                           </b>{" "}
-                          <b className={innerClasses.btnChangeDelivery}>(Изменить)</b>
+                          <b className={innerClasses.btnChangeDelivery} onClick={() => toggleLocationsModal && toggleLocationsModal()}>
+                            (Изменить)
+                          </b>
                         </b>
                       </div>
                     )}
@@ -250,7 +254,9 @@ const Bid = React.memo<IProps>(
                                 )
                               : "-"}
                           </b>{" "}
-                          <b className={innerClasses.btnChangeDelivery}>(Изменить)</b>
+                          <b className={innerClasses.btnChangeDelivery} onClick={() => toggleLocationsModal && toggleLocationsModal()}>
+                            (Изменить)
+                          </b>
                         </b>
                       </div>
                     )}

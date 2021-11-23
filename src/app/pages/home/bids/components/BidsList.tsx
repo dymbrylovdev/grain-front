@@ -40,6 +40,7 @@ interface IProps {
   salePurchaseMode?: "sale" | "purchase";
   bestAllMyMode?: "best-bids" | "all-bids" | "my-bids" | "edit";
   crops: ICrop[] | undefined;
+  toggleLocationsModal?: () => void;
   setProfit: (
     profit: IProfit
   ) => ActionWithPayload<
@@ -83,6 +84,7 @@ const BidsList: React.FC<IProps> = ({
   postError,
   points,
   numberParams,
+  toggleLocationsModal,
 }) => {
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
@@ -331,6 +333,7 @@ const BidsList: React.FC<IProps> = ({
               handleOpenMap={handleOpenMap}
               localBids={localBids}
               numberParams={numberParams}
+              toggleLocationsModal={toggleLocationsModal}
             />
           ))}
           {!!paginationData && !!fetcher && (

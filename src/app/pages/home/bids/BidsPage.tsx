@@ -266,6 +266,8 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
     }
   }, [cropId, fetch, filter, me, page, perPage, salePurchaseMode]);
 
+  const toggleLocationsModal = useCallback(() => setLocationModalOpen(!locationModalOpen), [locationModalOpen]);
+
   const isHaveRules = (user: IUser, id: number) => {
     return accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id;
   };
@@ -577,6 +579,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
               setProfit={setProfit}
               points={me?.points}
               numberParams={numberParams}
+              toggleLocationsModal={toggleLocationsModal}
             />
           </div>
           {newInexactBid.length > 0 && (
@@ -598,6 +601,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 setProfit={setProfit}
                 points={me?.points}
                 numberParams={numberParams}
+                toggleLocationsModal={toggleLocationsModal}
               />
             </div>
           )}
@@ -639,6 +643,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             setProfit={setProfit}
             points={me?.points}
             numberParams={numberParams}
+            toggleLocationsModal={toggleLocationsModal}
           />
           {!!myBids && !!myBids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
         </>
@@ -668,6 +673,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             setProfit={setProfit}
             points={me?.points}
             numberParams={numberParams}
+            toggleLocationsModal={toggleLocationsModal}
           />
           {!!bids && !!bids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
         </>

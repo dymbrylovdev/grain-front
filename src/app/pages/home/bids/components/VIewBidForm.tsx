@@ -309,7 +309,7 @@ const ViewBidForm: React.FC<IProps> = ({
                             )
                           : "-"}
                       </b>{" "}
-                      <b className={classes.btnChangeDelivery}>(Изменить)</b>
+                      {/* <b className={classes.btnChangeDelivery}>(Изменить)</b> */}
                     </b>
                   </div>
                 </>
