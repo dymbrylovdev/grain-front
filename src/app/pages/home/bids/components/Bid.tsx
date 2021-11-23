@@ -140,7 +140,7 @@ const Bid = React.memo<IProps>(
           {arrImgIndex && (
             <div className={innerClasses.containerDot}>
               {arrImgIndex.map(item => (
-                <div className={innerClasses.wrapperDot} onClick={() => handleDot(item)}>
+                <div key={item} className={innerClasses.wrapperDot} onClick={() => handleDot(item)}>
                   <div className={innerClasses.dot} style={{ backgroundColor: currentIndex === item ? "#6164FF" : "white" }} />
                 </div>
               ))}
@@ -534,7 +534,9 @@ const Bid = React.memo<IProps>(
                   <Button variant="outlined" color="primary" className={innerClasses.btnShowPhone} onClick={() => handleShowPhone(bid.id)}>
                     <div className={innerClasses.wrapperTextShowBtn}>
                       {showsPhones.find(item => item === bid.id) ? (
-                        <div className={innerClasses.textPhone}>{formatPhone(bid.vendor.phone)}</div>
+                        <div className={innerClasses.textPhone} style={{ textAlign: "center" }}>
+                          {formatPhone(bid.vendor.phone)}
+                        </div>
                       ) : (
                         <>
                           <div className={innerClasses.textPhone}>+7 *** *** ***</div>
@@ -552,7 +554,9 @@ const Bid = React.memo<IProps>(
                   <Button variant="outlined" color="primary" className={innerClasses.btnShowPhone} onClick={() => handleShowPhone(bid.id)}>
                     <div className={innerClasses.wrapperTextShowBtn}>
                       {showsPhones.find(item => item === bid.id) ? (
-                        <div className={innerClasses.textPhone}>{formatPhone(bid.vendor.phone)}</div>
+                        <div className={innerClasses.textPhone} style={{ textAlign: "center" }}>
+                          {formatPhone(bid.vendor.phone)}
+                        </div>
                       ) : (
                         <>
                           <div className={innerClasses.textPhone}>+7 *** *** ***</div>

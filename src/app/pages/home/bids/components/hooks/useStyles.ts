@@ -269,7 +269,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   btnShowPhone: {
-    width: 159,
+    maxWidth: 159,
     marginBottom: 18,
     textTransform: "initial",
     color: "#6164FF",
@@ -279,11 +279,20 @@ export const useBidTableStyles = makeStyles(theme => ({
       marginBottom: 16,
     },
   },
-  wrapperTextShowBtn: { display: "flex", flexDirection: "column", justifyContent: "flex-start" },
+  wrapperTextShowBtn: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    width: "100%",
+    padding: "0 8px",
+    alignItems: "flex-start",
+  },
   textPhone: {
     color: "black",
     fontSize: 16,
     fontWeight: 400,
+    width: "100%",
+    textAlign: "left",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       fontSize: 14,
@@ -671,22 +680,31 @@ export const useViewBidStyles = makeStyles(theme => ({
     },
   },
   btnShowPhone: {
-    height: 56,
-    width: 159,
+    maxWidth: 159,
+    maxHeight: 56,
     marginBottom: 18,
     textTransform: "initial",
     color: "#6164FF",
-    padding: 9,
+    padding: 0,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       marginBottom: 16,
     },
   },
-  wrapperTextShowBtn: { display: "flex", flexDirection: "column", justifyContent: "flex-start" },
+  wrapperTextShowBtn: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    width: "100%",
+    padding: "0 8px",
+    alignItems: "flex-start",
+  },
   textPhone: {
     color: "black",
     fontSize: 16,
     fontWeight: 400,
+    width: "100%",
+    textAlign: "left",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       fontSize: 14,

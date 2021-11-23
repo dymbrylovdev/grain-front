@@ -59,7 +59,7 @@ const ViewBidForm: React.FC<IProps> = ({
   const [goToRef, setGoToRef] = useState(false);
   const currentCrop = useMemo(() => crops?.find(item => item.id === bid?.crop_id), [crops, bid]);
   const [showPhoneDialog, setShowPhoneDialog] = useState(false);
-  const isBuyerTariff = useMemo(() => user?.tariff_matrix.tariff.id !== 1, [user]);
+  const isBuyerTariff = useMemo(() => me?.tariff_matrix.tariff.id !== 1, [me]);
 
   useEffect(() => {
     if (goToRef) {
@@ -422,7 +422,9 @@ const ViewBidForm: React.FC<IProps> = ({
                     >
                       <div className={classes.wrapperTextShowBtn}>
                         {showsPhones ? (
-                          <div className={classes.textPhone}>{formatPhone(bid.vendor.phone)}</div>
+                          <div className={classes.textPhone} style={{ textAlign: "center" }}>
+                            {formatPhone(bid.vendor.phone)}
+                          </div>
                         ) : (
                           <>
                             <div className={classes.textPhone}>+7 *** *** ***</div>
@@ -444,7 +446,9 @@ const ViewBidForm: React.FC<IProps> = ({
                       >
                         <div className={classes.wrapperTextShowBtn}>
                           {showsPhones ? (
-                            <div className={classes.textPhone}>{formatPhone(bid.vendor.phone)}</div>
+                            <div className={classes.textPhone} style={{ textAlign: "center" }}>
+                              {formatPhone(bid.vendor.phone)}
+                            </div>
                           ) : (
                             <>
                               <div className={classes.textPhone}>+7 *** *** ***</div>
