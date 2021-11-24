@@ -15,7 +15,6 @@ const FilterByManager: React.FC<PropsFromRedux &
     cropId: string | undefined;
     salePurchaseMode: TBidType | undefined;
   }> = ({ intl, setFilter, filter, fetchUsers, users, clearFetch }) => {
-
   useEffect(() => {
     fetchUsers({ page: 1, perPage: 999, userRolesId: "ROLE_MANAGER" });
     return () => {
@@ -45,12 +44,7 @@ const FilterByManager: React.FC<PropsFromRedux &
   return (
     <div>
       <MenuItem>
-        <RadioParamGroup
-          name={'Авторы объявлений'}
-          data={data}
-          value={filter.authorId}
-          handleChange={handleChange}
-        />
+        <RadioParamGroup name={"Авторы объявлений"} data={data} value={filter.authorId} handleChange={handleChange} />
       </MenuItem>
     </div>
   );

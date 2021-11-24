@@ -85,12 +85,7 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
           </React.Fragment>
         ))}
 
-      <Button
-        onClick={toggleLocationsModal}
-        variant="contained"
-        color="primary"
-        style={{ width: "100%", marginTop: 10 }}
-      >
+      <Button onClick={toggleLocationsModal} variant="contained" color="primary" style={{ width: "100%", marginTop: 10 }}>
         {["ROLE_BUYER"].includes(me.roles[0])
           ? intl.formatMessage({ id: "LOCATIONS.PRICES.BUYER" })
           : ["ROLE_VENDOR"].includes(me.roles[0])
@@ -98,13 +93,7 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
           : intl.formatMessage({ id: "LOCATIONS.PRICES.MODAL_NAME" })}
       </Button>
 
-      <LocationDialog
-        isOpen={locationModalOpen}
-        handleClose={() => setLocationModalOpen(false)}
-        user={me}
-        classes={classes}
-        intl={intl}
-      />
+      <LocationDialog isOpen={locationModalOpen} handleClose={() => setLocationModalOpen(false)} user={me} classes={classes} intl={intl} />
     </div>
   );
 };

@@ -103,26 +103,14 @@ interface IProps {
   enumParams: any;
 }
 
-const LeftMenu: React.FC<IProps> = ({
-  intl,
-  me,
-  bestAllMyDealsMode,
-  cropId,
-  salePurchaseMode,
-  setSalePurchaseMode,
-  setLeftMenuOpen,
-}) => {
+const LeftMenu: React.FC<IProps> = ({ intl, me, bestAllMyDealsMode, cropId, salePurchaseMode, setSalePurchaseMode, setLeftMenuOpen }) => {
   const classes = useStyles();
   const history = useHistory();
 
   const [bestOpen, setBestOpen] = useState(false);
-  const [selectedBestOpen, setSelectedBestOpen] = useState(
-    bestAllMyDealsMode === "best-bids" || false
-  );
+  const [selectedBestOpen, setSelectedBestOpen] = useState(bestAllMyDealsMode === "best-bids" || false);
   const [allOpen, setAllOpen] = useState(false);
-  const [selectedAllOpen, setSelectedAllOpen] = useState(
-    bestAllMyDealsMode === "all-bids" || false
-  );
+  const [selectedAllOpen, setSelectedAllOpen] = useState(bestAllMyDealsMode === "all-bids" || false);
   const [mySubscriptionsMode, setMySubscriptionMode] = useState(false);
 
   useEffect(() => {
@@ -173,8 +161,7 @@ const LeftMenu: React.FC<IProps> = ({
       <Divider style={{ margin: "6px 0" }} />
 
       {/* Продажа-Покупка меню */}
-      {((!!bestAllMyDealsMode && bestAllMyDealsMode !== "deals" && bestAllMyDealsMode !== "edit") ||
-        mySubscriptionsMode) &&
+      {((!!bestAllMyDealsMode && bestAllMyDealsMode !== "deals" && bestAllMyDealsMode !== "edit") || mySubscriptionsMode) &&
         accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
           <>
             <MenuItem
@@ -182,11 +169,7 @@ const LeftMenu: React.FC<IProps> = ({
               onClick={() => {
                 setSalePurchaseMode("sale");
                 if (bestAllMyDealsMode) {
-                  handleClick(
-                    `/sale/${bestAllMyDealsMode}${
-                      ["best-bids", "all-bids"].includes(bestAllMyDealsMode) ? "/" + cropId : ""
-                    }`
-                  );
+                  handleClick(`/sale/${bestAllMyDealsMode}${["best-bids", "all-bids"].includes(bestAllMyDealsMode) ? "/" + cropId : ""}`);
                 } else if (mySubscriptionsMode) {
                   handleClick("/sale/filters");
                 }
@@ -200,9 +183,7 @@ const LeftMenu: React.FC<IProps> = ({
                 setSalePurchaseMode("purchase");
                 if (bestAllMyDealsMode) {
                   handleClick(
-                    `/purchase/${bestAllMyDealsMode}${
-                      ["best-bids", "all-bids"].includes(bestAllMyDealsMode) ? "/" + cropId : ""
-                    }`
+                    `/purchase/${bestAllMyDealsMode}${["best-bids", "all-bids"].includes(bestAllMyDealsMode) ? "/" + cropId : ""}`
                   );
                 } else if (mySubscriptionsMode) {
                   handleClick("/purchase/filters");
@@ -280,9 +261,7 @@ const LeftMenu: React.FC<IProps> = ({
             setSelectedBestOpen(false);
             setSelectedAllOpen(false);
           }}
-          className={`${classes.nester} ${
-            bestAllMyDealsMode === "all-bids" ? classes.selected : ""
-          }`}
+          className={`${classes.nester} ${bestAllMyDealsMode === "all-bids" ? classes.selected : ""}`}
         >
           {intl.formatMessage({ id: "SUBMENU.ALL_BIDS" })}
           {allOpen ? (
@@ -303,9 +282,7 @@ const LeftMenu: React.FC<IProps> = ({
                 setSelectedAllOpen(true);
               }}
               className={`${classes.nested} ${
-                bestAllMyDealsMode === "all-bids" && !!cropId && +cropId === crop.id
-                  ? classes.selected
-                  : ""
+                bestAllMyDealsMode === "all-bids" && !!cropId && +cropId === crop.id ? classes.selected : ""
               }`}
             >
               • {crop.name}
@@ -323,9 +300,7 @@ const LeftMenu: React.FC<IProps> = ({
             <MenuItem
               key={crop.id}
               className={`${classes.nested} ${
-                bestAllMyDealsMode === "all-bids" && !!cropId && +cropId === crop.id
-                  ? classes.selected
-                  : ""
+                bestAllMyDealsMode === "all-bids" && !!cropId && +cropId === crop.id ? classes.selected : ""
               }`}
             >
               • {crop.name}
@@ -341,9 +316,7 @@ const LeftMenu: React.FC<IProps> = ({
           setSelectedBestOpen(false);
           setSelectedAllOpen(false);
         }}
-        className={`${classes.nester} ${
-          bestAllMyDealsMode === "best-bids" ? classes.selected : ""
-        }`}
+        className={`${classes.nester} ${bestAllMyDealsMode === "best-bids" ? classes.selected : ""}`}
       >
         {intl.formatMessage({ id: "SUBMENU.BIDS.BEST" })}
         {bestOpen ? (
@@ -362,11 +335,7 @@ const LeftMenu: React.FC<IProps> = ({
               setBestOpen(false);
               setSelectedBestOpen(true);
             }}
-            className={`${classes.nested} ${
-              bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id
-                ? classes.selected
-                : ""
-            }`}
+            className={`${classes.nested} ${bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id ? classes.selected : ""}`}
           >
             • {crop.name}
           </MenuItem>
@@ -380,20 +349,14 @@ const LeftMenu: React.FC<IProps> = ({
         {selectedCrop.map(crop => (
           <MenuItem
             key={crop.id}
-            className={`${classes.nested} ${
-              bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id
-                ? classes.selected
-                : ""
-            }`}
+            className={`${classes.nested} ${bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id ? classes.selected : ""}`}
           >
             • {crop.name}
           </MenuItem>
         ))}
       </Collapse>
 
-      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-        <Divider style={{ margin: "6px 0" }} />
-      )}
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && <Divider style={{ margin: "6px 0" }} />}
 
       {bestAllMyDealsMode === "best-bids" && (
         <>
@@ -426,12 +389,9 @@ const LeftMenu: React.FC<IProps> = ({
         </MenuItem>
       )}
 
-      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-        <Divider style={{ margin: "6px 0" }} />
-      )}
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && <Divider style={{ margin: "6px 0" }} />}
 
-      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
-        bestAllMyDealsMode === "deals" && <DealsFilterForAll />}
+      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && bestAllMyDealsMode === "deals" && <DealsFilterForAll />}
 
       {accessByRoles(me, ["ROLE_ADMIN"]) && bestAllMyDealsMode === "deals" && <DealsFilterForAdm />}
     </div>

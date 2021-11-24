@@ -408,7 +408,7 @@ const ViewBidForm: React.FC<IProps> = ({
                           <div className={classes.modifedAt}>{`Дата последнего изменения: ${bid.modified_at.slice(
                             8,
                             10
-                          )}.${bid.modified_at.slice(5, 7)}.${bid.created_at.slice(0, 4)}`}</div>
+                          )}.${bid.modified_at.slice(5, 7)}.${bid.modified_at.slice(0, 4)}`}</div>
                         )}
                       </>
                     )}
@@ -462,7 +462,7 @@ const ViewBidForm: React.FC<IProps> = ({
                       <div className={classes.modifedAt}>{`Дата последнего изменения: ${bid.modified_at.slice(
                         8,
                         10
-                      )}.${bid.modified_at.slice(5, 7)}.${bid.created_at.slice(0, 4)}`}</div>
+                      )}.${bid.modified_at.slice(5, 7)}.${bid.modified_at.slice(0, 4)}`}</div>
                     )}
                     {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
                       <>

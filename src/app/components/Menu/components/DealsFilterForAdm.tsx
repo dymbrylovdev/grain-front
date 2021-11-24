@@ -28,10 +28,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DealsFilterForAdm: React.FC<PropsFromRedux & WrappedComponentProps> = ({
-  intl,
-  editFilterRequest,
-}) => {
+const DealsFilterForAdm: React.FC<PropsFromRedux & WrappedComponentProps> = ({ intl, editFilterRequest }) => {
   const { filters, allCropParams, editFilterLoading } = useSelector(
     ({ deals: { filters, editFilterLoading }, crops2: { allCropParams } }: IAppState) => ({
       filters,

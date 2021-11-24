@@ -12,15 +12,15 @@ interface IFilterByRole {
 const FilterByRole: React.FC<IFilterByRole> = ({ userRoles, setCurrentRoles }): ReactElement => {
   const { values, handleChange, handleSubmit } = useFormik({
     initialValues: {},
-    onSubmit: (values) => {
+    onSubmit: values => {
       let params: any[] = [];
 
       for (const [key, value] of Object.entries(values)) {
         if (value) {
-          params.push({ key: key, value: value })
+          params.push({ key: key, value: value });
         }
       }
-      
+
       setCurrentRoles(params);
     },
   });
@@ -29,7 +29,7 @@ const FilterByRole: React.FC<IFilterByRole> = ({ userRoles, setCurrentRoles }): 
     <div>
       {userRoles &&
         userRoles.map(role => {
-          const valueName = role.name
+          const valueName = role.name;
           return (
             <FormControlLabel
               key={role.id}
