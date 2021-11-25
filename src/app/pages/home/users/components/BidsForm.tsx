@@ -21,6 +21,7 @@ interface IProps {
   classes: any;
   userId?: number;
   isBuyer?: boolean;
+  backParam?: number
 }
 
 const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({

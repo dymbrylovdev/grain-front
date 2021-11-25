@@ -42,11 +42,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
 
   const redirectUrl = useMemo(() => {
     if (user) {
-      if (
-        user.roles.includes("ROLE_ADMIN") ||
-        user.roles.includes("ROLE_MANAGER") ||
-        user.roles.includes("ROLE_TRADER")
-      ) {
+      if (user.roles.includes("ROLE_ADMIN") || user.roles.includes("ROLE_MANAGER") || user.roles.includes("ROLE_TRADER")) {
         return `/sale/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
       } else {
         return `/purchase/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
@@ -97,10 +93,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/funnel-states/edit/:id" component={FunnelStateEditPage} />
         <Route path="/funnel-states" component={FunnelStatesPage} />
 
-        <Route
-          path="/bid/:editMode/:salePurchaseMode/:bidId/:cropId?/:vendorId?"
-          component={BidEditPage}
-        />
+        <Route path="/bid/:editMode/:salePurchaseMode/:bidId/:cropId?/:vendorId?" component={BidEditPage} />
 
         {/* <Route path="/bid/create" exact component={BidCreatePage} />
         <Route path="/bid/create/crop/:cropId" component={BidCreatePage} />
@@ -150,11 +143,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
           <Redirect from="/bidsList/:cropId" to="/purchase/best-bids/:cropId" />
         )}
 
-        {user.is_buyer ? (
-          <Redirect from="/myBidsList" to="/purchase/my-bids" />
-        ) : (
-          <Redirect from="/myBidsList" to="/sale/my-bids" />
-        )}
+        {user.is_buyer ? <Redirect from="/myBidsList" to="/purchase/my-bids" /> : <Redirect from="/myBidsList" to="/sale/my-bids" />}
 
         <Redirect from="/allBidsList/:cropId" to="/sale/all-bids/:cropId" />
 

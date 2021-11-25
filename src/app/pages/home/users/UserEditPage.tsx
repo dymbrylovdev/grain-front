@@ -1,26 +1,26 @@
-import React, {useEffect, useState} from 'react';
-import {compose} from 'redux';
-import {RouteComponentProps, useHistory} from 'react-router-dom';
-import {connect, ConnectedProps} from 'react-redux';
-import {injectIntl, WrappedComponentProps} from 'react-intl';
-import {AppBar, Button, Divider, makeStyles, Paper, Tab, Tabs} from '@material-ui/core';
-import {useSnackbar} from 'notistack';
+import React, { useEffect, useState } from "react";
+import { compose } from "redux";
+import { RouteComponentProps, useHistory } from "react-router-dom";
+import { connect, ConnectedProps } from "react-redux";
+import { injectIntl, WrappedComponentProps } from "react-intl";
+import { AppBar, Button, Divider, makeStyles, Paper, Tab, Tabs } from "@material-ui/core";
+import { useSnackbar } from "notistack";
 
-import {actions as usersActions} from '../../../store/ducks/users.duck';
-import {actions as authActions} from '../../../store/ducks/auth.duck';
-import {actions as locationsActions} from '../../../store/ducks/locations.duck';
-import {actions as googleLocationsActions} from '../../../store/ducks/yaLocations.duck';
-import {actions as prompterActions} from '../../../store/ducks/prompter.duck';
+import { actions as usersActions } from "../../../store/ducks/users.duck";
+import { actions as authActions } from "../../../store/ducks/auth.duck";
+import { actions as locationsActions } from "../../../store/ducks/locations.duck";
+import { actions as googleLocationsActions } from "../../../store/ducks/yaLocations.duck";
+import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
 
-import AlertDialog from '../../../components/ui/Dialogs/AlertDialog';
-import useStyles from '../styles';
-import {IAppState} from '../../../store/rootDuck';
-import {LayoutSubheader} from '../../../../_metronic/layout/LayoutContext';
-import {a11yProps, TabPanel} from '../../../components/ui/Table/TabPanel';
-import {BidsForm, CropsForm, FilterForm, LocationsForm, ProfileForm} from './components';
-import ScrollToTop from '../../../components/ui/ScrollToTop';
-import TariffForm from './components/TariffForm/TariffForm';
-import {accessByRoles} from '../../../utils/utils';
+import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
+import useStyles from "../styles";
+import { IAppState } from "../../../store/rootDuck";
+import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
+import { a11yProps, TabPanel } from "../../../components/ui/Table/TabPanel";
+import { BidsForm, CropsForm, FilterForm, LocationsForm, ProfileForm } from "./components";
+import ScrollToTop from "../../../components/ui/ScrollToTop";
+import TariffForm from "./components/TariffForm/TariffForm";
+import { accessByRoles } from "../../../utils/utils";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -28,9 +28,7 @@ const innerStyles = makeStyles(theme => ({
   },
 }));
 
-const UserEditPage: React.FC<TPropsFromRedux &
-  WrappedComponentProps &
-  RouteComponentProps<{ id: string }>> = ({
+const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps<{ id: string }>> = ({
   match: {
     params: { id },
   },
@@ -111,6 +109,15 @@ const UserEditPage: React.FC<TPropsFromRedux &
   }, [editMode]);
 
   useEffect(() => {
+    const wasBidEditPage = localStorage.getItem("WasBidEditPage");
+
+    if (wasBidEditPage) {
+      setValueTabs(4);
+      localStorage.removeItem("WasBidEditPage");
+    }
+  }, []);
+
+  useEffect(() => {
     if (editMode === "profile") {
       if (match.url.indexOf("profile") !== -1) {
         setValueTabs(0);
@@ -148,23 +155,11 @@ const UserEditPage: React.FC<TPropsFromRedux &
       case "profile":
         return intl.formatMessage({ id: "SUBMENU.PROFILE" });
       case "create":
-        return (
-          intl.formatMessage({ id: "SUBHEADER.PARTS.CREATE" }) +
-          " " +
-          intl.formatMessage({ id: "SUBHEADER.PARTS.USER" })
-        );
+        return intl.formatMessage({ id: "SUBHEADER.PARTS.CREATE" }) + " " + intl.formatMessage({ id: "SUBHEADER.PARTS.USER" });
       case "edit":
-        return (
-          intl.formatMessage({ id: "SUBHEADER.PARTS.EDIT" }) +
-          " " +
-          intl.formatMessage({ id: "SUBHEADER.PARTS.USER" })
-        );
+        return intl.formatMessage({ id: "SUBHEADER.PARTS.EDIT" }) + " " + intl.formatMessage({ id: "SUBHEADER.PARTS.USER" });
       case "view":
-        return (
-          intl.formatMessage({ id: "SUBHEADER.PARTS.VIEW" }) +
-          " " +
-          intl.formatMessage({ id: "SUBHEADER.PARTS.USER" })
-        );
+        return intl.formatMessage({ id: "SUBHEADER.PARTS.VIEW" }) + " " + intl.formatMessage({ id: "SUBHEADER.PARTS.USER" });
     }
   };
 
@@ -223,17 +218,10 @@ const UserEditPage: React.FC<TPropsFromRedux &
     <>
       <ScrollToTop />
       <Paper className={classes.paperWithForm}>
-        <LayoutSubheader
-          title={subTitle(editMode)}
-          breadcrumb={undefined}
-          description={undefined}
-        />
+        <LayoutSubheader title={subTitle(editMode)} breadcrumb={undefined} description={undefined} />
         <div className={classes.form}>
           <div className={classes.topButtonsContainer}>
-            <div
-              className={classes.flexRow}
-              style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}
-            >
+            <div className={classes.flexRow} style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}>
               <div className={classes.button}>
                 <Button
                   variant="outlined"
@@ -261,17 +249,9 @@ const UserEditPage: React.FC<TPropsFromRedux &
 
               {editMode !== "create" && (
                 <Tab
-                  classes={
-                    prompterRunning && prompterStep === 0 && isLocTabPulse
-                      ? { root: innerClasses.pulseRoot }
-                      : {}
-                  }
+                  classes={prompterRunning && prompterStep === 0 && isLocTabPulse ? { root: innerClasses.pulseRoot } : {}}
                   label={
-                    accessByRoles(editMode === "profile" ? me : user, [
-                      "ROLE_ADMIN",
-                      "ROLE_MANAGER",
-                      "ROLE_TRADER",
-                    ])
+                    accessByRoles(editMode === "profile" ? me : user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
                       ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })
                       : accessByRoles(editMode === "profile" ? me : user, ["ROLE_VENDOR"])
                       ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.SALE" })
@@ -280,20 +260,11 @@ const UserEditPage: React.FC<TPropsFromRedux &
                   {...a11yProps(1)}
                 />
               )}
-              {editMode !== "create" && (
-                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />
-              )}
+              {editMode !== "create" && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
 
-              {((me &&
-                editMode === "profile" &&
-                !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
-                (user &&
-                  editMode === "edit" &&
-                  ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
-                <Tab
-                  label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
-                  {...a11yProps(3)}
-                />
+              {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+                (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
+                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })} {...a11yProps(3)} />
               )}
 
               {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
@@ -306,12 +277,7 @@ const UserEditPage: React.FC<TPropsFromRedux &
           </AppBar>
           <Divider />
           <TabPanel value={valueTabs} index={0}>
-            <ProfileForm
-              userId={+id || undefined}
-              editMode={editMode}
-              setAlertOpen={setAlertOpen}
-              setLocTabPulse={setLocTabPulse}
-            />
+            <ProfileForm userId={+id || undefined} editMode={editMode} setAlertOpen={setAlertOpen} setLocTabPulse={setLocTabPulse} />
           </TabPanel>
           <TabPanel value={valueTabs} index={1}>
             {editMode === "create" ? (
@@ -328,31 +294,21 @@ const UserEditPage: React.FC<TPropsFromRedux &
             )}
           </TabPanel>
 
-          {((me &&
-            editMode === "profile" &&
-            !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
-            (user &&
-              editMode === "edit" &&
-              ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
+          {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+            (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
             <TabPanel value={valueTabs} index={3}>
               <TariffForm editMode={editMode} userId={+id || undefined} />
             </TabPanel>
           )}
 
           {user && (
-            <TabPanel
-              value={valueTabs}
-              index={["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]) ? 4 : 3}
-            >
+            <TabPanel value={valueTabs} index={["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]) ? 4 : 3}>
               <BidsForm userId={+id || undefined} classes={classes} isBuyer={user.is_buyer} />
             </TabPanel>
           )}
 
           {user && (
-            <TabPanel
-              value={valueTabs}
-              index={5}
-            >
+            <TabPanel value={valueTabs} index={5}>
               <FilterForm match={match} userId={+id || undefined} />
             </TabPanel>
           )}
