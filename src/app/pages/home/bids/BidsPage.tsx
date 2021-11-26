@@ -32,6 +32,7 @@ import { useShowErrors } from "../../../hooks/useShowErrors";
 import BidsList from "./components/BidsList";
 import { IFilterForBids } from "../../../interfaces/filters";
 import { useBidsPageStyles } from "./components/hooks/useStyles";
+import BidTable from "./components/BidTable";
 
 const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps<{ cropId: string }>> = ({
   match: {
@@ -654,8 +655,8 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
       )}
 
       {bestAllMyMode === "all-bids" && (
-        <>
-          <BidsList
+        <div style={{ backgroundColor: bids && bids.length ? "#fff" : "initial" }}>
+          <BidTable
             classes={classes}
             bids={bids}
             isHaveRules={isHaveRules}
@@ -664,7 +665,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
               setAlertOpen(true);
             }}
             user={me as IUser}
-            loading={editLoading || !bids || (!cropParams && cropId !== "0")}
+            loading={!bids || (!cropParams && cropId !== "0")}
             paginationData={{ page, perPage, total }}
             fetcher={(newPage: number, newPerPage: number) =>
               fetch(+cropId, salePurchaseMode, newPage, newPerPage, filter.minDate, filter.maxDate)
@@ -675,13 +676,9 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             bestAllMyMode={bestAllMyMode}
             crops={crops}
             setProfit={setProfit}
-            points={me?.points}
-            numberParams={numberParams}
-            toggleLocationsModal={toggleLocationsModal}
-            archive={({ id, is_archived }) => edit(id, { is_archived })}
           />
           {!!bids && !!bids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
-        </>
+        </div>
       )}
       <LocationDialog isOpen={locationModalOpen} handleClose={() => setLocationModalOpen(false)} user={me} classes={classes} intl={intl} />
       <PricesDialog isOpen={pricesModalOpen} handleClose={() => setPricesModalOpen(false)} intl={intl} cropId={+cropId} />
