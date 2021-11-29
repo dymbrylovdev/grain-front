@@ -9,7 +9,6 @@ import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import { useSnackbar } from "notistack";
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
-
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
