@@ -18,6 +18,7 @@ import { Alert, Skeleton } from "@material-ui/lab";
 import NumberFormatCustom from "../../../../components/NumberFormatCustom/NumberFormatCustom";
 import { thousands } from "../../deals/utils/utils";
 import { useViewBidStyles } from "./hooks/useStyles";
+import { ILocalBids } from "./BidsList";
 
 interface IProps {
   intl: IntlShape;
@@ -83,6 +84,24 @@ const ViewBidForm: React.FC<IProps> = ({
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
 
   const [selectedRoute, setSelectedRoute] = useState<any | null>();
+
+  const localBids: ILocalBids[] | null = useMemo(() => {
+    const storageBids = localStorage.getItem("bids");
+    return storageBids ? JSON.parse(storageBids) : null;
+  }, []);
+
+  const newBid = useMemo(() => {
+    if (me && bid && localBids && localBids.length > 0) {
+      return localBids.find(
+        item =>
+          item.useId === me.id &&
+          item.salePurchaseMode === salePurchaseMode &&
+          item.currentBid.id === bid.id &&
+          (bid.price_delivery_per_km ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString() : false)
+      );
+    }
+  }, [localBids, bid, salePurchaseMode, me]);
+
   useEffect(() => {
     routeLoading && setSelectedRoute(null);
   }, [routeLoading]);
@@ -177,7 +196,7 @@ const ViewBidForm: React.FC<IProps> = ({
     if (currentCropId) fetchCropParams(currentCropId);
   }, [currentCropId, fetchCropParams]);
 
-  const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
+  const vendorUseVat = bid?.vendor_use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
 
@@ -284,7 +303,11 @@ const ViewBidForm: React.FC<IProps> = ({
                 <>
                   <div className={classes.wrapperPrice}>
                     <div className={classes.price}>
-                      {bid?.price_with_delivery_with_vat ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat)) : "-"}{" "}
+                      {newBid
+                        ? formatAsThousands(newBid.finalPrice)
+                        : bid?.price_with_delivery_with_vat
+                        ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
+                        : "-"}{" "}
                     </div>
                     <div className={classes.rybl}>₽</div>
                     {/* <div className={innerClasses.nds}>БЕЗ НДС</div> */}
@@ -382,7 +405,7 @@ const ViewBidForm: React.FC<IProps> = ({
                 {!isMobile && (
                   <div className={classes.wrapperParameters}>
                     {bid.parameter_values.map(item => (
-                      <div className={classes.wrapperParameter}>
+                      <div key={item.id} className={classes.wrapperParameter}>
                         <div className={classes.nameParameter}>{getParametrName(item)}</div>
                         <div className={classes.parameterValue}>{item.value}</div>
                       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { compose } from "redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
@@ -6,7 +6,7 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl"
 import { Button, Modal, Paper, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
-
+import { YMaps, Map } from "react-yandex-maps";
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
 import { actions as usersActions } from "../../../store/ducks/users.duck";
@@ -20,12 +20,27 @@ import { LayoutSubheader } from "../../../../_metronic";
 import { TrafficLight, UserActivity } from "../users/components";
 import { accessByRoles, getConfirmCompanyString } from "../../../utils/utils";
 import { thousands } from "./utils/utils";
-import { DatePicker, MuiPickersUtilsProvider, Calendar } from "@material-ui/pickers";
+import { MuiPickersUtilsProvider, Calendar } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import ruRU from "date-fns/locale/ru";
 import { isValid } from "date-fns";
 import { actions as bidsActions } from "../../../store/ducks/bids.duck";
 import { useShowErrors } from "../../../hooks/useShowErrors";
+import { REACT_APP_GOOGLE_API_KEY } from "../../../constants";
+
+export interface ILocalDeals {
+  sale_bid: {
+    lat: number;
+    lng: number;
+    text: string;
+  };
+  purchase_bid: {
+    lat: number;
+    lng: number;
+    text: string;
+  };
+  distance: number;
+}
 
 const DealViewPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -73,10 +88,13 @@ const DealViewPage: React.FC<TPropsFromRedux &
 }) => {
   const classes = useStyles();
   const history = useHistory();
+  const routeRef = useRef();
   const [archiveBid, setArchiveBid] = useState<undefined | { id: number; type: "sale" | "purchase" }>();
   const [archiveDate, setArchiveDate] = useState(new Date());
   const [isAlertOpen, setAlertOpen] = useState(false);
-
+  const [map, setMap] = useState<any>();
+  const [ymaps, setYmaps] = useState<any>();
+  const [localDistance, setLocalDistance] = useState<number | null>(null);
   const linkToContact = (dealType: "sale" | "purchase") => {
     if (deal && me) {
       let contactViewCount = me.contact_view_count;
@@ -101,6 +119,97 @@ const DealViewPage: React.FC<TPropsFromRedux &
       }
     }
   };
+
+  const currentCrop = useMemo(() => crops?.find(item => item.id.toString() === cropId), [crops, cropId]);
+
+  const newProfit = useMemo(() => {
+    if (localDistance && currentCrop && deal && currentCrop.delivery_price_coefficient) {
+      return deal.purchase_bid.price - deal.sale_bid.price - localDistance * currentCrop.delivery_price_coefficient;
+    } else if (deal) {
+      return Math.round(deal.profit_with_delivery_price);
+    }
+    return 0;
+  }, [localDistance, currentCrop, deal]);
+
+  const localDeals: ILocalDeals[] | null = useMemo(() => {
+    const storageDeals = localStorage.getItem("deals");
+    return storageDeals ? JSON.parse(storageDeals) : null;
+  }, []);
+
+  const mapState = useMemo(() => {
+    if (deal?.sale_bid?.location) {
+      return { center: [deal.sale_bid.location.lat, deal.sale_bid.location.lng], zoom: 7, margin: [10, 10, 10, 10] };
+    } else {
+      return null;
+    }
+  }, [deal]);
+
+  const addRoute = useCallback(
+    async (pointA: any, pointB: any) => {
+      map.geoObjects.remove(routeRef.current);
+
+      // create multiroute and add to the map
+      const multiRoute = await ymaps.route([pointA.text, pointB.text], {
+        multiRoute: true,
+        mapStateAutoApply: true,
+      });
+      routeRef.current = multiRoute;
+      await map.geoObjects.add(multiRoute);
+
+      // open active route balloon
+      const routes = multiRoute.getRoutes();
+      for (let i = 0, l = routes.getLength(); i < l; i++) {
+        const route = routes.get(i);
+        // if (!route.properties.get('blocked')) {
+        multiRoute.setActiveRoute(route);
+        route.balloon.open();
+        break;
+        // }
+      }
+      const activeProperties = multiRoute.getActiveRoute();
+      if (activeProperties && deal) {
+        const { distance } = activeProperties.properties.getAll();
+        const currentDeal: ILocalDeals = {
+          distance: Math.round(distance.value / 1000),
+          purchase_bid: {
+            lat: deal.purchase_bid.location.lat,
+            lng: deal.purchase_bid.location.lng,
+            text: deal.purchase_bid.location.text,
+          },
+          sale_bid: {
+            lat: deal.sale_bid.location.lat,
+            lng: deal.sale_bid.location.lng,
+            text: deal.sale_bid.location.text,
+          },
+        };
+        setLocalDistance(currentDeal.distance);
+        if (localDeals) {
+          const existDealsIndex = localDeals.findIndex(
+            item =>
+              item.purchase_bid.lat === deal.purchase_bid.location.lat &&
+              item.purchase_bid.lng === deal.purchase_bid.location.lng &&
+              item.sale_bid.lat === deal.sale_bid.location.lat &&
+              item.sale_bid.lng === deal.sale_bid.location.lng
+          );
+          if (existDealsIndex > -1) {
+            const newArr = localDeals;
+            newArr[existDealsIndex] = currentDeal;
+            localStorage.setItem("deals", JSON.stringify(newArr));
+          } else {
+            localStorage.setItem("deals", JSON.stringify([...localDeals, currentDeal]));
+          }
+        } else {
+          localStorage.setItem("deals", JSON.stringify([currentDeal]));
+        }
+      }
+    },
+    [ymaps, map, routeRef, localDeals, deal]
+  );
+
+  useEffect(() => {
+    if (ymaps && map && deal?.sale_bid?.location && deal?.purchase_bid?.location)
+      addRoute(deal.sale_bid.location, deal.purchase_bid.location);
+  }, [deal, addRoute, ymaps, map]);
 
   useEffect(() => {
     if (archiveBid && archiveBid.type && deal && deal[`${archiveBid.type}_bid`].archived_to) {
@@ -165,6 +274,21 @@ const DealViewPage: React.FC<TPropsFromRedux &
 
   return (
     <>
+      <div style={{ display: "none" }}>
+        {deal && mapState && (
+          <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
+            <Map
+              state={mapState}
+              instanceRef={ref => setMap(ref)}
+              onLoad={ymaps => {
+                setYmaps(ymaps);
+              }}
+              modules={["templateLayoutFactory", "route", "geoObject.addon.balloon"]}
+            />
+          </YMaps>
+        )}
+        \
+      </div>
       <Modal open={!!archiveBid && !editLoading} onClose={() => setArchiveBid(undefined)}>
         <div
           style={{
@@ -263,7 +387,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                         <strong>{intl.formatMessage({ id: "DEALS.TABLE.PROFIT_WITH_DELIVERY" })}</strong>
                       </TableCell>
                       <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }} colSpan={2} align="center">
-                        {thousands(Math.round(deal.profit_with_delivery_price).toString())}
+                        {thousands(newProfit.toString())}
                       </TableCell>
                     </TableRow>
 
@@ -288,8 +412,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                       <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.5)" }} colSpan={2} align="center">
                         {thousands(
                           Math.round(
-                            deal.profit_with_delivery_price *
-                              (deal.purchase_bid.volume < deal.sale_bid.volume ? deal.purchase_bid.volume : deal.sale_bid.volume)
+                            newProfit * (deal.purchase_bid.volume < deal.sale_bid.volume ? deal.purchase_bid.volume : deal.sale_bid.volume)
                           ).toString()
                         )}
                       </TableCell>
@@ -309,7 +432,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                         <strong>{intl.formatMessage({ id: "DEALS.UP_TABLE.DISTANCE" })}</strong>
                       </TableCell>
                       <TableCell style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }} colSpan={2} align="center">
-                        {thousands(Math.round(deal.distance).toString())}
+                        {thousands(localDistance ? localDistance.toString() : Math.round(deal.distance).toString())}
                       </TableCell>
                     </TableRow>
 

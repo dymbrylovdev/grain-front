@@ -271,19 +271,20 @@ const BidsList: React.FC<IProps> = ({
       if (activeProperties) {
         const { distance } = activeProperties.properties.getAll();
         if (distance.value > 0 && currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
+          const isMatch = !!user && user.use_vat && salePurchaseMode === "sale" && currentBid.vat && !currentBid.vendor_use_vat;
           const finalPrice = getFinalPrice(
             currentBid,
-            currentBid.distance,
+            Math.round(distance.value / 1000),
             currentBid.price_delivery_per_km,
             salePurchaseMode,
-            +currentBid.vat
+            isMatch ? +currentBid.vat : 0
           );
           const newLocalBid = {
             currentBid,
             useId: user.id,
             finalPrice,
             salePurchaseMode,
-            distance: distance.text.replace(/\D/g, ""),
+            distance: Math.round(distance.value / 1000).toString(),
           };
           setCurrentMark(newLocalBid);
         }

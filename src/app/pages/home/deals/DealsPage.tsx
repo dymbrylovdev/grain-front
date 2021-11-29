@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Modal } from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import ArchiveIcon from "@material-ui/icons/Archive";
-import UnarchiveIcon from "@material-ui/icons/Unarchive";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import { useSnackbar } from "notistack";
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
@@ -22,6 +20,8 @@ import MiniTrafficLight from "../users/components/miniTrafficLight/MiniTrafficLi
 import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
 import { thousands } from "./utils/utils";
+import { ILocalDeals } from "./DealViewPage";
+import { IDeal } from "../../../interfaces/deals";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -69,6 +69,42 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [filterModalOpen, setFilterModalOpen] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const localDeals: ILocalDeals[] | null = useMemo(() => {
+    const storageDeals = localStorage.getItem("deals");
+    return storageDeals ? JSON.parse(storageDeals) : null;
+  }, []);
+
+  const getCurrentCrop = useCallback((currentDeal: IDeal) => crops?.find(crop => crop.id === currentDeal.sale_bid.crop_id), [crops]);
+
+  const getDistance = useCallback(
+    (currentDeal: IDeal) => {
+      if (localDeals) {
+        const localDistance = localDeals.find(
+          item =>
+            item.purchase_bid.lat === currentDeal.purchase_bid.location.lat &&
+            item.purchase_bid.lng === currentDeal.purchase_bid.location.lng &&
+            item.sale_bid.lat === currentDeal.sale_bid.location.lat &&
+            item.sale_bid.lng === currentDeal.sale_bid.location.lng
+        );
+        if (localDistance) return localDistance.distance;
+      }
+      return currentDeal.distance;
+    },
+    [localDeals]
+  );
+
+  const getProfit = useCallback(
+    (currentDeal: IDeal) => {
+      const currentCrop = getCurrentCrop(currentDeal);
+      const localDistance = getDistance(currentDeal);
+      if (localDistance && currentCrop && currentCrop.delivery_price_coefficient) {
+        return currentDeal.purchase_bid.price - currentDeal.sale_bid.price - localDistance * currentCrop.delivery_price_coefficient;
+      }
+      return Math.round(currentDeal.profit_with_delivery_price);
+    },
+    [getCurrentCrop, getDistance]
+  );
 
   useEffect(() => {
     if (editFilterSuccess || editFilterError) {
@@ -280,8 +316,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>{Math.round(item.profit_with_delivery_price)}</TableCell>
-                    <TableCell>{item.distance}</TableCell>
+                    <TableCell>{getProfit(item)}</TableCell>
+                    <TableCell>{getDistance(item)}</TableCell>
                     <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
                     <TableCell align="right">
                       <IconButton

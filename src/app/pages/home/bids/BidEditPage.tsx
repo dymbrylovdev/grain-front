@@ -23,7 +23,7 @@ import Prompter from "../prompter/Prompter";
 import useStyles from "../styles";
 import { accessByRoles } from "../../../utils/utils";
 import { IPointPriceForGet } from "../../../interfaces/bids";
-import ViewBidForm from "./components/VIewBidForm";
+import ViewBidForm from "./components/ViewBidForm";
 
 const BidEditPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
