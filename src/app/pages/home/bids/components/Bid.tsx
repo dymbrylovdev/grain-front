@@ -14,7 +14,7 @@ import { toAbsoluteUrl } from "../../../../../_metronic/utils/utils";
 import { useBidTableStyles } from "./hooks/useStyles";
 import { ILocalBids } from "./BidsList";
 import AliceCarousel from "react-alice-carousel";
-import "react-alice-carousel/lib/alice-carousel.css";
+import "../../../../libs/react-alice-carousel/alice-carousel.css";
 
 interface IProps {
   isHaveRules?: (user: any, id: number) => boolean;
