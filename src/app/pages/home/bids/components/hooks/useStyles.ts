@@ -432,6 +432,15 @@ export const useBidsPageStyles = makeStyles(theme => ({
       width: "100%",
     },
   },
+  btnExcel: {
+    marginLeft: 15,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      marginTop: 8,
+      marginLeft: 0,
+      width: "100%",
+    },
+  },
   cropNameText: {
     fontSize: 36,
     color: "black",

@@ -138,6 +138,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   const currentCropName = useMemo(() => crops?.find(item => item.id.toString() === cropId)?.name, [cropId, crops]);
   const cropParameters = useMemo(() => {
     const newParams: any[] = [];
+    if (Number(cropId) === 0 || bestAllMyMode === "all-bids") return undefined;
     if (currentFilters && cropParams && currentFilters.filter.parameter_values) {
       if (currentFilters.filter.max_distance && currentFilters.filter.max_distance > 0) {
         newParams.push({
@@ -191,7 +192,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
       }, []);
       return [...newParams, ...newArr];
     }
-  }, [currentFilters, cropParams]);
+  }, [currentFilters, cropParams, cropId, bestAllMyMode]);
 
   const handleBtnFilter = useCallback(
     (item: any) => {
@@ -516,7 +517,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
               </Button>
 
               {["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && bestAllMyMode === "all-bids" && (
-                <Button style={{ marginLeft: 15 }} variant="contained" color="primary" onClick={() => exportFileToXlsx()}>
+                <Button className={innerClasses.btnExcel} variant="contained" color="primary" onClick={() => exportFileToXlsx()}>
                   {intl.formatMessage({ id: "BID.EXPORT.EXCEL" })}
                 </Button>
               )}
