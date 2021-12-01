@@ -213,7 +213,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
 
   useEffect(() => {
     if (archiveBid && archiveBid.type && deal && deal[`${archiveBid.type}_bid`].archived_to) {
-      setArchiveDate(deal[`${archiveBid.type}_bid`].archived_to);
+      setArchiveDate(new Date(deal[`${archiveBid.type}_bid`].archived_to));
     }
   }, [archiveBid]);
 
@@ -319,7 +319,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
               Отмена
             </Button>
             {archiveBid && (
-              <Button color="primary" onClick={() => edit(archiveBid.id, { archived_to: archiveDate })}>
+              <Button color="primary" onClick={() => edit(archiveBid.id, { archived_to: archiveDate, is_archived: true })}>
                 Архивировать
               </Button>
             )}
@@ -616,7 +616,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                             {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
                           </Button>
 
-                          {(deal.sale_bid.author.id === me?.id || me?.is_admin) && !deal.sale_bid.archived_to && (
+                          {(deal.sale_bid.author.id === me?.id || me?.is_admin) && !deal.sale_bid.is_archived && (
                             <Button onClick={() => setArchiveBid({ id: deal.sale_bid.id, type: "sale" })}>
                               {intl.formatMessage({ id: "DEALS.TABLE.ARCHIVE_TEXT" })}
                             </Button>
@@ -627,7 +627,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                             {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
                           </Button>
 
-                          {(deal.purchase_bid.author.id === me?.id || me?.is_admin) && !deal.purchase_bid.archived_to && (
+                          {(deal.purchase_bid.author.id === me?.id || me?.is_admin) && !deal.purchase_bid.is_archived && (
                             <Button onClick={() => setArchiveBid({ id: deal.purchase_bid.id, type: "purchase" })}>
                               {intl.formatMessage({ id: "DEALS.TABLE.ARCHIVE_TEXT" })}
                             </Button>
