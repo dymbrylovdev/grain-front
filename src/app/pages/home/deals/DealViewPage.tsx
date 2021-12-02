@@ -261,6 +261,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
         },
       });
       setArchiveBid(undefined);
+      history.goBack();
     }
   }, [editSuccess]);
 
