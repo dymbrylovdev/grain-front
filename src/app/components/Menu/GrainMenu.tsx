@@ -150,7 +150,7 @@ const connector = connect(
     userFiltersEmail: state.users.userFiltersEmail,
     userFiltersPhone: state.users.userFiltersPhone,
     currentRoles: state.users.currentRoles,
-    boughtTariff: state.users.boughtTariff
+    boughtTariff: state.users.boughtTariff,
   }),
   {
     ...leftMenuActions,

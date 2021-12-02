@@ -166,7 +166,7 @@ const BidTable: React.FC<IProps> = ({
                     <FormattedMessage id="BIDSLIST.TABLE.CROP" />
                   </TopTableCell>
                 )}
-                {bestAllMyMode === "edit" && (
+                {(bestAllMyMode === "edit" || bestAllMyMode === "all-bids") && (
                   <TopTableCell>
                     <FormattedMessage id="BIDSLIST.TABLE.CROP" />
                   </TopTableCell>
@@ -179,13 +179,15 @@ const BidTable: React.FC<IProps> = ({
                   />
                 </TopTableCell>
 
-                {bestAllMyMode !== "my-bids" && hasActivePoints && (
+                {bestAllMyMode !== "my-bids" && bestAllMyMode !== "all-bids" && hasActivePoints && (
                   <TopTableCell>{bestAllMyMode !== "edit" ? <FormattedMessage id="BIDSLIST.TABLE.FINAL_PRICE" /> : null}</TopTableCell>
                 )}
 
-                {bestAllMyMode !== "my-bids" && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-                  <TopTableCell>{bestAllMyMode !== "edit" ? <FormattedMessage id="BIDSLIST.TABLE.PROFIT" /> : null}</TopTableCell>
-                )}
+                {bestAllMyMode !== "my-bids" &&
+                  accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+                  bestAllMyMode !== "all-bids" && (
+                    <TopTableCell>{bestAllMyMode !== "edit" ? <FormattedMessage id="BIDSLIST.TABLE.PROFIT" /> : null}</TopTableCell>
+                  )}
                 <TopTableCell>
                   <FormattedMessage id="BIDSLIST.TABLE.VOLUME" />
                 </TopTableCell>
@@ -217,7 +219,19 @@ const BidTable: React.FC<IProps> = ({
                     </TopTableCell>
                   </>
                 )}
+                {bestAllMyMode === "all-bids" && (
+                  <>
+                    <TopTableCell>
+                      {salePurchaseMode === "sale" ? (
+                        <FormattedMessage id="PROFILE.INPUT.LOCATION.SALE" />
+                      ) : (
+                        <FormattedMessage id="PROFILE.INPUT.LOCATION.PURCHASE" />
+                      )}
+                    </TopTableCell>
+                  </>
+                )}
                 {bestAllMyMode !== "my-bids" &&
+                  bestAllMyMode !== "all-bids" &&
                   (clientWidth > 1024 || (clientWidth <= 1024 && accessByRoles(user, ["ROLE_BUYER", "ROLE_VENDOR"]))) && (
                     <TopTableCell>{bestAllMyMode !== "edit" ? <FormattedMessage id="BIDSLIST.TABLE.DESTINATION" /> : null}</TopTableCell>
                   )}
@@ -241,7 +255,7 @@ const BidTable: React.FC<IProps> = ({
                   {clientWidth > 1024 && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) && <TableCell>{bid.id}</TableCell>}
                   {bestAllMyMode === "my-bids" && <TableCell>{crops?.find(crop => crop.id === bid.crop_id)?.name || ""}</TableCell>}
 
-                  {bestAllMyMode === "edit" && bids && crops && (
+                  {(bestAllMyMode === "edit" || bestAllMyMode === "all-bids") && bids && crops && (
                     <TableCell>{crops?.find(crop => crop.id === bid.crop_id)?.name || ""}</TableCell>
                   )}
 
@@ -305,7 +319,7 @@ const BidTable: React.FC<IProps> = ({
                     </div>
                   </TableCell>
 
-                  {bestAllMyMode !== "my-bids" && hasActivePoints && (
+                  {bestAllMyMode !== "my-bids" && bestAllMyMode !== "all-bids" && hasActivePoints && (
                     <TableCell>
                       {bestAllMyMode !== "edit"
                         ? bid?.price_with_delivery_with_vat
@@ -315,31 +329,33 @@ const BidTable: React.FC<IProps> = ({
                     </TableCell>
                   )}
 
-                  {bestAllMyMode !== "my-bids" && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
-                    <TableCell>
-                      {bestAllMyMode !== "edit" ? (
-                        <Grid container direction="column" justify="center" alignItems="flex-start">
-                          {!!bid?.point_prices && !!bid.point_prices.length
-                            ? bid.point_prices.map(
-                                (item, i) =>
-                                  i === 0 &&
-                                  (i === 0 ? (
-                                    <div key={i}>
-                                      <strong>{Math.round(item.profit)}</strong>
-                                      {` • ${item.point.name}`}
-                                    </div>
-                                  ) : (
-                                    <div key={i}>
-                                      {Math.round(item.profit)}
-                                      {` • ${item.point.name}`}
-                                    </div>
-                                  ))
-                              )
-                            : "-"}
-                        </Grid>
-                      ) : null}
-                    </TableCell>
-                  )}
+                  {bestAllMyMode !== "my-bids" &&
+                    accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) &&
+                    bestAllMyMode !== "all-bids" && (
+                      <TableCell>
+                        {bestAllMyMode !== "edit" ? (
+                          <Grid container direction="column" justify="center" alignItems="flex-start">
+                            {!!bid?.point_prices && !!bid.point_prices.length
+                              ? bid.point_prices.map(
+                                  (item, i) =>
+                                    i === 0 &&
+                                    (i === 0 ? (
+                                      <div key={i}>
+                                        <strong>{Math.round(item.profit)}</strong>
+                                        {` • ${item.point.name}`}
+                                      </div>
+                                    ) : (
+                                      <div key={i}>
+                                        {Math.round(item.profit)}
+                                        {` • ${item.point.name}`}
+                                      </div>
+                                    ))
+                                )
+                              : "-"}
+                          </Grid>
+                        ) : null}
+                      </TableCell>
+                    )}
                   <TableCell>{bid.volume}</TableCell>
                   {clientWidth > 1024 && bestAllMyMode !== "my-bids" && (
                     <TableCell>
@@ -382,11 +398,12 @@ const BidTable: React.FC<IProps> = ({
                     </TableCell>
                   )}
                   {bestAllMyMode !== "my-bids" &&
+                    bestAllMyMode !== "all-bids" &&
                     (clientWidth > 1024 || (clientWidth <= 1024 && accessByRoles(user, ["ROLE_BUYER", "ROLE_VENDOR"]))) && (
                       <TableCell>{bestAllMyMode !== "edit" ? bid.distance || "-" : null}</TableCell>
                     )}
 
-                  {bestAllMyMode === "my-bids" && <TableCell>{bid?.location?.text}</TableCell>}
+                  {(bestAllMyMode === "my-bids" || bestAllMyMode === "all-bids") && <TableCell>{bid?.location?.text}</TableCell>}
 
                   {bestAllMyMode === "my-bids" && (
                     <TableCell>

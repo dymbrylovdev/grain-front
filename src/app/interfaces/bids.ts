@@ -18,6 +18,9 @@ export interface IBid {
       colors?: string[];
     };
     use_vat: boolean;
+    surname: string | null;
+    firstName: string | null;
+    lastName: string | null;
   };
   createdAt: string;
   created_at: string;
@@ -35,6 +38,10 @@ export interface IBid {
     company_confirmed_by_email?: boolean;
     company_confirmed_by_phone?: boolean;
     company_confirmed_by_payment?: boolean;
+    phone?: string;
+    surname?: string ;
+    firstName?: string;
+    lastName?: string;
   };
   location: {
     lat: number;
@@ -111,6 +118,8 @@ export interface IBidToRequest {
   payment_term?: number;
   is_sending_email?: number;
   is_sending_sms?: number;
+  is_archived?: boolean;
+  archived_to?: Date
 }
 
 export interface IBestBids {

@@ -36,7 +36,7 @@
   "MENU.PROFILE": "Профиль",
   "MENU.DASHBOARD": "DASHBOARD",
 
-  "SUBMENU.BIDS.BEST": "Лучшие объявления",
+  "SUBMENU.BIDS.BEST": "Выбрать культуру",
   "SUBMENU.BIDS.SALE": "Объявления продавцов",
   "SUBMENU.BIDS.PURCHASE": "Объявления покупателей",
   "SUBMENU.BIDS.DEALS": "Сделки",
@@ -170,6 +170,7 @@
   "DEALS.TABLE.BUYER": "Покупатель: ",
   "DEALS.TABLE.AGENT": "Контрагент",
   "DEALS.TABLE.EDIT_TEXT": "Редактировать объявление",
+  "DEALS.TABLE.ARCHIVE_TEXT": "Архивироавть объявление",
   "DEALS.TABLE.VIEW_TEXT": "Просмотреть объявление",
   "DEALS.FILTER.NAME": "Фильтр по параметрам",
   "DEALS.FILTER2.NAME": "Фильтр",

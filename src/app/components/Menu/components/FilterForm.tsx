@@ -17,10 +17,7 @@ const getInitialValues = (
       allCropParams[key].forEach(cropParam => {
         newValues[cropParam.id] =
           !!dealsFilters &&
-          !!dealsFilters.find(
-            item =>
-              !!item.parameters.length && item.parameters.find(param => param.id === cropParam.id)
-          );
+          !!dealsFilters.find(item => !!item.parameters.length && item.parameters.find(param => param.id === cropParam.id));
       });
     }
   }
@@ -53,14 +50,7 @@ interface IProps {
   editFilterLoading: boolean;
 }
 
-const FilterForm: React.FC<IProps> = ({
-  intl,
-  dealsFilters,
-  crop,
-  allCropParams,
-  editFilter,
-  editFilterLoading,
-}) => {
+const FilterForm: React.FC<IProps> = ({ intl, dealsFilters, crop, allCropParams, editFilter, editFilterLoading }) => {
   const { values, handleSubmit, handleChange, resetForm } = useFormik({
     initialValues: getInitialValues(crop.id, allCropParams, dealsFilters),
     onSubmit: values => {

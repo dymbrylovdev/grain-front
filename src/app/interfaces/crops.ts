@@ -4,6 +4,7 @@ export interface ICrop {
   id: number;
   name: string;
   vat: number;
+  delivery_price_coefficient?: number;
 }
 
 export interface ICropParam {

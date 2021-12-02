@@ -1,12 +1,5 @@
 import React, { ReactElement, useState, useEffect } from "react";
-import {
-  TextField,
-  MenuItem,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  Checkbox,
-} from "@material-ui/core";
+import { TextField, MenuItem, RadioGroup, FormControlLabel, Radio, Checkbox } from "@material-ui/core";
 import { IntlShape } from "react-intl";
 import { ActionWithPayload } from "../../utils/action-helper";
 
@@ -21,9 +14,7 @@ interface IUsersFilterMenu {
   setFunnelState: (payload: string) => ActionWithPayload<"funnelStates/SET_FUNNEL_STATE", string>;
   tariffsTypes: ITariffType[] | undefined;
   usersFilterTariff: string;
-  setUsersFilterTariff: (
-    payload: string
-  ) => ActionWithPayload<"tariffs/USERS_FILTER_SET_TARIFF", string>;
+  setUsersFilterTariff: (payload: string) => ActionWithPayload<"tariffs/USERS_FILTER_SET_TARIFF", string>;
   userRoles: any[] | undefined;
   setCurrentRoles: (payload: any) => ActionWithPayload<"users/SET_CURRENT_ROLES", any>;
   currentRoles: string | undefined;
@@ -108,12 +99,7 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
         onChange={e => setUsersFilterTariff(e.target.value)}
         name="tariff"
         variant="outlined"
-        disabled={
-          !currentRoles ||
-          currentRoles === "Все" ||
-          currentRoles === "ROLE_ADMIN" ||
-          currentRoles === "ROLE_MANAGER"
-        }
+        disabled={!currentRoles || currentRoles === "Все" || currentRoles === "ROLE_ADMIN" || currentRoles === "ROLE_MANAGER"}
       >
         <MenuItem value={"Все"}>Все</MenuItem>
         {tariffsTypes &&
@@ -138,12 +124,7 @@ const UsersFilterMenu: React.FC<IUsersFilterMenu> = ({
         onChange={e => setFunnelState(e.target.value)}
         name="status"
         variant="outlined"
-        disabled={
-          !currentRoles ||
-          currentRoles === "Все" ||
-          currentRoles === "ROLE_ADMIN" ||
-          currentRoles === "ROLE_MANAGER"
-        }
+        disabled={!currentRoles || currentRoles === "Все" || currentRoles === "ROLE_ADMIN" || currentRoles === "ROLE_MANAGER"}
       >
         <MenuItem value={"Все"}>Все</MenuItem>
         {funnelStates &&

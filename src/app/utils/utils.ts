@@ -40,34 +40,27 @@ export const getConfirmCompanyString = (user: IUser | undefined, intl: IntlShape
   return confirmCompanyString;
 };
 
-export const getConfirmCompanyStringOriginal = (
-  user: IUser | undefined,
-  intl: IntlShape
-): string => {
+export const getConfirmCompanyStringOriginal = (user: IUser | undefined, intl: IntlShape): string => {
   let confirmCompanyString = "";
   if (!user?.company) {
     confirmCompanyString = intl.formatMessage({ id: "COMPANY.NO_COMPANY" });
   } else {
-    if (
-      !user.company_confirmed_by_email &&
-      !user.company_confirmed_by_payment &&
-      !user.company_confirmed_by_phone
-    ) {
+    if (!user.company_confirmed_by_email && !user.company_confirmed_by_payment && !user.company_confirmed_by_phone) {
       confirmCompanyString = intl.formatMessage({ id: "COMPANY.CONFIRM.NO_CONFIRM" });
     } else {
       let byEmailText =
         intl.formatMessage({ id: "COMPANY.CONFIRM.BY_EMAIL" }) +
         (!user.company_confirmed_by_payment && !user.company_confirmed_by_phone ? "." : ", ");
-      let byPhoneText =
-        intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PHONE" }) +
-        (!user.company_confirmed_by_payment ? "." : ", ");
+      let byPhoneText = intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PHONE" }) + (!user.company_confirmed_by_payment ? "." : ", ");
       let byPaymentText = intl.formatMessage({ id: "COMPANY.CONFIRM.BY_PAY" }) + ".";
-      confirmCompanyString = `${intl.formatMessage({ id: "COMPANY.CONFIRM.TITLE" })} ${
-        user.company_confirmed_by_email ? byEmailText : ""
-      }${user.company_confirmed_by_phone ? byPhoneText : ""}${
-        user.company_confirmed_by_payment ? byPaymentText : ""
-      }`;
+      confirmCompanyString = `${intl.formatMessage({ id: "COMPANY.CONFIRM.TITLE" })} ${user.company_confirmed_by_email ? byEmailText : ""}${
+        user.company_confirmed_by_phone ? byPhoneText : ""
+      }${user.company_confirmed_by_payment ? byPaymentText : ""}`;
     }
   }
   return confirmCompanyString;
 };
+
+export const formatAsThousands = (data: string | number) => String(data).replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, `$1${"\u00A0"}`);
+
+export const formatPhone = (phone: string) => `+${phone.replace(/(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})/, "$1 $2 $3 $4 $5")}`;

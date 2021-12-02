@@ -1,12 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  MenuItem,
-  TextField,
-  IconButton,
-  Divider,
-  Checkbox,
-  FormControlLabel,
-} from "@material-ui/core";
+import { MenuItem, TextField, IconButton, Divider, Checkbox, FormControlLabel } from "@material-ui/core";
 import useStyles from "../../../pages/home/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import { connect, ConnectedProps } from "react-redux";
@@ -24,6 +17,7 @@ import { filterForCreate, filterForSubmit } from "../../../pages/home/myFilters/
 import { useSnackbar } from "notistack";
 import NumberParam from "../../../pages/home/bids/components/filter/NumberParam";
 import ButtonWithLoader from "../../ui/Buttons/ButtonWithLoader";
+import { isEqual } from "lodash";
 // import { setUser } from "@sentry/browser";
 
 const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
@@ -74,14 +68,11 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const enumParams: any = cropParams && cropParams.filter(item => item.type === "enum");
   const numberParams: any = cropParams && cropParams.filter(item => item.type === "number");
 
-  const currentFilter =
-    salePurchaseMode === "sale" ? currentSaleFilters[cropId] : currentPurchaseFilters[cropId];
+  const currentFilter = salePurchaseMode === "sale" ? currentSaleFilters[cropId] : currentPurchaseFilters[cropId];
 
   const setCurrentFilter = useCallback(
     (cropId: number, filter: { [x: string]: any }) => {
-      salePurchaseMode === "sale"
-        ? setCurrentSaleFilter(cropId, filter)
-        : setCurrentPurchaseFilter(cropId, filter);
+      salePurchaseMode === "sale" ? setCurrentSaleFilter(cropId, filter) : setCurrentPurchaseFilter(cropId, filter);
     },
     [salePurchaseMode, setCurrentPurchaseFilter, setCurrentSaleFilter]
   );
@@ -89,8 +80,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const newCropName = useCallback((): any => {
     const crop = crops ? crops.find(crop => crop.id === +cropId) : undefined;
     const now = new Date();
-    const name =
-      crop && `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
+    const name = crop && `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
     return name;
   }, [cropId, crops]);
 
@@ -98,9 +88,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     filter => {
       const crop = crops ? crops.find(crop => crop.id === +cropId) : undefined;
       const now = new Date();
-      const name = crop
-        ? `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`
-        : "";
+      const name = crop ? `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}` : "";
       return filter ? { name, ...filter } : { name };
     },
     [cropId, crops]
@@ -129,12 +117,12 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       min_prepayment_amount: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
     }),
   });
-  const { resetForm, values } = formik;
+  const { resetForm, values, setValues } = formik;
 
   const filterSubmit = () => {
     let params = { ...values };
     params.name = values.name && values.name.trim();
-    if (params.min_prepayment_amount === '100') params.max_payment_term = '';
+    if (params.min_prepayment_amount === "100") params.max_payment_term = "";
     params.cropId = cropId;
     setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
     clearBids();
@@ -143,7 +131,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const handleSubmit = useCallback(
     (values: any) => {
       let params = { ...values };
-      if (params.min_prepayment_amount === '100') params.max_payment_term = '';
+      if (params.min_prepayment_amount === "100") params.max_payment_term = "";
       params.name = values.name.trim();
       setCurrentFilter(+cropId, { ...params, cropId: +cropId });
     },
@@ -188,30 +176,33 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   }, [currentFilter, getInitialValues, resetForm]);
 
   useEffect(() => {
+    currentFilter &&
+      !isEqual(currentFilter, values) &&
+      Object.keys(currentFilter).length > 1 &&
+      resetForm({ values: getInitialValues(currentFilter) });
+  }, [currentSaleFilters, currentPurchaseFilters]);
+
+  useEffect(() => {
     if (me) {
       setUserPointsActive(me.points.some(point => point.active === true));
     }
   }, [me]);
-  
+
   useEffect(() => {
-    if (values.min_prepayment_amount === '100') {
-      values.max_payment_term = '';
+    if (values.min_prepayment_amount === "100") {
+      values.max_payment_term = "";
     }
     filterSubmit();
   }, [values.min_prepayment_amount]);
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      {enumParams && enumParams.map((param: any) => (
-        <MenuItem key={param.id}>
-          <CheckBoxParamGroup
-            param={param}
-            values={formik.values}
-            handleChange={formik.handleChange}
-            handleSubmit={filterSubmit}
-          />
-        </MenuItem>
-      ))}
+      {enumParams &&
+        enumParams.map((param: any) => (
+          <MenuItem key={param.id}>
+            <CheckBoxParamGroup param={param} values={formik.values} handleChange={formik.handleChange} handleSubmit={filterSubmit} />
+          </MenuItem>
+        ))}
 
       {salePurchaseMode === "purchase" && (
         <div className={classes.textFieldContainer}>
@@ -236,16 +227,13 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             InputProps={{
               // inputComponent: NumberFormatCustom,
               endAdornment: (
-                <IconButton
-                  onClick={() => formik.setFieldValue("max_payment_term", "")}
-                  disabled={values.min_prepayment_amount === '100'}
-                >
+                <IconButton onClick={() => formik.setFieldValue("max_payment_term", "")} disabled={values.min_prepayment_amount === "100"}>
                   <CloseIcon />
                 </IconButton>
               ),
             }}
             autoComplete="off"
-            disabled={values.min_prepayment_amount === '100'}
+            disabled={values.min_prepayment_amount === "100"}
           />
         </div>
       )}
@@ -307,16 +295,13 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <FormControlLabel
           control={
             <Checkbox
-              checked={values.min_prepayment_amount === '100'}
+              checked={values.min_prepayment_amount === "100"}
               onChange={() => {
-                formik.setFieldValue(
-                  "min_prepayment_amount",
-                  values.min_prepayment_amount === '' ? '100' : ''
-                )
+                formik.setFieldValue("min_prepayment_amount", values.min_prepayment_amount === "" ? "100" : "");
               }}
             />
           }
-          label={'Только с предоплатой'}
+          label={"Только с предоплатой"}
           name="fullPrepayment"
         />
       )}
@@ -373,18 +358,13 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <ButtonWithLoader
           loading={createLoading}
           disabled={
-            createLoading ||
-            (me?.tariff_matrix &&
-              myFilters &&
-              me.tariff_matrix.tariff_limits.max_filters_count - myFilters?.length <= 0)
+            createLoading || (me?.tariff_matrix && myFilters && me.tariff_matrix.tariff_limits.max_filters_count - myFilters?.length <= 0)
           }
           onPress={() => {
             if (!!currentFilter && currentFilter.name === formik.values.name) {
               const crop = crops ? crops.find(crop => crop.id === +cropId) : undefined;
               const now = new Date();
-              const name = `${
-                crop ? crop.name : undefined
-              } ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
+              const name = `${crop ? crop.name : undefined} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
               formik.setFieldValue("name", name);
             }
             formik.handleSubmit();

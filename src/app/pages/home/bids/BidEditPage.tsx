@@ -23,6 +23,7 @@ import Prompter from "../prompter/Prompter";
 import useStyles from "../styles";
 import { accessByRoles } from "../../../utils/utils";
 import { IPointPriceForGet } from "../../../interfaces/bids";
+import ViewBidForm from "./components/VIewBidForm";
 
 const BidEditPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -128,8 +129,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
   const [pointPrices, setPointPrices] = useState<IPointPriceForGet[]>([]);
 
   useEffect(() => {
-    const currentFilters =
-      salePurchaseMode === "sale" ? currentSaleFilters : currentPurchaseFilters;
+    const currentFilters = salePurchaseMode === "sale" ? currentSaleFilters : currentPurchaseFilters;
     let currentFilter: { [crop: string]: { [x: string]: any } } | undefined = undefined;
     if (editMode === "view") {
       for (let k in currentFilters) {
@@ -227,36 +227,15 @@ const BidEditPage: React.FC<TPropsFromRedux &
   if (!(salePurchaseMode === "sale" || salePurchaseMode === "purchase")) return <ErrorPage />;
   if (editMode === "create" && me?.is_buyer && salePurchaseMode === "sale") return <ErrorPage />;
 
-  if (editMode === "create" && me?.is_vendor && salePurchaseMode === "purchase")
+  if (editMode === "create" && me?.is_vendor && salePurchaseMode === "purchase") return <ErrorPage />;
+
+  if (editMode === "edit" && me && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !!bid && bid.vendor.id !== me?.id)
     return <ErrorPage />;
 
-  if (
-    editMode === "edit" &&
-    me &&
-    !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
-    !!bid &&
-    bid.vendor.id !== me?.id
-  )
+  if (!!user && !!vendorId && user.id === +vendorId && editMode === "create" && user.is_buyer && salePurchaseMode !== "purchase")
     return <ErrorPage />;
 
-  if (
-    !!user &&
-    !!vendorId &&
-    user.id === +vendorId &&
-    editMode === "create" &&
-    user.is_buyer &&
-    salePurchaseMode !== "purchase"
-  )
-    return <ErrorPage />;
-
-  if (
-    !!user &&
-    !!vendorId &&
-    user.id === +vendorId &&
-    editMode === "create" &&
-    user.is_vendor &&
-    salePurchaseMode !== "sale"
-  )
+  if (!!user && !!vendorId && user.id === +vendorId && editMode === "create" && user.is_vendor && salePurchaseMode !== "sale")
     return <ErrorPage />;
 
   if (error || userError || cropsError || usersCropsError || cropParamsError) {
@@ -267,75 +246,91 @@ const BidEditPage: React.FC<TPropsFromRedux &
 
   return (
     <>
-      <Prompter />
-      <Paper className={classes.paperWithForm}>
-        {title && <LayoutSubheader title={title} />}
-        {isNoModerate ? (
-          <div className={classes.titleText}>
-            {intl.formatMessage({ id: "BID.STATUS.NO_MODERATE" })}
-          </div>
-        ) : (
-          <BidForm
-            intl={intl}
-            vendorId={+vendorId}
-            user={user}
-            editMode={editMode}
-            salePurchaseMode={salePurchaseMode}
-            cropId={+cropId}
-            crops={crops}
-            bid={editMode === "create" ? undefined : bid}
-            bidsPair={bidsPair}
-            fetchMe={fetchMe}
-            me={me}
-            fetchFilters={fetchFilters}
-            filterCount={filterCount}
-            fetchLocations={fetchLocations}
-            locations={locations}
-            clearBidsPair={clearBidsPair}
-            fetchBidsPair={fetchBidsPair}
-            bidsPairSuccess={bidsPairSuccess}
-            bidsPairError={bidsPairError}
-            bidsPairLoading={bidsPairLoading}
-            loadingLocations={loadingLocations}
-            clearLocations={clearLocations}
-            clearCropParams={clearCropParams}
-            fetchCropParams={fetchCropParams}
-            cropParams={cropParams}
-            cropParamsLoading={cropParamsLoading}
-            setAlertOpen={setAlertOpen}
-            buttonLoading={createLoading || editLoading || postLoading}
-            create={create}
-            createSuccess={createSuccess}
-            createError={createError}
-            clearCreate={clearCreate}
-            post={post}
-            postSuccess={postSuccess}
-            postError={postError}
-            clearPost={clearPost}
-            edit={edit}
-            profit={profit}
-            openInfoAlert={openInfoAlert}
-            setOpenInfoAlert={setOpenInfoAlert}
-            editContactViewCount={editContactViewCount}
-          />
-        )}
-        <AlertDialog
-          isOpen={isAlertOpen}
-          text={intl.formatMessage({ id: "BIDSLIST.DIALOGS.DELETE_TEXT" })}
-          okText={intl.formatMessage({
-            id: "USERLIST.DIALOGS.AGREE_TEXT",
-          })}
-          cancelText={intl.formatMessage({
-            id: "USERLIST.DIALOGS.CANCEL_TEXT",
-          })}
-          handleClose={() => setAlertOpen(false)}
-          handleAgree={() => del(+bidId)}
-          loadingText={intl.formatMessage({
-            id: "BIDSLIST.DIALOGS.LOADING_TEXT",
-          })}
-          isLoading={delLoading}
+      {editMode === "view" ? (
+        <ViewBidForm
+          intl={intl}
+          vendorId={+vendorId}
+          user={user}
+          salePurchaseMode={salePurchaseMode}
+          editMode={editMode}
+          cropId={+cropId}
+          crops={crops}
+          bid={bid}
+          me={me}
+          fetchCropParams={fetchCropParams}
+          cropParams={cropParams}
         />
-      </Paper>
+      ) : (
+        <>
+          <Prompter />
+          <Paper className={classes.paperWithForm}>
+            {title && <LayoutSubheader title={title} />}
+            {isNoModerate ? (
+              <div className={classes.titleText}>{intl.formatMessage({ id: "BID.STATUS.NO_MODERATE" })}</div>
+            ) : (
+              <BidForm
+                intl={intl}
+                vendorId={+vendorId}
+                user={user}
+                editMode={editMode}
+                salePurchaseMode={salePurchaseMode}
+                cropId={+cropId}
+                crops={crops}
+                bid={editMode === "create" ? undefined : bid}
+                bidsPair={bidsPair}
+                fetchMe={fetchMe}
+                me={me}
+                fetchFilters={fetchFilters}
+                filterCount={filterCount}
+                fetchLocations={fetchLocations}
+                locations={locations}
+                clearBidsPair={clearBidsPair}
+                fetchBidsPair={fetchBidsPair}
+                bidsPairSuccess={bidsPairSuccess}
+                bidsPairError={bidsPairError}
+                bidsPairLoading={bidsPairLoading}
+                loadingLocations={loadingLocations}
+                clearLocations={clearLocations}
+                clearCropParams={clearCropParams}
+                fetchCropParams={fetchCropParams}
+                cropParams={cropParams}
+                cropParamsLoading={cropParamsLoading}
+                setAlertOpen={setAlertOpen}
+                buttonLoading={createLoading || editLoading || postLoading}
+                create={create}
+                createSuccess={createSuccess}
+                createError={createError}
+                clearCreate={clearCreate}
+                post={post}
+                postSuccess={postSuccess}
+                postError={postError}
+                clearPost={clearPost}
+                edit={edit}
+                profit={profit}
+                openInfoAlert={openInfoAlert}
+                setOpenInfoAlert={setOpenInfoAlert}
+                editContactViewCount={editContactViewCount}
+              />
+            )}
+            <AlertDialog
+              isOpen={isAlertOpen}
+              text={intl.formatMessage({ id: "BIDSLIST.DIALOGS.DELETE_TEXT" })}
+              okText={intl.formatMessage({
+                id: "USERLIST.DIALOGS.AGREE_TEXT",
+              })}
+              cancelText={intl.formatMessage({
+                id: "USERLIST.DIALOGS.CANCEL_TEXT",
+              })}
+              handleClose={() => setAlertOpen(false)}
+              handleAgree={() => del(+bidId)}
+              loadingText={intl.formatMessage({
+                id: "BIDSLIST.DIALOGS.LOADING_TEXT",
+              })}
+              isLoading={delLoading}
+            />
+          </Paper>
+        </>
+      )}
     </>
   );
 };

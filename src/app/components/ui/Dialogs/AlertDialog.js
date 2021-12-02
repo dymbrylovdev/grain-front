@@ -1,30 +1,9 @@
 import React from "react";
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  LinearProgress,
-} from "@material-ui/core";
+import { Button, Dialog, DialogContent, DialogContentText, DialogActions, LinearProgress } from "@material-ui/core";
 
-export default function AlertDialog({
-  isOpen,
-  handleClose,
-  handleAgree,
-  text,
-  okText,
-  cancelText,
-  loadingText = "",
-  isLoading = false,
-}) {
+export default function AlertDialog({ isOpen, handleClose, handleAgree, text, okText, cancelText, loadingText = "", isLoading = false }) {
   return (
-    <Dialog
-      open={isOpen}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
+    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
       <DialogContent>
         {isLoading ? (
           <>

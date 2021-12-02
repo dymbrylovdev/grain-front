@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useSnackbar } from 'notistack';
+import { useEffect } from "react";
+import { useSnackbar } from "notistack";
 
 interface IProps {
   successMessage: string;
@@ -11,21 +11,13 @@ interface IProps {
   afterSuccessOrError?: () => void;
 }
 
-const useCrudSnackbar = ({
-  success,
-  error,
-  clear,
-  successMessage,
-  errorMessage,
-  afterSuccess,
-  afterSuccessOrError,
-}: IProps) => {
+const useCrudSnackbar = ({ success, error, clear, successMessage, errorMessage, afterSuccess, afterSuccessOrError }: IProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (success || error) {
       enqueueSnackbar(success ? successMessage : errorMessage, {
-        variant: success ? 'success' : 'error',
+        variant: success ? "success" : "error",
       });
 
       if (afterSuccessOrError) afterSuccessOrError();

@@ -50,7 +50,7 @@ function degToRad(degrees) {
   return degrees * (pi / 180);
 }
 
-function distance(position1, position2) {
+export function distance(position1, position2) {
   //Haversine formula
   const lat1 = position1.lat;
   const lat2 = position2.lat;
@@ -159,7 +159,7 @@ const getInitialValues = (
   return values;
 };
 
-const getFinalPrice = (bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
+export const getFinalPrice = (bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
   if (salePurchaseMode === "sale") {
     return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * distanceKm);
   } else {
@@ -167,7 +167,7 @@ const getFinalPrice = (bid: IBid, distanceKm: number, pricePerKm: number, salePu
   }
 };
 
-const getDeliveryPrice = (bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
+export const getDeliveryPrice = (bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
   if (salePurchaseMode === "sale") {
     return Math.round(pricePerKm * distanceKm);
   } else {
@@ -636,8 +636,6 @@ const BidForm: React.FC<IProps> = ({
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
-
-  console.log("user", user);
 
   return (
     <div className={classes.form}>

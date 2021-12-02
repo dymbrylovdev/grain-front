@@ -21,12 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
-  intl,
-  setWeeks,
-  setTerm,
-  setPrepayment,
-}) => {
+const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({ intl, setWeeks, setTerm, setPrepayment }) => {
   const { weeks, term, min_prepayment_amount } = useSelector(
     ({ deals: { weeks, term, min_prepayment_amount } }: IAppState) => ({
       weeks,
@@ -38,7 +33,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   useEffect(() => {
     if (min_prepayment_amount === 100) setTerm(undefined);
-  }, [min_prepayment_amount, setTerm])
+  }, [min_prepayment_amount, setTerm]);
 
   const classes = useStyles();
   const [filterOpen, setFilterOpen] = useState(true);
@@ -119,7 +114,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                 }}
               />
             }
-            label={'Только с предоплатой'}
+            label={"Только с предоплатой"}
             name="fullPrepayment"
           />
         </div>

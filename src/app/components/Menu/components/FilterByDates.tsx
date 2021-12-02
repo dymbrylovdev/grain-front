@@ -17,11 +17,7 @@ const useInnerStyles = makeStyles(theme => ({
   },
 }));
 
-const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({
-  intl,
-  filter,
-  setFilter,
-}) => {
+const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({ intl, filter, setFilter }) => {
   const innerClasses = useInnerStyles();
 
   return (
