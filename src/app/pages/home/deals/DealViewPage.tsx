@@ -85,6 +85,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
   editLoading,
   editSuccess,
   editError,
+  clearEdit,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -250,6 +251,12 @@ const DealViewPage: React.FC<TPropsFromRedux &
       setDeal(undefined);
     };
   }, [deals, purchaseId, saleId, setDeal]);
+
+  useEffect(() => {
+    return () => {
+      clearEdit();
+    };
+  }, []);
 
   useEffect(() => {
     if (editSuccess && deal && archiveBid && archiveBid.type) {
