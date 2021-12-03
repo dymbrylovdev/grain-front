@@ -106,7 +106,7 @@ const Bid = React.memo<IProps>(
     }, []);
 
     const arrImgIndex = useMemo(() => {
-      if (bid.photos && bid.photos.length > 0) {
+      if (bid.photos && bid.photos.length > 1) {
         const arrImg: number[] = [];
         bid.photos.forEach((_, index) => arrImg.push(index));
         return arrImg;

@@ -81,9 +81,7 @@ const ImageGallery: React.FC<IProps> = ({ photos }) => {
   useEffect(() => {
     setCurrentImage(photos && photos.length > 0 ? `${API_DOMAIN}${photos[0].path}` : `${API_DOMAIN}/uploaded/images/bid/default.jpg`);
   }, [photos, setCurrentImage]);
-  console.log('====================================');
-  console.log(currentImage);
-  console.log('====================================');
+
   // images
   const images = useMemo(() => {
     if (photos && photos.length > 0) {
@@ -161,7 +159,7 @@ const ImageGallery: React.FC<IProps> = ({ photos }) => {
                 showPlayButton={false}
                 thumbnailPosition="bottom"
                 infinite
-                onSlide={index => photos && photos.length > 0 && setCurrentImage(`${API_DOMAIN}${photos[0].path}`)}
+                onSlide={index => photos && photos.length > 0 && setCurrentImage(`${API_DOMAIN}${photos[index].path}`)}
                 renderLeftNav={onClick => (
                   <IconButton onClick={onClick} className={classes.arrow} style={{ left: 15, zIndex: 2 }}>
                     <ArrowBack style={{ fontSize: 30 }} />
