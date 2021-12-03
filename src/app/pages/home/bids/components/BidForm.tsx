@@ -433,7 +433,7 @@ const BidForm: React.FC<IProps> = ({
       const bidType = params.bid_type;
       cropParams?.forEach(param => {
         const id = param.id;
-        if (values[`parameter${id}`] && values[`parameter${id}`] !== "") {
+        if (values[`parameter${id}`]) {
           delete params[`parameter${id}`]
         }
       });
