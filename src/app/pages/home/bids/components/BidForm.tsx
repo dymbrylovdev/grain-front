@@ -270,6 +270,7 @@ interface IProps {
   fetchFilters: any;
   filterCount: number;
   editSuccess: boolean;
+  fetch: any;
 }
 
 const BidForm: React.FC<IProps> = ({
@@ -326,6 +327,7 @@ const BidForm: React.FC<IProps> = ({
   filterCount,
   pointPrices,
   editSuccess,
+  fetch,
 }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -371,6 +373,12 @@ const BidForm: React.FC<IProps> = ({
     if (val === 1) setSendingEmail(!isSendingEmail);
     if (val === 2) setSendingSms(!isSendingSms);
   };
+
+  useEffect(() => {
+    if (editSuccess) {
+      tabValue === 0 ? history.goBack() : fetch(bidId, pointPrices);
+    }
+  }, [editSuccess]);
 
   const linkToContact = () => {
     let contactViewCount = me?.contact_view_count;
