@@ -2,9 +2,7 @@ import React, { useCallback, useState } from "react";
 import { Card, Col, Row } from "react-bootstrap";
 import { Button, CardContent, CardHeader, Grid, IconButton, Typography } from "@material-ui/core";
 import { DeleteOutline } from "@material-ui/icons";
-
 import { useHistory } from "react-router-dom";
-import { useIntl } from "react-intl";
 import { useStylesPhotosForm } from "../hooks/useStyles";
 import { API_DOMAIN } from "../../../../../constants";
 import { IBid } from "../../../../../interfaces/bids";
@@ -23,16 +21,11 @@ interface IProps {
   setPhotos?: any;
   photos: any[];
   localDelPhoto: any;
-  // loadAndSetMain: any;
-  // handleSubmit: any;
 }
 
 const PhotosForm: React.FC<IProps> = ({
   bid,
-  //   submit,
   delPhoto,
-  editLoading,
-  setMainPhoto,
   isView = false,
   forUser = false,
   userAvatar,
@@ -45,7 +38,6 @@ const PhotosForm: React.FC<IProps> = ({
   const [uploadPhoto, setUploadPhoto] = useState<string | null>(null);
   const classes = useStylesPhotosForm();
   const history = useHistory();
-  const intl = useIntl();
   const mainPhoto = bid?.photos?.find(item => item.main);
 
   const handleUpload = useCallback(

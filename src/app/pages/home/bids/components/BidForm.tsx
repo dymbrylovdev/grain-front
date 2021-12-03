@@ -376,7 +376,7 @@ const BidForm: React.FC<IProps> = ({
 
   useEffect(() => {
     if (editSuccess) {
-      tabValue === 0 ? history.goBack() : fetch(bidId, pointPrices);
+      tabValue === 0 ? history.goBack() : bidId && fetch(bidId, pointPrices);
     }
   }, [editSuccess]);
 
@@ -568,18 +568,6 @@ const BidForm: React.FC<IProps> = ({
     },
     [photos]
   );
-
-  // const handleLoadLocalPhoto = useCallback(async () => {
-  //   if (photos.length > 0) {
-  //     const arrayFiles: string[] = [];
-  //     for (const file of photos) {
-  //       const base64file = (await toBase64(file)) as string;
-  //       arrayFiles.push(base64file);
-  //     }
-  //     loadPhotos({ id: bid?.id, data: arrayFiles });
-  //     setPhotos([]);
-  //   }
-  // }, [loadPhotos, photos, bidId]);
 
   useEffect(() => {
     if (ymaps && map && bid && bid.location && mySelectedMapPoint) {
