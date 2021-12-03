@@ -431,6 +431,12 @@ const BidForm: React.FC<IProps> = ({
         photos_base64: arrayFiles.length > 0 ? arrayFiles : undefined,
       };
       const bidType = params.bid_type;
+      cropParams?.forEach(param => {
+        const id = param.id;
+        if (values[`parameter${id}`] && values[`parameter${id}`] !== "") {
+          delete params[`parameter${id}`]
+        }
+      });
       delete params.bid_type;
       if (editMode === "create") create(bidType, params, is_sending_email, is_sending_sms);
       if (editMode === "edit" && !!bid) {
