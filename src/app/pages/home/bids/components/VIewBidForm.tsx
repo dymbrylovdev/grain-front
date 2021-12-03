@@ -267,7 +267,7 @@ const ViewBidForm: React.FC<IProps> = ({
             </div>
             <div className={classes.leftCol}>
               <div style={{ maxWidth: 530 }}>
-                <ImageGallery />
+                <ImageGallery photos={bid.photos}/>
               </div>
 
               <div className={classes.header}>

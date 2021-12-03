@@ -15,6 +15,7 @@ import { useBidTableStyles } from "./hooks/useStyles";
 import { ILocalBids } from "./BidsList";
 import AliceCarousel from "react-alice-carousel";
 import "../../../../libs/react-alice-carousel/alice-carousel.css";
+import { API_DOMAIN } from "../../../../constants";
 
 interface IProps {
   isHaveRules?: (user: any, id: number) => boolean;
@@ -84,28 +85,34 @@ const Bid = React.memo<IProps>(
       [numberParams]
     );
 
-    const photos = ["/images/defaultImage.jpg", "/images//wheat (1).jpg", "/images//wheat (2).jpg", "/images//wheat (3).jpg"];
-
     const items = useMemo(() => {
       const arrImg: any = [];
-      photos.forEach((item, index) =>
+      if (bid.photos && bid.photos.length > 0) {
+        bid.photos.forEach((item, index) =>
+          arrImg.push(
+            <div className={innerClasses.wrapperImage}>
+              <img src={`${API_DOMAIN}${item.path}`} className={innerClasses.image} alt={index.toString()} />
+            </div>
+          )
+        );
+      } else {
         arrImg.push(
           <div className={innerClasses.wrapperImage}>
-            <img src={toAbsoluteUrl(item)} className={innerClasses.image} alt={index.toString()} />
+            <img src={`${API_DOMAIN}${"/uploaded/images/bid/default.jpg"}`} className={innerClasses.image} alt={"defaulImage"} />
           </div>
-        )
-      );
+        );
+      }
       return arrImg;
     }, []);
 
     const arrImgIndex = useMemo(() => {
-      if (photos && photos.length > 0) {
+      if (bid.photos && bid.photos.length > 0) {
         const arrImg: number[] = [];
-        photos.forEach((_, index) => arrImg.push(index));
+        bid.photos.forEach((_, index) => arrImg.push(index));
         return arrImg;
       }
       return null;
-    }, [photos]);
+    }, [bid.photos]);
 
     const handleDot = useCallback(
       (index: number) => {

@@ -6,9 +6,22 @@ import ArrowBack from "@material-ui/icons/ArrowBackIos";
 import ArrowNext from "@material-ui/icons/ArrowForwardIos";
 import { toAbsoluteUrl } from "../../../../../../_metronic/utils/utils";
 import ImageDialog from "../imageDialog/imageDialog";
+import { API_DOMAIN } from "../../../../../constants";
 // import { API_DOMAIN } from "../../../../../constants";
 
-interface IProps {}
+interface IProps {
+  photos:
+    | {
+        id: number;
+        path: string;
+        main: boolean;
+        name: string;
+        extension: string;
+        mimeType: string;
+        small: string;
+      }[]
+    | undefined;
+}
 
 const useStyles = makeStyles(theme => ({
   imgContainer: {
@@ -58,54 +71,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const photos = [
-  {
-    big: null,
-    extension: null,
-    id: 1,
-    main: true,
-    mime_type: null,
-    name: null,
-    origin: null,
-    path: toAbsoluteUrl("/images/defaultImage.jpg"),
-    small: toAbsoluteUrl("/images/defaultImage.jpg"),
-  },
-  {
-    big: null,
-    extension: null,
-    id: 2,
-    main: false,
-    mime_type: null,
-    name: null,
-    origin: null,
-    path: toAbsoluteUrl("/images/wheat (1).jpg"),
-    small: toAbsoluteUrl("/images//wheat (1).jpg"),
-  },
-  {
-    big: null,
-    extension: null,
-    id: 3,
-    main: false,
-    mime_type: null,
-    name: null,
-    origin: null,
-    path: toAbsoluteUrl("/images/wheat (2).jpg"),
-    small: toAbsoluteUrl("/images/wheat (2).jpg"),
-  },
-  {
-    big: null,
-    extension: null,
-    id: 4,
-    main: false,
-    mime_type: null,
-    name: null,
-    origin: null,
-    path: toAbsoluteUrl("/images/wheat (3).jpg"),
-    small: toAbsoluteUrl("/images/wheat (3).jpg"),
-  },
-];
-
-const ImageGallery: React.FC<IProps> = () => {
+const ImageGallery: React.FC<IProps> = ({ photos }) => {
   const classes = useStyles();
   const imageGalleryRef: any = useRef();
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -113,34 +79,55 @@ const ImageGallery: React.FC<IProps> = () => {
   const [currentImage, setCurrentImage] = useState<string | null>(null);
 
   useEffect(() => {
-    setCurrentImage(photos[0].path);
+    setCurrentImage(photos && photos.length > 0 ? `${API_DOMAIN}${photos[0].path}` : `${API_DOMAIN}/uploaded/images/bid/default.jpg`);
   }, [photos, setCurrentImage]);
-
+  console.log('====================================');
+  console.log(currentImage);
+  console.log('====================================');
   // images
   const images = useMemo(() => {
-    return photos.map(el => ({
-      original: el.path,
-      thumbnail: el.small,
-      renderItem: ({ original }) => (
-        <Card
-          className={`${classes.imgContainer} ${isFullScreen ? classes.imgContainerFull : classes.imgContainerSmall}`}
-          style={{ height: isFullScreen ? "85vh" : 500 }}
-        >
-          <img alt="" className={classes.img} style={{ objectFit: isFullScreen ? "contain" : "cover" }} src={original} />
-        </Card>
-      ),
-    }));
+    if (photos && photos.length > 0) {
+      return photos.map(el => ({
+        original: `${API_DOMAIN}${el.path}`,
+        thumbnail: `${API_DOMAIN}${el.path}`,
+        renderItem: ({ original }) => (
+          <Card
+            className={`${classes.imgContainer} ${isFullScreen ? classes.imgContainerFull : classes.imgContainerSmall}`}
+            style={{ height: isFullScreen ? "85vh" : 500 }}
+          >
+            <img alt="" className={classes.img} style={{ objectFit: isFullScreen ? "contain" : "cover" }} src={original} />
+          </Card>
+        ),
+      }));
+    } else {
+      return [
+        {
+          original: `${API_DOMAIN}/uploaded/images/bid/default.jpg`,
+          thumbnail: `${API_DOMAIN}/uploaded/images/bid/default.jpg`,
+          renderItem: ({ original }) => (
+            <Card
+              className={`${classes.imgContainer} ${isFullScreen ? classes.imgContainerFull : classes.imgContainerSmall}`}
+              style={{ height: isFullScreen ? "85vh" : 500 }}
+            >
+              <img alt="" className={classes.img} style={{ objectFit: isFullScreen ? "contain" : "cover" }} src={original} />
+            </Card>
+          ),
+        },
+      ];
+    }
   }, [isFullScreen, photos, classes]);
 
   const handleArrow = useCallback(
     (operation: "prev" | "next") => {
-      const currentIndex: number = imageGalleryRef.current.getCurrentIndex();
-      const maxIndex = photos.length - 1;
-      if (operation === "next") {
-        currentIndex === maxIndex ? imageGalleryRef.current.slideToIndex(0) : imageGalleryRef.current.slideToIndex(currentIndex + 1);
-      }
-      if (operation === "prev") {
-        currentIndex === 0 ? imageGalleryRef.current.slideToIndex(maxIndex) : imageGalleryRef.current.slideToIndex(currentIndex - 1);
+      if (photos && photos.length > 0) {
+        const currentIndex: number = imageGalleryRef.current.getCurrentIndex();
+        const maxIndex = photos.length - 1;
+        if (operation === "next") {
+          currentIndex === maxIndex ? imageGalleryRef.current.slideToIndex(0) : imageGalleryRef.current.slideToIndex(currentIndex + 1);
+        }
+        if (operation === "prev") {
+          currentIndex === 0 ? imageGalleryRef.current.slideToIndex(maxIndex) : imageGalleryRef.current.slideToIndex(currentIndex - 1);
+        }
       }
     },
     [photos, imageGalleryRef]
@@ -174,7 +161,7 @@ const ImageGallery: React.FC<IProps> = () => {
                 showPlayButton={false}
                 thumbnailPosition="bottom"
                 infinite
-                onSlide={index => setCurrentImage(photos[index].path)}
+                onSlide={index => photos && photos.length > 0 && setCurrentImage(`${API_DOMAIN}${photos[0].path}`)}
                 renderLeftNav={onClick => (
                   <IconButton onClick={onClick} className={classes.arrow} style={{ left: 15, zIndex: 2 }}>
                     <ArrowBack style={{ fontSize: 30 }} />

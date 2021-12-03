@@ -310,6 +310,8 @@ const BidEditPage: React.FC<TPropsFromRedux &
                 openInfoAlert={openInfoAlert}
                 setOpenInfoAlert={setOpenInfoAlert}
                 editContactViewCount={editContactViewCount}
+                pointPrices={pointPrices}
+                editSuccess={editSuccess}
               />
             )}
             <AlertDialog
