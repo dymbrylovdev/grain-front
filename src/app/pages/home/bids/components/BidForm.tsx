@@ -101,6 +101,17 @@ const useInnerStyles = makeStyles(theme => ({
   autoLoc: {
     width: "100%",
   },
+  imageFormContainer: {
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      padding: "8px 16px",
+    },
+  },
+  bidFormContainer: {
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+    },
+  },
 }));
 
 const getInitialValues = (
@@ -690,11 +701,11 @@ const BidForm: React.FC<IProps> = ({
         </div>
       )}
 
-      <div style={{ display: tabValue === 1 ? "block" : "none" }}>
+      <div className={innerClasses.imageFormContainer} style={{ display: tabValue === 1 ? "block" : "none" }}>
         <PhotosForm bid={bid} delPhoto={delPhoto} setPhotos={setPhotos} photos={photos} localDelPhoto={localDelPhoto} />
       </div>
 
-      <div style={{ display: tabValue === 0 ? "block" : "none" }}>
+      <div className={innerClasses.bidFormContainer} style={{ display: tabValue === 0 ? "block" : "none" }}>
         <div className={classes.form}>
           <div className={classes.topButtonsContainer}>
             <div className={classes.flexRow} style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}>
