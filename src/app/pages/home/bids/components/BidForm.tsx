@@ -559,7 +559,7 @@ const BidForm: React.FC<IProps> = ({
   );
 
   useEffect(() => {
-    bid && handleSubmit();
+    photos && photos.length && bid && handleSubmit();
   }, [photos]);
 
   const localDelPhoto = useCallback(
