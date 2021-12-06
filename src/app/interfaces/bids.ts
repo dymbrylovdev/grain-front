@@ -39,7 +39,7 @@ export interface IBid {
     company_confirmed_by_phone?: boolean;
     company_confirmed_by_payment?: boolean;
     phone?: string;
-    surname?: string ;
+    surname?: string;
     firstName?: string;
     lastName?: string;
   };
@@ -91,6 +91,15 @@ export interface IBid {
   prepayment_amount: number;
   vendor_use_vat: boolean;
   is_archived: boolean;
+  photos?: {
+    id: number;
+    path: string;
+    main: boolean;
+    name: string;
+    extension: string;
+    mimeType: string;
+    small: string;
+  }[];
 }
 
 export interface IBidToRequest {
@@ -119,7 +128,7 @@ export interface IBidToRequest {
   is_sending_email?: number;
   is_sending_sms?: number;
   is_archived?: boolean;
-  archived_to?: Date
+  archived_to?: Date;
 }
 
 export interface IBestBids {

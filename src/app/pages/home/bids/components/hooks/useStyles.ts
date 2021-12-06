@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, createStyles } from "@material-ui/core";
 
 export const useBidTableStyles = makeStyles(theme => ({
   container: {
@@ -832,3 +832,92 @@ export const useViewBidStyles = makeStyles(theme => ({
   },
   btnGoBack: { width: 40, height: 24, minWidth: 40, marginRight: 8, color: "black", border: "1px solid #000000", padding: 0 },
 }));
+
+export const useStylesPhotosForm = makeStyles(theme =>
+  createStyles({
+    root: {
+      width: '100%',
+      display: 'flex',
+      flexWrap: 'wrap',
+      flexGrow: 1,
+      justifyContent: 'space-around',
+      overflow: 'hidden',
+      backgroundColor: 'blue',
+    },
+    gridList: {
+      width: 'min-content',
+      height: 'max-content',
+      transform: 'translateZ(0)',
+    },
+    imgContainer: {
+      position: 'relative',
+      height: 300,
+      margin: 3,
+      [theme.breakpoints.down('xs')]: {
+        height: 150,
+      },
+    },
+    mainImgContainer: {
+      height: 700,
+      alignItems: 'center',
+      justifyContent: 'center',
+      // maxWidth: 1000,
+      marginTop: 20,
+      marginBottom: 20,
+      [theme.breakpoints.down('md')]: {
+        height: 600,
+      },
+      [theme.breakpoints.down('sm')]: {
+        height: 400,
+      },
+      [theme.breakpoints.down('xs')]: {
+        height: 200,
+      },
+    },
+    img: {
+      height: '100%',
+      maxWidth: '90%',
+      objectFit: 'cover',
+    },
+    titleBar: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      background:
+        'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+        'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+    },
+    icon: {
+      color: 'white',
+    },
+    mainContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      marginTop: 20,
+      marginBottom: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      transition: '1000',
+    },
+    empty: {
+      marginBottom: 20,
+    },
+    container: {
+      flexDirection: 'row',
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+      },
+    },
+
+    actions: {
+      marginTop: theme.spacing(3),
+      marginBottom: theme.spacing(3),
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    buttons: {
+      marginRight: theme.spacing(2),
+    },
+  })
+);

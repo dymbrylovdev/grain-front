@@ -14,6 +14,14 @@ export const getMyBids = (type: TBidType, page: number, perPage: number) => {
   return axios.get(`/api/my/bids?type=${type}&page=${page}&per_page=${perPage}`);
 };
 
+export const delPhoto = (photoId: number) => {
+  return axios.delete(`/api/bid_photo/${photoId}`)
+}
+
+export const editPhotoBid = (id: number, data: any, isArray?: boolean) => {
+  return axios.put(`/api/bid/${id}`, { photos_base64: isArray ? data : [data] });
+};
+
 export const getAllBids = (
   cropId: number,
   type: TBidType,

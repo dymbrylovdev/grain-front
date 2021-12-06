@@ -176,7 +176,6 @@ const BidEditPage: React.FC<TPropsFromRedux &
         }
       );
       clearEdit();
-      if (editSuccess) history.goBack();
     }
   }, [clearEdit, editError, editSuccess, enqueueSnackbar, history, intl]);
 
@@ -310,6 +309,9 @@ const BidEditPage: React.FC<TPropsFromRedux &
                 openInfoAlert={openInfoAlert}
                 setOpenInfoAlert={setOpenInfoAlert}
                 editContactViewCount={editContactViewCount}
+                pointPrices={pointPrices}
+                editSuccess={editSuccess}
+                fetch={fetch}
               />
             )}
             <AlertDialog
