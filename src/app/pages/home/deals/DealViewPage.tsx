@@ -295,7 +295,6 @@ const DealViewPage: React.FC<TPropsFromRedux &
             />
           </YMaps>
         )}
-        \
       </div>
       <Modal open={!!archiveBid && !editLoading} onClose={() => setArchiveBid(undefined)}>
         <div
