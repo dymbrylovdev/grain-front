@@ -8,6 +8,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     padding: 16,
     backgroundColor: "white",
     borderRadius: 4,
+    cursor: 'pointer',
     // transition: ".1s ease-in",
     boxShadow: "none !important",
     width: "100%",
@@ -66,6 +67,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   wrapperImage: {
     width: 318,
     height: 268,
+    cursor: 'pointer',
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       maxHeight: 102,

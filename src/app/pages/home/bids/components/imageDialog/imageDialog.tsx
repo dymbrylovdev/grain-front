@@ -33,10 +33,11 @@ const useStyles = makeStyles(theme => ({
 interface IProps extends DialogProps {
   handleClose: any;
   url: string;
-  handleArrow: any;
+  handleArrow?: any;
+  noneArrows?: boolean;
 }
 
-const ImageDialog: React.FC<IProps> = ({ open, handleClose, url, handleArrow }) => {
+const ImageDialog: React.FC<IProps> = ({ open, handleClose, url, handleArrow, noneArrows }) => {
   const classes = useStyles();
   return (
     <Dialog
@@ -52,20 +53,22 @@ const ImageDialog: React.FC<IProps> = ({ open, handleClose, url, handleArrow }) 
       }}
     >
       <DialogContent style={{ padding: 0, overflow: "hidden" }}>
-        <div className={classes.arrows}>
-          <IconButton
-            onClick={() => handleArrow("prev")}
-            style={{ top: "50%", transform: "translateY(-50%)", zIndex: 2, color: "#fff", left: 15 }}
-          >
-            <ArrowBack style={{ fontSize: 40 }} />
-          </IconButton>
-          <IconButton
-            onClick={() => handleArrow("next")}
-            style={{ top: "50%", transform: "translateY(-50%)", zIndex: 2, color: "#fff", left: 0 }}
-          >
-            <ArrowNext style={{ fontSize: 40 }} />
-          </IconButton>
-        </div>
+        {!noneArrows && handleArrow && (
+          <div className={classes.arrows}>
+            <IconButton
+              onClick={() => handleArrow("prev")}
+              style={{ top: "50%", transform: "translateY(-50%)", zIndex: 2, color: "#fff", left: 15, height: 50, width: 50 }}
+            >
+              <ArrowBack style={{ fontSize: 40 }} />
+            </IconButton>
+            <IconButton
+              onClick={() => handleArrow("next")}
+              style={{ top: "50%", transform: "translateY(-50%)", zIndex: 2, color: "#fff", left: 0, height: 50, width: 50 }}
+            >
+              <ArrowNext style={{ fontSize: 40 }} />
+            </IconButton>
+          </div>
+        )}
         <img className={classes.img} src={url} alt="imageDialog" />
       </DialogContent>
     </Dialog>

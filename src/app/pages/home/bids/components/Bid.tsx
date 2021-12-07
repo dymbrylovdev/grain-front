@@ -36,6 +36,7 @@ interface IProps {
   localBids: ILocalBids[] | null;
   numberParams?: ICropParam[];
   toggleLocationsModal?: () => void;
+  handleShowImage: (index: number, photos?: string[] | undefined) => void;
 }
 
 const Bid = React.memo<IProps>(
@@ -58,6 +59,7 @@ const Bid = React.memo<IProps>(
     localBids,
     numberParams,
     toggleLocationsModal,
+    handleShowImage,
   }) => {
     const history = useHistory();
     const caruselRef: any = useRef();
@@ -85,20 +87,37 @@ const Bid = React.memo<IProps>(
       [numberParams]
     );
 
+    const stopProp = useCallback((e: React.MouseEvent) => e.stopPropagation(), []);
+
     const items = useMemo(() => {
       const arrImg: any = [];
       if (bid.photos && bid.photos.length > 0) {
-        bid.photos.forEach((item, index) =>
+        const photosUrls = bid.photos.map(item => `${API_DOMAIN}${item.path}`);
+        bid.photos.forEach((item, index) => {
+          const url = `${API_DOMAIN}${item.path}`;
           arrImg.push(
-            <div className={innerClasses.wrapperImage}>
-              <img src={`${API_DOMAIN}${item.path}`} className={innerClasses.image} alt={index.toString()} />
+            <div
+              className={innerClasses.wrapperImage}
+              onClick={e => {
+                stopProp(e);
+                handleShowImage(index, photosUrls);
+              }}
+            >
+              <img src={url} className={innerClasses.image} alt={index.toString()} />
             </div>
-          )
-        );
+          );
+        });
       } else {
+        const defaultUrl = `${API_DOMAIN}${"/uploaded/images/bid/default.jpg"}`;
         arrImg.push(
-          <div className={innerClasses.wrapperImage}>
-            <img src={`${API_DOMAIN}${"/uploaded/images/bid/default.jpg"}`} className={innerClasses.image} alt={"defaulImage"} />
+          <div
+            className={innerClasses.wrapperImage}
+            onClick={e => {
+              stopProp(e);
+              handleShowImage(0, [defaultUrl]);
+            }}
+          >
+            <img src={defaultUrl} className={innerClasses.image} alt={"defaulImage"} />
           </div>
         );
       }
@@ -123,7 +142,7 @@ const Bid = React.memo<IProps>(
     );
 
     return (
-      <div className={innerClasses.container}>
+      <div className={innerClasses.container} onClick={() => handleClickEditOrViewBid(bid)}>
         <div className={innerClasses.imageBlock}>
           <div className={innerClasses.imageBlocks} style={{ zIndex: 1 }}>
             {!!bid?.vendor && (bid.vendor.company_confirmed_by_payment || bid.vendor.company_confirmed_by_email) && (
@@ -147,7 +166,14 @@ const Bid = React.memo<IProps>(
           {arrImgIndex && (
             <div className={innerClasses.containerDot}>
               {arrImgIndex.map(item => (
-                <div key={item} className={innerClasses.wrapperDot} onClick={() => handleDot(item)}>
+                <div
+                  key={item}
+                  className={innerClasses.wrapperDot}
+                  onClick={e => {
+                    stopProp(e);
+                    handleDot(item);
+                  }}
+                >
                   <div className={innerClasses.dot} style={{ backgroundColor: currentIndex === item ? "#6164FF" : "white" }} />
                 </div>
               ))}
@@ -193,7 +219,13 @@ const Bid = React.memo<IProps>(
                                 )
                               : "-"}
                           </b>{" "}
-                          <b className={innerClasses.btnChangeDelivery} onClick={() => toggleLocationsModal && toggleLocationsModal()}>
+                          <b
+                            className={innerClasses.btnChangeDelivery}
+                            onClick={e => {
+                              stopProp(e);
+                              toggleLocationsModal && toggleLocationsModal();
+                            }}
+                          >
                             (Изменить)
                           </b>
                         </b>
@@ -261,7 +293,13 @@ const Bid = React.memo<IProps>(
                                 )
                               : "-"}
                           </b>{" "}
-                          <b className={innerClasses.btnChangeDelivery} onClick={() => toggleLocationsModal && toggleLocationsModal()}>
+                          <b
+                            className={innerClasses.btnChangeDelivery}
+                            onClick={e => {
+                              stopProp(e);
+                              toggleLocationsModal && toggleLocationsModal();
+                            }}
+                          >
                             (Изменить)
                           </b>
                         </b>
@@ -356,7 +394,15 @@ const Bid = React.memo<IProps>(
                 {!isMobile && (
                   <>
                     <div className={innerClasses.textDrop}>{newBid?.distance || bid.distance || "-"}</div>
-                    <Button variant="text" color="primary" className={innerClasses.btnCard} onClick={() => handleOpenMap(bid)}>
+                    <Button
+                      variant="text"
+                      color="primary"
+                      className={innerClasses.btnCard}
+                      onClick={e => {
+                        stopProp(e);
+                        handleOpenMap(bid);
+                      }}
+                    >
                       <div className={innerClasses.textCard}>Посмотреть на карте</div>
                     </Button>
                   </>
@@ -378,7 +424,8 @@ const Bid = React.memo<IProps>(
                     {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" && (
                       <IconButton size="medium" color="primary">
                         <EmailIcon
-                          onClick={() => {
+                          onClick={e => {
+                            stopProp(e);
                             setSubDialogOpen(true);
                             setOpenedSubBidId(bid.id);
                           }}
@@ -386,7 +433,14 @@ const Bid = React.memo<IProps>(
                       </IconButton>
                     )}
                     {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" ? (
-                      <IconButton size="medium" color="primary" onClick={() => handleClickEditOrViewBid(bid)}>
+                      <IconButton
+                        size="medium"
+                        color="primary"
+                        onClick={e => {
+                          stopProp(e);
+                          handleClickEditOrViewBid(bid);
+                        }}
+                      >
                         <EditIcon />
                       </IconButton>
                     ) : (
@@ -394,7 +448,10 @@ const Bid = React.memo<IProps>(
                         color="primary"
                         variant="contained"
                         className={innerClasses.btnDetailed}
-                        onClick={() => handleClickEditOrViewBid(bid)}
+                        onClick={e => {
+                          stopProp(e);
+                          handleClickEditOrViewBid(bid);
+                        }}
                       >
                         <div className={innerClasses.textBtnDetailed}>Подробнее</div>
                         <CardMedia
@@ -412,7 +469,8 @@ const Bid = React.memo<IProps>(
                     <IconButton
                       size="medium"
                       color={bid.is_archived ? "secondary" : "primary"}
-                      onClick={() => {
+                      onClick={e => {
+                        stopProp(e);
                         if (archive) {
                           archive({ id: bid.id, is_archived: !bid.is_archived });
                         }
@@ -428,7 +486,10 @@ const Bid = React.memo<IProps>(
                       <IconButton
                         size="medium"
                         color="primary"
-                        onClick={() => history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`)}
+                        onClick={e => {
+                          stopProp(e);
+                          history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`);
+                        }}
                       >
                         <EditIcon />
                       </IconButton>
@@ -437,7 +498,10 @@ const Bid = React.memo<IProps>(
                         color="primary"
                         variant="contained"
                         className={innerClasses.btnDetailed}
-                        onClick={() => history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`)}
+                        onClick={e => {
+                          stopProp(e);
+                          history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`);
+                        }}
                       >
                         <div className={innerClasses.textBtnDetailed}>Подробнее</div>
                         <CardMedia
@@ -448,7 +512,14 @@ const Bid = React.memo<IProps>(
                         />
                       </Button>
                     )}
-                    <IconButton size="medium" onClick={() => handleDeleteDialiog(bid.id)} color="secondary">
+                    <IconButton
+                      size="medium"
+                      onClick={e => {
+                        stopProp(e);
+                        handleDeleteDialiog(bid.id);
+                      }}
+                      color="secondary"
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </>
@@ -538,7 +609,15 @@ const Bid = React.memo<IProps>(
                   )}.${bid.created_at.slice(0, 4)}`}</div>
                 </div>
                 {bid.vendor.phone && (
-                  <Button variant="outlined" color="primary" className={innerClasses.btnShowPhone} onClick={() => handleShowPhone(bid.id)}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    className={innerClasses.btnShowPhone}
+                    onClick={e => {
+                      stopProp(e);
+                      handleShowPhone(bid.id);
+                    }}
+                  >
                     <div className={innerClasses.wrapperTextShowBtn}>
                       {showsPhones.find(item => item === bid.id) ? (
                         <div className={innerClasses.textPhone} style={{ textAlign: "center" }}>
@@ -558,7 +637,15 @@ const Bid = React.memo<IProps>(
             {!isMobile && (
               <>
                 {bid.vendor.phone && (
-                  <Button variant="outlined" color="primary" className={innerClasses.btnShowPhone} onClick={() => handleShowPhone(bid.id)}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    className={innerClasses.btnShowPhone}
+                    onClick={e => {
+                      stopProp(e);
+                      handleShowPhone(bid.id);
+                    }}
+                  >
                     <div className={innerClasses.wrapperTextShowBtn}>
                       {showsPhones.find(item => item === bid.id) ? (
                         <div className={innerClasses.textPhone} style={{ textAlign: "center" }}>
@@ -605,14 +692,18 @@ const Bid = React.memo<IProps>(
                     color="primary"
                     className={innerClasses.btnCard}
                     style={{ width: "100%", marginBottom: 4, marginTop: 16 }}
-                    onClick={() => handleOpenMap(bid)}
+                    onClick={e => {
+                      stopProp(e);
+                      handleOpenMap(bid);
+                    }}
                   >
                     <div className={innerClasses.textCard}>Посмотреть на карте</div>
                   </Button>
                   {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" && (
                     <IconButton size="medium" color="primary">
                       <EmailIcon
-                        onClick={() => {
+                        onClick={e => {
+                          stopProp(e);
                           setSubDialogOpen(true);
                           setOpenedSubBidId(bid.id);
                         }}
@@ -621,7 +712,14 @@ const Bid = React.memo<IProps>(
                   )}
 
                   {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" ? (
-                    <IconButton size="medium" color="primary" onClick={() => handleClickEditOrViewBid(bid)}>
+                    <IconButton
+                      size="medium"
+                      color="primary"
+                      onClick={e => {
+                        stopProp(e);
+                        handleClickEditOrViewBid(bid);
+                      }}
+                    >
                       <EditIcon />
                     </IconButton>
                   ) : (
@@ -630,7 +728,10 @@ const Bid = React.memo<IProps>(
                       variant="contained"
                       className={innerClasses.btnDetailed}
                       style={{ width: "100%" }}
-                      onClick={() => handleClickEditOrViewBid(bid)}
+                      onClick={e => {
+                        stopProp(e);
+                        handleClickEditOrViewBid(bid);
+                      }}
                     >
                       <div className={innerClasses.textBtnDetailed}>Подробнее</div>
                       <CardMedia
@@ -648,7 +749,8 @@ const Bid = React.memo<IProps>(
                   <IconButton
                     size="medium"
                     color={bid.is_archived ? "secondary" : "primary"}
-                    onClick={() => {
+                    onClick={e => {
+                      stopProp(e);
                       if (archive) {
                         archive({ id: bid.id, is_archived: !bid.is_archived });
                       }
@@ -664,7 +766,10 @@ const Bid = React.memo<IProps>(
                     <IconButton
                       size="medium"
                       color="primary"
-                      onClick={() => history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`)}
+                      onClick={e => {
+                        stopProp(e);
+                        history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`);
+                      }}
                     >
                       <EditIcon />
                     </IconButton>
@@ -673,7 +778,10 @@ const Bid = React.memo<IProps>(
                       color="primary"
                       variant="contained"
                       className={innerClasses.btnDetailed}
-                      onClick={() => history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`)}
+                      onClick={e => {
+                        stopProp(e);
+                        history.push(`/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`);
+                      }}
                     >
                       <div className={innerClasses.textBtnDetailed}>Подробнее</div>
                       <CardMedia
@@ -684,7 +792,14 @@ const Bid = React.memo<IProps>(
                       />
                     </Button>
                   )}
-                  <IconButton size="medium" onClick={() => handleDeleteDialiog(bid.id)} color="secondary">
+                  <IconButton
+                    size="medium"
+                    onClick={e => {
+                      stopProp(e);
+                      handleDeleteDialiog(bid.id);
+                    }}
+                    color="secondary"
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </>

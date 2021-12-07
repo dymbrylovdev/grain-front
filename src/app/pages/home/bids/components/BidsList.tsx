@@ -15,6 +15,7 @@ import Bid from "./Bid";
 import { ILocation } from "../../../../interfaces/locations";
 import { distance } from "./BidForm";
 import YaMapDialog from "./YaMapDialog";
+import ImageDialog from "./imageDialog/imageDialog";
 
 export interface ILocalBids {
   currentBid: IBid;
@@ -102,6 +103,11 @@ const BidsList: React.FC<IProps> = ({
   const [currentMark, setCurrentMark] = useState<ILocalBids | null>(null);
   const isBuyerTariff = useMemo(() => user.tariff_matrix.tariff.id !== 1, [user]);
   const [showsPhones, setShowsPhones] = useState<number[]>([]);
+  const [isShowImage, setIsShowImage] = useState(false);
+  const [currentImages, setCurrentImages] = useState({
+    photos: [""],
+    index: 0,
+  });
 
   const updateWindowDimensions = () => {
     setClientWidth(window.innerWidth);
@@ -221,6 +227,33 @@ const BidsList: React.FC<IProps> = ({
     [history, setProfit, user, bestAllMyMode]
   );
 
+  const handleShowImage = useCallback((index: number, photos?: string[]) => {
+    setCurrentImages(state => ({
+      photos: photos || state.photos,
+      index: index,
+    }));
+    setIsShowImage(true);
+  }, []);
+
+  const handleArrowImage = useCallback(
+    (operation: "prev" | "next") => {
+      const maxIndex = currentImages.photos.length - 1;
+      if (operation === "next") {
+        setCurrentImages(state => ({
+          photos: state.photos,
+          index: currentImages.index === maxIndex ? 0 : currentImages.index + 1,
+        }));
+      }
+      if (operation === "prev") {
+        setCurrentImages(state => ({
+          photos: state.photos,
+          index: currentImages.index === 0 ? maxIndex : currentImages.index - 1,
+        }));
+      }
+    },
+    [currentImages]
+  );
+
   const handleShowPhone = useCallback(
     (id: number) => {
       const isOpen = showsPhones.find(item => item === id);
@@ -335,6 +368,7 @@ const BidsList: React.FC<IProps> = ({
               localBids={localBids}
               numberParams={numberParams}
               toggleLocationsModal={toggleLocationsModal}
+              handleShowImage={handleShowImage}
             />
           ))}
           {!!paginationData && !!fetcher && (
@@ -394,6 +428,13 @@ const BidsList: React.FC<IProps> = ({
         setMap={setMap}
         setYmaps={setYmaps}
         showPlacemark={showPlacemark}
+      />
+      <ImageDialog
+        open={isShowImage}
+        url={currentImages.photos[currentImages.index]}
+        handleClose={() => setIsShowImage(false)}
+        noneArrows={currentImages.photos.length < 2}
+        handleArrow={handleArrowImage}
       />
     </>
   );
