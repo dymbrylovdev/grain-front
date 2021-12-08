@@ -57,7 +57,7 @@ const ImageDialog: React.FC<IProps> = ({ open, handleClose, url, handleArrow, no
       >
         <div style={{ position: "absolute", zIndex: 100, width: "100%" }}>
           <div style={{ display: "flex", width: "100%", justifyContent: "end" }}>
-            <IconButton onClick={() => handleArrow("prev")} style={{ padding: 0 }}>
+            <IconButton onClick={() => handleClose()} style={{ padding: 0 }}>
               <Close style={{ fontSize: 40, color: "#fff" }} />
             </IconButton>
           </div>
