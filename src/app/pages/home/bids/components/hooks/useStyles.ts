@@ -3,7 +3,7 @@ import { makeStyles, createStyles } from "@material-ui/core";
 export const useBidTableStyles = makeStyles(theme => ({
   container: {
     display: "flex",
-    flexWrap: "wrap",
+    // flexWrap: "wrap",
     marginBottom: 8,
     padding: 16,
     backgroundColor: "white",
@@ -18,10 +18,6 @@ export const useBidTableStyles = makeStyles(theme => ({
       padding: 12,
     },
     // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1220px)"]: {
-      flexDirection: "column",
-    },
-    // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       display: "block",
     },
@@ -30,7 +26,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     marginBottom: 8,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (min-width:1010px)"]: {
-      marginRight: 32,
+      marginRight: 16,
     },
   },
   imageBlocks: {
@@ -57,7 +53,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     borderRadius: 4,
   },
   fontImageText: {
-    fontSize: 16,
+    fontSize: "0.9vw",
     color: "white",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
@@ -65,9 +61,20 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   wrapperImage: {
-    width: 318,
-    height: 268,
+    height: 258,
     cursor: "pointer",
+    [theme.breakpoints.up("md")]: {
+      width: 280,
+      height: 210,
+    },
+    [theme.breakpoints.up("lg")]: {
+      width: 300,
+      height: 230,
+    },
+    [theme.breakpoints.up("xl")]: {
+      width: 318,
+      height: 258,
+    },
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       maxHeight: 102,
@@ -86,10 +93,22 @@ export const useBidTableStyles = makeStyles(theme => ({
     flexWrap: "wrap",
     justifyContent: "center",
     position: "absolute",
-    marginTop: 245,
+    marginTop: 235,
     zIndex: 1,
-    width: 318,
+    width: 300,
     cursor: "pointer",
+    [theme.breakpoints.up("md")]: {
+      width: 280,
+      marginTop: 180,
+    },
+    [theme.breakpoints.up("lg")]: {
+      width: 300,
+      marginTop: 200,
+    },
+    [theme.breakpoints.up("xl")]: {
+      width: 318,
+      marginTop: 230,
+    },
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       marginTop: 90,
@@ -102,7 +121,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     paddingBottom: 8,
   },
   dot: {
-    width: 58,
+    width: 50,
     height: 6,
     borderRadius: 10,
     // eslint-disable-next-line no-useless-computed-key
@@ -111,7 +130,15 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   wrapperCarusel: {
-    width: 318,
+    [theme.breakpoints.up("md")]: {
+      width: 280,
+    },
+    [theme.breakpoints.up("lg")]: {
+      width: 300,
+    },
+    [theme.breakpoints.up("xl")]: {
+      width: 318,
+    },
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       width: "100%",
@@ -154,7 +181,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   },
   price: {
     fontWeight: "bold",
-    fontSize: 24,
+    fontSize: "1.175vw",
     color: "black",
     marginRight: 14,
     // eslint-disable-next-line no-useless-computed-key
@@ -163,7 +190,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   rybl: {
-    fontSize: 24,
+    fontSize: "1.175vw",
     color: "#21BA88",
     marginRight: 21,
     // eslint-disable-next-line no-useless-computed-key
@@ -172,7 +199,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   nds: {
-    fontSize: 24,
+    fontSize: "1.175vw",
     color: "black",
     marginRight: 21,
     // eslint-disable-next-line no-useless-computed-key
@@ -183,7 +210,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   delivery: {
     display: "inline-block",
     fontWeight: "bold",
-    fontSize: 24,
+    fontSize: "1.175vw",
     color: "black",
     marginRight: 5,
     // eslint-disable-next-line no-useless-computed-key
@@ -192,7 +219,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   deliveryAddress: {
-    fontSize: 24,
+    fontSize: "1.175vw",
     color: "black",
     fontWeight: "normal",
     // eslint-disable-next-line no-useless-computed-key
@@ -202,7 +229,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   },
 
   btnChangeDelivery: {
-    fontSize: 24,
+    fontSize: "1.175vw",
     fontWeight: "bold",
     color: "#6164FFFF",
     cursor: "pointer",
@@ -213,7 +240,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   drop: {
-    fontSize: 18,
+    fontSize: "1.175vw",
     fontWeight: "bold",
     marginBottom: 8,
     color: "black",
@@ -226,7 +253,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   wrapperDrop: { display: "flex", flexDirection: "row" },
   textDrop: {
     fontWeight: "bold",
-    fontSize: 24,
+    fontSize: "1.175vw",
     color: "black",
     marginRight: 16,
     // eslint-disable-next-line no-useless-computed-key
@@ -236,7 +263,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   },
   btnCard: {
     backgroundColor: "#EDEEF4FF",
-    fontSize: 16,
+    fontSize: "0.975vw",
     textTransform: "initial",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
@@ -245,7 +272,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   },
   textCard: {
     color: "#54C7A3FF",
-    fontSize: 16,
+    fontSize: "0.975vw",
     fontWeight: 400,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
@@ -253,7 +280,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   infoText: {
-    fontSize: 16,
+    fontSize: "0.975vw",
     fontWeight: "bold",
     color: "black",
     marginRight: 5,
@@ -263,7 +290,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   infoTwoText: {
-    fontSize: 16,
+    fontSize: "0.975vw",
     color: "black",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
@@ -271,14 +298,15 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   btnShowPhone: {
-    maxWidth: 159,
-    marginBottom: 18,
+    maxWidth: "9vw",
+    marginBottom: 16,
     textTransform: "initial",
     color: "#6164FF",
     padding: 0,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
-      marginBottom: 16,
+      maxWidth: 200,
+      paddingRight: 8,
     },
   },
   wrapperTextShowBtn: {
@@ -286,12 +314,12 @@ export const useBidTableStyles = makeStyles(theme => ({
     flexDirection: "column",
     justifyContent: "flex-start",
     width: "100%",
-    padding: "0 8px",
+    paddingLeft: 8,
     alignItems: "flex-start",
   },
   textPhone: {
     color: "black",
-    fontSize: 16,
+    fontSize: "0.975vw",
     fontWeight: 400,
     width: "100%",
     textAlign: "left",
@@ -302,7 +330,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   },
   textCreateAt: {
     color: "black",
-    fontSize: 16,
+    fontSize: "0.975vw",
     fontWeight: 400,
     textAlign: "end",
     // eslint-disable-next-line no-useless-computed-key
@@ -312,11 +340,11 @@ export const useBidTableStyles = makeStyles(theme => ({
   },
   companyWrapper: { display: "flex", justifyContent: "space-between", flexDirection: "column", marginRight: 10 },
   nameVendor: {
-    fontSize: 16,
+    fontSize: "0.975vw",
     fontWeight: "bold",
     color: "black",
     textDecoration: "underline ",
-    marginBottom: 16,
+    marginBottom: 8,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       fontSize: 14,
@@ -324,10 +352,11 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   datePublic: {
-    fontSize: 16,
+    fontSize: "0.975vw",
     fontWeight: "bold",
     color: "black",
-    marginBottom: 16,
+    textAlign: "end",
+    marginBottom: 8,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       fontSize: 14,
@@ -335,7 +364,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   nameCompany: {
-    fontSize: 16,
+    fontSize: "0.975vw",
     fontWeight: 400,
     color: "black",
     // eslint-disable-next-line no-useless-computed-key
@@ -344,8 +373,9 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   companyInfo: { display: "flex", flexDirection: "column" },
+  iconBtn: { padding: 8 },
   btnTextShowPhone: {
-    fontSize: 16,
+    fontSize: "0.975vw",
     color: "#6164FF",
     fontWeight: 400,
     // eslint-disable-next-line no-useless-computed-key
@@ -355,15 +385,13 @@ export const useBidTableStyles = makeStyles(theme => ({
   },
   wrapperInfoCompany: { display: "flex", flexDirection: "row" },
   btnDetailed: {
-    width: 140,
-    paddingTop: 8,
-    paddingBottom: 8,
+    width: "9vw",
     backgroundColor: "#6164FF",
     alignItems: "center",
     textTransform: "initial",
   },
   textBtnDetailed: {
-    fontSize: 16,
+    fontSize: "0.975vw",
     color: "white",
     fontWeight: 400,
     // eslint-disable-next-line no-useless-computed-key

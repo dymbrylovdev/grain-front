@@ -445,7 +445,7 @@ const ViewBidForm: React.FC<IProps> = ({
                       <div className={classes.wrapperTextShowBtn}>
                         {showsPhones ? (
                           <div className={classes.textPhone} style={{ textAlign: "center" }}>
-                            {formatPhone(bid.vendor.phone)}
+                            <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>
                           </div>
                         ) : (
                           <>
@@ -469,7 +469,7 @@ const ViewBidForm: React.FC<IProps> = ({
                         <div className={classes.wrapperTextShowBtn}>
                           {showsPhones ? (
                             <div className={classes.textPhone} style={{ textAlign: "center" }}>
-                              {formatPhone(bid.vendor.phone)}
+                              <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>
                             </div>
                           ) : (
                             <>
