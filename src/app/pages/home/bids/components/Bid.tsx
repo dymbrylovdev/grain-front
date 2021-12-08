@@ -621,7 +621,7 @@ const Bid = React.memo<IProps>(
                     <div className={innerClasses.wrapperTextShowBtn}>
                       {showsPhones.find(item => item === bid.id) ? (
                         <div className={innerClasses.textPhone} style={{ textAlign: "center" }}>
-                          {formatPhone(bid.vendor.phone)}
+                          <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>
                         </div>
                       ) : (
                         <>
@@ -649,7 +649,7 @@ const Bid = React.memo<IProps>(
                     <div className={innerClasses.wrapperTextShowBtn}>
                       {showsPhones.find(item => item === bid.id) ? (
                         <div className={innerClasses.textPhone} style={{ textAlign: "center" }}>
-                          {formatPhone(bid.vendor.phone)}
+                          <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>
                         </div>
                       ) : (
                         <>
