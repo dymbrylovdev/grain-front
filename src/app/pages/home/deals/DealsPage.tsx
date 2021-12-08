@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
+import { YMaps, Map } from "react-yandex-maps";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter } from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Button } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
@@ -21,11 +22,10 @@ import { actions as authActions } from "../../../store/ducks/auth.duck";
 import { thousands } from "./utils/utils";
 import { ILocalDeals } from "./DealViewPage";
 import { IDeal } from "../../../interfaces/deals";
+import { REACT_APP_GOOGLE_API_KEY } from "../../../constants";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
-
-  me,
   loadingMe,
   fetchMe,
   clearMe,
@@ -34,11 +34,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   perPage,
   total,
   weeks,
-  setWeeks,
   term,
-  setTerm,
   min_prepayment_amount,
-  setPrepayment,
   fetch,
   deals,
   loading,
@@ -46,7 +43,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   fetchDealsFilters,
   dealsFilters,
-  filtersLoading,
   filtersError,
 
   fetchCrops,
@@ -65,14 +61,86 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 }) => {
   const classes = useStyles();
   const history = useHistory();
+  const routeRef = useRef();
   const [filterModalOpen, setFilterModalOpen] = useState(false);
-
+  const [currentDeal, setCurrentDeal] = useState<IDeal | null>(null);
+  const [map, setMap] = useState<any>();
+  const [ymaps, setYmaps] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
 
   const localDeals: ILocalDeals[] | null = useMemo(() => {
     const storageDeals = localStorage.getItem("deals");
     return storageDeals ? JSON.parse(storageDeals) : null;
-  }, []);
+  }, [currentDeal]);
+
+  const mapState = useMemo(() => {
+    if (currentDeal?.sale_bid?.location) {
+      return { center: [currentDeal.sale_bid.location.lat, currentDeal.sale_bid.location.lng], zoom: 7, margin: [10, 10, 10, 10] };
+    } else {
+      return null;
+    }
+  }, [currentDeal]);
+
+  const addRoute = useCallback(
+    async (pointA: any, pointB: any) => {
+      map.geoObjects.remove(routeRef.current);
+      const multiRoute = await ymaps.route([pointA.text, pointB.text], {
+        multiRoute: true,
+        mapStateAutoApply: true,
+      });
+      routeRef.current = multiRoute;
+      await map.geoObjects.add(multiRoute);
+      const routes = multiRoute.getRoutes();
+      for (let i = 0, l = routes.getLength(); i < l; i++) {
+        const route = routes.get(i);
+        multiRoute.setActiveRoute(route);
+        route.balloon.open();
+        break;
+      }
+      const activeProperties = multiRoute.getActiveRoute();
+      if (activeProperties && currentDeal) {
+        const { distance } = activeProperties.properties.getAll();
+        const newCurrentDeal: ILocalDeals = {
+          distance: Math.round(distance.value / 1000),
+          purchase_bid: {
+            lat: currentDeal.purchase_bid.location.lat,
+            lng: currentDeal.purchase_bid.location.lng,
+            text: currentDeal.purchase_bid.location.text,
+          },
+          sale_bid: {
+            lat: currentDeal.sale_bid.location.lat,
+            lng: currentDeal.sale_bid.location.lng,
+            text: currentDeal.sale_bid.location.text,
+          },
+        };
+        if (localDeals) {
+          const existDealsIndex = localDeals.findIndex(
+            item =>
+              item.purchase_bid.lat === currentDeal.purchase_bid.location.lat &&
+              item.purchase_bid.lng === currentDeal.purchase_bid.location.lng &&
+              item.sale_bid.lat === currentDeal.sale_bid.location.lat &&
+              item.sale_bid.lng === currentDeal.sale_bid.location.lng
+          );
+          if (existDealsIndex > -1) {
+            const newArr = localDeals;
+            newArr[existDealsIndex] = newCurrentDeal;
+            localStorage.setItem("deals", JSON.stringify(newArr));
+          } else {
+            localStorage.setItem("deals", JSON.stringify([...localDeals, newCurrentDeal]));
+          }
+        } else {
+          localStorage.setItem("deals", JSON.stringify([newCurrentDeal]));
+        }
+      }
+      setCurrentDeal(null);
+    },
+    [ymaps, map, routeRef, localDeals, currentDeal]
+  );
+
+  useEffect(() => {
+    if (ymaps && map && currentDeal?.sale_bid?.location && currentDeal?.purchase_bid?.location)
+      addRoute(currentDeal.sale_bid.location, currentDeal.purchase_bid.location);
+  }, [currentDeal, addRoute, ymaps, map]);
 
   const getCurrentCrop = useCallback((currentDeal: IDeal) => crops?.find(crop => crop.id === currentDeal.sale_bid.crop_id), [crops]);
 
@@ -318,7 +386,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     <TableCell>{getProfit(item)}</TableCell>
                     <TableCell>{getDistance(item)}</TableCell>
                     <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
-                    <TableCell align="right">
+                    <TableCell align="center">
                       <IconButton
                         size="medium"
                         color="primary"
@@ -326,6 +394,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       >
                         <VisibilityIcon />
                       </IconButton>
+                      <Button variant="text" color="primary" onClick={() => setCurrentDeal(item)}>
+                        <div>Обновить расстояние</div>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -356,13 +427,26 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         editFilter={editFilter}
         editFilterLoading={editFilterLoading}
       />
+      <div style={{ display: "none" }}>
+        {mapState && (
+          <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
+            <Map
+              state={mapState}
+              instanceRef={ref => setMap(ref)}
+              onLoad={ymaps => {
+                setYmaps(ymaps);
+              }}
+              modules={["templateLayoutFactory", "route", "geoObject.addon.balloon"]}
+            />
+          </YMaps>
+        )}
+      </div>
     </Paper>
   );
 };
 
 const connector = connect(
   (state: IAppState) => ({
-    me: state.auth.user,
     loadingMe: state.auth.loading,
 
     page: state.deals.page,
@@ -376,7 +460,6 @@ const connector = connect(
     error: state.deals.error,
 
     dealsFilters: state.deals.filters,
-    filtersLoading: state.deals.filtersLoading,
     filtersError: state.deals.filtersError,
 
     crops: state.crops2.crops,
@@ -400,9 +483,6 @@ const connector = connect(
     fetchAllCropParams: crops2Actions.allCropParamsRequest,
     clearEditFilter: dealsActions.clearEditFilter,
     editFilter: dealsActions.editFilterRequest,
-    setWeeks: dealsActions.setWeeks,
-    setTerm: dealsActions.setTerm,
-    setPrepayment: dealsActions.setPrepayment,
 
     fetchMe: authActions.fetchRequest,
     clearMe: authActions.clearFetch,
