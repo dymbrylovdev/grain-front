@@ -63,15 +63,18 @@ export const useBidTableStyles = makeStyles(theme => ({
   wrapperImage: {
     height: 258,
     cursor: "pointer",
-    [theme.breakpoints.up("md")]: {
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (min-width:900px)"]: {
       width: 280,
       height: 210,
     },
-    [theme.breakpoints.up("lg")]: {
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (min-width:1200px)"]: {
       width: 300,
       height: 230,
     },
-    [theme.breakpoints.up("xl")]: {
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (min-width:1536px)"]: {
       width: 318,
       height: 258,
     },
@@ -97,15 +100,18 @@ export const useBidTableStyles = makeStyles(theme => ({
     zIndex: 1,
     width: 300,
     cursor: "pointer",
-    [theme.breakpoints.up("md")]: {
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (min-width:900px)"]: {
       width: 280,
       marginTop: 180,
     },
-    [theme.breakpoints.up("lg")]: {
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (min-width:1200px)"]: {
       width: 300,
       marginTop: 200,
     },
-    [theme.breakpoints.up("xl")]: {
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (min-width:1536px)"]: {
       width: 318,
       marginTop: 230,
     },
@@ -130,13 +136,16 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   wrapperCarusel: {
-    [theme.breakpoints.up("md")]: {
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (min-width:900px)"]: {
       width: 280,
     },
-    [theme.breakpoints.up("lg")]: {
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (min-width:1200px)"]: {
       width: 300,
     },
-    [theme.breakpoints.up("xl")]: {
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (min-width:1536px)"]: {
       width: 318,
     },
     // eslint-disable-next-line no-useless-computed-key
@@ -150,7 +159,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     flexWrap: "wrap",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (min-width:910px)"]: {
-      marginRight: 50,
+      marginRight: 40,
     },
   },
   wrapperInfoBlock: {
