@@ -8,7 +8,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     padding: 16,
     backgroundColor: "white",
     borderRadius: 4,
-    cursor: 'pointer',
+    cursor: "pointer",
     // transition: ".1s ease-in",
     boxShadow: "none !important",
     width: "100%",
@@ -67,7 +67,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   wrapperImage: {
     width: 318,
     height: 268,
-    cursor: 'pointer',
+    cursor: "pointer",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       maxHeight: 102,
@@ -486,16 +486,36 @@ export const useViewBidStyles = makeStyles(theme => ({
     flexWrap: "wrap",
     backgroundColor: "white",
   },
-  leftCol: {
-    maxWidth: 590,
+  containerCols: {
+    display: "flex",
     width: "100%",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:840px)"]: {
+      flexWrap: "wrap",
+    },
+  },
+  leftCol: {
+    marginRight: 40,
+    width: "42%",
+    maxWidth: 530,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:840px)"]: {
+      width: "100%",
+      maxWidth: "100%",
+      marginRight: 0,
+    },
   },
   rightCol: {
-    maxWidth: 750,
+    width: "55%",
+    maxWidth: 740,
     flex: 1,
     display: "flex",
     flexWrap: "wrap",
     flexDirection: "column",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:840px)"]: {
+      width: "100%",
+    },
   },
   header: {
     display: "flex",
@@ -505,9 +525,14 @@ export const useViewBidStyles = makeStyles(theme => ({
     marginTop: 25,
     marginBottom: 30,
     maxWidth: 530,
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:840px)"]: {
+      width: "100%",
+      maxWidth: "100%",
+    },
   },
   name: {
-    fontSize: 25,
+    fontSize: 22,
 
     fontWeight: "bold",
     margin: 0,
@@ -545,7 +570,7 @@ export const useViewBidStyles = makeStyles(theme => ({
     marginBottom: 15,
   },
   listValue: {
-    fontSize: 19,
+    fontSize: 16,
     fontWeight: 600,
     fontStretch: "normal",
     fontStyle: "normal",
@@ -564,14 +589,10 @@ export const useViewBidStyles = makeStyles(theme => ({
     marginTop: 30,
   },
   infoText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
     color: "black",
     marginRight: 5,
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 14,
-    },
   },
   wrapperPrice: {
     display: "flex",
@@ -579,12 +600,8 @@ export const useViewBidStyles = makeStyles(theme => ({
     marginBottom: 8,
   },
   infoTwoText: {
-    fontSize: 16,
+    fontSize: 14,
     color: "black",
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 14,
-    },
   },
   imgBtnDetailed: { marginLeft: 12, marginRight: 12 },
   nameCompany: {
@@ -594,101 +611,85 @@ export const useViewBidStyles = makeStyles(theme => ({
   },
   price: {
     fontWeight: "bold",
-    fontSize: 24,
+    fontSize: 21,
     color: "black",
     marginRight: 14,
     // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
+    ["@media (max-width:840px)"]: {
       fontSize: 18,
     },
   },
   rybl: {
-    fontSize: 24,
+    fontSize: 21,
     color: "#21BA88",
     marginRight: 21,
     // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
+    ["@media (max-width:840px)"]: {
       fontSize: 18,
     },
   },
   delivery: {
     display: "inline-block",
     fontWeight: "bold",
-    fontSize: 24,
+    fontSize: 21,
     color: "black",
     marginRight: 5,
     // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
+    ["@media (max-width:840px)"]: {
       fontSize: 18,
     },
   },
   deliveryAddress: {
-    fontSize: 24,
+    fontSize: 21,
     color: "black",
     fontWeight: "normal",
     // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
+    ["@media (max-width:840px)"]: {
       fontSize: 18,
     },
   },
   btnChangeDelivery: {
-    fontSize: 24,
+    fontSize: 21,
     fontWeight: "bold",
     color: "#6164FFFF",
     cursor: "pointer",
     textDecoration: "underline ",
     // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
+    ["@media (max-width:840px)"]: {
       fontSize: 18,
     },
   },
   nds: {
-    fontSize: 24,
+    fontSize: 21,
     color: "black",
     marginRight: 21,
     // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
+    ["@media (max-width:840px)"]: {
       fontSize: 18,
     },
   },
   nameParameter: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 700,
     color: "black",
     marginBottom: 8,
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 16,
-    },
   },
   parameterValue: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 400,
     color: "black",
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 14,
-    },
   },
   vendorCompany: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 400,
     color: "black",
     marginTop: 8,
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 14,
-    },
   },
   modifedAt: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 600,
     color: "black",
     marginBottom: 8,
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 14,
-    },
   },
   btnShowPhone: {
     maxWidth: 159,
@@ -698,7 +699,7 @@ export const useViewBidStyles = makeStyles(theme => ({
     color: "#6164FF",
     padding: 0,
     // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
+    ["@media (max-width:840px)"]: {
       marginBottom: 16,
     },
   },
@@ -712,62 +713,41 @@ export const useViewBidStyles = makeStyles(theme => ({
   },
   textPhone: {
     color: "black",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 400,
     width: "100%",
     textAlign: "left",
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 14,
-    },
   },
   btnTextShowPhone: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#6164FF",
     fontWeight: 400,
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 14,
-    },
   },
   infoAlert: {
     whiteSpace: "pre-wrap",
     marginTop: 8,
     marginBottom: 26,
-    fontSize: 16,
+    fontSize: 14,
     color: "black",
     fontWeight: 400,
-
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 14,
-    },
   },
   calcParam: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 400,
     color: "black",
     marginBottom: 8,
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 14,
-    },
   },
   calcVal: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 400,
     color: " #6164FF",
     marginBottom: 26,
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 14,
-    },
   },
   imageBlocks: {
     position: "absolute",
     marginLeft: 8,
     marginBottom: 8,
-    marginTop: 60,
+    marginTop: 75,
     zIndex: 1,
   },
   imageFirstBlock: {
@@ -788,18 +768,14 @@ export const useViewBidStyles = makeStyles(theme => ({
     borderRadius: 4,
   },
   fontImageText: {
-    fontSize: 16,
+    fontSize: 14,
     color: "white",
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 14,
-    },
   },
   wrapperValCalc: { display: "flex", flexDirection: "row", justifyContent: "space-between", flexWrap: "wrap" },
   wrapperMedia: { display: "flex", alignItems: "center", marginTop: -6 },
   yaMap: { width: "100%", marginTop: 5 },
   wrapperParameters: { display: "flex", flexDirection: "row", flexWrap: "wrap" },
-  wrapperParameter: { display: "flex", flexDirection: "column", marginRight: 50, marginBottom: 26 },
+  wrapperParameter: { display: "flex", flexDirection: "column", marginRight: 40, marginBottom: 16 },
   wrapperCalc: {
     paddingTop: 16,
     paddingBottom: 30,
@@ -811,13 +787,9 @@ export const useViewBidStyles = makeStyles(theme => ({
   },
   titleCalc: {
     marginBottom: 16,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 700,
     color: "black",
-    // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
-      fontSize: 16,
-    },
   },
   textField: { height: 50, width: 255, margin: 0, marginBottom: 26 },
   wrapperVendor: {
@@ -825,10 +797,10 @@ export const useViewBidStyles = makeStyles(theme => ({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    marginBottom: 26,
-
+    marginBottom: 20,
+    width: "98%",
     // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
+    ["@media (max-width:840px)"]: {
       marginBottom: 16,
     },
   },
@@ -838,85 +810,83 @@ export const useViewBidStyles = makeStyles(theme => ({
 export const useStylesPhotosForm = makeStyles(theme =>
   createStyles({
     root: {
-      width: '100%',
-      display: 'flex',
-      flexWrap: 'wrap',
+      width: "100%",
+      display: "flex",
+      flexWrap: "wrap",
       flexGrow: 1,
-      justifyContent: 'space-around',
-      overflow: 'hidden',
-      backgroundColor: 'blue',
+      justifyContent: "space-around",
+      overflow: "hidden",
+      backgroundColor: "blue",
     },
     gridList: {
-      width: 'min-content',
-      height: 'max-content',
-      transform: 'translateZ(0)',
+      width: "min-content",
+      height: "max-content",
+      transform: "translateZ(0)",
     },
     imgContainer: {
-      position: 'relative',
+      position: "relative",
       height: 300,
       margin: 3,
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down("xs")]: {
         height: 150,
       },
     },
     mainImgContainer: {
       height: 700,
-      alignItems: 'center',
-      justifyContent: 'center',
+      alignItems: "center",
+      justifyContent: "center",
       // maxWidth: 1000,
       marginTop: 20,
       marginBottom: 20,
-      [theme.breakpoints.down('md')]: {
+      [theme.breakpoints.down("md")]: {
         height: 600,
       },
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down("sm")]: {
         height: 400,
       },
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down("xs")]: {
         height: 200,
       },
     },
     img: {
-      height: '100%',
-      maxWidth: '90%',
-      objectFit: 'cover',
+      height: "100%",
+      maxWidth: "90%",
+      objectFit: "cover",
     },
     titleBar: {
-      position: 'absolute',
+      position: "absolute",
       top: 0,
       left: 0,
-      width: '100%',
-      background:
-        'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
-        'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+      width: "100%",
+      background: "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " + "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
     },
     icon: {
-      color: 'white',
+      color: "white",
     },
     mainContainer: {
-      display: 'flex',
-      flexDirection: 'column',
+      display: "flex",
+      flexDirection: "column",
       marginTop: 20,
       marginBottom: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-      transition: '1000',
+      alignItems: "center",
+      justifyContent: "center",
+      transition: "1000",
     },
     empty: {
       marginBottom: 20,
     },
     container: {
-      flexDirection: 'row',
-      [theme.breakpoints.down('xs')]: {
-        flexDirection: 'column',
+      flexDirection: "row",
+      [theme.breakpoints.down("xs")]: {
+        flexDirection: "column",
       },
     },
 
     actions: {
       marginTop: theme.spacing(3),
       marginBottom: theme.spacing(3),
-      display: 'flex',
-      justifyContent: 'center',
+      display: "flex",
+      justifyContent: "center",
     },
     buttons: {
       marginRight: theme.spacing(2),

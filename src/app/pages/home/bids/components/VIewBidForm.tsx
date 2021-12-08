@@ -68,7 +68,7 @@ const ViewBidForm: React.FC<IProps> = ({
       setGoToRef(false);
     }
   }, [goToRef]);
-  const isMobile = useMediaQuery("(max-width:1000px)");
+  const isMobile = useMediaQuery("(max-width:840px)");
   const vendor_id = (!bid && +vendorId) || (bid && bid.vendor && bid.vendor.id) || (me?.id as number);
   const vendor = me?.id === vendor_id ? me : user;
   const currentCropId: number = !!bid ? bid.crop_id : !!cropId ? cropId : vendor?.crops.length === 1 ? vendor.crops[0].id : 0;
@@ -265,41 +265,40 @@ const ViewBidForm: React.FC<IProps> = ({
             <div style={{ width: "100%" }}>
               <Divider style={{ marginBottom: 14 }} />
             </div>
-            <div className={classes.leftCol}>
-              <div style={{ maxWidth: 530 }}>
-                <ImageGallery photos={bid.photos}/>
+            <div className={classes.containerCols}>
+              <div className={classes.leftCol}>
+                <div style={{ maxWidth: "100%" }}>
+                  <ImageGallery photos={bid.photos} />
+                </div>
+                <div className={classes.header}>
+                  {mapState && bid && (
+                    <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
+                      <div className={classes.yaMap}>
+                        <Map
+                          state={mapState}
+                          instanceRef={ref => setMap(ref)}
+                          width={"100%"}
+                          height={400}
+                          onLoad={ymaps => {
+                            setYmaps(ymaps);
+                          }}
+                          modules={["templateLayoutFactory", "route", "geoObject.addon.balloon"]}
+                        >
+                          {showPlacemark && (
+                            <Placemark
+                              geometry={mapState.center}
+                              properties={{ iconCaption: bid.location.text }}
+                              modules={["geoObject.addon.balloon"]}
+                            />
+                          )}
+                        </Map>
+                      </div>
+                    </YMaps>
+                  )}
+                </div>
               </div>
 
-              <div className={classes.header}>
-                {mapState && bid && (
-                  <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
-                    <div className={classes.yaMap}>
-                      <Map
-                        state={mapState}
-                        instanceRef={ref => setMap(ref)}
-                        width={"100%"}
-                        height={400}
-                        onLoad={ymaps => {
-                          setYmaps(ymaps);
-                        }}
-                        modules={["templateLayoutFactory", "route", "geoObject.addon.balloon"]}
-                      >
-                        {showPlacemark && (
-                          <Placemark
-                            geometry={mapState.center}
-                            properties={{ iconCaption: bid.location.text }}
-                            modules={["geoObject.addon.balloon"]}
-                          />
-                        )}
-                      </Map>
-                    </div>
-                  </YMaps>
-                )}
-              </div>
-            </div>
-
-            <div className={classes.rightCol}>
-              <div>
+              <div className={classes.rightCol}>
                 <>
                   <div className={classes.wrapperPrice}>
                     <div className={classes.price}>
@@ -336,7 +335,7 @@ const ViewBidForm: React.FC<IProps> = ({
                     </b>
                   </div>
                 </>
-                <div className={classes.wrapperPrice} style={{ flexDirection: "column", marginBottom: 26 }}>
+                <div className={classes.wrapperPrice} style={{ flexDirection: "column", marginBottom: 20 }}>
                   <div className={classes.wrapperPrice}>
                     {salePurchaseMode === "sale" ? (
                       <>

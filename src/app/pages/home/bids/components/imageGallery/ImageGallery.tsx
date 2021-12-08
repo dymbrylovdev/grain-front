@@ -61,12 +61,14 @@ const useStyles = makeStyles(theme => ({
     alignItems: "center",
     position: "absolute",
     maxWidth: 530,
-    width: "100%",
+    width: "42%",
     height: 311,
     zIndex: 1,
     // eslint-disable-next-line no-useless-computed-key
-    ["@media (max-width:1000px)"]: {
+    ["@media (max-width:840px)"]: {
       paddingRight: 20,
+      width: "100%",
+      maxWidth: "100%",
     },
   },
 }));

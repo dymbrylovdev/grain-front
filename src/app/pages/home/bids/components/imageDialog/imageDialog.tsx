@@ -41,49 +41,46 @@ interface IProps extends DialogProps {
 const ImageDialog: React.FC<IProps> = ({ open, handleClose, url, handleArrow, noneArrows }) => {
   const classes = useStyles();
   return (
-    <>
-      <Button />
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        maxWidth="lg"
-        BackdropProps={{
-          classes: {
-            root: classes.backdrop,
-          },
-        }}
-      >
-        <div style={{ position: "absolute", zIndex: 100, width: "100%" }}>
-          <div style={{ display: "flex", width: "100%", justifyContent: "end" }}>
-            <IconButton onClick={() => handleArrow("prev")} style={{ padding: 0 }}>
-              <Close style={{ fontSize: 40, color: "#fff" }} />
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+      maxWidth="lg"
+      BackdropProps={{
+        classes: {
+          root: classes.backdrop,
+        },
+      }}
+    >
+      <div style={{ position: "absolute", zIndex: 100, width: "100%" }}>
+        <div style={{ display: "flex", width: "100%", justifyContent: "end" }}>
+          <IconButton onClick={() => handleArrow("prev")} style={{ padding: 0 }}>
+            <Close style={{ fontSize: 40, color: "#fff" }} />
+          </IconButton>
+        </div>
+      </div>
+
+      <DialogContent style={{ padding: 0, overflow: "hidden" }}>
+        {!noneArrows && handleArrow && (
+          <div className={classes.arrows}>
+            <IconButton
+              onClick={() => handleArrow("prev")}
+              style={{ top: "50%", transform: "translateY(-50%)", zIndex: 2, color: "#fff", left: 15, height: 50, width: 50 }}
+            >
+              <ArrowBack style={{ fontSize: 40 }} />
+            </IconButton>
+            <IconButton
+              onClick={() => handleArrow("next")}
+              style={{ top: "50%", transform: "translateY(-50%)", zIndex: 2, color: "#fff", left: 0, height: 50, width: 50 }}
+            >
+              <ArrowNext style={{ fontSize: 40 }} />
             </IconButton>
           </div>
-        </div>
-
-        <DialogContent style={{ padding: 0, overflow: "hidden" }}>
-          {!noneArrows && handleArrow && (
-            <div className={classes.arrows}>
-              <IconButton
-                onClick={() => handleArrow("prev")}
-                style={{ top: "50%", transform: "translateY(-50%)", zIndex: 2, color: "#fff", left: 15, height: 50, width: 50 }}
-              >
-                <ArrowBack style={{ fontSize: 40 }} />
-              </IconButton>
-              <IconButton
-                onClick={() => handleArrow("next")}
-                style={{ top: "50%", transform: "translateY(-50%)", zIndex: 2, color: "#fff", left: 0, height: 50, width: 50 }}
-              >
-                <ArrowNext style={{ fontSize: 40 }} />
-              </IconButton>
-            </div>
-          )}
-          <img className={classes.img} src={url} alt="imageDialog" />
-        </DialogContent>
-      </Dialog>
-    </>
+        )}
+        <img className={classes.img} src={url} alt="imageDialog" />
+      </DialogContent>
+    </Dialog>
   );
 };
 
