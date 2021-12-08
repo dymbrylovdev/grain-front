@@ -422,7 +422,7 @@ const Bid = React.memo<IProps>(
                 {bestAllMyMode !== "my-bids" && (
                   <>
                     {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" && (
-                      <IconButton size="medium" color="primary">
+                      <IconButton size="medium" color="primary" className={innerClasses.iconBtn}>
                         <EmailIcon
                           onClick={e => {
                             stopProp(e);
@@ -434,6 +434,7 @@ const Bid = React.memo<IProps>(
                     )}
                     {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" ? (
                       <IconButton
+                        className={innerClasses.iconBtn}
                         size="medium"
                         color="primary"
                         onClick={e => {
@@ -467,6 +468,7 @@ const Bid = React.memo<IProps>(
                 {bestAllMyMode === "my-bids" && archive && (
                   <Tooltip title={bid.is_archived ? "убрать с архива" : "добавить в архив"}>
                     <IconButton
+                      className={innerClasses.iconBtn}
                       size="medium"
                       color={bid.is_archived ? "secondary" : "primary"}
                       onClick={e => {
@@ -484,6 +486,7 @@ const Bid = React.memo<IProps>(
                   <>
                     {isHaveRules && isHaveRules(user, bid.vendor.id) ? (
                       <IconButton
+                        className={innerClasses.iconBtn}
                         size="medium"
                         color="primary"
                         onClick={e => {
@@ -513,6 +516,7 @@ const Bid = React.memo<IProps>(
                       </Button>
                     )}
                     <IconButton
+                      className={innerClasses.iconBtn}
                       size="medium"
                       onClick={e => {
                         stopProp(e);
@@ -673,7 +677,7 @@ const Bid = React.memo<IProps>(
                 {bid.vendor?.company?.short_name && <div className={innerClasses.nameCompany}>{bid.vendor.company.short_name}</div>}
               </div>
               {!isMobile && (
-                <div className={innerClasses.companyInfo} style={{ marginLeft: 80 }}>
+                <div className={innerClasses.companyInfo} style={{ marginLeft: 20 }}>
                   <div className={innerClasses.datePublic}>Дата публикации:</div>
                   <div className={innerClasses.textCreateAt}>{`${bid.created_at.slice(8, 10)}.${bid.created_at.slice(
                     5,
@@ -691,7 +695,7 @@ const Bid = React.memo<IProps>(
                     variant="text"
                     color="primary"
                     className={innerClasses.btnCard}
-                    style={{ width: "100%", marginBottom: 4, marginTop: 16 }}
+                    style={{ width: "100%", marginBottom: 4, marginTop: 16, padding: "4px 8px" }}
                     onClick={e => {
                       stopProp(e);
                       handleOpenMap(bid);
@@ -700,7 +704,7 @@ const Bid = React.memo<IProps>(
                     <div className={innerClasses.textCard}>Посмотреть на карте</div>
                   </Button>
                   {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" && (
-                    <IconButton size="medium" color="primary">
+                    <IconButton size="medium" color="primary" className={innerClasses.iconBtn}>
                       <EmailIcon
                         onClick={e => {
                           stopProp(e);
@@ -713,6 +717,7 @@ const Bid = React.memo<IProps>(
 
                   {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" ? (
                     <IconButton
+                      className={innerClasses.iconBtn}
                       size="medium"
                       color="primary"
                       onClick={e => {
@@ -747,6 +752,7 @@ const Bid = React.memo<IProps>(
               {bestAllMyMode === "my-bids" && (
                 <Tooltip title={bid.is_archived ? "убрать с архива" : "добавить в архив"}>
                   <IconButton
+                    className={innerClasses.iconBtn}
                     size="medium"
                     color={bid.is_archived ? "secondary" : "primary"}
                     onClick={e => {
@@ -764,6 +770,7 @@ const Bid = React.memo<IProps>(
                 <>
                   {isHaveRules && isHaveRules(user, bid.vendor.id) ? (
                     <IconButton
+                      className={innerClasses.iconBtn}
                       size="medium"
                       color="primary"
                       onClick={e => {
@@ -793,6 +800,7 @@ const Bid = React.memo<IProps>(
                     </Button>
                   )}
                   <IconButton
+                    className={innerClasses.iconBtn}
                     size="medium"
                     onClick={e => {
                       stopProp(e);
