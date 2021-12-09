@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { YMaps, Map } from "react-yandex-maps";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Button } from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Button, CircularProgress } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
@@ -64,6 +64,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const routeRef = useRef();
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [currentDeal, setCurrentDeal] = useState<IDeal | null>(null);
+  const [loadDistanation, setLoadDistanation] = useState<number | null>(null);
   const [map, setMap] = useState<any>();
   const [ymaps, setYmaps] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
@@ -131,6 +132,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         } else {
           localStorage.setItem("deals", JSON.stringify([newCurrentDeal]));
         }
+        setLoadDistanation(null);
+      } else {
+        setLoadDistanation(null);
       }
       setCurrentDeal(null);
     },
@@ -145,7 +149,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const getCurrentCrop = useCallback((currentDeal: IDeal) => crops?.find(crop => crop.id === currentDeal.sale_bid.crop_id), [crops]);
 
   const getDistance = useCallback(
-    (currentDeal: IDeal) => {
+    (currentDeal: IDeal, noneElement?: boolean) => {
       if (localDeals) {
         const localDistance = localDeals.find(
           item =>
@@ -154,9 +158,21 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             item.sale_bid.lat === currentDeal.sale_bid.location.lat &&
             item.sale_bid.lng === currentDeal.sale_bid.location.lng
         );
-        if (localDistance) return localDistance.distance;
+        if (localDistance) {
+          return {
+            isLocal: true,
+            data: noneElement ? (
+              localDistance.distance
+            ) : (
+              <TableCell className={classes.tableCellModifed}>{localDistance.distance}</TableCell>
+            ),
+          };
+        }
       }
-      return currentDeal.distance;
+      return {
+        isLocal: false,
+        data: noneElement ? currentDeal.distance : <TableCell>{currentDeal.distance}</TableCell>,
+      };
     },
     [localDeals]
   );
@@ -164,11 +180,15 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const getProfit = useCallback(
     (currentDeal: IDeal) => {
       const currentCrop = getCurrentCrop(currentDeal);
-      const localDistance = getDistance(currentDeal);
-      if (localDistance && currentCrop && currentCrop.delivery_price_coefficient) {
-        return currentDeal.purchase_bid.price - currentDeal.sale_bid.price - localDistance * currentCrop.delivery_price_coefficient;
+      const localDistance = getDistance(currentDeal, true);
+      if (localDistance.data && typeof localDistance.data === "number" && currentCrop && currentCrop.delivery_price_coefficient) {
+        return (
+          <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined}>
+            {currentDeal.purchase_bid.price - currentDeal.sale_bid.price - localDistance.data * currentCrop.delivery_price_coefficient}
+          </TableCell>
+        );
       }
-      return Math.round(currentDeal.profit_with_delivery_price);
+      return <TableCell>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
     },
     [getCurrentCrop, getDistance]
   );
@@ -383,8 +403,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>{getProfit(item)}</TableCell>
-                    <TableCell>{getDistance(item)}</TableCell>
+                    {getProfit(item)}
+                    {getDistance(item).data}
                     <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
                     <TableCell align="center">
                       <IconButton
@@ -394,8 +414,16 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       >
                         <VisibilityIcon />
                       </IconButton>
-                      <Button variant="text" color="primary" onClick={() => setCurrentDeal(item)}>
-                        <div>Обновить расстояние</div>
+                      <Button
+                        disabled={typeof loadDistanation === "number"}
+                        variant="text"
+                        color="primary"
+                        onClick={() => {
+                          setCurrentDeal(item);
+                          setLoadDistanation(i);
+                        }}
+                      >
+                        {loadDistanation === i ? <CircularProgress size={20} /> : <div>Уточнить расстояние</div>}
                       </Button>
                     </TableCell>
                   </TableRow>

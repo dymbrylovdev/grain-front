@@ -228,6 +228,10 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     minWidth: 120,
   },
+  tableCellModifed: {
+    color: "#666666",
+    fontWeight: "bold",
+  },
 }));
 
 export default useStyles;

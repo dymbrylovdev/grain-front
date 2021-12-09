@@ -15,7 +15,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     "&:hover": {
       // transform: "scale(0.99)",
       border: "4px solid #21BA88",
-      padding: 12,
+      padding: 8,
     },
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
@@ -25,7 +25,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   imageBlock: {
     marginBottom: 8,
     // eslint-disable-next-line no-useless-computed-key
-    ["@media (min-width:1010px)"]: {
+    ["@media (min-width:1000px)"]: {
       marginRight: 16,
     },
   },

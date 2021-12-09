@@ -200,6 +200,14 @@ const ViewBidForm: React.FC<IProps> = ({
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
 
+  useEffect(() => {
+    if (!loading) {
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 1000);
+    }
+  }, [loading]);
+
   return (
     <>
       {loading && <Skeleton width="100%" height={70} animation="wave" />}
