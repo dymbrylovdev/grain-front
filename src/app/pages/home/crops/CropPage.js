@@ -34,8 +34,7 @@ function CropPage({
   const classes = useStyles();
 
   const { crop } = useSelector(({ crops: { crops } }) => {
-    const filterCrops =
-      crops && crops.data && crops.data.filter(item => item.id === Number.parseInt(cropIdFromUrl));
+    const filterCrops = crops && crops.data && crops.data.filter(item => item.id === Number.parseInt(cropIdFromUrl));
     if (filterCrops && filterCrops.length > 0) {
       return { crop: filterCrops[0] };
     }
@@ -49,26 +48,8 @@ function CropPage({
     shallowEqual
   );
 
-  const {
-    delSuccess,
-    delError,
-    delLoading,
-    cropParams2,
-    delCropParamSuccess,
-    delCropParamError,
-    delCropParamLoading,
-  } = useSelector(
-    ({
-      crops2: {
-        delSuccess,
-        delError,
-        delLoading,
-        cropParams,
-        delCropParamSuccess,
-        delCropParamError,
-        delCropParamLoading,
-      },
-    }) => ({
+  const { delSuccess, delError, delLoading, cropParams2, delCropParamSuccess, delCropParamError, delCropParamLoading } = useSelector(
+    ({ crops2: { delSuccess, delError, delLoading, cropParams, delCropParamSuccess, delCropParamError, delCropParamLoading } }) => ({
       delSuccess,
       delError,
       delLoading,
@@ -115,15 +96,7 @@ function CropPage({
       clearDelCropParam();
       setCropParamAlertOpen(false);
     }
-  }, [
-    clearDelCropParam,
-    cropParamsRequest,
-    delCropParamError,
-    delCropParamSuccess,
-    cropId,
-    enqueueSnackbar,
-    intl,
-  ]);
+  }, [clearDelCropParam, cropParamsRequest, delCropParamError, delCropParamSuccess, cropId, enqueueSnackbar, intl]);
 
   const editCropAction = (values, setStatus, setSubmitting) => {
     const params = values;
@@ -151,9 +124,7 @@ function CropPage({
         }),
       });
     };
-    cropId
-      ? editCrop(cropId, params, user, successCallback, failCallback)
-      : createCrop(params, user, successCallback, failCallback);
+    cropId ? editCrop(cropId, params, user, successCallback, failCallback) : createCrop(params, user, successCallback, failCallback);
   };
 
   const editCropParamAction = (values, setStatus, setSubmitting, setIdValue) => {
@@ -211,6 +182,7 @@ function CropPage({
         setCropAlertOpen={setCropAlertOpen}
         setCropParamForDelId={setCropParamForDelId}
         setCropParamAlertOpen={setCropParamAlertOpen}
+        user={user}
       />
       <AlertDialog
         isOpen={isCropParamAlertOpen}

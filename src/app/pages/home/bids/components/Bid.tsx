@@ -108,7 +108,9 @@ const Bid = React.memo<IProps>(
           );
         });
       } else {
-        const defaultUrl = `${API_DOMAIN}${"/uploaded/images/bid/default.jpg"}`;
+        const defaultUrl = currentCrop?.photo
+          ? `${API_DOMAIN}${currentCrop.photo.small}`
+          : `${API_DOMAIN}${"/uploaded/images/bid/default.jpg"}`;
         arrImg.push(
           <div
             className={innerClasses.wrapperImage}

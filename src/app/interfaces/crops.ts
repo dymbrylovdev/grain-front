@@ -5,6 +5,15 @@ export interface ICrop {
   name: string;
   vat: number;
   delivery_price_coefficient?: number;
+  photo?: {
+    id: number;
+    path: string;
+    main: boolean;
+    name: string;
+    extension: string;
+    mimeType: string;
+    small: string;
+  };
 }
 
 export interface ICropParam {

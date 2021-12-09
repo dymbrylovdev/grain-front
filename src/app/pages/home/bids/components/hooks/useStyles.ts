@@ -888,7 +888,7 @@ export const useStylesPhotosForm = makeStyles(theme =>
     },
     img: {
       height: "100%",
-      maxWidth: "90%",
+      maxWidth: "100%",
       objectFit: "cover",
     },
     titleBar: {

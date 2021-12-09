@@ -39,3 +39,7 @@ export const getCropParams = id => {
 export const getAllCropParams = type => {
   return axios.get(`${CROP_URL}s/parameters?type=${type}`);
 };
+
+export const delCropPhoto = id => {
+  return axios.delete(`/api/crop_photo/${id}`);
+};

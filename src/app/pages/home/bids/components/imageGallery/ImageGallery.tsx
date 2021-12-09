@@ -7,7 +7,7 @@ import ArrowNext from "@material-ui/icons/ArrowForwardIos";
 import { toAbsoluteUrl } from "../../../../../../_metronic/utils/utils";
 import ImageDialog from "../imageDialog/imageDialog";
 import { API_DOMAIN } from "../../../../../constants";
-// import { API_DOMAIN } from "../../../../../constants";
+import { ICrop } from "../../../../../interfaces/crops";
 
 interface IProps {
   photos:
@@ -21,6 +21,7 @@ interface IProps {
         small: string;
       }[]
     | undefined;
+  currentCrop?: ICrop;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -73,7 +74,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ImageGallery: React.FC<IProps> = ({ photos }) => {
+const ImageGallery: React.FC<IProps> = ({ photos, currentCrop }) => {
   const classes = useStyles();
   const imageGalleryRef: any = useRef();
   const [isFullScreen, setIsFullScreen] = useState(false);
@@ -81,7 +82,10 @@ const ImageGallery: React.FC<IProps> = ({ photos }) => {
   const [currentImage, setCurrentImage] = useState<string | null>(null);
 
   useEffect(() => {
-    setCurrentImage(photos && photos.length > 0 ? `${API_DOMAIN}${photos[0].path}` : `${API_DOMAIN}/uploaded/images/bid/default.jpg`);
+    const defaultUrl = currentCrop?.photo
+      ? `${API_DOMAIN}${currentCrop.photo.small}`
+      : `${API_DOMAIN}${"/uploaded/images/bid/default.jpg"}`;
+    setCurrentImage(photos && photos.length > 0 ? `${API_DOMAIN}${photos[0].path}` : defaultUrl);
   }, [photos, setCurrentImage]);
 
   // images
@@ -100,10 +104,13 @@ const ImageGallery: React.FC<IProps> = ({ photos }) => {
         ),
       }));
     } else {
+      const defaultUrl = currentCrop?.photo
+        ? `${API_DOMAIN}${currentCrop.photo.small}`
+        : `${API_DOMAIN}${"/uploaded/images/bid/default.jpg"}`;
       return [
         {
-          original: `${API_DOMAIN}/uploaded/images/bid/default.jpg`,
-          thumbnail: `${API_DOMAIN}/uploaded/images/bid/default.jpg`,
+          original: defaultUrl,
+          thumbnail: defaultUrl,
           renderItem: ({ original }) => (
             <Card
               className={`${classes.imgContainer} ${isFullScreen ? classes.imgContainerFull : classes.imgContainerSmall}`}
@@ -115,7 +122,7 @@ const ImageGallery: React.FC<IProps> = ({ photos }) => {
         },
       ];
     }
-  }, [isFullScreen, photos, classes]);
+  }, [isFullScreen, photos, classes, currentCrop]);
 
   const handleArrow = useCallback(
     (operation: "prev" | "next") => {

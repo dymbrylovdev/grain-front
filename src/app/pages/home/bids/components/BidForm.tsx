@@ -691,7 +691,7 @@ const BidForm: React.FC<IProps> = ({
       )}
 
       <div className={classes.form} style={{ display: tabValue === 1 ? "block" : "none" }}>
-        <PhotosForm bid={bid} delPhoto={delPhoto} setPhotos={setPhotos} photos={photos} localDelPhoto={localDelPhoto} />
+        <PhotosForm data={bid} delPhoto={delPhoto} setPhotos={setPhotos} photos={photos} localDelPhoto={localDelPhoto} />
       </div>
 
       <div className={classes.form} style={{ display: tabValue === 0 ? "block" : "none" }}>

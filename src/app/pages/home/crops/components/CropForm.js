@@ -1,5 +1,5 @@
-import React from "react";
-import { Paper } from "@material-ui/core";
+import React, { useState } from "react";
+import { Paper, Tab, Tabs } from "@material-ui/core";
 import CropTitleForm from "./CropTitleForm";
 import CropParamForm from "./CropParamForm";
 import { FormattedMessage, injectIntl } from "react-intl";
@@ -18,7 +18,9 @@ function CropForm({
   setCropAlertOpen,
   setCropParamForDelId,
   setCropParamAlertOpen,
+  user,
 }) {
+  const [tabValue, setTabValue] = useState(0);
   const addEmptyCropParams = () => {
     setCropParams([...cropParams, ...[{ id: null }]]);
   };
@@ -34,6 +36,12 @@ function CropForm({
 
   return (
     <Paper className={classes.paperWithForm}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Tabs value={tabValue} onChange={(_, n) => setTabValue(n)} indicatorColor="primary" textColor="primary">
+          <Tab label="Основное" />
+          <Tab label="Фотографии" />
+        </Tabs>
+      </div>
       <div className={classes.form}>
         <CropTitleForm
           crop={crop}
@@ -43,27 +51,31 @@ function CropForm({
           delCrop={delCrop}
           isCropAlertOpen={isCropAlertOpen}
           setCropAlertOpen={setCropAlertOpen}
+          tabValue={tabValue}
+          user={user}
         />
-        {!!activeCropParams.length &&
-          !!cropId &&
-          !crop?.is_deleted &&
-          activeCropParams.map((cropParam, index) => (
-            <CropParamForm
-              key={`i${index}`}
-              classes={classes}
-              cropParam={cropParam}
-              editCropParamAction={editCropParamAction}
-              setCropParamForDelId={setCropParamForDelId}
-              setCropParamAlertOpen={setCropParamAlertOpen}
-            />
-          ))}
-        {cropId && !crop?.is_deleted && (
-          <div className={classes.buttonAddContainer}>
-            <ButtonWithLoader onPress={addEmptyCropParams}>
-              <FormattedMessage id="CROP.FORM.PARAM_ADD" />
-            </ButtonWithLoader>
-          </div>
-        )}
+        <div style={{ display: tabValue === 0 ? "block" : "none" }}>
+          {!!activeCropParams.length &&
+            !!cropId &&
+            !crop?.is_deleted &&
+            activeCropParams.map((cropParam, index) => (
+              <CropParamForm
+                key={`i${index}`}
+                classes={classes}
+                cropParam={cropParam}
+                editCropParamAction={editCropParamAction}
+                setCropParamForDelId={setCropParamForDelId}
+                setCropParamAlertOpen={setCropParamAlertOpen}
+              />
+            ))}
+          {cropId && !crop?.is_deleted && (
+            <div className={classes.buttonAddContainer}>
+              <ButtonWithLoader onPress={addEmptyCropParams}>
+                <FormattedMessage id="CROP.FORM.PARAM_ADD" />
+              </ButtonWithLoader>
+            </div>
+          )}
+        </div>
       </div>
     </Paper>
   );

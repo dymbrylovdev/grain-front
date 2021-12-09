@@ -99,6 +99,7 @@ const FilesDropzone: React.FC<IProps> = ({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: handleDrop,
+    maxFiles,
   });
 
   return (

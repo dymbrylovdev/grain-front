@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -7,14 +7,17 @@ import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import { injectIntl, FormattedMessage } from "react-intl";
 import { TextField, Button } from "@material-ui/core";
 import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
+import PhotosForm from "../../bids/components/photosForm/PhotosForm";
+import { toBase64 } from "../../../../utils/file";
+import { useDelCropPhoto } from "../hooks/useDelCropPhoto";
 
 const getInitialValues = crop => ({
   name: !!crop && crop.name ? crop.name : "",
   vat: !!crop && crop.vat ? crop.vat : 10,
-  delivery_price_coefficient:
-    !!crop && crop.delivery_price_coefficient ? crop.delivery_price_coefficient : 1,
+  delivery_price_coefficient: !!crop && crop.delivery_price_coefficient ? crop.delivery_price_coefficient : 1,
 });
 function CropTitleForm({
+  user,
   crop,
   editCropAction,
   intl,
@@ -23,8 +26,17 @@ function CropTitleForm({
   delCropLoading,
   isCropAlertOpen,
   setCropAlertOpen,
+  tabValue,
 }) {
   const history = useHistory();
+  const [photo, setPhoto] = useState([]);
+  const [delCropPhoto] = useDelCropPhoto(user);
+
+  const delPhoto = useCallback(() => {
+    if (crop) {
+      delCropPhoto(crop.id);
+    }
+  }, [crop, delCropPhoto]);
 
   return (
     <Formik
@@ -45,30 +57,49 @@ function CropTitleForm({
           .max(100, intl.formatMessage({ id: "YUP.NUMBERS.MAX" }, { max: 100 }))
           .typeError(<FormattedMessage id="YUP.NUMBERS" />),
       })}
-      onSubmit={(values, { setStatus, setSubmitting, resetForm }) => {
+      onSubmit={async (values, { setStatus, setSubmitting, resetForm }) => {
+        let arrayFiles = null;
+        if (photo.length > 0) {
+          for (const file of photo) {
+            const base64file = await toBase64(file);
+            arrayFiles = base64file;
+          }
+          setPhoto([]);
+        }
         editCropAction(
           {
             name: values.name.trim(),
             vat: +values.vat,
             delivery_price_coefficient: +values.delivery_price_coefficient,
+            photo_base64: arrayFiles || undefined,
           },
           setStatus,
           setSubmitting
         );
       }}
     >
-      {({
-        values,
-        status,
-        errors,
-        touched,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        isSubmitting,
-      }) => (
+      {({ values, status, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
         <div>
-          <form noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
+          <div className={classes.form} style={{ display: tabValue === 1 ? "block" : "none" }}>
+            <PhotosForm
+              data={{ photos: crop?.photo ? [crop.photo] : [] }}
+              delPhoto={delPhoto}
+              setPhotos={setPhoto}
+              photos={photo}
+              localDelPhoto={() => setPhoto([])}
+              titleSaveBtn={<FormattedMessage id="CROP.BUTTON.CROP_SAVE" />}
+              saveFunc={handleSubmit}
+              isOnePhoto
+              loadingSave={status && status.loading}
+            />
+          </div>
+          <form
+            noValidate
+            autoComplete="off"
+            className="kt-form"
+            onSubmit={handleSubmit}
+            style={{ display: tabValue === 0 ? "block" : "none" }}
+          >
             <div className={classes.topButtonsContainer}>
               <div className={classes.button}>
                 <Button
@@ -125,32 +156,20 @@ function CropTitleForm({
               onBlur={handleBlur}
               onChange={handleChange}
               helperText={touched.delivery_price_coefficient && errors.delivery_price_coefficient}
-              error={Boolean(
-                touched.delivery_price_coefficient && errors.delivery_price_coefficient
-              )}
+              error={Boolean(touched.delivery_price_coefficient && errors.delivery_price_coefficient)}
             />
 
-            <div className={classes.helperText}>
-              {intl.formatMessage({ id: "CROP.FORM.FORMULA" })}
-            </div>
+            <div className={classes.helperText}>{intl.formatMessage({ id: "CROP.FORM.FORMULA" })}</div>
 
             <div className={`${classes.bottomButtonsContainer} ${classes.bottomMargin2}`}>
               <div className={classes.button}>
-                <ButtonWithLoader
-                  loading={status && status.loading}
-                  disabled={status && status.loading}
-                  onPress={handleSubmit}
-                >
+                <ButtonWithLoader loading={status && status.loading} disabled={status && status.loading} onPress={handleSubmit}>
                   <FormattedMessage id="CROP.BUTTON.CROP_SAVE" />
                 </ButtonWithLoader>
               </div>
               {!!crop && crop.id !== 1 && (
                 <div className={classes.button}>
-                  <OutlinedRedButton
-                    variant="outlined"
-                    onClick={() => setCropAlertOpen(true)}
-                    disabled={status && status.loading}
-                  >
+                  <OutlinedRedButton variant="outlined" onClick={() => setCropAlertOpen(true)} disabled={status && status.loading}>
                     {intl.formatMessage({ id: "CROP.BUTTON.CROP_DEL" })}
                   </OutlinedRedButton>
                 </div>
