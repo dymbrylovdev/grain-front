@@ -5,7 +5,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     display: "flex",
     // flexWrap: "wrap",
     marginBottom: 8,
-    padding: 16,
+    padding: 12,
     backgroundColor: "white",
     borderRadius: 4,
     cursor: "pointer",
@@ -159,7 +159,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     flexWrap: "wrap",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (min-width:910px)"]: {
-      marginRight: 40,
+      marginRight: 30,
     },
   },
   wrapperInfoBlock: {
@@ -271,6 +271,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   btnCard: {
+    minWidth: 120,
     backgroundColor: "#EDEEF4FF",
     fontSize: "0.975vw",
     textTransform: "initial",
