@@ -681,6 +681,7 @@
   "NOTISTACK.ERRORS.DEL_FILTER": "Подписка удалена",
   "NOTISTACK.EDIT_FILTER": "Подписка изменена",
   "NOTISTACK.EDIT_DEAL_PARAMS": "Параметры сделок сохранены",
+  "NOTISTACK.DEALS.NO_DISTANCE": "Невозможно построить маршрут по суше",
   "NOTISTACK.ERRORS.DEL_USER": "Пользователь удален",
   "NOTISTACK.USERS.SAVE_PROFILE": "Мой профиль сохранен",
   "NOTISTACK.USERS.SAVE_USER": "Пользователь сохранен",

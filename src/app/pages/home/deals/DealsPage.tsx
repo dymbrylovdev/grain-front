@@ -135,10 +135,13 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         setLoadDistanation(null);
       } else {
         setLoadDistanation(null);
+        enqueueSnackbar(intl.formatMessage({ id: "NOTISTACK.DEALS.NO_DISTANCE" }), {
+          variant: "error",
+        });
       }
       setCurrentDeal(null);
     },
-    [ymaps, map, routeRef, localDeals, currentDeal]
+    [ymaps, map, routeRef, localDeals, currentDeal, enqueueSnackbar, intl]
   );
 
   useEffect(() => {
