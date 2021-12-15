@@ -56,6 +56,7 @@ const ViewBidForm: React.FC<IProps> = ({
 }) => {
   const classes = useViewBidStyles();
   const routeRef = useRef();
+  const calcRef: any = useRef(null);
   const inputEl = useRef<HTMLButtonElement>(null);
   const [goToRef, setGoToRef] = useState(false);
   const currentCrop = useMemo(() => crops?.find(item => item.id === bid?.crop_id), [crops, bid]);
@@ -203,10 +204,14 @@ const ViewBidForm: React.FC<IProps> = ({
   useEffect(() => {
     if (!loading) {
       setTimeout(() => {
-        window.scrollTo(0, 0);
+        if (isMobile) {
+          calcRef.current.scrollIntoView();
+        } else {
+          window.scrollTo(0, 0);
+        }
       }, 1000);
     }
-  }, [loading]);
+  }, [loading, calcRef]);
 
   return (
     <>
@@ -537,7 +542,7 @@ const ViewBidForm: React.FC<IProps> = ({
                   </>
                 )}
 
-                <div className={classes.wrapperCalc}>
+                <div className={classes.wrapperCalc} ref={calcRef}>
                   <div className={classes.titleCalc}>Калькулятор доставки</div>
                   <div style={{ width: "100%" }}>
                     <Divider style={{ marginBottom: 26 }} />

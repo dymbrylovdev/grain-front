@@ -1,10 +1,11 @@
 import React from "react";
-import { Dialog, DialogContent } from "@material-ui/core";
+import { Dialog, DialogContent, IconButton } from "@material-ui/core";
 import { YMaps, Map, Placemark } from "react-yandex-maps";
 import { IBid } from "../../../../interfaces/bids";
 import { REACT_APP_GOOGLE_API_KEY } from "../../../../constants";
 import { useBidTableStyles } from "./hooks/useStyles";
-
+import Close from "@material-ui/icons/Close";
+import { useStyles } from "./imageDialog/imageDialog";
 interface IProps {
   mapState: {
     center: number[];
@@ -21,7 +22,7 @@ interface IProps {
 
 const YaMapDialog = React.memo<IProps>(({ mapState, showYaMap, setShowYaMap, currentBid, setMap, setYmaps, showPlacemark }) => {
   const innerClasses = useBidTableStyles();
-
+  const imageDialogClasses = useStyles();
   return (
     <Dialog
       open={showYaMap}
@@ -35,6 +36,11 @@ const YaMapDialog = React.memo<IProps>(({ mapState, showYaMap, setShowYaMap, cur
         },
       }}
     >
+      <div className={imageDialogClasses.wrapperBtnClose}>
+        <IconButton onClick={() => setShowYaMap(false)} className={imageDialogClasses.btnClose}>
+          <Close className={imageDialogClasses.iconClose} />
+        </IconButton>
+      </div>
       <DialogContent style={{ padding: 0 }}>
         <div>
           {mapState && currentBid && (

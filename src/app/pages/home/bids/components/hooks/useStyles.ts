@@ -80,7 +80,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
-      maxHeight: 102,
+      maxHeight: 172,
       width: "100%",
     },
   },
@@ -117,7 +117,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
-      marginTop: 90,
+      marginTop: 160,
       width: "100%",
       marginLeft: -15,
     },

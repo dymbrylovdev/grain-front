@@ -4,7 +4,7 @@ import ArrowBack from "@material-ui/icons/ArrowBackIos";
 import ArrowNext from "@material-ui/icons/ArrowForwardIos";
 import Close from "@material-ui/icons/Close";
 
-const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles(theme => ({
   img: {
     // maxWidth: 1000,
     // // maxHeight: 800,
@@ -28,6 +28,18 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "space-between",
     overflow: "hidden",
+  },
+  wrapperBtnClose: {
+    position: "absolute",
+    zIndex: 100,
+    right: 0,
+  },
+  iconClose: {
+    fontSize: 40,
+    color: "#fff",
+  },
+  btnClose: {
+    padding: 0,
   },
 }));
 
@@ -53,12 +65,10 @@ const ImageDialog: React.FC<IProps> = ({ open, handleClose, url, handleArrow, no
         },
       }}
     >
-      <div style={{ position: "absolute", zIndex: 100, width: "100%" }}>
-        <div style={{ display: "flex", width: "100%", justifyContent: "end" }}>
-          <IconButton onClick={() => handleClose()} style={{ padding: 0 }}>
-            <Close style={{ fontSize: 40, color: "#fff" }} />
-          </IconButton>
-        </div>
+      <div className={classes.wrapperBtnClose}>
+        <IconButton onClick={() => handleClose()} className={classes.btnClose}>
+          <Close className={classes.iconClose} />
+        </IconButton>
       </div>
 
       <DialogContent style={{ padding: 0, overflow: "hidden" }}>
