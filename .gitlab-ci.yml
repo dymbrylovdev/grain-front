@@ -13,15 +13,15 @@ build-dev:
   stage: build
   script:
     - docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN
-    - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_DEV .
-    - docker push $GITLAB_REGISTRIES_URL/$IMAGE_DEV 
+    - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_FX .
+    - docker push $GITLAB_REGISTRIES_URL/$IMAGE_FX 
 deploy-dev:
   except:
     - "master"
   stage: deploy
   environment: 
     name: "development"
-    url: "$DOMEN_DEV"
+    url: "$DOMEN_FX"
   before_script:
     - mkdir -p ~/.ssh
     - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
@@ -32,4 +32,4 @@ deploy-dev:
   script:
     - printf "NODE_PATH=src/\n" > web-environment.env
     - scp -r ./web-environment.env $DEV_SERVER_USERNAME@${DEV_SERVER_IP}:~/
-    - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN;docker stop $CONTAINER_NAME_DEV;docker rm $CONTAINER_NAME_DEV --force;docker pull $GITLAB_REGISTRIES_URL/$IMAGE_DEV;docker run --restart always -p $PORT_DEV --name $CONTAINER_NAME_DEV --env-file web-environment.env -d $GITLAB_REGISTRIES_URL/$IMAGE_DEV"
+    - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN;docker stop $CONTAINER_NAME_FX;docker rm $CONTAINER_NAME_FX --force;docker pull $GITLAB_REGISTRIES_URL/$IMAGE_FX;docker run --restart always -p $PORT_FX --name $CONTAINER_NAME_FX --env-file web-environment.env -d $GITLAB_REGISTRIES_URL/$IMAGE_FX"
