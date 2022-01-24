@@ -2,7 +2,7 @@
   "name": "grain",
   "version": "6.1.5",
   "private": true,
-  "homepage": "http://grain-front.me-interactive.net/",
+  "homepage": "https://grain-fx.me-interactive.net/",
   "scripts": {
     "serve": "react-scripts build && cp-cli build _site/ && serve -p 3000",
     "start": "cross-env HTTPS=false react-scripts start",
