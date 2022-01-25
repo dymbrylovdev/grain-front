@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Divider, CardMedia, Button, TextField, useMediaQuery } from "@material-ui/core";
+import { Divider, CardMedia, Button, TextField, useMediaQuery, Tooltip } from "@material-ui/core";
+import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 import { accessByRoles, formatAsThousands, formatPhone } from "../../../../utils/utils";
 import ImageGallery from "./imageGallery/ImageGallery";
 import { IntlShape } from "react-intl";
@@ -201,6 +202,7 @@ const ViewBidForm: React.FC<IProps> = ({
 
   const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (!loading) {
       setTimeout(() => {
@@ -246,11 +248,6 @@ const ViewBidForm: React.FC<IProps> = ({
             <div className={classes.wrapperPrice}>{currentCrop && <div className={classes.infoText}>{currentCrop.name}</div>}</div>
             <>
               <div className={classes.imageBlocks}>
-                {!!bid?.vendor && (bid.vendor.company_confirmed_by_payment || bid.vendor.company_confirmed_by_email) && (
-                  <div className={classes.imageFirstBlock}>
-                    <div className={classes.fontImageText}>Связь подтверждена</div>
-                  </div>
-                )}
                 {bid.vendor.company && (
                   <>
                     {bid?.vendor?.company_confirmed_by_payment &&
@@ -262,6 +259,19 @@ const ViewBidForm: React.FC<IProps> = ({
                         </div>
                       )}
                   </>
+                )}
+                {!bid?.vendor?.company_confirmed_by_payment && (
+                  <Tooltip
+                    title={
+                      <div style={{ fontSize: 14 }}>
+                        {intl.formatMessage({
+                          id: "USERLIST.TOOLTIP.NO_COMPANY",
+                        })}
+                      </div>
+                    }
+                  >
+                    <ReportProblemIcon color="error" style={{ width: 24, height: 24 }} />
+                  </Tooltip>
                 )}
               </div>
               <div className={classes.wrapperMedia}>
@@ -326,7 +336,7 @@ const ViewBidForm: React.FC<IProps> = ({
                   </div>
                   <div className={classes.wrapperPrice}>
                     <b className={classes.delivery}>
-                      С доставкой:{" "}
+                      Цена указана с НДС с учётом доставки до:{" "}
                       <b className={classes.deliveryAddress}>
                         {!!bid?.point_prices && !!bid.point_prices.length
                           ? bid.point_prices.map(
@@ -431,6 +441,11 @@ const ViewBidForm: React.FC<IProps> = ({
                 <div className={classes.wrapperVendor}>
                   <div>
                     <div className={classes.nameParameter}>Продавец:</div>
+                    {Boolean(bid.vendor.surname || bid.vendor.firstName || bid.vendor.lastName) && (
+                      <div className={classes.vendorCompany}>
+                        {`${bid.vendor.surname || ""} ${bid.vendor.firstName || ""} ${bid.vendor.lastName || ""}`}
+                      </div>
+                    )}
                     {Boolean(bid.vendor.login) && <div className={classes.parameterValue}>{bid.vendor.login}</div>}
                     {bid.vendor?.company?.short_name && (
                       <div className={classes.vendorCompany} style={{ marginBottom: isMobile ? 0 : 16 }}>
@@ -653,7 +668,7 @@ const ViewBidForm: React.FC<IProps> = ({
                             ))}
                         </div>
                       </div>
-                      <div>
+                      {/* <div>
                         <div>
                           <div className={classes.calcParam}>
                             {!!me && me.use_vat && salePurchaseMode === "sale" && !!bid && !vendorUseVat
@@ -748,7 +763,7 @@ const ViewBidForm: React.FC<IProps> = ({
                               <p className={classes.calcVal}>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                             ))}
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

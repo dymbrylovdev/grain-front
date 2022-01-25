@@ -33,7 +33,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     position: "absolute",
     marginLeft: 8,
     marginBottom: 8,
-    marginTop: 20,
+    marginTop: 10,
   },
   imageFirstBlock: {
     paddingLeft: 8,
@@ -785,8 +785,8 @@ export const useViewBidStyles = makeStyles(theme => ({
     position: "absolute",
     marginLeft: 8,
     marginBottom: 8,
-    marginTop: 75,
-    zIndex: 1,
+    marginTop: 65,
+    zIndex: 100,
   },
   imageFirstBlock: {
     paddingLeft: 8,

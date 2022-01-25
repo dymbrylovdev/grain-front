@@ -342,7 +342,11 @@ const BidForm: React.FC<IProps> = ({
   const [fullPrepayment, setFullPrepayment] = useState(false);
   const [tabValue, setTabValue] = useState(0);
   const [photos, setPhotos] = useState<any[]>([]);
-  const isEditPhoto = useMemo(() => accessByRoles(me, ["ROLE_ADMIN"]) || bid?.author.id === me?.id, [me, bid]);
+  const isEditPhoto = useMemo(() => accessByRoles(me, ["ROLE_ADMIN"]) || bid?.author.id === me?.id || editMode === "create", [
+    me,
+    bid,
+    editMode,
+  ]);
   const createFilter = useCallback(
     (id: number) => {
       if (editMode === "edit") {

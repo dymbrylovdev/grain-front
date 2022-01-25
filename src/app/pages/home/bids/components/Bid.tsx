@@ -3,6 +3,7 @@ import { IconButton, Tooltip, CardMedia, Button, useMediaQuery } from "@material
 import { useHistory } from "react-router-dom";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 import ArchiveIcon from "@material-ui/icons/Archive";
 import UnarchiveIcon from "@material-ui/icons/Unarchive";
 import { IBid } from "../../../../interfaces/bids";
@@ -16,6 +17,7 @@ import { ILocalBids } from "./BidsList";
 import AliceCarousel from "react-alice-carousel";
 import "../../../../libs/react-alice-carousel/alice-carousel.css";
 import { API_DOMAIN } from "../../../../constants";
+import { useIntl } from "react-intl";
 
 interface IProps {
   isHaveRules?: (user: any, id: number) => boolean;
@@ -61,6 +63,7 @@ const Bid = React.memo<IProps>(
     toggleLocationsModal,
     handleShowImage,
   }) => {
+    const intl = useIntl();
     const history = useHistory();
     const caruselRef: any = useRef();
     const isMobile = useMediaQuery("(max-width:1000px)");
@@ -147,11 +150,6 @@ const Bid = React.memo<IProps>(
       <div className={innerClasses.container} onClick={() => handleClickEditOrViewBid(bid)}>
         <div className={innerClasses.imageBlock}>
           <div className={innerClasses.imageBlocks} style={{ zIndex: 1 }}>
-            {!!bid?.vendor && (bid.vendor.company_confirmed_by_payment || bid.vendor.company_confirmed_by_email) && (
-              <div className={innerClasses.imageFirstBlock}>
-                <div className={innerClasses.fontImageText}>Связь подтверждена</div>
-              </div>
-            )}
             {bid.vendor.company && (
               <>
                 {bid?.vendor?.company_confirmed_by_payment &&
@@ -163,6 +161,19 @@ const Bid = React.memo<IProps>(
                     </div>
                   )}
               </>
+            )}
+            {!bid?.vendor?.company_confirmed_by_payment && (
+              <Tooltip
+                title={
+                  <div style={{ fontSize: 14 }}>
+                    {intl.formatMessage({
+                      id: "USERLIST.TOOLTIP.NO_COMPANY",
+                    })}
+                  </div>
+                }
+              >
+                <ReportProblemIcon color="error" style={{ width: 24, height: 24 }} />
+              </Tooltip>
             )}
           </div>
           {arrImgIndex && (
@@ -203,7 +214,7 @@ const Bid = React.memo<IProps>(
                     {bestAllMyMode !== "edit" && (
                       <div className={innerClasses.wrapperPrice}>
                         <b className={innerClasses.delivery}>
-                          С доставкой:{" "}
+                          Цена указана с НДС с учётом доставки до:{" "}
                           <b className={innerClasses.deliveryAddress}>
                             {!!bid?.point_prices && !!bid.point_prices.length
                               ? bid.point_prices.map(
@@ -277,7 +288,7 @@ const Bid = React.memo<IProps>(
                     {bestAllMyMode !== "edit" && (
                       <div className={innerClasses.wrapperPrice}>
                         <b className={innerClasses.delivery}>
-                          С доставкой:{" "}
+                          Цена указана с НДС с учётом доставки до:{" "}
                           <b className={innerClasses.deliveryAddress}>
                             {!!bid?.point_prices && !!bid.point_prices.length
                               ? bid.point_prices.map(
