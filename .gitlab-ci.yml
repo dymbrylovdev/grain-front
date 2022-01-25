@@ -1,104 +1,91 @@
 image: docker:latest
 services:
   - docker:dind
-
+ 
 stages:
   - build
   - deploy
 
-variables:
-  FX_IMAGE: $CI_DOCKERHUB_LOGIN/grain-fx
-  DEV_IMAGE: $CI_DOCKERHUB_LOGIN/grain-dev
-  ME_IMAGE: $CI_DOCKERHUB_LOGIN/grain-me
-
-before_script:
-  - docker info
-  - docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD
-
-# jobs for grain-fx.me-interactive.net (branch 1.8.1):
-build-grain-fx:
-  stage: build
-  script:
-    - docker build --pull -t $FX_IMAGE .
-    - docker push $FX_IMAGE
-  only:
-    - '1.8.2'
-
-deploy-grain-fx:
-  stage: deploy
-  image: gitlab/dind:latest
-  only:
-    - '1.8.2'
-  environment: production
-  services:
-    - docker:dind
-  before_script:
-    - mkdir -p ~/.ssh
-    - echo "$DEPLOYMENT_SERVER_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEPLOYMENT_SERVER_IP >> ~/.ssh/known_hosts
-  script:
-    - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
-    - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
-    - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD;docker stop $FX_CONTAINER;docker rm $FX_CONTAINER --force;docker pull $FX_IMAGE;docker run --restart always -p 0.0.0.0:$FX_PORT:3000 --name $FX_CONTAINER --env-file web-environment.env -d $FX_IMAGE"
-
-
-# jobs for grain-dev.me-interactive.net (branch 1.9):
-build-grain-dev:
-  stage: build
-  script:
-    - docker build --pull -t $DEV_IMAGE .
-    - docker push $DEV_IMAGE
-  only:
-    - '1.9'
-
-deploy-grain-dev:
-  stage: deploy
-  image: gitlab/dind:latest
-  only:
-    - '1.9'
-  environment: production
-  services:
-    - docker:dind
-  before_script:
-    - mkdir -p ~/.ssh
-    - echo "$DEPLOYMENT_SERVER_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEPLOYMENT_SERVER_IP >> ~/.ssh/known_hosts
-  script:
-    - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
-    - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
-    - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD;docker stop $DEV_CONTAINER;docker rm $DEV_CONTAINER --force;docker pull $DEV_IMAGE;docker run --restart always -p 0.0.0.0:$DEV_PORT:3000 --name $DEV_CONTAINER --env-file web-environment.env -d $DEV_IMAGE"
-
-# jobs for grain.me-interactive.net (branch master):
-build-grain.me:
-  stage: build
-  script:
-    - docker build --pull -t $ME_IMAGE .
-    - docker push $ME_IMAGE
+# jobs for master:
+build-master:
   only:
     - 'master'
-
-deploy-grain.me:
-  stage: deploy
-  image: gitlab/dind:latest
+  stage: build
+  script:
+    - docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN
+    - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_MASTER .
+    - docker push $GITLAB_REGISTRIES_URL/$IMAGE_MASTER 
+deploy-master:
   only:
-    - 'master'
-  environment: production
-  services:
-    - docker:dind
+    - "master"
+  stage: deploy
+  environment: 
+    name: "development"
+    url: "$DOMEN_MASTER"
   before_script:
     - mkdir -p ~/.ssh
-    - echo "$DEPLOYMENT_SERVER_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - eval "$(ssh-agent -s)"
     - ssh-add ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEPLOYMENT_SERVER_IP >> ~/.ssh/known_hosts
+    - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
   script:
-    - printf "NODE_PATH=src/\n" > web-environment.env #envariment varibles
-    - scp -r ./web-environment.env $DEPLOYMENT_SERVER_USERNAME@${DEPLOYMENT_SERVER_IP}:~/
-    - ssh $DEPLOYMENT_SERVER_USERNAME@$DEPLOYMENT_SERVER_IP "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD;docker stop $ME_CONTAINER;docker rm $ME_CONTAINER --force;docker pull $ME_IMAGE;docker run --restart always -p 0.0.0.0:$ME_PORT:3000 --name $ME_CONTAINER --env-file web-environment.env -d $ME_IMAGE"
+    - printf "NODE_PATH=src/\n" > web-environment.env
+    - scp -r ./web-environment.env $DEV_SERVER_USERNAME@${DEV_SERVER_IP}:~/
+    - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN;docker stop $CONTAINER_NAME_MASTER;docker rm $CONTAINER_NAME_MASTER --force;docker pull $GITLAB_REGISTRIES_URL/$IMAGE_MASTER;docker run --restart always -p $PORT_MASTER --name $CONTAINER_NAME_MASTER --env-file web-environment.env -d $GITLAB_REGISTRIES_URL/$IMAGE_MASTER"
+ 
+# jobs for dev branch:
+build-dev:
+  only:
+    - '1.9'
+  stage: build
+  script:
+    - docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN
+    - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_DEV .
+    - docker push $GITLAB_REGISTRIES_URL/$IMAGE_DEV 
+deploy-dev:
+  only:
+    - '1.9'
+  stage: deploy
+  environment: 
+    name: "development"
+    url: "$DOMEN_DEV"
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - printf "NODE_PATH=src/\n" > web-environment.env
+    - scp -r ./web-environment.env $DEV_SERVER_USERNAME@${DEV_SERVER_IP}:~/
+    - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN;docker stop $CONTAINER_NAME_DEV;docker rm $CONTAINER_NAME_DEV --force;docker pull $GITLAB_REGISTRIES_URL/$IMAGE_DEV;docker run --restart always -p $PORT_DEV --name $CONTAINER_NAME_DEV --env-file web-environment.env -d $GITLAB_REGISTRIES_URL/$IMAGE_DEV"
+ 
+# jobs for fx branch:
+build-fx:
+  only:
+    - '1.9.1'
+  stage: build
+  script:
+    - docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN
+    - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_FX .
+    - docker push $GITLAB_REGISTRIES_URL/$IMAGE_FX 
+deploy-fx:
+  only:
+    - '1.9.1'
+  stage: deploy
+  environment: 
+    name: "development"
+    url: "$DOMEN_FX"
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - printf "NODE_PATH=src/\n" > web-environment.env
+    - scp -r ./web-environment.env $DEV_SERVER_USERNAME@${DEV_SERVER_IP}:~/
+    - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN;docker stop $CONTAINER_NAME_FX;docker rm $CONTAINER_NAME_FX --force;docker pull $GITLAB_REGISTRIES_URL/$IMAGE_FX;docker run --restart always -p $PORT_FX --name $CONTAINER_NAME_FX --env-file web-environment.env -d $GITLAB_REGISTRIES_URL/$IMAGE_FX"
