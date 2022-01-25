@@ -25,6 +25,7 @@ interface IProps {
   titleSaveBtn?: string;
   saveFunc?: () => void;
   loadingSave?: boolean;
+  hideBack?: boolean;
 }
 
 const PhotosForm: React.FC<IProps> = ({
@@ -41,6 +42,7 @@ const PhotosForm: React.FC<IProps> = ({
   titleSaveBtn,
   saveFunc,
   loadingSave,
+  hideBack,
 }) => {
   const [files, setFiles] = useState<File[] | null>(null);
   const [uploadPhoto, setUploadPhoto] = useState<string | null>(null);
@@ -74,9 +76,11 @@ const PhotosForm: React.FC<IProps> = ({
       <Row style={{ width: "100%" }}>
         <Col>
           <div className={classes.actions} style={{ justifyContent: "space-between" }}>
-            <Button onClick={() => history.goBack()} className={classes.buttons} variant="outlined" color="primary">
-              Назад
-            </Button>
+            {!hideBack && (
+              <Button onClick={() => history.goBack()} className={classes.buttons} variant="outlined" color="primary">
+                Назад
+              </Button>
+            )}
             {saveFunc && titleSaveBtn && (
               <ButtonWithLoader disabled={loadingSave} loading={loadingSave} onPress={() => saveFunc()}>
                 {titleSaveBtn}

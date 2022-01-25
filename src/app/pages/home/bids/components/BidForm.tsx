@@ -380,7 +380,7 @@ const BidForm: React.FC<IProps> = ({
 
   useEffect(() => {
     if (editSuccess) {
-      tabValue === 0 ? history.goBack() : bidId && fetch(bidId, pointPrices);
+      bidId && fetch(bidId, pointPrices);
     }
   }, [editSuccess]);
 
@@ -685,18 +685,18 @@ const BidForm: React.FC<IProps> = ({
 
   return (
     <>
-      {isEditPhoto && (
+      {/* {isEditPhoto && (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Tabs value={tabValue} onChange={(_, n) => setTabValue(n)} indicatorColor="primary" textColor="primary">
             <Tab label="Основное" />
             <Tab label="Фотографии" />
           </Tabs>
         </div>
-      )}
+      )} */}
 
-      <div className={classes.form} style={{ display: tabValue === 1 ? "block" : "none" }}>
+      {/* <div className={classes.form} style={{ display: tabValue === 1 ? "block" : "none" }}>
         <PhotosForm data={bid} delPhoto={delPhoto} setPhotos={setPhotos} photos={photos} localDelPhoto={localDelPhoto} />
-      </div>
+      </div> */}
 
       <div className={classes.form} style={{ display: tabValue === 0 ? "block" : "none" }}>
         <div className={classes.topButtonsContainer}>
@@ -1659,6 +1659,9 @@ const BidForm: React.FC<IProps> = ({
             />
           ))}
 
+        {isEditPhoto && (
+          <PhotosForm data={bid} delPhoto={delPhoto} setPhotos={setPhotos} photos={photos} localDelPhoto={localDelPhoto} hideBack={true} />
+        )}
         <div className={classes.bottomButtonsContainer}>
           {me && editMode !== "view" && (
             <>
