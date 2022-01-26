@@ -1262,7 +1262,7 @@ const BidForm: React.FC<IProps> = ({
                   ))}
               </Grid>
 
-              <div style={{ height: 8 }}></div>
+              {/* <div style={{ height: 8 }}></div>
 
               <div className={innerClasses.calcDescription}>
                 {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
@@ -1309,9 +1309,9 @@ const BidForm: React.FC<IProps> = ({
                   ) : (
                     <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                   ))}
-              </Grid>
+              </Grid> */}
 
-              <div style={{ height: 8 }}></div>
+              {/* <div style={{ height: 8 }}></div>
 
               <div className={innerClasses.calcDescription}>
                 {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
@@ -1352,7 +1352,7 @@ const BidForm: React.FC<IProps> = ({
                   ) : (
                     <p>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                   ))}
-              </Grid>
+              </Grid> */}
             </div>
           ))}
 
