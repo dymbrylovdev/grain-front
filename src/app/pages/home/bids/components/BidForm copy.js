@@ -34,10 +34,7 @@ const getInitialValues = (bid, crop, userRole) => {
 };
 
 const getFinalPrice = (bid, i, pricePerKm) => {
-  const distance =
-    !bid.point_prices[i].distance || bid.point_prices[i].distance < 100
-      ? 100
-      : bid.point_prices[i].distance;
+  const distance = !bid.point_prices[i].distance || bid.point_prices[i].distance < 100 ? 100 : bid.point_prices[i].distance;
   return Math.round(bid.price + pricePerKm * distance);
 };
 
@@ -119,17 +116,10 @@ function BidForm({
     }
   }, [enqueueSnackbar, formikErrored, intl]);
 
-  const filterCrops =
-    bid && crops && crops.filter(item => item.id === bid.crop_id)
-      ? crops.filter(item => item.id === bid.crop_id)
-      : null;
+  const filterCrops = bid && crops && crops.filter(item => item.id === bid.crop_id) ? crops.filter(item => item.id === bid.crop_id) : null;
 
   const currentCrop =
-    filterCrops && filterCrops.length > 0
-      ? filterCrops[0]
-      : !!cropId && !!crops
-      ? crops.find(item => item.id === +cropId)
-      : null;
+    filterCrops && filterCrops.length > 0 ? filterCrops[0] : !!cropId && !!crops ? crops.find(item => item.id === +cropId) : null;
   // console.log("crops: ", crops);
   // console.log("currentCrop: ", currentCrop);
   const getCropParamsAction = cropId => {
@@ -161,9 +151,7 @@ function BidForm({
   }, [bidId, currentCrop]); // eslint-disable-line
 
   const toUserPath =
-    user.id === (!!bid && bid.vendor && bid.vendor.id)
-      ? "/user/profile"
-      : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`;
+    user.id === (!!bid && bid.vendor && bid.vendor.id) ? "/user/profile" : `/user/view/${!!bid && bid.vendor && bid.vendor.id}`;
 
   return (
     <Paper className={classes.container}>
@@ -171,14 +159,10 @@ function BidForm({
         autoComplete="off"
         initialValues={getInitialValues(bid, currentCrop, userRole)}
         validationSchema={Yup.object().shape({
-          volume: Yup.string().required(
-            <FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />
-          ),
+          volume: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
           price: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
           location: Yup.object({
-            text: Yup.string().required(
-              <FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />
-            ),
+            text: Yup.string().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
           }),
           crop: Yup.mixed().required(<FormattedMessage id="PROFILE.VALIDATION.REQUIRED_FIELD" />),
         })}
@@ -196,17 +180,7 @@ function BidForm({
         }}
         innerRef={formRef}
       >
-        {({
-          values,
-          status,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-          setFieldValue,
-        }) => {
+        {({ values, status, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, setFieldValue }) => {
           return (
             <div className={classes.form}>
               <form noValidate autoComplete="off" className="kt-form" onSubmit={handleSubmit}>
@@ -225,9 +199,7 @@ function BidForm({
                   disabled={!isEditable || userRole !== "admin"}
                 >
                   <MenuItem value={"sale"}>{intl.formatMessage({ id: "BID.TYPE.SALE" })}</MenuItem>
-                  <MenuItem value={"purchase"}>
-                    {intl.formatMessage({ id: "BID.TYPE.PURCHASE" })}
-                  </MenuItem>
+                  <MenuItem value={"purchase"}>{intl.formatMessage({ id: "BID.TYPE.PURCHASE" })}</MenuItem>
                 </TextField>
                 <TextField
                   type="text"
@@ -247,36 +219,28 @@ function BidForm({
                   }}
                   disabled={!isEditable}
                 />
-                {!!user &&
-                  user.use_vat &&
-                  values.bid_type === "sale" &&
-                  !!bid &&
-                  !!bid.vat &&
-                  !bid.vendor.use_vat && (
-                    <>
-                      <TextField
-                        type="text"
-                        label={intl.formatMessage(
-                          { id: "BIDSLIST.TABLE.COST_WITH_VAT" },
-                          { vat: bid.vat }
-                        )}
-                        margin="normal"
-                        name="price"
-                        value={Math.round(+values.price * (+bid.vat / 100 + 1))}
-                        variant="outlined"
-                        InputProps={{
-                          inputComponent: NumberFormatCustom,
-                        }}
-                        disabled
-                      />
-                      <p>
-                        {intl.formatMessage(
-                          { id: "BIDSLIST.TABLE.COST_WITH_VAT.ABOUT" },
-                          { vat: Math.round((+values.price * +bid.vat) / 100) }
-                        )}
-                      </p>
-                    </>
-                  )}
+                {!!user && user.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !bid.vendor.use_vat && (
+                  <>
+                    <TextField
+                      type="text"
+                      label={intl.formatMessage({ id: "BIDSLIST.TABLE.COST_WITH_VAT" }, { vat: bid.vat })}
+                      margin="normal"
+                      name="price"
+                      value={Math.round(+values.price * (+bid.vat / 100 + 1))}
+                      variant="outlined"
+                      InputProps={{
+                        inputComponent: NumberFormatCustom,
+                      }}
+                      disabled
+                    />
+                    <p>
+                      {intl.formatMessage(
+                        { id: "BIDSLIST.TABLE.COST_WITH_VAT.ABOUT" },
+                        { vat: Math.round((+values.price * +bid.vat) / 100) }
+                      )}
+                    </p>
+                  </>
+                )}
                 <TextField
                   type="text"
                   label={intl.formatMessage({
@@ -296,15 +260,8 @@ function BidForm({
                   disabled={!isEditable}
                 />
                 {!isEditable && (
-                  <Box
-                    className={classes.paramContainer}
-                    border={1}
-                    borderColor="#eeeeee"
-                    borderRadius={5}
-                  >
-                    <div className={innerClasses.calcTitle}>
-                      {`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}
-                    </div>
+                  <Box className={classes.paramContainer} border={1} borderColor="#eeeeee" borderRadius={5}>
+                    <div className={innerClasses.calcTitle}>{`${intl.formatMessage({ id: "BID.CALCULATOR.TITLE" })}`}</div>
                     <TextField
                       type="text"
                       label={intl.formatMessage({
@@ -321,15 +278,8 @@ function BidForm({
                       }}
                     />
                     <div className={innerClasses.calcDescription}>
-                      {!!user &&
-                      user.use_vat &&
-                      values.bid_type === "sale" &&
-                      !!bid &&
-                      !bid.vendor.use_vat
-                        ? intl.formatMessage(
-                            { id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" },
-                            { vat: bid.vat }
-                          )
+                      {!!user && user.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat
+                        ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" })
                         : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
                     </div>
                     <div style={{ height: 8 }}></div>
@@ -338,16 +288,8 @@ function BidForm({
                         bid.point_prices &&
                         bid.point_prices.map((item, i) => (
                           <div key={i}>
-                            {!!user &&
-                            user.use_vat &&
-                            values.bid_type === "sale" &&
-                            !!bid &&
-                            !bid.vendor.use_vat ? (
-                              <strong>
-                                {Math.round(
-                                  getFinalPrice(bid, i, values.pricePerKm) * (+bid.vat / 100 + 1)
-                                )}
-                              </strong>
+                            {!!user && user.use_vat && values.bid_type === "sale" && !!bid && !bid.vendor.use_vat ? (
+                              <strong>{Math.round(getFinalPrice(bid, i, values.pricePerKm) * (+bid.vat / 100 + 1))}</strong>
                             ) : (
                               <strong>{getFinalPrice(bid, i, values.pricePerKm)}</strong>
                             )}
@@ -370,9 +312,7 @@ function BidForm({
                   inputHelperText={touched.location && errors.location && errors.location.text}
                   fetchLocations={fetchLocations}
                   clearLocations={clearLocations}
-                  setSelectedLocation={location =>
-                    !!location ? setFieldValue("location", location) : setFieldValue("location", {})
-                  }
+                  setSelectedLocation={location => (!!location ? setFieldValue("location", location) : setFieldValue("location", {}))}
                   handleBlur={handleBlur}
                   disable={!isEditable}
                 />
@@ -461,8 +401,7 @@ function BidForm({
                 {bid?.vendor && (
                   <Link to={toUserPath}>
                     <div className={innerClasses.authorText}>
-                      {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.fio ||
-                        bid.vendor.login}`}
+                      {`${intl.formatMessage({ id: "BID.FORM.AUTHOR" })} ${bid.vendor.fio || bid.vendor.login}`}
                     </div>
                   </Link>
                 )}

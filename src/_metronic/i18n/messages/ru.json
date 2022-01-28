@@ -324,7 +324,7 @@
   "BID.CALCULATOR.PRICE_PER_KM": "Стоимость доставки 1 тонны, руб. за км",
   "BID.CALCULATOR.TITLE": "Калькулятор доставки:",
   "BID.CALCULATOR.FINAL_PRICE": "Цена за тонну с учётом доставки, руб.:",
-  "BID.CALCULATOR.FINAL_PRICE_WITH_VAT": "Цена за тонну с учётом доставки с НДС {vat}%, руб.:",
+  "BID.CALCULATOR.FINAL_PRICE_WITH_VAT": "Цена за тонну с учётом доставки и НДС:",
   "BID.CALCULATOR.FINAL_PRICE_DELIVERY": "Цена доставки за тонну, руб.:",
   "BID.CALCULATOR.FINAL_PRICE_ALL": "Цена за весь объем с учётом доставки, руб.:",
   "BID.CALCULATOR.FINAL_PRICE_WITH_VAT_ALL": "Цена за весь объем с учётом доставки с НДС {vat}%, руб.:",

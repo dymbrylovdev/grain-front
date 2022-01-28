@@ -813,7 +813,7 @@ function* userActivateSaga({ payload }: { payload: { email: String } }) {
   }
 }
 
-function* userBidsSaga({ payload }: { payload:  { userId: number; page: number; perPage: number } }) {
+function* userBidsSaga({ payload }: { payload: { userId: number; page: number; perPage: number } }) {
   try {
     const { data }: { data: IServerResponse<IBid[]> } = yield call(() => getUserBids(payload));
     yield put(actions.userBidsSuccess(data));

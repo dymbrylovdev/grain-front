@@ -1185,7 +1185,7 @@ const BidForm: React.FC<IProps> = ({
               />
               <div className={innerClasses.calcDescription}>
                 {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
-                  ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" }, { vat: bid.vat })
+                  ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" })
                   : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
               </div>
               <div style={{ height: 8 }}></div>
