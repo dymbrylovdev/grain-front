@@ -165,7 +165,7 @@ const getInitialValues = (
 };
 
 export const getFinalPrice = (bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
-  const newDistance = 100 > distanceKm ? 100 : distanceKm
+  const newDistance = 100 > distanceKm ? 100 : distanceKm;
   if (salePurchaseMode === "sale") {
     return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * newDistance);
   } else {
@@ -174,10 +174,11 @@ export const getFinalPrice = (bid: IBid, distanceKm: number, pricePerKm: number,
 };
 
 export const getDeliveryPrice = (bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
+  const newDistance = 100 > distanceKm ? 100 : distanceKm;
   if (salePurchaseMode === "sale") {
-    return Math.round(pricePerKm * distanceKm);
+    return Math.round(pricePerKm * newDistance);
   } else {
-    return Math.round(pricePerKm * distanceKm);
+    return Math.round(pricePerKm * newDistance);
   }
 };
 interface IProps {
@@ -1198,12 +1199,22 @@ const BidForm: React.FC<IProps> = ({
                 {!!bid?.point_prices &&
                   (bid.point_prices.length > 0 ? (
                     <div>
-                      {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                      {values.bid_type === "sale" &&
+                      bid &&
+                      ((me?.use_vat && !bid?.vendor_use_vat) ||
+                        (me?.use_vat && bid?.vendor_use_vat) ||
+                        (!me?.use_vat && bid?.vendor_use_vat)) ? (
                         <b>
                           {selectedRoute
                             ? thousands(
                                 Math.round(
-                                  getFinalPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, +bid.vat)
+                                  getFinalPrice(
+                                    bid,
+                                    selectedRoute.distance.value / 1000,
+                                    values.pricePerKm,
+                                    salePurchaseMode,
+                                    bid.vat || 10
+                                  )
                                 ).toString()
                               ) + " • "
                             : ""}
@@ -1239,12 +1250,22 @@ const BidForm: React.FC<IProps> = ({
                   bid.point_prices &&
                   (bid.point_prices.length > 0 ? (
                     <div>
-                      {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                      {values.bid_type === "sale" &&
+                      bid &&
+                      ((me?.use_vat && !bid?.vendor_use_vat) ||
+                        (me?.use_vat && bid?.vendor_use_vat) ||
+                        (!me?.use_vat && bid?.vendor_use_vat)) ? (
                         <b>
                           {selectedRoute
                             ? thousands(
                                 Math.round(
-                                  getDeliveryPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, +bid.vat)
+                                  getDeliveryPrice(
+                                    bid,
+                                    selectedRoute.distance.value / 1000,
+                                    values.pricePerKm,
+                                    salePurchaseMode,
+                                    bid.vat || 10
+                                  )
                                 ).toString()
                               ) + " • "
                             : ""}

@@ -607,12 +607,22 @@ const ViewBidForm: React.FC<IProps> = ({
                           {!!bid?.point_prices &&
                             (bid.point_prices.length > 0 ? (
                               <div className={classes.calcVal}>
-                                {!!me && me.use_vat && salePurchaseMode === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                                {salePurchaseMode === "sale" &&
+                                bid &&
+                                ((me?.use_vat && !bid?.vendor_use_vat) ||
+                                  (me?.use_vat && bid?.vendor_use_vat) ||
+                                  (!me?.use_vat && bid?.vendor_use_vat)) ? (
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
                                           Math.round(
-                                            getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, +bid.vat)
+                                            getFinalPrice(
+                                              bid,
+                                              selectedRoute.distance.value / 1000,
+                                              pricePerKm,
+                                              salePurchaseMode,
+                                              bid.vat || 10
+                                            )
                                           ).toString()
                                         ) + " • "
                                       : ""}
@@ -646,7 +656,11 @@ const ViewBidForm: React.FC<IProps> = ({
                             bid.point_prices &&
                             (bid.point_prices.length > 0 ? (
                               <div className={classes.calcVal}>
-                                {!!me && me.use_vat && salePurchaseMode === "sale" && !!bid && !!bid.vat && !vendorUseVat ? (
+                                {salePurchaseMode === "sale" &&
+                                bid &&
+                                ((me?.use_vat && !bid?.vendor_use_vat) ||
+                                  (me?.use_vat && bid?.vendor_use_vat) ||
+                                  (!me?.use_vat && bid?.vendor_use_vat)) ? (
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
@@ -656,7 +670,7 @@ const ViewBidForm: React.FC<IProps> = ({
                                               selectedRoute.distance.value / 1000,
                                               pricePerKm,
                                               salePurchaseMode,
-                                              +bid.vat
+                                              bid.vat || 10
                                             )
                                           ).toString()
                                         ) + " • "
