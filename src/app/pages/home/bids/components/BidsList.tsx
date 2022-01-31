@@ -101,7 +101,7 @@ const BidsList: React.FC<IProps> = ({
   const [showPlacemark, setShowPlacemark] = useState(false);
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
   const [currentMark, setCurrentMark] = useState<ILocalBids | null>(null);
-  const isBuyerTariff = useMemo(() => user.tariff_matrix.tariff.id !== 1, [user]);
+  const isBuyerTariff = useMemo(() => user.tariff_matrix?.tariff?.id !== 1, [user]);
   const [showsPhones, setShowsPhones] = useState<number[]>([]);
   const [isShowImage, setIsShowImage] = useState(false);
   const [currentImages, setCurrentImages] = useState({
@@ -154,7 +154,7 @@ const BidsList: React.FC<IProps> = ({
   }, []);
 
   useEffect(() => {
-    if (user.points.find(el => el.active)) {
+    if (user?.points?.find(el => el.active)) {
       setHasActivePoints(true);
     } else {
       setHasActivePoints(false);

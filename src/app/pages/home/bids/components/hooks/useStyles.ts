@@ -55,6 +55,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   fontImageText: {
     fontSize: "0.9vw",
     color: "white",
+    fontWeight: 400,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       fontSize: 14,
@@ -808,6 +809,7 @@ export const useViewBidStyles = makeStyles(theme => ({
   fontImageText: {
     fontSize: 14,
     color: "white",
+    fontWeight: 400,
   },
   wrapperValCalc: { display: "flex", flexDirection: "row", justifyContent: "space-between", flexWrap: "wrap" },
   wrapperMedia: { display: "flex", alignItems: "center", marginTop: -6 },

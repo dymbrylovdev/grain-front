@@ -18,19 +18,13 @@ const innerStyles = makeStyles(theme => ({
   },
 }));
 
-function LocationBlock({
-  intl,
-  me,
-  handleClickLocation,
-  handleClickPrices,
-  locations,
-  salePurchaseMode,
-}) {
+function LocationBlock({ intl, me, handleClickLocation, handleClickPrices, locations, salePurchaseMode }) {
   const innerClasses = innerStyles();
   const activeLocations = [];
-  locations.forEach(item => {
-    if (item.active) activeLocations.push(item);
-  });
+  locations &&
+    locations.forEach(item => {
+      if (item.active) activeLocations.push(item);
+    });
 
   return (
     <div className={innerClasses.container}>

@@ -270,7 +270,10 @@ const ViewBidForm: React.FC<IProps> = ({
                       </div>
                     }
                   >
-                    <ReportProblemIcon color="error" style={{ width: 24, height: 24 }} />
+                    <div>
+                      <div style={{ height: 15, backgroundColor: "white", position: "absolute", right: 13, top: 13, width: 10 }} />
+                      <ReportProblemIcon color="error" style={{ width: 36, height: 36 }} />
+                    </div>
                   </Tooltip>
                 )}
               </div>
@@ -341,7 +344,7 @@ const ViewBidForm: React.FC<IProps> = ({
                         ? "Цена с учётом НДС и доставки до:"
                         : salePurchaseMode === "sale"
                         ? "Цена без НДС с учетом доставки до:"
-                        : "Цена указана с НДС с учётом доставки до:"}{" "}
+                        : "Цена указана с учётом доставки до:"}{" "}
                       <b className={classes.deliveryAddress}>
                         {!!bid?.point_prices && !!bid.point_prices.length
                           ? bid.point_prices.map(
@@ -591,9 +594,15 @@ const ViewBidForm: React.FC<IProps> = ({
                       <div>
                         <div>
                           <div className={classes.calcParam}>
-                            {!!me && me.use_vat && salePurchaseMode === "sale" && !!bid && !vendorUseVat
+                            {salePurchaseMode === "sale" &&
+                            ((me?.use_vat && !bid?.vendor_use_vat) ||
+                              (me?.use_vat && bid?.vendor_use_vat) ||
+                              (!me?.use_vat && bid?.vendor_use_vat))
                               ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" })
                               : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
+                            {/* {!!me && me.use_vat && salePurchaseMode === "sale" && !!bid && !vendorUseVat
+                              ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" })
+                              : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })} */}
                           </div>
                           {!!bid?.point_prices &&
                             (bid.point_prices.length > 0 ? (

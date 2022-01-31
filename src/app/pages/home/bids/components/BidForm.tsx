@@ -1184,9 +1184,13 @@ const BidForm: React.FC<IProps> = ({
                 autoFocus={true}
               />
               <div className={innerClasses.calcDescription}>
-                {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
+                {salePurchaseMode === "sale" &&
+                ((me?.use_vat && !bid?.vendor_use_vat) || (me?.use_vat && bid?.vendor_use_vat) || (!me?.use_vat && bid?.vendor_use_vat))
                   ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" })
                   : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
+                {/* {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
+                  ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" })
+                  : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })} */}
               </div>
               <div style={{ height: 8 }}></div>
               <Grid container direction="column" justify="center" alignItems="flex-start">

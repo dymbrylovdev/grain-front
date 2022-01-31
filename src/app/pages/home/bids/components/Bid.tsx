@@ -172,7 +172,10 @@ const Bid = React.memo<IProps>(
                   </div>
                 }
               >
-                <ReportProblemIcon color="error" style={{ width: 24, height: 24 }} />
+                <div>
+                  <div style={{ height: 15, backgroundColor: "white", position: "absolute", right: 13, top: 13, width: 10 }} />
+                  <ReportProblemIcon color="error" style={{ width: 36, height: 36 }} />
+                </div>
               </Tooltip>
             )}
           </div>
@@ -221,7 +224,7 @@ const Bid = React.memo<IProps>(
                             ? "Цена с учётом НДС и доставки до:"
                             : salePurchaseMode === "sale"
                             ? "Цена без НДС с учетом доставки до:"
-                            : "Цена указана с НДС с учётом доставки до:"}{" "}
+                            : "Цена указана с учётом доставки до:"}{" "}
                           <b className={innerClasses.deliveryAddress}>
                             {!!bid?.point_prices && !!bid.point_prices.length
                               ? bid.point_prices.map(
@@ -302,7 +305,7 @@ const Bid = React.memo<IProps>(
                             ? "Цена с учётом НДС и доставки до:"
                             : salePurchaseMode === "sale"
                             ? "Цена без НДС с учетом доставки до:"
-                            : "Цена указана с НДС с учётом доставки до:"}{" "}
+                            : "Цена указана с учётом доставки до:"}{" "}
                           <b className={innerClasses.deliveryAddress}>
                             {!!bid?.point_prices && !!bid.point_prices.length
                               ? bid.point_prices.map(
