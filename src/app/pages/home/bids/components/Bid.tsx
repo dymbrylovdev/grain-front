@@ -249,7 +249,7 @@ const Bid = React.memo<IProps>(
                               toggleLocationsModal && toggleLocationsModal();
                             }}
                           >
-                            (Изменить)
+                            (Изменить адрес)
                           </b>
                         </b>
                       </div>
@@ -330,7 +330,7 @@ const Bid = React.memo<IProps>(
                               toggleLocationsModal && toggleLocationsModal();
                             }}
                           >
-                            (Изменить)
+                            (Изменить адрес)
                           </b>
                         </b>
                       </div>
@@ -697,7 +697,7 @@ const Bid = React.memo<IProps>(
               </>
             )}
 
-            <div className={innerClasses.wrapperInfoCompany}>
+            <div className={innerClasses.wrapperInfoCompany} style={{ justifyContent: "space-between" }}>
               <div className={innerClasses.companyWrapper}>
                 <div className={innerClasses.nameVendor}>
                   {Boolean(bid.vendor.surname || bid.vendor.firstName || bid.vendor.firstName)

@@ -366,7 +366,7 @@ const ViewBidForm: React.FC<IProps> = ({
                     </b>
                   </div>
                 </>
-                <div className={classes.wrapperPrice} style={{ flexDirection: "column", marginBottom: 20 }}>
+                <div className={classes.wrapperPrice} style={{ flexDirection: "column", marginBottom: 10 }}>
                   <div className={classes.wrapperPrice}>
                     {salePurchaseMode === "sale" ? (
                       <>
@@ -434,6 +434,12 @@ const ViewBidForm: React.FC<IProps> = ({
                 </div>
                 {!isMobile && (
                   <div className={classes.wrapperParameters}>
+                    {currentCrop && (
+                      <div className={classes.wrapperParameter}>
+                        <div className={classes.nameParameter}>Культура</div>
+                        <div className={classes.parameterValue}>{currentCrop.name}</div>
+                      </div>
+                    )}
                     {bid.parameter_values.map(item => (
                       <div key={item.id} className={classes.wrapperParameter}>
                         <div className={classes.nameParameter}>{getParametrName(item)}</div>

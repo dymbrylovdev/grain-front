@@ -584,6 +584,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
               numberParams={numberParams}
               toggleLocationsModal={toggleLocationsModal}
               archive={({ id, is_archived }) => edit(id, { is_archived })}
+              currentCropName={currentCropName}
             />
           </div>
           {newInexactBid.length > 0 && (
@@ -607,6 +608,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 numberParams={numberParams}
                 toggleLocationsModal={toggleLocationsModal}
                 archive={({ id, is_archived }) => edit(id, { is_archived })}
+                currentCropName={currentCropName}
               />
             </div>
           )}
@@ -650,6 +652,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             numberParams={numberParams}
             toggleLocationsModal={toggleLocationsModal}
             archive={({ id, is_archived }) => edit(id, { is_archived })}
+            currentCropName={currentCropName}
           />
           {!!myBids && !!myBids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
         </>

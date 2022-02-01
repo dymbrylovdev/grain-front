@@ -155,27 +155,32 @@ export const useBidTableStyles = makeStyles(theme => ({
     },
   },
   wrapperFirstInfoBlock: {
-    flex: 1,
     display: "flex",
     flexWrap: "wrap",
+    width: "30vw",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (min-width:910px)"]: {
       marginRight: 30,
     },
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      width: "100%",
+    },
   },
   wrapperInfoBlock: {
-    flex: 1,
     display: "flex",
     flexWrap: "wrap",
+    width: "24vw",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       display: "block",
+      width: "100%",
     },
   },
   containerInfoBlock: {
     display: "flex",
     flexDirection: "column",
-    maxWidth: 500,
+    width: "100%",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1800px)"]: {
       maxWidth: 750,
@@ -814,7 +819,15 @@ export const useViewBidStyles = makeStyles(theme => ({
   wrapperValCalc: { display: "flex", flexDirection: "row", justifyContent: "space-between", flexWrap: "wrap" },
   wrapperMedia: { display: "flex", alignItems: "center", marginTop: -6 },
   yaMap: { width: "100%", marginTop: 5 },
-  wrapperParameters: { display: "flex", flexDirection: "row", flexWrap: "wrap" },
+  wrapperParameters: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    borderTop: "0.5px solid #9FA8DAFF",
+    borderBottom: "0.5px solid #9FA8DAFF",
+    paddingTop: 10,
+    marginBottom: 10,
+  },
   wrapperParameter: { display: "flex", flexDirection: "column", marginRight: 40, marginBottom: 16 },
   wrapperCalc: {
     paddingTop: 16,

@@ -59,6 +59,7 @@ interface IProps {
   postError?: string | null;
   points?: ILocation[];
   numberParams?: ICropParam[];
+  currentCropName?: string;
 }
 
 const BidsList: React.FC<IProps> = ({
@@ -86,6 +87,7 @@ const BidsList: React.FC<IProps> = ({
   points,
   numberParams,
   toggleLocationsModal,
+  currentCropName,
 }) => {
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
@@ -153,6 +155,26 @@ const BidsList: React.FC<IProps> = ({
     };
   }, []);
 
+  const scrollPosition = useCallback(() => {
+    const scrollBidList = localStorage.getItem("scrollBidList");
+    const parseScroll = scrollBidList ? JSON.parse(scrollBidList) : null;
+    if (
+      parseScroll &&
+      salePurchaseMode === parseScroll.salePurchaseMode &&
+      currentCropName === parseScroll.currentCropName &&
+      bestAllMyMode === parseScroll.bestAllMyMode
+    ) {
+      window.scrollTo(0, parseScroll.position);
+      localStorage.removeItem("scrollBidList");
+    }
+  }, [currentCropName, bestAllMyMode, salePurchaseMode]);
+
+  useEffect(() => {
+    if (!loading || bids) {
+      scrollPosition();
+    }
+  }, [loading, bids, salePurchaseMode, scrollPosition]);
+
   useEffect(() => {
     if (user?.points?.find(el => el.active)) {
       setHasActivePoints(true);
@@ -218,13 +240,22 @@ const BidsList: React.FC<IProps> = ({
         bid_id: bid.id,
         value: maxProfit || 0,
       });
+      localStorage.setItem(
+        "scrollBidList",
+        JSON.stringify({
+          currentCropName,
+          bestAllMyMode,
+          salePurchaseMode,
+          position: window.pageYOffset,
+        })
+      );
       history.push(
         ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit"
           ? `/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`
           : `/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`
       );
     },
-    [history, setProfit, user, bestAllMyMode]
+    [history, setProfit, user, bestAllMyMode, salePurchaseMode, currentCropName]
   );
 
   const handleShowImage = useCallback((index: number, photos?: string[]) => {
