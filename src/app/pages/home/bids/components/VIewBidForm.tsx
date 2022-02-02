@@ -127,6 +127,25 @@ const ViewBidForm: React.FC<IProps> = ({
     }
   }, [bid]);
 
+  const newPrice = useMemo(() => {
+    if (selectedRoute && bid) {
+      return thousands(
+        Math.round(getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, bid.vat || 10)).toString()
+      );
+    }
+    return null;
+  }, [selectedRoute, bid, pricePerKm, salePurchaseMode]);
+
+  const selectedPrice = useMemo(() => {
+    return newBid
+      ? formatAsThousands(newBid.finalPrice)
+      : newPrice
+      ? newPrice
+      : bid?.price_with_delivery_with_vat
+      ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
+      : "-";
+  }, [newBid, bid, newPrice]);
+
   useEffect(() => {
     if (me && bid && bid.location) {
       const locations = me?.points.filter(el => el.active);
@@ -334,13 +353,7 @@ const ViewBidForm: React.FC<IProps> = ({
               <div className={classes.rightCol}>
                 <>
                   <div className={classes.wrapperPrice}>
-                    <div className={classes.price}>
-                      {newBid
-                        ? formatAsThousands(newBid.finalPrice)
-                        : bid?.price_with_delivery_with_vat
-                        ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
-                        : "-"}{" "}
-                    </div>
+                    <div className={classes.price}>{selectedPrice}</div>
                     <div className={classes.rybl}>₽</div>
                     {/* <div className={innerClasses.nds}>БЕЗ НДС</div> */}
                   </div>
