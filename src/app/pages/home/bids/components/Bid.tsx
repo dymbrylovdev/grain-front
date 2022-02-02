@@ -359,7 +359,7 @@ const Bid = React.memo<IProps>(
                                 {formatAsThousands(!!bid && Math.round(bid.price * ((bid.vat || 0) / 100 + 1)))}{" "}
                               </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`с учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
+                              <div className={innerClasses.nds}>{`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
                             </>
                           )}
 
@@ -578,7 +578,7 @@ const Bid = React.memo<IProps>(
                                 {formatAsThousands(!!bid && Math.round(bid.price * ((bid.vat || 0) / 100 + 1)))}{" "}
                               </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`с учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
+                              <div className={innerClasses.nds}>{`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
                             </>
                           )}
 

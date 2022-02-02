@@ -379,7 +379,7 @@ const ViewBidForm: React.FC<IProps> = ({
                                   {formatAsThousands(!!bid && Math.round(bid.price * ((bid.vat || 0) / 100 + 1)))}{" "}
                                 </div>
                                 <div className={classes.rybl}>₽</div>
-                                <div className={classes.nds}>{`с учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
+                                <div className={classes.nds}>{`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
                               </>
                             )}
 
