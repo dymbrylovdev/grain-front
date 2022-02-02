@@ -129,12 +129,15 @@ const ViewBidForm: React.FC<IProps> = ({
 
   const newPrice = useMemo(() => {
     if (selectedRoute && bid) {
-      return thousands(
-        Math.round(getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, bid.vat || 10)).toString()
-      );
+      return salePurchaseMode === "sale" &&
+        ((me?.use_vat && !bid?.vendor_use_vat) || (me?.use_vat && bid?.vendor_use_vat) || (!me?.use_vat && bid?.vendor_use_vat))
+        ? thousands(
+            Math.round(getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, bid.vat || 10)).toString()
+          )
+        : thousands(Math.round(getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, 0)).toString());
     }
     return null;
-  }, [selectedRoute, bid, pricePerKm, salePurchaseMode]);
+  }, [selectedRoute, bid, pricePerKm, salePurchaseMode, me]);
 
   const selectedPrice = useMemo(() => {
     return newBid
