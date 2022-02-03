@@ -411,7 +411,7 @@ const ViewBidForm: React.FC<IProps> = ({
                               <>
                                 <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
                                 <div className={classes.rybl}>₽</div>
-                                <div className={classes.nds}>{`с учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
+                                <div className={classes.nds}>{`с учётом НДС`}</div>
                               </>
                             )}
 
@@ -429,7 +429,7 @@ const ViewBidForm: React.FC<IProps> = ({
                               <>
                                 <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
                                 <div className={classes.rybl}>₽</div>
-                                <div className={classes.nds}>{`с учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
+                                <div className={classes.nds}>{`с учётом НДС`}</div>
                               </>
                             )}
                           </>
