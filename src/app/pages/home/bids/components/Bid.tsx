@@ -368,7 +368,7 @@ const Bid = React.memo<IProps>(
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`с учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
+                              <div className={innerClasses.nds}>{`с учётом НДС`}</div>
                             </>
                           )}
 
@@ -386,7 +386,7 @@ const Bid = React.memo<IProps>(
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`с учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
+                              <div className={innerClasses.nds}>{`с учётом НДС`}</div>
                             </>
                           )}
                         </>
@@ -587,7 +587,7 @@ const Bid = React.memo<IProps>(
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`с учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
+                              <div className={innerClasses.nds}>{`с учётом НДС`}</div>
                             </>
                           )}
 
@@ -605,7 +605,7 @@ const Bid = React.memo<IProps>(
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`с учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
+                              <div className={innerClasses.nds}>{`с учётом НДС`}</div>
                             </>
                           )}
                         </>
