@@ -18,6 +18,7 @@ import AliceCarousel from "react-alice-carousel";
 import "../../../../libs/react-alice-carousel/alice-carousel.css";
 import { API_DOMAIN } from "../../../../constants";
 import { useIntl } from "react-intl";
+import { useIsViewed } from "./hooks/useViewedBid";
 
 interface IProps {
   isHaveRules?: (user: any, id: number) => boolean;
@@ -70,6 +71,7 @@ const Bid = React.memo<IProps>(
     const innerClasses = useBidTableStyles();
     const currentCrop = useMemo(() => crops?.find(item => item.id === bid.crop_id), [crops, bid]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const isViewed = useIsViewed(bid.id);
     const newBid = useMemo(() => {
       if (localBids && localBids.length > 0) {
         return localBids.find(
@@ -156,7 +158,7 @@ const Bid = React.memo<IProps>(
                   !!bid?.vendor?.company?.colors &&
                   bid.vendor.company.colors.length > 0 &&
                   bid.vendor.company.colors.find(item => item === "green") && (
-                    <div className={innerClasses.imageTwoBlock}>
+                    <div className={innerClasses.imageFirstBlock}>
                       <div className={innerClasses.fontImageText}>Надежный контрагент</div>
                     </div>
                   )}
@@ -172,11 +174,16 @@ const Bid = React.memo<IProps>(
                   </div>
                 }
               >
-                <div>
+                <div style={{ marginBottom: 4 }}>
                   <div style={{ height: 15, backgroundColor: "white", position: "absolute", right: 13, top: 13, width: 10 }} />
                   <ReportProblemIcon color="error" style={{ width: 36, height: 36 }} />
                 </div>
               </Tooltip>
+            )}
+            {isViewed && (
+              <div className={innerClasses.imageTwoBlock} style={{ position: "absolute" }}>
+                <div className={innerClasses.fontImageText}>Просмотрено</div>
+              </div>
             )}
           </div>
           {arrImgIndex && (

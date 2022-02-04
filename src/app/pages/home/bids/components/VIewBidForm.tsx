@@ -20,6 +20,7 @@ import NumberFormatCustom from "../../../../components/NumberFormatCustom/Number
 import { thousands } from "../../deals/utils/utils";
 import { useViewBidStyles } from "./hooks/useStyles";
 import { ILocalBids } from "./BidsList";
+import { setViewed } from "./hooks/useViewedBid";
 
 interface IProps {
   intl: IntlShape;
@@ -103,6 +104,12 @@ const ViewBidForm: React.FC<IProps> = ({
       );
     }
   }, [localBids, bid, salePurchaseMode, me]);
+
+  useEffect(() => {
+    if (bid?.id) {
+      setViewed(bid?.id);
+    }
+  }, [bid]);
 
   useEffect(() => {
     routeLoading && setSelectedRoute(null);

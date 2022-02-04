@@ -40,7 +40,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     paddingRight: 8,
     paddingTop: 4,
     paddingBottom: 4,
-    backgroundColor: "#21BA88FF",
+    backgroundColor: "#0F7F12FF",
     borderRadius: 4,
     marginBottom: 8,
   },
@@ -49,7 +49,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     paddingRight: 8,
     paddingTop: 4,
     paddingBottom: 4,
-    backgroundColor: "#0F7F12FF",
+    backgroundColor: "#21BA88FF",
     borderRadius: 4,
   },
   fontImageText: {
