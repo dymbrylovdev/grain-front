@@ -217,14 +217,15 @@ const Bid = React.memo<IProps>(
                     {bestAllMyMode !== "edit" && (
                       <div className={innerClasses.wrapperPrice}>
                         <b className={innerClasses.delivery}>
-                          {salePurchaseMode === "sale" &&
+                          {salePurchaseMode === "sale" ? "С учётом доставки до:" : "Цена указана с учётом доставки до:"}
+                          {/* {salePurchaseMode === "sale" &&
                           ((user.use_vat && !bid.vendor_use_vat) ||
                             (user.use_vat && bid.vendor_use_vat) ||
                             (!user.use_vat && bid.vendor_use_vat))
                             ? "Цена с учётом НДС и доставки до:"
                             : salePurchaseMode === "sale"
                             ? "Цена без НДС с учетом доставки до:"
-                            : "Цена указана с учётом доставки до:"}{" "}
+                            : "Цена указана с учётом доставки до:"}{" "} */}
                           <b className={innerClasses.deliveryAddress}>
                             {!!bid?.point_prices && !!bid.point_prices.length
                               ? bid.point_prices.map(
@@ -268,7 +269,15 @@ const Bid = React.memo<IProps>(
                             : "-"}{" "}
                         </div>
                         <div className={innerClasses.rybl}>₽</div>
-                        {/* <div className={innerClasses.nds}>БЕЗ НДС</div> */}
+                        {salePurchaseMode === "sale" && (
+                          <div className={innerClasses.nds}>
+                            {(user.use_vat && !bid.vendor_use_vat) ||
+                            (user.use_vat && bid.vendor_use_vat) ||
+                            (!user.use_vat && bid.vendor_use_vat)
+                              ? "Цена указана с НДС"
+                              : "Цена указана без НДС"}{" "}
+                          </div>
+                        )}
                       </div>
                     )}
                   </>
@@ -288,7 +297,15 @@ const Bid = React.memo<IProps>(
                             : "-"}{" "}
                         </div>
                         <div className={innerClasses.rybl}>₽</div>
-                        {/* <div className={innerClasses.nds}>БЕЗ НДС</div> */}
+                        {salePurchaseMode === "sale" && (
+                          <div className={innerClasses.nds}>
+                            {(user.use_vat && !bid.vendor_use_vat) ||
+                            (user.use_vat && bid.vendor_use_vat) ||
+                            (!user.use_vat && bid.vendor_use_vat)
+                              ? "Цена указана с НДС"
+                              : "Цена указана без НДС"}{" "}
+                          </div>
+                        )}
                       </div>
                     )}
                   </>
@@ -298,14 +315,15 @@ const Bid = React.memo<IProps>(
                     {bestAllMyMode !== "edit" && (
                       <div className={innerClasses.wrapperPrice}>
                         <b className={innerClasses.delivery}>
-                          {salePurchaseMode === "sale" &&
+                          {salePurchaseMode === "sale" ? "С учётом доставки до:" : "Цена указана с учётом доставки до:"}
+                          {/* {salePurchaseMode === "sale" &&
                           ((user.use_vat && !bid.vendor_use_vat) ||
                             (user.use_vat && bid.vendor_use_vat) ||
                             (!user.use_vat && bid.vendor_use_vat))
                             ? "Цена с учётом НДС и доставки до:"
                             : salePurchaseMode === "sale"
                             ? "Цена без НДС с учетом доставки до:"
-                            : "Цена указана с учётом доставки до:"}{" "}
+                            : "Цена указана с учётом доставки до:"}{" "} */}
                           <b className={innerClasses.deliveryAddress}>
                             {!!bid?.point_prices && !!bid.point_prices.length
                               ? bid.point_prices.map(
@@ -343,8 +361,15 @@ const Bid = React.memo<IProps>(
               <>
                 <div className={innerClasses.wrapperPrice}>
                   <b className={innerClasses.delivery}>
-                    Цена
-                    <b className={innerClasses.deliveryAddress}>{` (${bid.location.text})`}</b>
+                    {salePurchaseMode === "sale" ? (
+                      <>
+                        Место отгрузки: <b className={innerClasses.deliveryAddress}>{`${bid.location.text}`}</b>
+                      </>
+                    ) : (
+                      <>
+                        Цена <b className={innerClasses.deliveryAddress}>{`(${bid.location.text})`}</b>
+                      </>
+                    )}
                   </b>
                 </div>
                 <div className={innerClasses.wrapperPrice}>
@@ -359,7 +384,7 @@ const Bid = React.memo<IProps>(
                                 {formatAsThousands(!!bid && Math.round(bid.price * ((bid.vat || 0) / 100 + 1)))}{" "}
                               </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
+                              <div className={innerClasses.nds}>{`Цена указана с НДС`}</div>
                             </>
                           )}
 
@@ -368,7 +393,7 @@ const Bid = React.memo<IProps>(
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`с учётом НДС`}</div>
+                              <div className={innerClasses.nds}>{`Цена указана с НДС`}</div>
                             </>
                           )}
 
@@ -377,7 +402,7 @@ const Bid = React.memo<IProps>(
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>Цена без НДС</div>
+                              <div className={innerClasses.nds}>Цена указана без НДС</div>
                             </>
                           )}
 
@@ -386,7 +411,7 @@ const Bid = React.memo<IProps>(
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`с учётом НДС`}</div>
+                              <div className={innerClasses.nds}>{`Цена указана с НДС`}</div>
                             </>
                           )}
                         </>
@@ -578,7 +603,7 @@ const Bid = React.memo<IProps>(
                                 {formatAsThousands(!!bid && Math.round(bid.price * ((bid.vat || 0) / 100 + 1)))}{" "}
                               </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
+                              <div className={innerClasses.nds}>{`Цена указана с НДС`}</div>
                             </>
                           )}
 
@@ -587,7 +612,7 @@ const Bid = React.memo<IProps>(
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`с учётом НДС`}</div>
+                              <div className={innerClasses.nds}>{`Цена указана с НДС`}</div>
                             </>
                           )}
 
@@ -596,7 +621,7 @@ const Bid = React.memo<IProps>(
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>Цена без НДС</div>
+                              <div className={innerClasses.nds}>Цена указана без НДС</div>
                             </>
                           )}
 
@@ -605,7 +630,7 @@ const Bid = React.memo<IProps>(
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
-                              <div className={innerClasses.nds}>{`с учётом НДС`}</div>
+                              <div className={innerClasses.nds}>{`Цена указана с НДС`}</div>
                             </>
                           )}
                         </>
@@ -628,7 +653,15 @@ const Bid = React.memo<IProps>(
                 </div>
                 <div className={innerClasses.wrapperPrice}>
                   <b className={innerClasses.delivery}>
-                    Цена <b className={innerClasses.deliveryAddress}>{`(${bid.location.text})`}</b>
+                    {salePurchaseMode === "sale" ? (
+                      <>
+                        Место отгрузки: <b className={innerClasses.deliveryAddress}>{`${bid.location.text}`}</b>
+                      </>
+                    ) : (
+                      <>
+                        Цена <b className={innerClasses.deliveryAddress}>{`(${bid.location.text})`}</b>
+                      </>
+                    )}
                   </b>
                 </div>
               </>
