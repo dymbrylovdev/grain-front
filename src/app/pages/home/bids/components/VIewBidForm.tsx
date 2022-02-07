@@ -373,7 +373,13 @@ const ViewBidForm: React.FC<IProps> = ({
                   <div className={classes.wrapperPrice}>
                     <div className={classes.price}>{selectedPrice}</div>
                     <div className={classes.rybl}>₽</div>
-                    {/* <div className={innerClasses.nds}>БЕЗ НДС</div> */}
+                    {salePurchaseMode === "sale" && (
+                      <div className={classes.nds}>
+                        {(me?.use_vat && !bid.vendor_use_vat) || (me?.use_vat && bid.vendor_use_vat) || (!me?.use_vat && bid.vendor_use_vat)
+                          ? "Цена указана с НДС"
+                          : "Цена указана без НДС"}{" "}
+                      </div>
+                    )}
                   </div>
                   <div className={classes.wrapperPrice}>
                     <b className={classes.delivery}>
@@ -381,14 +387,15 @@ const ViewBidForm: React.FC<IProps> = ({
                         "Цена указана с учётом доставки до:"
                       ) : (
                         <>
-                          {salePurchaseMode === "sale" &&
+                          {salePurchaseMode === "sale" ? "С учётом доставки до:" : "Цена указана с учётом доставки до:"}
+                          {/* {salePurchaseMode === "sale" &&
                           ((me?.use_vat && !bid.vendor_use_vat) ||
                             (me?.use_vat && bid.vendor_use_vat) ||
                             (!me?.use_vat && bid.vendor_use_vat))
                             ? "Цена с учётом НДС и доставки до:"
                             : salePurchaseMode === "sale"
                             ? "Цена без НДС с учетом доставки до:"
-                            : "Цена указана с учётом доставки до:"}{" "}
+                            : "Цена указана с учётом доставки до:"}{" "} */}
                         </>
                       )}
                       <b className={classes.deliveryAddress}>
@@ -431,7 +438,7 @@ const ViewBidForm: React.FC<IProps> = ({
                                   {formatAsThousands(!!bid && Math.round(bid.price * ((bid.vat || 0) / 100 + 1)))}{" "}
                                 </div>
                                 <div className={classes.rybl}>₽</div>
-                                <div className={classes.nds}>{`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
+                                <div className={classes.nds}>{`Цена указана с НДС`}</div>
                               </>
                             )}
 
@@ -440,7 +447,7 @@ const ViewBidForm: React.FC<IProps> = ({
                               <>
                                 <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
                                 <div className={classes.rybl}>₽</div>
-                                <div className={classes.nds}>{`с учётом НДС`}</div>
+                                <div className={classes.nds}>{`Цена указана с НДС`}</div>
                               </>
                             )}
 
@@ -449,7 +456,7 @@ const ViewBidForm: React.FC<IProps> = ({
                               <>
                                 <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
                                 <div className={classes.rybl}>₽</div>
-                                <div className={classes.nds}>Цена без НДС</div>
+                                <div className={classes.nds}>Цена указана без НДС</div>
                               </>
                             )}
 
@@ -458,7 +465,7 @@ const ViewBidForm: React.FC<IProps> = ({
                               <>
                                 <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
                                 <div className={classes.rybl}>₽</div>
-                                <div className={classes.nds}>{`с учётом НДС`}</div>
+                                <div className={classes.nds}>{`Цена указана с НДС`}</div>
                               </>
                             )}
                           </>
@@ -480,8 +487,15 @@ const ViewBidForm: React.FC<IProps> = ({
                     )}
                   </div>
                   <div className={classes.delivery}>
-                    Цена
-                    <b className={classes.deliveryAddress}>{` (${bid.location.text})`}</b>
+                    {salePurchaseMode === "sale" ? (
+                      <>
+                        Место отгрузки: <b className={classes.deliveryAddress}>{`${bid.location.text}`}</b>
+                      </>
+                    ) : (
+                      <>
+                        Цена <b className={classes.deliveryAddress}>{`(${bid.location.text})`}</b>
+                      </>
+                    )}
                   </div>
                 </div>
                 {!isMobile && (
