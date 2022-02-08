@@ -216,6 +216,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   nds: {
     fontSize: "1.175vw",
     color: "black",
+    fontWeight: "normal",
     marginRight: 21,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
@@ -716,6 +717,7 @@ export const useViewBidStyles = makeStyles(theme => ({
     fontSize: 21,
     color: "black",
     marginRight: 21,
+    fontWeight: "normal",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:840px)"]: {
       fontSize: 18,
