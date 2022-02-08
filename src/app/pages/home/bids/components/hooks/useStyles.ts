@@ -420,6 +420,15 @@ export const useBidTableStyles = makeStyles(theme => ({
     backdropFilter: "blur(3px)",
     backgroundColor: "rgba(0,0,30,0.4)",
   },
+  wrapperPriceVat: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: 8,
+  },
+  priceVat: {
+    display: "flex",
+    flexDirection: "row",
+  },
 }));
 
 export const useBidsPageStyles = makeStyles(theme => ({
@@ -858,6 +867,15 @@ export const useViewBidStyles = makeStyles(theme => ({
     },
   },
   btnGoBack: { width: 40, height: 24, minWidth: 40, marginRight: 8, color: "black", border: "1px solid #000000", padding: 0 },
+  wrapperPriceVat: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: 8,
+  },
+  priceVat: {
+    display: "flex",
+    flexDirection: "row",
+  },
 }));
 
 export const useStylesPhotosForm = makeStyles(theme =>

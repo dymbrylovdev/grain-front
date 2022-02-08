@@ -426,7 +426,7 @@ const ViewBidForm: React.FC<IProps> = ({
                   </div>
                 </>
                 <div className={classes.wrapperPrice} style={{ flexDirection: "column", marginBottom: 10 }}>
-                  <div className={classes.wrapperPrice}>
+                  <div className={classes.wrapperPriceVat}>
                     {salePurchaseMode === "sale" ? (
                       <>
                         {bid.price ? (
@@ -434,38 +434,49 @@ const ViewBidForm: React.FC<IProps> = ({
                             {/*Если покупатель работает с НДС, а объявление продавца было установлено без работы с ндс, то мы добавляем +10 процент*/}
                             {me?.use_vat && !bid.vendor_use_vat && (
                               <>
-                                <div className={classes.price}>
-                                  {formatAsThousands(!!bid && Math.round(bid.price * ((bid.vat || 0) / 100 + 1)))}{" "}
+                                <div className={classes.priceVat}>
+                                  <div className={classes.price}>
+                                    {formatAsThousands(!!bid && Math.round(bid.price * ((bid.vat || 0) / 100 + 1)))}{" "}
+                                  </div>
+                                  <div className={classes.rybl}>₽</div>
+                                  <div className={classes.nds}>{`Цена указана с НДС`}</div>
                                 </div>
-                                <div className={classes.rybl}>₽</div>
-                                <div className={classes.nds}>{`Цена указана с НДС`}</div>
+                                <div className={classes.price}>{`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
                               </>
                             )}
 
                             {/*Если покупатель работает с НДС, а объявление продавца было установлено, когда он работал с НДС*/}
                             {me?.use_vat && bid.vendor_use_vat && (
                               <>
-                                <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
-                                <div className={classes.rybl}>₽</div>
-                                <div className={classes.nds}>{`Цена указана с НДС`}</div>
+                                <div className={classes.priceVat}>
+                                  <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
+                                  <div className={classes.rybl}>₽</div>
+                                  <div className={classes.nds}>{`Цена указана с НДС`}</div>
+                                </div>
+                                <div className={classes.price}>{`С учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
                               </>
                             )}
 
                             {/*Когда покупатель не работает с НДС, а у продавца установлено объявление, когда тот не работал с НДС*/}
                             {!me?.use_vat && !bid.vendor_use_vat && (
                               <>
-                                <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
-                                <div className={classes.rybl}>₽</div>
-                                <div className={classes.nds}>Цена указана без НДС</div>
+                                <div className={classes.priceVat}>
+                                  <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
+                                  <div className={classes.rybl}>₽</div>
+                                  <div className={classes.nds}>Цена указана без НДС</div>
+                                </div>
                               </>
                             )}
 
                             {/*Когда покупатель не работает с НДС, а у продавец выставил объявление работая с НДС*/}
                             {!me?.use_vat && bid.vendor_use_vat && (
                               <>
-                                <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
-                                <div className={classes.rybl}>₽</div>
-                                <div className={classes.nds}>{`Цена указана с НДС`}</div>
+                                <div className={classes.priceVat}>
+                                  <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
+                                  <div className={classes.rybl}>₽</div>
+                                  <div className={classes.nds}>{`Цена указана с НДС`}</div>
+                                </div>
+                                <div className={classes.price}>{`С учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
                               </>
                             )}
                           </>
@@ -477,8 +488,10 @@ const ViewBidForm: React.FC<IProps> = ({
                       <>
                         {bid.price ? (
                           <>
-                            <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
-                            <div className={classes.rybl}>₽</div>
+                            <div className={classes.priceVat}>
+                              <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
+                              <div className={classes.rybl}>₽</div>
+                            </div>
                           </>
                         ) : (
                           <div className={classes.rybl}>-</div>
