@@ -417,7 +417,7 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <div className={classes.rybl}>₽</div>
                                   <div className={classes.nds}>{`Цена указана с НДС`}</div>
                                 </div>
-                                <div className={classes.price}>{`С учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
+                                {/* <div className={classes.price}>{`С учётом НДС`}</div> */}
                               </>
                             )}
 
@@ -440,7 +440,7 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <div className={classes.rybl}>₽</div>
                                   <div className={classes.nds}>{`Цена указана с НДС`}</div>
                                 </div>
-                                <div className={classes.price}>{`С учётом ${Boolean(bid.vat) ? `${bid.vat}%` : ""} НДС`}</div>
+                                {/* <div className={classes.price}>{`С учётом НДС`}</div> */}
                               </>
                             )}
                           </>
