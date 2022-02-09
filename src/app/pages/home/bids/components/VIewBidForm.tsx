@@ -405,7 +405,9 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <div className={classes.rybl}>₽</div>
                                   <div className={classes.nds}>{`Цена указана с НДС`}</div>
                                 </div>
-                                <div className={classes.price}>{`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
+                                <div className={classes.price} style={{ fontWeight: "normal" }}>{`${bid.price && Math.round(bid.price)} + ${
+                                  bid.vat
+                                }% НДС`}</div>
                               </>
                             )}
 

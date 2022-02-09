@@ -387,7 +387,8 @@ const Bid = React.memo<IProps>(
                                 <div className={innerClasses.rybl}>₽</div>
                                 <div className={innerClasses.nds}>{`Цена указана с НДС`}</div>
                               </div>
-                              <div className={innerClasses.price}>{`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
+                              <div className={innerClasses.price} style={{ fontWeight: "normal" }}>{`${bid.price &&
+                                Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
                             </>
                           )}
 
@@ -619,7 +620,8 @@ const Bid = React.memo<IProps>(
                                 <div className={innerClasses.rybl}>₽</div>
                                 <div className={innerClasses.nds}>{`Цена указана с НДС`}</div>
                               </div>
-                              <div className={innerClasses.price}>{`${bid.price && Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
+                              <div className={innerClasses.price} style={{ fontWeight: "normal" }}>{`${bid.price &&
+                                Math.round(bid.price)} + ${bid.vat}% НДС`}</div>
                             </>
                           )}
 
