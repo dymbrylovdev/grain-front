@@ -6,33 +6,33 @@ stages:
   - build
   - deploy
 
-# jobs for master:
-# build-master:
-#   only:
-#     - 'master'
-#   stage: build
-#   script:
-#     - docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN
-#     - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_MASTER .
-#     - docker push $GITLAB_REGISTRIES_URL/$IMAGE_MASTER 
-# deploy-master:
-#   only:
-#     - "master"
-#   stage: deploy
-#   environment: 
-#     name: "development"
-#     url: "$DOMEN_MASTER"
-#   before_script:
-#     - mkdir -p ~/.ssh
-#     - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-#     - chmod 600 ~/.ssh/id_rsa
-#     - eval "$(ssh-agent -s)"
-#     - ssh-add ~/.ssh/id_rsa
-#     - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
-#   script:
-#     - printf "NODE_PATH=src/\n" > web-environment.env
-#     - scp -r ./web-environment.env $DEV_SERVER_USERNAME@${DEV_SERVER_IP}:~/
-#     - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN;docker stop $CONTAINER_NAME_MASTER;docker rm $CONTAINER_NAME_MASTER --force;docker pull $GITLAB_REGISTRIES_URL/$IMAGE_MASTER;docker run --restart always -p $PORT_MASTER --name $CONTAINER_NAME_MASTER --env-file web-environment.env -d $GITLAB_REGISTRIES_URL/$IMAGE_MASTER"
+jobs for master:
+build-master:
+  only:
+    - 'master'
+  stage: build
+  script:
+    - docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN
+    - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_MASTER .
+    - docker push $GITLAB_REGISTRIES_URL/$IMAGE_MASTER 
+deploy-master:
+  only:
+    - "master"
+  stage: deploy
+  environment: 
+    name: "development"
+    url: "$DOMEN_MASTER"
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - printf "NODE_PATH=src/\n" > web-environment.env
+    - scp -r ./web-environment.env $DEV_SERVER_USERNAME@${DEV_SERVER_IP}:~/
+    - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN;docker stop $CONTAINER_NAME_MASTER;docker rm $CONTAINER_NAME_MASTER --force;docker pull $GITLAB_REGISTRIES_URL/$IMAGE_MASTER;docker run --restart always -p $PORT_MASTER --name $CONTAINER_NAME_MASTER --env-file web-environment.env -d $GITLAB_REGISTRIES_URL/$IMAGE_MASTER"
  
 # jobs for dev branch:
 build-dev:
@@ -91,29 +91,29 @@ deploy-fx:
     - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN;docker stop $CONTAINER_NAME_FX;docker rm $CONTAINER_NAME_FX --force;docker pull $GITLAB_REGISTRIES_URL/$IMAGE_FX;docker run --restart always -p $PORT_FX --name $CONTAINER_NAME_FX --env-file web-environment.env -d $GITLAB_REGISTRIES_URL/$IMAGE_FX"
 
 # build with dockerhub
-build-master-dockerhub:
-  only:
-    - 'master'
-  stage: build
-  script:
-    - docker login -u $DOCKERHUB_LOGIN -p $DOCKERHUB_PASSWORD
-    - docker build --pull -t $DOCKERHUB_LOGIN/$IMAGE_MASTER_DOCKERHUB .
-    - docker push $DOCKERHUB_LOGIN/$IMAGE_MASTER_DOCKERHUB
-deploy-master-dockerhub:
-  only:
-    - "master"
-  stage: deploy
-  environment: 
-    name: "development"
-    url: "$DOMEN_MASTER"
-  before_script:
-    - mkdir -p ~/.ssh
-    - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
-  script:
-    - printf "NODE_PATH=src/\n" > web-environment.env
-    - scp -r ./web-environment.env $DEV_SERVER_USERNAME@${DEV_SERVER_IP}:~/
-    - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login -u $DOCKERHUB_LOGIN -p $DOCKERHUB_PASSWORD;docker stop $CONTAINER_NAME_MASTER;docker rm $CONTAINER_NAME_MASTER --force;docker pull $DOCKERHUB_LOGIN/$IMAGE_MASTER_DOCKERHUB;docker run --restart always -p $PORT_MASTER --name $CONTAINER_NAME_MASTER --env-file web-environment.env -d $DOCKERHUB_LOGIN/$IMAGE_MASTER_DOCKERHUB"
+# build-master-dockerhub:
+#   only:
+#     - 'master'
+#   stage: build
+#   script:
+#     - docker login -u $DOCKERHUB_LOGIN -p $DOCKERHUB_PASSWORD
+#     - docker build --pull -t $DOCKERHUB_LOGIN/$IMAGE_MASTER_DOCKERHUB .
+#     - docker push $DOCKERHUB_LOGIN/$IMAGE_MASTER_DOCKERHUB
+# deploy-master-dockerhub:
+#   only:
+#     - "master"
+#   stage: deploy
+#   environment: 
+#     name: "development"
+#     url: "$DOMEN_MASTER"
+#   before_script:
+#     - mkdir -p ~/.ssh
+#     - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+#     - chmod 600 ~/.ssh/id_rsa
+#     - eval "$(ssh-agent -s)"
+#     - ssh-add ~/.ssh/id_rsa
+#     - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
+#   script:
+#     - printf "NODE_PATH=src/\n" > web-environment.env
+#     - scp -r ./web-environment.env $DEV_SERVER_USERNAME@${DEV_SERVER_IP}:~/
+#     - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login -u $DOCKERHUB_LOGIN -p $DOCKERHUB_PASSWORD;docker stop $CONTAINER_NAME_MASTER;docker rm $CONTAINER_NAME_MASTER --force;docker pull $DOCKERHUB_LOGIN/$IMAGE_MASTER_DOCKERHUB;docker run --restart always -p $PORT_MASTER --name $CONTAINER_NAME_MASTER --env-file web-environment.env -d $DOCKERHUB_LOGIN/$IMAGE_MASTER_DOCKERHUB"
