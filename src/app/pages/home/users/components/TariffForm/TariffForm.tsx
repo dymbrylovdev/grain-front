@@ -280,8 +280,6 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
     fetchTrial();
   }, [fetchTrial]);
 
-  console.log(tariffs);
-
   return (
     <>
       <div>
