@@ -29,7 +29,7 @@ interface IProps {
   intl: any;
   classes: any;
   bids: IBid[] | undefined;
-  isHaveRules?: (user: any, id: number) => boolean;
+  isHaveRules?: (user?: any, id?: number) => boolean;
   handleDeleteDialiog: (id: number) => void;
   user: IUser;
   title?: string;
@@ -60,6 +60,7 @@ interface IProps {
   points?: ILocation[];
   numberParams?: ICropParam[];
   currentCropName?: string;
+  guestPoint?: ILocation;
 }
 
 const BidsList: React.FC<IProps> = ({
@@ -88,6 +89,7 @@ const BidsList: React.FC<IProps> = ({
   numberParams,
   toggleLocationsModal,
   currentCropName,
+  guestPoint,
 }) => {
   const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
@@ -103,7 +105,7 @@ const BidsList: React.FC<IProps> = ({
   const [showPlacemark, setShowPlacemark] = useState(false);
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
   const [currentMark, setCurrentMark] = useState<ILocalBids | null>(null);
-  const isBuyerTariff = useMemo(() => user.tariff_matrix?.tariff?.id !== 1, [user]);
+  const isBuyerTariff = useMemo(() => user?.tariff_matrix?.tariff?.id !== 1, [user]);
   const [showsPhones, setShowsPhones] = useState<number[]>([]);
   const [isShowImage, setIsShowImage] = useState(false);
   const [currentImages, setCurrentImages] = useState({
@@ -181,7 +183,7 @@ const BidsList: React.FC<IProps> = ({
     } else {
       setHasActivePoints(false);
     }
-  }, [user.points]);
+  }, [user?.points]);
 
   useEffect(() => {
     if (postSuccess || postError) {
@@ -212,8 +214,10 @@ const BidsList: React.FC<IProps> = ({
         }
         setMySelectedMapPoint(closest);
       }
+    } else if (!user) {
+      setMySelectedMapPoint(guestPoint?.active ? guestPoint : null);
     }
-  }, [currentBid, points]);
+  }, [currentBid, points, user, guestPoint]);
 
   useEffect(() => {
     if (ymaps && map && currentBid && currentBid.location && mySelectedMapPoint) {
@@ -250,7 +254,7 @@ const BidsList: React.FC<IProps> = ({
         })
       );
       history.push(
-        ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit"
+        ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user?.roles[0]) && bestAllMyMode === "edit"
           ? `/bid/edit/${bid.type}/${bid.id}/${bid.crop_id}`
           : `/bid/view/${bid.type}/${bid.id}/${bid.crop_id}`
       );
@@ -332,7 +336,7 @@ const BidsList: React.FC<IProps> = ({
       }
 
       const activeProperties = multiRoute.getActiveRoute();
-      if (activeProperties) {
+      if (activeProperties && user) {
         const { distance } = activeProperties.properties.getAll();
         if (distance.value > 0 && currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
           const isMatch = !!user && user.use_vat && salePurchaseMode === "sale" && currentBid.vat && !currentBid.vendor_use_vat;

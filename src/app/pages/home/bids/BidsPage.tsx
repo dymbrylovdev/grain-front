@@ -33,6 +33,7 @@ import BidsList from "./components/BidsList";
 import { IFilterForBids } from "../../../interfaces/filters";
 import { useBidsPageStyles } from "./components/hooks/useStyles";
 import BidTable from "./components/BidTable";
+import { getPoint } from "../../../utils/localPoint";
 
 const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps<{ cropId: string }>> = ({
   match: {
@@ -114,6 +115,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   bidsXlsUrl,
   // bidsXlsUrlLoading,
   // bidsXlsUrlSuccess,
+  guestLocation,
   bidsXlsUrlError,
 }) => {
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
@@ -214,7 +216,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
 
   let pageTitle = "";
 
-  if (!!crops) {
+  if (!!crops && !!me) {
     crops.push({
       id: 0,
       name: "Все культуры",
@@ -252,7 +254,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   const classes = useStyles();
   const history = useHistory();
   const innerClasses = useBidsPageStyles();
-
+  const guestPoint = useMemo(() => getPoint(), [guestLocation]);
   const [deleteBidId, setDeleteBidId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [locationModalOpen, setLocationModalOpen] = useState(false);
@@ -270,8 +272,8 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
 
   const toggleLocationsModal = useCallback(() => setLocationModalOpen(!locationModalOpen), [locationModalOpen]);
 
-  const isHaveRules = (user: IUser, id: number) => {
-    return accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id;
+  const isHaveRules = (user?: IUser, id?: number) => {
+    return user ? accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) || user.id === id : false;
   };
 
   const newInexactBid: IBid[] = [];
@@ -306,6 +308,8 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   }, [clearEditFilters, editFilterError, editFilterSuccess, enqueueSnackbar, fetchFilters, intl, me, salePurchaseMode]);
 
   useEffect(() => {
+    const localPoint = getPoint();
+    const location = localPoint.active && !me ? localPoint : undefined;
     if (delSuccess) {
       enqueueSnackbar(
         delSuccess
@@ -329,11 +333,11 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 cropParams.filter(item => item.type === "number"),
                 pointPrices
               );
-              fetchBestBids(salePurchaseMode, newFilter);
+              fetchBestBids(salePurchaseMode, { ...newFilter, filter: { ...newFilter.filter, location } });
               setCurrentFilters(newFilter);
             }
             if (cropId && !currentSaleFilters[cropId]) {
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId, location } });
               setCurrentFilters({ filter: { cropId: +cropId } });
             }
           }
@@ -345,11 +349,11 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 cropParams.filter(item => item.type === "number"),
                 pointPrices
               );
-              fetchBestBids(salePurchaseMode, newFilter);
+              fetchBestBids(salePurchaseMode, { ...newFilter, filter: { ...newFilter.filter, location } });
               setCurrentFilters(newFilter);
             }
             if (cropId && !currentPurchaseFilters[cropId]) {
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
+              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId, location } });
               setCurrentFilters({ filter: { cropId: +cropId } });
             }
           }
@@ -382,6 +386,8 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
     pointPrices,
     fetchAll,
     editSuccess,
+    guestLocation,
+    me,
   ]);
 
   useEffect(() => {
@@ -397,50 +403,52 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   }, [fetchCrops]);
 
   useEffect(() => {
-    if (!!me) {
-      switch (bestAllMyMode) {
-        case "best-bids":
-          if (salePurchaseMode === "sale") {
-            if (currentSaleFilters[cropId] && cropParams && pointPrices) {
-              const newFilter = filterForBids(
-                currentSaleFilters[cropId] || {},
-                cropParams.filter(item => item.type === "enum"),
-                cropParams.filter(item => item.type === "number"),
-                pointPrices
-              );
-              fetchBestBids(salePurchaseMode, newFilter);
-              setCurrentFilters(newFilter);
-            }
-            if (cropId && !currentSaleFilters[cropId]) {
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
-              setCurrentFilters({ filter: { cropId: +cropId } });
-            }
+    // if (!!me) {
+    const localPoint = getPoint();
+    const location = localPoint.active && !me ? localPoint : undefined;
+    switch (bestAllMyMode) {
+      case "best-bids":
+        if (salePurchaseMode === "sale") {
+          if (currentSaleFilters[cropId] && cropParams && pointPrices) {
+            const newFilter = filterForBids(
+              currentSaleFilters[cropId] || {},
+              cropParams.filter(item => item.type === "enum"),
+              cropParams.filter(item => item.type === "number"),
+              pointPrices
+            );
+            fetchBestBids(salePurchaseMode, { ...newFilter, filter: { ...newFilter.filter, location } });
+            setCurrentFilters(newFilter);
           }
-          if (salePurchaseMode === "purchase") {
-            if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
-              const newFilter = filterForBids(
-                currentPurchaseFilters[cropId] || {},
-                cropParams.filter(item => item.type === "enum"),
-                cropParams.filter(item => item.type === "number"),
-                pointPrices
-              );
-              fetchBestBids(salePurchaseMode, newFilter);
-              setCurrentFilters(newFilter);
-            }
-            if (cropId && !currentPurchaseFilters[cropId]) {
-              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId } });
-              setCurrentFilters({ filter: { cropId: +cropId } });
-            }
+          if (cropId && !currentSaleFilters[cropId]) {
+            fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId, location } });
+            setCurrentFilters({ filter: { cropId: +cropId } });
           }
-          break;
-        case "my-bids":
-          fetchMyBids(salePurchaseMode, page, perPage);
-          break;
-        case "all-bids":
-          fetchAll();
-          break;
-      }
+        }
+        if (salePurchaseMode === "purchase") {
+          if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
+            const newFilter = filterForBids(
+              currentPurchaseFilters[cropId] || {},
+              cropParams.filter(item => item.type === "enum"),
+              cropParams.filter(item => item.type === "number"),
+              pointPrices
+            );
+            fetchBestBids(salePurchaseMode, { ...newFilter, filter: { ...newFilter.filter, location } });
+            setCurrentFilters(newFilter);
+          }
+          if (cropId && !currentPurchaseFilters[cropId]) {
+            fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId, location } });
+            setCurrentFilters({ filter: { cropId: +cropId } });
+          }
+        }
+        break;
+      case "my-bids":
+        fetchMyBids(salePurchaseMode, page, perPage);
+        break;
+      case "all-bids":
+        fetchAll();
+        break;
     }
+    // }
   }, [
     bestAllMyMode,
     cropId,
@@ -457,6 +465,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
     filter,
     pointPrices,
     fetchAll,
+    guestLocation,
   ]);
 
   useEffect(() => {
@@ -585,6 +594,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
               toggleLocationsModal={toggleLocationsModal}
               archive={({ id, is_archived }) => edit(id, { is_archived })}
               currentCropName={currentCropName}
+              guestPoint={guestPoint}
             />
           </div>
           {newInexactBid.length > 0 && (
@@ -609,6 +619,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 toggleLocationsModal={toggleLocationsModal}
                 archive={({ id, is_archived }) => edit(id, { is_archived })}
                 currentCropName={currentCropName}
+                guestPoint={guestPoint}
               />
             </div>
           )}
@@ -653,6 +664,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             toggleLocationsModal={toggleLocationsModal}
             archive={({ id, is_archived }) => edit(id, { is_archived })}
             currentCropName={currentCropName}
+            guestPoint={guestPoint}
           />
           {!!myBids && !!myBids.length && <div className={innerClasses.text}>{intl.formatMessage({ id: "BID.BOTTOM.TEXT" })}</div>}
         </>
@@ -762,6 +774,7 @@ const connector = connect(
     bidsXlsUrlLoading: state.bids.bidsXlsLoading,
     bidsXlsUrlSuccess: state.bids.bidsXlsSuccess,
     bidsXlsUrlError: state.bids.bidsXlsError,
+    guestLocation: state.locations.guestLocationChange,
   }),
   {
     fetchMe: authActions.fetchRequest,

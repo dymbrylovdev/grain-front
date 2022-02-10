@@ -260,7 +260,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                   {...a11yProps(1)}
                 />
               )}
-              {editMode !== "create" && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
+              {me && editMode !== "create" && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
 
               {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
                 (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (

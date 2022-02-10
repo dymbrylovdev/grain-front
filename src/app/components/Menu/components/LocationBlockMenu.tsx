@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { Button, FormControlLabel, Checkbox } from "@material-ui/core";
 import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
@@ -7,8 +7,9 @@ import { useSnackbar } from "notistack";
 import { IAppState } from "../../../store/rootDuck";
 import { actions as locationsActions } from "../../../store/ducks/locations.duck";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
-
 import LocationDialog from "../../../pages/home/bids/components/location/LocationDialog";
+import { changeActive, getPoint } from "../../../utils/localPoint";
+import { ILocation } from "../../../interfaces/locations";
 
 interface IProps {
   me: any;
@@ -29,8 +30,33 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
   editLoading,
   editSuccess,
   editError,
+  editGuestLocation,
+  guestLocation,
 }) => {
   const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const [localPoint, setLocalPoint] = useState<ILocation | null>(null);
+
+  useEffect(() => {
+    const point = getPoint();
+    setLocalPoint(point);
+  }, [guestLocation]);
+
+  const changeActiveLocalPoint = useCallback(
+    (value: boolean) => {
+      if (localPoint) {
+        changeActive({
+          ...localPoint,
+          active: value,
+        });
+        setLocalPoint({
+          ...localPoint,
+          active: value,
+        });
+        editGuestLocation();
+      }
+    },
+    [localPoint, editGuestLocation]
+  );
 
   const toggleLocationsModal = () => {
     setLocationModalOpen(!locationModalOpen);
@@ -64,6 +90,13 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
 
   return (
     <div style={{ marginTop: 20, marginBottom: 20 }}>
+      {localPoint && !me && (
+        <FormControlLabel
+          control={<Checkbox checked={localPoint.active} onChange={() => changeActiveLocalPoint(!localPoint.active)} />}
+          label={localPoint.name}
+          name="active"
+        />
+      )}
       {me && !me.points.length && <h6>У вас ещё нет точек отгрузки / погрузки</h6>}
 
       {me &&
@@ -86,9 +119,9 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
         ))}
 
       <Button onClick={toggleLocationsModal} variant="contained" color="primary" style={{ width: "100%", marginTop: 10 }}>
-        {["ROLE_BUYER"].includes(me.roles[0])
+        {["ROLE_BUYER"].includes(me?.roles[0])
           ? intl.formatMessage({ id: "LOCATIONS.PRICES.BUYER" })
-          : ["ROLE_VENDOR"].includes(me.roles[0])
+          : ["ROLE_VENDOR"].includes(me?.roles[0])
           ? intl.formatMessage({ id: "LOCATIONS.PRICES.VENDOR" })
           : intl.formatMessage({ id: "LOCATIONS.PRICES.MODAL_NAME" })}
       </Button>
@@ -103,11 +136,14 @@ const connector = connect(
     editLoading: state.locations.editLoading,
     editSuccess: state.locations.editSuccess,
     editError: state.locations.editError,
+    filter: state.bids.filter,
+    guestLocation: state.locations.guestLocationChange,
   }),
   {
     fetchMe: authActions.fetchRequest,
     clearEdit: locationsActions.clearEdit,
     edit: locationsActions.editRequest,
+    editGuestLocation: locationsActions.editGuestLocation,
   }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;

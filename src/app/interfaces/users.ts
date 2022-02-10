@@ -19,6 +19,8 @@ export interface IUser {
   is_buyer?: boolean;
   is_admin?: boolean;
   is_vendor?: boolean;
+  is_manager?: boolean;
+  is_trader?: boolean;
   location?: ILocation;
   company?: ICompany;
   company_confirmed_by_email?: boolean;

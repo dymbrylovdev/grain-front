@@ -1,4 +1,5 @@
 import { TBidType, IPointPriceForGet } from "./bids";
+import { ILocation } from "./locations";
 
 export interface IPointPrice {
   point: {
@@ -87,10 +88,12 @@ export interface IFilterForBids {
     max_distance?: number;
     parameter_values?: IParamValue[];
     point_prices?: IPointPriceForEdit[];
+    location?: ILocation;
   };
 }
 export interface IFilterForBid {
   filter: {
     point_prices: IPointPriceForGet[];
+    location?: ILocation;
   };
 }

@@ -31,6 +31,7 @@ const CLEAR_DEL = "locations/CLEAR_DEL";
 const DEL_REQUEST = "locations/DEL_REQUEST";
 const DEL_SUCCESS = "locations/DEL_SUCCESS";
 const DEL_FAIL = "locations/DEL_FAIL";
+const CHANGE_GUEST_LOCATION = "locations/CHANGE_GUEST_LOCATION";
 
 export interface IInitialState {
   locations: ILocation[] | undefined;
@@ -54,6 +55,7 @@ export interface IInitialState {
   delLoading: boolean;
   delSuccess: boolean;
   delError: string | null;
+  guestLocationChange: boolean;
 }
 
 const initialState: IInitialState = {
@@ -78,6 +80,7 @@ const initialState: IInitialState = {
   delLoading: false,
   delSuccess: false,
   delError: null,
+  guestLocationChange: false,
 };
 
 export const reducer: Reducer<IInitialState, TAppActions> = (state = initialState, action) => {
@@ -93,7 +96,6 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_SUCCESS: {
-      //console.log("Locations: ", action.payload);
       return {
         ...state,
         page: action.payload.page,
@@ -110,7 +112,6 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case CLEAR_FETCH_BY_ID: {
-      //console.log("CLEAR_FETCH_BY_ID");
       return {
         ...state,
         location: undefined,
@@ -121,7 +122,6 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_BY_ID_REQUEST: {
-      //console.log("FETCH_BY_ID_REQUEST");
       return {
         ...state,
         location: undefined,
@@ -132,7 +132,6 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
     }
 
     case FETCH_BY_ID_SUCCESS: {
-      //console.log(action.payload);
       return {
         ...state,
         location: action.payload.data,
@@ -197,6 +196,10 @@ export const reducer: Reducer<IInitialState, TAppActions> = (state = initialStat
       return { ...state, delLoading: false, delError: action.payload };
     }
 
+    case CHANGE_GUEST_LOCATION: {
+      return { ...state, guestLocationChange: !state.guestLocationChange };
+    }
+
     default:
       return state;
   }
@@ -209,8 +212,7 @@ export const actions = {
 
   clearFetchById: () => createAction(CLEAR_FETCH_BY_ID),
   fetchByIdRequest: (payload: { id: number }) => createAction(FETCH_BY_ID_REQUEST, payload),
-  fetchByIdSuccess: (payload: IServerResponse<ILocation>) =>
-    createAction(FETCH_BY_ID_SUCCESS, payload),
+  fetchByIdSuccess: (payload: IServerResponse<ILocation>) => createAction(FETCH_BY_ID_SUCCESS, payload),
   fetchByIdFail: (payload: string) => createAction(FETCH_BY_ID_FAIL, payload),
 
   clearCreate: () => createAction(CLEAR_CREATE),
@@ -219,8 +221,7 @@ export const actions = {
   createFail: (payload: string) => createAction(CREATE_FAIL, payload),
 
   clearEdit: () => createAction(CLEAR_EDIT),
-  editRequest: (payload: { id: number; data: ILocationToRequest }) =>
-    createAction(EDIT_REQUEST, payload),
+  editRequest: (payload: { id: number; data: ILocationToRequest }) => createAction(EDIT_REQUEST, payload),
   editSuccess: () => createAction(EDIT_SUCCESS),
   editFail: (payload: string) => createAction(EDIT_FAIL, payload),
 
@@ -228,6 +229,7 @@ export const actions = {
   delRequest: (payload: { id: number }) => createAction(DEL_REQUEST, payload),
   delSuccess: () => createAction(DEL_SUCCESS),
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
+  editGuestLocation: () => createAction(CHANGE_GUEST_LOCATION),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -243,9 +245,7 @@ function* fetchSaga() {
 
 function* fetchByIdSaga({ payload }: { payload: { id: number } }) {
   try {
-    const { data }: { data: IServerResponse<ILocation> } = yield call(() =>
-      getUserById(payload.id)
-    );
+    const { data }: { data: IServerResponse<ILocation> } = yield call(() => getUserById(payload.id));
     yield put(actions.fetchByIdSuccess(data));
   } catch (e) {
     yield put(actions.fetchByIdFail(e?.response?.data?.message || "Ошибка соединения."));

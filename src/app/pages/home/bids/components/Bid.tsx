@@ -19,11 +19,12 @@ import "../../../../libs/react-alice-carousel/alice-carousel.css";
 import { API_DOMAIN } from "../../../../constants";
 import { useIntl } from "react-intl";
 import { useIsViewed } from "./hooks/useViewedBid";
+import { getPoint } from "../../../../utils/localPoint";
 
 interface IProps {
-  isHaveRules?: (user: any, id: number) => boolean;
+  isHaveRules?: (user?: any, id?: number) => boolean;
   handleDeleteDialiog: (id: number) => void;
-  user: IUser;
+  user?: IUser;
   salePurchaseMode?: "sale" | "purchase";
   bestAllMyMode?: "best-bids" | "all-bids" | "my-bids" | "edit";
   crops: ICrop[] | undefined;
@@ -72,11 +73,12 @@ const Bid = React.memo<IProps>(
     const currentCrop = useMemo(() => crops?.find(item => item.id === bid.crop_id), [crops, bid]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const isViewed = useIsViewed(bid.id);
+    const guestLocation = useMemo(() => getPoint(), []);
     const newBid = useMemo(() => {
       if (localBids && localBids.length > 0) {
         return localBids.find(
           item =>
-            item.useId === user.id &&
+            item.useId === user?.id &&
             item.salePurchaseMode === salePurchaseMode &&
             item.currentBid.id === bid.id &&
             (bid.price_delivery_per_km ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString() : false)
@@ -219,51 +221,66 @@ const Bid = React.memo<IProps>(
           <div className={innerClasses.containerInfoBlock}>
             {isMobile ? (
               <>
-                {bestAllMyMode !== "my-bids" && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER"]) && (
-                  <>
-                    {bestAllMyMode !== "edit" && (
-                      <div className={innerClasses.wrapperPrice}>
-                        <b className={innerClasses.delivery}>
-                          {salePurchaseMode === "sale" &&
-                          ((user.use_vat && !bid.vendor_use_vat) ||
-                            (user.use_vat && bid.vendor_use_vat) ||
-                            (!user.use_vat && bid.vendor_use_vat))
-                            ? "Цена с учётом НДС и доставки до:"
-                            : salePurchaseMode === "sale"
-                            ? "Цена без НДС с учетом доставки до:"
-                            : "Цена указана с учётом доставки до:"}{" "}
-                          <b className={innerClasses.deliveryAddress}>
-                            {!!bid?.point_prices && !!bid.point_prices.length
-                              ? bid.point_prices.map(
-                                  (item, i) =>
-                                    i === 0 &&
-                                    (i === 0 ? (
-                                      <b key={i} className={innerClasses.deliveryAddress}>
-                                        {` в ${item.point.name}`}
-                                      </b>
-                                    ) : (
-                                      <b key={i} className={innerClasses.deliveryAddress}>
-                                        {` в ${item.point.name}`}
-                                      </b>
-                                    ))
-                                )
-                              : "-"}
-                          </b>{" "}
-                          <b
-                            className={innerClasses.btnChangeDelivery}
-                            onClick={e => {
-                              stopProp(e);
-                              toggleLocationsModal && toggleLocationsModal();
-                            }}
-                          >
-                            (Изменить адрес)
+                {bestAllMyMode !== "my-bids" &&
+                  (accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER"]) || (!user && guestLocation)) && (
+                    <>
+                      {bestAllMyMode !== "edit" && (
+                        <div className={innerClasses.wrapperPrice}>
+                          <b className={innerClasses.delivery}>
+                            {!user && guestLocation ? (
+                              "Цена указана с учётом доставки до:"
+                            ) : (
+                              <>
+                                {salePurchaseMode === "sale" &&
+                                ((user?.use_vat && !bid.vendor_use_vat) ||
+                                  (user?.use_vat && bid.vendor_use_vat) ||
+                                  (!user?.use_vat && bid.vendor_use_vat))
+                                  ? "Цена с учётом НДС и доставки до:"
+                                  : salePurchaseMode === "sale"
+                                  ? "Цена без НДС с учетом доставки до:"
+                                  : "Цена указана с учётом доставки до:"}{" "}
+                              </>
+                            )}
+                            <b className={innerClasses.deliveryAddress}>
+                              {!user ? (
+                                <b className={innerClasses.deliveryAddress}>{`${
+                                  guestLocation.active ? `в ${guestLocation.name}` : "-"
+                                }`}</b>
+                              ) : (
+                                <>
+                                  {!!bid?.point_prices && !!bid.point_prices.length
+                                    ? bid.point_prices.map(
+                                        (item, i) =>
+                                          i === 0 &&
+                                          (i === 0 ? (
+                                            <b key={i} className={innerClasses.deliveryAddress}>
+                                              {` в ${item.point.name}`}
+                                            </b>
+                                          ) : (
+                                            <b key={i} className={innerClasses.deliveryAddress}>
+                                              {` в ${item.point.name}`}
+                                            </b>
+                                          ))
+                                      )
+                                    : "-"}
+                                </>
+                              )}
+                            </b>{" "}
+                            <b
+                              className={innerClasses.btnChangeDelivery}
+                              onClick={e => {
+                                stopProp(e);
+                                toggleLocationsModal && toggleLocationsModal();
+                              }}
+                            >
+                              (Изменить адрес)
+                            </b>
                           </b>
-                        </b>
-                      </div>
-                    )}
-                  </>
-                )}
-                {bestAllMyMode !== "my-bids" && hasActivePoints && (
+                        </div>
+                      )}
+                    </>
+                  )}
+                {bestAllMyMode !== "my-bids" && (hasActivePoints || (!user && guestLocation.active)) && (
                   <>
                     {bestAllMyMode !== "edit" && (
                       <div className={innerClasses.wrapperPrice}>
@@ -283,7 +300,7 @@ const Bid = React.memo<IProps>(
               </>
             ) : (
               <>
-                {bestAllMyMode !== "my-bids" && hasActivePoints && (
+                {bestAllMyMode !== "my-bids" && (hasActivePoints || (!user && guestLocation.active)) && (
                   <>
                     {bestAllMyMode !== "edit" && (
                       <div className={innerClasses.wrapperPrice}>
@@ -300,50 +317,65 @@ const Bid = React.memo<IProps>(
                     )}
                   </>
                 )}
-                {bestAllMyMode !== "my-bids" && accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER"]) && (
-                  <>
-                    {bestAllMyMode !== "edit" && (
-                      <div className={innerClasses.wrapperPrice}>
-                        <b className={innerClasses.delivery}>
-                          {salePurchaseMode === "sale" &&
-                          ((user.use_vat && !bid.vendor_use_vat) ||
-                            (user.use_vat && bid.vendor_use_vat) ||
-                            (!user.use_vat && bid.vendor_use_vat))
-                            ? "Цена с учётом НДС и доставки до:"
-                            : salePurchaseMode === "sale"
-                            ? "Цена без НДС с учетом доставки до:"
-                            : "Цена указана с учётом доставки до:"}{" "}
-                          <b className={innerClasses.deliveryAddress}>
-                            {!!bid?.point_prices && !!bid.point_prices.length
-                              ? bid.point_prices.map(
-                                  (item, i) =>
-                                    i === 0 &&
-                                    (i === 0 ? (
-                                      <b key={i} className={innerClasses.deliveryAddress}>
-                                        {` в ${item.point.name}`}
-                                      </b>
-                                    ) : (
-                                      <b key={i} className={innerClasses.deliveryAddress}>
-                                        {` в ${item.point.name}`}
-                                      </b>
-                                    ))
-                                )
-                              : "-"}
-                          </b>{" "}
-                          <b
-                            className={innerClasses.btnChangeDelivery}
-                            onClick={e => {
-                              stopProp(e);
-                              toggleLocationsModal && toggleLocationsModal();
-                            }}
-                          >
-                            (Изменить адрес)
+                {bestAllMyMode !== "my-bids" &&
+                  (accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER"]) || (!user && guestLocation)) && (
+                    <>
+                      {bestAllMyMode !== "edit" && (
+                        <div className={innerClasses.wrapperPrice}>
+                          <b className={innerClasses.delivery}>
+                            {!user && guestLocation ? (
+                              "Цена указана с учётом доставки до:"
+                            ) : (
+                              <>
+                                {salePurchaseMode === "sale" &&
+                                ((user?.use_vat && !bid.vendor_use_vat) ||
+                                  (user?.use_vat && bid.vendor_use_vat) ||
+                                  (!user?.use_vat && bid.vendor_use_vat))
+                                  ? "Цена с учётом НДС и доставки до:"
+                                  : salePurchaseMode === "sale"
+                                  ? "Цена без НДС с учетом доставки до:"
+                                  : "Цена указана с учётом доставки до:"}{" "}
+                              </>
+                            )}
+                            <b className={innerClasses.deliveryAddress}>
+                              {!user ? (
+                                <b className={innerClasses.deliveryAddress}>{`${
+                                  guestLocation.active ? `в ${guestLocation.name}` : "-"
+                                }`}</b>
+                              ) : (
+                                <>
+                                  {!!bid?.point_prices && !!bid.point_prices.length
+                                    ? bid.point_prices.map(
+                                        (item, i) =>
+                                          i === 0 &&
+                                          (i === 0 ? (
+                                            <b key={i} className={innerClasses.deliveryAddress}>
+                                              {` в ${item.point.name}`}
+                                            </b>
+                                          ) : (
+                                            <b key={i} className={innerClasses.deliveryAddress}>
+                                              {` в ${item.point.name}`}
+                                            </b>
+                                          ))
+                                      )
+                                    : "-"}
+                                </>
+                              )}
+                            </b>{" "}
+                            <b
+                              className={innerClasses.btnChangeDelivery}
+                              onClick={e => {
+                                stopProp(e);
+                                toggleLocationsModal && toggleLocationsModal();
+                              }}
+                            >
+                              (Изменить адрес)
+                            </b>
                           </b>
-                        </b>
-                      </div>
-                    )}
-                  </>
-                )}
+                        </div>
+                      )}
+                    </>
+                  )}
               </>
             )}
             {isMobile && (
@@ -360,7 +392,7 @@ const Bid = React.memo<IProps>(
                       {bid.price ? (
                         <>
                           {/*Если покупатель работает с НДС, а объявление продавца было установлено без работы с ндс, то мы добавляем +10 процент*/}
-                          {user.use_vat && !bid.vendor_use_vat && (
+                          {user?.use_vat && !bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.price}>
                                 {formatAsThousands(!!bid && Math.round(bid.price * ((bid.vat || 0) / 100 + 1)))}{" "}
@@ -371,7 +403,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Если покупатель работает с НДС, а объявление продавца было установлено, когда он работал с НДС*/}
-                          {user.use_vat && bid.vendor_use_vat && (
+                          {user?.use_vat && bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
@@ -380,7 +412,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Когда покупатель не работает с НДС, а у продавца установлено объявление, когда тот не работал с НДС*/}
-                          {!user.use_vat && !bid.vendor_use_vat && (
+                          {!user?.use_vat && !bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
@@ -389,7 +421,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Когда покупатель не работает с НДС, а у продавец выставил объявление работая с НДС*/}
-                          {!user.use_vat && bid.vendor_use_vat && (
+                          {!user?.use_vat && bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
@@ -458,7 +490,7 @@ const Bid = React.memo<IProps>(
               <div style={{ minWidth: 150 }}>
                 {bestAllMyMode !== "my-bids" && (
                   <>
-                    {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" && (
+                    {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user?.roles[0]) && bestAllMyMode === "edit" && (
                       <IconButton size="medium" color="primary" className={innerClasses.iconBtn}>
                         <EmailIcon
                           onClick={e => {
@@ -469,7 +501,7 @@ const Bid = React.memo<IProps>(
                         />
                       </IconButton>
                     )}
-                    {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" ? (
+                    {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user?.roles[0]) && bestAllMyMode === "edit" ? (
                       <IconButton
                         className={innerClasses.iconBtn}
                         size="medium"
@@ -579,7 +611,7 @@ const Bid = React.memo<IProps>(
                       {bid.price ? (
                         <>
                           {/*Если покупатель работает с НДС, а объявление продавца было установлено без работы с ндс, то мы добавляем +10 процент*/}
-                          {user.use_vat && !bid.vendor_use_vat && (
+                          {user?.use_vat && !bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.price}>
                                 {formatAsThousands(!!bid && Math.round(bid.price * ((bid.vat || 0) / 100 + 1)))}{" "}
@@ -590,7 +622,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Если покупатель работает с НДС, а объявление продавца было установлено, когда он работал с НДС*/}
-                          {user.use_vat && bid.vendor_use_vat && (
+                          {user?.use_vat && bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
@@ -599,7 +631,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Когда покупатель не работает с НДС, а у продавца установлено объявление, когда тот не работал с НДС*/}
-                          {!user.use_vat && !bid.vendor_use_vat && (
+                          {!user?.use_vat && !bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
@@ -608,7 +640,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Когда покупатель не работает с НДС, а у продавец выставил объявление работая с НДС*/}
-                          {!user.use_vat && bid.vendor_use_vat && (
+                          {!user?.use_vat && bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={innerClasses.rybl}>₽</div>
@@ -656,7 +688,11 @@ const Bid = React.memo<IProps>(
                     className={innerClasses.btnShowPhone}
                     onClick={e => {
                       stopProp(e);
-                      handleShowPhone(bid.id);
+                      if (user) {
+                        handleShowPhone(bid.id);
+                      } else {
+                        history.push("/auth");
+                      }
                     }}
                   >
                     <div className={innerClasses.wrapperTextShowBtn}>
@@ -684,7 +720,11 @@ const Bid = React.memo<IProps>(
                     className={innerClasses.btnShowPhone}
                     onClick={e => {
                       stopProp(e);
-                      handleShowPhone(bid.id);
+                      if (user) {
+                        handleShowPhone(bid.id);
+                      } else {
+                        history.push("/auth");
+                      }
                     }}
                   >
                     <div className={innerClasses.wrapperTextShowBtn}>
@@ -740,7 +780,7 @@ const Bid = React.memo<IProps>(
                   >
                     <div className={innerClasses.textCard}>Посмотреть на карте</div>
                   </Button>
-                  {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" && (
+                  {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user?.roles[0]) && bestAllMyMode === "edit" && (
                     <IconButton size="medium" color="primary" className={innerClasses.iconBtn}>
                       <EmailIcon
                         onClick={e => {
@@ -752,7 +792,7 @@ const Bid = React.memo<IProps>(
                     </IconButton>
                   )}
 
-                  {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user.roles[0]) && bestAllMyMode === "edit" ? (
+                  {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user?.roles[0]) && bestAllMyMode === "edit" ? (
                     <IconButton
                       className={innerClasses.iconBtn}
                       size="medium"

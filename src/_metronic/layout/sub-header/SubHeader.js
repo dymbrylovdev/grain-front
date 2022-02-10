@@ -3,31 +3,17 @@ import React from "react";
 import { connect } from "react-redux";
 import objectPath from "object-path";
 import { withRouter } from "react-router-dom";
-//import SaveIcon from "@material-ui/icons/Save";
-//import IconButton from "@material-ui/core/IconButton";
-// import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 
 import { LayoutContextConsumer } from "../LayoutContext";
 import * as builder from "../../ducks/builder";
-// import { QuickActions } from './components/QuickActions';
-// import { ReactComponent as SortNum1Icon } from '../../../_metronic/layout/assets/layout-svg-icons/SortNum1.svg';
 import BreadCrumbs from "./components/BreadCrumbs";
 import { Button } from "@material-ui/core";
-// import { roles } from "../../../app/pages/home/users/utils/profileForm";
 import { injectIntl } from "react-intl";
 import { accessByRoles } from "../../../app/utils/utils";
 
 class SubHeader extends React.Component {
   render() {
-    const {
-      subheaderCssClasses,
-      subheaderContainerCssClasses,
-      subheaderMobileToggle,
-      me,
-      history,
-
-      // intl,
-    } = this.props;
+    const { subheaderCssClasses, subheaderContainerCssClasses, subheaderMobileToggle, me, history } = this.props;
 
     return (
       <div
@@ -94,29 +80,34 @@ class SubHeader extends React.Component {
                 <SaveIcon className="kt-svg-icon kt-svg-icon--primary kt-svg-icon--md" />
               </IconButton> */}
             </div>
+            {!me && (
+              <Button className="kt-subheader__btn" variant="contained" color="secondary" onClick={() => history.push(`/auth`)}>
+                Авторизоваться
+              </Button>
+            )}
             {me && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
               <Button variant="contained" color="primary" onClick={() => history.push("/user/create")} className="kt-subheader__top-btn">
                 Добавить пользователя
               </Button>
             )}
 
-            {me && !accessByRoles(me, ["ROLE_MANAGER"]) && (
+            {(!accessByRoles(me, ["ROLE_MANAGER"]) || !me) && (
               <Button
                 className="kt-subheader__btn"
                 variant="contained"
                 color="primary"
-                onClick={() => history.push(`/bid/create/${me.is_buyer ? "purchase" : "sale"}/0`)}
+                onClick={() => (me ? history.push(`/bid/create/${me.is_buyer ? "purchase" : "sale"}/0`) : history.push(`/auth`))}
               >
                 Добавить объявление
               </Button>
             )}
 
-            {me && accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && (
+            {(accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) || !me) && (
               <Button
                 className="kt-subheader__btn"
                 variant="contained"
                 color="secondary"
-                onClick={() => history.push(`/user/profile/tariffs`)}
+                onClick={() => (me ? history.push(`/user/profile/tariffs`) : history.push(`/auth`))}
               >
                 Купить тариф
               </Button>

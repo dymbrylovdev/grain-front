@@ -2,21 +2,13 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import * as routerHelpers from "../../router/RouterHelpers";
 
-import {
-  IUser,
-  ILoginSuccessData,
-  IUserForEdit,
-  IUserForRegister,
-  IRegSuccessData,
-  LoginType,
-  TRole,
-} from "../../interfaces/users";
+import { IUser, ILoginSuccessData, IUserForEdit, IUserForRegister, IRegSuccessData, LoginType, TRole } from "../../interfaces/users";
 import { Reducer } from "redux";
 import { PersistPartial } from "redux-persist/es/persistReducer";
 import { TAppActions } from "../rootDuck";
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
-import { put, call, takeLatest } from "redux-saga/effects";
+import { put, call, takeLatest, select } from "redux-saga/effects";
 import {
   register,
   login,
@@ -208,7 +200,6 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case FETCH_SUCCESS: {
-        // console.log("Fetch Me: ", action.payload);
         return {
           ...state,
           user: action.payload.data,
@@ -561,10 +552,8 @@ export const actions = {
   regFail: (payload: string) => createAction(REG_FAIL, payload),
 
   clearLogin: () => createAction(CLEAR_LOGIN),
-  loginRequest: (payload: { login: string; password: string }) =>
-    createAction(LOGIN_REQUEST, payload),
-  loginSuccess: (payload: IServerResponse<ILoginSuccessData>) =>
-    createAction(LOGIN_SUCCESS, payload),
+  loginRequest: (payload: { login: string; password: string }) => createAction(LOGIN_REQUEST, payload),
+  loginSuccess: (payload: IServerResponse<ILoginSuccessData>) => createAction(LOGIN_SUCCESS, payload),
   loginFail: (payload: string) => createAction(LOGIN_FAIL, payload),
 
   logout: () => createAction(LOGOUT),
@@ -572,24 +561,18 @@ export const actions = {
   mergeUser: (payload: any) => createAction(MERGE_USER, payload),
 
   clearRecoveryPassword: () => createAction(CLEAR_RECOVERY_PASSWORD),
-  recoveryPasswordRequest: (payload: { email: string }) =>
-    createAction(RECOVERY_PASSWORD_REQUEST, payload),
-  recoveryPasswordSuccess: (payload: IServerResponse<IUser>) =>
-    createAction(RECOVERY_PASSWORD_SUCCESS, payload),
+  recoveryPasswordRequest: (payload: { email: string }) => createAction(RECOVERY_PASSWORD_REQUEST, payload),
+  recoveryPasswordSuccess: (payload: IServerResponse<IUser>) => createAction(RECOVERY_PASSWORD_SUCCESS, payload),
   recoveryPasswordFail: (payload: string) => createAction(RECOVERY_PASSWORD_FAIL, payload),
 
   clearNewPassword: () => createAction(CLEAR_NEW_PASSWORD),
-  newPasswordRequest: (payload: { password: string; password2: string; code: string }) =>
-    createAction(NEW_PASSWORD_REQUEST, payload),
-  newPasswordSuccess: (payload: IServerResponse<ILoginSuccessData>) =>
-    createAction(NEW_PASSWORD_SUCCESS, payload),
+  newPasswordRequest: (payload: { password: string; password2: string; code: string }) => createAction(NEW_PASSWORD_REQUEST, payload),
+  newPasswordSuccess: (payload: IServerResponse<ILoginSuccessData>) => createAction(NEW_PASSWORD_SUCCESS, payload),
   newPasswordFail: (payload: string) => createAction(NEW_PASSWORD_FAIL, payload),
 
   clearLoginByPhone: () => createAction(CLEAR_LOGIN_BY_PHONE),
-  loginByPhoneRequest: (payload: { phone: string; code: string }) =>
-    createAction(LOGIN_BY_PHONE_REQUEST, payload),
-  loginByPhoneSuccess: (payload: IServerResponse<ILoginSuccessData>) =>
-    createAction(LOGIN_BY_PHONE_SUCCESS, payload),
+  loginByPhoneRequest: (payload: { phone: string; code: string }) => createAction(LOGIN_BY_PHONE_REQUEST, payload),
+  loginByPhoneSuccess: (payload: IServerResponse<ILoginSuccessData>) => createAction(LOGIN_BY_PHONE_SUCCESS, payload),
   loginByPhoneFail: (payload: string) => createAction(LOGIN_BY_PHONE_FAIL, payload),
 
   clearSendCode: () => createAction(CLEAR_SEND_CODE),
@@ -599,17 +582,13 @@ export const actions = {
 
   clearLoginByJwt: () => createAction(CLEAR_LOGIN_BY_JWT),
   loginByJwtRequest: (payload: { jwt: string }) => createAction(LOGIN_BY_JWT_REQUEST, payload),
-  loginByJwtSuccess: (payload: IServerResponse<ILoginSuccessData>) =>
-    createAction(LOGIN_BY_JWT_SUCCESS, payload),
+  loginByJwtSuccess: (payload: IServerResponse<ILoginSuccessData>) => createAction(LOGIN_BY_JWT_SUCCESS, payload),
   loginByJwtFail: (payload: string) => createAction(LOGIN_BY_JWT_FAIL, payload),
 
   clearFindInSystem: () => createAction(CLEAR_FIND_IN_SYSTEM),
-  findInSystemRequest: (payload: { value: string; type: LoginType }) =>
-    createAction(FIND_IN_SYSTEM_REQUEST, payload),
-  findInSystemSuccess: (payload: { value: string; type: LoginType }) =>
-    createAction(FIND_IN_SYSTEM_SUCCESS, payload),
-  findInSystemFail: (payload: { value: string; type: LoginType }) =>
-    createAction(FIND_IN_SYSTEM_FAIL, payload),
+  findInSystemRequest: (payload: { value: string; type: LoginType }) => createAction(FIND_IN_SYSTEM_REQUEST, payload),
+  findInSystemSuccess: (payload: { value: string; type: LoginType }) => createAction(FIND_IN_SYSTEM_SUCCESS, payload),
+  findInSystemFail: (payload: { value: string; type: LoginType }) => createAction(FIND_IN_SYSTEM_FAIL, payload),
 
   clearAuthToken: () => createAction(CLEAR_USER),
 };
@@ -618,8 +597,13 @@ export type TActions = ActionsUnion<typeof actions>;
 
 function* fetchSaga() {
   try {
-    const { data }: { data: IServerResponse<IUser> } = yield call(() => getMe());
-    yield put(actions.fetchSuccess(data));
+    const state = yield select();
+    if (state.auth.authToken) {
+      const { data }: { data: IServerResponse<IUser> } = yield call(() => getMe());
+      yield put(actions.fetchSuccess(data));
+    } else {
+      yield put(actions.fetchFail(""));
+    }
   } catch (e) {
     yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
   }
@@ -636,9 +620,7 @@ function* editSaga({ payload }: { payload: { data: IUserForEdit } }) {
 
 function* regSaga({ payload }: { payload: IUserForRegister }) {
   try {
-    const { data }: { data: IServerResponse<IRegSuccessData> } = yield call(() =>
-      register(payload)
-    );
+    const { data }: { data: IServerResponse<IRegSuccessData> } = yield call(() => register(payload));
     yield put(actions.regSuccess(data));
   } catch (e) {
     yield put(actions.regFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -647,10 +629,9 @@ function* regSaga({ payload }: { payload: IUserForRegister }) {
 
 function* loginSaga({ payload }: { payload: { login: string; password: string } }) {
   try {
-    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() =>
-      login(payload.login, payload.password)
-    );
+    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() => login(payload.login, payload.password));
     yield put(actions.loginSuccess(data));
+    yield put(actions.fetchRequest());
   } catch (e) {
     yield put(actions.loginFail(e?.response?.data?.message || "Ошибка соединения."));
   }
@@ -658,24 +639,16 @@ function* loginSaga({ payload }: { payload: { login: string; password: string } 
 
 function* recoveryPasswordSaga({ payload }: { payload: { email: string } }) {
   try {
-    const { data }: { data: IServerResponse<IUser> } = yield call(() =>
-      requestPassword(payload.email)
-    );
+    const { data }: { data: IServerResponse<IUser> } = yield call(() => requestPassword(payload.email));
     yield put(actions.recoveryPasswordSuccess(data));
   } catch (e) {
     yield put(actions.recoveryPasswordFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
-function* newPasswordSaga({
-  payload,
-}: {
-  payload: { password: string; password2: string; code: string };
-}) {
+function* newPasswordSaga({ payload }: { payload: { password: string; password2: string; code: string } }) {
   try {
-    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() =>
-      changePassword(payload)
-    );
+    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() => changePassword(payload));
     yield put(actions.newPasswordSuccess(data));
   } catch (e) {
     yield put(actions.newPasswordFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -684,9 +657,7 @@ function* newPasswordSaga({
 
 function* loginByPhoneSaga({ payload }: { payload: { phone: string; code: string } }) {
   try {
-    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() =>
-      loginByPhone(payload.phone, payload.code)
-    );
+    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() => loginByPhone(payload.phone, payload.code));
     yield put(actions.loginByPhoneSuccess(data));
   } catch (e) {
     yield put(actions.loginByPhoneFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -704,9 +675,7 @@ function* sendCodeConfigrmSaga({ payload }: { payload: { phone: string } }) {
 
 function* loginByJwtSaga({ payload }: { payload: { jwt: string } }) {
   try {
-    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() =>
-      loginByJwt(payload.jwt)
-    );
+    const { data }: { data: IServerResponse<ILoginSuccessData> } = yield call(() => loginByJwt(payload.jwt));
     yield put(actions.loginByJwtSuccess(data));
   } catch (e) {
     yield put(actions.loginByJwtFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -727,28 +696,10 @@ export function* saga() {
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
   yield takeLatest<ReturnType<typeof actions.regRequest>>(REG_REQUEST, regSaga);
   yield takeLatest<ReturnType<typeof actions.loginRequest>>(LOGIN_REQUEST, loginSaga);
-  yield takeLatest<ReturnType<typeof actions.recoveryPasswordRequest>>(
-    RECOVERY_PASSWORD_REQUEST,
-    recoveryPasswordSaga
-  );
-  yield takeLatest<ReturnType<typeof actions.newPasswordRequest>>(
-    NEW_PASSWORD_REQUEST,
-    newPasswordSaga
-  );
-  yield takeLatest<ReturnType<typeof actions.loginByPhoneRequest>>(
-    LOGIN_BY_PHONE_REQUEST,
-    loginByPhoneSaga
-  );
-  yield takeLatest<ReturnType<typeof actions.sendCodeRequest>>(
-    SEND_CODE_REQUEST,
-    sendCodeConfigrmSaga
-  );
-  yield takeLatest<ReturnType<typeof actions.loginByJwtRequest>>(
-    LOGIN_BY_JWT_REQUEST,
-    loginByJwtSaga
-  );
-  yield takeLatest<ReturnType<typeof actions.findInSystemRequest>>(
-    FIND_IN_SYSTEM_REQUEST,
-    findInSystemSaga
-  );
+  yield takeLatest<ReturnType<typeof actions.recoveryPasswordRequest>>(RECOVERY_PASSWORD_REQUEST, recoveryPasswordSaga);
+  yield takeLatest<ReturnType<typeof actions.newPasswordRequest>>(NEW_PASSWORD_REQUEST, newPasswordSaga);
+  yield takeLatest<ReturnType<typeof actions.loginByPhoneRequest>>(LOGIN_BY_PHONE_REQUEST, loginByPhoneSaga);
+  yield takeLatest<ReturnType<typeof actions.sendCodeRequest>>(SEND_CODE_REQUEST, sendCodeConfigrmSaga);
+  yield takeLatest<ReturnType<typeof actions.loginByJwtRequest>>(LOGIN_BY_JWT_REQUEST, loginByJwtSaga);
+  yield takeLatest<ReturnType<typeof actions.findInSystemRequest>>(FIND_IN_SYSTEM_REQUEST, findInSystemSaga);
 }

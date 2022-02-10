@@ -44,7 +44,7 @@ export const Routes = withRouter(({ history }) => {
     ({ auth, builder: { menuConfig } }) => {
       return {
         menuConfig,
-        isAuthorized: auth.user != null,
+        isAuthorized: Boolean(auth.authToken),
         userLastLocation: routerHelpers.getLastLocation(),
         user: auth.user,
         loginByJwtLoading: auth.loginByJwtLoading,
@@ -65,7 +65,6 @@ export const Routes = withRouter(({ history }) => {
   }, [loginByJwtError, enqueueSnackbar]);
 
   const redirectFromAuth = useMemo(() => {
-    // console.log(user);
     if (isAuthorized && user) {
       if (
         user.roles.includes("ROLE_ADMIN") ||
@@ -90,25 +89,27 @@ export const Routes = withRouter(({ history }) => {
       {/* Create `LayoutContext` from current `history` and `menuConfig`. */}
       <LayoutContextProvider history={history} menuConfig={menuConfig}>
         <Switch>
-          {isAuthorized ? (
-            /* Otherwise redirect to root page (`/`) */
+          {isAuthorized && <Redirect from="/auth" to={redirectFromAuth} />}
+          {/* {isAuthorized ? (
             <Redirect from="/auth" to={redirectFromAuth} />
           ) : (
-            /* Render auth page when user at `/auth` and not authorized. */
             <AuthPage />
-          )}
+          )} */}
 
           <Route path="/error" component={ErrorsPage} />
           <Route path="/logout" component={LogoutPage} />
+          {!isAuthorized && <Route path="/auth" component={AuthPage} />}
+          <Layout>
+            <HomePage userLastLocation={userLastLocation} />
+          </Layout>
 
-          {isAuthorized ? (
+          {/* {isAuthorized ? (
             <Layout>
               <HomePage userLastLocation={userLastLocation} />
             </Layout>
           ) : (
-            /* Redirect to `/auth` when user is not authorized */
             <Redirect to="/auth/login" />
-          )}
+          )} */}
         </Switch>
       </LayoutContextProvider>
     </>

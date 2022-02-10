@@ -1,27 +1,16 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { compose } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
-import {
-  TextField,
-  Tabs,
-  Tab,
-  Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-} from "@material-ui/core";
+import { TextField, Tabs, Tab, MenuItem } from "@material-ui/core";
 import { Link, useHistory } from "react-router-dom";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useSnackbar } from "notistack";
 
 import { actions as authActions } from "../../store/ducks/auth.duck";
 
 import ButtonWithLoader from "../../components/ui/Buttons/ButtonWithLoader";
 import { TabPanel, a11yProps } from "../../components/ui/Table/TabPanel";
-import NumberFormatForRegister from "../../components/NumberFormatCustom/NumberFormatForRegister";
 import { phoneCountryCodes, countries } from "./phoneCountryCodes";
 import { IAppState } from "../../store/rootDuck";
 
@@ -143,14 +132,25 @@ const CheckInSystem: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </div>
 
               <div className="kt-login__actions">
-                <div>
-                  <ButtonWithLoader
-                    onPress={handleSubmit}
-                    disabled={fetchLoading || findInSystemLoading}
-                    loading={fetchLoading || findInSystemLoading}
-                  >
-                    <FormattedMessage id="AUTH.LOGIN.BUTTON" />
-                  </ButtonWithLoader>
+                <div style={{ width: "100%" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}>
+                    <div style={{ marginRight: 16 }}>
+                      <ButtonWithLoader
+                        onPress={handleSubmit}
+                        disabled={fetchLoading || findInSystemLoading}
+                        loading={fetchLoading || findInSystemLoading}
+                      >
+                        <FormattedMessage id="AUTH.LOGIN.BUTTON" />
+                      </ButtonWithLoader>
+                    </div>
+                    <div
+                      onClick={() => history.push('/')}
+                      className="kt-link kt-login__link-forgot"
+                      style={{ fontSize: 16, cursor: "pointer" }}
+                    >
+                      Вернуться к объявлениям
+                    </div>
+                  </div>
                   <div style={{ marginTop: 16 }}>
                     <Link to="/auth/forgot-password" className="kt-link kt-login__link-forgot">
                       <FormattedMessage id="AUTH.GENERAL.FORGOT_BUTTON" />

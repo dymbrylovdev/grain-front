@@ -41,6 +41,7 @@ interface IProps {
     }
   >;
   cropParams: ICropParam[] | undefined;
+  guestPoint?: ILocation;
 }
 
 const ViewBidForm: React.FC<IProps> = ({
@@ -55,6 +56,7 @@ const ViewBidForm: React.FC<IProps> = ({
   me,
   fetchCropParams,
   cropParams,
+  guestPoint,
 }) => {
   const classes = useViewBidStyles();
   const routeRef = useRef();
@@ -63,7 +65,7 @@ const ViewBidForm: React.FC<IProps> = ({
   const [goToRef, setGoToRef] = useState(false);
   const currentCrop = useMemo(() => crops?.find(item => item.id === bid?.crop_id), [crops, bid]);
   const [showPhoneDialog, setShowPhoneDialog] = useState(false);
-  const isBuyerTariff = useMemo(() => me?.tariff_matrix.tariff.id !== 1, [me]);
+  const isBuyerTariff = useMemo(() => me?.tariff_matrix?.tariff?.id !== 1, [me]);
 
   useEffect(() => {
     if (goToRef) {
@@ -116,8 +118,12 @@ const ViewBidForm: React.FC<IProps> = ({
   }, [routeLoading]);
 
   useEffect(() => {
-    setMySelectedMapPoint(me?.points.filter(el => el.active)[0] || null);
-  }, [me]);
+    if (me) {
+      setMySelectedMapPoint(me?.points.filter(el => el.active)[0] || null);
+    } else {
+      setMySelectedMapPoint(guestPoint?.active ? guestPoint : null);
+    }
+  }, [me, guestPoint]);
 
   const mapState = useMemo(() => {
     if (bid && bid.location) {
@@ -140,6 +146,15 @@ const ViewBidForm: React.FC<IProps> = ({
   }, [selectedRoute, bid, pricePerKm, salePurchaseMode, me]);
 
   const selectedPrice = useMemo(() => {
+    if (!me) {
+      return newBid
+        ? formatAsThousands(newBid.finalPrice)
+        : newPrice
+        ? newPrice
+        : bid?.price_with_delivery
+        ? formatAsThousands(Math.round(bid.price_with_delivery))
+        : "-";
+    }
     return newBid
       ? formatAsThousands(newBid.finalPrice)
       : newPrice
@@ -147,7 +162,7 @@ const ViewBidForm: React.FC<IProps> = ({
       : bid?.price_with_delivery_with_vat
       ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
       : "-";
-  }, [newBid, bid, newPrice]);
+  }, [newBid, bid, newPrice, me]);
 
   useEffect(() => {
     if (me && bid && bid.location) {
@@ -229,7 +244,7 @@ const ViewBidForm: React.FC<IProps> = ({
 
   const vendorUseVat = bid?.vendor_use_vat;
 
-  const loading = !me || !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
+  const loading = !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -362,28 +377,42 @@ const ViewBidForm: React.FC<IProps> = ({
                   </div>
                   <div className={classes.wrapperPrice}>
                     <b className={classes.delivery}>
-                      {salePurchaseMode === "sale" &&
-                      ((me?.use_vat && !bid.vendor_use_vat) || (me?.use_vat && bid.vendor_use_vat) || (!me?.use_vat && bid.vendor_use_vat))
-                        ? "Цена с учётом НДС и доставки до:"
-                        : salePurchaseMode === "sale"
-                        ? "Цена без НДС с учетом доставки до:"
-                        : "Цена указана с учётом доставки до:"}{" "}
+                      {!me && guestPoint?.active ? (
+                        "Цена указана с учётом доставки до:"
+                      ) : (
+                        <>
+                          {salePurchaseMode === "sale" &&
+                          ((me?.use_vat && !bid.vendor_use_vat) ||
+                            (me?.use_vat && bid.vendor_use_vat) ||
+                            (!me?.use_vat && bid.vendor_use_vat))
+                            ? "Цена с учётом НДС и доставки до:"
+                            : salePurchaseMode === "sale"
+                            ? "Цена без НДС с учетом доставки до:"
+                            : "Цена указана с учётом доставки до:"}{" "}
+                        </>
+                      )}
                       <b className={classes.deliveryAddress}>
-                        {!!bid?.point_prices && !!bid.point_prices.length
-                          ? bid.point_prices.map(
-                              (item, i) =>
-                                i === 0 &&
-                                (i === 0 ? (
-                                  <b key={i} className={classes.deliveryAddress}>
-                                    {` в ${item.point.name}`}
-                                  </b>
-                                ) : (
-                                  <b key={i} className={classes.deliveryAddress}>
-                                    {` в ${item.point.name}`}
-                                  </b>
-                                ))
-                            )
-                          : "-"}
+                        {!me && guestPoint?.active ? (
+                          <b className={classes.deliveryAddress}>{` в ${guestPoint.name}`}</b>
+                        ) : (
+                          <>
+                            {!!bid?.point_prices && !!bid.point_prices.length
+                              ? bid.point_prices.map(
+                                  (item, i) =>
+                                    i === 0 &&
+                                    (i === 0 ? (
+                                      <b key={i} className={classes.deliveryAddress}>
+                                        {` в ${item.point.name}`}
+                                      </b>
+                                    ) : (
+                                      <b key={i} className={classes.deliveryAddress}>
+                                        {` в ${item.point.name}`}
+                                      </b>
+                                    ))
+                                )
+                              : "-"}
+                          </>
+                        )}
                       </b>{" "}
                       {/* <b className={classes.btnChangeDelivery}>(Изменить)</b> */}
                     </b>
@@ -505,7 +534,13 @@ const ViewBidForm: React.FC<IProps> = ({
                       variant="outlined"
                       color="primary"
                       className={classes.btnShowPhone}
-                      onClick={() => (isBuyerTariff ? setShowsPhones(true) : setShowPhoneDialog(true))}
+                      onClick={() => {
+                        if (me) {
+                          isBuyerTariff ? setShowsPhones(true) : setShowPhoneDialog(true);
+                        } else {
+                          history.push("/auth");
+                        }
+                      }}
                     >
                       <div className={classes.wrapperTextShowBtn}>
                         {showsPhones ? (
@@ -529,7 +564,13 @@ const ViewBidForm: React.FC<IProps> = ({
                         variant="outlined"
                         color="primary"
                         className={classes.btnShowPhone}
-                        onClick={() => (isBuyerTariff ? setShowsPhones(true) : setShowPhoneDialog(true))}
+                        onClick={() => {
+                          if (me) {
+                            isBuyerTariff ? setShowsPhones(true) : setShowPhoneDialog(true);
+                          } else {
+                            history.push("/auth");
+                          }
+                        }}
                       >
                         <div className={classes.wrapperTextShowBtn}>
                           {showsPhones ? (
@@ -671,6 +712,41 @@ const ViewBidForm: React.FC<IProps> = ({
                                   mySelectedMapPoint ? mySelectedMapPoint.text : ""
                                 }`}
                               </div>
+                            ) : !me && guestPoint?.active ? (
+                              <>
+                                {salePurchaseMode === "sale" && bid?.vendor_use_vat ? (
+                                  <b className={classes.calcVal}>
+                                    {selectedRoute
+                                      ? thousands(
+                                          Math.round(
+                                            getFinalPrice(
+                                              bid,
+                                              selectedRoute.distance.value / 1000,
+                                              pricePerKm,
+                                              salePurchaseMode,
+                                              bid.vat || 10
+                                            )
+                                          ).toString()
+                                        ) + " • "
+                                      : ""}
+                                  </b>
+                                ) : (
+                                  <b className={classes.calcVal}>
+                                    {selectedRoute
+                                      ? thousands(
+                                          Math.round(
+                                            getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, 0)
+                                          ).toString()
+                                        ) + " • "
+                                      : ""}
+                                  </b>
+                                )}
+                                <b className={classes.calcVal}>
+                                  {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
+                                    mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                                  }`}
+                                </b>
+                              </>
                             ) : (
                               <p className={classes.calcVal}>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                             ))}
@@ -720,6 +796,41 @@ const ViewBidForm: React.FC<IProps> = ({
                                   mySelectedMapPoint ? mySelectedMapPoint.text : ""
                                 }`}
                               </div>
+                            ) : !me && guestPoint?.active ? (
+                              <>
+                                {salePurchaseMode === "sale" && bid?.vendor_use_vat ? (
+                                  <b className={classes.calcVal}>
+                                    {selectedRoute
+                                      ? thousands(
+                                          Math.round(
+                                            getDeliveryPrice(
+                                              bid,
+                                              selectedRoute.distance.value / 1000,
+                                              pricePerKm,
+                                              salePurchaseMode,
+                                              bid.vat || 10
+                                            )
+                                          ).toString()
+                                        ) + " • "
+                                      : ""}
+                                  </b>
+                                ) : (
+                                  <b className={classes.calcVal}>
+                                    {selectedRoute
+                                      ? thousands(
+                                          Math.round(
+                                            getDeliveryPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, 0)
+                                          ).toString()
+                                        ) + " • "
+                                      : ""}
+                                  </b>
+                                )}
+                                <b className={classes.calcVal}>
+                                  {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
+                                    mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                                  }`}
+                                </b>
+                              </>
                             ) : (
                               <p className={classes.calcVal}>{intl.formatMessage({ id: "BIDLIST.NO_POINTS" })}</p>
                             ))}

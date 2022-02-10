@@ -74,6 +74,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   boughtTariff,
   setUserBoughtTariff,
+  crops,
 }) => {
   const classes = useStyles();
   const isMinWidthQuery = useMediaQuery("(min-width:1025px)");
@@ -90,7 +91,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     if (route === "all-bids") bestAllMyDealsMode = "all-bids";
   }
 
-  if (!me) return null;
+  // if (!me) return null;
 
   return (
     <Wrapper
@@ -108,6 +109,7 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         setSalePurchaseMode={setSalePurchaseMode}
         setLeftMenuOpen={setLeftMenuOpen}
         enumParams={cropParams && cropParams.filter(item => item.type === "enum")}
+        storeCrops={crops}
       />
 
       {location.pathname === "/user-list" && (
@@ -151,6 +153,7 @@ const connector = connect(
     userFiltersPhone: state.users.userFiltersPhone,
     currentRoles: state.users.currentRoles,
     boughtTariff: state.users.boughtTariff,
+    crops: state.crops2.crops,
   }),
   {
     ...leftMenuActions,

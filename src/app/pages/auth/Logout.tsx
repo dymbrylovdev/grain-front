@@ -18,22 +18,15 @@ const Logout: React.FC<TPropsFromRedux> = ({
   stopPrompter,
   setSalePurchaseMode,
 }) => {
-
   useEffect(() => {
     clearCurrentSaleFilter();
     clearCurrentPurchaseFilter();
     setSalePurchaseMode(undefined);
     stopPrompter();
     logout();
-  }, [
-    clearCurrentPurchaseFilter,
-    clearCurrentSaleFilter,
-    logout,
-    setSalePurchaseMode,
-    stopPrompter,
-  ]);
+  }, [clearCurrentPurchaseFilter, clearCurrentSaleFilter, logout, setSalePurchaseMode, stopPrompter]);
 
-  return hasAuthToken ? <LayoutSplashScreen /> : <Redirect to="/auth" />;
+  return hasAuthToken ? <LayoutSplashScreen /> : <Redirect to="/sale/best-bids/1" />;
 };
 
 const connector = connect(

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { Collapse, Divider, makeStyles, MenuItem } from "@material-ui/core";
 import { IntlShape } from "react-intl";
@@ -17,6 +17,7 @@ import FilterBids from "./components/FilterBids";
 import LocationBlockMenu from "./components/LocationBlockMenu";
 import FilterByManager from "./components/FilterByManager";
 import FilterByDates from "./components/FilterByDates";
+import { ICrop } from "../../interfaces/crops";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -80,7 +81,7 @@ const useStyles = makeStyles(theme => ({
 
 interface IProps {
   intl: IntlShape;
-  me: IUser;
+  me?: IUser;
   bestAllMyDealsMode?: "deals" | "best-bids" | "all-bids" | "my-bids" | "edit";
   cropId?: string;
   salePurchaseMode: "sale" | "purchase" | undefined;
@@ -101,9 +102,19 @@ interface IProps {
     }
   >;
   enumParams: any;
+  storeCrops?: ICrop[];
 }
 
-const LeftMenu: React.FC<IProps> = ({ intl, me, bestAllMyDealsMode, cropId, salePurchaseMode, setSalePurchaseMode, setLeftMenuOpen }) => {
+const LeftMenu: React.FC<IProps> = ({
+  intl,
+  me,
+  bestAllMyDealsMode,
+  cropId,
+  salePurchaseMode,
+  setSalePurchaseMode,
+  setLeftMenuOpen,
+  storeCrops,
+}) => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -130,12 +141,14 @@ const LeftMenu: React.FC<IProps> = ({ intl, me, bestAllMyDealsMode, cropId, sale
     setLeftMenuOpen(false);
   };
 
+  const userCrops = useMemo(() => (me && me.crops.length > 0 ? me?.crops : storeCrops || []), [me, storeCrops]);
+
   const crops = [
     {
       id: 0,
       name: intl.formatMessage({ id: "SUBMENU.ALL_CROPS" }),
     },
-    ...me?.crops,
+    ...userCrops,
   ];
 
   const selectedCrop = crops.filter(crop => !!cropId && +cropId === crop.id);
@@ -162,7 +175,7 @@ const LeftMenu: React.FC<IProps> = ({ intl, me, bestAllMyDealsMode, cropId, sale
 
       {/* Продажа-Покупка меню */}
       {((!!bestAllMyDealsMode && bestAllMyDealsMode !== "deals" && bestAllMyDealsMode !== "edit") || mySubscriptionsMode) &&
-        accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
+        (accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) || !me) && (
           <>
             <MenuItem
               className={salePurchaseMode === "sale" ? classes.selected : ""}
@@ -234,8 +247,10 @@ const LeftMenu: React.FC<IProps> = ({ intl, me, bestAllMyDealsMode, cropId, sale
       <MenuItem
         className={mySubscriptionsMode ? classes.selected : ""}
         onClick={() => {
-          if (!mySubscriptionsMode) {
-            handleClick(`/${me.roles.includes("ROLE_BUYER") ? "sale" : "purchase"}/filters`);
+          if (!mySubscriptionsMode && me) {
+            handleClick(`/${me?.roles.includes("ROLE_BUYER") ? "sale" : "purchase"}/filters`);
+          } else if (!me) {
+            handleClick("/auth");
           }
         }}
       >
@@ -245,9 +260,13 @@ const LeftMenu: React.FC<IProps> = ({ intl, me, bestAllMyDealsMode, cropId, sale
       <MenuItem
         className={bestAllMyDealsMode === "my-bids" ? classes.selected : ""}
         onClick={() => {
-          setBestOpen(false);
-          setAllOpen(false);
-          handleClick(`/${salePurchaseModeForMyBids(me, salePurchaseMode)}/my-bids`);
+          if (me) {
+            setBestOpen(false);
+            setAllOpen(false);
+            handleClick(`/${salePurchaseModeForMyBids(me, salePurchaseMode)}/my-bids`);
+          } else {
+            handleClick("/auth");
+          }
         }}
       >
         {intl.formatMessage({ id: "SUBMENU.MY_BIDS" })}
@@ -288,7 +307,7 @@ const LeftMenu: React.FC<IProps> = ({ intl, me, bestAllMyDealsMode, cropId, sale
               • {crop.name}
             </MenuItem>
           ))}
-          <MenuItem onClick={() => handleClick("/user/profile/crops")} className={classes.nested}>
+          <MenuItem onClick={() => (me ? handleClick("/user/profile/crops") : handleClick("/auth"))} className={classes.nested}>
             • {intl.formatMessage({ id: "SUBMENU.PROFILE.CROPS" })}
           </MenuItem>
         </Collapse>
@@ -327,20 +346,40 @@ const LeftMenu: React.FC<IProps> = ({ intl, me, bestAllMyDealsMode, cropId, sale
       </MenuItem>
 
       <Collapse in={bestOpen} timeout="auto" unmountOnExit>
-        {me?.crops?.map(crop => (
-          <MenuItem
-            key={crop.id}
-            onClick={() => {
-              handleClick(`/${salePurchaseMode}/best-bids/${crop.id}`);
-              setBestOpen(false);
-              setSelectedBestOpen(true);
-            }}
-            className={`${classes.nested} ${bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id ? classes.selected : ""}`}
-          >
-            • {crop.name}
-          </MenuItem>
-        ))}
-        <MenuItem onClick={() => handleClick("/user/profile/crops")} className={classes.nested}>
+        {me && me.crops.length > 0
+          ? me.crops.map(crop => (
+              <MenuItem
+                key={crop.id}
+                onClick={() => {
+                  handleClick(`/${salePurchaseMode}/best-bids/${crop.id}`);
+                  setBestOpen(false);
+                  setSelectedBestOpen(true);
+                }}
+                className={`${classes.nested} ${
+                  bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id ? classes.selected : ""
+                }`}
+              >
+                • {crop.name}
+              </MenuItem>
+            ))
+          : storeCrops &&
+            storeCrops.map(crop => (
+              <MenuItem
+                key={crop.id}
+                onClick={() => {
+                  handleClick(`/${salePurchaseMode}/best-bids/${crop.id}`);
+                  setBestOpen(false);
+                  setSelectedBestOpen(true);
+                }}
+                className={`${classes.nested} ${
+                  bestAllMyDealsMode === "best-bids" && !!cropId && +cropId === crop.id ? classes.selected : ""
+                }`}
+              >
+                • {crop.name}
+              </MenuItem>
+            ))}
+
+        <MenuItem onClick={() => (me ? handleClick("/user/profile/crops") : handleClick("/auth"))} className={classes.nested}>
           • {intl.formatMessage({ id: "SUBMENU.PROFILE.CROPS" })}
         </MenuItem>
       </Collapse>
@@ -356,7 +395,7 @@ const LeftMenu: React.FC<IProps> = ({ intl, me, bestAllMyDealsMode, cropId, sale
         ))}
       </Collapse>
 
-      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && <Divider style={{ margin: "6px 0" }} />}
+      {(accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) || !me) && <Divider style={{ margin: "6px 0" }} />}
 
       {bestAllMyDealsMode === "best-bids" && (
         <>
@@ -380,9 +419,13 @@ const LeftMenu: React.FC<IProps> = ({ intl, me, bestAllMyDealsMode, cropId, sale
         <MenuItem
           className={bestAllMyDealsMode === "deals" ? classes.selected : ""}
           onClick={() => {
-            setBestOpen(false);
-            setAllOpen(false);
-            handleClick("/deals");
+            if (me) {
+              setBestOpen(false);
+              setAllOpen(false);
+              handleClick("/deals");
+            } else {
+              history.push("/auth");
+            }
           }}
         >
           {intl.formatMessage({ id: "SUBMENU.BIDS.DEALS" })}
@@ -391,7 +434,7 @@ const LeftMenu: React.FC<IProps> = ({ intl, me, bestAllMyDealsMode, cropId, sale
 
       {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && <Divider style={{ margin: "6px 0" }} />}
 
-      {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && bestAllMyDealsMode === "deals" && <DealsFilterForAll />}
+      {(accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) || !me) && bestAllMyDealsMode === "deals" && <DealsFilterForAll />}
 
       {accessByRoles(me, ["ROLE_ADMIN"]) && bestAllMyDealsMode === "deals" && <DealsFilterForAdm />}
     </div>
