@@ -6,7 +6,7 @@ stages:
   - build
   - deploy
 
-jobs for master:
+# jobs for master:
 build-master:
   only:
     - 'master'
