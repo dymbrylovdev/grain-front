@@ -125,14 +125,15 @@ const DealViewPage: React.FC<TPropsFromRedux &
 
   const newProfit = useMemo(() => {
     if (localDistance && currentCrop && deal && currentCrop.delivery_price_coefficient) {
+      const distance = localDistance > 100 ? localDistance : 100;
       if (!!deal?.purchase_bid?.vendor.use_vat && !!deal?.sale_bid?.vat && !deal.sale_bid.vendor.use_vat) {
         return (
           deal.purchase_bid.price -
           Math.round(deal.sale_bid.price * (deal.sale_bid.vat / 100 + 1)) -
-          localDistance * currentCrop.delivery_price_coefficient
+          distance * currentCrop.delivery_price_coefficient
         );
       } else {
-        return deal.purchase_bid.price - deal.sale_bid.price - localDistance * currentCrop.delivery_price_coefficient;
+        return deal.purchase_bid.price - deal.sale_bid.price - distance * currentCrop.delivery_price_coefficient;
       }
     } else if (deal) {
       return Math.round(deal.profit_with_delivery_price);
