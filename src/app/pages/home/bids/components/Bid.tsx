@@ -698,10 +698,10 @@ const Bid = React.memo<IProps>(
               <div className={innerClasses.wrapperInfoCompany} style={{ justifyContent: "space-between" }}>
                 <div className={innerClasses.companyInfo} style={{ marginBottom: 16 }}>
                   <div className={innerClasses.datePublic}>Дата публикации:</div>
-                  <div className={innerClasses.textPhone}>{`${bid.created_at.slice(8, 10)}.${bid.created_at.slice(
+                  <div className={innerClasses.textPhone}>{`${bid.modified_at.slice(8, 10)}.${bid.modified_at.slice(
                     5,
                     7
-                  )}.${bid.created_at.slice(0, 4)}`}</div>
+                  )}.${bid.modified_at.slice(0, 4)}`}</div>
                 </div>
                 {bid.vendor.phone && (
                   <Button
@@ -770,10 +770,10 @@ const Bid = React.memo<IProps>(
               {!isMobile && (
                 <div className={innerClasses.companyInfo} style={{ marginLeft: 20 }}>
                   <div className={innerClasses.datePublic}>Дата публикации:</div>
-                  <div className={innerClasses.textCreateAt}>{`${bid.created_at.slice(8, 10)}.${bid.created_at.slice(
+                  <div className={innerClasses.textCreateAt}>{`${bid.modified_at.slice(8, 10)}.${bid.modified_at.slice(
                     5,
                     7
-                  )}.${bid.created_at.slice(0, 4)}`}</div>
+                  )}.${bid.modified_at.slice(0, 4)}`}</div>
                 </div>
               )}
             </div>
