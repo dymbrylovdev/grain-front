@@ -216,6 +216,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   nds: {
     fontSize: "1.175vw",
     color: "black",
+    fontWeight: "normal",
     marginRight: 21,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
@@ -419,6 +420,15 @@ export const useBidTableStyles = makeStyles(theme => ({
   backdrop: {
     backdropFilter: "blur(3px)",
     backgroundColor: "rgba(0,0,30,0.4)",
+  },
+  wrapperPriceVat: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: 8,
+  },
+  priceVat: {
+    display: "flex",
+    flexDirection: "row",
   },
 }));
 
@@ -707,6 +717,7 @@ export const useViewBidStyles = makeStyles(theme => ({
     fontSize: 21,
     color: "black",
     marginRight: 21,
+    fontWeight: "normal",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:840px)"]: {
       fontSize: 18,
@@ -858,6 +869,15 @@ export const useViewBidStyles = makeStyles(theme => ({
     },
   },
   btnGoBack: { width: 40, height: 24, minWidth: 40, marginRight: 8, color: "black", border: "1px solid #000000", padding: 0 },
+  wrapperPriceVat: {
+    display: "flex",
+    flexDirection: "column",
+    marginBottom: 8,
+  },
+  priceVat: {
+    display: "flex",
+    flexDirection: "row",
+  },
 }));
 
 export const useStylesPhotosForm = makeStyles(theme =>
