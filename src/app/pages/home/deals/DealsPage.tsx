@@ -187,7 +187,17 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       if (localDistance.data && typeof localDistance.data === "number" && currentCrop && currentCrop.delivery_price_coefficient) {
         return (
           <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined}>
-            {currentDeal.purchase_bid.price - currentDeal.sale_bid.price - localDistance.data * currentCrop.delivery_price_coefficient}
+            {!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat ? (
+              <>
+                {currentDeal.purchase_bid.price -
+                  Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
+                  localDistance.data * currentCrop.delivery_price_coefficient}
+              </>
+            ) : (
+              <>
+                {currentDeal.purchase_bid.price - currentDeal.sale_bid.price - localDistance.data * currentCrop.delivery_price_coefficient}
+              </>
+            )}
           </TableCell>
         );
       }
