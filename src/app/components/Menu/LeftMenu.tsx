@@ -141,7 +141,7 @@ const LeftMenu: React.FC<IProps> = ({
     setLeftMenuOpen(false);
   };
 
-  const userCrops = useMemo(() => (me && me.crops.length > 0 ? me?.crops : storeCrops || []), [me, storeCrops]);
+  const userCrops = useMemo(() => (me && me.crops && me.crops.length > 0 ? me?.crops : storeCrops || []), [me, storeCrops]);
 
   const crops = [
     {
