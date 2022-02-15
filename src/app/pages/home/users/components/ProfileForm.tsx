@@ -705,7 +705,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           <Skeleton width={135} height={37.5} animation="wave" />
         ) : (
           <FormControlLabel
-            control={<Checkbox checked={values.use_vat} onChange={handleChange} />}
+            control={<Checkbox checked={me ? values.use_vat : true} onChange={handleChange} />}
             label={intl.formatMessage({ id: "USER.EDIT_FORM.USE_VAT" })}
             name="use_vat"
             disabled={editMode === "view" || !me}

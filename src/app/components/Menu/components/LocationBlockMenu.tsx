@@ -97,7 +97,7 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
           name="active"
         />
       )}
-      {me && !me.points.length && <h6>У вас ещё нет точек отгрузки / погрузки</h6>}
+      {me && me.points && !me.points.length && <h6>У вас ещё нет точек отгрузки / погрузки</h6>}
 
       {me &&
         me.points.map(point => (

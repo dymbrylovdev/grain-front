@@ -295,9 +295,9 @@ const Bid = React.memo<IProps>(
                         <div className={innerClasses.rybl}>₽</div>
                         {salePurchaseMode === "sale" && (
                           <div className={innerClasses.nds}>
-                            {(user?.use_vat && !bid.vendor_use_vat) ||
-                            (user?.use_vat && bid.vendor_use_vat) ||
-                            (user?.use_vat && bid.vendor_use_vat)
+                            {((user?.use_vat || !user) && !bid.vendor_use_vat) ||
+                            (!user?.use_vat && user && bid.vendor_use_vat) ||
+                            ((user?.use_vat || !user) && bid.vendor_use_vat)
                               ? "Цена указана с НДС"
                               : "Цена указана без НДС"}{" "}
                           </div>
@@ -323,9 +323,9 @@ const Bid = React.memo<IProps>(
                         <div className={innerClasses.rybl}>₽</div>
                         {salePurchaseMode === "sale" && (
                           <div className={innerClasses.nds}>
-                            {(user?.use_vat && !bid.vendor_use_vat) ||
-                            (user?.use_vat && bid.vendor_use_vat) ||
-                            (user?.use_vat && bid.vendor_use_vat)
+                            {((user?.use_vat || !user) && !bid.vendor_use_vat) ||
+                            (!user?.use_vat && user && bid.vendor_use_vat) ||
+                            ((user?.use_vat || !user) && bid.vendor_use_vat)
                               ? "Цена указана с НДС"
                               : "Цена указана без НДС"}{" "}
                           </div>
@@ -417,7 +417,7 @@ const Bid = React.memo<IProps>(
                       {bid.price ? (
                         <>
                           {/*Если покупатель работает с НДС, а объявление продавца было установлено без работы с ндс, то мы добавляем +10 процент*/}
-                          {user?.use_vat && !bid.vendor_use_vat && (
+                          {(user?.use_vat || !user) && !bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.priceVat}>
                                 <div className={innerClasses.price}>
@@ -432,7 +432,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Если покупатель работает с НДС, а объявление продавца было установлено, когда он работал с НДС*/}
-                          {user?.use_vat && bid.vendor_use_vat && (
+                          {(user?.use_vat || !user) && bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.priceVat}>
                                 <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
@@ -444,7 +444,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Когда покупатель не работает с НДС, а у продавца установлено объявление, когда тот не работал с НДС*/}
-                          {!user?.use_vat && !bid.vendor_use_vat && (
+                          {user && !user.use_vat && !bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.priceVat}>
                                 <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
@@ -455,7 +455,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Когда покупатель не работает с НДС, а у продавец выставил объявление работая с НДС*/}
-                          {!user?.use_vat && bid.vendor_use_vat && (
+                          {user && !user?.use_vat && bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.priceVat}>
                                 <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
@@ -650,7 +650,7 @@ const Bid = React.memo<IProps>(
                       {bid.price ? (
                         <>
                           {/*Если покупатель работает с НДС, а объявление продавца было установлено без работы с ндс, то мы добавляем +10 процент*/}
-                          {user?.use_vat && !bid.vendor_use_vat && (
+                          {(user?.use_vat || !user) && !bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.priceVat}>
                                 <div className={innerClasses.price}>
@@ -665,7 +665,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Если покупатель работает с НДС, а объявление продавца было установлено, когда он работал с НДС*/}
-                          {user?.use_vat && bid.vendor_use_vat && (
+                          {(user?.use_vat || !user) && bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.priceVat}>
                                 <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
@@ -677,7 +677,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Когда покупатель не работает с НДС, а у продавца установлено объявление, когда тот не работал с НДС*/}
-                          {!user?.use_vat && !bid.vendor_use_vat && (
+                          {user && !user?.use_vat && !bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.priceVat}>
                                 <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>
@@ -688,7 +688,7 @@ const Bid = React.memo<IProps>(
                           )}
 
                           {/*Когда покупатель не работает с НДС, а у продавец выставил объявление работая с НДС*/}
-                          {!user?.use_vat && bid.vendor_use_vat && (
+                          {user && !user?.use_vat && bid.vendor_use_vat && (
                             <>
                               <div className={innerClasses.priceVat}>
                                 <div className={innerClasses.price}>{formatAsThousands(Math.round(bid.price))} </div>

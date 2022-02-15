@@ -136,7 +136,9 @@ const ViewBidForm: React.FC<IProps> = ({
   const newPrice = useMemo(() => {
     if (selectedRoute && bid) {
       return salePurchaseMode === "sale" &&
-        ((me?.use_vat && !bid?.vendor_use_vat) || (me?.use_vat && bid?.vendor_use_vat) || (!me?.use_vat && bid?.vendor_use_vat))
+        (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
+          ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
+          (!me?.use_vat && me && bid?.vendor_use_vat))
         ? thousands(
             Math.round(getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, bid.vat || 10)).toString()
           )
@@ -375,7 +377,9 @@ const ViewBidForm: React.FC<IProps> = ({
                     <div className={classes.rybl}>₽</div>
                     {salePurchaseMode === "sale" && (
                       <div className={classes.nds}>
-                        {(me?.use_vat && !bid.vendor_use_vat) || (me?.use_vat && bid.vendor_use_vat) || (!me?.use_vat && bid.vendor_use_vat)
+                        {((me?.use_vat || !me) && !bid.vendor_use_vat) ||
+                        ((me?.use_vat || !me) && bid.vendor_use_vat) ||
+                        (!me?.use_vat && me && bid.vendor_use_vat)
                           ? "Цена указана с НДС"
                           : "Цена указана без НДС"}{" "}
                       </div>
@@ -432,7 +436,7 @@ const ViewBidForm: React.FC<IProps> = ({
                         {bid.price ? (
                           <>
                             {/*Если покупатель работает с НДС, а объявление продавца было установлено без работы с ндс, то мы добавляем +10 процент*/}
-                            {me?.use_vat && !bid.vendor_use_vat && (
+                            {(me?.use_vat || !me) && !bid.vendor_use_vat && (
                               <>
                                 <div className={classes.priceVat}>
                                   <div className={classes.price}>
@@ -448,7 +452,7 @@ const ViewBidForm: React.FC<IProps> = ({
                             )}
 
                             {/*Если покупатель работает с НДС, а объявление продавца было установлено, когда он работал с НДС*/}
-                            {me?.use_vat && bid.vendor_use_vat && (
+                            {(me?.use_vat || !me) && bid.vendor_use_vat && (
                               <>
                                 <div className={classes.priceVat}>
                                   <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
@@ -460,7 +464,7 @@ const ViewBidForm: React.FC<IProps> = ({
                             )}
 
                             {/*Когда покупатель не работает с НДС, а у продавца установлено объявление, когда тот не работал с НДС*/}
-                            {!me?.use_vat && !bid.vendor_use_vat && (
+                            {me && !me?.use_vat && !bid.vendor_use_vat && (
                               <>
                                 <div className={classes.priceVat}>
                                   <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
@@ -471,7 +475,7 @@ const ViewBidForm: React.FC<IProps> = ({
                             )}
 
                             {/*Когда покупатель не работает с НДС, а у продавец выставил объявление работая с НДС*/}
-                            {!me?.use_vat && bid.vendor_use_vat && (
+                            {me && !me?.use_vat && bid.vendor_use_vat && (
                               <>
                                 <div className={classes.priceVat}>
                                   <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
@@ -694,9 +698,9 @@ const ViewBidForm: React.FC<IProps> = ({
                         <div>
                           <div className={classes.calcParam}>
                             {salePurchaseMode === "sale" &&
-                            ((me?.use_vat && !bid?.vendor_use_vat) ||
-                              (me?.use_vat && bid?.vendor_use_vat) ||
-                              (!me?.use_vat && bid?.vendor_use_vat))
+                            (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
+                              ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
+                              (me && !me?.use_vat && bid?.vendor_use_vat))
                               ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" })
                               : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
                             {/* {!!me && me.use_vat && salePurchaseMode === "sale" && !!bid && !vendorUseVat
@@ -708,9 +712,9 @@ const ViewBidForm: React.FC<IProps> = ({
                               <div className={classes.calcVal}>
                                 {salePurchaseMode === "sale" &&
                                 bid &&
-                                ((me?.use_vat && !bid?.vendor_use_vat) ||
-                                  (me?.use_vat && bid?.vendor_use_vat) ||
-                                  (!me?.use_vat && bid?.vendor_use_vat)) ? (
+                                (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
+                                  ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
+                                  (me && !me?.use_vat && bid?.vendor_use_vat)) ? (
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
@@ -743,7 +747,7 @@ const ViewBidForm: React.FC<IProps> = ({
                               </div>
                             ) : !me && guestPoint?.active ? (
                               <>
-                                {salePurchaseMode === "sale" && bid?.vendor_use_vat ? (
+                                {salePurchaseMode === "sale" && (bid?.vendor_use_vat || !me) ? (
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
@@ -782,7 +786,7 @@ const ViewBidForm: React.FC<IProps> = ({
                         </div>
                         <div>
                           <div className={classes.calcParam}>
-                            {!!me && me.use_vat && salePurchaseMode === "sale" && !!bid && !vendorUseVat
+                            {(me?.use_vat || !me) && salePurchaseMode === "sale" && !!bid && !vendorUseVat
                               ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })
                               : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })}
                           </div>
@@ -792,9 +796,9 @@ const ViewBidForm: React.FC<IProps> = ({
                               <div className={classes.calcVal}>
                                 {salePurchaseMode === "sale" &&
                                 bid &&
-                                ((me?.use_vat && !bid?.vendor_use_vat) ||
-                                  (me?.use_vat && bid?.vendor_use_vat) ||
-                                  (!me?.use_vat && bid?.vendor_use_vat)) ? (
+                                (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
+                                  ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
+                                  (me && !me?.use_vat && bid?.vendor_use_vat)) ? (
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(

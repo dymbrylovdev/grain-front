@@ -346,7 +346,7 @@ const LeftMenu: React.FC<IProps> = ({
       </MenuItem>
 
       <Collapse in={bestOpen} timeout="auto" unmountOnExit>
-        {me && me.crops.length > 0
+        {me && me.crops && me.crops.length > 0
           ? me.crops.map(crop => (
               <MenuItem
                 key={crop.id}

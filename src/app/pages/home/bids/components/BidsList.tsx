@@ -339,7 +339,7 @@ const BidsList: React.FC<IProps> = ({
       if (activeProperties && user) {
         const { distance } = activeProperties.properties.getAll();
         if (distance.value > 0 && currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
-          const isMatch = !!user && user.use_vat && salePurchaseMode === "sale" && currentBid.vat && !currentBid.vendor_use_vat;
+          const isMatch = (user?.use_vat || !user) && salePurchaseMode === "sale" && currentBid.vat && !currentBid.vendor_use_vat;
           const finalPrice = getFinalPrice(
             currentBid,
             Math.round(distance.value / 1000),
