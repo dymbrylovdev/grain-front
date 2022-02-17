@@ -166,7 +166,7 @@ const BidsList: React.FC<IProps> = ({
       currentCropName === parseScroll.currentCropName &&
       bestAllMyMode === parseScroll.bestAllMyMode
     ) {
-      window.scrollTo(0, parseScroll.position);
+      setTimeout(() => window.scrollTo(0, parseScroll.position), 1000);
       localStorage.removeItem("scrollBidList");
     }
   }, [currentCropName, bestAllMyMode, salePurchaseMode]);

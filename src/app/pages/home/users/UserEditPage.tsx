@@ -219,7 +219,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
       <ScrollToTop />
       <Paper className={classes.paperWithForm}>
         <LayoutSubheader title={subTitle(editMode)} breadcrumb={undefined} description={undefined} />
-        <div className={classes.form}>
+        <div className={classes.form} style={valueTabs === 4 || valueTabs === 3 ? { maxWidth: 1000 } : undefined}>
           <div className={classes.topButtonsContainer}>
             <div className={classes.flexRow} style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}>
               <div className={classes.button}>

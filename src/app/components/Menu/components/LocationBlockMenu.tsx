@@ -100,6 +100,7 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
       {me && me.points && !me.points.length && <h6>У вас ещё нет точек отгрузки / погрузки</h6>}
 
       {me &&
+        me.points &&
         me.points.map(point => (
           <React.Fragment key={point.id}>
             <FormControlLabel

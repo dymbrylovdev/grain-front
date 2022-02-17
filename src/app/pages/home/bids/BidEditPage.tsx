@@ -214,6 +214,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
   }, [setActiveStep]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchMe();
   }, [fetchMe]);
 
