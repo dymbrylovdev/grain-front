@@ -10,8 +10,15 @@ import BreadCrumbs from "./components/BreadCrumbs";
 import { Button } from "@material-ui/core";
 import { injectIntl } from "react-intl";
 import { accessByRoles } from "../../../app/utils/utils";
+import Modal from "../../../app/components/ui/Modal";
 
 class SubHeader extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      open: false,
+    };
+  }
   render() {
     const { subheaderCssClasses, subheaderContainerCssClasses, subheaderMobileToggle, me, history } = this.props;
 
@@ -96,7 +103,7 @@ class SubHeader extends React.Component {
                 className="kt-subheader__btn"
                 variant="contained"
                 color="primary"
-                onClick={() => (me ? history.push(`/bid/create/${me.is_buyer ? "purchase" : "sale"}/0`) : history.push(`/auth`))}
+                onClick={() => (me ? history.push(`/bid/create/${me.is_buyer ? "purchase" : "sale"}/0`) : this.setState({ open: true }))}
               >
                 Добавить объявление
               </Button>
@@ -107,13 +114,28 @@ class SubHeader extends React.Component {
                 className="kt-subheader__btn"
                 variant="contained"
                 color="secondary"
-                onClick={() => (me ? history.push(`/user/profile/tariffs`) : history.push(`/auth`))}
+                onClick={() => (me ? history.push(`/user/profile/tariffs`) : this.setState({ open: true }))}
               >
                 Купить тариф
               </Button>
             )}
           </div>
         </div>
+        <Modal
+          open={this.state.open}
+          onClose={() => this.setState({ open: false })}
+          title={"Чтобы продолжить действие с редактированием профиля или объявления, авторизуйтесь!"}
+          actions={[
+            {
+              title: "Cancel",
+              onClick: () => this.setState({ open: false }),
+            },
+            {
+              title: "OK",
+              onClick: () => history.push(`/auth`),
+            },
+          ]}
+        />
       </div>
     );
   }

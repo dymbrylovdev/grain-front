@@ -18,6 +18,7 @@ import { useSnackbar } from "notistack";
 import NumberParam from "../../../pages/home/bids/components/filter/NumberParam";
 import ButtonWithLoader from "../../ui/Buttons/ButtonWithLoader";
 import { isEqual } from "lodash";
+import Modal from "../../ui/Modal";
 
 const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   me,
@@ -61,7 +62,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const history = useHistory();
   const classes = useStyles();
   const location = useLocation();
-
+  const [open, setOpen] = useState(false);
   const [, , , cropId] = location.pathname.split("/");
 
   const enumParams: any = cropParams && cropParams.filter(item => item.type === "enum");
@@ -369,7 +370,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               }
               formik.handleSubmit();
             } else {
-              history.push("/auth");
+              setOpen(true);
             }
           }}
         >
@@ -401,6 +402,21 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           }}
         />
       </div>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title={"Чтобы продолжить действие с редактированием профиля или объявления, авторизуйтесь!"}
+        actions={[
+          {
+            title: "Cancel",
+            onClick: () => setOpen(false),
+          },
+          {
+            title: "OK",
+            onClick: () => history.push("/auth"),
+          },
+        ]}
+      />
     </form>
   );
 };

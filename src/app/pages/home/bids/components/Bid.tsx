@@ -20,6 +20,7 @@ import { API_DOMAIN } from "../../../../constants";
 import { useIntl } from "react-intl";
 import { useIsViewed } from "./hooks/useViewedBid";
 import { getPoint } from "../../../../utils/localPoint";
+import Modal from "../../../../components/ui/Modal";
 
 interface IProps {
   isHaveRules?: (user?: any, id?: number) => boolean;
@@ -72,6 +73,7 @@ const Bid = React.memo<IProps>(
     const innerClasses = useBidTableStyles();
     const currentCrop = useMemo(() => crops?.find(item => item.id === bid.crop_id), [crops, bid]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [open, setOpen] = useState(false);
     const isViewed = useIsViewed(bid.id);
     const guestLocation = useMemo(() => getPoint(), []);
     const newBid = useMemo(() => {
@@ -748,7 +750,7 @@ const Bid = React.memo<IProps>(
                       if (user) {
                         handleShowPhone(bid.id);
                       } else {
-                        history.push("/auth");
+                        setOpen(true);
                       }
                     }}
                   >
@@ -780,7 +782,7 @@ const Bid = React.memo<IProps>(
                       if (user) {
                         handleShowPhone(bid.id);
                       } else {
-                        history.push("/auth");
+                        setOpen(true);
                       }
                     }}
                   >
@@ -949,6 +951,21 @@ const Bid = React.memo<IProps>(
             </div>
           )}
         </div>
+        <Modal
+          open={open}
+          onClose={() => setOpen(false)}
+          title={"Чтобы продолжить действие с редактированием профиля или объявления, авторизуйтесь!"}
+          actions={[
+            {
+              title: "Cancel",
+              onClick: () => setOpen(false),
+            },
+            {
+              title: "OK",
+              onClick: () => history.push("/auth"),
+            },
+          ]}
+        />
       </div>
     );
   }

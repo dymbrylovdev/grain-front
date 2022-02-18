@@ -18,6 +18,7 @@ import LocationBlockMenu from "./components/LocationBlockMenu";
 import FilterByManager from "./components/FilterByManager";
 import FilterByDates from "./components/FilterByDates";
 import { ICrop } from "../../interfaces/crops";
+import Modal from "../ui/Modal";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -119,6 +120,7 @@ const LeftMenu: React.FC<IProps> = ({
   const history = useHistory();
 
   const [bestOpen, setBestOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [selectedBestOpen, setSelectedBestOpen] = useState(bestAllMyDealsMode === "best-bids" || false);
   const [allOpen, setAllOpen] = useState(false);
   const [selectedAllOpen, setSelectedAllOpen] = useState(bestAllMyDealsMode === "all-bids" || false);
@@ -250,7 +252,7 @@ const LeftMenu: React.FC<IProps> = ({
           if (!mySubscriptionsMode && me) {
             handleClick(`/${me?.roles.includes("ROLE_BUYER") ? "sale" : "purchase"}/filters`);
           } else if (!me) {
-            handleClick("/auth");
+            setOpen(true);
           }
         }}
       >
@@ -265,7 +267,7 @@ const LeftMenu: React.FC<IProps> = ({
             setAllOpen(false);
             handleClick(`/${salePurchaseModeForMyBids(me, salePurchaseMode)}/my-bids`);
           } else {
-            handleClick("/auth");
+            setOpen(true);
           }
         }}
       >
@@ -307,7 +309,7 @@ const LeftMenu: React.FC<IProps> = ({
               • {crop.name}
             </MenuItem>
           ))}
-          <MenuItem onClick={() => (me ? handleClick("/user/profile/crops") : handleClick("/auth"))} className={classes.nested}>
+          <MenuItem onClick={() => (me ? handleClick("/user/profile/crops") : setOpen(true))} className={classes.nested}>
             • {intl.formatMessage({ id: "SUBMENU.PROFILE.CROPS" })}
           </MenuItem>
         </Collapse>
@@ -379,7 +381,7 @@ const LeftMenu: React.FC<IProps> = ({
               </MenuItem>
             ))}
 
-        <MenuItem onClick={() => (me ? handleClick("/user/profile/crops") : handleClick("/auth"))} className={classes.nested}>
+        <MenuItem onClick={() => (me ? handleClick("/user/profile/crops") : setOpen(true))} className={classes.nested}>
           • {intl.formatMessage({ id: "SUBMENU.PROFILE.CROPS" })}
         </MenuItem>
       </Collapse>
@@ -424,7 +426,7 @@ const LeftMenu: React.FC<IProps> = ({
               setAllOpen(false);
               handleClick("/deals");
             } else {
-              history.push("/auth");
+              setOpen(true);
             }
           }}
         >
@@ -437,6 +439,21 @@ const LeftMenu: React.FC<IProps> = ({
       {(accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) || !me) && bestAllMyDealsMode === "deals" && <DealsFilterForAll />}
 
       {accessByRoles(me, ["ROLE_ADMIN"]) && bestAllMyDealsMode === "deals" && <DealsFilterForAdm />}
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title={"Чтобы продолжить действие с редактированием профиля или объявления, авторизуйтесь!"}
+        actions={[
+          {
+            title: "Cancel",
+            onClick: () => setOpen(false),
+          },
+          {
+            title: "OK",
+            onClick: () => handleClick("/auth"),
+          },
+        ]}
+      />
     </div>
   );
 };

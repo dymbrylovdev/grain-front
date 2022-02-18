@@ -21,6 +21,7 @@ import { thousands } from "../../deals/utils/utils";
 import { useViewBidStyles } from "./hooks/useStyles";
 import { ILocalBids } from "./BidsList";
 import { setViewed } from "./hooks/useViewedBid";
+import Modal from "../../../../components/ui/Modal";
 
 interface IProps {
   intl: IntlShape;
@@ -80,6 +81,7 @@ const ViewBidForm: React.FC<IProps> = ({
   const history = useHistory();
   // * yandex map --------------->
 
+  const [open, setOpen] = useState(false);
   const [ymaps, setYmaps] = useState<any>();
   const [map, setMap] = useState<any>();
   const [routeLoading, setRouteLoading] = useState(false);
@@ -572,7 +574,7 @@ const ViewBidForm: React.FC<IProps> = ({
                         if (me) {
                           isBuyerTariff ? setShowsPhones(true) : setShowPhoneDialog(true);
                         } else {
-                          history.push("/auth");
+                          setOpen(true);
                         }
                       }}
                     >
@@ -602,7 +604,7 @@ const ViewBidForm: React.FC<IProps> = ({
                           if (me) {
                             isBuyerTariff ? setShowsPhones(true) : setShowPhoneDialog(true);
                           } else {
-                            history.push("/auth");
+                            setOpen(true);
                           }
                         }}
                       >
@@ -972,6 +974,21 @@ const ViewBidForm: React.FC<IProps> = ({
               </div>
             </div>
           </div>
+          <Modal
+            open={open}
+            onClose={() => setOpen(false)}
+            title={"Чтобы продолжить действие с редактированием профиля или объявления, авторизуйтесь!"}
+            actions={[
+              {
+                title: "Cancel",
+                onClick: () => setOpen(false),
+              },
+              {
+                title: "OK",
+                onClick: () => history.push("/auth"),
+              },
+            ]}
+          />
         </div>
       )}
     </>
