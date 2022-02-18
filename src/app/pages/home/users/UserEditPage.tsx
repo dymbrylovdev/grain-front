@@ -112,10 +112,10 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     const wasBidEditPage = localStorage.getItem("WasBidEditPage");
 
     if (wasBidEditPage) {
-      setValueTabs(4);
+      accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && setValueTabs(3);
       localStorage.removeItem("WasBidEditPage");
     }
-  }, []);
+  }, [me, editMode]);
 
   useEffect(() => {
     if (editMode === "profile") {
