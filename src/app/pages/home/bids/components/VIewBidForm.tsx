@@ -380,21 +380,23 @@ const ViewBidForm: React.FC<IProps> = ({
                   >
                     <div className={classes.price}>{selectedPrice}</div>
                     <div className={classes.rybl}>₽</div>
-                    {(salePurchaseMode === "sale" || salePurchaseMode === "purchase") && (
+                    {selectedPrice !== "-" && (salePurchaseMode === "sale" || salePurchaseMode === "purchase") && (
                       <div className={classes.nds}>
                         {((me?.use_vat || !me) && !bid.vendor_use_vat) ||
                         ((me?.use_vat || !me) && bid.vendor_use_vat) ||
                         (!me?.use_vat && me && bid.vendor_use_vat)
                           ? "Цена указана с НДС"
                           : "Цена указана без НДС"}{" "}
+                        <div>
+                          {salePurchaseMode === "purchase" && (
+                            <div className={classes.nds} style={{ marginBottom: 8 }}>
+                              С учетом доставки
+                            </div>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
-                  {salePurchaseMode === "purchase" && selectedPrice !== "-" && (
-                    <div className={classes.nds} style={{ marginBottom: 8 }}>
-                      С учетом доставки
-                    </div>
-                  )}
                   <div className={classes.wrapperPrice}>
                     <b className={classes.delivery}>
                       {salePurchaseMode === "sale" ? "С учётом доставки до:" : "Место отгрузки: "}

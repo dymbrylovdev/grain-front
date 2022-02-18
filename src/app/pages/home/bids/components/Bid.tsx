@@ -287,14 +287,14 @@ const Bid = React.memo<IProps>(
                               ((user?.use_vat || !user) && bid.vendor_use_vat)
                                 ? "Цена указана с НДС"
                                 : "Цена указана без НДС"}{" "}
+                              {salePurchaseMode === "purchase" && (
+                                <div className={innerClasses.nds} style={{ marginBottom: 8 }}>
+                                  С учетом доставки
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
-                        {salePurchaseMode === "purchase" && (
-                          <div className={innerClasses.nds} style={{ marginBottom: 8 }}>
-                            С учетом доставки
-                          </div>
-                        )}
                       </>
                     )}
                   </>
@@ -322,14 +322,14 @@ const Bid = React.memo<IProps>(
                               ((user?.use_vat || !user) && bid.vendor_use_vat)
                                 ? "Цена указана с НДС"
                                 : "Цена указана без НДС"}{" "}
+                              {salePurchaseMode === "purchase" && (
+                                <div className={innerClasses.nds} style={{ marginBottom: 8 }}>
+                                  С учетом доставки
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
-                        {salePurchaseMode === "purchase" && (
-                          <div className={innerClasses.nds} style={{ marginBottom: 8 }}>
-                            С учетом доставки
-                          </div>
-                        )}
                       </>
                     )}
                   </>
