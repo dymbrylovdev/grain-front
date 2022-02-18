@@ -2,15 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, WrappedComponentProps } from "react-intl";
-import {
-  Button,
-  Divider,
-  Grid as div,
-  IconButton,
-  TextField,
-  Theme,
-  Tooltip,
-} from "@material-ui/core";
+import { Button, Divider, Grid as div, IconButton, TextField, Theme, Tooltip } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import StarIcon from "@material-ui/icons/Star";
@@ -118,11 +110,9 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
 
   const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
     initialValues: {
-      tariff_id: realUser?.tariff_matrix.id,
-      tariff_type_id: realUser?.tariff_matrix.tariff.id,
-      tariff_period_id: realUser?.tariff_matrix.tariff_period
-        ? realUser?.tariff_matrix.tariff_period.id
-        : undefined,
+      tariff_id: realUser?.tariff_matrix?.id,
+      tariff_type_id: realUser?.tariff_matrix?.tariff?.id,
+      tariff_period_id: realUser?.tariff_matrix?.tariff_period ? realUser?.tariff_matrix?.tariff_period?.id : undefined,
       crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
       main_crop_id: realUser?.main_crop ? realUser?.main_crop.id : 0,
     },
@@ -189,9 +179,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   if (realTariffs && realUser) {
     if (!["ROLE_ADMIN", "ROLE_MANAGER"].includes(realUser.roles[0])) {
       realSelectedTariff = realTariffs?.find(
-        tariff =>
-          tariff.tariff.id === values.tariff_type_id &&
-          tariff.tariff_period.id === values.tariff_period_id
+        tariff => tariff.tariff.id === values.tariff_type_id && tariff.tariff_period.id === values.tariff_period_id
       );
     } else {
       realSelectedTariff = realUser.tariff_matrix;
@@ -202,11 +190,9 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
     if (realUser) {
       resetForm({
         values: {
-          tariff_id: realUser?.tariff_matrix.id,
-          tariff_type_id: realUser?.tariff_matrix.tariff.id,
-          tariff_period_id: realUser?.tariff_matrix.tariff_period
-            ? realUser?.tariff_matrix.tariff_period.id
-            : undefined,
+          tariff_id: realUser?.tariff_matrix?.id,
+          tariff_type_id: realUser?.tariff_matrix?.tariff?.id,
+          tariff_period_id: realUser?.tariff_matrix?.tariff_period ? realUser?.tariff_matrix?.tariff_period?.id : undefined,
           crop_ids: realUser?.crops ? Array.from(realUser?.crops, x => x.id) : [],
           main_crop_id: realUser?.main_crop ? realUser?.main_crop.id : 0,
         },
@@ -230,17 +216,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
       if (editMode === "edit" && userId) fetchUser({ id: userId });
       clearEdit();
     }
-  }, [
-    clearEdit,
-    editError,
-    editMode,
-    editSuccess,
-    enqueueSnackbar,
-    fetchMe,
-    fetchUser,
-    intl,
-    userId,
-  ]);
+  }, [clearEdit, editError, editMode, editSuccess, enqueueSnackbar, fetchMe, fetchUser, intl, userId]);
 
   useEffect(() => {
     if (editMeSuccess || editMeError) {
@@ -286,8 +262,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
             <div key={item.id}>
               <div className={innerClasses.crop}>
                 <div>{item.name}</div>
-                {(editMode !== "view" ||
-                  (me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]))) && (
+                {(editMode !== "view" || (me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]))) && (
                   <div>
                     <IconButton
                       size={"medium"}
@@ -319,9 +294,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
           ))
         ) : (
           <div>
-            <div className={innerClasses.crop}>
-              {intl.formatMessage({ id: "TARIFFS.NO_CROPS" })}
-            </div>
+            <div className={innerClasses.crop}>{intl.formatMessage({ id: "TARIFFS.NO_CROPS" })}</div>
             <Divider />
           </div>
         )}
@@ -346,109 +319,100 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
             )}
           </>
         )}
-        {!!crops &&
-          !!realUser?.crops &&
-          !!realUser?.tariff_matrix &&
-          realUser?.crops?.length < crops.length && (
-            <div className={classes.textFieldContainer}>
-              {!addingCrop ? (
-                <>
-                  {(realUser?.crops?.length <
-                    realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
-                    editMode === "view" &&
-                    accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])) ||
-                    (((realUser?.crops?.length <
-                      realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
-                      editMode === "edit") ||
-                      editMode === "profile") && (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => setAddingCrop(true)}
-                        disabled={loadingMe || loadingUser || editLoading}
-                      >
-                        {intl.formatMessage({ id: "CROPSLIST.BUTTON.CREATE" })}
-                      </Button>
-                    ))}
+        {!!crops && !!realUser?.crops && !!realUser?.tariff_matrix && realUser?.crops?.length < crops.length && (
+          <div className={classes.textFieldContainer}>
+            {!addingCrop ? (
+              <>
+                {(realUser?.crops?.length < realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
+                  editMode === "view" &&
+                  accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])) ||
+                  (((realUser?.crops?.length < realUser?.tariff_matrix?.tariff_limits.max_crops_count && editMode === "edit") ||
+                    editMode === "profile") && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => setAddingCrop(true)}
+                      disabled={loadingMe || loadingUser || editLoading}
+                    >
+                      {intl.formatMessage({ id: "CROPSLIST.BUTTON.CREATE" })}
+                    </Button>
+                  ))}
 
-                  {(realUser?.crops?.length <
-                    realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
-                    editMode === "view" &&
-                    accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])) ||
-                    (((realUser?.crops?.length <
-                      realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
-                      editMode === "edit") ||
-                      editMode === "profile") && (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          let newCropIds = [...values.crop_ids];
-                          crops.map(item => {
-                            if (!newCropIds.includes(item.id)) {
-                              newCropIds.push(item.id)
-                            }
-                          })
-                          setFieldValue("crop_ids", newCropIds);
-                          handleSubmit();
-                        }}
-                        style={{ marginLeft: 15 }}
-                        disabled={loadingMe || loadingUser || editLoading}
-                      >
-                        {intl.formatMessage({ id: "CROPLIST.BUTTON.ADD_ALL" })}
-                      </Button>
-                    ))}
+                {(realUser?.crops?.length < realUser?.tariff_matrix?.tariff_limits.max_crops_count &&
+                  editMode === "view" &&
+                  accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])) ||
+                  (((realUser?.crops?.length < realUser?.tariff_matrix?.tariff_limits.max_crops_count && editMode === "edit") ||
+                    editMode === "profile") && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => {
+                        let newCropIds = [...values.crop_ids];
+                        crops.map(item => {
+                          if (!newCropIds.includes(item.id)) {
+                            newCropIds.push(item.id);
+                          }
+                        });
+                        setFieldValue("crop_ids", newCropIds);
+                        handleSubmit();
+                      }}
+                      style={{ marginLeft: 15 }}
+                      disabled={loadingMe || loadingUser || editLoading}
+                    >
+                      {intl.formatMessage({ id: "CROPLIST.BUTTON.ADD_ALL" })}
+                    </Button>
+                  ))}
 
-                  {editMode !== "view" &&
-                    accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
-                    me &&
-                    me.tariff_matrix.tariff.name === "Бесплатный" && (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          setTariffTable(1);
-                          history.push(`/user/profile/tariffs`);
-                        }}
-                        style={{ marginLeft: 15 }}
-                        disabled={loadingMe || loadingUser || editLoading}
-                      >
-                        {intl.formatMessage({ id: "BID.PRICES.GET.PREMIUM" })}
-                      </Button>
-                    )}
-                </>
-              ) : (
-                <div className={classes.textField}>
-                  <Autocomplete
-                    id="crops"
-                    options={realCrops}
-                    getOptionLabel={option => option.name}
-                    loadingText={intl.formatMessage({ id: "ALL.AUTOCOMPLIT.EMPTY" })}
-                    noOptionsText={intl.formatMessage({ id: "ALL.AUTOCOMPLIT.EMPTY" })}
-                    onChange={(e: any, val: any) => {
-                      let newCropIds = [...values.crop_ids];
-                      newCropIds.push(val.id);
-                      setFieldValue("crop_ids", newCropIds);
-                      handleSubmit();
-                      setAddingCrop(false);
-                    }}
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        margin="normal"
-                        label={intl.formatMessage({ id: "BIDSLIST.TABLE.CROP" })}
-                        variant="outlined"
-                        onBlur={() => {
-                          setAddingCrop(false);
-                        }}
-                        autoFocus
-                      />
-                    )}
-                  />
-                </div>
-              )}
-            </div>
-          )}
+                {editMode !== "view" &&
+                  accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
+                  me &&
+                  me.tariff_matrix.tariff.name === "Бесплатный" && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => {
+                        setTariffTable(1);
+                        history.push(`/user/profile/tariffs`);
+                      }}
+                      style={{ marginLeft: 15 }}
+                      disabled={loadingMe || loadingUser || editLoading}
+                    >
+                      {intl.formatMessage({ id: "BID.PRICES.GET.PREMIUM" })}
+                    </Button>
+                  )}
+              </>
+            ) : (
+              <div className={classes.textField}>
+                <Autocomplete
+                  id="crops"
+                  options={realCrops}
+                  getOptionLabel={option => option.name}
+                  loadingText={intl.formatMessage({ id: "ALL.AUTOCOMPLIT.EMPTY" })}
+                  noOptionsText={intl.formatMessage({ id: "ALL.AUTOCOMPLIT.EMPTY" })}
+                  onChange={(e: any, val: any) => {
+                    let newCropIds = [...values.crop_ids];
+                    newCropIds.push(val.id);
+                    setFieldValue("crop_ids", newCropIds);
+                    handleSubmit();
+                    setAddingCrop(false);
+                  }}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      margin="normal"
+                      label={intl.formatMessage({ id: "BIDSLIST.TABLE.CROP" })}
+                      variant="outlined"
+                      onBlur={() => {
+                        setAddingCrop(false);
+                      }}
+                      autoFocus
+                    />
+                  )}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </>
   );

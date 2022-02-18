@@ -1,15 +1,7 @@
 import React, { useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { useHistory } from "react-router-dom";
-import {
-  Collapse,
-  Divider,
-  makeStyles,
-  Menu,
-  MenuItem,
-  Tooltip,
-  useMediaQuery,
-} from "@material-ui/core";
+import { Collapse, Divider, makeStyles, Menu, MenuItem, Tooltip, useMediaQuery } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import MenuIcon from "@material-ui/icons/Menu";
 import TuneIcon from "@material-ui/icons/Tune";
@@ -100,12 +92,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
-  intl,
-  me,
-  leftMenuOpen,
-  setLeftMenuOpen,
-}) => {
+const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({ intl, me, leftMenuOpen, setLeftMenuOpen }) => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -133,7 +120,7 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       <div className="kt-container kt-container--fluid">
         <div className={classes.btns}>
           {mediaQuerymatchesMobile ? (
-            <div className={classes.logo_contain} onClick={() => handleClick("/user/profile")}>
+            <div className={classes.logo_contain} onClick={() => (me ? handleClick("/user/profile") : handleClick("/sale/best-bids/1"))}>
               <img className={classes.logo} src={logoPng} alt="logo" />
             </div>
           ) : (
@@ -150,29 +137,25 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           <div className={classes.contain}>
             <div className={classes.contacts}>
               <div>8 800 333-86-33</div>
-              <a style={{color: "#e1e9ff"}} href="mailto:info@kupit-zerno.com">info@kupit-zerno.com</a>
+              <a style={{ color: "#e1e9ff" }} href="mailto:info@kupit-zerno.com">
+                info@kupit-zerno.com
+              </a>
             </div>
 
             <div style={{ display: "flex", alignItems: "center" }}>
-                {!!me && !me.company_confirmed_by_payment && !me.company_confirmed_by_email ? (
-                  <Tooltip
-                    title={intl.formatMessage({
-                      id: "COMPANY.CONFIRM.NO_CONFIRM",
-                    })}
-                    onClick={() => history.push('/user/profile')}
-                  >
-                    <ReportProblemIcon
-                      color="error"
-                      style={{ marginRight: 8, width: 20, height: 20 }}
-                    />
-                  </Tooltip>
-                ) : (
-                  <PersonPinOutlinedIcon
-                    color="inherit"
-                    style={{ marginRight: 8, width: 20, height: 20 }}
-                  />
-                )}
-              </div>
+              {!!me && !me.company_confirmed_by_payment && !me.company_confirmed_by_email ? (
+                <Tooltip
+                  title={intl.formatMessage({
+                    id: "COMPANY.CONFIRM.NO_CONFIRM",
+                  })}
+                  onClick={() => history.push("/user/profile")}
+                >
+                  <ReportProblemIcon color="error" style={{ marginRight: 8, width: 20, height: 20 }} />
+                </Tooltip>
+              ) : (
+                <PersonPinOutlinedIcon color="inherit" style={{ marginRight: 8, width: 20, height: 20 }} />
+              )}
+            </div>
 
             <div
               className={classes.btn}
@@ -180,94 +163,80 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 setAnchorEl(event.currentTarget);
               }}
             >
-              <div className={classes.profile_btn_text}>
-                {intl.formatMessage({ id: "MENU.SETTINGS" })}
-              </div>
+              <div className={classes.profile_btn_text}>{intl.formatMessage({ id: "MENU.SETTINGS" })}</div>
               <TuneIcon />
             </div>
           </div>
-
         </div>
       </div>
-      {!!me && (
-        <Menu
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={() => setAnchorEl(null)}
-          // anchorOrigin={{
-          //   vertical: 'bottom',
-          //   horizontal: 'right',
-          // }}
-          // transformOrigin={{
-          //   vertical: 'bottom',
-          //   horizontal: 'right',
-          // }}
-          {...{disableScrollLock: true}}
-        >
-          <MenuItem onClick={() => handleClick("/user/profile")}>
-            <div className={classes.info}>
-              <div>
-                <div style={{ fontWeight: "bold", color: "#000000" }}>{me.email}</div>
-                <div style={{ color: "gray" }}>
-                  {roles
-                    .find(role => !!me?.roles?.length && role.id === me.roles[0])
-                    ?.value?.toLowerCase()}
-                </div>
-              </div>
+      <Menu
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+        // anchorOrigin={{
+        //   vertical: 'bottom',
+        //   horizontal: 'right',
+        // }}
+        // transformOrigin={{
+        //   vertical: 'bottom',
+        //   horizontal: 'right',
+        // }}
+        {...{ disableScrollLock: true }}
+      >
+        <MenuItem onClick={() => handleClick("/user/profile")}>
+          <div className={classes.info}>
+            <div>
+              {me ? (
+                <>
+                  <div style={{ fontWeight: "bold", color: "#000000" }}>{me.email}</div>
+                  <div style={{ color: "gray" }}>
+                    {roles.find(role => !!me?.roles?.length && role.id === me.roles[0])?.value?.toLowerCase()}
+                  </div>
+                </>
+              ) : (
+                <div style={{ fontWeight: "bold", color: "#000000" }}>Гость</div>
+              )}
             </div>
-          </MenuItem>
+          </div>
+        </MenuItem>
 
-          <Divider style={{ margin: "6px 16px" }} />
+        <Divider style={{ margin: "6px 16px" }} />
 
-          {accessByRoles(me, ["ROLE_BUYER"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile")}>
-              {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
-            </MenuItem>
-          )}
-          {/* {accessByRoles(me, ["ROLE_BUYER"]) && (
+        {(accessByRoles(me, ["ROLE_BUYER"]) || !me) && (
+          <MenuItem onClick={() => handleClick("/user/profile")}>{intl.formatMessage({ id: "SUBMENU.PROFILE" })}</MenuItem>
+        )}
+        {/* {accessByRoles(me, ["ROLE_BUYER"]) && (
             <MenuItem onClick={() => handleClick("/sale/filters")}>
               {intl.formatMessage({ id: "SUBMENU.MY_FILTERS" })}
             </MenuItem>
           )} */}
-          {accessByRoles(me, ["ROLE_BUYER"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile/points")}>
-              {intl.formatMessage({ id: "SUBMENU.POINTS2" })}
-            </MenuItem>
-          )}
-          {accessByRoles(me, ["ROLE_BUYER"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile/tariffs")}>
-              {intl.formatMessage({ id: "SUBMENU.TARIFFS" })}
-            </MenuItem>
-          )}
+        {accessByRoles(me, ["ROLE_BUYER"]) && (
+          <MenuItem onClick={() => handleClick("/user/profile/points")}>{intl.formatMessage({ id: "SUBMENU.POINTS2" })}</MenuItem>
+        )}
+        {accessByRoles(me, ["ROLE_BUYER"]) && (
+          <MenuItem onClick={() => handleClick("/user/profile/tariffs")}>{intl.formatMessage({ id: "SUBMENU.TARIFFS" })}</MenuItem>
+        )}
 
-          {accessByRoles(me, ["ROLE_VENDOR"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile")}>
-              {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
-            </MenuItem>
-          )}
-          {/* {accessByRoles(me, ["ROLE_VENDOR"]) && (
+        {accessByRoles(me, ["ROLE_VENDOR"]) && (
+          <MenuItem onClick={() => handleClick("/user/profile")}>{intl.formatMessage({ id: "SUBMENU.PROFILE" })}</MenuItem>
+        )}
+        {/* {accessByRoles(me, ["ROLE_VENDOR"]) && (
             <MenuItem onClick={() => handleClick("/purchase/filters")}>
               {intl.formatMessage({ id: "SUBMENU.MY_FILTERS" })}
             </MenuItem>
           )} */}
-          {accessByRoles(me, ["ROLE_VENDOR"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile/points")}>
-              {intl.formatMessage({ id: "SUBMENU.POINTS" })}
-            </MenuItem>
-          )}
-          {accessByRoles(me, ["ROLE_VENDOR"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile/tariffs")}>
-              {intl.formatMessage({ id: "SUBMENU.TARIFFS" })}
-            </MenuItem>
-          )}
+        {accessByRoles(me, ["ROLE_VENDOR"]) && (
+          <MenuItem onClick={() => handleClick("/user/profile/points")}>{intl.formatMessage({ id: "SUBMENU.POINTS" })}</MenuItem>
+        )}
+        {accessByRoles(me, ["ROLE_VENDOR"]) && (
+          <MenuItem onClick={() => handleClick("/user/profile/tariffs")}>{intl.formatMessage({ id: "SUBMENU.TARIFFS" })}</MenuItem>
+        )}
 
-          {accessByRoles(me, ["ROLE_TRADER"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile")}>
-              {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
-            </MenuItem>
-          )}
-          {/* {accessByRoles(me, ["ROLE_TRADER"]) && (
+        {accessByRoles(me, ["ROLE_TRADER"]) && (
+          <MenuItem onClick={() => handleClick("/user/profile")}>{intl.formatMessage({ id: "SUBMENU.PROFILE" })}</MenuItem>
+        )}
+        {/* {accessByRoles(me, ["ROLE_TRADER"]) && (
             <MenuItem onClick={() => setFiltersOpen(!filtersOpen)} className={classes.nester}>
               {intl.formatMessage({ id: "SUBMENU.MY_FILTERS" })}
               {filtersOpen ? (
@@ -287,78 +256,74 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </MenuItem>
             </Collapse>
           )} */}
-          {accessByRoles(me, ["ROLE_TRADER"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile/points")}>
-              {intl.formatMessage({ id: "SUBMENU.POINTS" })}
-            </MenuItem>
-          )}
-          {accessByRoles(me, ["ROLE_TRADER"]) && (
-            <MenuItem onClick={() => handleClick("/user/profile/tariffs")}>
-              {intl.formatMessage({ id: "SUBMENU.TARIFFS" })}
-            </MenuItem>
-          )}
+        {accessByRoles(me, ["ROLE_TRADER"]) && (
+          <MenuItem onClick={() => handleClick("/user/profile/points")}>{intl.formatMessage({ id: "SUBMENU.POINTS" })}</MenuItem>
+        )}
+        {accessByRoles(me, ["ROLE_TRADER"]) && (
+          <MenuItem onClick={() => handleClick("/user/profile/tariffs")}>{intl.formatMessage({ id: "SUBMENU.TARIFFS" })}</MenuItem>
+        )}
 
-          {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
-            <MenuItem onClick={() => setAnaliticsOpen(!analiticsOpen)} className={classes.nester}>
-              {intl.formatMessage({ id: "MENU.ANALITICS" })}
-              {analiticsOpen ? (
-                <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
-              ) : (
-                <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
-              )}
+        {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
+          <MenuItem onClick={() => setAnaliticsOpen(!analiticsOpen)} className={classes.nester}>
+            {intl.formatMessage({ id: "MENU.ANALITICS" })}
+            {analiticsOpen ? (
+              <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
+            ) : (
+              <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
+            )}
+          </MenuItem>
+        )}
+        {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
+          <Collapse in={analiticsOpen} timeout="auto" unmountOnExit>
+            <MenuItem onClick={() => handleClick("/activity-report")} className={classes.nested}>
+              {intl.formatMessage({ id: "SUBMENU.ACTIVITY_REPORT" })}
             </MenuItem>
-          )}
-          {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
-            <Collapse in={analiticsOpen} timeout="auto" unmountOnExit>
-              <MenuItem onClick={() => handleClick("/activity-report")} className={classes.nested}>
-                {intl.formatMessage({ id: "SUBMENU.ACTIVITY_REPORT" })}
-              </MenuItem>
-            </Collapse>
-          )}
+          </Collapse>
+        )}
 
-          {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
-            <MenuItem onClick={() => setUsersOpen(!usersOpen)} className={classes.nester}>
-              {intl.formatMessage({ id: "MENU.USERS" })}
-              {usersOpen ? (
-                <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
-              ) : (
-                <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
-              )}
-            </MenuItem>
-          )}
-          {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
-            <Collapse in={usersOpen} timeout="auto" unmountOnExit>
-              {/* <MenuItem onClick={() => handleClick("/user-list")} className={classes.nested}>
+        {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
+          <MenuItem onClick={() => setUsersOpen(!usersOpen)} className={classes.nester}>
+            {intl.formatMessage({ id: "MENU.USERS" })}
+            {usersOpen ? (
+              <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
+            ) : (
+              <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
+            )}
+          </MenuItem>
+        )}
+        {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
+          <Collapse in={usersOpen} timeout="auto" unmountOnExit>
+            {/* <MenuItem onClick={() => handleClick("/user-list")} className={classes.nested}>
                 {intl.formatMessage({ id: "SUBMENU.USER.LIST" })}
               </MenuItem> */}
-              <MenuItem onClick={() => handleClick("/user/create")} className={classes.nested}>
-                {intl.formatMessage({ id: "SUBMENU.USER.CREATE_USER" })}
-              </MenuItem>
-              <MenuItem onClick={() => handleClick("/companyList")} className={classes.nested}>
-                {intl.formatMessage({ id: "SUBMENU.COMPANY.LIST" })}
-              </MenuItem>
-              <MenuItem onClick={() => handleClick("/company/create")} className={classes.nested}>
-                {intl.formatMessage({ id: "SUBMENU.COMPANY.CREATE" })}
-              </MenuItem>
-            </Collapse>
-          )}
-
-          {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
-            <MenuItem onClick={() => setSettingsOpen(!settingsOpen)} className={classes.nester}>
-              {intl.formatMessage({ id: "MENU.SETTINGS" })}
-              {settingsOpen ? (
-                <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
-              ) : (
-                <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
-              )}
+            <MenuItem onClick={() => handleClick("/user/create")} className={classes.nested}>
+              {intl.formatMessage({ id: "SUBMENU.USER.CREATE_USER" })}
             </MenuItem>
-          )}
-          {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
-            <Collapse in={settingsOpen} timeout="auto" unmountOnExit>
-              <MenuItem onClick={() => handleClick("/user/profile")} className={classes.nested}>
-                {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
-              </MenuItem>
-              {/* <MenuItem
+            <MenuItem onClick={() => handleClick("/companyList")} className={classes.nested}>
+              {intl.formatMessage({ id: "SUBMENU.COMPANY.LIST" })}
+            </MenuItem>
+            <MenuItem onClick={() => handleClick("/company/create")} className={classes.nested}>
+              {intl.formatMessage({ id: "SUBMENU.COMPANY.CREATE" })}
+            </MenuItem>
+          </Collapse>
+        )}
+
+        {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
+          <MenuItem onClick={() => setSettingsOpen(!settingsOpen)} className={classes.nester}>
+            {intl.formatMessage({ id: "MENU.SETTINGS" })}
+            {settingsOpen ? (
+              <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
+            ) : (
+              <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
+            )}
+          </MenuItem>
+        )}
+        {accessByRoles(me, ["ROLE_MANAGER", "ROLE_ADMIN"]) && (
+          <Collapse in={settingsOpen} timeout="auto" unmountOnExit>
+            <MenuItem onClick={() => handleClick("/user/profile")} className={classes.nested}>
+              {intl.formatMessage({ id: "SUBMENU.PROFILE" })}
+            </MenuItem>
+            {/* <MenuItem
                 onClick={() => setFiltersOpen(!filtersOpen)}
                 className={classes.nester_nested}
               >
@@ -383,92 +348,76 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   {intl.formatMessage({ id: "SUBMENU.SELLER_FILTERS" })}
                 </MenuItem>
               </Collapse> */}
-              {accessByRoles(me, ["ROLE_ADMIN"]) && (
-                <MenuItem
-                  onClick={() => setCatalogSettingsOpen(!catalogSettingsOpen)}
-                  className={classes.nester_nested}
-                >
-                  {intl.formatMessage({ id: "SUBMENU.CATALOG.SETTINGS" })}
-                  {catalogSettingsOpen ? (
-                    <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
-                  ) : (
-                    <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
-                  )}
-                </MenuItem>
-              )}
-              {accessByRoles(me, ["ROLE_ADMIN"]) && (
-                <Collapse in={catalogSettingsOpen} timeout="auto" unmountOnExit>
-                  <MenuItem
-                    onClick={() => handleClick("/cropList")}
-                    className={classes.nested_nested}
-                  >
-                    {intl.formatMessage({ id: "SUBMENU.CATALOG.CROP_LIST" })}
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => handleClick("/crop/create")}
-                    className={classes.nested_nested}
-                  >
-                    {intl.formatMessage({ id: "SUBMENU.CATALOG.CREATE_CROP" })}
-                  </MenuItem>
-                </Collapse>
-              )}
-              {accessByRoles(me, ["ROLE_ADMIN"]) && (
-                <MenuItem onClick={() => handleClick("/funnel-states")} className={classes.nested}>
-                  {intl.formatMessage({ id: "SUBMENU.FUNNEL_STATES" })}
-                </MenuItem>
-              )}
-              {accessByRoles(me, ["ROLE_ADMIN"]) && (
-                <MenuItem
-                  onClick={() => setTariffOpen(!tariffOpen)}
-                  className={classes.nester_nested}
-                >
-                  {intl.formatMessage({ id: "SUBMENU.TARIFFS" })}
-                  {tariffOpen ? (
-                    <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
-                  ) : (
-                    <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
-                  )}
-                </MenuItem>
-              )}
-              {accessByRoles(me, ["ROLE_ADMIN"]) && (
-                <Collapse in={tariffOpen} timeout="auto" unmountOnExit>
-                  <MenuItem
-                    onClick={() => handleClick("/tariffs")}
-                    className={classes.nested_nested}
-                  >
-                    {intl.formatMessage({ id: "SUBMENU.TARIFFS.LIMITS" })}
-                  </MenuItem>
-                  <MenuItem onClick={() => handleClick("/trial")} className={classes.nested_nested}>
-                    {intl.formatMessage({ id: "SUBMENU.TARIFFS.TRIAL" })}
-                  </MenuItem>
-                </Collapse>
-              )}
-            </Collapse>
-          )}
-
-          {accessByRoles(me, ["ROLE_ADMIN"]) && (
-            <MenuItem onClick={() => setDocsOpen(!docsOpen)} className={classes.nester}>
-              {intl.formatMessage({ id: "MENU.DOCS" })}
-              {docsOpen ? (
-                <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
-              ) : (
-                <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
-              )}
-            </MenuItem>
-          )}
-          {accessByRoles(me, ["ROLE_ADMIN"]) && (
-            <Collapse in={docsOpen} timeout="auto" unmountOnExit>
-              <MenuItem onClick={() => handleClick("/userDocs/legacy")} className={classes.nested}>
-                {intl.formatMessage({ id: "SUBMENU.LEGAL" })}
+            {accessByRoles(me, ["ROLE_ADMIN"]) && (
+              <MenuItem onClick={() => setCatalogSettingsOpen(!catalogSettingsOpen)} className={classes.nester_nested}>
+                {intl.formatMessage({ id: "SUBMENU.CATALOG.SETTINGS" })}
+                {catalogSettingsOpen ? (
+                  <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
+                ) : (
+                  <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
+                )}
               </MenuItem>
-            </Collapse>
-          )}
+            )}
+            {accessByRoles(me, ["ROLE_ADMIN"]) && (
+              <Collapse in={catalogSettingsOpen} timeout="auto" unmountOnExit>
+                <MenuItem onClick={() => handleClick("/cropList")} className={classes.nested_nested}>
+                  {intl.formatMessage({ id: "SUBMENU.CATALOG.CROP_LIST" })}
+                </MenuItem>
+                <MenuItem onClick={() => handleClick("/crop/create")} className={classes.nested_nested}>
+                  {intl.formatMessage({ id: "SUBMENU.CATALOG.CREATE_CROP" })}
+                </MenuItem>
+              </Collapse>
+            )}
+            {accessByRoles(me, ["ROLE_ADMIN"]) && (
+              <MenuItem onClick={() => handleClick("/funnel-states")} className={classes.nested}>
+                {intl.formatMessage({ id: "SUBMENU.FUNNEL_STATES" })}
+              </MenuItem>
+            )}
+            {accessByRoles(me, ["ROLE_ADMIN"]) && (
+              <MenuItem onClick={() => setTariffOpen(!tariffOpen)} className={classes.nester_nested}>
+                {intl.formatMessage({ id: "SUBMENU.TARIFFS" })}
+                {tariffOpen ? (
+                  <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
+                ) : (
+                  <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
+                )}
+              </MenuItem>
+            )}
+            {accessByRoles(me, ["ROLE_ADMIN"]) && (
+              <Collapse in={tariffOpen} timeout="auto" unmountOnExit>
+                <MenuItem onClick={() => handleClick("/tariffs")} className={classes.nested_nested}>
+                  {intl.formatMessage({ id: "SUBMENU.TARIFFS.LIMITS" })}
+                </MenuItem>
+                <MenuItem onClick={() => handleClick("/trial")} className={classes.nested_nested}>
+                  {intl.formatMessage({ id: "SUBMENU.TARIFFS.TRIAL" })}
+                </MenuItem>
+              </Collapse>
+            )}
+          </Collapse>
+        )}
 
-          <MenuItem onClick={() => handleClick("/logout")}>
-            {intl.formatMessage({ id: "MENU.LOGOUT" })}
+        {accessByRoles(me, ["ROLE_ADMIN"]) && (
+          <MenuItem onClick={() => setDocsOpen(!docsOpen)} className={classes.nester}>
+            {intl.formatMessage({ id: "MENU.DOCS" })}
+            {docsOpen ? (
+              <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
+            ) : (
+              <ExpandMore style={{ width: 16, height: 16, marginLeft: 16 }} />
+            )}
           </MenuItem>
-        </Menu>
-      )}
+        )}
+        {accessByRoles(me, ["ROLE_ADMIN"]) && (
+          <Collapse in={docsOpen} timeout="auto" unmountOnExit>
+            <MenuItem onClick={() => handleClick("/userDocs/legacy")} className={classes.nested}>
+              {intl.formatMessage({ id: "SUBMENU.LEGAL" })}
+            </MenuItem>
+          </Collapse>
+        )}
+
+        <MenuItem onClick={() => (me ? handleClick("/logout") : handleClick("/auth"))}>
+          {me ? `${intl.formatMessage({ id: "MENU.LOGOUT" })}` : "Авторизоваться"}
+        </MenuItem>
+      </Menu>
     </div>
   );
 };

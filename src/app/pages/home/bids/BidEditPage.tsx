@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { compose } from "redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
@@ -24,6 +24,7 @@ import useStyles from "../styles";
 import { accessByRoles } from "../../../utils/utils";
 import { IPointPriceForGet } from "../../../interfaces/bids";
 import ViewBidForm from "./components/VIewBidForm";
+import { getPoint } from "../../../utils/localPoint";
 
 const BidEditPage: React.FC<TPropsFromRedux &
   WrappedComponentProps &
@@ -127,6 +128,10 @@ const BidEditPage: React.FC<TPropsFromRedux &
   const history = useHistory();
   const [isAlertOpen, setAlertOpen] = useState(false);
   const [pointPrices, setPointPrices] = useState<IPointPriceForGet[]>([]);
+  const guestPoint = useMemo(() => {
+    const localPoint = getPoint();
+    return localPoint.active && !me ? localPoint : undefined;
+  }, [me]);
 
   useEffect(() => {
     const currentFilters = salePurchaseMode === "sale" ? currentSaleFilters : currentPurchaseFilters;
@@ -188,11 +193,11 @@ const BidEditPage: React.FC<TPropsFromRedux &
   }, [fetchCrops, fetchUsersCrops, vendorId]);
 
   useEffect(() => {
-    if (+bidId) fetch(+bidId, { filter: { point_prices: pointPrices } });
+    if (+bidId) fetch(+bidId, { filter: { point_prices: pointPrices, location: guestPoint } });
     return () => {
       clearFetch();
     };
-  }, [bidId, clearFetch, fetch, pointPrices]);
+  }, [bidId, clearFetch, fetch, pointPrices, guestPoint]);
 
   useEffect(() => {
     if (!bid) {
@@ -209,6 +214,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
   }, [setActiveStep]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchMe();
   }, [fetchMe]);
 
@@ -258,6 +264,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
           me={me}
           fetchCropParams={fetchCropParams}
           cropParams={cropParams}
+          guestPoint={guestPoint}
         />
       ) : (
         <>

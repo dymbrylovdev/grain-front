@@ -1187,7 +1187,9 @@ const BidForm: React.FC<IProps> = ({
               />
               <div className={innerClasses.calcDescription}>
                 {salePurchaseMode === "sale" &&
-                ((me?.use_vat && !bid?.vendor_use_vat) || (me?.use_vat && bid?.vendor_use_vat) || (!me?.use_vat && bid?.vendor_use_vat))
+                (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
+                  ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
+                  (!me?.use_vat && me && bid?.vendor_use_vat))
                   ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" })
                   : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
                 {/* {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
@@ -1201,9 +1203,9 @@ const BidForm: React.FC<IProps> = ({
                     <div>
                       {values.bid_type === "sale" &&
                       bid &&
-                      ((me?.use_vat && !bid?.vendor_use_vat) ||
-                        (me?.use_vat && bid?.vendor_use_vat) ||
-                        (!me?.use_vat && bid?.vendor_use_vat)) ? (
+                      (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
+                        ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
+                        (!me?.use_vat && me && bid?.vendor_use_vat)) ? (
                         <b>
                           {selectedRoute
                             ? thousands(
@@ -1240,7 +1242,7 @@ const BidForm: React.FC<IProps> = ({
               <div style={{ height: 8 }}></div>
 
               <div className={innerClasses.calcDescription}>
-                {!!me && me.use_vat && values.bid_type === "sale" && !!bid && !vendorUseVat
+                {(me?.use_vat || !me) && values.bid_type === "sale" && !!bid && !vendorUseVat
                   ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })
                   : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_DELIVERY" })}
               </div>
@@ -1252,9 +1254,9 @@ const BidForm: React.FC<IProps> = ({
                     <div>
                       {values.bid_type === "sale" &&
                       bid &&
-                      ((me?.use_vat && !bid?.vendor_use_vat) ||
-                        (me?.use_vat && bid?.vendor_use_vat) ||
-                        (!me?.use_vat && bid?.vendor_use_vat)) ? (
+                      (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
+                        ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
+                        (!me?.use_vat && me && bid?.vendor_use_vat)) ? (
                         <b>
                           {selectedRoute
                             ? thousands(

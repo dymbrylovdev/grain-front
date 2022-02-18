@@ -2,16 +2,7 @@ import React, { useEffect, useState } from "react";
 import { compose } from "redux";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
-import {
-  IconButton,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@material-ui/core";
+import { IconButton, Button, Table, TableBody, TableCell, TableHead, TableRow, Paper } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps, FormattedMessage } from "react-intl";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -94,11 +85,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
       clearDel();
       if (delSuccess) {
         if (salePurchaseMode === "sale") {
-          if (
-            !!deleteFilterId &&
-            currentSaleFilters[deleteFilterCropId] &&
-            currentSaleFilters[deleteFilterCropId].id === deleteFilterId
-          ) {
+          if (!!deleteFilterId && currentSaleFilters[deleteFilterCropId] && currentSaleFilters[deleteFilterCropId].id === deleteFilterId) {
             setCurrentSaleFilter(deleteFilterCropId, undefined);
           }
         }
@@ -152,9 +139,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
     <Paper className={classes.paperWithTable}>
       <LayoutSubheader
         title={
-          salePurchaseMode === "sale"
-            ? intl.formatMessage({ id: "FILTERS.MY.SALE" })
-            : intl.formatMessage({ id: "FILTERS.MY.PURCHASE" })
+          salePurchaseMode === "sale" ? intl.formatMessage({ id: "FILTERS.MY.SALE" }) : intl.formatMessage({ id: "FILTERS.MY.PURCHASE" })
         }
       />
       <div className={classes.topButtonsContainer}>
@@ -165,31 +150,29 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
           onClick={() => history.push(`/${salePurchaseMode}/filters/edit/new`)}
           disabled={
             !myFilters ||
-            (!!me?.tariff_matrix.tariff_limits.max_filters_count &&
+            (!!me?.tariff_matrix?.tariff_limits?.max_filters_count &&
               !!myFilters &&
-              me.tariff_matrix.tariff_limits.max_filters_count - myFilters?.length <= 0) ||
+              me.tariff_matrix?.tariff_limits?.max_filters_count - myFilters?.length <= 0) ||
             me?.available_filter_count === 0
           }
         >
           {intl.formatMessage({ id: "FILTER.FORM.TABS.CREATE_FILTER" })}
         </Button>
 
-        {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) &&
-          me &&
-          me.tariff_matrix.tariff.name === "Бесплатный" && (
-            <Button
-              className={classes.button}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                setTariffTable(1);
-                history.push(`/user/profile/tariffs`);
-              }}
-              disabled={!myFilters}
-            >
-              {intl.formatMessage({ id: "BID.PRICES.GET.PREMIUM" })}
-            </Button>
-          )}
+        {accessByRoles(me, ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"]) && me && me.tariff_matrix.tariff.name === "Бесплатный" && (
+          <Button
+            className={classes.button}
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setTariffTable(1);
+              history.push(`/user/profile/tariffs`);
+            }}
+            disabled={!myFilters}
+          >
+            {intl.formatMessage({ id: "BID.PRICES.GET.PREMIUM" })}
+          </Button>
+        )}
 
         {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) && (
           <Button
@@ -219,12 +202,8 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
               {intl.formatMessage(
                 { id: "FILTER.FORM.LIMIT" },
                 {
-                  count:
-                    me.available_filter_count,
-                  word: declOfNum(
-                    me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount,
-                    ["подписка", "подписки", "подписок"]
-                  ),
+                  count: me.available_filter_count,
+                  word: declOfNum(me?.tariff_matrix?.tariff_limits.max_filters_count - filterCount, ["подписка", "подписки", "подписок"]),
                   fullCount: me?.tariff_matrix?.tariff_limits.max_filters_count,
                 }
               )}
@@ -264,36 +243,32 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
                           <StatusIndicator isActive={item.is_sending_sms} />
                         </TableCell>
                         <TableCell align="right">
-                          <div style={{minWidth: 150}}>
-                          <IconButton
-                            size="medium"
-                            color="primary"
-                            onClick={() =>
-                              history.push(`/${salePurchaseMode}/filters/view/${item.id}`)
-                            }
-                          >
-                            <VisibilityIcon />
-                          </IconButton>
-                          <IconButton
-                            size="medium"
-                            color="primary"
-                            onClick={() =>
-                              history.push(`/${salePurchaseMode}/filters/edit/${item.id}`)
-                            }
-                          >
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            size="medium"
-                            onClick={() => {
-                              setDeleteFilterCropId(item.crop.id);
-                              setDeleteFilterId(item.id || 0);
-                              setAlertOpen(true);
-                            }}
-                            color="secondary"
-                          >
-                            <DeleteIcon />
-                          </IconButton>
+                          <div style={{ minWidth: 150 }}>
+                            <IconButton
+                              size="medium"
+                              color="primary"
+                              onClick={() => history.push(`/${salePurchaseMode}/filters/view/${item.id}`)}
+                            >
+                              <VisibilityIcon />
+                            </IconButton>
+                            <IconButton
+                              size="medium"
+                              color="primary"
+                              onClick={() => history.push(`/${salePurchaseMode}/filters/edit/${item.id}`)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              size="medium"
+                              onClick={() => {
+                                setDeleteFilterCropId(item.crop.id);
+                                setDeleteFilterId(item.id || 0);
+                                setAlertOpen(true);
+                              }}
+                              color="secondary"
+                            >
+                              <DeleteIcon />
+                            </IconButton>
                           </div>
                         </TableCell>
                       </TableRow>

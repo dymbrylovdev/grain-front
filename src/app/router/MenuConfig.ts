@@ -1,7 +1,7 @@
 import { ICrop } from "../interfaces/crops";
 import { IUser } from "../interfaces/users";
 
-export default function getMenuConfig(crops: ICrop[] = [], user: IUser) {
+export default function getMenuConfig(crops: ICrop[] = [], user?: IUser) {
   if (user?.roles?.length) {
     const role = user.roles[0];
     switch (role) {
@@ -16,7 +16,7 @@ export default function getMenuConfig(crops: ICrop[] = [], user: IUser) {
       case "ROLE_TRADER":
         return getTraderMenu(crops);
       default:
-        return {};
+        return getGuestMenu(crops);
     }
   }
 }
@@ -589,6 +589,76 @@ const getTraderMenu = (crops: ICrop[]) => ({
       // },
       // ],
       // },
+      {
+        title: "Выход",
+        icon: "far fa-share-square",
+        page: "logout",
+        translate: "MENU.LOGOUT",
+      },
+    ],
+  },
+});
+
+const getGuestMenu = (crops: ICrop[]) => ({
+  header: {
+    self: {},
+    items: [],
+  },
+  aside: {
+    self: {},
+    items: [
+      {
+        title: "Рынок зерна",
+        icon: "fas fa-seedling",
+        page: "",
+        translate: "MENU.GRAIN",
+        submenu: [
+          {
+            title: "Объявления на продажу",
+            page: "",
+            translate: "SUBMENU.BIDS.SALE",
+            submenu: [
+              {
+                title: "Выбрать культуру",
+                page: "",
+                translate: "SUBMENU.BIDS.BEST",
+                bullet: "dot",
+                submenu: getCropsSubmenu(crops, "sale/best-bids"),
+              },
+              {
+                title: "Мои объявления",
+                page: "sale/my-bids",
+                translate: "SUBMENU.MY_BIDS",
+              },
+            ],
+          },
+          {
+            title: "Объявления на покупку",
+            page: "",
+            translate: "SUBMENU.BIDS.PURCHASE",
+            submenu: [
+              {
+                title: "Выбрать культуру",
+                page: "",
+                translate: "SUBMENU.BIDS.BEST",
+                bullet: "dot",
+                submenu: getCropsSubmenu(crops, "purchase/best-bids"),
+              },
+            ],
+          },
+          {
+            title: "Сделки",
+            page: "deals",
+            translate: "SUBMENU.BIDS.DEALS",
+          },
+        ],
+      },
+      {
+        title: "Мой профайл",
+        icon: "fas fa-user-circle",
+        page: "user/profile",
+        translate: "SUBMENU.PROFILE",
+      },
       {
         title: "Выход",
         icon: "far fa-share-square",

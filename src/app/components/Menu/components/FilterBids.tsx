@@ -3,7 +3,7 @@ import { MenuItem, TextField, IconButton, Divider, Checkbox, FormControlLabel } 
 import useStyles from "../../../pages/home/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import { connect, ConnectedProps } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -18,7 +18,7 @@ import { useSnackbar } from "notistack";
 import NumberParam from "../../../pages/home/bids/components/filter/NumberParam";
 import ButtonWithLoader from "../../ui/Buttons/ButtonWithLoader";
 import { isEqual } from "lodash";
-// import { setUser } from "@sentry/browser";
+import Modal from "../../ui/Modal";
 
 const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   me,
@@ -59,10 +59,10 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   // setOpenInfoAlert,
 }) => {
   const [hasUserPointsActive, setUserPointsActive] = useState(false);
-
+  const history = useHistory();
   const classes = useStyles();
   const location = useLocation();
-
+  const [open, setOpen] = useState(false);
   const [, , , cropId] = location.pathname.split("/");
 
   const enumParams: any = cropParams && cropParams.filter(item => item.type === "enum");
@@ -361,13 +361,17 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             createLoading || (me?.tariff_matrix && myFilters && me.tariff_matrix.tariff_limits.max_filters_count - myFilters?.length <= 0)
           }
           onPress={() => {
-            if (!!currentFilter && currentFilter.name === formik.values.name) {
-              const crop = crops ? crops.find(crop => crop.id === +cropId) : undefined;
-              const now = new Date();
-              const name = `${crop ? crop.name : undefined} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
-              formik.setFieldValue("name", name);
+            if (me) {
+              if (!!currentFilter && currentFilter.name === formik.values.name) {
+                const crop = crops ? crops.find(crop => crop.id === +cropId) : undefined;
+                const now = new Date();
+                const name = `${crop ? crop.name : undefined} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
+                formik.setFieldValue("name", name);
+              }
+              formik.handleSubmit();
+            } else {
+              setOpen(true);
             }
-            formik.handleSubmit();
           }}
         >
           {intl.formatMessage({ id: "FILTER.FORM.BUTTON.ADD" })}
@@ -386,18 +390,33 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           value={values.name || ""}
           variant="outlined"
           onBlur={filterSubmit}
-          onChange={formik.handleChange}
+          onChange={me && formik.handleChange}
           helperText={formik.touched.name && formik.errors.name}
           error={Boolean(formik.touched.name && formik.errors.name)}
           InputProps={{
             endAdornment: (
-              <IconButton onClick={() => formik.setFieldValue("name", "")}>
+              <IconButton onClick={() => me && formik.setFieldValue("name", "")}>
                 <CloseIcon />
               </IconButton>
             ),
           }}
         />
       </div>
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title={"Чтобы продолжить действие с редактированием профиля или объявления, авторизуйтесь!"}
+        actions={[
+          {
+            title: "Cancel",
+            onClick: () => setOpen(false),
+          },
+          {
+            title: "OK",
+            onClick: () => history.push("/auth"),
+          },
+        ]}
+      />
     </form>
   );
 };

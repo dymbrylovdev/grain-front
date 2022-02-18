@@ -198,10 +198,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           roles.find(el => el.id === value) ? true : false
         )
         .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
-      status:
-        editMode !== "create"
-          ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-          : Yup.string(),
+      status: editMode !== "create" ? Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })) : Yup.string(),
       email: Yup.string().email(intl.formatMessage({ id: "AUTH.VALIDATION.INVALID_FIELD" })),
       phone:
         countryCode.length === 1
@@ -210,10 +207,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               .matches(/^(\d{1}|\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
               .when(["email"], {
                 is: email => !email,
-                then: Yup.string().matches(
-                  /^(\d{11})$/,
-                  intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })
-                ),
+                then: Yup.string().matches(/^(\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
               })
           : Yup.string()
               .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
@@ -225,25 +219,14 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   const validationSchemaPassword = Yup.object().shape({
     password: Yup.string(),
-    repeatPassword: Yup.string().test(
-      "passwords-match",
-      intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }),
-      function(value) {
-        return this.parent.password === value;
-      }
-    ),
+    repeatPassword: Yup.string().test("passwords-match", intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }), function(
+      value
+    ) {
+      return this.parent.password === value;
+    }),
   });
 
-  const {
-    values,
-    handleSubmit,
-    handleChange,
-    handleBlur,
-    resetForm,
-    setFieldValue,
-    touched,
-    errors,
-  } = useFormik({
+  const { values, handleSubmit, handleChange, handleBlur, resetForm, setFieldValue, touched, errors } = useFormik({
     initialValues: getInitialValues(undefined),
     onSubmit: values => {
       if (roles.find(el => el.id === values.role) === undefined) return;
@@ -285,18 +268,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       setEditNoNoti(false);
       setOldUserValues(values);
     }
-  }, [
-    clearMe,
-    editMode,
-    me,
-    meSuccess,
-    userSuccess,
-    oldValues,
-    oldUserValues,
-    setEditNoNoti,
-    user,
-    values,
-  ]);
+  }, [clearMe, editMode, me, meSuccess, userSuccess, oldValues, oldUserValues, setEditNoNoti, user, values]);
 
   useEffect(() => {
     return () => {
@@ -309,14 +281,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   useEffect(() => {
     if (!values.fio) setLocTabPulse(false);
-    if (
-      prompterRunning &&
-      prompterStep === 0 &&
-      !!values.fio &&
-      !!values.phone &&
-      me?.points.length === 0
-    )
-      setLocTabPulse(true);
+    if (prompterRunning && prompterStep === 0 && !!values.fio && !!values.phone && me?.points.length === 0) setLocTabPulse(true);
     if (!!values.fio && !values.phone) setLocTabPulse(false);
   }, [me, prompterRunning, prompterStep, setLocTabPulse, values.fio, values.phone]);
 
@@ -337,18 +302,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     if (createSuccess) {
       history.push(`/user/edit/${createdUserId}`);
     }
-  }, [
-    clearCreateUser,
-    createError,
-    createSuccess,
-    createdUserId,
-    editError,
-    editMode,
-    enqueueSnackbar,
-    fetchUser,
-    history,
-    intl,
-  ]);
+  }, [clearCreateUser, createError, createSuccess, createdUserId, editError, editMode, enqueueSnackbar, fetchUser, history, intl]);
 
   useEffect(() => {
     if (editSuccess || editError) {
@@ -365,17 +319,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     if (editSuccess) {
       if (userId) fetchUser({ id: userId });
     }
-  }, [
-    clearEditUser,
-    editError,
-    editMeNoNoti,
-    editSuccess,
-    enqueueSnackbar,
-    fetchUser,
-    intl,
-    setEditNoNoti,
-    userId,
-  ]);
+  }, [clearEditUser, editError, editMeNoNoti, editSuccess, enqueueSnackbar, fetchUser, intl, setEditNoNoti, userId]);
 
   useEffect(() => {
     if (editMeSuccess || editMeError) {
@@ -395,17 +339,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     if (editMeSuccess) {
       fetchMe();
     }
-  }, [
-    clearEditMe,
-    editError,
-    editMeError,
-    editMeNoNoti,
-    editMeSuccess,
-    enqueueSnackbar,
-    fetchMe,
-    intl,
-    setEditNoNoti,
-  ]);
+  }, [clearEditMe, editError, editMeError, editMeNoNoti, editMeSuccess, enqueueSnackbar, fetchMe, intl, setEditNoNoti]);
 
   useEffect(() => {
     if (editUserSuccess || editUserError) {
@@ -425,17 +359,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     if (editUserSuccess && userId) {
       fetchUser({ id: userId });
     }
-  }, [
-    clearUser,
-    editUserError,
-    editUserSuccess,
-    editMeNoNoti,
-    enqueueSnackbar,
-    fetchUser,
-    intl,
-    setEditNoNoti,
-    userId,
-  ]);
+  }, [clearUser, editUserError, editUserSuccess, editMeNoNoti, enqueueSnackbar, fetchUser, intl, setEditNoNoti, userId]);
 
   useEffect(() => {
     if (userActivateSuccess || userActivateError) {
@@ -496,10 +420,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   return (
     <>
       <div className={classes.textFieldContainer}>
-        {meLoading ||
-        userLoading ||
-        cropsLoading ||
-        (editMode !== "profile" && funnelStatesLoading) ? (
+        {meLoading || userLoading || cropsLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
           <TextField
@@ -512,7 +433,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             variant="outlined"
             helperText={touched.role && errors.role}
             error={Boolean(touched.role && errors.role)}
-            disabled={editMode !== "create"}
+            disabled={editMode !== "create" || !me}
           >
             {newRoles.map((item, i) => (
               <MenuItem key={i} value={item.id}>
@@ -540,7 +461,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               variant="outlined"
               helperText={touched.status && errors.status}
               error={Boolean(touched.status && errors.status)}
-              disabled={editMode === "view"}
+              disabled={editMode === "view" || !me}
             >
               {statuses.map(option => (
                 <MenuItem key={option} value={option}>
@@ -571,7 +492,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                   onChange={handleChange}
                   name="funnel_state_id"
                   variant="outlined"
-                  disabled={values.is_funnel_state_automate || editMode === "view"}
+                  disabled={values.is_funnel_state_automate || editMode === "view" || !me}
                 >
                   <MenuItem value={0} style={{ backgroundColor: "#f2f2f2" }}>
                     {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
@@ -581,11 +502,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                       funnelStates
                         .filter(fs => fs.role === "ROLE_BUYER")
                         .map(option => (
-                          <MenuItem
-                            key={option.id}
-                            value={option.id}
-                            style={{ backgroundColor: `${option.color || "#ededed"}` }}
-                          >
+                          <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
                             {`${option.engagement || "0"} • ${option.name}`}
                           </MenuItem>
                         ))
@@ -593,11 +510,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                       funnelStates
                         .filter(fs => fs.role === "ROLE_VENDOR")
                         .map(option => (
-                          <MenuItem
-                            key={option.id}
-                            value={option.id}
-                            style={{ backgroundColor: `${option.color || "#ededed"}` }}
-                          >
+                          <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
                             {`${option.engagement || "0"} • ${option.name}`}
                           </MenuItem>
                         ))}
@@ -610,9 +523,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                   <Skeleton width={322} height={37.5} animation="wave" />
                 ) : (
                   <FormControlLabel
-                    control={
-                      <Checkbox checked={values.is_funnel_state_automate} onChange={handleChange} />
-                    }
+                    control={<Checkbox checked={values.is_funnel_state_automate} onChange={handleChange} />}
                     label={intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.AUTO" })}
                     name="is_funnel_state_automate"
                   />
@@ -641,7 +552,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             helperText={touched.email && errors.email}
             error={Boolean(touched.email && errors.email)}
             autoComplete="off"
-            disabled={editMode === "view"}
+            disabled={editMode === "view" || !me}
           />
         )}
       </div>
@@ -675,7 +586,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div> */}
 
-<div className={classes.textFieldContainer}>
+      <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
@@ -686,11 +597,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             })}
             margin="normal"
             className={classes.textField}
-            classes={
-              prompterRunning && prompterStep === 0 && !values.surname
-                ? { root: innerClasses.pulseRoot }
-                : {}
-            }
+            classes={prompterRunning && prompterStep === 0 && !values.surname ? { root: innerClasses.pulseRoot } : {}}
             name="surname"
             value={values.surname}
             variant="outlined"
@@ -699,7 +606,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             helperText={touched.surname && errors.surname}
             error={Boolean(touched.surname && errors.surname)}
             autoComplete="off"
-            disabled={editMode === "view"}
+            disabled={editMode === "view" || !me}
           />
         )}
       </div>
@@ -715,11 +622,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             })}
             margin="normal"
             className={classes.textField}
-            classes={
-              prompterRunning && prompterStep === 0 && !values.firstname
-                ? { root: innerClasses.pulseRoot }
-                : {}
-            }
+            classes={prompterRunning && prompterStep === 0 && !values.firstname ? { root: innerClasses.pulseRoot } : {}}
             name="firstname"
             value={values.firstname}
             variant="outlined"
@@ -728,7 +631,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             helperText={touched.firstname && errors.firstname}
             error={Boolean(touched.firstname && errors.firstname)}
             autoComplete="off"
-            disabled={editMode === "view"}
+            disabled={editMode === "view" || !me}
           />
         )}
       </div>
@@ -744,11 +647,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             })}
             margin="normal"
             className={classes.textField}
-            classes={
-              prompterRunning && prompterStep === 0 && !values.lastname
-                ? { root: innerClasses.pulseRoot }
-                : {}
-            }
+            classes={prompterRunning && prompterStep === 0 && !values.lastname ? { root: innerClasses.pulseRoot } : {}}
             name="lastname"
             value={values.lastname}
             variant="outlined"
@@ -757,38 +656,37 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             helperText={touched.lastname && errors.lastname}
             error={Boolean(touched.lastname && errors.lastname)}
             autoComplete="off"
-            disabled={editMode === "view"}
+            disabled={editMode === "view" || !me}
           />
         )}
       </div>
 
-      {!(meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading)) &&
-        editMode === "profile" && (
-          <Collapse in={openInfoAlert}>
-            <Alert
-              className={classes.infoAlert}
-              severity="info"
-              color="info"
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    setOpenInfoAlert(false);
-                  }}
-                >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
-              }
-            >
-              <div>{intl.formatMessage({ id: "PROFILE.VAT.INFO" })}</div>
-              <Link to={accessByRoles(me, ["ROLE_BUYER"]) ? "/purchase/my-bids" : "/sale/my-bids"}>
-                {intl.formatMessage({ id: "PROFILE.VAT.INFO.LINK" })}
-              </Link>
-            </Alert>
-          </Collapse>
-        )}
+      {!(meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading)) && editMode === "profile" && me && (
+        <Collapse in={openInfoAlert}>
+          <Alert
+            className={classes.infoAlert}
+            severity="info"
+            color="info"
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setOpenInfoAlert(false);
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+          >
+            <div>{intl.formatMessage({ id: "PROFILE.VAT.INFO" })}</div>
+            <Link to={accessByRoles(me, ["ROLE_BUYER"]) ? "/purchase/my-bids" : "/sale/my-bids"}>
+              {intl.formatMessage({ id: "PROFILE.VAT.INFO.LINK" })}
+            </Link>
+          </Alert>
+        </Collapse>
+      )}
 
       {prompterRunning && prompterStep === 0 && !values.use_vat && (
         <div>
@@ -796,8 +694,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             <Skeleton width="100%" height={37.5} animation="wave" />
           ) : (
             <div style={{ color: "#fd397a", marginBottom: 16 }}>
-              <ReportProblemIcon color="error" />{" "}
-              <b>{intl.formatMessage({ id: "USER.EDIT_FORM.ATTENTION" })}</b>
+              <ReportProblemIcon color="error" /> <b>{intl.formatMessage({ id: "USER.EDIT_FORM.ATTENTION" })}</b>
             </div>
           )}
         </div>
@@ -808,10 +705,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           <Skeleton width={135} height={37.5} animation="wave" />
         ) : (
           <FormControlLabel
-            control={<Checkbox checked={values.use_vat} onChange={handleChange} />}
+            control={<Checkbox checked={me ? values.use_vat : true} onChange={handleChange} />}
             label={intl.formatMessage({ id: "USER.EDIT_FORM.USE_VAT" })}
             name="use_vat"
-            disabled={editMode === "view"}
+            disabled={editMode === "view" || !me}
           />
         )}
       </div>
@@ -839,6 +736,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               }}
               value={countryName}
               fullWidth
+              disabled={!me}
             >
               {countries.map(item => (
                 <MenuItem key={item.id} value={item.country}>
@@ -864,11 +762,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               })}
               margin="normal"
               className={classes.textField}
-              classes={
-                prompterRunning && prompterStep === 0 && !!values.fio && !values.phone
-                  ? { root: innerClasses.pulseRoot }
-                  : {}
-              }
+              classes={prompterRunning && prompterStep === 0 && !!values.fio && !values.phone ? { root: innerClasses.pulseRoot } : {}}
               name="phone"
               value={values.phone}
               variant="outlined"
@@ -878,6 +772,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               error={Boolean(touched.phone && errors.phone)}
               InputLabelProps={{ shrink: true }}
               autoComplete="off"
+              disabled={!me}
             />
           </div>
         )}
@@ -890,7 +785,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}*/}
 
-      {editMode !== "create" && (
+      {me && editMode !== "create" && (
         <div>
           {currentUser && currentUser.company ? (
             <>
@@ -914,11 +809,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                       className={classes.textField}
                     />
                     {editMode !== "view" && (
-                      <IconButton
-                        size={"medium"}
-                        color="secondary"
-                        onClick={() => setCompanyAlertOpen(true)}
-                      >
+                      <IconButton size={"medium"} color="secondary" onClick={() => setCompanyAlertOpen(true)}>
                         <DeleteIcon />
                       </IconButton>
                     )}
@@ -928,16 +819,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               <CompanyConfirmBlock
                 user={editMode === "profile" ? me : user}
                 values={values}
-                handleChange={
-                  editMode === "profile"
-                    ? editMe
-                    : ({ data }: any) => editUser({ id: userId as number, data: data })
-                }
-                disabled={
-                  editMode === "profile" ||
-                  editMode === "view" ||
-                  !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])
-                }
+                handleChange={editMode === "profile" ? editMe : ({ data }: any) => editUser({ id: userId as number, data: data })}
+                disabled={editMode === "profile" || editMode === "view" || !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
                 loading={editMeLoading || editLoading}
                 // loading={!currentUser || meLoading || userLoading || editLoading}
               />
@@ -972,30 +855,23 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
             </div>
           )}
-          {(!!currentUser?.company_confirmed_by_email ||
-            !!currentUser?.company_confirmed_by_payment) &&
-            !!currentUser?.company?.colors && (
-              <TrafficLight intl={intl} colors={currentUser.company.colors} />
-            )}
+          {(!!currentUser?.company_confirmed_by_email || !!currentUser?.company_confirmed_by_payment) && !!currentUser?.company?.colors && (
+            <TrafficLight intl={intl} colors={currentUser.company.colors} />
+          )}
 
-          {editMode !== "view" &&
-            accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
-            !!currentUser &&
-            !!currentUser.company && (
-              <div className={classes.bottomButtonsContainer}>
-                <div className={classes.button}>
-                  <ButtonWithLoader
-                    loading={false}
-                    disabled={
-                      editMeLoading || createLoading || editLoading || meLoading || userLoading
-                    }
-                    onPress={() => history.push(`/company/edit/${currentUser.company?.id}`)}
-                  >
-                    {intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })}
-                  </ButtonWithLoader>
-                </div>
+          {me && editMode !== "view" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !!currentUser && !!currentUser.company && (
+            <div className={classes.bottomButtonsContainer}>
+              <div className={classes.button}>
+                <ButtonWithLoader
+                  loading={false}
+                  disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
+                  onPress={() => history.push(`/company/edit/${currentUser.company?.id}`)}
+                >
+                  {intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })}
+                </ButtonWithLoader>
               </div>
-            )}
+            </div>
+          )}
 
           {editMode !== "view" && !!currentUser && !currentUser.company && (
             <CompanySearchForm
@@ -1009,11 +885,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 setFieldValue("company_confirmed_by_phone", false);
                 setFieldValue("company_confirmed_by_payment", false);
               }}
-              editAction={
-                editMode === "profile"
-                  ? editMe
-                  : ({ data }: any) => editUser({ id: userId as number, data: data })
-              }
+              editAction={editMode === "profile" ? editMe : ({ data }: any) => editUser({ id: userId as number, data: data })}
               values={values}
               confirms={editMode === "profile" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
             />
@@ -1052,92 +924,92 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
-      <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
-        {editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-          <div className={classes.button} style={{ marginTop: 4, marginBottom: 4 }}>
-            <ButtonWithLoader
-              disabled={!user}
-              onPress={() =>
-                history.push(`/bid/create/${user?.is_buyer ? "purchase" : "sale"}/0/0/${user?.id}`)
-              }
-            >
-              {intl.formatMessage({ id: "ALL.BUTTONS.BID_CREATE" })}
-            </ButtonWithLoader>
+      {me && (
+        <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
+          {editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+            <div className={classes.button} style={{ marginTop: 4, marginBottom: 4 }}>
+              <ButtonWithLoader
+                disabled={!user}
+                onPress={() => history.push(`/bid/create/${user?.is_buyer ? "purchase" : "sale"}/0/0/${user?.id}`)}
+              >
+                {intl.formatMessage({ id: "ALL.BUTTONS.BID_CREATE" })}
+              </ButtonWithLoader>
+            </div>
+          )}
+
+          <div className={classes.flexRow} style={{ marginTop: 4, marginBottom: 4 }}>
+            {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+              <div className={classes.button}>
+                <ButtonWithLoader
+                  loading={editMeLoading || createLoading || editLoading}
+                  disabled={
+                    editMeLoading ||
+                    createLoading ||
+                    editLoading ||
+                    meLoading ||
+                    userLoading ||
+                    userActivateLoading ||
+                    (editMode !== "profile" && funnelStatesLoading) ||
+                    isEqual(oldValues, values)
+                  }
+                  onPress={onEmailConfirm}
+                >
+                  {intl.formatMessage({ id: "USER.EDIT_FORM.ACTIVATE" })}
+                </ButtonWithLoader>
+              </div>
+            )}
+
+            {editMode !== "view" && (
+              <div className={classes.button}>
+                <ButtonWithLoader
+                  loading={editMeLoading || createLoading || editLoading}
+                  disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
+                  onPress={() => {
+                    setPasswordChange(true);
+                    setChangePasswordModalOpen(true);
+                  }}
+                >
+                  {intl.formatMessage({ id: "ALL.BUTTONS.CHANGE.PASSWORD" })}
+                </ButtonWithLoader>
+              </div>
+            )}
+
+            {editMode !== "view" && (
+              <div className={classes.button}>
+                <ButtonWithLoader
+                  loading={editMeLoading || createLoading || editLoading}
+                  disabled={
+                    editMeLoading ||
+                    createLoading ||
+                    editLoading ||
+                    meLoading ||
+                    userLoading ||
+                    (editMode !== "profile" && funnelStatesLoading) ||
+                    isEqual(oldValues, values)
+                  }
+                  onPress={handleSubmit}
+                >
+                  {editMode === "create"
+                    ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
+                    : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+                </ButtonWithLoader>
+              </div>
+            )}
+
+            {editMode === "edit" && me?.is_admin && (
+              <div className={classes.button}>
+                <OutlinedRedButton
+                  variant="outlined"
+                  onClick={() => setAlertOpen(true)}
+                  disabled={meLoading || userLoading || funnelStatesLoading}
+                >
+                  {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
+                </OutlinedRedButton>
+              </div>
+            )}
           </div>
-        )}
-
-        <div className={classes.flexRow} style={{ marginTop: 4, marginBottom: 4 }}>
-          {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-            <div className={classes.button}>
-              <ButtonWithLoader
-                loading={editMeLoading || createLoading || editLoading}
-                disabled={
-                  editMeLoading ||
-                  createLoading ||
-                  editLoading ||
-                  meLoading ||
-                  userLoading ||
-                  userActivateLoading ||
-                  (editMode !== "profile" && funnelStatesLoading) ||
-                  isEqual(oldValues, values)
-                }
-                onPress={onEmailConfirm}
-              >
-                {intl.formatMessage({ id: "USER.EDIT_FORM.ACTIVATE" })}
-              </ButtonWithLoader>
-            </div>
-          )}
-
-          {editMode !== "view" && (
-            <div className={classes.button}>
-              <ButtonWithLoader
-                loading={editMeLoading || createLoading || editLoading}
-                disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
-                onPress={() => {
-                  setPasswordChange(true);
-                  setChangePasswordModalOpen(true);
-                }}
-              >
-                {intl.formatMessage({ id: "ALL.BUTTONS.CHANGE.PASSWORD" })}
-              </ButtonWithLoader>
-            </div>
-          )}
-
-          {editMode !== "view" && (
-            <div className={classes.button}>
-              <ButtonWithLoader
-                loading={editMeLoading || createLoading || editLoading}
-                disabled={
-                  editMeLoading ||
-                  createLoading ||
-                  editLoading ||
-                  meLoading ||
-                  userLoading ||
-                  (editMode !== "profile" && funnelStatesLoading) ||
-                  isEqual(oldValues, values)
-                }
-                onPress={handleSubmit}
-              >
-                {editMode === "create"
-                  ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
-                  : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
-              </ButtonWithLoader>
-            </div>
-          )}
-
-          {editMode === "edit" && me?.is_admin && (
-            <div className={classes.button}>
-              <OutlinedRedButton
-                variant="outlined"
-                onClick={() => setAlertOpen(true)}
-                disabled={meLoading || userLoading || funnelStatesLoading}
-              >
-                {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
-              </OutlinedRedButton>
-            </div>
-          )}
         </div>
-      </div>
+      )}
 
       <Dialog
         open={isChangePasswordModalOpen}
@@ -1149,10 +1021,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         fullWidth
       >
         {editMode !== "view" && (
-          <div
-            className={classes.box}
-            style={{ marginTop: 20, marginBottom: 20, marginRight: 20, marginLeft: 20 }}
-          >
+          <div className={classes.box} style={{ marginTop: 20, marginBottom: 20, marginRight: 20, marginLeft: 20 }}>
             {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
               <Skeleton width="100%" height={32} animation="wave" />
             ) : editMode === "create" ? (
@@ -1210,30 +1079,29 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               />
             )}
 
-            <div
-              className={classes.button}
-              style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}
-            >
-              <ButtonWithLoader
-                loading={editMeLoading || createLoading || editLoading}
-                disabled={
-                  editMeLoading ||
-                  createLoading ||
-                  editLoading ||
-                  meLoading ||
-                  userLoading ||
-                  (editMode !== "profile" && funnelStatesLoading) ||
-                  isEqual(oldValues, values)
-                }
-                onPress={() => {
-                  handleSubmit();
-                  setPasswordChange(false);
-                  setChangePasswordModalOpen(false);
-                }}
-              >
-                {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
-              </ButtonWithLoader>
-            </div>
+            {me && (
+              <div className={classes.button} style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
+                <ButtonWithLoader
+                  loading={editMeLoading || createLoading || editLoading}
+                  disabled={
+                    editMeLoading ||
+                    createLoading ||
+                    editLoading ||
+                    meLoading ||
+                    userLoading ||
+                    (editMode !== "profile" && funnelStatesLoading) ||
+                    isEqual(oldValues, values)
+                  }
+                  onPress={() => {
+                    handleSubmit();
+                    setPasswordChange(false);
+                    setChangePasswordModalOpen(false);
+                  }}
+                >
+                  {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+                </ButtonWithLoader>
+              </div>
+            )}
           </div>
         )}
       </Dialog>

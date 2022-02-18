@@ -37,7 +37,7 @@ deploy-master:
 # jobs for dev branch:
 build-dev:
   only:
-    - '1.9.2'
+    - '1.10'
   stage: build
   script:
     - docker login $GITLAB_REGISTRIES_URL -u $GITLAB_LOGIN -p $GITLAB_TOKEN
@@ -45,7 +45,7 @@ build-dev:
     - docker push $GITLAB_REGISTRIES_URL/$IMAGE_DEV 
 deploy-dev:
   only:
-    - '1.9.2'
+    - '1.10'
   stage: deploy
   environment: 
     name: "development"

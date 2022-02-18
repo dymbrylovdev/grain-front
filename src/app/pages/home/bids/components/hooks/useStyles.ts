@@ -40,7 +40,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     paddingRight: 8,
     paddingTop: 4,
     paddingBottom: 4,
-    backgroundColor: "#21BA88FF",
+    backgroundColor: "#0F7F12FF",
     borderRadius: 4,
     marginBottom: 8,
   },
@@ -49,7 +49,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     paddingRight: 8,
     paddingTop: 4,
     paddingBottom: 4,
-    backgroundColor: "#0F7F12FF",
+    backgroundColor: "#21BA88FF",
     borderRadius: 4,
   },
   fontImageText: {
@@ -207,7 +207,7 @@ export const useBidTableStyles = makeStyles(theme => ({
   rybl: {
     fontSize: "1.175vw",
     color: "#21BA88",
-    marginRight: 21,
+    marginRight: 14,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       fontSize: 18,
@@ -217,7 +217,6 @@ export const useBidTableStyles = makeStyles(theme => ({
     fontSize: "1.175vw",
     color: "black",
     fontWeight: "normal",
-    marginRight: 21,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       fontSize: 18,
@@ -228,7 +227,6 @@ export const useBidTableStyles = makeStyles(theme => ({
     fontWeight: "bold",
     fontSize: "1.175vw",
     color: "black",
-    marginRight: 5,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:1000px)"]: {
       fontSize: 18,
@@ -676,7 +674,7 @@ export const useViewBidStyles = makeStyles(theme => ({
   rybl: {
     fontSize: 21,
     color: "#21BA88",
-    marginRight: 21,
+    marginRight: 14,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:840px)"]: {
       fontSize: 18,
@@ -687,7 +685,6 @@ export const useViewBidStyles = makeStyles(theme => ({
     fontWeight: "bold",
     fontSize: 21,
     color: "black",
-    marginRight: 5,
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:840px)"]: {
       fontSize: 18,
@@ -716,7 +713,6 @@ export const useViewBidStyles = makeStyles(theme => ({
   nds: {
     fontSize: 21,
     color: "black",
-    marginRight: 21,
     fontWeight: "normal",
     // eslint-disable-next-line no-useless-computed-key
     ["@media (max-width:840px)"]: {

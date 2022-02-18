@@ -22,23 +22,21 @@ import { TariffsEditPage } from "./tariffs";
 import { TrialEditPage } from "./trial";
 import UserBidFiltersEdit from "./users/components/UserBidFiltersEdit";
 import FilterForm from "./users/components/FilterForm";
-import * as VoxImplant from "voximplant-websdk";
 
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { user } = useSelector(({ auth }) => ({ user: auth.user }), shallowEqual);
-
+  const { crops } = useSelector(({ crops2 }) => ({ crops: crops2.crops }), shallowEqual);
   const getCropsAction = () => {
     getCrops(user);
   };
 
   useEffect(() => {
     fetchStatuses();
-    getCropsAction();
+    // getCropsAction();
   }, []); // eslint-disable-line
-
   useEffect(() => {
-    setMenuConfig(getMenuConfig(user.crops, user));
-  }, [setMenuConfig, user]);
+    setMenuConfig(getMenuConfig(user?.crops && user.crops.length > 0 ? user?.crops : crops, user));
+  }, [setMenuConfig, user, crops]);
 
   const redirectUrl = useMemo(() => {
     if (user) {
@@ -48,7 +46,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         return `/purchase/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
       }
     }
-    return "/auth";
+    return "/sale/best-bids/1";
   }, [user]);
 
   return (
@@ -137,13 +135,13 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/bidsList/:cropId" exact component={BidsListPage} />
         <Route path="/allBidsList/:cropId" component={AllBidsPage} /> */}
 
-        {user.is_buyer ? (
+        {user?.is_buyer ? (
           <Redirect from="/bidsList/:cropId" to="/sale/best-bids/:cropId" />
         ) : (
           <Redirect from="/bidsList/:cropId" to="/purchase/best-bids/:cropId" />
         )}
 
-        {user.is_buyer ? <Redirect from="/myBidsList" to="/purchase/my-bids" /> : <Redirect from="/myBidsList" to="/sale/my-bids" />}
+        {user?.is_buyer ? <Redirect from="/myBidsList" to="/purchase/my-bids" /> : <Redirect from="/myBidsList" to="/sale/my-bids" />}
 
         <Redirect from="/allBidsList/:cropId" to="/sale/all-bids/:cropId" />
 
