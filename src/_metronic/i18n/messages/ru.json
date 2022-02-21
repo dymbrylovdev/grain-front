@@ -546,6 +546,7 @@
   "LOCATIONS.PRICES.BUYER": "Изменить адрес доставки",
   "LOCATIONS.PRICES.VENDOR": "Изменить адрес отгрузки",
   "LOCATIONS.MORE": "Добавить ещё одну точку",
+  "LOCATIONS.CHANGE": "Изменить адрес",
 
   "TARIFFS.MAIN_TITLE": "Тарифы • Ограничения",
   "TARIFFS.TITLE1": "Публикация объявлений",

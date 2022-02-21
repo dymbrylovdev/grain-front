@@ -124,7 +124,7 @@ const LocationBlockMenu: React.FC<IProps & PropsFromRedux & WrappedComponentProp
           ? intl.formatMessage({ id: "LOCATIONS.PRICES.BUYER" })
           : ["ROLE_VENDOR"].includes(me?.roles[0])
           ? intl.formatMessage({ id: "LOCATIONS.PRICES.VENDOR" })
-          : intl.formatMessage({ id: "LOCATIONS.PRICES.MODAL_NAME" })}
+          : intl.formatMessage({ id: me ? "LOCATIONS.PRICES.MODAL_NAME" : "LOCATIONS.CHANGE" })}
       </Button>
 
       <LocationDialog isOpen={locationModalOpen} handleClose={() => setLocationModalOpen(false)} user={me} classes={classes} intl={intl} />

@@ -239,13 +239,45 @@ const Bid = React.memo<IProps>(
             <div className={innerClasses.containerInfoBlock}>
               {isMobile ? (
                 <>
+                  {bestAllMyMode !== "my-bids" && (hasActivePoints || (!user && guestLocation.active)) && (
+                    <>
+                      {bestAllMyMode !== "edit" && (
+                        <>
+                          <div className={innerClasses.wrapperPrice} style={{ marginBottom: salePurchaseMode === "purchase" ? 0 : 8 }}>
+                            <div className={innerClasses.price}>
+                              {newBid
+                                ? formatAsThousands(newBid.finalPrice)
+                                : bid?.price_with_delivery_with_vat
+                                ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
+                                : "-"}{" "}
+                            </div>
+                            <div className={innerClasses.rybl}>₽</div>
+                            {(salePurchaseMode === "sale" || salePurchaseMode === "purchase") && (
+                              <div className={innerClasses.nds}>
+                                {((user?.use_vat || !user) && !bid.vendor_use_vat) ||
+                                (!user?.use_vat && user && bid.vendor_use_vat) ||
+                                ((user?.use_vat || !user) && bid.vendor_use_vat)
+                                  ? "Цена указана с НДС"
+                                  : "Цена указана без НДС"}{" "}
+                                {salePurchaseMode === "purchase" && (
+                                  <div className={innerClasses.nds} style={{ marginBottom: 8 }}>
+                                    С учетом доставки
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </>
+                  )}
                   {bestAllMyMode !== "my-bids" &&
                     (accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER"]) || (!user && guestLocation)) && (
                       <>
                         {bestAllMyMode !== "edit" && (
                           <div className={innerClasses.wrapperPrice}>
                             <b className={innerClasses.delivery}>
-                              {salePurchaseMode === "sale" ? "С учётом доставки до:" : "Место отгрузки: "}
+                              {salePurchaseMode === "sale" ? "С учётом доставки до: " : "Место отгрузки: "}
                               <b className={innerClasses.deliveryAddress}>
                                 {!user ? (
                                   <b className={innerClasses.deliveryAddress}>{`${
@@ -285,38 +317,6 @@ const Bid = React.memo<IProps>(
                         )}
                       </>
                     )}
-                  {bestAllMyMode !== "my-bids" && (hasActivePoints || (!user && guestLocation.active)) && (
-                    <>
-                      {bestAllMyMode !== "edit" && (
-                        <>
-                          <div className={innerClasses.wrapperPrice} style={{ marginBottom: salePurchaseMode === "purchase" ? 0 : 8 }}>
-                            <div className={innerClasses.price}>
-                              {newBid
-                                ? formatAsThousands(newBid.finalPrice)
-                                : bid?.price_with_delivery_with_vat
-                                ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
-                                : "-"}{" "}
-                            </div>
-                            <div className={innerClasses.rybl}>₽</div>
-                            {(salePurchaseMode === "sale" || salePurchaseMode === "purchase") && (
-                              <div className={innerClasses.nds}>
-                                {((user?.use_vat || !user) && !bid.vendor_use_vat) ||
-                                (!user?.use_vat && user && bid.vendor_use_vat) ||
-                                ((user?.use_vat || !user) && bid.vendor_use_vat)
-                                  ? "Цена указана с НДС"
-                                  : "Цена указана без НДС"}{" "}
-                                {salePurchaseMode === "purchase" && (
-                                  <div className={innerClasses.nds} style={{ marginBottom: 8 }}>
-                                    С учетом доставки
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </>
-                      )}
-                    </>
-                  )}
                 </>
               ) : (
                 <>
@@ -358,7 +358,7 @@ const Bid = React.memo<IProps>(
                         {bestAllMyMode !== "edit" && (
                           <div className={innerClasses.wrapperPrice}>
                             <b className={innerClasses.delivery}>
-                              {salePurchaseMode === "sale" ? "С учётом доставки до:" : "Место отгрузки: "}
+                              {salePurchaseMode === "sale" ? "С учётом доставки до: " : "Место отгрузки: "}
                               <b className={innerClasses.deliveryAddress}>
                                 {!user ? (
                                   <b className={innerClasses.deliveryAddress}>{`${
@@ -402,19 +402,6 @@ const Bid = React.memo<IProps>(
               )}
               {isMobile && (
                 <>
-                  <div className={innerClasses.wrapperPrice}>
-                    <b className={innerClasses.delivery}>
-                      {salePurchaseMode === "sale" ? (
-                        <>
-                          Место отгрузки: <b className={innerClasses.deliveryAddress}>{`${bid.location.text}`}</b>
-                        </>
-                      ) : (
-                        <>
-                          Место выгрузки: <b className={innerClasses.deliveryAddress}>{`(${bid.location.text})`}</b>
-                        </>
-                      )}
-                    </b>
-                  </div>
                   <div className={innerClasses.wrapperPriceVat}>
                     {salePurchaseMode === "sale" ? (
                       <>
@@ -495,6 +482,19 @@ const Bid = React.memo<IProps>(
                         )}
                       </>
                     )}
+                  </div>
+                  <div className={innerClasses.wrapperPrice}>
+                    <b className={innerClasses.delivery}>
+                      {salePurchaseMode === "sale" ? (
+                        <>
+                          Место отгрузки: <b className={innerClasses.deliveryAddress}>{`${bid.location.text}`}</b>
+                        </>
+                      ) : (
+                        <>
+                          Место выгрузки: <b className={innerClasses.deliveryAddress}>{`(${bid.location.text})`}</b>
+                        </>
+                      )}
+                    </b>
                   </div>
                 </>
               )}
