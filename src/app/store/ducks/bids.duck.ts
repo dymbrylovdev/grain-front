@@ -635,9 +635,13 @@ function* fetchMySaga({
 
 function* fetchBestSaga({ payload }: { payload: { bidType: TBidType; filter: IFilterForBids } }) {
   try {
-    const { data }: { data: IServerResponse<IBestBids> } = yield call(() =>
-      getBestBids(payload.bidType, payload.filter)
-    );
+    const fixFilter: IFilterForBids = {
+      filter: {
+        ...payload.filter.filter,
+        max_distance: Boolean(payload.filter.filter.max_distance) ? payload.filter.filter.max_distance : 999999999,
+      },
+    };
+    const { data }: { data: IServerResponse<IBestBids> } = yield call(() => getBestBids(payload.bidType, fixFilter));
     yield put(actions.fetchBestSuccess(data));
   } catch (e) {
     yield put(actions.fetchBestFail(e?.response?.data?.message || "Ошибка соединения."));
