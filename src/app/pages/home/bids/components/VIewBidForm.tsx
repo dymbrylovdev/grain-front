@@ -98,10 +98,19 @@ const ViewBidForm: React.FC<IProps> = ({
   }, []);
 
   const newBid = useMemo(() => {
-    if (me && bid && localBids && localBids.length > 0) {
+    if (bid && localBids && localBids.length > 0) {
+      if (me){
+        return localBids.find(
+          item =>
+            item.useId === me.id &&
+            item.salePurchaseMode === salePurchaseMode &&
+            item.currentBid.id === bid.id &&
+            (bid.price_delivery_per_km ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString() : false)
+        );
+      }
       return localBids.find(
         item =>
-          item.useId === me.id &&
+          item.useId === 0 &&
           item.salePurchaseMode === salePurchaseMode &&
           item.currentBid.id === bid.id &&
           (bid.price_delivery_per_km ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString() : false)
@@ -198,15 +207,25 @@ const ViewBidForm: React.FC<IProps> = ({
       routeRef.current = multiRoute;
       await map.geoObjects.add(multiRoute);
 
+      let newRoute: any = null;
       // open active route balloon
       const routes = multiRoute.getRoutes();
       for (let i = 0, l = routes.getLength(); i < l; i++) {
         const route = routes.get(i);
-        // if (!route.properties.get('blocked')) {
-        multiRoute.setActiveRoute(route);
-        route.balloon.open();
-        break;
-        // }
+        if (!newRoute) {
+          newRoute = route;
+        } else {
+          const newRouteDistance = newRoute.properties.getAll().distance.value;
+          const distance = route.properties.getAll().distance.value;
+          if (newRouteDistance > distance) {
+            newRoute = route;
+          }
+        }
+      }
+
+      if (newRoute) {
+        multiRoute.setActiveRoute(newRoute);
+        newRoute.balloon.open();
       }
 
       const activeProperties = multiRoute.getActiveRoute();
@@ -378,7 +397,7 @@ const ViewBidForm: React.FC<IProps> = ({
                     className={classes.wrapperPrice}
                     style={{ marginBottom: salePurchaseMode === "purchase" && selectedPrice !== "-" ? 0 : 8 }}
                   >
-                    <div className={classes.price}>{selectedPrice}</div>
+                    <div className={classes.price}>{`${newBid ? "" : "≈ "}${selectedPrice}`}</div>
                     <div className={classes.rybl}>₽</div>
                     {selectedPrice !== "-" && (salePurchaseMode === "sale" || salePurchaseMode === "purchase") && (
                       <div className={classes.nds}>

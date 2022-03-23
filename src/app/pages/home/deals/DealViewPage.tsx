@@ -165,16 +165,24 @@ const DealViewPage: React.FC<TPropsFromRedux &
       });
       routeRef.current = multiRoute;
       await map.geoObjects.add(multiRoute);
-
+      let newRoute: any = null;
       // open active route balloon
       const routes = multiRoute.getRoutes();
       for (let i = 0, l = routes.getLength(); i < l; i++) {
         const route = routes.get(i);
-        // if (!route.properties.get('blocked')) {
-        multiRoute.setActiveRoute(route);
-        route.balloon.open();
-        break;
-        // }
+        if (!newRoute) {
+          newRoute = route;
+        } else {
+          const newRouteDistance = newRoute.properties.getAll().distance.value;
+          const distance = route.properties.getAll().distance.value;
+          if (newRouteDistance > distance) {
+            newRoute = route;
+          }
+        }
+      }
+      if (newRoute) {
+        multiRoute.setActiveRoute(newRoute);
+        newRoute.balloon.open();
       }
       const activeProperties = multiRoute.getActiveRoute();
       if (activeProperties && deal) {

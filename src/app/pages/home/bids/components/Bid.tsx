@@ -1,6 +1,7 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import { IconButton, Tooltip, CardMedia, Button, useMediaQuery } from "@material-ui/core";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { IconButton, Tooltip, CardMedia, Button, useMediaQuery, CircularProgress } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+import { YMaps, Map } from "react-yandex-maps";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
@@ -16,11 +17,14 @@ import { useBidTableStyles } from "./hooks/useStyles";
 import { ILocalBids } from "./BidsList";
 import AliceCarousel from "react-alice-carousel";
 import "../../../../libs/react-alice-carousel/alice-carousel.css";
-import { API_DOMAIN } from "../../../../constants";
+import { API_DOMAIN, REACT_APP_GOOGLE_API_KEY } from "../../../../constants";
 import { useIntl } from "react-intl";
 import { useIsViewed } from "./hooks/useViewedBid";
 import { getPoint } from "../../../../utils/localPoint";
 import Modal from "../../../../components/ui/Modal";
+import { distance, getFinalPrice } from "./BidForm";
+import { ILocation } from "../../../../interfaces/locations";
+import { useSnackbar } from "notistack";
 
 interface IProps {
   isHaveRules?: (user?: any, id?: number) => boolean;
@@ -41,6 +45,8 @@ interface IProps {
   localBids: ILocalBids[] | null;
   numberParams?: ICropParam[];
   toggleLocationsModal?: () => void;
+  points?: ILocation[];
+  changeLocalStore: () => void;
   handleShowImage: (index: number, photos?: string[] | undefined) => void;
 }
 
@@ -65,28 +71,168 @@ const Bid = React.memo<IProps>(
     numberParams,
     toggleLocationsModal,
     handleShowImage,
+    points,
+    changeLocalStore,
   }) => {
     const intl = useIntl();
     const history = useHistory();
     const caruselRef: any = useRef();
     const isMobile = useMediaQuery("(max-width:1000px)");
     const innerClasses = useBidTableStyles();
+    const routeRef = useRef();
     const currentCrop = useMemo(() => crops?.find(item => item.id === bid.crop_id), [crops, bid]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [open, setOpen] = useState(false);
+    const [currentBid, setCurrentBid] = useState<IBid | null>(null);
+    const [loadDistanation, setLoadDistanation] = useState(false);
+    const { enqueueSnackbar } = useSnackbar();
+    const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
+    const [map, setMap] = useState<any>();
+    const [ymaps, setYmaps] = useState<any>();
     const isViewed = useIsViewed(bid.id);
     const guestLocation = useMemo(() => getPoint(), []);
+    const isBestBids = useMemo(() => bestAllMyMode === "best-bids", [bestAllMyMode]);
+
     const newBid = useMemo(() => {
       if (localBids && localBids.length > 0) {
+        if (user) {
+          return localBids.find(
+            item =>
+              item.useId === user.id &&
+              item.salePurchaseMode === salePurchaseMode &&
+              item.currentBid.id === bid.id &&
+              (bid.price_delivery_per_km
+                ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString()
+                : false)
+          );
+        }
         return localBids.find(
           item =>
-            item.useId === user?.id &&
+            item.useId === 0 &&
             item.salePurchaseMode === salePurchaseMode &&
             item.currentBid.id === bid.id &&
             (bid.price_delivery_per_km ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString() : false)
         );
       }
     }, [localBids, bid, salePurchaseMode, user]);
+
+    useEffect(() => {
+      if (ymaps && map && currentBid && currentBid.location && mySelectedMapPoint) {
+        addRoute(currentBid.location, mySelectedMapPoint);
+      }
+    }, [ymaps, map, currentBid, mySelectedMapPoint]);
+
+    const addRoute = useCallback(
+      async (pointA: any, pointB: any) => {
+        map.geoObjects.remove(routeRef.current);
+        const multiRoute = await ymaps.route([pointA.text, pointB.text], {
+          multiRoute: true,
+          mapStateAutoApply: true,
+        });
+        routeRef.current = multiRoute;
+        await map.geoObjects.add(multiRoute);
+        const routes = multiRoute.getRoutes();
+        let newRoute: any = null;
+        for (let i = 0, l = routes.getLength(); i < l; i++) {
+          const route = routes.get(i);
+          if (!route.properties.get("blocked")) {
+            if (!newRoute) {
+              newRoute = route;
+            } else {
+              const newRouteDistance = newRoute.properties.getAll().distance.value;
+              const distance = route.properties.getAll().distance.value;
+              if (newRouteDistance > distance) {
+                newRoute = route;
+              }
+            }
+          }
+        }
+        if (newRoute) {
+          multiRoute.setActiveRoute(newRoute);
+          newRoute.balloon.open();
+        }
+        const activeProperties = multiRoute.getActiveRoute();
+        if (activeProperties) {
+          const { distance } = activeProperties.properties.getAll();
+          if (distance.value > 0 && currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
+            const isMatch = (user?.use_vat || !user) && salePurchaseMode === "sale" && currentBid.vat && !currentBid.vendor_use_vat;
+            const finalPrice = getFinalPrice(
+              currentBid,
+              Math.round(distance.value / 1000),
+              currentBid.price_delivery_per_km,
+              salePurchaseMode,
+              isMatch ? +currentBid.vat : 10
+            );
+            const newLocalBid = {
+              currentBid,
+              useId: user?.id || 0,
+              finalPrice,
+              salePurchaseMode,
+              distance: Math.round(distance.value / 1000).toString(),
+            };
+            if (newLocalBid && currentBid) {
+              if (localBids) {
+                const existBidsIndex = localBids.findIndex(item => {
+                  if (user) {
+                    return item.useId === user.id && item.salePurchaseMode === salePurchaseMode && currentBid.id === item.currentBid.id;
+                  }
+                  return item.useId === 0 && item.salePurchaseMode === salePurchaseMode && currentBid.id === item.currentBid.id;
+                });
+                if (existBidsIndex > -1) {
+                  const newArr = localBids;
+                  newArr[existBidsIndex] = newLocalBid;
+                  localStorage.setItem("bids", JSON.stringify(newArr));
+                } else {
+                  localStorage.setItem("bids", JSON.stringify([...localBids, newLocalBid]));
+                }
+              } else {
+                localStorage.setItem("bids", JSON.stringify([newLocalBid]));
+              }
+            }
+          } else {
+            enqueueSnackbar(intl.formatMessage({ id: "NOTISTACK.DEALS.NO_DISTANCE" }), {
+              variant: "error",
+            });
+          }
+          changeLocalStore();
+        } else {
+          enqueueSnackbar(intl.formatMessage({ id: "NOTISTACK.DEALS.NO_DISTANCE" }), {
+            variant: "error",
+          });
+        }
+        setCurrentBid(null);
+        setLoadDistanation(false);
+      },
+      [ymaps, map, routeRef, currentBid, salePurchaseMode, user, localBids]
+    );
+
+    useEffect(() => {
+      if (points && currentBid && currentBid.location) {
+        const locations = points && points.filter(el => el.active);
+        const position = currentBid.location;
+        if (locations.length > 0) {
+          let closest = locations[0];
+          let closestDistance = distance(closest, position);
+          for (let i = 1; i < locations.length; i++) {
+            if (distance(locations[i], position) < closestDistance) {
+              closestDistance = distance(locations[i], position);
+              closest = locations[i];
+            }
+          }
+          setMySelectedMapPoint(closest);
+        }
+      } else if (!user) {
+        setMySelectedMapPoint(guestLocation?.active ? guestLocation : null);
+      }
+    }, [currentBid, points, user, guestLocation]);
+
+    const mapState = useMemo(() => {
+      if (currentBid && currentBid.location) {
+        return { center: [currentBid.location.lat, currentBid.location.lng], zoom: 7, margin: [10, 10, 10, 10] };
+      } else {
+        return null;
+      }
+    }, [currentBid]);
 
     const getParametrName = useCallback(
       (item: { id: number; value: string; parameter_id: number }) => {
@@ -248,7 +394,7 @@ const Bid = React.memo<IProps>(
                               {newBid
                                 ? formatAsThousands(newBid.finalPrice)
                                 : bid?.price_with_delivery_with_vat
-                                ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
+                                ? `≈ ${formatAsThousands(Math.round(bid.price_with_delivery_with_vat))}`
                                 : "-"}{" "}
                             </div>
                             <div className={innerClasses.rybl}>₽</div>
@@ -329,7 +475,7 @@ const Bid = React.memo<IProps>(
                               {newBid
                                 ? formatAsThousands(newBid.finalPrice)
                                 : bid?.price_with_delivery_with_vat
-                                ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
+                                ? `≈ ${formatAsThousands(Math.round(bid.price_with_delivery_with_vat))}`
                                 : "-"}{" "}
                             </div>
                             <div className={innerClasses.rybl}>₽</div>
@@ -511,12 +657,13 @@ const Bid = React.memo<IProps>(
 
                 <div className={innerClasses.wrapperDrop}>
                   {!isMobile && (
-                    <>
+                    <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                       <div className={innerClasses.textDrop}>{newBid?.distance || bid.distance || "-"}</div>
                       <Button
                         variant="text"
                         color="primary"
                         className={innerClasses.btnCard}
+                        style={{ marginRight: 16, marginBottom: 8 }}
                         onClick={e => {
                           stopProp(e);
                           handleOpenMap(bid);
@@ -524,7 +671,24 @@ const Bid = React.memo<IProps>(
                       >
                         <div className={innerClasses.textCard}>Посмотреть на карте</div>
                       </Button>
-                    </>
+                      {isBestBids && (
+                        <Button
+                          variant="text"
+                          color="primary"
+                          className={innerClasses.btnCard}
+                          style={{ marginBottom: 8 }}
+                          onClick={e => {
+                            e.stopPropagation();
+                            if (!loadDistanation) {
+                              setCurrentBid(bid);
+                              setLoadDistanation(true);
+                            }
+                          }}
+                        >
+                          {loadDistanation ? <CircularProgress size={20} /> : <div className={innerClasses.textCard}>Уточнить цену</div>}
+                        </Button>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
@@ -851,7 +1015,7 @@ const Bid = React.memo<IProps>(
                       variant="text"
                       color="primary"
                       className={innerClasses.btnCard}
-                      style={{ width: "100%", marginBottom: 4, marginTop: 16, padding: "4px 8px" }}
+                      style={{ width: "100%", marginTop: 16, padding: "4px 8px" }}
                       onClick={e => {
                         stopProp(e);
                         handleOpenMap(bid);
@@ -859,6 +1023,23 @@ const Bid = React.memo<IProps>(
                     >
                       <div className={innerClasses.textCard}>Посмотреть на карте</div>
                     </Button>
+                    {isBestBids && (
+                      <Button
+                        variant="text"
+                        color="primary"
+                        className={innerClasses.btnCard}
+                        style={{ width: "100%", marginBottom: 4, marginTop: 4, padding: "4px 8px" }}
+                        onClick={e => {
+                          e.stopPropagation();
+                          if (!loadDistanation) {
+                            setCurrentBid(bid);
+                            setLoadDistanation(true);
+                          }
+                        }}
+                      >
+                        {loadDistanation ? <CircularProgress size={20} /> : <div className={innerClasses.textCard}>Уточнить цену</div>}
+                      </Button>
+                    )}
                     {user && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(user?.roles[0]) && bestAllMyMode === "edit" && (
                       <IconButton size="medium" color="primary" className={innerClasses.iconBtn}>
                         <EmailIcon
@@ -971,6 +1152,20 @@ const Bid = React.memo<IProps>(
               </div>
             )}
           </div>
+        </div>
+        <div style={{ display: "none" }}>
+          {mapState && (
+            <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
+              <Map
+                state={mapState}
+                instanceRef={ref => setMap(ref)}
+                onLoad={ymaps => {
+                  setYmaps(ymaps);
+                }}
+                modules={["templateLayoutFactory", "route", "geoObject.addon.balloon"]}
+              />
+            </YMaps>
+          )}
         </div>
       </>
     );

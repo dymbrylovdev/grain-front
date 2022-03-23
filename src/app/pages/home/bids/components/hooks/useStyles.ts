@@ -192,7 +192,7 @@ export const useBidTableStyles = makeStyles(theme => ({
     marginBottom: 8,
   },
   wrapperNonRow: {
-    marginBottom: 8,
+    // marginBottom: 8,
   },
   price: {
     fontWeight: "bold",

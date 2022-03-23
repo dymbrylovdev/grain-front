@@ -108,6 +108,7 @@ const BidsList: React.FC<IProps> = ({
   const isBuyerTariff = useMemo(() => user?.tariff_matrix?.tariff?.id !== 1, [user]);
   const [showsPhones, setShowsPhones] = useState<number[]>([]);
   const [isShowImage, setIsShowImage] = useState(false);
+  const [changeStore, setChangeStore] = useState(false);
   const [currentImages, setCurrentImages] = useState({
     photos: [""],
     index: 0,
@@ -128,9 +129,12 @@ const BidsList: React.FC<IProps> = ({
   useEffect(() => {
     if (currentMark && currentBid) {
       if (localBids) {
-        const existBidsIndex = localBids.findIndex(
-          item => item.useId === user.id && item.salePurchaseMode === salePurchaseMode && currentBid.id === item.currentBid.id
-        );
+        const existBidsIndex = localBids.findIndex(item => {
+          if (user) {
+            return item.useId === user.id && item.salePurchaseMode === salePurchaseMode && currentBid.id === item.currentBid.id;
+          }
+          return item.useId === 0 && item.salePurchaseMode === salePurchaseMode && currentBid.id === item.currentBid.id;
+        });
         if (existBidsIndex > -1) {
           const newArr = localBids;
           newArr[existBidsIndex] = currentMark;
@@ -148,7 +152,7 @@ const BidsList: React.FC<IProps> = ({
     const storageBids = localStorage.getItem("bids");
     return storageBids ? JSON.parse(storageBids) : null;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bids, user, crops, showYaMap, currentBid, mySelectedMapPoint, ymaps, map, routeRef, salePurchaseMode]);
+  }, [changeStore, bids, user, crops, showYaMap, currentBid, mySelectedMapPoint, ymaps, map, routeRef, salePurchaseMode]);
 
   useEffect(() => {
     window.addEventListener("resize", updateWindowDimensions);
@@ -300,10 +304,11 @@ const BidsList: React.FC<IProps> = ({
   );
 
   const getFinalPrice = useCallback((bid: IBid, distanceKm: number, pricePerKm: number, salePurchaseMode: string, vat: number) => {
+    const newDistance = 100 > distanceKm ? 100 : distanceKm;
     if (salePurchaseMode === "sale") {
-      return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * distanceKm);
+      return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * newDistance);
     } else {
-      return Math.round(bid.price * (vat / 100 + 1) - pricePerKm * distanceKm);
+      return Math.round(bid.price * (vat / 100 + 1) - pricePerKm * newDistance);
     }
   }, []);
 
@@ -326,17 +331,29 @@ const BidsList: React.FC<IProps> = ({
 
       // open active route balloon
       const routes = multiRoute.getRoutes();
+      let newRoute: any = null;
       for (let i = 0, l = routes.getLength(); i < l; i++) {
         const route = routes.get(i);
-        // if (!route.properties.get('blocked')) {
-        multiRoute.setActiveRoute(route);
-        route.balloon.open();
-        break;
-        // }
+        if (!route.properties.get("blocked")) {
+          if (!newRoute) {
+            newRoute = route;
+          } else {
+            const newRouteDistance = newRoute.properties.getAll().distance.value;
+            const distance = route.properties.getAll().distance.value;
+            if (newRouteDistance > distance) {
+              newRoute = route;
+            }
+          }
+        }
+      }
+
+      if (newRoute) {
+        multiRoute.setActiveRoute(newRoute);
+        newRoute.balloon.open();
       }
 
       const activeProperties = multiRoute.getActiveRoute();
-      if (activeProperties && user) {
+      if (activeProperties) {
         const { distance } = activeProperties.properties.getAll();
         if (distance.value > 0 && currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
           const isMatch = (user?.use_vat || !user) && salePurchaseMode === "sale" && currentBid.vat && !currentBid.vendor_use_vat;
@@ -345,11 +362,11 @@ const BidsList: React.FC<IProps> = ({
             Math.round(distance.value / 1000),
             currentBid.price_delivery_per_km,
             salePurchaseMode,
-            isMatch ? +currentBid.vat : 0
+            isMatch ? +currentBid.vat : 10
           );
           const newLocalBid = {
             currentBid,
-            useId: user.id,
+            useId: user?.id || 0,
             finalPrice,
             salePurchaseMode,
             distance: Math.round(distance.value / 1000).toString(),
@@ -404,6 +421,8 @@ const BidsList: React.FC<IProps> = ({
               numberParams={numberParams}
               toggleLocationsModal={toggleLocationsModal}
               handleShowImage={handleShowImage}
+              points={points}
+              changeLocalStore={() => setChangeStore(prev => !prev)}
             />
           ))}
           {!!paginationData && !!fetcher && (
