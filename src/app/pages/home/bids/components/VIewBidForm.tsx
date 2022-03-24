@@ -99,7 +99,7 @@ const ViewBidForm: React.FC<IProps> = ({
 
   const newBid = useMemo(() => {
     if (bid && localBids && localBids.length > 0) {
-      if (me){
+      if (me) {
         return localBids.find(
           item =>
             item.useId === me.id &&
@@ -121,6 +121,9 @@ const ViewBidForm: React.FC<IProps> = ({
   useEffect(() => {
     if (bid?.id) {
       setViewed(bid?.id);
+    }
+    if (bid && bid.price_delivery_per_km) {
+      setPricePerKm(bid.price_delivery_per_km);
     }
   }, [bid]);
 
