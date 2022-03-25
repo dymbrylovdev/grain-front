@@ -183,7 +183,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   }, [currentSaleFilters, currentPurchaseFilters]);
 
   useEffect(() => {
-    if (me) {
+    if (me && me.points && me.points.length) {
       setUserPointsActive(me.points.some(point => point.active === true));
     }
   }, [me]);

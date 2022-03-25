@@ -158,7 +158,7 @@ const Bid = React.memo<IProps>(
             const isMatch = (user?.use_vat || !user) && salePurchaseMode === "sale" && currentBid.vat && !currentBid.vendor_use_vat;
             const finalPrice = getFinalPrice(
               currentBid,
-              Math.round(distance.value / 1000),
+              distance.value / 1000,
               currentBid.price_delivery_per_km,
               salePurchaseMode,
               isMatch ? +currentBid.vat : 10

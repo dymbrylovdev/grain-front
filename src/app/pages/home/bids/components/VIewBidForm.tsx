@@ -88,6 +88,7 @@ const ViewBidForm: React.FC<IProps> = ({
   const [showsPhones, setShowsPhones] = useState(false);
   const [showPlacemark, setShowPlacemark] = useState(false);
   const [pricePerKm, setPricePerKm] = useState(bid?.price_delivery_per_km || 4);
+  const [updatedLocalStorage, setUpdateLocalStorage] = useState(false);
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
 
   const [selectedRoute, setSelectedRoute] = useState<any | null>();
@@ -95,7 +96,7 @@ const ViewBidForm: React.FC<IProps> = ({
   const localBids: ILocalBids[] | null = useMemo(() => {
     const storageBids = localStorage.getItem("bids");
     return storageBids ? JSON.parse(storageBids) : null;
-  }, []);
+  }, [updatedLocalStorage]);
 
   const newBid = useMemo(() => {
     if (bid && localBids && localBids.length > 0) {
@@ -153,10 +154,8 @@ const ViewBidForm: React.FC<IProps> = ({
         (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
           ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
           (!me?.use_vat && me && bid?.vendor_use_vat))
-        ? thousands(
-            Math.round(getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, bid.vat || 10)).toString()
-          )
-        : thousands(Math.round(getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, 0)).toString());
+        ? thousands(getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, bid.vat || 10).toString())
+        : thousands(getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, 0).toString());
     }
     return null;
   }, [selectedRoute, bid, pricePerKm, salePurchaseMode, me]);
@@ -234,6 +233,44 @@ const ViewBidForm: React.FC<IProps> = ({
       const activeProperties = multiRoute.getActiveRoute();
 
       if (activeProperties) {
+        const { distance } = activeProperties.properties.getAll();
+        if (distance.value > 0 && bid && salePurchaseMode && typeof bid.vat === "number") {
+          const isMatch = (me?.use_vat || !me) && salePurchaseMode === "sale" && bid.vat && !bid.vendor_use_vat;
+          const finalPrice = getFinalPrice(
+            bid,
+            distance.value / 1000,
+            bid.price_delivery_per_km,
+            salePurchaseMode,
+            isMatch ? +bid.vat : 10
+          );
+          const newLocalBid = {
+            currentBid: bid,
+            useId: me?.id || 0,
+            finalPrice,
+            salePurchaseMode,
+            distance: Math.round(distance.value / 1000).toString(),
+          };
+          if (newLocalBid && bid) {
+            if (localBids) {
+              const existBidsIndex = localBids.findIndex(item => {
+                if (me) {
+                  return item.useId === me.id && item.salePurchaseMode === salePurchaseMode && bid.id === item.currentBid.id;
+                }
+                return item.useId === 0 && item.salePurchaseMode === salePurchaseMode && bid.id === item.currentBid.id;
+              });
+              if (existBidsIndex > -1) {
+                const newArr = localBids;
+                newArr[existBidsIndex] = newLocalBid;
+                localStorage.setItem("bids", JSON.stringify(newArr));
+              } else {
+                localStorage.setItem("bids", JSON.stringify([...localBids, newLocalBid]));
+              }
+            } else {
+              localStorage.setItem("bids", JSON.stringify([newLocalBid]));
+            }
+            setUpdateLocalStorage(prev => !prev);
+          }
+        }
         setSelectedRoute(activeProperties.properties.getAll());
         // set selected route, update on change
         multiRoute.events.add("activeroutechange", () => {
@@ -243,7 +280,7 @@ const ViewBidForm: React.FC<IProps> = ({
 
       setRouteLoading(false);
     },
-    [ymaps, map, routeRef]
+    [ymaps, map, routeRef, bid, salePurchaseMode, me, localBids]
   );
 
   const getParametrName = useCallback(
@@ -745,14 +782,12 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
-                                          Math.round(
-                                            getFinalPrice(
-                                              bid,
-                                              selectedRoute.distance.value / 1000,
-                                              pricePerKm,
-                                              salePurchaseMode,
-                                              bid.vat || 10
-                                            )
+                                          getFinalPrice(
+                                            bid,
+                                            selectedRoute.distance.value / 1000,
+                                            pricePerKm,
+                                            salePurchaseMode,
+                                            bid.vat || 10
                                           ).toString()
                                         ) + " • "
                                       : ""}
@@ -761,8 +796,12 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
-                                          Math.round(
-                                            getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, 0)
+                                          getFinalPrice(
+                                            bid,
+                                            selectedRoute.distance.value / 1000,
+                                            pricePerKm,
+                                            salePurchaseMode,
+                                            0
                                           ).toString()
                                         ) + " • "
                                       : ""}
@@ -778,14 +817,12 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
-                                          Math.round(
-                                            getFinalPrice(
-                                              bid,
-                                              selectedRoute.distance.value / 1000,
-                                              pricePerKm,
-                                              salePurchaseMode,
-                                              bid.vat || 10
-                                            )
+                                          getFinalPrice(
+                                            bid,
+                                            selectedRoute.distance.value / 1000,
+                                            pricePerKm,
+                                            salePurchaseMode,
+                                            bid.vat || 10
                                           ).toString()
                                         ) + " • "
                                       : ""}
@@ -794,8 +831,12 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
-                                          Math.round(
-                                            getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, 0)
+                                          getFinalPrice(
+                                            bid,
+                                            selectedRoute.distance.value / 1000,
+                                            pricePerKm,
+                                            salePurchaseMode,
+                                            0
                                           ).toString()
                                         ) + " • "
                                       : ""}

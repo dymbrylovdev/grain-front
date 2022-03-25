@@ -1219,14 +1219,12 @@ const BidForm: React.FC<IProps> = ({
                         <b>
                           {selectedRoute
                             ? thousands(
-                                Math.round(
-                                  getFinalPrice(
-                                    bid,
-                                    selectedRoute.distance.value / 1000,
-                                    values.pricePerKm,
-                                    salePurchaseMode,
-                                    bid.vat || 10
-                                  )
+                                getFinalPrice(
+                                  bid,
+                                  selectedRoute.distance.value / 1000,
+                                  values.pricePerKm,
+                                  salePurchaseMode,
+                                  bid.vat || 10
                                 ).toString()
                               ) + " • "
                             : ""}
@@ -1235,9 +1233,7 @@ const BidForm: React.FC<IProps> = ({
                         <b>
                           {selectedRoute
                             ? thousands(
-                                Math.round(
-                                  getFinalPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, 0)
-                                ).toString()
+                                getFinalPrice(bid, selectedRoute.distance.value / 1000, values.pricePerKm, salePurchaseMode, 0).toString()
                               ) + " • "
                             : ""}
                         </b>
