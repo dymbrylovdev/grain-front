@@ -92,13 +92,16 @@ const ViewBidForm: React.FC<IProps> = ({
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
 
   const [selectedRoute, setSelectedRoute] = useState<any | null>();
-
+  const [mapBid, setMapBid] = useState<ILocalBids | null>(null)
   const localBids: ILocalBids[] | null = useMemo(() => {
     const storageBids = localStorage.getItem("bids");
     return storageBids ? JSON.parse(storageBids) : null;
   }, [updatedLocalStorage]);
 
   const newBid = useMemo(() => {
+    if (mapBid){
+      return mapBid
+    }
     if (bid && localBids && localBids.length > 0) {
       if (me) {
         return localBids.find(
@@ -117,7 +120,7 @@ const ViewBidForm: React.FC<IProps> = ({
           (bid.price_delivery_per_km ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString() : false)
       );
     }
-  }, [localBids, bid, salePurchaseMode, me]);
+  }, [localBids, bid, salePurchaseMode, me, mapBid]);
 
   useEffect(() => {
     if (bid?.id) {
@@ -214,6 +217,40 @@ const ViewBidForm: React.FC<IProps> = ({
       const routes = multiRoute.getRoutes();
       for (let i = 0, l = routes.getLength(); i < l; i++) {
         const route = routes.get(i);
+        route.events.add("click", function() {
+          multiRoute.setActiveRoute(route);
+          route.balloon.open();
+          const activeProperties = multiRoute.getActiveRoute();
+          if (activeProperties){
+            const { distance } = activeProperties.properties.getAll();
+            if (distance.value > 0 && bid && salePurchaseMode && typeof bid.vat === "number") {
+              const isMatch = (me?.use_vat || !me) && salePurchaseMode === "sale" && bid.vat && !bid.vendor_use_vat;
+              const finalPrice = getFinalPrice(
+                bid,
+                distance.value / 1000,
+                bid.price_delivery_per_km,
+                salePurchaseMode,
+                isMatch ? +bid.vat : 10
+              );
+              const newLocalBid = {
+                currentBid: bid,
+                useId: me?.id || 0,
+                finalPrice,
+                salePurchaseMode,
+                distance: Math.round(distance.value / 1000).toString(),
+              };
+              if (newLocalBid && bid) {
+                setMapBid(newLocalBid)
+                setUpdateLocalStorage(prev => !prev);
+              }
+            }
+            setSelectedRoute(activeProperties.properties.getAll());
+            // set selected route, update on change
+            multiRoute.events.add("activeroutechange", () => {
+              setSelectedRoute(activeProperties.properties.getAll());
+            });
+          }
+        });
         if (!newRoute) {
           newRoute = route;
         } else {
@@ -277,7 +314,6 @@ const ViewBidForm: React.FC<IProps> = ({
           setSelectedRoute(activeProperties.properties.getAll());
         });
       }
-
       setRouteLoading(false);
     },
     [ymaps, map, routeRef, bid, salePurchaseMode, me, localBids]
