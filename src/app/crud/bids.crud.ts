@@ -111,3 +111,5 @@ export const getBidsXlsUrl = (
   }
   return axios.get(uri, { responseType: "arraybuffer" });
 };
+
+export const archivedBId = (id: number) => axios.put(`/api/bid/archive/${id}`);

@@ -34,6 +34,7 @@ import { IFilterForBids } from "../../../interfaces/filters";
 import { useBidsPageStyles } from "./components/hooks/useStyles";
 import BidTable from "./components/BidTable";
 import { getPoint } from "../../../utils/localPoint";
+import { useArchivedBid } from "./components/hooks/useArchivedBid";
 
 const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps<{ cropId: string }>> = ({
   match: {
@@ -128,6 +129,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
   if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
   const [currentFilters, setCurrentFilters] = useState<IFilterForBids | null>(null);
+  const [archivedBid, loadingArchived, successArchived] = useArchivedBid();
   const dateForExcel = format(new Date(), "dd.MM.yyyy");
   const numberParams = useMemo(() => cropParams && cropParams.filter(item => item.type === "number"), [cropParams]);
   const currentFilterOnCropId = useMemo(() => (salePurchaseMode === "sale" ? currentSaleFilters[cropId] : currentPurchaseFilters[cropId]), [
@@ -322,7 +324,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
       setAlertOpen(false);
       clearDel();
     }
-    if (delSuccess || editSuccess) {
+    if (delSuccess || editSuccess || successArchived) {
       switch (bestAllMyMode) {
         case "best-bids":
           if (salePurchaseMode === "sale") {
@@ -388,6 +390,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
     editSuccess,
     guestLocation,
     me,
+    successArchived,
   ]);
 
   useEffect(() => {
@@ -592,7 +595,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
               points={me?.points}
               numberParams={numberParams}
               toggleLocationsModal={toggleLocationsModal}
-              archive={({ id, is_archived }) => edit(id, { is_archived })}
+              archive={({ id, is_archived }) => (is_archived ? archivedBid(id) : edit(id, { is_archived }))}
               currentCropName={currentCropName}
               guestPoint={guestPoint}
             />
@@ -617,7 +620,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 points={me?.points}
                 numberParams={numberParams}
                 toggleLocationsModal={toggleLocationsModal}
-                archive={({ id, is_archived }) => edit(id, { is_archived })}
+                archive={({ id, is_archived }) => (is_archived ? archivedBid(id) : edit(id, { is_archived }))}
                 currentCropName={currentCropName}
                 guestPoint={guestPoint}
               />
@@ -662,7 +665,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             points={me?.points}
             numberParams={numberParams}
             toggleLocationsModal={toggleLocationsModal}
-            archive={({ id, is_archived }) => edit(id, { is_archived })}
+            archive={({ id, is_archived }) => (is_archived ? archivedBid(id) : edit(id, { is_archived }))}
             currentCropName={currentCropName}
             guestPoint={guestPoint}
           />

@@ -73,7 +73,7 @@ const Autocomplete: React.FC<IProps> = ({
         // console.log('fetch for:', location);
         fetchLocations(location);
         setLoadingLocal(false);
-      }, 4000);
+      }, 1500);
 
       return () => {
         clearTimeout(fetchDelay);
@@ -97,6 +97,8 @@ const Autocomplete: React.FC<IProps> = ({
       loading={loading || loadingLocal}
       getOptionLabel={option => option.text}
       onChange={(_: any, val: any) => {
+        console.log('val', val);
+        
         if (val) {
           setSelectedLocation(val);
           setEditableLocation(false);
