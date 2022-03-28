@@ -437,7 +437,7 @@ const ViewBidForm: React.FC<IProps> = ({
                     className={classes.wrapperPrice}
                     style={{ marginBottom: salePurchaseMode === "purchase" && selectedPrice !== "-" ? 0 : 8 }}
                   >
-                    <div className={classes.price}>{`${newBid ? "" : "≈ "}${selectedPrice}`}</div>
+                    <div className={classes.price}>{`${selectedPrice}`}</div>
                     <div className={classes.rybl}>₽</div>
                     {selectedPrice !== "-" && (salePurchaseMode === "sale" || salePurchaseMode === "purchase") && (
                       <div className={classes.nds}>
