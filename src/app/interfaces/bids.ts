@@ -128,7 +128,7 @@ export interface IBidToRequest {
   is_sending_email?: number;
   is_sending_sms?: number;
   is_archived?: boolean;
-  archived_to?: Date;
+  archived_to?: Date | null;
 }
 
 export interface IBestBids {

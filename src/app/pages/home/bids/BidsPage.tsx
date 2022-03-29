@@ -595,7 +595,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
               points={me?.points}
               numberParams={numberParams}
               toggleLocationsModal={toggleLocationsModal}
-              archive={({ id, is_archived }) => (is_archived ? archivedBid(id) : edit(id, { is_archived }))}
+              archive={({ id, is_archived }) => (is_archived ? archivedBid(id) : edit(id, { archived_to: null }))}
               currentCropName={currentCropName}
               guestPoint={guestPoint}
             />
@@ -620,7 +620,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 points={me?.points}
                 numberParams={numberParams}
                 toggleLocationsModal={toggleLocationsModal}
-                archive={({ id, is_archived }) => (is_archived ? archivedBid(id) : edit(id, { is_archived }))}
+                archive={({ id, is_archived }) => (is_archived ? archivedBid(id) : edit(id, { archived_to: null }))}
                 currentCropName={currentCropName}
                 guestPoint={guestPoint}
               />
@@ -665,7 +665,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
             points={me?.points}
             numberParams={numberParams}
             toggleLocationsModal={toggleLocationsModal}
-            archive={({ id, is_archived }) => (is_archived ? archivedBid(id) : edit(id, { is_archived }))}
+            archive={({ id, is_archived }) => (is_archived ? archivedBid(id) : edit(id, { archived_to: null }))}
             currentCropName={currentCropName}
             guestPoint={guestPoint}
           />
