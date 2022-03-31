@@ -851,7 +851,7 @@ const ViewBidForm: React.FC<IProps> = ({
                               </div>
                             ) : !me && guestPoint?.active ? (
                               <>
-                                {salePurchaseMode === "sale" && (bid?.vendor_use_vat || !me) ? (
+                                {salePurchaseMode === "sale" && !bid?.vendor_use_vat && !me ? (
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
