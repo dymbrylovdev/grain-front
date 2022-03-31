@@ -528,6 +528,14 @@ export const useViewBidStyles = makeStyles(theme => ({
     padding: 0,
     margin: 0,
   },
+  btnVendor: {
+    cursor: "pointer",
+    width: 90,
+    borderBottom: "0.5px solid black",
+    "&:hover": {
+      opacity: 0.7,
+    },
+  },
   card: {
     paddingLeft: 16,
     paddingRight: 16,

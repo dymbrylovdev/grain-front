@@ -10,7 +10,7 @@ export const setMeValues = (values: { [key: string]: any }) => {
         }
       }
     } else {
-      if (key === "fio" || key === "phone" || key === "email") {
+      if (key === "fio" || key === "phone" || key === "email" || key === "firstname" || key === "lastname" || key === "surname") {
         newValues[key] = "";
       }
     }

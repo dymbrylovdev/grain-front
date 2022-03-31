@@ -643,7 +643,15 @@ const ViewBidForm: React.FC<IProps> = ({
                 )}
                 <div className={classes.wrapperVendor}>
                   <div>
-                    <div className={classes.nameParameter}>Продавец:</div>
+                    <div className={classes.nameParameter} style={{}}>
+                      {me?.is_admin ? (
+                        <p className={classes.btnVendor} onClick={() => history.push(`/user/edit/${bid.vendor.id}`)}>
+                          Продавец:
+                        </p>
+                      ) : (
+                        <p>Продавец:</p>
+                      )}
+                    </div>
                     {Boolean(bid.vendor.surname || bid.vendor.firstName || bid.vendor.lastName) && (
                       <div className={classes.vendorCompany}>
                         {`${bid.vendor.surname || ""} ${bid.vendor.firstName || ""} ${bid.vendor.lastName || ""}`}
