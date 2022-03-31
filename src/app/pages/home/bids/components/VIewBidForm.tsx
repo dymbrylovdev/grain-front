@@ -229,10 +229,7 @@ const ViewBidForm: React.FC<IProps> = ({
             const newDistance = distanceArr ? Number(distanceArr[0]) : null;
             if (newDistance && newDistance > 0 && bid && salePurchaseMode && typeof bid.vat === "number") {
               setMapDistance(newDistance);
-              const isVat =
-                ((me?.use_vat || !me) && !bid.vendor_use_vat) ||
-                (!me?.use_vat && me && bid.vendor_use_vat) ||
-                ((me?.use_vat || !me) && bid.vendor_use_vat);
+              const isVat = (me?.use_vat || !me) && !bid.vendor_use_vat;
               const isMatch = isVat && salePurchaseMode === "sale";
               const finalPrice = getFinalPrice(bid, newDistance, bid.price_delivery_per_km, salePurchaseMode, isMatch ? +bid.vat : 0);
               const newLocalBid = {
@@ -278,10 +275,7 @@ const ViewBidForm: React.FC<IProps> = ({
         const newDistance = distanceArr ? Number(distanceArr[0]) : null;
         if (newDistance && newDistance > 0 && bid && salePurchaseMode && typeof bid.vat === "number") {
           setMapDistance(newDistance);
-          const isVat =
-            ((me?.use_vat || !me) && !bid.vendor_use_vat) ||
-            (!me?.use_vat && me && bid.vendor_use_vat) ||
-            ((me?.use_vat || !me) && bid.vendor_use_vat);
+          const isVat = (me?.use_vat || !me) && !bid.vendor_use_vat;
           const isMatch = isVat && salePurchaseMode === "sale";
           const finalPrice = getFinalPrice(bid, newDistance, bid.price_delivery_per_km, salePurchaseMode, isMatch ? +bid.vat : 0);
           const newLocalBid = {

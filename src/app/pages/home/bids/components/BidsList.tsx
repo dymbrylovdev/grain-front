@@ -360,10 +360,7 @@ const BidsList: React.FC<IProps> = ({
         const distanceArr = /\d+/gm.exec(distance.text.replace(/\s/g, ""));
         const newDistance = distanceArr ? Number(distanceArr[0]) : null;
         if (newDistance && newDistance > 0 && currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
-          const isVat =
-            ((user?.use_vat || !user) && !currentBid.vendor_use_vat) ||
-            (!user?.use_vat && user && currentBid.vendor_use_vat) ||
-            ((user?.use_vat || !user) && currentBid.vendor_use_vat);
+          const isVat = (user?.use_vat || !user) && !currentBid.vendor_use_vat;
           const isMatch = isVat && salePurchaseMode === "sale";
           const finalPrice = getFinalPrice(
             currentBid,
