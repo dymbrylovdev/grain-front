@@ -825,7 +825,7 @@ const ViewBidForm: React.FC<IProps> = ({
                                             mapDistance || selectedRoute.distance.value / 1000,
                                             pricePerKm,
                                             salePurchaseMode,
-                                            bid.vat || 10
+                                            bid.vat || 0
                                           ).toString()
                                         ) + " • "
                                       : ""}
@@ -860,7 +860,7 @@ const ViewBidForm: React.FC<IProps> = ({
                                             mapDistance || selectedRoute.distance.value / 1000,
                                             pricePerKm,
                                             salePurchaseMode,
-                                            bid.vat || 10
+                                            bid.vat || 0
                                           ).toString()
                                         ) + " • "
                                       : ""}
