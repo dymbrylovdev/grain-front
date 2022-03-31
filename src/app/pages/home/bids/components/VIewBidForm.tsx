@@ -816,11 +816,7 @@ const ViewBidForm: React.FC<IProps> = ({
                           {!!bid?.point_prices &&
                             (bid.point_prices.length > 0 ? (
                               <div className={classes.calcVal}>
-                                {salePurchaseMode === "sale" &&
-                                bid &&
-                                (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
-                                  ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
-                                  (me && !me?.use_vat && bid?.vendor_use_vat)) ? (
+                                {salePurchaseMode === "sale" && bid && (me?.use_vat || !me) && !bid?.vendor_use_vat ? (
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
@@ -904,22 +900,16 @@ const ViewBidForm: React.FC<IProps> = ({
                             bid.point_prices &&
                             (bid.point_prices.length > 0 ? (
                               <div className={classes.calcVal}>
-                                {salePurchaseMode === "sale" &&
-                                bid &&
-                                (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
-                                  ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
-                                  (me && !me?.use_vat && bid?.vendor_use_vat)) ? (
+                                {salePurchaseMode === "sale" && bid && ((me && me.use_vat) || !me) && !bid?.vendor_use_vat ? (
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
-                                          Math.round(
-                                            getDeliveryPrice(
-                                              bid,
-                                              selectedRoute.distance.value / 1000,
-                                              pricePerKm,
-                                              salePurchaseMode,
-                                              bid.vat || 10
-                                            )
+                                          getDeliveryPrice(
+                                            bid,
+                                            mapDistance || selectedRoute.distance.value / 1000,
+                                            pricePerKm,
+                                            salePurchaseMode,
+                                            bid.vat || 10
                                           ).toString()
                                         ) + " • "
                                       : ""}
@@ -928,8 +918,12 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
-                                          Math.round(
-                                            getDeliveryPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, 0)
+                                          getDeliveryPrice(
+                                            bid,
+                                            mapDistance || selectedRoute.distance.value / 1000,
+                                            pricePerKm,
+                                            salePurchaseMode,
+                                            0
                                           ).toString()
                                         ) + " • "
                                       : ""}
@@ -945,14 +939,12 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
-                                          Math.round(
-                                            getDeliveryPrice(
-                                              bid,
-                                              selectedRoute.distance.value / 1000,
-                                              pricePerKm,
-                                              salePurchaseMode,
-                                              bid.vat || 10
-                                            )
+                                          getDeliveryPrice(
+                                            bid,
+                                            mapDistance || selectedRoute.distance.value / 1000,
+                                            pricePerKm,
+                                            salePurchaseMode,
+                                            bid.vat || 10
                                           ).toString()
                                         ) + " • "
                                       : ""}
@@ -961,8 +953,12 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <b className={classes.calcVal}>
                                     {selectedRoute
                                       ? thousands(
-                                          Math.round(
-                                            getDeliveryPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, 0)
+                                          getDeliveryPrice(
+                                            bid,
+                                            (mapDistance && mapDistance) || selectedRoute.distance.value / 1000,
+                                            pricePerKm,
+                                            salePurchaseMode,
+                                            0
                                           ).toString()
                                         ) + " • "
                                       : ""}
