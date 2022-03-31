@@ -168,6 +168,8 @@ export const getFinalPrice = (bid: IBid, distanceKm: number, pricePerKm: number,
   const newDistance = 100 > distanceKm ? 100 : distanceKm;
   if (salePurchaseMode === "sale") {
     return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * newDistance);
+  } else if (salePurchaseMode === "purchase") {
+    return Math.round(bid.price - pricePerKm * newDistance);
   } else {
     return Math.round(bid.price * (vat / 100 + 1) - pricePerKm * newDistance);
   }

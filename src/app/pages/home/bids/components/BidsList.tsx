@@ -307,6 +307,8 @@ const BidsList: React.FC<IProps> = ({
     const newDistance = 100 > distanceKm ? 100 : distanceKm;
     if (salePurchaseMode === "sale") {
       return Math.round(bid.price * (vat / 100 + 1) + pricePerKm * newDistance);
+    } else if (salePurchaseMode === "purchase") {
+      return Math.round(bid.price - pricePerKm * newDistance);
     } else {
       return Math.round(bid.price * (vat / 100 + 1) - pricePerKm * newDistance);
     }
@@ -355,21 +357,27 @@ const BidsList: React.FC<IProps> = ({
       const activeProperties = multiRoute.getActiveRoute();
       if (activeProperties) {
         const { distance } = activeProperties.properties.getAll();
-        if (distance.value > 0 && currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
-          const isMatch = (user?.use_vat || !user) && salePurchaseMode === "sale" && currentBid.vat && !currentBid.vendor_use_vat;
+        const distanceArr = /\d+/gm.exec(distance.text.replace(/\s/g, ""));
+        const newDistance = distanceArr ? Number(distanceArr[0]) : null;
+        if (newDistance && newDistance > 0 && currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
+          const isVat =
+            ((user?.use_vat || !user) && !currentBid.vendor_use_vat) ||
+            (!user?.use_vat && user && currentBid.vendor_use_vat) ||
+            ((user?.use_vat || !user) && currentBid.vendor_use_vat);
+          const isMatch = isVat && salePurchaseMode === "sale";
           const finalPrice = getFinalPrice(
             currentBid,
-            distance.value / 1000,
+            newDistance,
             currentBid.price_delivery_per_km,
             salePurchaseMode,
-            isMatch ? +currentBid.vat : 10
+            isMatch ? +currentBid.vat : 0
           );
           const newLocalBid = {
             currentBid,
             useId: user?.id || 0,
             finalPrice,
             salePurchaseMode,
-            distance: Math.round(distance.value / 1000).toString(),
+            distance: newDistance.toString(),
           };
           setCurrentMark(newLocalBid);
         }

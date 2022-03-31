@@ -90,17 +90,17 @@ const ViewBidForm: React.FC<IProps> = ({
   const [pricePerKm, setPricePerKm] = useState(bid?.price_delivery_per_km || 4);
   const [updatedLocalStorage, setUpdateLocalStorage] = useState(false);
   const [mySelectedMapPoint, setMySelectedMapPoint] = useState<ILocation | null>();
-
+  const [mapDistance, setMapDistance] = useState<number | null>(null);
   const [selectedRoute, setSelectedRoute] = useState<any | null>();
-  const [mapBid, setMapBid] = useState<ILocalBids | null>(null)
+  const [mapBid, setMapBid] = useState<ILocalBids | null>(null);
   const localBids: ILocalBids[] | null = useMemo(() => {
     const storageBids = localStorage.getItem("bids");
     return storageBids ? JSON.parse(storageBids) : null;
   }, [updatedLocalStorage]);
 
   const newBid = useMemo(() => {
-    if (mapBid){
-      return mapBid
+    if (mapBid) {
+      return mapBid;
     }
     if (bid && localBids && localBids.length > 0) {
       if (me) {
@@ -157,11 +157,13 @@ const ViewBidForm: React.FC<IProps> = ({
         (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
           ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
           (!me?.use_vat && me && bid?.vendor_use_vat))
-        ? thousands(getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, bid.vat || 10).toString())
-        : thousands(getFinalPrice(bid, selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, 0).toString());
+        ? thousands(
+            getFinalPrice(bid, mapDistance || selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, bid.vat || 10).toString()
+          )
+        : thousands(getFinalPrice(bid, mapDistance || selectedRoute.distance.value / 1000, pricePerKm, salePurchaseMode, 0).toString());
     }
     return null;
-  }, [selectedRoute, bid, pricePerKm, salePurchaseMode, me]);
+  }, [selectedRoute, bid, pricePerKm, salePurchaseMode, me, mapDistance]);
 
   const selectedPrice = useMemo(() => {
     if (!me) {
@@ -221,26 +223,27 @@ const ViewBidForm: React.FC<IProps> = ({
           multiRoute.setActiveRoute(route);
           route.balloon.open();
           const activeProperties = multiRoute.getActiveRoute();
-          if (activeProperties){
+          if (activeProperties) {
             const { distance } = activeProperties.properties.getAll();
-            if (distance.value > 0 && bid && salePurchaseMode && typeof bid.vat === "number") {
-              const isMatch = (me?.use_vat || !me) && salePurchaseMode === "sale" && bid.vat && !bid.vendor_use_vat;
-              const finalPrice = getFinalPrice(
-                bid,
-                distance.value / 1000,
-                bid.price_delivery_per_km,
-                salePurchaseMode,
-                isMatch ? +bid.vat : 10
-              );
+            const distanceArr = /\d+/gm.exec(distance.text);
+            const newDistance = distanceArr ? Number(distanceArr[0]) : null;
+            if (newDistance && newDistance > 0 && bid && salePurchaseMode && typeof bid.vat === "number") {
+              setMapDistance(newDistance);
+              const isVat =
+                ((me?.use_vat || !me) && !bid.vendor_use_vat) ||
+                (!me?.use_vat && me && bid.vendor_use_vat) ||
+                ((me?.use_vat || !me) && bid.vendor_use_vat);
+              const isMatch = isVat && salePurchaseMode === "sale";
+              const finalPrice = getFinalPrice(bid, newDistance, bid.price_delivery_per_km, salePurchaseMode, isMatch ? +bid.vat : 0);
               const newLocalBid = {
                 currentBid: bid,
                 useId: me?.id || 0,
                 finalPrice,
                 salePurchaseMode,
-                distance: Math.round(distance.value / 1000).toString(),
+                distance: newDistance.toString(),
               };
               if (newLocalBid && bid) {
-                setMapBid(newLocalBid)
+                setMapBid(newLocalBid);
                 setUpdateLocalStorage(prev => !prev);
               }
             }
@@ -271,21 +274,22 @@ const ViewBidForm: React.FC<IProps> = ({
 
       if (activeProperties) {
         const { distance } = activeProperties.properties.getAll();
-        if (distance.value > 0 && bid && salePurchaseMode && typeof bid.vat === "number") {
-          const isMatch = (me?.use_vat || !me) && salePurchaseMode === "sale" && bid.vat && !bid.vendor_use_vat;
-          const finalPrice = getFinalPrice(
-            bid,
-            distance.value / 1000,
-            bid.price_delivery_per_km,
-            salePurchaseMode,
-            isMatch ? +bid.vat : 10
-          );
+        const distanceArr = /\d+/gm.exec(distance.text.replace(/\s/g, ""));
+        const newDistance = distanceArr ? Number(distanceArr[0]) : null;
+        if (newDistance && newDistance > 0 && bid && salePurchaseMode && typeof bid.vat === "number") {
+          setMapDistance(newDistance);
+          const isVat =
+            ((me?.use_vat || !me) && !bid.vendor_use_vat) ||
+            (!me?.use_vat && me && bid.vendor_use_vat) ||
+            ((me?.use_vat || !me) && bid.vendor_use_vat);
+          const isMatch = isVat && salePurchaseMode === "sale";
+          const finalPrice = getFinalPrice(bid, newDistance, bid.price_delivery_per_km, salePurchaseMode, isMatch ? +bid.vat : 0);
           const newLocalBid = {
             currentBid: bid,
             useId: me?.id || 0,
             finalPrice,
             salePurchaseMode,
-            distance: Math.round(distance.value / 1000).toString(),
+            distance: newDistance.toString(),
           };
           if (newLocalBid && bid) {
             if (localBids) {
@@ -591,9 +595,9 @@ const ViewBidForm: React.FC<IProps> = ({
                               <div className={classes.price}>{formatAsThousands(Math.round(bid.price))} </div>
                               <div className={classes.rybl}>₽</div>
                               <div className={classes.nds}>
-                                {((user?.use_vat || !user) && !bid.vendor_use_vat) ||
-                                (!user?.use_vat && user && bid.vendor_use_vat) ||
-                                ((user?.use_vat || !user) && bid.vendor_use_vat)
+                                {((me?.use_vat || !me) && !bid.vendor_use_vat) ||
+                                (!me?.use_vat && me && bid.vendor_use_vat) ||
+                                ((me?.use_vat || !me) && bid.vendor_use_vat)
                                   ? "Цена указана с НДС"
                                   : "Цена указана без НДС"}{" "}
                               </div>
@@ -820,7 +824,7 @@ const ViewBidForm: React.FC<IProps> = ({
                                       ? thousands(
                                           getFinalPrice(
                                             bid,
-                                            selectedRoute.distance.value / 1000,
+                                            mapDistance || selectedRoute.distance.value / 1000,
                                             pricePerKm,
                                             salePurchaseMode,
                                             bid.vat || 10
@@ -834,7 +838,7 @@ const ViewBidForm: React.FC<IProps> = ({
                                       ? thousands(
                                           getFinalPrice(
                                             bid,
-                                            selectedRoute.distance.value / 1000,
+                                            mapDistance || selectedRoute.distance.value / 1000,
                                             pricePerKm,
                                             salePurchaseMode,
                                             0
@@ -855,7 +859,7 @@ const ViewBidForm: React.FC<IProps> = ({
                                       ? thousands(
                                           getFinalPrice(
                                             bid,
-                                            selectedRoute.distance.value / 1000,
+                                            mapDistance || selectedRoute.distance.value / 1000,
                                             pricePerKm,
                                             salePurchaseMode,
                                             bid.vat || 10
@@ -869,7 +873,7 @@ const ViewBidForm: React.FC<IProps> = ({
                                       ? thousands(
                                           getFinalPrice(
                                             bid,
-                                            selectedRoute.distance.value / 1000,
+                                            mapDistance || selectedRoute.distance.value / 1000,
                                             pricePerKm,
                                             salePurchaseMode,
                                             0
