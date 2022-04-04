@@ -96,6 +96,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
   const [map, setMap] = useState<any>();
   const [ymaps, setYmaps] = useState<any>();
   const [localDistance, setLocalDistance] = useState<number | null>(null);
+  const isManager = useMemo(() => accessByRoles(me, ["ROLE_MANAGER"]), [me]);
   const linkToContact = (dealType: "sale" | "purchase") => {
     if (deal && me) {
       let contactViewCount = me.contact_view_count;
@@ -640,7 +641,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                             {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
                           </Button>
 
-                          {(deal.sale_bid.author.id === me?.id || me?.is_admin) && !deal.sale_bid.is_archived && (
+                          {(deal.sale_bid.author.id === me?.id || me?.is_admin || isManager) && !deal.sale_bid.is_archived && (
                             <Button onClick={() => setArchiveBid({ id: deal.sale_bid.id, type: "sale" })}>
                               {intl.formatMessage({ id: "DEALS.TABLE.ARCHIVE_TEXT" })}
                             </Button>
@@ -651,7 +652,7 @@ const DealViewPage: React.FC<TPropsFromRedux &
                             {intl.formatMessage({ id: "DEALS.TABLE.EDIT_TEXT" })}
                           </Button>
 
-                          {(deal.purchase_bid.author.id === me?.id || me?.is_admin) && !deal.purchase_bid.is_archived && (
+                          {(deal.purchase_bid.author.id === me?.id || me?.is_admin || isManager) && !deal.purchase_bid.is_archived && (
                             <Button onClick={() => setArchiveBid({ id: deal.purchase_bid.id, type: "purchase" })}>
                               {intl.formatMessage({ id: "DEALS.TABLE.ARCHIVE_TEXT" })}
                             </Button>
