@@ -1,17 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
-import {
-  makeStyles,
-  TextField,
-  Divider,
-  IconButton,
-  Grid,
-  Paper,
-  Button,
-  FormControlLabel,
-  Checkbox,
-} from "@material-ui/core";
+import { makeStyles, TextField, Divider, IconButton, Grid, Paper, Button, FormControlLabel, Checkbox } from "@material-ui/core";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
@@ -59,9 +49,7 @@ const useInnerStyles = makeStyles(theme => ({
   },
 }));
 
-const UserBidFiltersEdit: React.FC<TPropsFromRedux &
-  WrappedComponentProps &
-  RouteComponentProps<{ id: string; userId: string }>> = ({
+const UserBidFiltersEdit: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps<{ id: string; userId: string }>> = ({
   match: {
     params: { id, userId },
   },
@@ -129,6 +117,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
   const history = useHistory();
   const isEditable = match.url.indexOf("view") === -1;
   const isNew = match.url.indexOf("new") !== -1;
+  const userFilter = useMemo(() => userBidFilters?.filters.find(item => item.id === +id), [userBidFilters, id]);
   // let salePurchaseMode: "sale" | "purchase" = "sale";
   // if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
   // if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";
@@ -161,13 +150,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
       );
       clearCreateUserFilter();
     }
-  }, [
-    clearCreateUserFilter,
-    createUserFilterError,
-    createUserFilterSuccess,
-    enqueueSnackbar,
-    intl,
-  ]);
+  }, [clearCreateUserFilter, createUserFilterError, createUserFilterSuccess, enqueueSnackbar, intl]);
 
   useEffect(() => {
     if (delError) {
@@ -196,11 +179,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
   useEffect(() => {
     if (delSuccess) {
       if (salePurchaseMode === "sale") {
-        if (
-          !!deleteFilterId &&
-          currentSaleFilters[deleteFilterCropId] &&
-          currentSaleFilters[deleteFilterCropId].id === deleteFilterId
-        ) {
+        if (!!deleteFilterId && currentSaleFilters[deleteFilterCropId] && currentSaleFilters[deleteFilterCropId].id === deleteFilterId) {
           setCurrentSaleFilter(deleteFilterCropId, undefined);
         }
       }
@@ -233,7 +212,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
   }, [createUserFilterSuccess, editSuccess, history, userId]);
 
   useEffect(() => {
-    salePurchaseMode && fetchUserBidFilters({ id: +userId});
+    salePurchaseMode && fetchUserBidFilters({ id: +userId });
   }, [fetchUserBidFilters, userId]);
 
   useEffect(() => {
@@ -278,13 +257,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
         description={undefined}
       />
       <Formik
-        initialValues={
-          +id
-            ? fromApiToFilter(
-                userBidFilters?.filters.find(item => item.id === +id) as IMyFilterItem
-              )
-            : { name: "" }
-        }
+        initialValues={+id ? fromApiToFilter(userBidFilters?.filters.find(item => item.id === +id) as IMyFilterItem) : { name: "" }}
         onSubmit={(values, { setStatus, setSubmitting }) => {
           let params: { [x: string]: any } = { ...values };
           params.name = values.name.trim();
@@ -293,7 +266,8 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
             itemById(userBidFilters?.filters, +id)?.point_prices.forEach(item => {
               params.point_prices.push({ point_id: item.point.id, price: item.price });
             });
-          params.bid_type = salePurchaseMode;
+
+          params.bid_type = userFilter?.bid_type || salePurchaseMode;
           cropParams &&
             (+id
               ? editFilter({
@@ -366,12 +340,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
                 onChange={(e: any, val: ICrop | null) => {
                   const now = new Date();
                   if (val) {
-                    setFieldValue(
-                      "name",
-                      `${val.name} ${now.toLocaleDateString()} - ${now
-                        .toLocaleTimeString()
-                        .slice(0, -3)}`
-                    );
+                    setFieldValue("name", `${val.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`);
                   }
                   setFieldValue("cropId", val?.id || "");
                   !!val?.id ? fetchCropParams(val.id) : clearCropParams();
@@ -409,12 +378,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
                         .filter(item => item.type === "enum")
                         .map(param => (
                           <Col key={param.id}>
-                            <CheckBoxParamGroup
-                              param={param}
-                              values={values}
-                              handleChange={handleChange}
-                              isEditable={isEditable}
-                            />
+                            <CheckBoxParamGroup param={param} values={values} handleChange={handleChange} isEditable={isEditable} />
                           </Col>
                         ))}
                     </Row>
@@ -446,9 +410,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
                               ? {
                                   inputComponent: NumberFormatCustom as any,
                                   endAdornment: (
-                                    <IconButton
-                                      onClick={() => setFieldValue("max_payment_term", "")}
-                                    >
+                                    <IconButton onClick={() => setFieldValue("max_payment_term", "")}>
                                       <CloseIcon />
                                     </IconButton>
                                   ),
@@ -600,9 +562,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
 
                       <FormControlLabel
                         className={classes.switcher}
-                        control={
-                          <Checkbox checked={values.is_sending_sms} onChange={handleChange} />
-                        }
+                        control={<Checkbox checked={values.is_sending_sms} onChange={handleChange} />}
                         label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SMS.SENDING" })}
                         name="is_sending_sms"
                         disabled={!isEditable || !me?.phone}
@@ -618,14 +578,8 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
                       className={innerClasses.buttonContainer}
                     >
                       <Grid item>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          onClick={() => history.push(`/${salePurchaseMode}/filters`)}
-                        >
-                          {isEditable
-                            ? intl.formatMessage({ id: "ALL.BUTTONS.CANCEL" })
-                            : intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                        <Button variant="outlined" color="primary" onClick={() => history.push(`/${salePurchaseMode}/filters`)}>
+                          {isEditable ? intl.formatMessage({ id: "ALL.BUTTONS.CANCEL" }) : intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
                         </Button>
                       </Grid>
                       {isEditable && (
@@ -638,9 +592,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux &
                               handleSubmit();
                             }}
                           >
-                            {+id
-                              ? intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })
-                              : intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })}
+                            {+id ? intl.formatMessage({ id: "ALL.BUTTONS.SAVE" }) : intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })}
                           </ButtonWithLoader>
                         </Grid>
                       )}
