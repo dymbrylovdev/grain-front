@@ -23,9 +23,9 @@ export interface ILocalBids {
   finalPrice: number;
   salePurchaseMode: "sale" | "purchase" | string;
   distance: any;
-  userLocation: {
-    lat: number;
-    lng: number;
+  userLocation?: {
+    lat?: number;
+    lng?: number;
   };
 }
 

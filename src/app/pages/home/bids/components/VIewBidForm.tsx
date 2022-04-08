@@ -111,8 +111,8 @@ const ViewBidForm: React.FC<IProps> = ({
             item.salePurchaseMode === salePurchaseMode &&
             item.currentBid.id === bid.id &&
             userPoint &&
-            userPoint.lat === item.userLocation.lat &&
-            userPoint.lng === item.userLocation.lng &&
+            userPoint.lat === item.userLocation?.lat &&
+            userPoint.lng === item.userLocation?.lng &&
             (bid.price_delivery_per_km ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString() : false)
         );
       }
@@ -122,8 +122,8 @@ const ViewBidForm: React.FC<IProps> = ({
           item.salePurchaseMode === salePurchaseMode &&
           item.currentBid.id === bid.id &&
           userPoint &&
-          userPoint.lat === item.userLocation.lat &&
-          userPoint.lng === item.userLocation.lng &&
+          userPoint.lat === item.userLocation?.lat &&
+          userPoint.lng === item.userLocation?.lng &&
           (bid.price_delivery_per_km ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString() : false)
       );
     }
