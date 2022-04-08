@@ -23,6 +23,10 @@ export interface ILocalBids {
   finalPrice: number;
   salePurchaseMode: "sale" | "purchase" | string;
   distance: any;
+  userLocation: {
+    lat: number;
+    lng: number;
+  };
 }
 
 interface IProps {
@@ -375,6 +379,10 @@ const BidsList: React.FC<IProps> = ({
             finalPrice,
             salePurchaseMode,
             distance: newDistance.toString(),
+            userLocation: {
+              lat: pointB.lat,
+              lng: pointB.lng,
+            },
           };
           setCurrentMark(newLocalBid);
         }

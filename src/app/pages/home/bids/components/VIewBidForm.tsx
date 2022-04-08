@@ -103,12 +103,16 @@ const ViewBidForm: React.FC<IProps> = ({
       return mapBid;
     }
     if (bid && localBids && localBids.length > 0) {
+      const userPoint = bid.point_prices && bid.point_prices.length && bid.point_prices[0].point;
       if (me) {
         return localBids.find(
           item =>
             item.useId === me.id &&
             item.salePurchaseMode === salePurchaseMode &&
             item.currentBid.id === bid.id &&
+            userPoint &&
+            userPoint.lat === item.userLocation.lat &&
+            userPoint.lng === item.userLocation.lng &&
             (bid.price_delivery_per_km ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString() : false)
         );
       }
@@ -117,6 +121,9 @@ const ViewBidForm: React.FC<IProps> = ({
           item.useId === 0 &&
           item.salePurchaseMode === salePurchaseMode &&
           item.currentBid.id === bid.id &&
+          userPoint &&
+          userPoint.lat === item.userLocation.lat &&
+          userPoint.lng === item.userLocation.lng &&
           (bid.price_delivery_per_km ? item.currentBid.price_delivery_per_km.toString() === bid.price_delivery_per_km.toString() : false)
       );
     }
@@ -238,6 +245,10 @@ const ViewBidForm: React.FC<IProps> = ({
                 finalPrice,
                 salePurchaseMode,
                 distance: newDistance.toString(),
+                userLocation: {
+                  lat: pointB.lat,
+                  lng: pointB.lng,
+                },
               };
               if (newLocalBid && bid) {
                 setMapBid(newLocalBid);
@@ -284,6 +295,10 @@ const ViewBidForm: React.FC<IProps> = ({
             finalPrice,
             salePurchaseMode,
             distance: newDistance.toString(),
+            userLocation: {
+              lat: pointB.lat,
+              lng: pointB.lng,
+            },
           };
           if (newLocalBid && bid) {
             if (localBids) {
