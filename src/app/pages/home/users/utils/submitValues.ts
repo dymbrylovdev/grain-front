@@ -58,7 +58,7 @@ export const setEditValues = (values: { [key: string]: any }) => {
         }
       }
     } else {
-      if (key === "fio" || key === "phone") {
+      if (key === "fio" || key === "phone" || key === "firstname" || key === "lastname" || key === "surname") {
         newValues[key] = "";
       }
     }
