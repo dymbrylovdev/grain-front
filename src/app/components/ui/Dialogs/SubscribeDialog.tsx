@@ -10,7 +10,7 @@ export default function SubDialog({ handleClose, isOpen, children, handleSubmit,
         <DialogTitle style={{ padding: 8 }}>
           <Grid container direction="row" justify="space-between" alignItems="center">
             <Grid item style={{ marginLeft: 16 }}>
-              Подписать на объявления
+              Подписаться на объявления
             </Grid>
             <Grid item>
               <IconButton onClick={handleClose}>

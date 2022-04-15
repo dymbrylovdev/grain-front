@@ -340,7 +340,7 @@ const BidForm: React.FC<IProps> = ({
   const inputEl = useRef<HTMLButtonElement>(null);
   const [goToRef, setGoToRef] = useState(false);
   const [isMoreBidOpen, setMoreBidOpen] = useState(false);
-  const [isSendingEmail, setSendingEmail] = useState(true);
+  const [isSendingEmail, setSendingEmail] = useState(false);
   const [isSendingSms, setSendingSms] = useState(false);
   const [isContactAlertOpen, setContactAlertOpen] = useState(false);
   const [fullPrepayment, setFullPrepayment] = useState(false);
@@ -672,11 +672,11 @@ const BidForm: React.FC<IProps> = ({
     if (currentCropId) fetchCropParams(currentCropId);
   }, [currentCropId, fetchCropParams]);
 
-  useEffect(() => {
-    if (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 && editMode === "create") {
-      setSendingEmail(false);
-    }
-  }, [me, filterCount, editMode]);
+  // useEffect(() => {
+  //   if (!!me?.tariff_matrix && me.tariff_matrix.tariff_limits.max_filters_count - filterCount <= 0 && editMode === "create") {
+  //     setSendingEmail(false);
+  //   }
+  // }, [me, filterCount, editMode]);
 
   useEffect(() => {
     if (values.prepayment_amount === 100) setFullPrepayment(true);
@@ -686,12 +686,12 @@ const BidForm: React.FC<IProps> = ({
     if (fullPrepayment) setFieldValue("payment_term", "");
   }, [fullPrepayment]);
 
-  useEffect(() => {
-    if (user) {
-      user?.email ? setSendingEmail(true) : setSendingEmail(false);
-      user?.phone && user?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false);
-    }
-  }, [me, user, editMode]);
+  // useEffect(() => {
+  //   if (user) {
+  //     user?.email ? setSendingEmail(true) : setSendingEmail(false);
+  //     user?.phone && user?.phone.length > 4 ? setSendingSms(true) : setSendingSms(false);
+  //   }
+  // }, [me, user, editMode]);
 
   const vendorUseVat = editMode === "view" ? bid?.vendor_use_vat : bid?.vendor?.use_vat;
 

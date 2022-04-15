@@ -408,6 +408,7 @@
   "FILTER.MY_FILTERS.EMPTY": "У Вас нет сохранённых фильтров для культуры \"{name}\".",
   "FILTER.MY_FILTERS.APLIED": "Применен этот фильтр",
   "FILTER.DIALOGS.DELETE_TEXT": "Вы уверены, что хотите удалить этот фильтр?",
+  "FILTER.DIALOGS.DELETE_TEXT_SUB": "Вы уверены, что хотите удалить эту подписку?",
   "FILTER.DIALOGS.AGREE_TEXT": "Да",
   "FILTER.DIALOGS.CANCEL_TEXT": "Отмена",
   "FILTER.DIALOGS.LOADING_TEXT": "Удаление фильтра",

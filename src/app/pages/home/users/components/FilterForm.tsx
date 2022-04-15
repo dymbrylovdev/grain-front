@@ -250,7 +250,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
       <AlertDialog
         isOpen={isAlertOpen}
         text={intl.formatMessage({
-          id: "FILTER.DIALOGS.DELETE_TEXT",
+          id: "FILTER.DIALOGS.DELETE_TEXT_SUB",
         })}
         okText={intl.formatMessage({
           id: "FILTER.DIALOGS.AGREE_TEXT",

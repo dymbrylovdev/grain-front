@@ -282,7 +282,7 @@ const MyFiltersPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteCom
       <AlertDialog
         isOpen={isAlertOpen}
         text={intl.formatMessage({
-          id: "FILTER.DIALOGS.DELETE_TEXT",
+          id: "FILTER.DIALOGS.DELETE_TEXT_SUB",
         })}
         okText={intl.formatMessage({
           id: "FILTER.DIALOGS.AGREE_TEXT",

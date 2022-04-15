@@ -308,7 +308,17 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
           )}
 
           {user && (
-            <TabPanel value={valueTabs} index={5}>
+            <TabPanel
+              value={valueTabs}
+              index={
+                !(
+                  (me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+                  (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))
+                )
+                  ? 4
+                  : 5
+              }
+            >
               <FilterForm match={match} userId={+id || undefined} />
             </TabPanel>
           )}
