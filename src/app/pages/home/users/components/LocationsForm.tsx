@@ -213,13 +213,60 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
       {me ? (
         <>
           {!locations.length ? (
-            <div className={classes.text}>
-              {loadingMe || loadingUser ? (
-                <Skeleton width="70%" height={24} animation="wave" />
-              ) : (
-                intl.formatMessage({ id: "LOCATIONS.FORM.NO_LOCATIONS" })
+            <>
+              {editMode !== "view" &&
+                (loadingMe || loadingUser ? (
+                  <p>
+                    <Skeleton width="100%" height={22} animation="wave" />
+                  </p>
+                ) : (
+                  <p style={{ fontSize: 16, marginTop: 20 }}>
+                    <b>{intl.formatMessage({ id: "LOCATIONS.MORE" })}</b>
+                  </p>
+                ))}
+              {editMode !== "view" && (
+                <div className={classes.box}>
+                  <div className={classes.textFieldContainer}>
+                    <div className={classes.textField}>
+                      <AutocompleteLocations
+                        options={googleLocations || []}
+                        inputValue={autoLocation}
+                        label={
+                          accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
+                            ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION" })
+                            : accessByRoles(me, ["ROLE_VENDOR"])
+                            ? intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })
+                            : intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })
+                        }
+                        editable={true}
+                        inputClassName={classes.textField}
+                        inputError={Boolean(errorGoogleLocations)}
+                        inputHelperText={errorGoogleLocations}
+                        fetchLocations={fetchGoogleLocations}
+                        clearLocations={clearGoogleLocations}
+                        setSelectedLocation={(location: ILocationToRequest) => {
+                          if (location.text !== "") {
+                            setAutoLocation({ text: "" });
+                            userId ? (location.user_id = userId) : (location.user_id = me?.id);
+                            create(location);
+                          }
+                        }}
+                        disable={false}
+                        prompterRunning={me?.points.length === 0 ? prompterRunning : false}
+                        prompterStep={prompterStep}
+                      />
+                    </div>
+                  </div>
+                </div>
               )}
-            </div>
+              <div className={classes.text}>
+                {loadingMe || loadingUser ? (
+                  <Skeleton width="70%" height={24} animation="wave" />
+                ) : (
+                  intl.formatMessage({ id: "LOCATIONS.FORM.NO_LOCATIONS" })
+                )}
+              </div>
+            </>
           ) : (
             <>
               {editMode !== "view" &&
