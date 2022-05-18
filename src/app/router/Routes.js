@@ -57,6 +57,10 @@ export const Routes = withRouter(({ history }) => {
   );
 
   useEffect(() => {
+    isAuthorized && !user && dispatch(authActions.fetchRequest());
+  }, [user, isAuthorized, dispatch]);
+
+  useEffect(() => {
     if (loginByJwtError) {
       enqueueSnackbar(loginByJwtError, {
         variant: "error",
