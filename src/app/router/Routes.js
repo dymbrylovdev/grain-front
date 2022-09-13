@@ -70,6 +70,7 @@ export const Routes = withRouter(({ history }) => {
 
   const redirectFromAuth = useMemo(() => {
     if (isAuthorized && user) {
+      if (user.roles.includes("ROLE_TRANSPORTER")) return '/user/profile'
       if (
         user.roles.includes("ROLE_ADMIN") ||
         user.roles.includes("ROLE_MANAGER") ||

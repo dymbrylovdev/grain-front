@@ -3,7 +3,7 @@ import { ILocation } from "./locations";
 import { ICrop } from "./crops";
 import { ITariff, ITariffType, ITariffPeriod } from "./tariffs";
 
-export type TRole = "ROLE_ADMIN" | "ROLE_VENDOR" | "ROLE_BUYER" | "ROLE_MANAGER" | "ROLE_TRADER";
+export type TRole = "ROLE_ADMIN" | "ROLE_VENDOR" | "ROLE_BUYER" | "ROLE_MANAGER" | "ROLE_TRADER" | "ROLE_TRANSPORTER";
 
 export interface IUser {
   id: number;

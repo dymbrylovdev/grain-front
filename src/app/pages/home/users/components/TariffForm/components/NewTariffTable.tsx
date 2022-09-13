@@ -242,7 +242,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
         </TableBody>
       </Table>
 
-      {!["ROLE_TRADER"].includes(realUser.roles[0]) && (
+      {!["ROLE_TRADER", "ROLE_TRANSPORTER"].includes(realUser.roles[0]) && (
         <Table>
           <TableHead>
             <TableRow>
