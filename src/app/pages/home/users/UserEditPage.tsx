@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { compose } from "redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
@@ -21,6 +21,7 @@ import { BidsForm, CropsForm, FilterForm, LocationsForm, ProfileForm } from "./c
 import ScrollToTop from "../../../components/ui/ScrollToTop";
 import TariffForm from "./components/TariffForm/TariffForm";
 import { accessByRoles } from "../../../utils/utils";
+import OptionsForm from "./components/OptionsForm";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -118,6 +119,11 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
   }, [me, editMode]);
 
 
+  const accessTransporter = useCallback(() => {
+      return accessByRoles(me, ["ROLE_TRANSPORTER"])
+  }, [me, editMode]);
+
+
 
   useEffect(() => {
     if (editMode === "profile") {
@@ -131,10 +137,11 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
         setValueTabs(2);
       }
 
-      if (accessByRoles(me, ["ROLE_TRANSPORTER"]) && match.url.indexOf("profile/tariffs") !== -1) {
+      if (accessTransporter() && match.url.indexOf("profile/options") !== -1) {
         setValueTabs(2);
         return
       }
+
       if (match.url.indexOf("profile/tariffs") !== -1) {
         setValueTabs(3);
       }
@@ -152,12 +159,8 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     if (editMode === "profile") {
       if (newValue === 0) history.push("/user/profile");
       if (newValue === 1) history.push("/user/profile/points");
-      if (newValue === 2) {
-        accessByRoles(me, ["ROLE_TRANSPORTER"])
-          ? history.push("/user/profile/tariffs")
-          : history.push("/user/profile/crops")
-        return
-      }
+      if (newValue === 2) history.push("/user/profile/crops")
+      if (newValue === 2 && accessTransporter()) history.push("/user/profile/options")
       if (newValue === 3) history.push("/user/profile/tariffs");
     }
   };
@@ -273,8 +276,9 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                 />
               )}
 
-              {me && editMode !== "create" && !accessByRoles(me, ["ROLE_TRANSPORTER"]) &&
-                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
+              {me && editMode !== "create" && accessTransporter()
+                ? <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.OPTIONS" })} {...a11yProps(2)} />
+                : <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
 
               {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
                 (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
@@ -300,19 +304,27 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               <LocationsForm editMode={editMode} userId={+id || undefined} />
             )}
           </TabPanel>
-          {!accessByRoles(me, ["ROLE_TRANSPORTER"]) && (
-            <TabPanel value={valueTabs} index={2}>
-              {editMode === "create" ? (
-                <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
-              ) : (
-                <CropsForm userId={+id || undefined} editMode={editMode} />
-              )}
-            </TabPanel>
-          )}
+      
+
+          {accessTransporter()
+              ? (<TabPanel value={valueTabs} index={2}>
+                {editMode === "create" ? (
+                  <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
+                ) : (
+                 <OptionsForm />
+                )}
+              </TabPanel>)
+              : (<TabPanel value={valueTabs} index={2}>
+                {editMode === "create" ? (
+                  <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
+                ) : (
+                  <CropsForm userId={+id || undefined} editMode={editMode} />
+                )}
+              </TabPanel>)}
 
           {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
             (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
-              <TabPanel value={valueTabs} index={accessByRoles(me, ["ROLE_TRANSPORTER"]) ? 2 : 3}>
+              <TabPanel value={valueTabs} index={3}>
                 <TariffForm editMode={editMode} userId={+id || undefined} />
               </TabPanel>
             )}

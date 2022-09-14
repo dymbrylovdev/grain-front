@@ -157,6 +157,8 @@ const ViewBidForm: React.FC<IProps> = ({
       return null;
     }
   }, [bid]);
+  
+  
 
   const newPrice = useMemo(() => {
     if (selectedRoute && bid) {

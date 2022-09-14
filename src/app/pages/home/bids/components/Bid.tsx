@@ -248,6 +248,8 @@ const Bid = React.memo<IProps>(
       }
     }, [currentBid]);
 
+    
+
     const getParametrName = useCallback(
       (item: { id: number; value: string; parameter_id: number }) => {
         const nameParam = numberParams?.find(param => param.id === item.parameter_id)?.name;

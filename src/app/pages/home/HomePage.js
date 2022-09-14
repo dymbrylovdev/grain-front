@@ -62,6 +62,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/user/profile" exact component={UserEditPage} />
         <Route path="/user/profile/points" component={UserEditPage} />
         <Route path="/user/profile/crops" component={UserEditPage} />
+        <Route path="/user/profile/options" component={UserEditPage} />
         <Route path="/user/profile/tariffs" exact component={UserEditPage} />
         <Route path="/user/profile/tariffs/payment/:id" component={UserPaymentPage} />
         <Route path="/user/profile/tariffs/payment-form" component={UserPaymentPage} />
