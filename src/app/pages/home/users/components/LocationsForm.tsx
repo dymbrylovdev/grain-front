@@ -242,7 +242,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                         inputClassName={classes.textField}
                         inputError={Boolean(errorGoogleLocations)}
                         inputHelperText={errorGoogleLocations}
-                        fetchLocations={fetchGoogleLocations}
+                        fetchLocations={ fetchGoogleLocations}
                         clearLocations={clearGoogleLocations}
                         setSelectedLocation={(location: ILocationToRequest) => {
                           if (location.text !== "") {

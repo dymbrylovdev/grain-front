@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { connect, ConnectedProps } from "react-redux";
+import { connect, ConnectedProps, useDispatch } from "react-redux";
 import { WrappedComponentProps, injectIntl } from "react-intl";
 import {
     TextField,
@@ -23,23 +23,19 @@ import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { actions as authActions } from "../../../../store/ducks/auth.duck";
 import { actions as funnelStatesActions } from "../../../../store/ducks/funnelStates.duck";
 import { actions as optionsActions } from "../../../../store/ducks/options.duck";
+// import { actions as locationActions } from "../../../../store/ducks/yaLocations.duck";
+
+import { actions as googleLocationsActions } from "../../../../store/ducks/yaLocations.duck";
+import { actions as locationsActions } from "../../../../store/ducks/locations.duck";
+
 
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import useStyles from "../../styles";
-import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
-import { roles } from "../utils/profileForm";
-import { setMeValues, setCreateValues, setEditValues } from "../utils/submitValues";
+
 import { IAppState } from "../../../../store/rootDuck";
 import { IUser, IUserForEdit } from "../../../../interfaces/users";
 import NumberFormatForProfile from "../../../../components/NumberFormatCustom/NumberFormatForProfile";
-import { accessByRoles } from "../../../../utils/utils";
-import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
-import { TrafficLight } from ".";
-import CompanyConfirmBlock from "../../companies/components/CompanyConfirmBlock";
-import CompanySearchForm from "../../companies/components/CompanySearchForm";
-import CompanyConfirmDialog from "./CompanyConfirmDialog";
-import { phoneCountryCodes, countries } from "../../../auth/phoneCountryCodes";
-import PhoneButton from "../../../../components/PhoneButton";
+
 
 
 import NumberFormat from "react-number-format";
@@ -49,6 +45,8 @@ import { Placemark, YMaps, Map } from "react-yandex-maps";
 import { API_DOMAIN, REACT_APP_GOOGLE_API_KEY } from "../../../../constants";
 
 import { ITransport } from "../../../../interfaces/options";
+import AutocompleteLocations from '../../../../components/AutocompleteLocations'
+import { ILocationToRequest } from "../../../../interfaces/locations";
 
 
 const innerStyles = makeStyles((theme: Theme) => ({
@@ -85,10 +83,6 @@ function NumberFormatCustom(props) {
     );
 }
 interface IProps {
-    //   editMode: "profile" | "create" | "edit" | "view";
-    //   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    //   userId?: number;
-    //   setLocTabPulse: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
@@ -98,10 +92,21 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     me,
     meLoading,
     editLoading,
+    create,
+    fetchGoogleLocations,
+    googleLocations,
+    errorGoogleLocations,
+    clearGoogleLocations,
+    prompterRunning,
+    prompterStep,
+    selectedLocation,
+    setSelectedLocation,
+    clearSelectedLocation,
 
 }) => {
     const innerClasses = innerStyles();
     const classes = useStyles();
+    const dispatch = useDispatch();
     const history = useHistory();
 
 
@@ -110,6 +115,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         technicalDetails: me?.transport ? me.transport.technical_details : '',
         weight: me?.transport ? me.transport.weight : '',
         amount: me?.transport ? me.transport.amount : '',
+        location: me?.transport ? me.transport.location : '',
     });
 
     const validationSchema = Yup.object().shape(
@@ -117,26 +123,41 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             technicalDetails: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
             weight: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
             amount: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
+            location: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
         },
-        [["email", "phone"]]
+        []
     );
 
     const [ymaps, setYmaps] = useState<any>();
     const [map, setMap] = useState<any>();
-    const [showPlacemark, setShowPlacemark] = useState(false);
 
 
-    const mapState = {"center":[-25.694768,133.795384],"zoom":7,"margin":[10,10,10,10]};
-    // const mapState = useMemo(() => {
-    //     if (false) {
-    //         //   return { center: [currentDeal.sale_bid.location.lat, currentDeal.sale_bid.location.lng], zoom: 7, margin: [10, 10, 10, 10] };
-    //         return { center: [3, 4], zoom: 7, margin: [10, 10, 10, 10] };
-    //     } else {
-    //         return null;
-    //     }
-    // }, []);
+
+    const [autoLocation, setAutoLocation] = useState({ text: "" });
 
 
+    React.useEffect(() => {
+        dispatch(clearSelectedLocation())
+    }, [])
+
+
+    React.useEffect(() => {
+        me?.transport?.location?.text && setAutoLocation({ text: me?.transport?.location?.text })
+    }, [me])
+
+
+
+    const mapState = useMemo(() => {
+        if (selectedLocation) {
+            return { center: [selectedLocation.lat, selectedLocation.lng], zoom: 7, margin: [10, 10, 10, 10] };
+        } else {
+            if (me?.transport?.location) {
+                return { center: [me?.transport.location.lat, me?.transport.location.lng], zoom: 7, margin: [10, 10, 10, 10] };
+            } else {
+                return null;
+            }
+        }
+    }, [selectedLocation, me]);
 
 
 
@@ -147,19 +168,9 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 id: me?.id,
                 data: {
                     ...values,
-                    "location": {
-                        "lat": 1,
-                        "lng": 1,
-                        "country": "Россия",
-                        "province": "Ростовская Область",
-                        "city": "Ростов-на-Дону",
-                        "street": "Садовая",
-                        "text": "ул. Садовая дом 55 строение 122",
-                        "house": "1/1"
-                    }
+                    location: selectedLocation || me?.transport.location,
                 }
             })
-            console.log('values', values);
         },
         validationSchema: validationSchema,
     });
@@ -175,20 +186,21 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         setFieldValue("amount", val);
     }, [])
 
-
-
-
-
+    const fetchLoc = useCallback((val) => {
+        dispatch(fetchGoogleLocations(val))
+    }, [])
 
 
     return (
         <>
-
-
-
-            <div className={classes.null}>
+            <div className={classes.null} >
                 {meLoading ? (
-                    <Skeleton width="100%" height={70} animation="wave" />
+                    <>
+                        <Skeleton width="100%" height={70} animation="wave" />
+                        <Skeleton width="100%" height={70} animation="wave" />
+                        <Skeleton width="100%" height={70} animation="wave" />
+                        <Skeleton width="100%" height={70} animation="wave" />
+                    </>
                 ) : (
                     <>
                         <TextField
@@ -207,7 +219,6 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                             fullWidth
                             helperText={touched.technicalDetails && errors.technicalDetails}
                             error={Boolean(touched.technicalDetails && errors.technicalDetails)}
-                        // disabled={!isEditable}
                         />
                         <TextField
                             type="text"
@@ -253,26 +264,35 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                             }}
                             autoComplete="off"
                         />
-                        {/* <div style={{ display: "none" }}>
-                            {true && (
-                                <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
-                                    <Map
-                                        state={mapState}
-                                        instanceRef={ref => setMap(ref)}
-                                        width={"100%"}
-                                        height={600}
-                                        onLoad={ymaps => {
-                                          setYmaps(ymaps);
-                                        }}
-                                        modules={["templateLayoutFactory", "route", "geoObject.addon.balloon"]}
-                                    />
-                                </YMaps>
-                            )}
-                        </div> */}
 
-                        {mapState && me?.transport  && (
+                        <div className={classes.textField}>
+                            <AutocompleteLocations
+                                options={googleLocations || []}
+                                inputValue={autoLocation}
+                                // inputValue={loc}
+                                label={intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.LOCATION" })}
+                                editable={true}
+                                inputClassName={classes.textField}
+                                inputError={Boolean(touched?.location && errors?.location)}
+                                inputHelperText={errorGoogleLocations}
+                                fetchLocations={fetchLoc}
+                                clearLocations={clearGoogleLocations}
+                                setSelectedLocation={(location: ILocationToRequest) => {
+                                    if (location.text !== "") {
+                                        dispatch(setSelectedLocation(location))
+                                        setFieldValue("location", location)
+                                    }
+                                }}
+                                disable={false}
+                                prompterRunning={me?.points.length === 0 ? prompterRunning : false}
+                                prompterStep={prompterStep}
+                            />
+                        </div>
+
+
+                        {mapState && (
                             <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
-                                <div className={classes.yaMap}>
+                                <div className={classes.yaMap} style={{ marginTop: "15px" }}>
                                     <Map
                                         state={mapState}
                                         instanceRef={ref => setMap(ref)}
@@ -283,10 +303,14 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                                         }}
                                         modules={["templateLayoutFactory", "route", "geoObject.addon.balloon"]}
                                     >
-                                        {showPlacemark && (
+                                        {(me?.transport?.location || selectedLocation) && (
                                             <Placemark
                                                 geometry={mapState.center}
-                                                properties={{ iconCaption: me?.transport?.location?.text }}
+                                                properties={{
+                                                    iconCaption: selectedLocation
+                                                        ? selectedLocation.text
+                                                        : me?.transport?.location?.text
+                                                }}
                                                 modules={["geoObject.addon.balloon"]}
                                             />
                                         )}
@@ -304,7 +328,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                     <div className={classes.button} style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
                         <ButtonWithLoader
                             loading={editLoading}
-                            disabled={editLoading}
+                            // disabled={editLoading}
                             onPress={() => {
                                 handleSubmit();
                             }}
@@ -325,6 +349,25 @@ const connector = connect(
         me: state.auth.user,
         meLoading: state.auth.loading,
         editLoading: state.options.editLoading,
+        selectedLocation: state.options.selectedLocation,
+
+
+        create: locationsActions.createRequest,
+
+        googleLocations: state.yaLocations.yaLocations,
+
+        errorGoogleLocations: state.yaLocations.error,
+
+
+        prompterRunning: state.prompter.running,
+        prompterStep: state.prompter.activeStep,
+
+        fetchGoogleLocations: googleLocationsActions.fetchRequest,
+        clearGoogleLocations: googleLocationsActions.clear,
+        setSelectedLocation: optionsActions.setSelectedLocation,
+        clearSelectedLocation: optionsActions.clearSelectedLocation,
+
+
     }),
     {
         edit: optionsActions.editRequest,

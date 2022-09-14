@@ -188,6 +188,7 @@
   "PROFILE.INPUT.STATUS_ARCHIVED": "В архиве",
   "PROFILE.INPUT.STATUS_ACTIVE": "Активное",
   "PROFILE.INPUT.LOCATION.PURCHASE": "Точка приемки",
+  "PROFILE.INPUT.LOCATION.LOCATION": "Местоположение",
   "PROFILE.INPUT.LOCATION": "Точка отгрузки/приемки",
   "PROFILE.INPUT.EMAIL": "Email",
   "PROFILE.INPUT.LOGIN": "Логин",

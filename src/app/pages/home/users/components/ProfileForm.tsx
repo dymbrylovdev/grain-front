@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { WrappedComponentProps, injectIntl } from "react-intl";
 import {
@@ -203,15 +203,15 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       phone:
         countryCode.length === 1
           ? Yup.string()
-              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-              .matches(/^(\d{1}|\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
-              .when(["email"], {
-                is: email => !email,
-                then: Yup.string().matches(/^(\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
-              })
+            .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+            .matches(/^(\d{1}|\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
+            .when(["email"], {
+              is: email => !email,
+              then: Yup.string().matches(/^(\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+            })
           : Yup.string()
-              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-              .matches(/^(\d{3}|\d{13})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+            .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+            .matches(/^(\d{3}|\d{13})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
       // fio: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
     },
     [["email", "phone"]]
@@ -219,7 +219,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   const validationSchemaPassword = Yup.object().shape({
     password: Yup.string(),
-    repeatPassword: Yup.string().test("passwords-match", intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }), function(
+    repeatPassword: Yup.string().test("passwords-match", intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }), function (
       value
     ) {
       return this.parent.password === value;
@@ -417,6 +417,12 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     newRoles.splice(0, 2);
   }
 
+  
+  const accessTransporter = useCallback(() => {
+    return accessByRoles(me, ["ROLE_TRANSPORTER"])
+}, [me]);
+  
+
   return (
     <>
       <div className={classes.textFieldContainer}>
@@ -499,21 +505,21 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                   </MenuItem>
                   {user && user.is_buyer
                     ? !!funnelStates &&
-                      funnelStates
-                        .filter(fs => fs.role === "ROLE_BUYER")
-                        .map(option => (
-                          <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
-                            {`${option.engagement || "0"} • ${option.name}`}
-                          </MenuItem>
-                        ))
+                    funnelStates
+                      .filter(fs => fs.role === "ROLE_BUYER")
+                      .map(option => (
+                        <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
+                          {`${option.engagement || "0"} • ${option.name}`}
+                        </MenuItem>
+                      ))
                     : !!funnelStates &&
-                      funnelStates
-                        .filter(fs => fs.role === "ROLE_VENDOR")
-                        .map(option => (
-                          <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
-                            {`${option.engagement || "0"} • ${option.name}`}
-                          </MenuItem>
-                        ))}
+                    funnelStates
+                      .filter(fs => fs.role === "ROLE_VENDOR")
+                      .map(option => (
+                        <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
+                          {`${option.engagement || "0"} • ${option.name}`}
+                        </MenuItem>
+                      ))}
                 </TextField>
               )}
             </div>
@@ -557,7 +563,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
-      {/* <div className={classes.textFieldContainer}>
+      <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : (
@@ -584,7 +590,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             disabled={editMode === "view"}
           />
         )}
-      </div> */}
+      </div>
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
@@ -661,7 +667,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
-      {!(meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading)) && editMode === "profile" && me && (
+      {!accessTransporter() && !(meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading)) && editMode === "profile" && me && (
         <Collapse in={openInfoAlert}>
           <Alert
             className={classes.infoAlert}
@@ -700,7 +706,23 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
-      <div>
+      {
+        !accessTransporter() &&
+        <div>
+          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+            <Skeleton width={135} height={37.5} animation="wave" />
+          ) : (
+            <FormControlLabel
+              control={<Checkbox checked={me ? values.use_vat : true} onChange={handleChange} />}
+              label={intl.formatMessage({ id: "USER.EDIT_FORM.USE_VAT" })}
+              name="use_vat"
+              disabled={editMode === "view" || !me}
+            />
+          )}
+        </div>
+      }
+
+      {/* <div>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width={135} height={37.5} animation="wave" />
         ) : (
@@ -711,7 +733,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             disabled={editMode === "view" || !me}
           />
         )}
-      </div>
+      </div> */}
+
+
 
       {editMode === "create" && (
         <div className={classes.textFieldContainer}>
@@ -822,7 +846,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 handleChange={editMode === "profile" ? editMe : ({ data }: any) => editUser({ id: userId as number, data: data })}
                 disabled={editMode === "profile" || editMode === "view" || !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
                 loading={editMeLoading || editLoading}
-                // loading={!currentUser || meLoading || userLoading || editLoading}
+              // loading={!currentUser || meLoading || userLoading || editLoading}
               />
               {!values.company_confirmed_by_email &&
                 !values.company_confirmed_by_payment &&

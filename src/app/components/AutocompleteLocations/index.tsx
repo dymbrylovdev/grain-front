@@ -26,7 +26,7 @@ interface IProps {
   inputHelperText: any;
   disable: boolean;
   handleBlur?: (e: any) => {} | void;
-  fetchLocations: (location: string) => {};
+  fetchLocations: (location: string) => {} | void;
   clearLocations: () => {};
   setSelectedLocation: (location: any) => {} | void;
   prompterRunning?: boolean;
@@ -63,8 +63,6 @@ const Autocomplete: React.FC<IProps> = ({
 
   useEffect(() => {
     if (location.length > 1) {
-      // console.log(location);
-
       const loadingDelay = setTimeout(() => {
         setLoadingLocal(true);
       }, 500);
@@ -83,6 +81,8 @@ const Autocomplete: React.FC<IProps> = ({
       setLoadingLocal(false);
     }
   }, [fetchLocations, location]);
+
+  
 
   useEffect(() => {
     if (inputValue.text === "") setEditableLocation(true);
