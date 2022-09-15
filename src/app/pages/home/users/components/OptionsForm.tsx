@@ -13,31 +13,17 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { useFormik, validateYupSchema } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
-import isEqual from "lodash.isequal";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import ReportProblemIcon from "@material-ui/icons/ReportProblem";
+
 import CloseIcon from "@material-ui/icons/Close";
-
-import { actions as usersActions } from "../../../../store/ducks/users.duck";
-import { actions as authActions } from "../../../../store/ducks/auth.duck";
-import { actions as funnelStatesActions } from "../../../../store/ducks/funnelStates.duck";
 import { actions as optionsActions } from "../../../../store/ducks/options.duck";
-// import { actions as locationActions } from "../../../../store/ducks/yaLocations.duck";
-
 import { actions as googleLocationsActions } from "../../../../store/ducks/yaLocations.duck";
 import { actions as locationsActions } from "../../../../store/ducks/locations.duck";
 
-
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import useStyles from "../../styles";
-
 import { IAppState } from "../../../../store/rootDuck";
 import { IUser, IUserForEdit } from "../../../../interfaces/users";
 import NumberFormatForProfile from "../../../../components/NumberFormatCustom/NumberFormatForProfile";
-
-
-
 import NumberFormat from "react-number-format";
 import { Formik } from "formik";
 import { thousands } from "../../deals/utils/utils";
@@ -135,17 +121,13 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
     const [autoLocation, setAutoLocation] = useState({ text: "" });
 
-
     React.useEffect(() => {
         dispatch(clearSelectedLocation())
     }, [])
 
-
     React.useEffect(() => {
         me?.transport?.location?.text && setAutoLocation({ text: me?.transport?.location?.text })
     }, [me])
-
-
 
     const mapState = useMemo(() => {
         if (selectedLocation) {
@@ -158,8 +140,6 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             }
         }
     }, [selectedLocation, me]);
-
-
 
     const { values, handleSubmit, handleChange, handleBlur, resetForm, setFieldValue, touched, errors } = useFormik({
         initialValues: getInitialValues(undefined),
@@ -328,7 +308,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                     <div className={classes.button} style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
                         <ButtonWithLoader
                             loading={editLoading}
-                            // disabled={editLoading}
+                            disabled={editLoading}
                             onPress={() => {
                                 handleSubmit();
                             }}
@@ -350,18 +330,11 @@ const connector = connect(
         meLoading: state.auth.loading,
         editLoading: state.options.editLoading,
         selectedLocation: state.options.selectedLocation,
-
-
-        create: locationsActions.createRequest,
-
         googleLocations: state.yaLocations.yaLocations,
-
         errorGoogleLocations: state.yaLocations.error,
-
-
         prompterRunning: state.prompter.running,
         prompterStep: state.prompter.activeStep,
-
+        create: locationsActions.createRequest,
         fetchGoogleLocations: googleLocationsActions.fetchRequest,
         clearGoogleLocations: googleLocationsActions.clear,
         setSelectedLocation: optionsActions.setSelectedLocation,
@@ -380,22 +353,3 @@ export default connector(injectIntl(OptionsForm));
 
 
 
-
-
-
-
-{/* <TextField
-type="text"
-label={intl.formatMessage({
-  id: "BIDSLIST.TABLE.DESCRIPTION",
-})}
-margin="normal"
-name="description"
-value={values.description}
-variant="outlined"
-onBlur={handleBlur}
-onChange={handleChange}
-rows="6"
-multiline
-disabled={!isEditable}
-/> */}
