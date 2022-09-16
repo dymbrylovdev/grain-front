@@ -122,6 +122,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
 
   clearUsersCrops,
   fetchUsersCrops,
+  // fetchTransporters,
 }) => {
   const isNoModerate = !vendorId && !+bidId && me?.status === "На модерации";
   const classes = useStyles();
@@ -265,6 +266,7 @@ const BidEditPage: React.FC<TPropsFromRedux &
           fetchCropParams={fetchCropParams}
           cropParams={cropParams}
           guestPoint={guestPoint}
+          // fetchTransporters={fetchTransporters}
         />
       ) : (
         <>
@@ -444,6 +446,7 @@ const connector = connect(
     fetchUsersCrops: crops2Actions.userCropsRequest,
 
     setOpenInfoAlert: bidsActions.setOpenInfoAlert,
+    // fetchTransporters: usersActions.fetchTransporters,
   }
 );
 

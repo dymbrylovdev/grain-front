@@ -165,6 +165,9 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     }
   };
 
+  console.log("editMode", editMode);
+  
+
   const subTitle = (editMode: "profile" | "create" | "edit" | "view"): string => {
     switch (editMode) {
       case "profile":

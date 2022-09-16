@@ -136,7 +136,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   openInfoAlert,
   setOpenInfoAlert,
   editNoNoti,
-
+  userView,
   cropsLoading,
 }) => {
   const innerClasses = innerStyles();
@@ -417,11 +417,11 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     newRoles.splice(0, 2);
   }
 
-  
+
   const accessTransporter = useCallback(() => {
     return accessByRoles(me, ["ROLE_TRANSPORTER"])
-}, [me]);
-  
+  }, [me]);
+
 
   return (
     <>
@@ -707,7 +707,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       )}
 
       {
-        !accessTransporter() &&
+        !accessTransporter() && !accessByRoles(userView, ["ROLE_TRANSPORTER"]) &&
         <div>
           {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
             <Skeleton width={135} height={37.5} animation="wave" />
@@ -722,18 +722,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       }
 
-      {/* <div>
-        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-          <Skeleton width={135} height={37.5} animation="wave" />
-        ) : (
-          <FormControlLabel
-            control={<Checkbox checked={me ? values.use_vat : true} onChange={handleChange} />}
-            label={intl.formatMessage({ id: "USER.EDIT_FORM.USE_VAT" })}
-            name="use_vat"
-            disabled={editMode === "view" || !me}
-          />
-        )}
-      </div> */}
 
 
 
@@ -796,7 +784,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               error={Boolean(touched.phone && errors.phone)}
               InputLabelProps={{ shrink: true }}
               autoComplete="off"
-              disabled={!me}
+              disabled={editMode === "view" || !me}
             />
           </div>
         )}
@@ -1176,6 +1164,7 @@ const connector = connect(
     userActivateError: state.users.userActivateError,
 
     openInfoAlert: state.users.openInfoAlert,
+    userView: state.users.user,
 
     editNoNoti: state.auth.editNoNoti,
 

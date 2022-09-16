@@ -265,7 +265,7 @@ function BidForm({
                     <TextField
                       type="text"
                       label={intl.formatMessage({
-                        id: "BID.CALCULATOR.PRICE_PER_KM",
+                        id: "BID.CALCULATOR.PRICE_PER_KM",  
                       })}
                       margin="normal"
                       name="pricePerKm"
@@ -274,7 +274,7 @@ function BidForm({
                       onBlur={handleBlur}
                       onChange={handleChange("pricePerKm")}
                       InputProps={{
-                        inputComponent: NumberFormatCustom,
+                        inputComponent: NumberFormatCustom, 
                       }}
                     />
                     <div className={innerClasses.calcDescription}>

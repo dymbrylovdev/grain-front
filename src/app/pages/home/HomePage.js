@@ -60,6 +60,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/userDocs/legacy" component={UserDocPage} />
         <Route path="/user/view/:id" exact component={UserEditPage} />
         <Route path="/user/profile" exact component={UserEditPage} />
+        <Route path="/user/profile/:id" exact component={UserEditPage} />
         <Route path="/user/profile/points" component={UserEditPage} />
         <Route path="/user/profile/crops" component={UserEditPage} />
         <Route path="/user/profile/options" component={UserEditPage} />
