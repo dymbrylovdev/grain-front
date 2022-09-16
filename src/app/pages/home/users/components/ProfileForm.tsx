@@ -563,34 +563,38 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
-      <div className={classes.textFieldContainer}>
-        {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-          <Skeleton width="100%" height={70} animation="wave" />
-        ) : (
-          <TextField
-            type="text"
-            label={intl.formatMessage({
-              id: "PROFILE.INPUT.FIO",
-            })}
-            margin="normal"
-            className={classes.textField}
-            classes={
-              prompterRunning && prompterStep === 0 && !values.fio
-                ? { root: innerClasses.pulseRoot }
-                : {}
-            }
-            name="fio"
-            value={values.fio}
-            variant="outlined"
-            onBlur={handleBlur}
-            onChange={handleChange}
-            helperText={touched.fio && errors.fio}
-            error={Boolean(touched.fio && errors.fio)}
-            autoComplete="off"
-            disabled={editMode === "view"}
-          />
-        )}
-      </div>
+
+      {!accessTransporter() && (
+        <div className={classes.textFieldContainer}>
+          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+            <Skeleton width="100%" height={70} animation="wave" />
+          ) : (
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "PROFILE.INPUT.FIO",
+              })}
+              margin="normal"
+              className={classes.textField}
+              classes={
+                prompterRunning && prompterStep === 0 && !values.fio
+                  ? { root: innerClasses.pulseRoot }
+                  : {}
+              }
+              name="fio"
+              value={values.fio}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={touched.fio && errors.fio}
+              error={Boolean(touched.fio && errors.fio)}
+              autoComplete="off"
+              disabled={editMode === "view"}
+            />
+          )}
+        </div>
+      )}
+
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
