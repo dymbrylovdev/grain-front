@@ -120,7 +120,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
 
 
   const accessTransporter = useCallback(() => {
-      return accessByRoles(me, ["ROLE_TRANSPORTER"])
+    return accessByRoles(me, ["ROLE_TRANSPORTER"])
   }, [me, editMode]);
 
 
@@ -165,8 +165,6 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     }
   };
 
-  console.log("editMode", editMode);
-  
 
   const subTitle = (editMode: "profile" | "create" | "edit" | "view"): string => {
     switch (editMode) {
@@ -240,18 +238,20 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
         <div className={classes.form} style={valueTabs === 4 || valueTabs === 3 ? { maxWidth: 1000 } : undefined}>
           <div className={classes.topButtonsContainer}>
             <div className={classes.flexRow} style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}>
-              <div className={classes.button}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => {
-                    history.goBack();
-                  }}
-                  disabled={loadingMe || loadingUser}
-                >
-                  {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-                </Button>
-              </div>
+              {!accessByRoles(me, ["ROLE_TRANSPORTER"]) && (
+                  <div className={classes.button}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => {
+                        history.goBack();
+                      }}
+                      disabled={loadingMe || loadingUser}
+                    >
+                      {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                    </Button>
+                  </div>)}
+
             </div>
           </div>
           <AppBar position="static" color="default" className={classes.appBar}>
@@ -307,23 +307,23 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               <LocationsForm editMode={editMode} userId={+id || undefined} />
             )}
           </TabPanel>
-      
+
 
           {accessTransporter()
-              ? (<TabPanel value={valueTabs} index={2}>
-                {editMode === "create" ? (
-                  <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
-                ) : (
-                 <OptionsForm />
-                )}
-              </TabPanel>)
-              : (<TabPanel value={valueTabs} index={2}>
-                {editMode === "create" ? (
-                  <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
-                ) : (
-                  <CropsForm userId={+id || undefined} editMode={editMode} />
-                )}
-              </TabPanel>)}
+            ? (<TabPanel value={valueTabs} index={2}>
+              {editMode === "create" ? (
+                <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
+              ) : (
+                <OptionsForm />
+              )}
+            </TabPanel>)
+            : (<TabPanel value={valueTabs} index={2}>
+              {editMode === "create" ? (
+                <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
+              ) : (
+                <CropsForm userId={+id || undefined} editMode={editMode} />
+              )}
+            </TabPanel>)}
 
           {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
             (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
