@@ -84,9 +84,12 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* editSaga({ payload }: { payload: { id: any, data: any } }) {
+function* editSaga({ payload }: { payload: { id: any, data: any } }) {    
     try {
-          const {data} = yield call(() => editOptions(payload.id, payload.data));
+        console.log("Send edit data");
+        
+        const {data} = yield call(() => editOptions(payload.id, payload.data));
+        console.log("edit response", data);
           yield put(actions.editOptionsSuccess());
           yield put(authActions.editUserSuccess(data));
     } catch (e) {

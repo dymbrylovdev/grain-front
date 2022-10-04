@@ -230,6 +230,13 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     }, 10000);
   }
 
+
+  const isTransporterProfile = useCallback(() => {
+    return accessByRoles(user, ["ROLE_TRANSPORTER"])
+  }, [user])
+
+
+
   return (
     <>
       <ScrollToTop />
@@ -239,18 +246,18 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
           <div className={classes.topButtonsContainer}>
             <div className={classes.flexRow} style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}>
               {!accessByRoles(me, ["ROLE_TRANSPORTER"]) && (
-                  <div className={classes.button}>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => {
-                        history.goBack();
-                      }}
-                      disabled={loadingMe || loadingUser}
-                    >
-                      {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-                    </Button>
-                  </div>)}
+                <div className={classes.button}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      history.goBack();
+                    }}
+                    disabled={loadingMe || loadingUser}
+                  >
+                    {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                  </Button>
+                </div>)}
 
             </div>
           </div>
@@ -281,14 +288,14 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
 
               {me && editMode !== "create" && accessTransporter()
                 ? <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.OPTIONS" })} {...a11yProps(2)} />
-                : <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
+                : !isTransporterProfile() && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
 
               {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
                 (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
                   <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })} {...a11yProps(3)} />
                 )}
 
-              {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
+              {!isTransporterProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
                 <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(4)} />
               )}
               {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
@@ -298,7 +305,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
           </AppBar>
           <Divider />
           <TabPanel value={valueTabs} index={0}>
-            <ProfileForm userId={+id || undefined} editMode={editMode} setAlertOpen={setAlertOpen} setLocTabPulse={setLocTabPulse} />
+            <ProfileForm userId={+id || undefined} isTransporterProfile={isTransporterProfile} editMode={editMode} setAlertOpen={setAlertOpen} setLocTabPulse={setLocTabPulse}  />
           </TabPanel>
           <TabPanel value={valueTabs} index={1}>
             {editMode === "create" ? (
@@ -320,7 +327,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             : (<TabPanel value={valueTabs} index={2}>
               {editMode === "create" ? (
                 <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
-              ) : (
+              ) : !isTransporterProfile() && (
                 <CropsForm userId={+id || undefined} editMode={editMode} />
               )}
             </TabPanel>)}
@@ -346,7 +353,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                   (me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
                   (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))
                 )
-                  ? 4
+                  ? !isTransporterProfile() ? 4 : 2
                   : 5
               }
             >

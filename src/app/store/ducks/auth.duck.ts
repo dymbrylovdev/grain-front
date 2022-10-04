@@ -229,8 +229,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, user: action.payload.data, editLoading: false, editSuccess: true };
       }
       case EDIT_USER_SUCCESS: {
-        console.log("action.payload.data ", action.payload.data );
-        
+        // console.log("action.payload.data ", action.payload.data );        
         return { ...state, user: action.payload.data };
       }
 
@@ -604,9 +603,13 @@ export type TActions = ActionsUnion<typeof actions>;
 
 function* fetchSaga() {
   try {
+    console.log("fetch user");
+    
     const state = yield select();
     if (state.auth.authToken) {
       const { data }: { data: IServerResponse<IUser> } = yield call(() => getMe());
+          console.log("fetch user data", data);
+
       yield put(actions.fetchSuccess(data));
     } else {
       yield put(actions.fetchFail(""));

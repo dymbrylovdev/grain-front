@@ -144,6 +144,10 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     const { values, handleSubmit, handleChange, handleBlur, resetForm, setFieldValue, touched, errors } = useFormik({
         initialValues: getInitialValues(undefined),
         onSubmit: values => {
+
+            console.log("values", values);
+            console.log("selectedLocation", selectedLocation);
+            
             edit({
                 id: me?.id,
                 data: {
@@ -334,6 +338,15 @@ const connector = connect(
         errorGoogleLocations: state.yaLocations.error,
         prompterRunning: state.prompter.running,
         prompterStep: state.prompter.activeStep,
+        // create: locationsActions.createRequest,
+        // fetchGoogleLocations: googleLocationsActions.fetchRequest,
+        // clearGoogleLocations: googleLocationsActions.clear,
+        // setSelectedLocation: optionsActions.setSelectedLocation,
+        // clearSelectedLocation: optionsActions.clearSelectedLocation,
+
+
+    }),
+    {
         create: locationsActions.createRequest,
         fetchGoogleLocations: googleLocationsActions.fetchRequest,
         clearGoogleLocations: googleLocationsActions.clear,
@@ -341,8 +354,6 @@ const connector = connect(
         clearSelectedLocation: optionsActions.clearSelectedLocation,
 
 
-    }),
-    {
         edit: optionsActions.editRequest,
     }
 );

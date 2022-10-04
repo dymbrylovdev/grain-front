@@ -58,8 +58,8 @@ export const getAllBids = (
   return axios.get(url);
 };
 
-export const getBidById = (id: number, filter: IFilterForBid) => {
-  return axios.post(`${AD_URL}/get/${id}`, filter);
+export const getBidById = (id: number, filter: IFilterForBid) => {  
+  return axios.post(`${AD_URL}/get/${id}?find_transport=true`, filter);
 };
 
 export const getBestPrice = (
@@ -113,3 +113,5 @@ export const getBidsXlsUrl = (
 };
 
 export const archivedBId = (id: number) => axios.put(`/api/bid/archive/${id}`);
+
+

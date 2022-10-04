@@ -69,7 +69,7 @@ const TransporterTable = React.memo<IProps>(({ transportersList, fetch, page, pe
                                     </TableCell>
 
                                     <TableCell>
-                                        {item?.transport?.location.text}
+                                        {item?.transport?.location?.text}
                                     </TableCell>
                                     <TableCell align="right">
                                         <Tooltip

@@ -24,7 +24,7 @@ import { setViewed } from "./hooks/useViewedBid";
 import Modal from "../../../../components/ui/Modal";
 import clsx from 'clsx';
 import { useDispatch } from 'react-redux'
-import { useFetchTransporters } from './hooks/useFetchTransporters'
+// import { useFetchTransporters } from './hooks/useFetchTransporters'
 import TransporterTable from "./transporterTable/TransporterTable";
 
 interface IProps {
@@ -90,6 +90,7 @@ const ViewBidForm: React.FC<IProps> = ({
   const [map, setMap] = useState<any>();
   const [routeLoading, setRouteLoading] = useState(false);
   const [showsPhones, setShowsPhones] = useState(false);
+  const [authAlert, setAuthAlert] = useState(false);
   const [showPlacemark, setShowPlacemark] = useState(false);
   const [pricePerKm, setPricePerKm] = useState<number | string>(bid?.price_delivery_per_km || 4);
   const [updatedLocalStorage, setUpdateLocalStorage] = useState(false);
@@ -103,7 +104,7 @@ const ViewBidForm: React.FC<IProps> = ({
   }, [updatedLocalStorage]);
 
 
-  const [fetch, loadTransporters, response, page, perPage, total] = useFetchTransporters()
+  // const [fetch, loadTransporters, response, page, perPage, total] = useFetchTransporters()
 
   const newBid = useMemo(() => {
     if (mapBid) {
@@ -395,9 +396,12 @@ const ViewBidForm: React.FC<IProps> = ({
 
 
   const openCompaniesDialog = useCallback(() => {
-    fetch({ page, perPage })
     setOpenDialogCompanies(true);
   }, [openDialogCompanies]);
+
+  const openAuthAlert = useCallback(() => {
+    setAuthAlert(true);
+  }, [me]);
 
 
 
@@ -419,14 +423,15 @@ const ViewBidForm: React.FC<IProps> = ({
         open={openDialogCompanies}
         onClose={false ? () => { } : () => setOpenDialogCompanies(false)}
         title={''}
-        loading={loadTransporters}
+        // loading={loadTransporters}
         content={
           <TransporterTable
-            transportersList={response?.data}
-            fetch={fetch}
-            page={page}
-            perPage={perPage}
-            total={total} />
+            transportersList={bid?.transports}
+            fetch={() => { }}
+            page={1}
+            perPage={bid?.transports?.length || 0}
+            total={bid && bid.transports?.length > 0 ? 1 : 0}
+          />
         }
         actions={[
           {
@@ -434,6 +439,22 @@ const ViewBidForm: React.FC<IProps> = ({
             onClick: () => {
               setOpenDialogCompanies(false)
             },
+          },
+        ]}
+      />
+
+      <Modal
+        open={authAlert}
+        onClose={() => setAuthAlert(false)}
+        title={"Чтобы продолжить действие с редактированием профиля или объявления, авторизуйтесь!"}
+        actions={[
+          {
+            title: "Cancel",
+            onClick: () => setAuthAlert(false),
+          },
+          {
+            title: "OK",
+            onClick: () => history.push("/auth"),
           },
         ]}
       />
@@ -848,11 +869,13 @@ const ViewBidForm: React.FC<IProps> = ({
                   </>
                 )}
 
+
+
                 <div className={classes.wrapperCalc} ref={calcRef}>
                   <div className={clsx(classes.titleCalc, classes.flex)}>
                     <div>Калькулятор доставки</div>
                     <Button variant="contained" color="primary"
-                      onClick={openCompaniesDialog}
+                      onClick={!me ? openAuthAlert : openCompaniesDialog}
                       className="kt-subheader__top-btn">
                       Список камазистов
                     </Button>

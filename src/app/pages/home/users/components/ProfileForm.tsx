@@ -70,11 +70,13 @@ interface IProps {
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
   userId?: number;
   setLocTabPulse: React.Dispatch<React.SetStateAction<boolean>>;
+  isTransporterProfile: any;
 }
 
 const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
   intl,
   createdUserId,
+  isTransporterProfile,
 
   fetchFunnelStates,
   funnelStates,
@@ -168,6 +170,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       }
     });
   };
+
+
 
   const getInitialValues = (user: IUser | undefined) => ({
     login: user?.login || "",
@@ -942,7 +946,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       {me && (
         <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
-          {editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+          {!isTransporterProfile() && editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
             <div className={classes.button} style={{ marginTop: 4, marginBottom: 4 }}>
               <ButtonWithLoader
                 disabled={!user}
@@ -954,7 +958,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           )}
 
           <div className={classes.flexRow} style={{ marginTop: 4, marginBottom: 4 }}>
-            {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+            {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRANSPORTER"]) && !(editMode === "view") && (
               <div className={classes.button}>
                 <ButtonWithLoader
                   loading={editMeLoading || createLoading || editLoading}
