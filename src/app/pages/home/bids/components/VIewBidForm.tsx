@@ -403,6 +403,9 @@ const ViewBidForm: React.FC<IProps> = ({
     setAuthAlert(true);
   }, [me]);
 
+  // console.log("bid.vendor", bid?.vendor?.firstname);
+
+
 
 
   return (
@@ -741,11 +744,12 @@ const ViewBidForm: React.FC<IProps> = ({
                         <p>Продавец:</p>
                       )}
                     </div>
-                    {Boolean(bid.vendor.surname || bid.vendor.firstName || bid.vendor.lastName) && (
+                    {bid?.vendor.firstname && (
                       <div className={classes.vendorCompany}>
-                        {`${bid.vendor.surname || ""} ${bid.vendor.firstName || ""} ${bid.vendor.lastName || ""}`}
+                        {bid?.vendor.firstname} {bid?.vendor?.lastname}
                       </div>
                     )}
+
                     {Boolean(bid.vendor.login) && <div className={classes.parameterValue}>{bid.vendor.login}</div>}
                     {bid.vendor?.company?.short_name && (
                       <div className={classes.vendorCompany} style={{ marginBottom: isMobile ? 0 : 16 }}>

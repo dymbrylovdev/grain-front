@@ -568,7 +568,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       </div>
 
 
-      {!accessTransporter() && (
+      {false && (
         <div className={classes.textFieldContainer}>
           {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
             <Skeleton width="100%" height={70} animation="wave" />

@@ -42,8 +42,8 @@ export interface IBid {
     company_confirmed_by_payment?: boolean;
     phone?: string;
     surname?: string;
-    firstName?: string;
-    lastName?: string;
+    firstname?: string;
+    lastname?: string;
   };
   location: {
     lat: number;
