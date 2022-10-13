@@ -22,6 +22,7 @@ import ScrollToTop from "../../../components/ui/ScrollToTop";
 import TariffForm from "./components/TariffForm/TariffForm";
 import { accessByRoles } from "../../../utils/utils";
 import OptionsForm from "./components/OptionsForm";
+import { Skeleton } from "@material-ui/lab";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -237,6 +238,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
 
 
 
+
   return (
     <>
       <ScrollToTop />
@@ -262,50 +264,55 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             </div>
           </div>
           <AppBar position="static" color="default" className={classes.appBar}>
-            <Tabs
-              value={valueTabs}
-              onChange={handleTabsChange}
-              variant="scrollable"
-              indicatorColor="primary"
-              textColor="primary"
-              aria-label="tabs"
-            >
-              <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
+            {user || window.location.href.includes('profile') ? (
+              <Tabs
+                value={valueTabs}
+                onChange={handleTabsChange}
+                variant="scrollable"
+                indicatorColor="primary"
+                textColor="primary"
+                aria-label="tabs"
+              >
+                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
 
-              {editMode !== "create" && (
-                <Tab
-                  classes={prompterRunning && prompterStep === 0 && isLocTabPulse ? { root: innerClasses.pulseRoot } : {}}
-                  label={
-                    accessByRoles(editMode === "profile" ? me : user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
-                      ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })
-                      : accessByRoles(editMode === "profile" ? me : user, ["ROLE_VENDOR"])
-                        ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.SALE" })
-                        : intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.PURCHASE" })
-                  }
-                  {...a11yProps(1)}
-                />
-              )}
-
-              {me && editMode !== "create" && accessTransporter()
-                ? <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.OPTIONS" })} {...a11yProps(2)} />
-                : !isTransporterProfile() && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
-
-              {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
-                (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
-                  <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })} {...a11yProps(3)} />
+                {editMode !== "create" && (
+                  <Tab
+                    classes={prompterRunning && prompterStep === 0 && isLocTabPulse ? { root: innerClasses.pulseRoot } : {}}
+                    label={
+                      accessByRoles(editMode === "profile" ? me : user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
+                        ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })
+                        : accessByRoles(editMode === "profile" ? me : user, ["ROLE_VENDOR"])
+                          ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.SALE" })
+                          : intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.PURCHASE" })
+                    }
+                    {...a11yProps(1)}
+                  />
                 )}
 
-              {!isTransporterProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
-                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(4)} />
-              )}
-              {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && editMode === "edit" && (
-                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.FILTERS" })} {...a11yProps(5)} />
-              )}
-            </Tabs>
+                {me && editMode !== "create" && accessTransporter()
+                  ? <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.OPTIONS" })} {...a11yProps(2)} />
+                  : !isTransporterProfile() && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
+
+                {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+                  (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
+                    <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })} {...a11yProps(3)} />
+                  )}
+
+                {!isTransporterProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
+                  <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(4)} />
+                )}
+                {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && editMode === "edit" && (
+                  <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.FILTERS" })} {...a11yProps(5)} />
+                )}
+              </Tabs>
+            ) : (
+              <Skeleton width="100%" height={50} animation="wave" />
+            )}
+
           </AppBar>
           <Divider />
           <TabPanel value={valueTabs} index={0}>
-            <ProfileForm userId={+id || undefined} isTransporterProfile={isTransporterProfile} editMode={editMode} setAlertOpen={setAlertOpen} setLocTabPulse={setLocTabPulse}  />
+            <ProfileForm userId={+id || undefined} isTransporterProfile={isTransporterProfile} editMode={editMode} setAlertOpen={setAlertOpen} setLocTabPulse={setLocTabPulse} />
           </TabPanel>
           <TabPanel value={valueTabs} index={1}>
             {editMode === "create" ? (
