@@ -298,7 +298,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               {!isTransporterProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
                 <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(4)} />
               )}
-              {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
+              {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && editMode === "edit" && (
                 <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.FILTERS" })} {...a11yProps(5)} />
               )}
             </Tabs>
