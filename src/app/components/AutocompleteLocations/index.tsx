@@ -24,7 +24,7 @@ interface IProps {
   editable: boolean;
   inputError: boolean;
   inputHelperText: any;
-  disable: boolean;
+  disable: boolean ;
   handleBlur?: (e: any) => {} | void;
   fetchLocations: (location: string) => {} | void;
   clearLocations: () => {};
@@ -82,7 +82,7 @@ const Autocomplete: React.FC<IProps> = ({
     }
   }, [fetchLocations, location]);
 
-  
+
 
   useEffect(() => {
     if (inputValue.text === "") setEditableLocation(true);
@@ -98,7 +98,7 @@ const Autocomplete: React.FC<IProps> = ({
       getOptionLabel={option => option.text}
       onChange={(_: any, val: any) => {
         console.log('val', val);
-        
+
         if (val) {
           setSelectedLocation(val);
           setEditableLocation(false);

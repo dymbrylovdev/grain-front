@@ -69,6 +69,7 @@ function NumberFormatCustom(props) {
     );
 }
 interface IProps {
+    editMode?: "profile" | "create" | "edit" | "view";
 }
 
 const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
@@ -88,6 +89,8 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     selectedLocation,
     setSelectedLocation,
     clearSelectedLocation,
+    editMode,
+    user,
 
 }) => {
     const innerClasses = innerStyles();
@@ -97,11 +100,13 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
 
 
+    const userType = editMode === "view" ? user : me
+
     const getInitialValues = (options: ITransport | undefined) => ({
-        technicalDetails: me?.transport ? me.transport.technical_details : '',
-        weight: me?.transport ? me.transport.weight : '',
-        amount: me?.transport ? me.transport.amount : '',
-        location: me?.transport ? me.transport.location : '',
+        technicalDetails: userType?.transport ? userType.transport.technical_details : '',
+        weight: userType?.transport ? userType.transport.weight : '',
+        amount: userType?.transport ? userType.transport.amount : '',
+        location: userType?.transport ? userType.transport.location : '',
     });
 
     const validationSchema = Yup.object().shape(
@@ -126,28 +131,27 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     }, [])
 
     React.useEffect(() => {
-        me?.transport?.location?.text && setAutoLocation({ text: me?.transport?.location?.text })
-    }, [me])
+        userType?.transport?.location?.text && setAutoLocation({ text: userType?.transport?.location?.text })
+    }, [userType])
+  
 
     const mapState = useMemo(() => {
         if (selectedLocation) {
             return { center: [selectedLocation.lat, selectedLocation.lng], zoom: 7, margin: [10, 10, 10, 10] };
         } else {
-            if (me?.transport?.location) {
-                return { center: [me?.transport.location.lat, me?.transport.location.lng], zoom: 7, margin: [10, 10, 10, 10] };
+            if (userType?.transport?.location) {
+                return { center: [userType?.transport.location.lat, userType?.transport.location.lng], zoom: 7, margin: [10, 10, 10, 10] };
             } else {
                 return null;
             }
         }
-    }, [selectedLocation, me]);
+    }, [selectedLocation, userType]);
+ 
 
     const { values, handleSubmit, handleChange, handleBlur, resetForm, setFieldValue, touched, errors } = useFormik({
         initialValues: getInitialValues(undefined),
         onSubmit: values => {
 
-            console.log("values", values);
-            console.log("selectedLocation", selectedLocation);
-            
             edit({
                 id: me?.id,
                 data: {
@@ -174,6 +178,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         dispatch(fetchGoogleLocations(val))
     }, [])
 
+    
 
     return (
         <>
@@ -201,6 +206,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                             rows="6"
                             multiline
                             fullWidth
+                            disabled={editMode === "view"}
                             helperText={touched.technicalDetails && errors.technicalDetails}
                             error={Boolean(touched.technicalDetails && errors.technicalDetails)}
                         />
@@ -215,6 +221,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                             variant="outlined"
                             onBlur={handleBlur}
                             onChange={onChangeHandler}
+                            disabled={editMode === "view"}
                             helperText={touched.weight && errors.weight}
                             error={Boolean(touched.weight && errors.weight)}
                             InputProps={{
@@ -239,6 +246,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                             onChange={onChangeHandlerAmount}
                             helperText={touched.amount && errors.amount}
                             error={Boolean(touched.amount && errors.amount)}
+                            disabled={editMode === "view"}
                             InputProps={{
                                 inputComponent: NumberFormatCustom as any,
                                 endAdornment: (
@@ -267,8 +275,11 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                                         setFieldValue("location", location)
                                     }
                                 }}
-                                disable={false}
-                                prompterRunning={me?.points.length === 0 ? prompterRunning : false}
+                                // disable={false}
+                                // disabled={Boolean(editMode === "view")}
+                                disable={Boolean(editMode === "view")}
+                                // prompterRunning={me?.points.length === 0 ? prompterRunning : false}
+                                prompterRunning={userType?.points.length === 0 ? prompterRunning : false}
                                 prompterStep={prompterStep}
                             />
                         </div>
@@ -287,13 +298,15 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                                         }}
                                         modules={["templateLayoutFactory", "route", "geoObject.addon.balloon"]}
                                     >
-                                        {(me?.transport?.location || selectedLocation) && (
+                                        {/* {(me?.transport?.location || selectedLocation) && ( */}
+                                        {(userType?.transport?.location || selectedLocation) && (
                                             <Placemark
                                                 geometry={mapState.center}
                                                 properties={{
                                                     iconCaption: selectedLocation
                                                         ? selectedLocation.text
-                                                        : me?.transport?.location?.text
+                                                        : userType?.transport?.location?.text
+                                                        // : me?.transport?.location?.text
                                                 }}
                                                 modules={["geoObject.addon.balloon"]}
                                             />
@@ -308,7 +321,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 )}
 
 
-                {me && (
+                {me && editMode != "view" && (
                     <div className={classes.button} style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
                         <ButtonWithLoader
                             loading={editLoading}
@@ -331,6 +344,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 const connector = connect(
     (state: IAppState) => ({
         me: state.auth.user,
+        user: state.users.user,
         meLoading: state.auth.loading,
         editLoading: state.options.editLoading,
         selectedLocation: state.options.selectedLocation,

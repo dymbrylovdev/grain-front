@@ -125,7 +125,6 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
   }, [me, editMode]);
 
 
-
   useEffect(() => {
     if (editMode === "profile") {
       if (match.url.indexOf("profile") !== -1) {
@@ -236,7 +235,6 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     return accessByRoles(user, ["ROLE_TRANSPORTER"])
   }, [user])
 
-  console.log("valueTabs", valueTabs);
 
 
 
@@ -276,7 +274,8 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               >
                 <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
 
-                {editMode !== "create" && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && (
+                {editMode !== "create" && 
+                !accessByRoles(user, ["ROLE_TRANSPORTER"]) &&  (
                   <Tab
                     classes={prompterRunning && prompterStep === 0 && isLocTabPulse ? { root: innerClasses.pulseRoot } : {}}
                     label={
@@ -329,7 +328,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
 
           {accessByRoles(user, ["ROLE_TRANSPORTER"]) && (
             <TabPanel value={valueTabs} index={1}>
-              <OptionsForm />
+              <OptionsForm editMode={editMode} />
             </TabPanel>
           )}
 
