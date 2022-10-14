@@ -13,6 +13,7 @@ import { IAppState } from "../../store/rootDuck";
 
 import { LeftMenu } from ".";
 import UsersFilterMenu from "./UsersFilterMenu";
+import { accessByRoles } from "../../utils/utils";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -92,8 +93,10 @@ const GrainMenu: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   }
 
   // if (!me) return null;
+  if (accessByRoles(me, ["ROLE_TRANSPORTER"])) return null;
 
   return (
+    
     <Wrapper
       isMinWidthQuery={isMinWidthQuery}
       className={isMinWidthQuery ? classes.root : classes.left_menu}

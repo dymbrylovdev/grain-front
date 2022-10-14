@@ -146,8 +146,8 @@
   "AUTH.TERM.LOADING": "Загрузка...",
 
   "DEALS.TABLE.CROP": "Культура",
-  "DEALS.TABLE.SALE": "Продажа",
-  "DEALS.TABLE.PURCHASE": "Покупка",
+  "DEALS.TABLE.SALE": "Продать",
+  "DEALS.TABLE.PURCHASE": "Купить",
   "DEALS.TABLE.PROFIT": "Прибыль, руб.",
   "DEALS.TABLE.PROFIT_WITH_DELIVERY": "Прибыль на тонну с учетом доставки, руб.",
   "DEALS.TABLE.PROFIT_BY_TONN": "Прибыль на тонну, руб.",
@@ -188,6 +188,7 @@
   "PROFILE.INPUT.STATUS_ARCHIVED": "В архиве",
   "PROFILE.INPUT.STATUS_ACTIVE": "Активное",
   "PROFILE.INPUT.LOCATION.PURCHASE": "Точка приемки",
+  "PROFILE.INPUT.LOCATION.LOCATION": "Местоположение",
   "PROFILE.INPUT.LOCATION": "Точка отгрузки/приемки",
   "PROFILE.INPUT.EMAIL": "Email",
   "PROFILE.INPUT.LOGIN": "Логин",
@@ -248,6 +249,7 @@
   "USER.EDIT_FORM.LOCATIONS.INACTIVE": "Не учитывать при поиске объявлений",
   "USER.EDIT_FORM.TARIFFS": "Тариф",
   "USER.EDIT_FORM.CROPS": "Культуры",
+  "USER.EDIT_FORM.OPTIONS": "Параметры",
   "USER.EDIT_FORM.BIDS": "Объявления",
   "USER.EDIT_FORM.FILTERS": "Подписки",
   "USER.EDIT_FORM.USE_VAT": "Работаю с НДС.",
@@ -381,6 +383,11 @@
   "CROP.PARAM.DIALOGS.AGREE_TEXT": "Да",
   "CROP.PARAM.DIALOGS.CANCEL_TEXT": "Отмена",
   "CROP.PARAM.DIALOGS.LOADING_TEXT": "Удаление параметра",
+  
+  "OPTIONS.DETAILS": "Техническике данные",
+  "OPTIONS.WEIGHT": "Вес",
+  "OPTIONS.AMOUNT": "Количество",
+
 
   "FILTER.FORM.MAX_PAYMENT_TERM": "Макс. срок расчета, календарных дней",
   "FILTER.FORM.MAX_PAYMENT_TERM1": "С максимальным сроком расчета:",

@@ -76,7 +76,7 @@ export const actions = {
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* fetchSaga({ payload }: { payload: any }) {
+function* fetchSaga({ payload }: { payload: any }) {  
   if (!payload) return yield put(actions.clear());
   try {
     const { data }: { data: any } = yield call(() => getLocation(payload));

@@ -20,6 +20,10 @@ const trader = {
   value: "Трейдер",
   id: "ROLE_TRADER",
 };
+const transporter = {
+  value: "Камазист",
+  id: "ROLE_TRANSPORTER",
+};
 
 export const getInitialValues = (user: IUser | undefined) => ({
   login: user?.login || "",
@@ -40,4 +44,4 @@ export const getInitialValues = (user: IUser | undefined) => ({
   company_id: user && user.company ? user.company.id : 0,
 });
 
-export const roles = [admin, manager, buyer, vendor, trader];
+export const roles = [admin, manager, buyer, vendor, trader, transporter];

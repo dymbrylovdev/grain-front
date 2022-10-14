@@ -40,6 +40,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
 
   const redirectUrl = useMemo(() => {
     if (user) {
+      if (user.roles.includes("ROLE_TRANSPORTER")) return "user/profile"
       if (user.roles.includes("ROLE_ADMIN") || user.roles.includes("ROLE_MANAGER") || user.roles.includes("ROLE_TRADER")) {
         return `/sale/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
       } else {
@@ -59,8 +60,10 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
         <Route path="/userDocs/legacy" component={UserDocPage} />
         <Route path="/user/view/:id" exact component={UserEditPage} />
         <Route path="/user/profile" exact component={UserEditPage} />
+        <Route path="/user/profile/:id" exact component={UserEditPage} />
         <Route path="/user/profile/points" component={UserEditPage} />
         <Route path="/user/profile/crops" component={UserEditPage} />
+        <Route path="/user/profile/options" component={UserEditPage} />
         <Route path="/user/profile/tariffs" exact component={UserEditPage} />
         <Route path="/user/profile/tariffs/payment/:id" component={UserPaymentPage} />
         <Route path="/user/profile/tariffs/payment-form" component={UserPaymentPage} />
@@ -151,7 +154,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   );
 }
 
-export default connect(state => {}, {
+export default connect(state => { }, {
   ...builder.actions,
   ...crops.actions,
   ...users.actions,

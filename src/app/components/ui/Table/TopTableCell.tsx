@@ -4,7 +4,7 @@ import { withStyles } from "@material-ui/styles";
 const TopTableCell = withStyles(theme => ({
   head: {
     backgroundColor: "#1e1e2d",
-    color: "white",
+    color: "white !important",
     fontSize: 14,
     fontWeight: "bold",
   },
@@ -16,6 +16,7 @@ const TopTableCell = withStyles(theme => ({
     head: {
       fontSize: 12,
       paddingRight: 0,
+      color: "white",
       // paddingLeft: theme.spacing(2),
     },
   },

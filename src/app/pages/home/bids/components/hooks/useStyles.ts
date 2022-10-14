@@ -882,6 +882,12 @@ export const useViewBidStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
   },
+  flex:{
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
+
+  }
 }));
 
 export const useStylesPhotosForm = makeStyles(theme =>

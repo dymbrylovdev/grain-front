@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { compose } from "redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
@@ -21,6 +21,8 @@ import { BidsForm, CropsForm, FilterForm, LocationsForm, ProfileForm } from "./c
 import ScrollToTop from "../../../components/ui/ScrollToTop";
 import TariffForm from "./components/TariffForm/TariffForm";
 import { accessByRoles } from "../../../utils/utils";
+import OptionsForm from "./components/OptionsForm";
+import { Skeleton } from "@material-ui/lab";
 
 const innerStyles = makeStyles(theme => ({
   pulseRoot: {
@@ -117,6 +119,12 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     }
   }, [me, editMode]);
 
+
+  const accessTransporter = useCallback(() => {
+    return accessByRoles(me, ["ROLE_TRANSPORTER"])
+  }, [me, editMode]);
+
+
   useEffect(() => {
     if (editMode === "profile") {
       if (match.url.indexOf("profile") !== -1) {
@@ -128,6 +136,12 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
       if (match.url.indexOf("profile/crops") !== -1) {
         setValueTabs(2);
       }
+
+      if (accessTransporter() && match.url.indexOf("profile/options") !== -1) {
+        setValueTabs(2);
+        return
+      }
+
       if (match.url.indexOf("profile/tariffs") !== -1) {
         setValueTabs(3);
       }
@@ -145,10 +159,12 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     if (editMode === "profile") {
       if (newValue === 0) history.push("/user/profile");
       if (newValue === 1) history.push("/user/profile/points");
-      if (newValue === 2) history.push("/user/profile/crops");
+      if (newValue === 2) history.push("/user/profile/crops")
+      if (newValue === 2 && accessTransporter()) history.push("/user/profile/options")
       if (newValue === 3) history.push("/user/profile/tariffs");
     }
   };
+
 
   const subTitle = (editMode: "profile" | "create" | "edit" | "view"): string => {
     switch (editMode) {
@@ -214,6 +230,14 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     }, 10000);
   }
 
+
+  const isTransporterProfile = useCallback(() => {
+    return accessByRoles(user, ["ROLE_TRANSPORTER"])
+  }, [user])
+
+
+
+
   return (
     <>
       <ScrollToTop />
@@ -222,84 +246,116 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
         <div className={classes.form} style={valueTabs === 4 || valueTabs === 3 ? { maxWidth: 1000 } : undefined}>
           <div className={classes.topButtonsContainer}>
             <div className={classes.flexRow} style={{ width: "100%", alignItems: "center", justifyContent: "space-between" }}>
-              <div className={classes.button}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => {
-                    history.goBack();
-                  }}
-                  disabled={loadingMe || loadingUser}
-                >
-                  {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
-                </Button>
-              </div>
+              {!accessByRoles(me, ["ROLE_TRANSPORTER"]) && !(accessByRoles(user, ["ROLE_TRANSPORTER"]) && editMode === "view") && (
+                <div className={classes.button}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      history.goBack();
+                    }}
+                    disabled={loadingMe || loadingUser}
+                  >
+                    {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                  </Button>
+                </div>)}
+
             </div>
           </div>
           <AppBar position="static" color="default" className={classes.appBar}>
-            <Tabs
-              value={valueTabs}
-              onChange={handleTabsChange}
-              variant="scrollable"
-              indicatorColor="primary"
-              textColor="primary"
-              aria-label="tabs"
-            >
-              <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
+            {user || window.location.href.includes('profile') ? (
+              <Tabs
+                value={valueTabs}
+                onChange={handleTabsChange}
+                variant="scrollable"
+                indicatorColor="primary"
+                textColor="primary"
+                aria-label="tabs"
+              >
+                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
 
-              {editMode !== "create" && (
-                <Tab
-                  classes={prompterRunning && prompterStep === 0 && isLocTabPulse ? { root: innerClasses.pulseRoot } : {}}
-                  label={
-                    accessByRoles(editMode === "profile" ? me : user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
-                      ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })
-                      : accessByRoles(editMode === "profile" ? me : user, ["ROLE_VENDOR"])
-                      ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.SALE" })
-                      : intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.PURCHASE" })
-                  }
-                  {...a11yProps(1)}
-                />
-              )}
-              {me && editMode !== "create" && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
+                {editMode !== "create" && 
+                !accessByRoles(user, ["ROLE_TRANSPORTER"]) &&  (
+                  <Tab
+                    classes={prompterRunning && prompterStep === 0 && isLocTabPulse ? { root: innerClasses.pulseRoot } : {}}
+                    label={
+                      accessByRoles(editMode === "profile" ? me : user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
+                        ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })
+                        : accessByRoles(editMode === "profile" ? me : user, ["ROLE_VENDOR"])
+                          ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.SALE" })
+                          : intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.PURCHASE" })
+                    }
+                    {...a11yProps(1)}
+                  />
+                )}
 
-              {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
-                (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
-                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })} {...a11yProps(3)} />
-              )}
+                {/* {(me && editMode !== "create" && accessTransporter()) */}
+                {(me && editMode !== "create" && accessTransporter()) || accessByRoles(user, ["ROLE_TRANSPORTER"])
+                  ? <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.OPTIONS" })} {...a11yProps(accessByRoles(user, ["ROLE_TRANSPORTER"]) ? 1 : 2)} />
+                  : !isTransporterProfile() && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
 
-              {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
-                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(4)} />
-              )}
-              {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
-                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.FILTERS" })} {...a11yProps(5)} />
-              )}
-            </Tabs>
+                {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+                  (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
+                    <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })} {...a11yProps(3)} />
+                  )}
+
+                {!isTransporterProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
+                  <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(4)} />
+                )}
+                {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && editMode === "edit" && (
+                  <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.FILTERS" })} {...a11yProps(5)} />
+                )}
+              </Tabs>
+            ) : (
+              <Skeleton width="100%" height={50} animation="wave" />
+            )}
+
           </AppBar>
           <Divider />
           <TabPanel value={valueTabs} index={0}>
-            <ProfileForm userId={+id || undefined} editMode={editMode} setAlertOpen={setAlertOpen} setLocTabPulse={setLocTabPulse} />
+            <ProfileForm userId={+id || undefined} isTransporterProfile={isTransporterProfile} editMode={editMode} setAlertOpen={setAlertOpen} setLocTabPulse={setLocTabPulse} />
           </TabPanel>
-          <TabPanel value={valueTabs} index={1}>
-            {editMode === "create" ? (
-              <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
-            ) : (
-              <LocationsForm editMode={editMode} userId={+id || undefined} />
-            )}
-          </TabPanel>
-          <TabPanel value={valueTabs} index={2}>
-            {editMode === "create" ? (
-              <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
-            ) : (
-              <CropsForm userId={+id || undefined} editMode={editMode} />
-            )}
-          </TabPanel>
+
+          {!accessByRoles(user, ["ROLE_TRANSPORTER"]) && (
+            <TabPanel value={valueTabs} index={1}>
+              {editMode === "create" ? (
+                <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
+              ) : (
+                <LocationsForm editMode={editMode} userId={+id || undefined} />
+              )}
+            </TabPanel>
+          )}
+
+          {accessByRoles(user, ["ROLE_TRANSPORTER"]) && (
+            <TabPanel value={valueTabs} index={1}>
+              <OptionsForm editMode={editMode} />
+            </TabPanel>
+          )}
+
+
+
+          {accessTransporter()
+            ? (<TabPanel value={valueTabs} index={2}>
+              {editMode === "create" ? (
+                <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
+              ) : (
+                <OptionsForm />
+              )}
+            </TabPanel>)
+            : (<TabPanel value={valueTabs} index={2}>
+              {editMode === "create" ? (
+                <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
+              ) : !isTransporterProfile() && (
+                <CropsForm userId={+id || undefined} editMode={editMode} />
+              )}
+            </TabPanel>)}
 
           {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
             (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
-            <TabPanel value={valueTabs} index={3}>
-              <TariffForm editMode={editMode} userId={+id || undefined} />
-            </TabPanel>
-          )}
+              <TabPanel value={valueTabs} index={3}>
+                <TariffForm editMode={editMode} userId={+id || undefined} />
+              </TabPanel>
+            )}
 
           {user && (
             <TabPanel value={valueTabs} index={["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]) ? 4 : 3}>
@@ -315,13 +371,15 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                   (me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
                   (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))
                 )
-                  ? 4
+                  ? !isTransporterProfile() ? 4 : 2
                   : 5
               }
             >
               <FilterForm match={match} userId={+id || undefined} />
             </TabPanel>
+
           )}
+
         </div>
         <AlertDialog
           isOpen={isAlertOpen}

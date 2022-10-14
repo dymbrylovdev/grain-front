@@ -49,6 +49,7 @@ const SET_EDIT_NO_NOTI = "auth/SET_EDIT_NO_NOTI";
 const CLEAR_EDIT = "auth/CLEAR_EDIT";
 const EDIT_REQUEST = "auth/EDIT_REQUEST";
 const EDIT_SUCCESS = "auth/EDIT_SUCCESS";
+const EDIT_USER_SUCCESS = "auth/EDIT_USER_SUCCESS";
 const EDIT_FAIL = "auth/EDIT_FAIL";
 
 const CLEAR_RECOVERY_PASSWORD = "auth/CLEAR_RECOVERY_PASSWORD";
@@ -226,6 +227,10 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 
       case EDIT_SUCCESS: {
         return { ...state, user: action.payload.data, editLoading: false, editSuccess: true };
+      }
+      case EDIT_USER_SUCCESS: {
+        // console.log("action.payload.data ", action.payload.data );        
+        return { ...state, user: action.payload.data };
       }
 
       case EDIT_FAIL: {
@@ -544,6 +549,7 @@ export const actions = {
   clearEdit: () => createAction(CLEAR_EDIT),
   editRequest: (payload: { data: IUserForEdit }) => createAction(EDIT_REQUEST, payload),
   editSuccess: (payload: IServerResponse<IUser>) => createAction(EDIT_SUCCESS, payload),
+  editUserSuccess: (payload: IServerResponse<IUser>) => createAction(EDIT_USER_SUCCESS, payload),
   editFail: (payload: string) => createAction(EDIT_FAIL, payload),
 
   clearReg: () => createAction(CLEAR_REG),
@@ -597,9 +603,13 @@ export type TActions = ActionsUnion<typeof actions>;
 
 function* fetchSaga() {
   try {
+    console.log("fetch user");
+    
     const state = yield select();
     if (state.auth.authToken) {
       const { data }: { data: IServerResponse<IUser> } = yield call(() => getMe());
+          console.log("fetch user data", data);
+
       yield put(actions.fetchSuccess(data));
     } else {
       yield put(actions.fetchFail(""));

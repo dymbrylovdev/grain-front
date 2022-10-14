@@ -1,4 +1,6 @@
+import { ITransport } from './options';
 export type TBidType = "sale" | "purchase";
+
 
 export interface IBid {
   type: "sale" | "purchase";
@@ -40,8 +42,8 @@ export interface IBid {
     company_confirmed_by_payment?: boolean;
     phone?: string;
     surname?: string;
-    firstName?: string;
-    lastName?: string;
+    firstname?: string;
+    lastname?: string;
   };
   location: {
     lat: number;
@@ -82,6 +84,7 @@ export interface IBid {
   price_with_delivery: number | null;
   price_with_delivery_with_vat: number | null;
   profit: number;
+  transports: ITransport[];
   vat: number | null;
   tariff: {
     id: number;

@@ -242,7 +242,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                         inputClassName={classes.textField}
                         inputError={Boolean(errorGoogleLocations)}
                         inputHelperText={errorGoogleLocations}
-                        fetchLocations={fetchGoogleLocations}
+                        fetchLocations={ fetchGoogleLocations}
                         clearLocations={clearGoogleLocations}
                         setSelectedLocation={(location: ILocationToRequest) => {
                           if (location.text !== "") {
@@ -425,7 +425,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       </>
                     )}
                   </div>
-                  {editMode !== "view" && (
+                  {editMode !== "view" && !accessByRoles(me, ["ROLE_TRANSPORTER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && (
                     <div>
                       {loadingMe || loadingUser ? (
                         <Skeleton width={300} height={41} animation="wave" />

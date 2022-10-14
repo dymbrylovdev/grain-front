@@ -98,7 +98,7 @@ class SubHeader extends React.Component {
               </Button>
             )}
 
-            {(!accessByRoles(me, ["ROLE_MANAGER"]) || !me) && (
+            {(!accessByRoles(me, ["ROLE_MANAGER", "ROLE_TRANSPORTER"]) || !me) && (
               <Button
                 className="kt-subheader__btn"
                 variant="contained"

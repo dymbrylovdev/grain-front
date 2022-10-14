@@ -212,6 +212,11 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     control={<Radio />}
                     label={roles.find(role => role.id === "ROLE_VENDOR")?.value}
                   />
+                  <FormControlLabel
+                    value="ROLE_TRANSPORTER"
+                    control={<Radio />}
+                    label={roles.find(role => role.id === "ROLE_TRANSPORTER")?.value}
+                  />
                 </RadioGroup>
 
                 <div className="form-group mb-0">

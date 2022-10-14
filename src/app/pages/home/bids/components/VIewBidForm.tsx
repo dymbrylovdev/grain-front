@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Divider, CardMedia, Button, TextField, useMediaQuery, Tooltip } from "@material-ui/core";
+import { Divider, CardMedia, Button, TextField, useMediaQuery, Tooltip, DialogProps, } from "@material-ui/core";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 import { accessByRoles, formatAsThousands, formatPhone } from "../../../../utils/utils";
 import ImageGallery from "./imageGallery/ImageGallery";
@@ -22,6 +22,10 @@ import { useViewBidStyles } from "./hooks/useStyles";
 import { ILocalBids } from "./BidsList";
 import { setViewed } from "./hooks/useViewedBid";
 import Modal from "../../../../components/ui/Modal";
+import clsx from 'clsx';
+import { useDispatch } from 'react-redux'
+// import { useFetchTransporters } from './hooks/useFetchTransporters'
+import TransporterTable from "./transporterTable/TransporterTable";
 
 interface IProps {
   intl: IntlShape;
@@ -80,12 +84,13 @@ const ViewBidForm: React.FC<IProps> = ({
   const currentCropId: number = !!bid ? bid.crop_id : !!cropId ? cropId : vendor?.crops.length === 1 ? vendor.crops[0].id : 0;
   const history = useHistory();
   // * yandex map --------------->
-
+  const dispatch = useDispatch()
   const [open, setOpen] = useState(false);
   const [ymaps, setYmaps] = useState<any>();
   const [map, setMap] = useState<any>();
   const [routeLoading, setRouteLoading] = useState(false);
   const [showsPhones, setShowsPhones] = useState(false);
+  const [authAlert, setAuthAlert] = useState(false);
   const [showPlacemark, setShowPlacemark] = useState(false);
   const [pricePerKm, setPricePerKm] = useState<number | string>(bid?.price_delivery_per_km || 4);
   const [updatedLocalStorage, setUpdateLocalStorage] = useState(false);
@@ -97,6 +102,9 @@ const ViewBidForm: React.FC<IProps> = ({
     const storageBids = localStorage.getItem("bids");
     return storageBids ? JSON.parse(storageBids) : null;
   }, [updatedLocalStorage]);
+
+
+  // const [fetch, loadTransporters, response, page, perPage, total] = useFetchTransporters()
 
   const newBid = useMemo(() => {
     if (mapBid) {
@@ -158,6 +166,8 @@ const ViewBidForm: React.FC<IProps> = ({
     }
   }, [bid]);
 
+
+
   const newPrice = useMemo(() => {
     if (selectedRoute && bid) {
       const isVat = (me?.use_vat || !me) && !bid.vendor_use_vat;
@@ -167,17 +177,17 @@ const ViewBidForm: React.FC<IProps> = ({
           ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
           (!me?.use_vat && me && bid?.vendor_use_vat))
         ? thousands(
-            getFinalPrice(
-              bid,
-              mapDistance || selectedRoute.distance.value / 1000,
-              Number(pricePerKm),
-              salePurchaseMode,
-              isMatch ? bid.vat || 10 : 0
-            ).toString()
-          )
+          getFinalPrice(
+            bid,
+            mapDistance || selectedRoute.distance.value / 1000,
+            Number(pricePerKm),
+            salePurchaseMode,
+            isMatch ? bid.vat || 10 : 0
+          ).toString()
+        )
         : thousands(
-            getFinalPrice(bid, mapDistance || selectedRoute.distance.value / 1000, Number(pricePerKm), salePurchaseMode, 0).toString()
-          );
+          getFinalPrice(bid, mapDistance || selectedRoute.distance.value / 1000, Number(pricePerKm), salePurchaseMode, 0).toString()
+        );
     }
     return null;
   }, [selectedRoute, bid, pricePerKm, salePurchaseMode, me, mapDistance]);
@@ -187,18 +197,18 @@ const ViewBidForm: React.FC<IProps> = ({
       return newBid
         ? formatAsThousands(newBid.finalPrice)
         : newPrice
-        ? newPrice
-        : bid?.price_with_delivery
-        ? formatAsThousands(Math.round(bid.price_with_delivery))
-        : "-";
+          ? newPrice
+          : bid?.price_with_delivery
+            ? formatAsThousands(Math.round(bid.price_with_delivery))
+            : "-";
     }
     return newBid
       ? formatAsThousands(newBid.finalPrice)
       : newPrice
-      ? newPrice
-      : bid?.price_with_delivery_with_vat
-      ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
-      : "-";
+        ? newPrice
+        : bid?.price_with_delivery_with_vat
+          ? formatAsThousands(Math.round(bid.price_with_delivery_with_vat))
+          : "-";
   }, [newBid, bid, newPrice, me]);
 
   useEffect(() => {
@@ -236,7 +246,7 @@ const ViewBidForm: React.FC<IProps> = ({
       const routes = multiRoute.getRoutes();
       for (let i = 0, l = routes.getLength(); i < l; i++) {
         const route = routes.get(i);
-        route.events.add("click", function() {
+        route.events.add("click", function () {
           multiRoute.setActiveRoute(route);
           route.balloon.open();
           const activeProperties = multiRoute.getActiveRoute();
@@ -381,6 +391,23 @@ const ViewBidForm: React.FC<IProps> = ({
     }
   }, [loading, calcRef]);
 
+
+  const [openDialogCompanies, setOpenDialogCompanies] = useState(false);
+
+
+  const openCompaniesDialog = useCallback(() => {
+    setOpenDialogCompanies(true);
+  }, [openDialogCompanies]);
+
+  const openAuthAlert = useCallback(() => {
+    setAuthAlert(true);
+  }, [me]);
+
+  // console.log("bid.vendor", bid?.vendor?.firstname);
+
+
+
+
   return (
     <>
       {loading && <Skeleton width="100%" height={70} animation="wave" />}
@@ -392,6 +419,53 @@ const ViewBidForm: React.FC<IProps> = ({
         handleClose={() => setShowPhoneDialog(false)}
         handleAgree={() => history.push("/user/profile/tariffs")}
       />
+
+
+      <Modal
+        DialogProps={{ maxWidth: 'md' } as DialogProps}
+        open={openDialogCompanies}
+        onClose={false ? () => { } : () => setOpenDialogCompanies(false)}
+        title={''}
+        // loading={loadTransporters}
+        content={
+          <TransporterTable
+            transportersList={bid?.transports}
+            fetch={() => { }}
+            page={1}
+            perPage={bid?.transports?.length || 0}
+            total={bid && bid.transports?.length > 0 ? 1 : 0}
+          />
+        }
+        actions={[
+          {
+            title: "Закрыть",
+            onClick: () => {
+              setOpenDialogCompanies(false)
+            },
+          },
+        ]}
+      />
+
+      <Modal
+        open={authAlert}
+        onClose={() => setAuthAlert(false)}
+        title={"Чтобы продолжить действие с редактированием профиля или объявления, авторизуйтесь!"}
+        actions={[
+          {
+            title: "Cancel",
+            onClick: () => setAuthAlert(false),
+          },
+          {
+            title: "OK",
+            onClick: () => history.push("/auth"),
+          },
+        ]}
+      />
+
+
+
+
+
       {bid && user && (
         <div className={classes.container}>
           <div className={classes.card}>
@@ -501,8 +575,8 @@ const ViewBidForm: React.FC<IProps> = ({
                     {selectedPrice !== "-" && (salePurchaseMode === "sale" || salePurchaseMode === "purchase") && (
                       <div className={classes.nds}>
                         {((me?.use_vat || !me) && !bid.vendor_use_vat) ||
-                        ((me?.use_vat || !me) && bid.vendor_use_vat) ||
-                        (!me?.use_vat && me && bid.vendor_use_vat)
+                          ((me?.use_vat || !me) && bid.vendor_use_vat) ||
+                          (!me?.use_vat && me && bid.vendor_use_vat)
                           ? "Цена указана с НДС"
                           : "Цена указана без НДС"}{" "}
                         <div>
@@ -525,18 +599,18 @@ const ViewBidForm: React.FC<IProps> = ({
                           <>
                             {!!bid?.point_prices && !!bid.point_prices.length
                               ? bid.point_prices.map(
-                                  (item, i) =>
-                                    i === 0 &&
-                                    (i === 0 ? (
-                                      <b key={i} className={classes.deliveryAddress}>
-                                        {` ${item.point.name}`}
-                                      </b>
-                                    ) : (
-                                      <b key={i} className={classes.deliveryAddress}>
-                                        {` ${item.point.name}`}
-                                      </b>
-                                    ))
-                                )
+                                (item, i) =>
+                                  i === 0 &&
+                                  (i === 0 ? (
+                                    <b key={i} className={classes.deliveryAddress}>
+                                      {` ${item.point.name}`}
+                                    </b>
+                                  ) : (
+                                    <b key={i} className={classes.deliveryAddress}>
+                                      {` ${item.point.name}`}
+                                    </b>
+                                  ))
+                              )
                               : "-"}
                           </>
                         )}
@@ -561,9 +635,8 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <div className={classes.rybl}>₽</div>
                                   <div className={classes.nds}>{`Цена указана с НДС`}</div>
                                 </div>
-                                <div className={classes.price} style={{ fontWeight: "normal" }}>{`${bid.price && Math.round(bid.price)} + ${
-                                  bid.vat
-                                }% НДС`}</div>
+                                <div className={classes.price} style={{ fontWeight: "normal" }}>{`${bid.price && Math.round(bid.price)} + ${bid.vat
+                                  }% НДС`}</div>
                               </>
                             )}
 
@@ -615,8 +688,8 @@ const ViewBidForm: React.FC<IProps> = ({
                               <div className={classes.rybl}>₽</div>
                               <div className={classes.nds}>
                                 {((me?.use_vat || !me) && !bid.vendor_use_vat) ||
-                                (!me?.use_vat && me && bid.vendor_use_vat) ||
-                                ((me?.use_vat || !me) && bid.vendor_use_vat)
+                                  (!me?.use_vat && me && bid.vendor_use_vat) ||
+                                  ((me?.use_vat || !me) && bid.vendor_use_vat)
                                   ? "Цена указана с НДС"
                                   : "Цена указана без НДС"}{" "}
                               </div>
@@ -671,11 +744,12 @@ const ViewBidForm: React.FC<IProps> = ({
                         <p>Продавец:</p>
                       )}
                     </div>
-                    {Boolean(bid.vendor.surname || bid.vendor.firstName || bid.vendor.lastName) && (
+                    {bid?.vendor.firstname && (
                       <div className={classes.vendorCompany}>
-                        {`${bid.vendor.surname || ""} ${bid.vendor.firstName || ""} ${bid.vendor.lastName || ""}`}
+                        {bid?.vendor.firstname} {bid?.vendor?.lastname}
                       </div>
                     )}
+
                     {Boolean(bid.vendor.login) && <div className={classes.parameterValue}>{bid.vendor.login}</div>}
                     {bid.vendor?.company?.short_name && (
                       <div className={classes.vendorCompany} style={{ marginBottom: isMobile ? 0 : 16 }}>
@@ -799,8 +873,20 @@ const ViewBidForm: React.FC<IProps> = ({
                   </>
                 )}
 
+
+
                 <div className={classes.wrapperCalc} ref={calcRef}>
-                  <div className={classes.titleCalc}>Калькулятор доставки</div>
+                  <div className={clsx(classes.titleCalc, classes.flex)}>
+                    <div>Калькулятор доставки</div>
+                    <Button variant="contained" color="primary"
+                      onClick={!me ? openAuthAlert : openCompaniesDialog}
+                      className="kt-subheader__top-btn">
+                      Список камазистов
+                    </Button>
+
+
+                  </div>
+
                   <div style={{ width: "100%" }}>
                     <Divider style={{ marginBottom: 26 }} />
                     <div>
@@ -829,9 +915,9 @@ const ViewBidForm: React.FC<IProps> = ({
                         <div>
                           <div className={classes.calcParam}>
                             {salePurchaseMode === "sale" &&
-                            (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
-                              ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
-                              (me && !me?.use_vat && bid?.vendor_use_vat))
+                              (((me?.use_vat || !me) && !bid?.vendor_use_vat) ||
+                                ((me?.use_vat || !me) && bid?.vendor_use_vat) ||
+                                (me && !me?.use_vat && bid?.vendor_use_vat))
                               ? intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE_WITH_VAT" })
                               : intl.formatMessage({ id: "BID.CALCULATOR.FINAL_PRICE" })}
                           </div>
@@ -842,34 +928,33 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <b className={classes.calcVal}>
                                     {selectedRoute && typeof pricePerKm === "number"
                                       ? thousands(
-                                          getFinalPrice(
-                                            bid,
-                                            mapDistance || selectedRoute.distance.value / 1000,
-                                            pricePerKm,
-                                            salePurchaseMode,
-                                            bid.vat || 0
-                                          ).toString()
-                                        ) + " • "
+                                        getFinalPrice(
+                                          bid,
+                                          mapDistance || selectedRoute.distance.value / 1000,
+                                          pricePerKm,
+                                          salePurchaseMode,
+                                          bid.vat || 0
+                                        ).toString()
+                                      ) + " • "
                                       : " • "}
                                   </b>
                                 ) : (
                                   <b className={classes.calcVal}>
                                     {selectedRoute && typeof pricePerKm === "number"
                                       ? thousands(
-                                          getFinalPrice(
-                                            bid,
-                                            mapDistance || selectedRoute.distance.value / 1000,
-                                            pricePerKm,
-                                            salePurchaseMode,
-                                            0
-                                          ).toString()
-                                        ) + " • "
+                                        getFinalPrice(
+                                          bid,
+                                          mapDistance || selectedRoute.distance.value / 1000,
+                                          pricePerKm,
+                                          salePurchaseMode,
+                                          0
+                                        ).toString()
+                                      ) + " • "
                                       : " • "}
                                   </b>
                                 )}
-                                {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
-                                  mySelectedMapPoint ? mySelectedMapPoint.text : ""
-                                }`}
+                                {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                                  }`}
                               </div>
                             ) : !me && guestPoint?.active ? (
                               <>
@@ -877,35 +962,34 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <b className={classes.calcVal}>
                                     {selectedRoute && typeof pricePerKm === "number"
                                       ? thousands(
-                                          getFinalPrice(
-                                            bid,
-                                            mapDistance || selectedRoute.distance.value / 1000,
-                                            pricePerKm,
-                                            salePurchaseMode,
-                                            bid.vat || 0
-                                          ).toString()
-                                        ) + " • "
+                                        getFinalPrice(
+                                          bid,
+                                          mapDistance || selectedRoute.distance.value / 1000,
+                                          pricePerKm,
+                                          salePurchaseMode,
+                                          bid.vat || 0
+                                        ).toString()
+                                      ) + " • "
                                       : " • "}
                                   </b>
                                 ) : (
                                   <b className={classes.calcVal}>
                                     {selectedRoute && typeof pricePerKm === "number"
                                       ? thousands(
-                                          getFinalPrice(
-                                            bid,
-                                            mapDistance || selectedRoute.distance.value / 1000,
-                                            pricePerKm,
-                                            salePurchaseMode,
-                                            0
-                                          ).toString()
-                                        ) + " • "
+                                        getFinalPrice(
+                                          bid,
+                                          mapDistance || selectedRoute.distance.value / 1000,
+                                          pricePerKm,
+                                          salePurchaseMode,
+                                          0
+                                        ).toString()
+                                      ) + " • "
                                       : " • "}
                                   </b>
                                 )}
                                 <b className={classes.calcVal}>
-                                  {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
-                                    mySelectedMapPoint ? mySelectedMapPoint.text : ""
-                                  }`}
+                                  {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                                    }`}
                                 </b>
                               </>
                             ) : (
@@ -926,34 +1010,33 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <b className={classes.calcVal}>
                                     {selectedRoute && typeof pricePerKm === "number"
                                       ? thousands(
-                                          getDeliveryPrice(
-                                            bid,
-                                            mapDistance || selectedRoute.distance.value / 1000,
-                                            pricePerKm,
-                                            salePurchaseMode,
-                                            bid.vat || 10
-                                          ).toString()
-                                        ) + " • "
+                                        getDeliveryPrice(
+                                          bid,
+                                          mapDistance || selectedRoute.distance.value / 1000,
+                                          pricePerKm,
+                                          salePurchaseMode,
+                                          bid.vat || 10
+                                        ).toString()
+                                      ) + " • "
                                       : " • "}
                                   </b>
                                 ) : (
                                   <b className={classes.calcVal}>
                                     {selectedRoute && typeof pricePerKm === "number"
                                       ? thousands(
-                                          getDeliveryPrice(
-                                            bid,
-                                            mapDistance || selectedRoute.distance.value / 1000,
-                                            pricePerKm,
-                                            salePurchaseMode,
-                                            0
-                                          ).toString()
-                                        ) + " • "
+                                        getDeliveryPrice(
+                                          bid,
+                                          mapDistance || selectedRoute.distance.value / 1000,
+                                          pricePerKm,
+                                          salePurchaseMode,
+                                          0
+                                        ).toString()
+                                      ) + " • "
                                       : " • "}
                                   </b>
                                 )}
-                                {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
-                                  mySelectedMapPoint ? mySelectedMapPoint.text : ""
-                                }`}
+                                {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                                  }`}
                               </div>
                             ) : !me && guestPoint?.active ? (
                               <>
@@ -961,35 +1044,34 @@ const ViewBidForm: React.FC<IProps> = ({
                                   <b className={classes.calcVal}>
                                     {selectedRoute && typeof pricePerKm === "number"
                                       ? thousands(
-                                          getDeliveryPrice(
-                                            bid,
-                                            mapDistance || selectedRoute.distance.value / 1000,
-                                            pricePerKm,
-                                            salePurchaseMode,
-                                            bid.vat || 10
-                                          ).toString()
-                                        ) + " • "
+                                        getDeliveryPrice(
+                                          bid,
+                                          mapDistance || selectedRoute.distance.value / 1000,
+                                          pricePerKm,
+                                          salePurchaseMode,
+                                          bid.vat || 10
+                                        ).toString()
+                                      ) + " • "
                                       : " • "}
                                   </b>
                                 ) : (
                                   <b className={classes.calcVal}>
                                     {selectedRoute && typeof pricePerKm === "number"
                                       ? thousands(
-                                          getDeliveryPrice(
-                                            bid,
-                                            (mapDistance && mapDistance) || selectedRoute.distance.value / 1000,
-                                            pricePerKm,
-                                            salePurchaseMode,
-                                            0
-                                          ).toString()
-                                        ) + " • "
+                                        getDeliveryPrice(
+                                          bid,
+                                          (mapDistance && mapDistance) || selectedRoute.distance.value / 1000,
+                                          pricePerKm,
+                                          salePurchaseMode,
+                                          0
+                                        ).toString()
+                                      ) + " • "
                                       : " • "}
                                   </b>
                                 )}
                                 <b className={classes.calcVal}>
-                                  {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${
-                                    mySelectedMapPoint ? mySelectedMapPoint.text : ""
-                                  }`}
+                                  {`${selectedRoute ? selectedRoute.distance.text + " •" : ""} ${mySelectedMapPoint ? mySelectedMapPoint.text : ""
+                                    }`}
                                 </b>
                               </>
                             ) : (
