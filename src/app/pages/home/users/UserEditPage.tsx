@@ -236,6 +236,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     return accessByRoles(user, ["ROLE_TRANSPORTER"])
   }, [user])
 
+  console.log("valueTabs", valueTabs);
 
 
 
@@ -275,7 +276,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               >
                 <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
 
-                {editMode !== "create" && (
+                {editMode !== "create" && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && (
                   <Tab
                     classes={prompterRunning && prompterStep === 0 && isLocTabPulse ? { root: innerClasses.pulseRoot } : {}}
                     label={
@@ -289,8 +290,9 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                   />
                 )}
 
-                {me && editMode !== "create" && accessTransporter()
-                  ? <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.OPTIONS" })} {...a11yProps(2)} />
+                {/* {(me && editMode !== "create" && accessTransporter()) */}
+                {(me && editMode !== "create" && accessTransporter()) || accessByRoles(user, ["ROLE_TRANSPORTER"])
+                  ? <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.OPTIONS" })} {...a11yProps(accessByRoles(user, ["ROLE_TRANSPORTER"]) ? 1 : 2)} />
                   : !isTransporterProfile() && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
 
                 {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
@@ -314,13 +316,23 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
           <TabPanel value={valueTabs} index={0}>
             <ProfileForm userId={+id || undefined} isTransporterProfile={isTransporterProfile} editMode={editMode} setAlertOpen={setAlertOpen} setLocTabPulse={setLocTabPulse} />
           </TabPanel>
-          <TabPanel value={valueTabs} index={1}>
-            {editMode === "create" ? (
-              <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
-            ) : (
-              <LocationsForm editMode={editMode} userId={+id || undefined} />
-            )}
-          </TabPanel>
+
+          {!accessByRoles(user, ["ROLE_TRANSPORTER"]) && (
+            <TabPanel value={valueTabs} index={1}>
+              {editMode === "create" ? (
+                <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
+              ) : (
+                <LocationsForm editMode={editMode} userId={+id || undefined} />
+              )}
+            </TabPanel>
+          )}
+
+          {accessByRoles(user, ["ROLE_TRANSPORTER"]) && (
+            <TabPanel value={valueTabs} index={1}>
+              <OptionsForm />
+            </TabPanel>
+          )}
+
 
 
           {accessTransporter()
@@ -366,7 +378,9 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             >
               <FilterForm match={match} userId={+id || undefined} />
             </TabPanel>
+
           )}
+
         </div>
         <AlertDialog
           isOpen={isAlertOpen}
