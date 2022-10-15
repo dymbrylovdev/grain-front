@@ -99,8 +99,25 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     const history = useHistory();
 
 
+    const [isMe, setItsMe] = useState<boolean>()
 
-    const userType = editMode === "view" ? user : me
+    const userType = useMemo(() => {
+        if (editMode === "view") {
+            setItsMe(false)
+            return user
+        } else {
+            if (me?.roles.includes("ROLE_ADMIN") && user) {
+                setItsMe(false)
+                return user
+            } else {
+                setItsMe(true)
+                return me
+            }
+        }
+    }, [me, user])
+
+
+
 
     const getInitialValues = (options: ITransport | undefined) => ({
         technicalDetails: userType?.transport ? userType.transport.technical_details : '',
@@ -133,7 +150,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     React.useEffect(() => {
         userType?.transport?.location?.text && setAutoLocation({ text: userType?.transport?.location?.text })
     }, [userType])
-  
+
 
     const mapState = useMemo(() => {
         if (selectedLocation) {
@@ -146,18 +163,19 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             }
         }
     }, [selectedLocation, userType]);
- 
+
 
     const { values, handleSubmit, handleChange, handleBlur, resetForm, setFieldValue, touched, errors } = useFormik({
         initialValues: getInitialValues(undefined),
         onSubmit: values => {
 
             edit({
-                id: me?.id,
+                id: userType?.id,
                 data: {
                     ...values,
-                    location: selectedLocation || me?.transport.location,
-                }
+                    location: selectedLocation || userType?.transport.location,
+                },
+                self: isMe,
             })
         },
         validationSchema: validationSchema,
@@ -178,7 +196,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         dispatch(fetchGoogleLocations(val))
     }, [])
 
-    
+
 
     return (
         <>
@@ -306,7 +324,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                                                     iconCaption: selectedLocation
                                                         ? selectedLocation.text
                                                         : userType?.transport?.location?.text
-                                                        // : me?.transport?.location?.text
+                                                    // : me?.transport?.location?.text
                                                 }}
                                                 modules={["geoObject.addon.balloon"]}
                                             />

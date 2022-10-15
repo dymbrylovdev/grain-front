@@ -5,8 +5,9 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
-import {editOptions} from "../../crud/options.crud";
-import {actions as authActions} from "./auth.duck";
+import { editOptions } from "../../crud/options.crud";
+import { actions as authActions } from "./auth.duck";
+import { actions as usersActions } from "./users.duck";
 
 const EDIT_OPTIONS_REQUEST = "options/EDIT_OPTIONS_REQUEST";
 const EDIT_OPTIONS_SUCCESS = "options/EDIT_OPTIONS_SUCCESS";
@@ -20,7 +21,7 @@ export interface IInitialState {
 }
 
 const initialState: IInitialState = {
-    editLoading: false, 
+    editLoading: false,
     selectedLocation: null,
 };
 
@@ -45,6 +46,7 @@ export const reducer: Reducer<any> = persistReducer(
                 return {
                     ...state,
                     editLoading: false,
+                    editLoadingErr: false,
                 };
             }
             case EDIT_OPTIONS_ERR: {
@@ -74,26 +76,26 @@ export const reducer: Reducer<any> = persistReducer(
 );
 
 export const actions = {
-    editRequest: (payload: { id: any, data: any }) => createAction(EDIT_OPTIONS_REQUEST, payload),
+    editRequest: (payload: { id: any, data: any, self?: boolean }) => createAction(EDIT_OPTIONS_REQUEST, payload),
     editOptionsSuccess: () => createAction(EDIT_OPTIONS_SUCCESS),
     editOptionsErr: (payload: any) => createAction(EDIT_OPTIONS_ERR, payload),
-    setSelectedLocation: (payload : any) => createAction(SET_SELECTED_LOCATION, payload),
+    setSelectedLocation: (payload: any) => createAction(SET_SELECTED_LOCATION, payload),
     clearSelectedLocation: () => createAction(CLEAR_SELECTED_LOCATION),
 
 };
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* editSaga({ payload }: { payload: { id: any, data: any } }) {    
+function* editSaga({ payload }: { payload: { id: any, data: any, self?: boolean } }) {
     try {
         console.log("Send edit data");
-        
-        const {data} = yield call(() => editOptions(payload.id, payload.data));
+        const { data } = yield call(() => editOptions(payload.id, payload.data));
         console.log("edit response", data);
-          yield put(actions.editOptionsSuccess());
-          yield put(authActions.editUserSuccess(data));
+        yield put(actions.editOptionsSuccess());
+        yield payload.self && put(authActions.editUserSuccess(data));
+        //   fetchByIdRequest
     } catch (e) {
-          yield put(actions.editOptionsErr(e?.response?.data?.message || "Ошибка соединения."));
+        yield put(actions.editOptionsErr(e?.response?.data?.message || "Ошибка соединения."));
     }
 }
 
