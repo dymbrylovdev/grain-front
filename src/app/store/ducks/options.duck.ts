@@ -5,23 +5,29 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
-import {editOptions} from "../../crud/options.crud";
-import {actions as authActions} from "./auth.duck";
+import { editOptions } from "../../crud/options.crud";
+import { actions as authActions } from "./auth.duck";
+import { actions as usersActions } from "./users.duck";
 
 const EDIT_OPTIONS_REQUEST = "options/EDIT_OPTIONS_REQUEST";
 const EDIT_OPTIONS_SUCCESS = "options/EDIT_OPTIONS_SUCCESS";
 const SET_SELECTED_LOCATION = "options/SET_SELECTED_LOCATION";
 const CLEAR_SELECTED_LOCATION = "options/CLEAR_SELECTED_LOCATION";
 const EDIT_OPTIONS_ERR = "options/EDIT_OPTIONS_ERR";
+const CLEAR_CREATE_OPTIONS = "options/CLEAR_CREATE_OPTIONS";
 
 export interface IInitialState {
     editLoading: boolean;
     selectedLocation: ILocation | null;
+    editOptionsSuccess: boolean;
+    editLoadingErr: boolean | string;
 }
 
 const initialState: IInitialState = {
-    editLoading: false, 
+    editLoading: false,
     selectedLocation: null,
+    editOptionsSuccess: false,
+    editLoadingErr: false
 };
 
 export type TInitialState = typeof initialState;
@@ -39,19 +45,24 @@ export const reducer: Reducer<any> = persistReducer(
                 return {
                     ...state,
                     editLoading: true,
+                    editOptionsSuccess: false,
                 };
             }
             case EDIT_OPTIONS_SUCCESS: {
                 return {
                     ...state,
                     editLoading: false,
+                    editOptionsSuccess: true,
+                    editLoadingErr: false,
+
                 };
             }
             case EDIT_OPTIONS_ERR: {
                 return {
                     ...state,
                     editLoading: false,
-                    editLoadingErr: action.payload
+                    editLoadingErr: action.payload,
+                    editOptionsSuccess: false,
                 };
             }
             case SET_SELECTED_LOCATION: {
@@ -66,6 +77,14 @@ export const reducer: Reducer<any> = persistReducer(
                     selectedLocation: null,
                 };
             }
+            case CLEAR_CREATE_OPTIONS: {
+                return {
+                    ...state,
+                    editLoading: false,
+                    editOptionsSuccess: false,
+                    editLoadingErr: null,
+                };
+            }
 
             default:
                 return state;
@@ -74,26 +93,27 @@ export const reducer: Reducer<any> = persistReducer(
 );
 
 export const actions = {
-    editRequest: (payload: { id: any, data: any }) => createAction(EDIT_OPTIONS_REQUEST, payload),
+    editRequest: (payload: { id: any, data: any, self?: boolean }) => createAction(EDIT_OPTIONS_REQUEST, payload),
     editOptionsSuccess: () => createAction(EDIT_OPTIONS_SUCCESS),
     editOptionsErr: (payload: any) => createAction(EDIT_OPTIONS_ERR, payload),
-    setSelectedLocation: (payload : any) => createAction(SET_SELECTED_LOCATION, payload),
+    setSelectedLocation: (payload: any) => createAction(SET_SELECTED_LOCATION, payload),
     clearSelectedLocation: () => createAction(CLEAR_SELECTED_LOCATION),
+    clearCreateOptions: () => createAction(CLEAR_CREATE_OPTIONS),
 
 };
 
 export type TActions = ActionsUnion<typeof actions>;
 
-function* editSaga({ payload }: { payload: { id: any, data: any } }) {    
+function* editSaga({ payload }: { payload: { id: any, data: any, self?: boolean } }) {
     try {
         console.log("Send edit data");
-        
-        const {data} = yield call(() => editOptions(payload.id, payload.data));
+        const { data } = yield call(() => editOptions(payload.id, payload.data));
         console.log("edit response", data);
-          yield put(actions.editOptionsSuccess());
-          yield put(authActions.editUserSuccess(data));
+        yield put(actions.editOptionsSuccess());
+        yield payload.self && put(authActions.editUserSuccess(data));
+        //   fetchByIdRequest
     } catch (e) {
-          yield put(actions.editOptionsErr(e?.response?.data?.message || "Ошибка соединения."));
+        yield put(actions.editOptionsErr(e?.response?.data?.message || "Ошибка соединения."));
     }
 }
 

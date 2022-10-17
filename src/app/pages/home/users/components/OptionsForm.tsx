@@ -91,6 +91,9 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     clearSelectedLocation,
     editMode,
     user,
+    editOptionsSuccess,
+    editLoadingErr, 
+    clearCreateOptions
 
 }) => {
     const innerClasses = innerStyles();
@@ -99,8 +102,25 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     const history = useHistory();
 
 
+    const [isMe, setItsMe] = useState<boolean>()
 
-    const userType = editMode === "view" ? user : me
+    const userType = useMemo(() => {
+        if (editMode === "view") {
+            setItsMe(false)
+            return user
+        } else {
+            if (me?.roles.includes("ROLE_ADMIN") && user) {
+                setItsMe(false)
+                return user
+            } else {
+                setItsMe(true)
+                return me
+            }
+        }
+    }, [me, user])
+
+
+
 
     const getInitialValues = (options: ITransport | undefined) => ({
         technicalDetails: userType?.transport ? userType.transport.technical_details : '',
@@ -123,6 +143,22 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     const [map, setMap] = useState<any>();
 
 
+    useEffect(() => {
+        if (editOptionsSuccess || editLoadingErr) {
+            enqueueSnackbar(
+                editOptionsSuccess
+                    ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_USER" })
+                    : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editLoadingErr}`,
+                {
+                    variant: editOptionsSuccess ? "success" : "error",
+                }
+            );
+            clearCreateOptions()
+        }
+
+    }, [editOptionsSuccess, editLoadingErr]);
+
+
 
     const [autoLocation, setAutoLocation] = useState({ text: "" });
 
@@ -133,7 +169,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     React.useEffect(() => {
         userType?.transport?.location?.text && setAutoLocation({ text: userType?.transport?.location?.text })
     }, [userType])
-  
+
 
     const mapState = useMemo(() => {
         if (selectedLocation) {
@@ -146,18 +182,19 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             }
         }
     }, [selectedLocation, userType]);
- 
+
 
     const { values, handleSubmit, handleChange, handleBlur, resetForm, setFieldValue, touched, errors } = useFormik({
         initialValues: getInitialValues(undefined),
         onSubmit: values => {
 
             edit({
-                id: me?.id,
+                id: userType?.id,
                 data: {
                     ...values,
-                    location: selectedLocation || me?.transport.location,
-                }
+                    location: selectedLocation || userType?.transport.location,
+                },
+                self: isMe,
             })
         },
         validationSchema: validationSchema,
@@ -178,7 +215,8 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         dispatch(fetchGoogleLocations(val))
     }, [])
 
-    
+
+
 
     return (
         <>
@@ -306,7 +344,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                                                     iconCaption: selectedLocation
                                                         ? selectedLocation.text
                                                         : userType?.transport?.location?.text
-                                                        // : me?.transport?.location?.text
+                                                    // : me?.transport?.location?.text
                                                 }}
                                                 modules={["geoObject.addon.balloon"]}
                                             />
@@ -348,6 +386,8 @@ const connector = connect(
         meLoading: state.auth.loading,
         editLoading: state.options.editLoading,
         selectedLocation: state.options.selectedLocation,
+        editOptionsSuccess: state.options.editOptionsSuccess,
+        editLoadingErr: state.options.editLoadingErr,
         googleLocations: state.yaLocations.yaLocations,
         errorGoogleLocations: state.yaLocations.error,
         prompterRunning: state.prompter.running,
@@ -366,6 +406,7 @@ const connector = connect(
         clearGoogleLocations: googleLocationsActions.clear,
         setSelectedLocation: optionsActions.setSelectedLocation,
         clearSelectedLocation: optionsActions.clearSelectedLocation,
+        clearCreateOptions: optionsActions.clearCreateOptions,
 
 
         edit: optionsActions.editRequest,
