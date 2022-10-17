@@ -91,6 +91,9 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     clearSelectedLocation,
     editMode,
     user,
+    editOptionsSuccess,
+    editLoadingErr, 
+    clearCreateOptions
 
 }) => {
     const innerClasses = innerStyles();
@@ -138,6 +141,22 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
     const [ymaps, setYmaps] = useState<any>();
     const [map, setMap] = useState<any>();
+
+
+    useEffect(() => {
+        if (editOptionsSuccess || editLoadingErr) {
+            enqueueSnackbar(
+                editOptionsSuccess
+                    ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_USER" })
+                    : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editLoadingErr}`,
+                {
+                    variant: editOptionsSuccess ? "success" : "error",
+                }
+            );
+            clearCreateOptions()
+        }
+
+    }, [editOptionsSuccess, editLoadingErr]);
 
 
 
@@ -196,7 +215,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         dispatch(fetchGoogleLocations(val))
     }, [])
 
-    
+
 
 
     return (
@@ -367,6 +386,8 @@ const connector = connect(
         meLoading: state.auth.loading,
         editLoading: state.options.editLoading,
         selectedLocation: state.options.selectedLocation,
+        editOptionsSuccess: state.options.editOptionsSuccess,
+        editLoadingErr: state.options.editLoadingErr,
         googleLocations: state.yaLocations.yaLocations,
         errorGoogleLocations: state.yaLocations.error,
         prompterRunning: state.prompter.running,
@@ -385,6 +406,7 @@ const connector = connect(
         clearGoogleLocations: googleLocationsActions.clear,
         setSelectedLocation: optionsActions.setSelectedLocation,
         clearSelectedLocation: optionsActions.clearSelectedLocation,
+        clearCreateOptions: optionsActions.clearCreateOptions,
 
 
         edit: optionsActions.editRequest,

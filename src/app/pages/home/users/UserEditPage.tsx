@@ -267,7 +267,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             </div>
           </div>
           <AppBar position="static" color="default" className={classes.appBar}>
-            {user || window.location.href.includes('profile') ? (
+            {user || window.location.href.includes('profile') || window.location.href.includes('create') ? (
               <Tabs
                 value={valueTabs}
                 onChange={handleTabsChange}
@@ -295,9 +295,12 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                   )}
 
                 {/* {(me && editMode !== "create" && accessTransporter()) */}
-                {(me && editMode !== "create" && accessTransporter()) || accessByRoles(user, ["ROLE_TRANSPORTER"])
-                  ? <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.OPTIONS" })} {...a11yProps((accessByRoles(me, ["ROLE_TRANSPORTER"]) || accessByRoles(user, ["ROLE_TRANSPORTER"])) ? 1 : 2)} />
-                  : !isTransporterProfile() && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
+
+                {(accessByRoles(me, ["ROLE_ADMIN"]) && editMode === "create" && !user)
+                  ? null
+                  : (me && editMode !== "create" && accessTransporter()) || accessByRoles(user, ["ROLE_TRANSPORTER"])
+                    ? <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.OPTIONS" })} {...a11yProps((accessByRoles(me, ["ROLE_TRANSPORTER"]) || accessByRoles(user, ["ROLE_TRANSPORTER"])) ? 1 : 2)} />
+                    : !isTransporterProfile() && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />}
 
                 {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
                   (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
@@ -339,7 +342,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               {editMode === "create" ? (
                 <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
               ) : (
-                <OptionsForm  editMode={editMode} />
+                <OptionsForm editMode={editMode} />
               )}
             </TabPanel>)
             : (<TabPanel value={valueTabs} index={2}>

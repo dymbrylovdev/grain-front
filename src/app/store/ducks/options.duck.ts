@@ -14,15 +14,20 @@ const EDIT_OPTIONS_SUCCESS = "options/EDIT_OPTIONS_SUCCESS";
 const SET_SELECTED_LOCATION = "options/SET_SELECTED_LOCATION";
 const CLEAR_SELECTED_LOCATION = "options/CLEAR_SELECTED_LOCATION";
 const EDIT_OPTIONS_ERR = "options/EDIT_OPTIONS_ERR";
+const CLEAR_CREATE_OPTIONS = "options/CLEAR_CREATE_OPTIONS";
 
 export interface IInitialState {
     editLoading: boolean;
     selectedLocation: ILocation | null;
+    editOptionsSuccess: boolean;
+    editLoadingErr: boolean | string;
 }
 
 const initialState: IInitialState = {
     editLoading: false,
     selectedLocation: null,
+    editOptionsSuccess: false,
+    editLoadingErr: false
 };
 
 export type TInitialState = typeof initialState;
@@ -40,20 +45,24 @@ export const reducer: Reducer<any> = persistReducer(
                 return {
                     ...state,
                     editLoading: true,
+                    editOptionsSuccess: false,
                 };
             }
             case EDIT_OPTIONS_SUCCESS: {
                 return {
                     ...state,
                     editLoading: false,
+                    editOptionsSuccess: true,
                     editLoadingErr: false,
+
                 };
             }
             case EDIT_OPTIONS_ERR: {
                 return {
                     ...state,
                     editLoading: false,
-                    editLoadingErr: action.payload
+                    editLoadingErr: action.payload,
+                    editOptionsSuccess: false,
                 };
             }
             case SET_SELECTED_LOCATION: {
@@ -66,6 +75,14 @@ export const reducer: Reducer<any> = persistReducer(
                 return {
                     ...state,
                     selectedLocation: null,
+                };
+            }
+            case CLEAR_CREATE_OPTIONS: {
+                return {
+                    ...state,
+                    editLoading: false,
+                    editOptionsSuccess: false,
+                    editLoadingErr: null,
                 };
             }
 
@@ -81,6 +98,7 @@ export const actions = {
     editOptionsErr: (payload: any) => createAction(EDIT_OPTIONS_ERR, payload),
     setSelectedLocation: (payload: any) => createAction(SET_SELECTED_LOCATION, payload),
     clearSelectedLocation: () => createAction(CLEAR_SELECTED_LOCATION),
+    clearCreateOptions: () => createAction(CLEAR_CREATE_OPTIONS),
 
 };
 
