@@ -339,7 +339,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               {editMode === "create" ? (
                 <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
               ) : (
-                <OptionsForm />
+                <OptionsForm  editMode={editMode} />
               )}
             </TabPanel>)
             : (<TabPanel value={valueTabs} index={2}>
