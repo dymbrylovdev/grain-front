@@ -466,7 +466,8 @@ const ViewBidForm: React.FC<IProps> = ({
 
 
 
-      {bid && user && (
+      {/* {bid && user && ( */}
+      {bid && (
         <div className={classes.container}>
           <div className={classes.card}>
             <Button
