@@ -232,6 +232,10 @@ const useStyles = makeStyles(theme => ({
     color: "#666666",
     fontWeight: "bold",
   },
+  hideIcon: {
+    pointerEvents: "none",
+    visibility: "hidden"
+  },
 }));
 
 export default useStyles;

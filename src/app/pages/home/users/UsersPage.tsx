@@ -423,60 +423,72 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       )}
                     </TableCell>
                     <TableCell align="right">
-                      <div style={{minWidth: 150}}>
-                      {!(accessByRoles(item, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !me?.is_admin) && (
-                        <Tooltip
-                          title={intl.formatMessage({
-                            id: "USERLIST.TOOLTIP.EDIT",
-                          })}
-                        >
-                          <IconButton
-                            size="medium"
-                            color="primary"
-                            onClick={() => history.push(`/user/edit/${item.id}`)}
+                      <div style={{ minWidth: 150 }}>
+                        {!(accessByRoles(item, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !me?.is_admin) && (
+                          <Tooltip
+                            title={intl.formatMessage({
+                              id: "USERLIST.TOOLTIP.EDIT",
+                            })}
                           >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                      )}
+                            <IconButton
+                              size="medium"
+                              color="primary"
+                              onClick={() => history.push(`/user/edit/${item.id}`)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
 
-                      <Tooltip
-                        title={intl.formatMessage({
-                          id: "USERLIST.TOOLTIP.CREATE_BID",
-                        })}
-                      >
-                        <IconButton
-                          size="medium"
-                          color="primary"
-                          onClick={() =>
-                            history.push(
-                              `/bid/create/${
-                                item.roles.includes("ROLE_BUYER") ? "purchase" : "sale"
-                              }/0/0/${item.id}`
-                            )
-                          }
-                        >
-                          <AddIcon />
-                        </IconButton>
-                      </Tooltip>
-                      {me?.is_admin && (
-                        <Tooltip
-                          title={intl.formatMessage({
-                            id: "USERLIST.TOOLTIP.DELETE",
-                          })}
-                        >
-                          <IconButton
-                            size="medium"
-                            color="secondary"
-                            onClick={() => {
-                              setDeleteUserId(item.id);
-                              setAlertOpen(true);
-                            }}
+                        {!item.roles?.includes("ROLE_TRANSPORTER") ? (
+                          <Tooltip
+                            title={intl.formatMessage({
+                              id: "USERLIST.TOOLTIP.CREATE_BID",
+                            })}
                           >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      )}
+                            <IconButton
+                              size="medium"
+                              color="primary"
+                              onClick={() =>
+                                history.push(
+                                  `/bid/create/${item.roles.includes("ROLE_BUYER") ? "purchase" : "sale"
+                                  }/0/0/${item.id}`
+                                )
+                              }
+                            >
+                              <AddIcon />
+                            </IconButton>
+                          </Tooltip>
+                        ) : (
+                          <span className={classes.hideIcon}>
+                            <IconButton
+                              size="medium"
+                              color="primary"
+                            >
+                              <AddIcon />
+                            </IconButton>
+                          </span>
+                        )}
+
+
+                        {me?.is_admin && (
+                          <Tooltip
+                            title={intl.formatMessage({
+                              id: "USERLIST.TOOLTIP.DELETE",
+                            })}
+                          >
+                            <IconButton
+                              size="medium"
+                              color="secondary"
+                              onClick={() => {
+                                setDeleteUserId(item.id);
+                                setAlertOpen(true);
+                              }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

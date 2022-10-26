@@ -384,9 +384,9 @@
   "CROP.PARAM.DIALOGS.CANCEL_TEXT": "Отмена",
   "CROP.PARAM.DIALOGS.LOADING_TEXT": "Удаление параметра",
   
-  "OPTIONS.DETAILS": "Техническике данные",
-  "OPTIONS.WEIGHT": "Вес",
-  "OPTIONS.AMOUNT": "Количество",
+  "OPTIONS.DETAILS": "Технические данные",
+  "OPTIONS.WEIGHT": "Максимальный вес (тонна)",
+  "OPTIONS.AMOUNT": "Количество машин",
 
 
   "FILTER.FORM.MAX_PAYMENT_TERM": "Макс. срок расчета, календарных дней",
