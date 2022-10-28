@@ -882,7 +882,7 @@ const ViewBidForm: React.FC<IProps> = ({
                     <Button variant="contained" color="primary"
                       onClick={!me ? openAuthAlert : openCompaniesDialog}
                       className="kt-subheader__top-btn">
-                      Список камазистов
+                      Перевозчики зерна
                     </Button>
 
 
