@@ -14,4 +14,6 @@ COPY . /app
 
 EXPOSE 3000
 
-CMD ["yarn", "run", "serve"]
+ENV NODE_OPTIONS=--openssl-legacy-provider
+
+CMD ["yarn", "run", "server"]
