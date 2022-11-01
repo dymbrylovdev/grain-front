@@ -71,6 +71,7 @@ debugdeploy-dev:
   except:
     - "master"
   stage: deploy
+  when: manual
   environment: 
     name: "development"
     url: "$DOMEN_DEV"
