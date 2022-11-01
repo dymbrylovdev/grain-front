@@ -17,4 +17,4 @@ EXPOSE 3000
 
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
-CMD ["yarn", "run", "server"]
+CMD ["yarn", "run", "serve"]
