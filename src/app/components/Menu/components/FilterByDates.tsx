@@ -22,9 +22,8 @@ const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({ intl,
 
   return (
     <MenuItem>
-      <Col>
+      <div style={{ display: "flex", flexDirection: "column" }}>
         <Row>{intl.formatMessage({ id: "BIDLIST.FILTTER.UPDATE_DATE_RANGE" })}</Row>
-
         <Row>
           <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
             <div className={innerClasses.calendarBlock}>
@@ -71,7 +70,7 @@ const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({ intl,
             </div>
           </MuiPickersUtilsProvider>
         </Row>
-      </Col>
+      </div>
     </MenuItem>
   );
 };
