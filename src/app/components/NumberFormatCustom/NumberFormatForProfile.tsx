@@ -2,7 +2,7 @@ import React from "react";
 import NumberFormat from "react-number-format";
 
 interface NumberFormatCustomProps {
-  inputRef: (instance: NumberFormat | null) => void;
+  inputRef: (instance: any) => void;
   onChange: (event: { target: { name: string; value: string } }) => void;
   name: string;
 }
@@ -25,7 +25,7 @@ function NumberFormatForProfile(props: NumberFormatCustomProps) {
       thousandSeparator={false}
       isNumericString
       type="tel"
-      format="# (###) ### - ####" 
+      format="# (###) ### - ####"
       allowEmptyFormatting
       mask=" . "
     />

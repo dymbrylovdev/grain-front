@@ -7,7 +7,7 @@ WORKDIR /app
 # Cache npm dependencies
 COPY package.json /app/
 # COPY yarn.lock /app/
-RUN npm i
+RUN npm i --legacy-peer-deps --force
 RUN yarn
 
 # Copy application files
