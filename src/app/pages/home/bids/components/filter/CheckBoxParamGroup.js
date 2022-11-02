@@ -2,16 +2,10 @@ import React, { useEffect } from "react";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { Col, Row } from "react-bootstrap";
 
-const CheckBoxParamGroup = ({
-  values,
-  handleChange,
-  param,
-  isEditable = true,
-  handleSubmit = null,
-}) => {
+const CheckBoxParamGroup = ({ values, handleChange, param, isEditable = true, handleSubmit }) => {
   const onSubmit = () => {
     if (handleSubmit) {
-      handleSubmit()
+      handleSubmit();
     }
   };
 
@@ -28,12 +22,7 @@ const CheckBoxParamGroup = ({
           return (
             <Row key={item}>
               <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={values[valueName] || false}
-                    onChange={handleChange}
-                  />
-                }
+                control={<Checkbox checked={values[valueName] || false} onChange={handleChange} />}
                 label={item}
                 name={valueName}
                 disabled={!isEditable}

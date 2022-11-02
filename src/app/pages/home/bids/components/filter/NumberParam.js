@@ -42,11 +42,11 @@ const useStyles = makeStyles(theme => ({
     // marginLeft: theme.spacing(2),
   },
   resize: {
-    fontSize: 30
-  }
+    fontSize: 30,
+  },
 }));
 
-function NumberParam({ values, param, handleChange, clearAction, isEditable = true, handleSubmit = null }) {
+function NumberParam({ values, param, handleChange, clearAction, isEditable = true, handleSubmit }) {
   const composeName = `compose${param.id}`;
   const numberName = `number${param.id}`;
   const classes = useStyles();
@@ -55,7 +55,7 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
     if (handleSubmit) {
       handleSubmit();
     }
-  }
+  };
 
   return (
     <div className={classes.container}>
@@ -89,7 +89,7 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
               : undefined
           }
           InputLabelProps={{
-            style: { fontSize: 12 }
+            style: { fontSize: 12 },
           }}
           disabled={!isEditable}
           autoComplete="off"
@@ -103,20 +103,8 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
           className={classes.radioGroup}
           row={true}
         >
-          <FormControlLabel
-            value="≤"
-            control={<Radio />}
-            label="≤&nbsp;Меньше"
-            disabled={!isEditable}
-            style={{ fontSize: 15 }}
-          />
-          <FormControlLabel
-            value="≥"
-            control={<Radio />}
-            label=" ≥&nbsp;Больше"
-            disabled={!isEditable}
-            style={{ fontSize: 15 }}
-          />
+          <FormControlLabel value="≤" control={<Radio />} label="≤&nbsp;Меньше" disabled={!isEditable} style={{ fontSize: 15 }} />
+          <FormControlLabel value="≥" control={<Radio />} label=" ≥&nbsp;Больше" disabled={!isEditable} style={{ fontSize: 15 }} />
         </RadioGroup>
       </div>
     </div>

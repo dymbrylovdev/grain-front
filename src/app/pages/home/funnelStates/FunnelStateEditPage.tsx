@@ -20,9 +20,7 @@ import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
 import { OutlinedRedButton } from "../../../components/ui/Buttons/RedButtons";
 import { TRole } from "../../../interfaces/users";
 
-const FunnelStateEditPage: React.FC<TPropsFromRedux &
-  WrappedComponentProps &
-  RouteComponentProps<{ id: string }>> = ({
+const FunnelStateEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps<{ id: string }>> = ({
   match: {
     params: { id },
   },
@@ -160,15 +158,9 @@ const FunnelStateEditPage: React.FC<TPropsFromRedux &
       {!!funnelStates && (
         <LayoutSubheader
           title={`${
-            !+id
-              ? intl.formatMessage({ id: "SUBHEADER.PARTS.CREATE" })
-              : intl.formatMessage({ id: "SUBHEADER.PARTS.EDIT" })
+            !+id ? intl.formatMessage({ id: "SUBHEADER.PARTS.CREATE" }) : intl.formatMessage({ id: "SUBHEADER.PARTS.EDIT" })
           } ${intl.formatMessage({ id: "SUBHEADER.PARTS.FUNNEL_STATUS" })} ${
-            (!role &&
-              +id &&
-              funnelStates &&
-              funnelStates.find(item => item.id === +id)?.role === "ROLE_BUYER") ||
-            role === "ROLE_BUYER"
+            (!role && +id && funnelStates && funnelStates.find(item => item.id === +id)?.role === "ROLE_BUYER") || role === "ROLE_BUYER"
               ? intl.formatMessage({ id: "SUBHEADER.PARTS.FUNNEL_STATUS.BUYER" })
               : intl.formatMessage({ id: "SUBHEADER.PARTS.FUNNEL_STATUS.SELLER" })
           }`}
@@ -287,25 +279,21 @@ const FunnelStateEditPage: React.FC<TPropsFromRedux &
           </>
         ) : (
           <>
-            <div className={classes.text}>
-              {intl.formatMessage({ id: "FUNNEL_STATES.INPUT.HINT" })}
-            </div>
+            <div className={classes.text}>{intl.formatMessage({ id: "FUNNEL_STATES.INPUT.HINT" })}</div>
             <div>
-              <DraftEditor
-                initialState={funnelStates.find(item => item.id === +id)?.hint || ""}
-                handleEditorChange={handleChange("hint")}
-              />
+              {
+                // @ts-ignore
+                <DraftEditor
+                  initialState={funnelStates.find(item => item.id === +id)?.hint || ""}
+                  handleEditorChange={() => handleChange("hint")}
+                />
+              }
             </div>
           </>
         )}
         <div className={classes.bottomButtonsContainer}>
           <div className={classes.button}>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => history.push("/funnel-states")}
-              disabled={loading}
-            >
+            <Button variant="outlined" color="primary" onClick={() => history.push("/funnel-states")} disabled={loading}>
               {intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
             </Button>
           </div>
@@ -315,17 +303,11 @@ const FunnelStateEditPage: React.FC<TPropsFromRedux &
               disabled={loading || createLoading || editLoading}
               onPress={handleSubmit}
             >
-              {!+id
-                ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
-                : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+              {!+id ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" }) : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
             </ButtonWithLoader>
           </div>
           <div className={classes.button}>
-            <OutlinedRedButton
-              variant="outlined"
-              onClick={() => setAlertOpen(true)}
-              disabled={loading}
-            >
+            <OutlinedRedButton variant="outlined" onClick={() => setAlertOpen(true)} disabled={loading}>
               {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
             </OutlinedRedButton>
           </div>
