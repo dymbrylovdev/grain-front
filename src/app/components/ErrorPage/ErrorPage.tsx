@@ -31,7 +31,7 @@ const ErrorPage: React.FC = () => {
         disabled={offButton}
         onClick={() => {
           setOffButton(true);
-          document.location.reload(true);
+          document.location.reload();
         }}
       >
         Обновить страницу

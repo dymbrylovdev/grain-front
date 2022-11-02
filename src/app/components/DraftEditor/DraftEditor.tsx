@@ -70,8 +70,7 @@ class DraftEditor extends Component<IProps, IState> {
   // @ts-ignore
   public focus = () => this.refs.editor?.focus();
   public getEditorState = () => this.state.editorState;
-  public logState = () =>
-    console.log("editor state ==> ", convertToRaw(this.state.editorState.getCurrentContent()));
+  public logState = () => console.log("editor state ==> ", convertToRaw(this.state.editorState.getCurrentContent()));
 
   private onChange = (editorState: any) => {
     if (!editorState.getSelection().isCollapsed()) {
@@ -84,9 +83,7 @@ class DraftEditor extends Component<IProps, IState> {
       }
 
       const selectionCoords = getSelectionCoords(selectionRange);
-      const position = selectionCoords
-        ? { top: selectionCoords.offsetTop, left: selectionCoords.offsetLeft }
-        : null;
+      const position = selectionCoords ? { top: selectionCoords.offsetTop, left: selectionCoords.offsetLeft } : null;
 
       this.setState({
         inlineToolbar: {
@@ -113,11 +110,7 @@ class DraftEditor extends Component<IProps, IState> {
 
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
     const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
-    const _editorState = RichUtils.toggleLink(
-      newEditorState,
-      newEditorState.getSelection(),
-      entityKey
-    );
+    const _editorState = RichUtils.toggleLink(newEditorState, newEditorState.getSelection(), entityKey);
     this.setState(
       {
         editorState: _editorState,
@@ -175,11 +168,7 @@ class DraftEditor extends Component<IProps, IState> {
     return (
       <Paper id="editor-container" className={classes.root}>
         {/* <InputModal open={openUrlModal} onClose={this.closeModal} /> */}
-        <EditorToolbar
-          setLink={this.setLink}
-          editorState={editorState}
-          onToggle={this.toggleInlineStyle}
-        />
+        <EditorToolbar setLink={this.setLink} editorState={editorState} onToggle={this.toggleInlineStyle} />
 
         {/* {inlineToolbar.show && (
           <InlineToolbar

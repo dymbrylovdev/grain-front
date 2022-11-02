@@ -378,7 +378,13 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux & WrappedComponentProps & Rou
                         .filter(item => item.type === "enum")
                         .map(param => (
                           <Col key={param.id}>
-                            <CheckBoxParamGroup param={param} values={values} handleChange={handleChange} isEditable={isEditable} />
+                            <CheckBoxParamGroup
+                              param={param}
+                              values={values}
+                              handleChange={handleChange}
+                              isEditable={isEditable}
+                              handleSubmit={() => {}}
+                            />
                           </Col>
                         ))}
                     </Row>
@@ -518,6 +524,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux & WrappedComponentProps & Rou
                             handleChange={handleChange}
                             clearAction={setFieldValue}
                             isEditable={isEditable}
+                            handleSubmit={()=>{}}
                           />
                           <Divider />
                         </div>

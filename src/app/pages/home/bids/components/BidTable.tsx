@@ -60,7 +60,7 @@ interface IProps {
       profit: IProfit;
     }
   >;
-  archive?: ({ id: number, is_archived: boolean }) => void;
+  archive?: ({ id, is_archived }: { id: number; is_archived: boolean }) => void;
 
   post?: any;
   clearPost?: any;
