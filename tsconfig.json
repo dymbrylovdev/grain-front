@@ -16,6 +16,7 @@
     "jsx": "react",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": false,
+    "useUnknownInCatchVariables": false
   },
   "include": ["src"]
 }

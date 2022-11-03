@@ -2,17 +2,7 @@ import React, { useEffect, useState } from "react";
 import { compose } from "redux";
 import { connect, ConnectedProps } from "react-redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
-import {
-  makeStyles,
-  TextField,
-  Divider,
-  IconButton,
-  Grid,
-  Paper,
-  Button,
-  FormControlLabel,
-  Checkbox,
-} from "@material-ui/core";
+import { makeStyles, TextField, Divider, IconButton, Grid, Paper, Button, FormControlLabel, Checkbox } from "@material-ui/core";
 import { Row, Col } from "react-bootstrap";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 import CloseIcon from "@material-ui/icons/Close";
@@ -59,9 +49,7 @@ const useInnerStyles = makeStyles(theme => ({
   },
 }));
 
-const MyFiltersEditPage: React.FC<TPropsFromRedux &
-  WrappedComponentProps &
-  RouteComponentProps<{ id: string }>> = ({
+const MyFiltersEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps<{ id: string }>> = ({
   match: {
     params: { id },
   },
@@ -177,11 +165,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
   useEffect(() => {
     if (delSuccess) {
       if (salePurchaseMode === "sale") {
-        if (
-          !!deleteFilterId &&
-          currentSaleFilters[deleteFilterCropId] &&
-          currentSaleFilters[deleteFilterCropId].id === deleteFilterId
-        ) {
+        if (!!deleteFilterId && currentSaleFilters[deleteFilterCropId] && currentSaleFilters[deleteFilterCropId].id === deleteFilterId) {
           setCurrentSaleFilter(deleteFilterCropId, undefined);
         }
       }
@@ -258,11 +242,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
         description={undefined}
       />
       <Formik
-        initialValues={
-          +id
-            ? fromApiToFilter(myFilters.find(item => item.id === +id) as IMyFilterItem)
-            : { name: "" }
-        }
+        initialValues={+id ? fromApiToFilter(myFilters.find(item => item.id === +id) as IMyFilterItem) : { name: "" }}
         onSubmit={(values, { setStatus, setSubmitting }) => {
           let params: { [x: string]: any } = { ...values };
           params.name = values.name.trim();
@@ -342,12 +322,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                 onChange={(e: any, val: ICrop | null) => {
                   const now = new Date();
                   if (val) {
-                    setFieldValue(
-                      "name",
-                      `${val.name} ${now.toLocaleDateString()} - ${now
-                        .toLocaleTimeString()
-                        .slice(0, -3)}`
-                    );
+                    setFieldValue("name", `${val.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`);
                   }
                   setFieldValue("cropId", val?.id || "");
                   !!val?.id ? fetchCropParams(val.id) : clearCropParams();
@@ -390,6 +365,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                               values={values}
                               handleChange={handleChange}
                               isEditable={isEditable}
+                              handleSubmit={() => {}}
                             />
                           </Col>
                         ))}
@@ -422,9 +398,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                               ? {
                                   inputComponent: NumberFormatCustom as any,
                                   endAdornment: (
-                                    <IconButton
-                                      onClick={() => setFieldValue("max_payment_term", "")}
-                                    >
+                                    <IconButton onClick={() => setFieldValue("max_payment_term", "")}>
                                       <CloseIcon />
                                     </IconButton>
                                   ),
@@ -532,6 +506,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                             handleChange={handleChange}
                             clearAction={setFieldValue}
                             isEditable={isEditable}
+                            handleSubmit={() => {}}
                           />
                           <Divider />
                         </div>
@@ -576,9 +551,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
 
                       <FormControlLabel
                         className={classes.switcher}
-                        control={
-                          <Checkbox checked={values.is_sending_sms} onChange={handleChange} />
-                        }
+                        control={<Checkbox checked={values.is_sending_sms} onChange={handleChange} />}
                         label={intl.formatMessage({ id: "FILTERS.TABLE.HEADER.SMS.SENDING" })}
                         name="is_sending_sms"
                         disabled={!isEditable || !me.phone}
@@ -594,14 +567,8 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                       className={innerClasses.buttonContainer}
                     >
                       <Grid item>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          onClick={() => history.push(`/${salePurchaseMode}/filters`)}
-                        >
-                          {isEditable
-                            ? intl.formatMessage({ id: "ALL.BUTTONS.CANCEL" })
-                            : intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
+                        <Button variant="outlined" color="primary" onClick={() => history.push(`/${salePurchaseMode}/filters`)}>
+                          {isEditable ? intl.formatMessage({ id: "ALL.BUTTONS.CANCEL" }) : intl.formatMessage({ id: "ALL.BUTTONS.PREV" })}
                         </Button>
                       </Grid>
                       {isEditable && (
@@ -614,9 +581,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux &
                               handleSubmit();
                             }}
                           >
-                            {+id
-                              ? intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })
-                              : intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })}
+                            {+id ? intl.formatMessage({ id: "ALL.BUTTONS.SAVE" }) : intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })}
                           </ButtonWithLoader>
                         </Grid>
                       )}
