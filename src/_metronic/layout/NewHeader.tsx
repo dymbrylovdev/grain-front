@@ -136,7 +136,7 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({ intl, me
           )}
           <div className={classes.contain}>
             <div className={classes.contacts}>
-              <div>8 800 333-86-33</div>
+              <div>8 913 096-64-47</div>
               <a style={{ color: "#e1e9ff" }} href="mailto:info@kupit-zerno.com">
                 info@kupit-zerno.com
               </a>
