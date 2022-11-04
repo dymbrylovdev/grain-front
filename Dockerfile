@@ -1,4 +1,4 @@
-FROM gitlab.magic-egg.net/ui/docker:latest
+FROM gitlab.magic-egg.net:5005/ui/docker:latest
 
 # Create app folder
 RUN mkdir -p /app
