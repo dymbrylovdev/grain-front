@@ -3,14 +3,7 @@ import { useFormik } from "formik";
 import { connect, ConnectedProps } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
-import {
-  Checkbox,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  TextField,
-} from "@material-ui/core";
+import { Checkbox, FormControlLabel, FormLabel, Radio, RadioGroup, TextField } from "@material-ui/core";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 
@@ -65,9 +58,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     }
     if (phoneRegPhase === 1) {
       validationSchema = {
-        codeConfirm: Yup.string().required(
-          intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })
-        ),
+        codeConfirm: Yup.string().required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
       };
     }
   }
@@ -78,7 +69,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     history.push("/auth");
   }, [clearFindInSystem, history]);
 
-  const { values, errors, touched, resetForm, handleChange, handleBlur, handleSubmit } = useFormik({
+  const { values, errors, touched, handleChange, handleBlur, handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: {
       codeConfirm: "",
@@ -134,21 +125,16 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
       clearReg();
     }
-  }, [clearReg, enqueueSnackbar, history, regError, regSuccess]);
+  }, [clearReg, enqueueSnackbar, history, regError, regSuccess, authData, intl]);
 
   useEffect(() => {
     if (sendCodeSuccess || sendCodeError) {
-      enqueueSnackbar(
-        sendCodeSuccess
-          ? intl.formatMessage({ id: "AUTH.VALIDATION.CODE.CONFIRM" })
-          : sendCodeError,
-        {
-          variant: sendCodeSuccess ? "success" : "error",
-        }
-      );
+      enqueueSnackbar(sendCodeSuccess ? intl.formatMessage({ id: "AUTH.VALIDATION.CODE.CONFIRM" }) : sendCodeError, {
+        variant: sendCodeSuccess ? "success" : "error",
+      });
       clearSendCode();
     }
-  }, [enqueueSnackbar, sendCodeSuccess, sendCodeError, clearSendCode]);
+  }, [enqueueSnackbar, sendCodeSuccess, sendCodeError, clearSendCode, intl]);
 
   useEffect(() => {
     if (loginByPhoneSuccess || loginByPhoneError) {
@@ -199,19 +185,9 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             {!phoneRegPhase ? (
               <>
                 <RadioGroup name="role" value={values.role} onChange={handleChange}>
-                  <FormLabel component="legend">
-                    {intl.formatMessage({ id: "AUTH.REGISTER.ROLE_TITLE" })}
-                  </FormLabel>
-                  <FormControlLabel
-                    value="ROLE_BUYER"
-                    control={<Radio />}
-                    label={roles.find(role => role.id === "ROLE_BUYER")?.value}
-                  />
-                  <FormControlLabel
-                    value="ROLE_VENDOR"
-                    control={<Radio />}
-                    label={roles.find(role => role.id === "ROLE_VENDOR")?.value}
-                  />
+                  <FormLabel component="legend">{intl.formatMessage({ id: "AUTH.REGISTER.ROLE_TITLE" })}</FormLabel>
+                  <FormControlLabel value="ROLE_BUYER" control={<Radio />} label={roles.find(role => role.id === "ROLE_BUYER")?.value} />
+                  <FormControlLabel value="ROLE_VENDOR" control={<Radio />} label={roles.find(role => role.id === "ROLE_VENDOR")?.value} />
                   <FormControlLabel
                     value="ROLE_TRANSPORTER"
                     control={<Radio />}
@@ -257,10 +233,7 @@ const Registration: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               </div>
             )}
 
-            <div
-              className="kt-login__actions"
-              style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}
-            >
+            <div className="kt-login__actions" style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
               <button
                 onClick={backHandler}
                 type="button"

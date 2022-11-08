@@ -16,7 +16,6 @@ import * as prompter from "../../../store/ducks/prompter.duck";
 import * as users from "../../../store/ducks/users.duck";
 import Preloader from "../../../components/ui/Loaders/Preloader";
 import LocationDialog from "./components/location/LocationDialog";
-import Prompter from "../prompter/Prompter";
 import { useSnackbar } from "notistack";
 import { ErrorPage } from "../../../components/ErrorPage";
 function BidCreatePage({

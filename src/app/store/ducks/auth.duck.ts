@@ -2,7 +2,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import * as routerHelpers from "../../router/RouterHelpers";
 
-import { IUser, ILoginSuccessData, IUserForEdit, IUserForRegister, IRegSuccessData, LoginType, TRole } from "../../interfaces/users";
+import { IUser, ILoginSuccessData, IUserForEdit, IUserForRegister, IRegSuccessData, LoginType } from "../../interfaces/users";
 import { Reducer } from "redux";
 import { PersistPartial } from "redux-persist/es/persistReducer";
 import { TAppActions } from "../rootDuck";
@@ -229,7 +229,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, user: action.payload.data, editLoading: false, editSuccess: true };
       }
       case EDIT_USER_SUCCESS: {
-        // console.log("action.payload.data ", action.payload.data );        
+        // console.log("action.payload.data ", action.payload.data );
         return { ...state, user: action.payload.data };
       }
 
@@ -604,11 +604,11 @@ export type TActions = ActionsUnion<typeof actions>;
 function* fetchSaga() {
   try {
     console.log("fetch user");
-    
+
     const state = yield select();
     if (state.auth.authToken) {
       const { data }: { data: IServerResponse<IUser> } = yield call(() => getMe());
-          console.log("fetch user data", data);
+      // console.log("fetch user data", data);
 
       yield put(actions.fetchSuccess(data));
     } else {

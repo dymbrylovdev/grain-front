@@ -15,16 +15,14 @@ import {
   editUser,
   editContactViewContact,
   getUserActivate,
-  getUsersCrops,
   getUserRoles,
   getUserBidFilters,
   createUserBidFilter,
   getUserFilters,
 } from "../../crud/users.crud";
-import { IUser, IUserForCreate, IUserForEdit, TRole, IUserBidFilters } from "../../interfaces/users";
+import { IUser, IUserForCreate, IUserForEdit, IUserBidFilters } from "../../interfaces/users";
 import { IBid } from "../../interfaces/bids";
-import { ICrop } from "../../interfaces/crops";
-import { IFilterForCreate, IMyFilterItem, IMyFilters } from "../../interfaces/filters";
+import { IFilterForCreate, IMyFilters } from "../../interfaces/filters";
 import { PersistPartial } from "redux-persist/es/persistReducer";
 
 const CLEAR_FETCH = "users/CLEAR_FETCH";
@@ -96,9 +94,6 @@ const SET_USER_FILTERS_PHONE = "users/SET_USER_FILTERS_PHONE";
 
 const SET_USER_BOUGHT_TARIFF = "users/SET_USER_BOUGHT_TARIFF";
 
-
-
-
 export interface IInitialState {
   page: number;
   per_page: number;
@@ -169,8 +164,6 @@ export interface IInitialState {
   userFiltersPhone: string | undefined;
 
   boughtTariff: boolean;
-
-
 }
 
 const initialState: IInitialState = {
@@ -243,7 +236,6 @@ const initialState: IInitialState = {
   userFiltersPhone: undefined,
 
   boughtTariff: false,
-
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
@@ -740,8 +732,6 @@ export const actions = {
   setUserFiltersPhone: (payload: string) => createAction(SET_USER_FILTERS_PHONE, payload),
 
   setUserBoughtTariff: (payload: boolean) => createAction(SET_USER_BOUGHT_TARIFF, payload),
-
-
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -866,7 +856,6 @@ function* userFiltersSaga({ payload }: { payload: { email?: string; phone?: stri
     yield put(actions.userFiltersFail(e?.response?.data?.message) || "Ошибка соединения.");
   }
 }
-
 
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);

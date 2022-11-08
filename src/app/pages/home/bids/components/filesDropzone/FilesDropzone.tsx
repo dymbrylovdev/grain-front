@@ -90,7 +90,7 @@ const FilesDropzone: React.FC<IProps> = ({
 
       // setFiles(avalibleFiles);
     },
-    [setFiles, maxFiles]
+    [handleUpload]
   );
 
   const handleRemoveAll = () => {

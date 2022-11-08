@@ -7,15 +7,7 @@ import storage from "redux-persist/lib/storage";
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
 import { ITariff, ITariffToRequest, ITariffType } from "../../interfaces/tariffs";
-import {
-  getTariffs,
-  editTariff,
-  editTariffPeriod,
-  editTariffLimits,
-  getTariffsProlongations,
-  getTariffsTypes,
-  getFondyCredentials,
-} from "../../crud/tariffs.crud";
+import { getTariffs, editTariff, editTariffPeriod, editTariffLimits, getTariffsTypes, getFondyCredentials } from "../../crud/tariffs.crud";
 import { PersistPartial } from "redux-persist/es/persistReducer";
 
 const CLEAR_FETCH = "tariffs/CLEAR_FETCH";
@@ -43,7 +35,7 @@ const TARIFFS_TYPES_SUCCESS = "tariffs/TARIFFS_TYPES_SUCCESS";
 const TARIFFS_TYPES_FAIL = "tariffs/TARIFFS_TYPES_FAIL";
 
 const USERS_FILTER_SET_TARIFF = "tariffs/USERS_FILTER_SET_TARIFF";
-const USERS_FILTER_SET_TARIFF_ID = "tariffs/USERS_FILTER_SET_TARIFF_ID";
+// const USERS_FILTER_SET_TARIFF_ID = "tariffs/USERS_FILTER_SET_TARIFF_ID";
 
 const CLEAR_EDIT_LIMITS = "tariffs/CLEAR_EDIT_LIMITS";
 const EDIT_LIMITS_REQUEST = "tariffs/EDIT_LIMITS_REQUEST";
@@ -250,11 +242,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       case EDIT_PERIOD_SUCCESS: {
         let newTariffs: ITariff[] = [];
         state.tariffs?.forEach(item => {
-          if (
-            item.tariff_period
-              ? item.tariff_period.id === action.payload.response.data.id
-              : item.tariff_period === null
-          ) {
+          if (item.tariff_period ? item.tariff_period.id === action.payload.response.data.id : item.tariff_period === null) {
             let newItem = Object.assign({}, item);
             newItem.tariff_period = action.payload.response.data;
             newTariffs.push(newItem);
@@ -353,11 +341,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       case EDIT_LIMITS_SUCCESS: {
         let newTariffs: ITariff[] = [];
         state.tariffs?.forEach(item => {
-          if (
-            item.tariff_limits
-              ? item.tariff_limits.id === action.payload.response.data.id
-              : item.tariff_limits === null
-          ) {
+          if (item.tariff_limits ? item.tariff_limits.id === action.payload.response.data.id : item.tariff_limits === null) {
             let newItem = Object.assign({}, item);
             //@ts-ignore
             newItem.tariff_limits = action.payload.response.data;
@@ -436,31 +420,25 @@ export const actions = {
   editFail: (error: string) => createAction(EDIT_FAIL, { error }),
 
   clearEditPeriod: () => createAction(CLEAR_EDIT_PERIOD),
-  editPeriodRequest: (id: number, data: ITariffToRequest) =>
-    createAction(EDIT_PERIOD_REQUEST, { id, data }),
-  editPeriodSuccess: (response: IServerResponse<ITariff>) =>
-    createAction(EDIT_PERIOD_SUCCESS, { response }),
+  editPeriodRequest: (id: number, data: ITariffToRequest) => createAction(EDIT_PERIOD_REQUEST, { id, data }),
+  editPeriodSuccess: (response: IServerResponse<ITariff>) => createAction(EDIT_PERIOD_SUCCESS, { response }),
   editPeriodFail: (error: string) => createAction(EDIT_PERIOD_FAIL, { error }),
 
   clearTariffTypes: () => createAction(CLEAR_TARIFFS_TYPES),
   tariffsTypesRequest: (payload?: string) => createAction(TARIFFS_TYPES_REQUEST, payload),
-  tariffsTypesSuccess: (response: IServerResponse<ITariffType>) =>
-    createAction(TARIFFS_TYPES_SUCCESS, { response }),
+  tariffsTypesSuccess: (response: IServerResponse<ITariffType>) => createAction(TARIFFS_TYPES_SUCCESS, { response }),
   tariffsTypesFail: (error: string) => createAction(TARIFFS_TYPES_FAIL, { error }),
 
   setUsersFilterTariff: (payload: string) => createAction(USERS_FILTER_SET_TARIFF, payload),
 
   clearEditLimits: () => createAction(CLEAR_EDIT_LIMITS),
-  editLimitsRequest: (id: number, data: ITariffToRequest) =>
-    createAction(EDIT_LIMITS_REQUEST, { id, data }),
-  editLimitsSuccess: (response: IServerResponse<ITariff>) =>
-    createAction(EDIT_LIMITS_SUCCESS, { response }),
+  editLimitsRequest: (id: number, data: ITariffToRequest) => createAction(EDIT_LIMITS_REQUEST, { id, data }),
+  editLimitsSuccess: (response: IServerResponse<ITariff>) => createAction(EDIT_LIMITS_SUCCESS, { response }),
   editLimitsFail: (error: string) => createAction(EDIT_LIMITS_FAIL, { error }),
 
   clearFondyCredentials: () => createAction(CLEAR_FONDY_CREDENTIALS),
   fondyCredentialsRequest: () => createAction(FONDY_CREDENTIALS_REQUEST),
-  fondyCredentialsSuccess: (response: IServerResponse<any>) =>
-    createAction(FONDY_CREDENTIALS_SUCCESS, { response }),
+  fondyCredentialsSuccess: (response: IServerResponse<any>) => createAction(FONDY_CREDENTIALS_SUCCESS, { response }),
   fondyCredentialsFail: (error: string) => createAction(FONDY_CREDENTIALS_FAIL, { error }),
 
   setTariffTable: (newTariffTable: number) => createAction(SET_TARIFF_TABLE, newTariffTable),
@@ -470,9 +448,7 @@ export type TActions = ActionsUnion<typeof actions>;
 
 function* fetchSaga({ payload }: { payload: { userView?: number } }) {
   try {
-    const { data }: { data: IServerResponse<ITariff[]> } = yield call(() =>
-      getTariffs(payload.userView)
-    );
+    const { data }: { data: IServerResponse<ITariff[]> } = yield call(() => getTariffs(payload.userView));
     yield put(actions.fetchSuccess(data));
   } catch (e) {
     yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -481,9 +457,7 @@ function* fetchSaga({ payload }: { payload: { userView?: number } }) {
 
 function* editSaga({ payload }: { payload: { id: number; data: ITariffToRequest } }) {
   try {
-    const { data }: { data: IServerResponse<ITariff> } = yield call(() =>
-      editTariff(payload.id, payload.data)
-    );
+    const { data }: { data: IServerResponse<ITariff> } = yield call(() => editTariff(payload.id, payload.data));
     yield put(actions.editSuccess(data));
   } catch (e) {
     yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -492,9 +466,7 @@ function* editSaga({ payload }: { payload: { id: number; data: ITariffToRequest 
 
 function* editPeriodSaga({ payload }: { payload: { id: number; data: ITariffToRequest } }) {
   try {
-    const { data }: { data: IServerResponse<ITariff> } = yield call(() =>
-      editTariffPeriod(payload.id, payload.data)
-    );
+    const { data }: { data: IServerResponse<ITariff> } = yield call(() => editTariffPeriod(payload.id, payload.data));
     yield put(actions.editPeriodSuccess(data));
   } catch (e) {
     yield put(actions.editPeriodFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -503,9 +475,7 @@ function* editPeriodSaga({ payload }: { payload: { id: number; data: ITariffToRe
 
 function* getTariffsTypesSaga({ payload }: { payload?: string }) {
   try {
-    const { data }: { data: IServerResponse<ITariffType> } = yield call(() =>
-      getTariffsTypes(payload)
-    );
+    const { data }: { data: IServerResponse<ITariffType> } = yield call(() => getTariffsTypes(payload));
     yield put(actions.tariffsTypesSuccess(data));
   } catch (e) {
     yield put(actions.tariffsTypesFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -514,9 +484,7 @@ function* getTariffsTypesSaga({ payload }: { payload?: string }) {
 
 function* editLimitsSaga({ payload }: { payload: { id: number; data: ITariffToRequest } }) {
   try {
-    const { data }: { data: IServerResponse<ITariff> } = yield call(() =>
-      editTariffLimits(payload.id, payload.data)
-    );
+    const { data }: { data: IServerResponse<ITariff> } = yield call(() => editTariffLimits(payload.id, payload.data));
     yield put(actions.editLimitsSuccess(data));
   } catch (e) {
     yield put(actions.editLimitsFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -535,20 +503,8 @@ function* fondyCredentialsSaga() {
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.editRequest>>(EDIT_REQUEST, editSaga);
-  yield takeLatest<ReturnType<typeof actions.editPeriodRequest>>(
-    EDIT_PERIOD_REQUEST,
-    editPeriodSaga
-  );
-  yield takeLatest<ReturnType<typeof actions.tariffsTypesRequest>>(
-    TARIFFS_TYPES_REQUEST,
-    getTariffsTypesSaga
-  );
-  yield takeLatest<ReturnType<typeof actions.editLimitsRequest>>(
-    EDIT_LIMITS_REQUEST,
-    editLimitsSaga
-  );
-  yield takeLatest<ReturnType<typeof actions.fondyCredentialsRequest>>(
-    FONDY_CREDENTIALS_REQUEST,
-    fondyCredentialsSaga
-  );
+  yield takeLatest<ReturnType<typeof actions.editPeriodRequest>>(EDIT_PERIOD_REQUEST, editPeriodSaga);
+  yield takeLatest<ReturnType<typeof actions.tariffsTypesRequest>>(TARIFFS_TYPES_REQUEST, getTariffsTypesSaga);
+  yield takeLatest<ReturnType<typeof actions.editLimitsRequest>>(EDIT_LIMITS_REQUEST, editLimitsSaga);
+  yield takeLatest<ReturnType<typeof actions.fondyCredentialsRequest>>(FONDY_CREDENTIALS_REQUEST, fondyCredentialsSaga);
 }

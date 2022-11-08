@@ -4,7 +4,7 @@ import { injectIntl, WrappedComponentProps } from "react-intl";
 
 import { IAppState } from "../../../store/rootDuck";
 import { actions as bidsActions } from "../../../store/ducks/bids.duck";
-import { Col, Row } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import ruRU from "date-fns/locale/ru";

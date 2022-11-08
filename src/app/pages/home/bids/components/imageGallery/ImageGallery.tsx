@@ -86,7 +86,7 @@ const ImageGallery: React.FC<IProps> = ({ photos, currentCrop }) => {
       ? `${API_DOMAIN}${currentCrop.photo.small}`
       : `${API_DOMAIN}${"/uploaded/images/bid/default.jpg"}`;
     setCurrentImage(photos && photos.length > 0 ? `${API_DOMAIN}${photos[0].path}` : defaultUrl);
-  }, [photos, setCurrentImage]);
+  }, [photos, setCurrentImage, currentCrop]);
 
   // images
   const images = useMemo(() => {

@@ -97,7 +97,7 @@ const NewHeader: React.FC<TPropsFromRedux & WrappedComponentProps> = ({ intl, me
   const history = useHistory();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  // const [filtersOpen, setFiltersOpen] = useState(false);
   const [analiticsOpen, setAnaliticsOpen] = useState(false);
   const [usersOpen, setUsersOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
