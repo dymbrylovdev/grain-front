@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 
 const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial }) => {
-
   useEffect(() => {
     const Options = {
       options: {
@@ -25,8 +24,7 @@ const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial
         order_id: new Date().getTime(),
         amount: selectedTariff.price * 100,
         order_desc: `Тариф: ${selectedTariff.tariff.name}, период: ${selectedTariff.tariff_period.period} дней`,
-        email:
-          realUser.email ? realUser.email : trial  && trial.manager_email,
+        email: realUser.email ? realUser.email : trial && trial.manager_email,
         server_callback_url: "https://api.kupit-zerno.com/api/fondy/callback",
         lang: "ru",
         product_id: selectedTariff.id,
@@ -50,7 +48,7 @@ const PaymentByCard = ({ realUser, selectedTariff, selectedDate, merchant, trial
   ]);
 
   return (
-    <div style={{paddingTop: 40, backgroundColor: "#fff"}}>
+    <div style={{ paddingTop: 40, backgroundColor: "#fff" }}>
       <div id="fondy-container"></div>
     </div>
   );

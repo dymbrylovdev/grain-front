@@ -16,8 +16,6 @@ import {
   InputLabel,
   Select,
   CircularProgress,
-  Tabs,
-  Tab,
 } from "@material-ui/core";
 
 import CloseIcon from "@material-ui/icons/Close";
@@ -39,7 +37,7 @@ import { ILocation } from "../../../../interfaces/locations";
 import useStyles from "../../styles";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import { OutlinedRedButton } from "../../../../components/ui/Buttons/RedButtons";
-import { IMyFilterItem, IParamValue } from "../../../../interfaces/filters";
+import { IParamValue } from "../../../../interfaces/filters";
 import NumberFormatCustom from "../../../../components/NumberFormatCustom/NumberFormatCustom";
 import { accessByRoles, getConfirmCompanyString } from "../../../../utils/utils";
 import { TrafficLight } from "../../users/components";
@@ -361,7 +359,7 @@ const BidForm: React.FC<IProps> = ({
         });
       }
     },
-    [isSendingEmail, isSendingSms, editMode]
+    [isSendingEmail, isSendingSms, editMode, post]
   );
 
   useEffect(() => {
@@ -386,7 +384,7 @@ const BidForm: React.FC<IProps> = ({
     if (editSuccess) {
       bidId && fetch(bidId, pointPrices);
     }
-  }, [editSuccess]);
+  }, [editSuccess, bidId, fetch, pointPrices]);
 
   const linkToContact = () => {
     let contactViewCount = me?.contact_view_count;
@@ -1440,7 +1438,7 @@ const BidForm: React.FC<IProps> = ({
                 </YMaps>
               )}
 
-              {me?.points && mySelectedMapPoint && editMode == "view" && bid && (
+              {me?.points && mySelectedMapPoint && editMode === "view" && bid && (
                 <FormControl variant="outlined" className={classes.formControl} style={{ width: "100%", marginLeft: 0, marginTop: 15 }}>
                   <InputLabel id="demo-simple-select-outlined-label">
                     {bid.type === "sale"

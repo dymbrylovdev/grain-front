@@ -26,9 +26,9 @@ import FilterForm from "./users/components/FilterForm";
 function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   const { user } = useSelector(({ auth }) => ({ user: auth.user }), shallowEqual);
   const { crops } = useSelector(({ crops2 }) => ({ crops: crops2.crops }), shallowEqual);
-  const getCropsAction = () => {
-    getCrops(user);
-  };
+  // const getCropsAction = () => {
+  //   getCrops(user);
+  // };
 
   useEffect(() => {
     fetchStatuses();
@@ -40,7 +40,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
 
   const redirectUrl = useMemo(() => {
     if (user) {
-      if (user.roles.includes("ROLE_TRANSPORTER")) return "user/profile"
+      if (user.roles.includes("ROLE_TRANSPORTER")) return "user/profile";
       if (user.roles.includes("ROLE_ADMIN") || user.roles.includes("ROLE_MANAGER") || user.roles.includes("ROLE_TRADER")) {
         return `/sale/best-bids/${user.main_crop ? user.main_crop.id : 0}`;
       } else {
@@ -154,7 +154,7 @@ function HomePage({ setMenuConfig, getCrops, fetchStatuses }) {
   );
 }
 
-export default connect(state => { }, {
+export default connect(state => {}, {
   ...builder.actions,
   ...crops.actions,
   ...users.actions,

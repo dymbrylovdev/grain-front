@@ -9,7 +9,6 @@ import { searchCompanies } from "../../../../crud/companies.crud";
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import StatusAlert from "../../../../components/ui/Messages/StatusAlert";
 import CompanySearchDialog from "./CompanySearchDialog";
-import ScrollToTop from "../../../../components/ui/ScrollToTop";
 
 const innerStyles = makeStyles(theme => ({
   title: {
@@ -37,16 +36,7 @@ const isSearchEmpty = values => {
   return false;
 };
 
-function CompanySearchForm({
-  intl,
-  setCompanyAction,
-  me,
-  classes,
-  company,
-  editAction,
-  values,
-  confirms,
-}) {
+function CompanySearchForm({ intl, setCompanyAction, me, classes, company, editAction, values, confirms }) {
   const formRef = useRef();
   const searchRef = useRef();
   const innerClasses = innerStyles();
@@ -93,16 +83,7 @@ function CompanySearchForm({
       });
       setDialogOpen(false);
     },
-    [
-      confirms,
-      editAction,
-      values.email,
-      values.fio,
-      values.is_funnel_state_automate,
-      values.login,
-      values.phone,
-      values.use_vat,
-    ]
+    [confirms, editAction, values.email, values.fio, values.is_funnel_state_automate, values.login, values.phone, values.use_vat]
   );
 
   const scrollBottom = () => window.scrollTo(0, window.innerHeight);
@@ -160,16 +141,7 @@ function CompanySearchForm({
           inn: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
         })}
       >
-        {({
-          values,
-          status,
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-        }) => (
+        {({ values, status, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
           <div noValidate className="kt-form" onSubmit={handleSubmit}>
             <Box
               ref={searchRef}
@@ -178,9 +150,7 @@ function CompanySearchForm({
               borderColor={me?.company === null ? "#6775c4" : "#eeeeee"}
               borderRadius={5}
             >
-              <div className={innerClasses.title}>
-                {`${intl.formatMessage({ id: "COMPANY.SEARCH.TITLE" })}`}
-              </div>
+              <div className={innerClasses.title}>{`${intl.formatMessage({ id: "COMPANY.SEARCH.TITLE" })}`}</div>
               {/* <TextField
                 type="text"
                 label={intl.formatMessage({

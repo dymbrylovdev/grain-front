@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FormControlLabel, Radio, RadioGroup } from "@material-ui/core";
 import { Col, Row } from "react-bootstrap";
 

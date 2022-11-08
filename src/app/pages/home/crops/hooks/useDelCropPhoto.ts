@@ -8,7 +8,6 @@ import { getResponseMessage } from "../../../../utils";
 export const useDelCropPhoto: any = (user: any) => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState<any>(null);
   const [success, setSuccess] = useState(false);
   const dispatch = useDispatch();
   const fetch = useCallback(
@@ -25,7 +24,6 @@ export const useDelCropPhoto: any = (user: any) => {
         })
         .finally(() => {
           setLoading(false);
-          setErr(null);
           setSuccess(false);
         });
     },

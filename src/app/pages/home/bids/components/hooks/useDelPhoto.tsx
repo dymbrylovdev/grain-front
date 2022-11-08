@@ -9,7 +9,6 @@ import { IPointPriceForGet } from "../../../../../interfaces/bids";
 export const useDelPhoto: any = (bidId: number, pointPrices: IPointPriceForGet[]) => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState<any>(null);
   const [success, setSuccess] = useState(false);
   const dispatch = useDispatch();
   const fetch = useCallback(
@@ -26,7 +25,6 @@ export const useDelPhoto: any = (bidId: number, pointPrices: IPointPriceForGet[]
         })
         .finally(() => {
           setLoading(false);
-          setErr(null);
           setSuccess(false);
         });
     },

@@ -1,23 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { WrappedComponentProps, injectIntl } from "react-intl";
-import {
-  TextField,
-  MenuItem,
-  Theme,
-  FormControlLabel,
-  Checkbox,
-  IconButton,
-  Collapse,
-  Button,
-  Dialog,
-  DialogActions,
-} from "@material-ui/core";
+import { TextField, MenuItem, Theme, FormControlLabel, Checkbox, IconButton, Collapse, Button, Dialog } from "@material-ui/core";
 import { Alert, Skeleton } from "@material-ui/lab";
 import { Link, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { useFormik, validateYupSchema } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useSnackbar } from "notistack";
 import isEqual from "lodash.isequal";
@@ -37,7 +26,6 @@ import { roles } from "../utils/profileForm";
 import { setMeValues, setCreateValues, setEditValues } from "../utils/submitValues";
 import { IAppState } from "../../../../store/rootDuck";
 import { IUser, IUserForEdit } from "../../../../interfaces/users";
-import NumberFormatForProfile from "../../../../components/NumberFormatCustom/NumberFormatForProfile";
 import { accessByRoles } from "../../../../utils/utils";
 import AlertDialog from "../../../../components/ui/Dialogs/AlertDialog";
 import { TrafficLight } from ".";
@@ -45,7 +33,6 @@ import CompanyConfirmBlock from "../../companies/components/CompanyConfirmBlock"
 import CompanySearchForm from "../../companies/components/CompanySearchForm";
 import CompanyConfirmDialog from "./CompanyConfirmDialog";
 import { phoneCountryCodes, countries } from "../../../auth/phoneCountryCodes";
-import PhoneButton from "../../../../components/PhoneButton";
 
 const innerStyles = makeStyles((theme: Theme) => ({
   companyContainer: {
@@ -171,29 +158,30 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     });
   };
 
-
-
-  const getInitialValues = (user: IUser | undefined) => ({
-    login: user?.login || "",
-    fio: user?.fio || "",
-    firstname: user?.firstname || "",
-    surname: user?.surname || "",
-    lastname: user?.lastname || "",
-    phone: user?.phone || `${countryCode}`,
-    email: user?.email || "",
-    password: "",
-    repeatPassword: "",
-    role: user?.roles?.length ? user.roles[0] : "",
-    status: user?.status || "",
-    funnel_state_id: user?.funnel_state?.id || 0,
-    is_funnel_state_automate: user?.is_funnel_state_automate || false,
-    use_vat: user?.use_vat === undefined ? false : user.use_vat,
-    company_confirmed_by_email: user ? user.company_confirmed_by_email : false,
-    company_confirmed_by_phone: user ? user.company_confirmed_by_phone : false,
-    company_confirmed_by_payment: user ? user.company_confirmed_by_payment : false,
-    company_name: user && user.company ? user.company.short_name : "",
-    company_id: user && user.company ? user.company.id : 0,
-  });
+  const getInitialValues = useCallback(
+    (user: IUser | undefined) => ({
+      login: user?.login || "",
+      fio: user?.fio || "",
+      firstname: user?.firstname || "",
+      surname: user?.surname || "",
+      lastname: user?.lastname || "",
+      phone: user?.phone || `${countryCode}`,
+      email: user?.email || "",
+      password: "",
+      repeatPassword: "",
+      role: user?.roles?.length ? user.roles[0] : "",
+      status: user?.status || "",
+      funnel_state_id: user?.funnel_state?.id || 0,
+      is_funnel_state_automate: user?.is_funnel_state_automate || false,
+      use_vat: user?.use_vat === undefined ? false : user.use_vat,
+      company_confirmed_by_email: user ? user.company_confirmed_by_email : false,
+      company_confirmed_by_phone: user ? user.company_confirmed_by_phone : false,
+      company_confirmed_by_payment: user ? user.company_confirmed_by_payment : false,
+      company_name: user && user.company ? user.company.short_name : "",
+      company_id: user && user.company ? user.company.id : 0,
+    }),
+    [countryCode]
+  );
 
   const validationSchema = Yup.object().shape(
     {
@@ -207,15 +195,15 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       phone:
         countryCode.length === 1
           ? Yup.string()
-            .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-            .matches(/^(\d{1}|\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
-            .when(["email"], {
-              is: email => !email,
-              then: Yup.string().matches(/^(\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
-            })
+              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+              .matches(/^(\d{1}|\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" }))
+              .when(["email"], {
+                is: email => !email,
+                then: Yup.string().matches(/^(\d{11})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+              })
           : Yup.string()
-            .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
-            .matches(/^(\d{3}|\d{13})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
+              .required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" }))
+              .matches(/^(\d{3}|\d{13})$/, intl.formatMessage({ id: "PROFILE.VALIDATION.PHONE" })),
       // fio: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
     },
     [["email", "phone"]]
@@ -223,7 +211,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   const validationSchemaPassword = Yup.object().shape({
     password: Yup.string(),
-    repeatPassword: Yup.string().test("passwords-match", intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }), function (
+    repeatPassword: Yup.string().test("passwords-match", intl.formatMessage({ id: "PROFILE.VALIDATION.SIMILAR_PASSWORD" }), function(
       value
     ) {
       return this.parent.password === value;
@@ -272,7 +260,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       setEditNoNoti(false);
       setOldUserValues(values);
     }
-  }, [clearMe, editMode, me, meSuccess, userSuccess, oldValues, oldUserValues, setEditNoNoti, user, values]);
+  }, [clearMe, editMode, me, meSuccess, userSuccess, oldValues, oldUserValues, setEditNoNoti, user, values, getInitialValues]);
 
   useEffect(() => {
     return () => {
@@ -406,7 +394,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         resetForm({ values: getInitialValues(undefined) });
         break;
     }
-  }, [editMode, me, resetForm, user, setCurrentUser]);
+  }, [editMode, me, resetForm, user, setCurrentUser, getInitialValues]);
 
   useEffect(() => {
     if (accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !funnelStates) fetchFunnelStates();
@@ -421,11 +409,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     newRoles.splice(0, 2);
   }
 
-
   const accessTransporter = useCallback(() => {
-    return accessByRoles(me, ["ROLE_TRANSPORTER"])
+    return accessByRoles(me, ["ROLE_TRANSPORTER"]);
   }, [me]);
-
 
   return (
     <>
@@ -509,21 +495,21 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                   </MenuItem>
                   {user && user.is_buyer
                     ? !!funnelStates &&
-                    funnelStates
-                      .filter(fs => fs.role === "ROLE_BUYER")
-                      .map(option => (
-                        <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
-                          {`${option.engagement || "0"} • ${option.name}`}
-                        </MenuItem>
-                      ))
+                      funnelStates
+                        .filter(fs => fs.role === "ROLE_BUYER")
+                        .map(option => (
+                          <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
+                            {`${option.engagement || "0"} • ${option.name}`}
+                          </MenuItem>
+                        ))
                     : !!funnelStates &&
-                    funnelStates
-                      .filter(fs => fs.role === "ROLE_VENDOR")
-                      .map(option => (
-                        <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
-                          {`${option.engagement || "0"} • ${option.name}`}
-                        </MenuItem>
-                      ))}
+                      funnelStates
+                        .filter(fs => fs.role === "ROLE_VENDOR")
+                        .map(option => (
+                          <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
+                            {`${option.engagement || "0"} • ${option.name}`}
+                          </MenuItem>
+                        ))}
                 </TextField>
               )}
             </div>
@@ -567,7 +553,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
-
       {false && (
         <div className={classes.textFieldContainer}>
           {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
@@ -580,11 +565,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               })}
               margin="normal"
               className={classes.textField}
-              classes={
-                prompterRunning && prompterStep === 0 && !values.fio
-                  ? { root: innerClasses.pulseRoot }
-                  : {}
-              }
+              classes={prompterRunning && prompterStep === 0 && !values.fio ? { root: innerClasses.pulseRoot } : {}}
               name="fio"
               value={values.fio}
               variant="outlined"
@@ -598,7 +579,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           )}
         </div>
       )}
-
 
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
@@ -675,32 +655,35 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         )}
       </div>
 
-      {!accessTransporter() && !(meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading)) && editMode === "profile" && me && (
-        <Collapse in={openInfoAlert}>
-          <Alert
-            className={classes.infoAlert}
-            severity="info"
-            color="info"
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  setOpenInfoAlert(false);
-                }}
-              >
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
-          >
-            <div>{intl.formatMessage({ id: "PROFILE.VAT.INFO" })}</div>
-            <Link to={accessByRoles(me, ["ROLE_BUYER"]) ? "/purchase/my-bids" : "/sale/my-bids"}>
-              {intl.formatMessage({ id: "PROFILE.VAT.INFO.LINK" })}
-            </Link>
-          </Alert>
-        </Collapse>
-      )}
+      {!accessTransporter() &&
+        !(meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading)) &&
+        editMode === "profile" &&
+        me && (
+          <Collapse in={openInfoAlert}>
+            <Alert
+              className={classes.infoAlert}
+              severity="info"
+              color="info"
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setOpenInfoAlert(false);
+                  }}
+                >
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+              }
+            >
+              <div>{intl.formatMessage({ id: "PROFILE.VAT.INFO" })}</div>
+              <Link to={accessByRoles(me, ["ROLE_BUYER"]) ? "/purchase/my-bids" : "/sale/my-bids"}>
+                {intl.formatMessage({ id: "PROFILE.VAT.INFO.LINK" })}
+              </Link>
+            </Alert>
+          </Collapse>
+        )}
 
       {prompterRunning && prompterStep === 0 && !values.use_vat && (
         <div>
@@ -714,8 +697,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
-      {
-        !accessTransporter() && !accessByRoles(userView, ["ROLE_TRANSPORTER"]) &&
+      {!accessTransporter() && !accessByRoles(userView, ["ROLE_TRANSPORTER"]) && (
         <div>
           {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
             <Skeleton width={135} height={37.5} animation="wave" />
@@ -728,10 +710,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             />
           )}
         </div>
-      }
-
-
-
+      )}
 
       {editMode === "create" && (
         <div className={classes.textFieldContainer}>
@@ -842,7 +821,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 handleChange={editMode === "profile" ? editMe : ({ data }: any) => editUser({ id: userId as number, data: data })}
                 disabled={editMode === "profile" || editMode === "view" || !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
                 loading={editMeLoading || editLoading}
-              // loading={!currentUser || meLoading || userLoading || editLoading}
+                // loading={!currentUser || meLoading || userLoading || editLoading}
               />
               {!values.company_confirmed_by_email &&
                 !values.company_confirmed_by_payment &&

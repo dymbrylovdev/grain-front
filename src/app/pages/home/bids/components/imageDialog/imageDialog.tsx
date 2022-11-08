@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, DialogContent, DialogProps, IconButton, makeStyles, Button } from "@material-ui/core";
+import { Dialog, DialogContent, DialogProps, IconButton, makeStyles } from "@material-ui/core";
 import ArrowBack from "@material-ui/icons/ArrowBackIos";
 import ArrowNext from "@material-ui/icons/ArrowForwardIos";
 import Close from "@material-ui/icons/Close";

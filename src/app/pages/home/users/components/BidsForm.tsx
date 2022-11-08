@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, IntlShape, WrappedComponentProps } from "react-intl";
 import { useHistory } from "react-router-dom";
@@ -21,7 +21,7 @@ interface IProps {
   classes: any;
   userId?: number;
   isBuyer?: boolean;
-  backParam?: number
+  backParam?: number;
 }
 
 const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
@@ -56,8 +56,8 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
 }) => {
   const history = useHistory();
 
-  const [deleteBidId, setDeleteBidId] = useState(-1);
-  const [isAlertOpen, setAlertOpen] = useState(false);
+  // const [deleteBidId, setDeleteBidId] = useState(-1);
+  // const [isAlertOpen, setAlertOpen] = useState(false);
   const numberParams = useMemo(() => cropParams && cropParams.filter(item => item.type === "number"), [cropParams]);
   useEffect(() => {
     fetchCrops();
@@ -79,8 +79,8 @@ const BidsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
         classes={classes}
         bids={userBids}
         handleDeleteDialiog={(id: number) => {
-          setDeleteBidId(id);
-          setAlertOpen(true);
+          // setDeleteBidId(id);
+          // setAlertOpen(true);
         }}
         bestAllMyMode={"edit"}
         user={me as IUser}

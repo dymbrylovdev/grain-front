@@ -1,4 +1,4 @@
-import { IMyFilterItem } from './../../interfaces/filters';
+import { IMyFilterItem } from "./../../interfaces/filters";
 import { persistReducer } from "redux-persist";
 import { Reducer } from "redux";
 import { PersistPartial } from "redux-persist/es/persistReducer";
@@ -8,17 +8,11 @@ import { put, takeLatest, call } from "redux-saga/effects";
 
 import { ActionsUnion, createAction } from "../../utils/action-helper";
 import { IServerResponse } from "../../interfaces/server";
-import {
-  createMyFilter,
-  getMyFilters,
-  deleteMyFilter,
-  editMyFilter,
-  postMyFilter,
-} from "../../crud/myFilters.crud";
+import { createMyFilter, getMyFilters, deleteMyFilter, editMyFilter, postMyFilter } from "../../crud/myFilters.crud";
 import { IFilterForCreate, IMyFilters } from "../../interfaces/filters";
 import { TBidType } from "../../interfaces/bids";
 import { fromApiToFilter } from "../../pages/home/myFilters/utils";
-import { PhotoSizeSelectLargeSharp } from "@material-ui/icons";
+// import { PhotoSizeSelectLargeSharp } from "@material-ui/icons";
 
 const FETCH_REQUEST = "myFilters/FETCH_REQUEST";
 const FETCH_SUCCESS = "myFilters/FETCH_SUCCESS";
@@ -328,7 +322,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
           postFilterId: undefined,
           postLoading: false,
           postSuccess: false,
-          postError: null
+          postError: null,
         };
       }
 
@@ -350,11 +344,11 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case SET_POINT_PRICES: {
-        return { ...state, pointPrices: action.payload }
+        return { ...state, pointPrices: action.payload };
       }
 
       case CLEAR_POINT_PRICES: {
-        return { ...state, pointPrices: [] }
+        return { ...state, pointPrices: [] };
       }
 
       default:
@@ -369,8 +363,7 @@ export const actions = {
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
   setSelectedFilterId: (id: number) => createAction(SET_SELECTED_FILTER_ID, { id }),
-  setOpenInfoAlert: (openInfoAlert: boolean) =>
-    createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
+  setOpenInfoAlert: (openInfoAlert: boolean) => createAction(SET_OPEN_INFO_ALERT, { openInfoAlert }),
 
   setCurrentSaleFilter: (cropId: number, filter: { [x: string]: any } | undefined) =>
     createAction(SET_CURRENT_SALE_FILTER, { cropId, filter }),
@@ -386,8 +379,7 @@ export const actions = {
   createFail: (payload: string) => createAction(CREATE_FAIL, payload),
 
   clearEdit: () => createAction(CLEAR_EDIT),
-  editRequest: (payload: { id: number; data: IFilterForCreate }) =>
-    createAction(EDIT_REQUEST, payload),
+  editRequest: (payload: { id: number; data: IFilterForCreate }) => createAction(EDIT_REQUEST, payload),
   editSuccess: (data: IServerResponse<IMyFilterItem>) => createAction(EDIT_SUCCESS, { data }),
   editFail: (payload: string) => createAction(EDIT_FAIL, payload),
 
@@ -397,8 +389,7 @@ export const actions = {
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
 
   clearPost: () => createAction(CLEAR_POST),
-  postFilter: (payload: { id: number; is_sending_email: 0 | 1; is_sending_sms: 0 | 1 }) =>
-    createAction(POST_FILTER, payload),
+  postFilter: (payload: { id: number; is_sending_email: 0 | 1; is_sending_sms: 0 | 1 }) => createAction(POST_FILTER, payload),
   postSucces: (payload: IMyFilterItem) => createAction(POST_SUCCESS, payload),
   postFail: (payload: string) => createAction(POST_ERROR, payload),
 
@@ -410,9 +401,7 @@ export type TActions = ActionsUnion<typeof actions>;
 
 function* fetchSaga({ payload }: { payload: { type: TBidType } }) {
   try {
-    const { data }: { data: IServerResponse<IMyFilters> } = yield call(() =>
-      getMyFilters(payload.type)
-    );
+    const { data }: { data: IServerResponse<IMyFilters> } = yield call(() => getMyFilters(payload.type));
     yield put(actions.fetchSuccess(data));
   } catch (e) {
     yield put(actions.fetchFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -421,9 +410,7 @@ function* fetchSaga({ payload }: { payload: { type: TBidType } }) {
 
 function* createSaga({ payload }: { payload: IFilterForCreate }) {
   try {
-    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() =>
-      createMyFilter(payload)
-    );
+    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() => createMyFilter(payload));
     yield put(actions.createSuccess(data.data));
   } catch (e) {
     yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -432,9 +419,7 @@ function* createSaga({ payload }: { payload: IFilterForCreate }) {
 
 function* editSaga({ payload }: { payload: { id: number; data: IFilterForCreate } }) {
   try {
-    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() =>
-      editMyFilter(payload.id, payload.data)
-    );
+    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() => editMyFilter(payload.id, payload.data));
     yield put(actions.editSuccess(data));
   } catch (e) {
     yield put(actions.editFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -443,23 +428,17 @@ function* editSaga({ payload }: { payload: { id: number; data: IFilterForCreate 
 
 function* delSaga({ payload }: { payload: number }) {
   try {
-    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() =>
-      deleteMyFilter(payload)
-    );
+    const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() => deleteMyFilter(payload));
     yield put(actions.delSuccess(data.data));
   } catch (e) {
     yield put(actions.delFail(e?.response?.data?.message || "Ошибка соединения."));
   }
 }
 
-function* postSaga({
-  payload,
-}: {
-  payload: { id: number; is_sending_email: 0 | 1; is_sending_sms: 0 | 1 };
-}) {
+function* postSaga({ payload }: { payload: { id: number; is_sending_email: 0 | 1; is_sending_sms: 0 | 1 } }) {
   try {
     const { data }: { data: IServerResponse<IMyFilterItem> } = yield call(() =>
-      (postMyFilter(payload.id, payload.is_sending_email, payload.is_sending_sms))
+      postMyFilter(payload.id, payload.is_sending_email, payload.is_sending_sms)
     );
     yield put(actions.postSucces(data.data));
   } catch (e) {

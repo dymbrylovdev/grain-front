@@ -14,7 +14,6 @@ import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { LayoutSubheader } from "../../../../_metronic/layout/LayoutContext";
 import ButtonWithLoader from "../../../components/ui/Buttons/ButtonWithLoader";
-import NumberFormatCustom from "../../../components/NumberFormatCustom/NumberFormatCustom";
 import NumberFormatTrial from "../../../components/NumberFormatCustom/NumberFormatTrial";
 
 const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
@@ -33,7 +32,7 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 }) => {
   const classes = useStyles();
   const history = useHistory();
-  const isTrial = true;
+  // const isTrial = true;
 
   const { values, handleSubmit, handleChange, handleBlur, resetForm, touched, errors } = useFormik({
     initialValues: { trial_days: "", manager_email: "", manager_phone: "" },
@@ -132,7 +131,7 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
               helperText={touched.manager_phone && errors.manager_phone}
               error={Boolean(touched.manager_phone && errors.manager_phone)}
               InputProps={{
-                inputComponent: NumberFormatTrial as any, 
+                inputComponent: NumberFormatTrial as any,
               }}
               autoComplete="off"
             />
@@ -141,11 +140,7 @@ const TrialEditPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
         <div className={classes.bottomButtonsContainer}>
           <div className={classes.button}>
-            <ButtonWithLoader
-              loading={editLoading}
-              disabled={loading || editLoading}
-              onPress={handleSubmit}
-            >
+            <ButtonWithLoader loading={editLoading} disabled={loading || editLoading} onPress={handleSubmit}>
               {intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
             </ButtonWithLoader>
           </div>
