@@ -1,6 +1,6 @@
-import { EditorState, ContentBlock, genKey } from 'draft-js';
+import { EditorState, ContentBlock, genKey } from "draft-js";
 
-import { List } from 'immutable';
+import { List } from "immutable";
 
 export const getSelectionRange = () => {
   const selection = window.getSelection();
@@ -9,7 +9,7 @@ export const getSelectionRange = () => {
 };
 
 export const getSelectionCoords = (selectionRange: any) => {
-  const editorBounds = document.getElementById('editor-container')?.getBoundingClientRect();
+  const editorBounds = document.getElementById("editor-container")?.getBoundingClientRect();
   if (!editorBounds) return null;
 
   const rangeBounds = selectionRange.getBoundingClientRect();
@@ -33,12 +33,7 @@ export const getCurrentBlock = (editorState: any) => {
   return contentState.getBlockForKey(selectionState.getStartKey());
 };
 
-export const addNewBlockAt = (
-  editorState: any,
-  pivotBlockKey: any,
-  newBlockType = 'unstyled',
-  initialData = {}
-) => {
+export const addNewBlockAt = (editorState: any, pivotBlockKey: any, newBlockType = "unstyled", initialData = {}) => {
   const content = editorState.getCurrentContent();
   const blockMap = content.getBlockMap();
   const block = blockMap.get(pivotBlockKey);
@@ -59,7 +54,7 @@ export const addNewBlockAt = (
   const newBlock = new ContentBlock({
     key: newBlockKey,
     type: newBlockType,
-    text: '',
+    text: "",
     // @ts-ignore
     characterList: new List(),
     depth: 0,
@@ -90,7 +85,7 @@ export const addNewBlockAt = (
     }),
   });
 
-  return EditorState.push(editorState, newContent, 'split-block');
+  return EditorState.push(editorState, newContent, "split-block");
 };
 
 export const closest = (element: any, matchFunction: any) => {
@@ -108,7 +103,7 @@ export const hasClass = (element: any, className: any) => {
   if (element.classList) {
     isHasClass = element.classList.contains(className);
   } else {
-    isHasClass = new RegExp(`(^| )${className}( |$)`, 'gi').test(element.className);
+    isHasClass = new RegExp(`(^| )${className}( |$)`, "gi").test(element.className);
   }
 
   return isHasClass;
@@ -117,6 +112,6 @@ export const hasClass = (element: any, className: any) => {
 export const findLinkEntities = (contentBlock: any, callback: any, contentState: any) => {
   contentBlock.findEntityRanges((character: any) => {
     const entityKey = character.getEntity();
-    return entityKey !== null && contentState.getEntity(entityKey).getType() === 'LINK';
+    return entityKey !== null && contentState.getEntity(entityKey).getType() === "LINK";
   }, callback);
 };

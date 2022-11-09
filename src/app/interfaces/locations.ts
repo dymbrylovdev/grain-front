@@ -1,6 +1,6 @@
 export interface ILocation {
-  id: number;
-  name: string;
+  id?: number;
+  name?: string;
   lat: number;
   lng: number;
   country: string;

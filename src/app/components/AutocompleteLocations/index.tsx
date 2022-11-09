@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Autocomplete as MaterialAutocomplete } from "@material-ui/lab";
 import { TextField, CircularProgress, IconButton, makeStyles } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
@@ -24,7 +24,7 @@ interface IProps {
   editable: boolean;
   inputError: boolean;
   inputHelperText: any;
-  disable: boolean ;
+  disable: boolean;
   handleBlur?: (e: any) => {} | void;
   fetchLocations: (location: string) => {} | void;
   clearLocations: () => {};
@@ -82,8 +82,6 @@ const Autocomplete: React.FC<IProps> = ({
     }
   }, [fetchLocations, location]);
 
-
-
   useEffect(() => {
     if (inputValue.text === "") setEditableLocation(true);
     if (inputValue.text !== "") setEditableLocation(false);
@@ -97,7 +95,7 @@ const Autocomplete: React.FC<IProps> = ({
       loading={loading || loadingLocal}
       getOptionLabel={option => option.text}
       onChange={(_: any, val: any) => {
-        console.log('val', val);
+        console.log("val", val);
 
         if (val) {
           setSelectedLocation(val);

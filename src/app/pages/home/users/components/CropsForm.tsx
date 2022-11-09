@@ -108,7 +108,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
 
   const [addingCrop, setAddingCrop] = useState(false);
 
-  const { values, resetForm, handleSubmit, errors, touched, setFieldValue } = useFormik({
+  const { values, resetForm, handleSubmit, setFieldValue } = useFormik({
     initialValues: {
       tariff_id: realUser?.tariff_matrix?.id,
       tariff_type_id: realUser?.tariff_matrix?.tariff?.id,
@@ -348,7 +348,7 @@ const CropsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
                       color="primary"
                       onClick={() => {
                         let newCropIds = [...values.crop_ids];
-                        crops.map(item => {
+                        crops.forEach(item => {
                           if (!newCropIds.includes(item.id)) {
                             newCropIds.push(item.id);
                           }

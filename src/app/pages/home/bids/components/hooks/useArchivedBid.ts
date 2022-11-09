@@ -6,7 +6,6 @@ import { getResponseMessage } from "../../../../../utils";
 export const useArchivedBid: any = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState<any>(null);
   const [success, setSuccess] = useState(false);
   const fetch = useCallback(
     async (id: number) => {
@@ -20,7 +19,6 @@ export const useArchivedBid: any = () => {
         })
         .finally(() => {
           setLoading(false);
-          setErr(null);
           setSuccess(false);
         });
     },

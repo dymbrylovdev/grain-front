@@ -46,10 +46,7 @@ interface IProps {
   trial: any;
 }
 
-const PaymentPage: React.FC<IProps &
-  TPropsFromRedux &
-  WrappedComponentProps &
-  RouteComponentProps<{ id: string }>> = ({
+const PaymentPage: React.FC<IProps & TPropsFromRedux & WrappedComponentProps & RouteComponentProps<{ id: string }>> = ({
   match: {
     params: { id },
   },
@@ -102,9 +99,7 @@ const PaymentPage: React.FC<IProps &
   }, [fetchMe]);
 
   useEffect(() => {
-    me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])
-      ? fetchUser({ id: +id })
-      : console.log("123");
+    if (me && ["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) fetchUser({ id: +id });
   }, [fetchUser, id, me]);
 
   useEffect(() => {
@@ -139,11 +134,7 @@ const PaymentPage: React.FC<IProps &
       <Divider />
 
       <TabPanel value={valueTabs} index={0}>
-        <CashlessPayment
-          realUser={realUser}
-          selectedTariff={selectedTariff}
-          selectedDate={selectedDate}
-        />
+        <CashlessPayment realUser={realUser} selectedTariff={selectedTariff} selectedDate={selectedDate} />
       </TabPanel>
 
       {me && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && (

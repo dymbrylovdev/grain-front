@@ -43,9 +43,14 @@ const Modal: React.FC<IProps> = ({
   if (!open) return null;
 
   return (
-    <Dialog open={open}
+    <Dialog
+      open={open}
       disableScrollLock={true}
-      onClose={onClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"  {...DialogProps}>
+      onClose={onClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+      {...DialogProps}
+    >
       {title && (
         <DialogTitle id="alert-dialog-title" {...DialogTitleProps}>
           {title}

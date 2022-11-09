@@ -113,8 +113,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [funnelStateEditId, setFunnelStateEditId] = useState(0);
   const [tariffId, setTariffId] = useState<number | undefined>();
   const [funnelStateId, setFunnelStateId] = useState<number | undefined>();
-  const [userRolesId, setUserRolesId] = useState<string | undefined>('');
-
+  const [userRolesId, setUserRolesId] = useState<string | undefined>("");
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -162,7 +161,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     tariffId,
     funnelStateId,
     userRolesId,
-    boughtTariff
+    boughtTariff,
   ]);
 
   useEffect(() => {
@@ -178,7 +177,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchMe]);
 
   useEffect(() => {
-    fetchTariffTypes(currentUserRoles)
+    fetchTariffTypes(currentUserRoles);
   }, [fetchTariffTypes, currentUserRoles]);
 
   //TODO: Убрать сравнение по строкам
@@ -188,25 +187,28 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchUserRoles]);
 
   useEffect(() => {
-    if (tariffsTypesSuccess) tariffsTypes.find(item => {
-      if (usersFilterTariff === "Все") setTariffId(undefined);
-      if (item.id === usersFilterTariff) setTariffId(item.id);
-    });
+    if (tariffsTypesSuccess)
+      tariffsTypes.forEach(item => {
+        if (usersFilterTariff === "Все") setTariffId(undefined);
+        if (item.id === usersFilterTariff) setTariffId(item.id);
+      });
   }, [tariffsTypes, tariffsTypesSuccess, usersFilterTariff]);
 
   useEffect(() => {
-    if (funnelStateSuccess) funnelStates?.find(item => {
-      if (currentFunnelState === "Все") setFunnelStateId(undefined);
-      // @ts-ignore
-      if (item.id === +currentFunnelState) setFunnelStateId(item.id);
-    });
+    if (funnelStateSuccess)
+      funnelStates?.forEach(item => {
+        if (currentFunnelState === "Все") setFunnelStateId(undefined);
+        // @ts-ignore
+        if (item.id === +currentFunnelState) setFunnelStateId(item.id);
+      });
   }, [funnelStateSuccess, currentFunnelState, funnelStates]);
 
   useEffect(() => {
-    if (userRolesSuccess) userRoles?.find(item => {
-      if (currentUserRoles === "Все") setUserRolesId(undefined);
-      if (item.name === currentUserRoles) setUserRolesId(item.name);
-    })
+    if (userRolesSuccess)
+      userRoles?.find(item => {
+        if (currentUserRoles === "Все") setUserRolesId(undefined);
+        if (item.name === currentUserRoles) setUserRolesId(item.name);
+      });
   }, [currentUserRoles, userRoles, userRolesSuccess]);
 
   // useEffect(() => {
@@ -277,19 +279,14 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     <TableCell>
                       <div>
                         <div className={classes.topAndBottomMargin1}>{item.email}</div>
-                        {!!item.phone && (
-                          <div className={classes.topAndBottomMargin1}>{item.phone}</div>
-                        )}
+                        {!!item.phone && <div className={classes.topAndBottomMargin1}>{item.phone}</div>}
                       </div>
                     </TableCell>
 
                     <TableCell>
                       <div>
                         <div className={classes.topAndBottomMargin1}>{`${item.fio || ""}`}</div>
-                        {item.company && (
-                          <div className={classes.topAndBottomMargin1}>{`${item.company
-                            .short_name || ""}`}</div>
-                        )}
+                        {item.company && <div className={classes.topAndBottomMargin1}>{`${item.company.short_name || ""}`}</div>}
                       </div>
                     </TableCell>
 
@@ -321,21 +318,14 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           {funnelStates
                             .filter(fs => fs.role === item.roles[0])
                             .map(option => (
-                              <MenuItem
-                                key={option.id}
-                                value={option.id}
-                                style={{ backgroundColor: `${option.color || "#ededed"}` }}
-                              >
+                              <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
                                 {`${option.engagement || "0"} • ${option.name}`}
                               </MenuItem>
                             ))}
                         </TextField>
                       ) : accessByRoles(item, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) ? (
                         <div className={classes.flexRow}>
-                          <div
-                            className={classes.funnelStateName}
-                            style={{ border: "1px solid rgba(10, 187, 135, 0.4)" }}
-                          >
+                          <div className={classes.funnelStateName} style={{ border: "1px solid rgba(10, 187, 135, 0.4)" }}>
                             {roles.find(role => role.id === item.roles[0])?.value}
                           </div>
                         </div>
@@ -354,9 +344,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                             size="medium"
                             color="primary"
                             onClick={() => {
-                              setInfoText(
-                                intl.formatMessage({ id: "FUNNEL_STATES.DIALOGS.INFO.NO_TEXT" })
-                              );
+                              setInfoText(intl.formatMessage({ id: "FUNNEL_STATES.DIALOGS.INFO.NO_TEXT" }));
                               setInfoOpen(true);
                             }}
                           >
@@ -397,10 +385,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                                   })
                                 );
                               } else {
-                                setInfoText(
-                                  funnelStates.find(fs => fs.id === item.funnel_state?.id)
-                                    ?.hint as string
-                                );
+                                setInfoText(funnelStates.find(fs => fs.id === item.funnel_state?.id)?.hint as string);
                               }
                               setInfoOpen(true);
                             }}
@@ -423,60 +408,61 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       )}
                     </TableCell>
                     <TableCell align="right">
-                      <div style={{minWidth: 150}}>
-                      {!(accessByRoles(item, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !me?.is_admin) && (
-                        <Tooltip
-                          title={intl.formatMessage({
-                            id: "USERLIST.TOOLTIP.EDIT",
-                          })}
-                        >
-                          <IconButton
-                            size="medium"
-                            color="primary"
-                            onClick={() => history.push(`/user/edit/${item.id}`)}
+                      <div style={{ minWidth: 150 }}>
+                        {!(accessByRoles(item, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !me?.is_admin) && (
+                          <Tooltip
+                            title={intl.formatMessage({
+                              id: "USERLIST.TOOLTIP.EDIT",
+                            })}
                           >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                      )}
+                            <IconButton size="medium" color="primary" onClick={() => history.push(`/user/edit/${item.id}`)}>
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
 
-                      <Tooltip
-                        title={intl.formatMessage({
-                          id: "USERLIST.TOOLTIP.CREATE_BID",
-                        })}
-                      >
-                        <IconButton
-                          size="medium"
-                          color="primary"
-                          onClick={() =>
-                            history.push(
-                              `/bid/create/${
-                                item.roles.includes("ROLE_BUYER") ? "purchase" : "sale"
-                              }/0/0/${item.id}`
-                            )
-                          }
-                        >
-                          <AddIcon />
-                        </IconButton>
-                      </Tooltip>
-                      {me?.is_admin && (
-                        <Tooltip
-                          title={intl.formatMessage({
-                            id: "USERLIST.TOOLTIP.DELETE",
-                          })}
-                        >
-                          <IconButton
-                            size="medium"
-                            color="secondary"
-                            onClick={() => {
-                              setDeleteUserId(item.id);
-                              setAlertOpen(true);
-                            }}
+                        {!item.roles?.includes("ROLE_TRANSPORTER") ? (
+                          <Tooltip
+                            title={intl.formatMessage({
+                              id: "USERLIST.TOOLTIP.CREATE_BID",
+                            })}
                           >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      )}
+                            <IconButton
+                              size="medium"
+                              color="primary"
+                              onClick={() =>
+                                history.push(`/bid/create/${item.roles.includes("ROLE_BUYER") ? "purchase" : "sale"}/0/0/${item.id}`)
+                              }
+                            >
+                              <AddIcon />
+                            </IconButton>
+                          </Tooltip>
+                        ) : (
+                          <span className={classes.hideIcon}>
+                            <IconButton size="medium" color="primary">
+                              <AddIcon />
+                            </IconButton>
+                          </span>
+                        )}
+
+                        {me?.is_admin && (
+                          <Tooltip
+                            title={intl.formatMessage({
+                              id: "USERLIST.TOOLTIP.DELETE",
+                            })}
+                          >
+                            <IconButton
+                              size="medium"
+                              color="secondary"
+                              onClick={() => {
+                                setDeleteUserId(item.id);
+                                setAlertOpen(true);
+                              }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -558,7 +544,6 @@ const connector = connect(
     delLoading: state.users.delLoading,
     delSuccess: state.users.delSuccess,
     delError: state.users.delError,
-
 
     tariffsTypes: state.tariffs.tariffsTypes,
     tariffsTypesLoading: state.tariffs.tariffsTypesLoading,

@@ -1,11 +1,10 @@
 import React, { ReactElement, useState, useEffect } from "react";
-import { TextField, MenuItem, RadioGroup, FormControlLabel, Radio, Checkbox } from "@material-ui/core";
+import { TextField, MenuItem, RadioGroup, FormControlLabel, Radio } from "@material-ui/core";
 import { IntlShape } from "react-intl";
 import { ActionWithPayload } from "../../utils/action-helper";
 
 import { IFunnelState } from "../../interfaces/funnelStates";
 import { ITariffType } from "../../interfaces/tariffs";
-import { setUser } from "@sentry/minimal";
 
 interface IUsersFilterMenu {
   intl: IntlShape;

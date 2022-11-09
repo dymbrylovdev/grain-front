@@ -1,16 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
-import {
-  IconButton,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@material-ui/core";
+import { IconButton, Table, TableBody, TableCell, TableHead, TableRow, Paper } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps, FormattedMessage } from "react-intl";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -29,8 +20,6 @@ import TopTableCell from "../../../../components/ui/Table/TopTableCell";
 import StatusIndicator from "../../../../components/ui/Table/StatusIndicator";
 import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../../_metronic";
-import { declOfNum } from "../../../../utils";
-import { accessByRoles } from "../../../../utils/utils";
 
 interface IFilterForm {
   match: any;
@@ -98,11 +87,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
       clearDel();
       if (delSuccess) {
         if (salePurchaseMode === "sale") {
-          if (
-            !!deleteFilterId &&
-            currentSaleFilters[deleteFilterCropId] &&
-            currentSaleFilters[deleteFilterCropId].id === deleteFilterId
-          ) {
+          if (!!deleteFilterId && currentSaleFilters[deleteFilterCropId] && currentSaleFilters[deleteFilterCropId].id === deleteFilterId) {
             setCurrentSaleFilter(deleteFilterCropId, undefined);
           }
         }
@@ -116,7 +101,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
           }
         }
 
-        if (userId) fetchUserBidFilters({ id: +userId })
+        if (userId) fetchUserBidFilters({ id: +userId });
       }
     }
   }, [
@@ -134,11 +119,11 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
     setCurrentPurchaseFilter,
     setCurrentSaleFilter,
     fetchUserBidFilters,
-    userId
+    userId,
   ]);
 
   useEffect(() => {
-    if (userId) fetchUserBidFilters({ id: +userId })
+    if (userId) fetchUserBidFilters({ id: +userId });
   }, [fetchUserBidFilters, userId]);
 
   useEffect(() => {
@@ -155,9 +140,7 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
     <Paper className={classes.paperWithTable}>
       <LayoutSubheader
         title={
-          salePurchaseMode === "sale"
-            ? intl.formatMessage({ id: "FILTERS.MY.SALE" })
-            : intl.formatMessage({ id: "FILTERS.MY.PURCHASE" })
+          salePurchaseMode === "sale" ? intl.formatMessage({ id: "FILTERS.MY.SALE" }) : intl.formatMessage({ id: "FILTERS.MY.PURCHASE" })
         }
       />
       {!userBidFilters?.filters ? (
@@ -205,22 +188,18 @@ const FilterForm: React.FC<IFilterForm & TPropsFromRedux & WrappedComponentProps
                           <StatusIndicator isActive={item.is_sending_sms} />
                         </TableCell>
                         <TableCell align="right">
-                          <div style={{minWidth: 150}}>
+                          <div style={{ minWidth: 150 }}>
                             <IconButton
                               size="medium"
                               color="primary"
-                              onClick={() =>
-                                history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/view/${item.id}`)
-                              }
+                              onClick={() => history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/view/${item.id}`)}
                             >
                               <VisibilityIcon />
                             </IconButton>
                             <IconButton
                               size="medium"
                               color="primary"
-                              onClick={() =>
-                                history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/edit/${item.id}`)
-                              }
+                              onClick={() => history.push(`/${salePurchaseMode}/user/${userId ? +userId : null}/filters/edit/${item.id}`)}
                             >
                               <EditIcon />
                             </IconButton>

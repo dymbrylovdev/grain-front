@@ -117,7 +117,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       min_prepayment_amount: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
     }),
   });
-  const { resetForm, values, setValues } = formik;
+  const { resetForm, values } = formik;
 
   const filterSubmit = () => {
     let params = { ...values };

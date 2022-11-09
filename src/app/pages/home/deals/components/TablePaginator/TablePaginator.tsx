@@ -23,16 +23,15 @@ const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
 }) => {
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     fetchRows(newPage + 1, perPage);
-  }
+  };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     fetchRows(1, parseInt(event.target.value, 10));
-  }
+  };
 
   return (
     <TablePagination
+      onPageChange={() => {}}
       rowsPerPageOptions={[10, 20, 50]}
       count={total}
       rowsPerPage={perPage}
@@ -46,13 +45,9 @@ const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
       onChangeRowsPerPage={handleChangeRowsPerPage}
       ActionsComponent={TablePaginationActions}
       labelDisplayedRows={({ from, to, count }) =>
-        `${from}${
-          realPerPage === 1
-            ? ""
-            : realPerPage === 2
-            ? ` ${intl.formatMessage({ id: "TABLE.AND.LABEL" })} `
-            : "-"
-        }${realPerPage === 1 ? "" : to} ${intl.formatMessage({
+        `${from}${realPerPage === 1 ? "" : realPerPage === 2 ? ` ${intl.formatMessage({ id: "TABLE.AND.LABEL" })} ` : "-"}${
+          realPerPage === 1 ? "" : to
+        } ${intl.formatMessage({
           id: "TABLE.FROM.LABEL",
         })} ${count}`
       }

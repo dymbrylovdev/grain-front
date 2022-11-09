@@ -4,7 +4,7 @@ import { injectIntl, WrappedComponentProps } from "react-intl";
 
 import { IAppState } from "../../../store/rootDuck";
 import { actions as bidsActions } from "../../../store/ducks/bids.duck";
-import { Col, Row } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import ruRU from "date-fns/locale/ru";
@@ -22,9 +22,8 @@ const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({ intl,
 
   return (
     <MenuItem>
-      <Col>
+      <div style={{ display: "flex", flexDirection: "column" }}>
         <Row>{intl.formatMessage({ id: "BIDLIST.FILTTER.UPDATE_DATE_RANGE" })}</Row>
-
         <Row>
           <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ruRU}>
             <div className={innerClasses.calendarBlock}>
@@ -71,7 +70,7 @@ const FilterByDates: React.FC<PropsFromRedux & WrappedComponentProps> = ({ intl,
             </div>
           </MuiPickersUtilsProvider>
         </Row>
-      </Col>
+      </div>
     </MenuItem>
   );
 };

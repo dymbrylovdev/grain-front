@@ -116,7 +116,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux & WrappedComponentProps & Rou
   const classes = useStyles();
   const history = useHistory();
   const isEditable = match.url.indexOf("view") === -1;
-  const isNew = match.url.indexOf("new") !== -1;
+  // const isNew = match.url.indexOf("new") !== -1;
   const userFilter = useMemo(() => userBidFilters?.filters.find(item => item.id === +id), [userBidFilters, id]);
   // let salePurchaseMode: "sale" | "purchase" = "sale";
   // if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
@@ -213,7 +213,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux & WrappedComponentProps & Rou
 
   useEffect(() => {
     salePurchaseMode && fetchUserBidFilters({ id: +userId });
-  }, [fetchUserBidFilters, userId]);
+  }, [fetchUserBidFilters, userId, salePurchaseMode]);
 
   useEffect(() => {
     if (!crops && !cropsLoading) {
@@ -378,7 +378,13 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux & WrappedComponentProps & Rou
                         .filter(item => item.type === "enum")
                         .map(param => (
                           <Col key={param.id}>
-                            <CheckBoxParamGroup param={param} values={values} handleChange={handleChange} isEditable={isEditable} />
+                            <CheckBoxParamGroup
+                              param={param}
+                              values={values}
+                              handleChange={handleChange}
+                              isEditable={isEditable}
+                              handleSubmit={() => {}}
+                            />
                           </Col>
                         ))}
                     </Row>
@@ -518,6 +524,7 @@ const UserBidFiltersEdit: React.FC<TPropsFromRedux & WrappedComponentProps & Rou
                             handleChange={handleChange}
                             clearAction={setFieldValue}
                             isEditable={isEditable}
+                            handleSubmit={() => {}}
                           />
                           <Divider />
                         </div>

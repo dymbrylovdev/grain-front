@@ -242,7 +242,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                         inputClassName={classes.textField}
                         inputError={Boolean(errorGoogleLocations)}
                         inputHelperText={errorGoogleLocations}
-                        fetchLocations={ fetchGoogleLocations}
+                        fetchLocations={fetchGoogleLocations}
                         clearLocations={clearGoogleLocations}
                         setSelectedLocation={(location: ILocationToRequest) => {
                           if (location.text !== "") {
@@ -341,7 +341,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                             disabled={editLoading}
                             loading={editLoading}
                             onPress={() => {
-                              setEditNameId(item.id);
+                              item.id && setEditNameId(item.id);
                               handleSubmit();
                             }}
                           >
@@ -362,8 +362,8 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                               color="primary"
                               size={"medium"}
                               onClick={() => {
-                                setEditNameId(item.id);
-                                resetForm({ values: { name: item.name } });
+                                item.id && setEditNameId(item.id);
+                                resetForm({ values: { name: item.name || "" } });
                               }}
                             >
                               <EditIcon />
@@ -380,7 +380,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                       <>
                         <div className={classes.textField}>
                           <AutocompleteLocations
-                            id={item.id.toString()}
+                            id={item.id?.toString()}
                             options={googleLocations || []}
                             inputValue={item}
                             label={
@@ -400,7 +400,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                               if (location.text !== "") {
                                 // delete location.name;
                                 location.user_id = userId || me?.id;
-                                edit({ id: item.id, data: location });
+                                item.id && edit({ id: item.id, data: location });
                               }
                             }}
                             disable={editMode === "view"}
@@ -413,7 +413,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                             <IconButton
                               size={"medium"}
                               onClick={() => {
-                                setDeleteLocationId(item.id);
+                                item.id && setDeleteLocationId(item.id);
                                 setAlertOpen(true);
                               }}
                               color="secondary"
@@ -435,7 +435,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                             <Checkbox
                               checked={item.active}
                               onChange={() => {
-                                edit({
+                                item.id && edit({
                                   id: item.id,
                                   data: { active: !item.active, user_id: userId || me?.id },
                                 });
@@ -461,7 +461,7 @@ const LocationsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
           {guestLocation && (
             <div className={classes.textField}>
               <AutocompleteLocations
-                id={guestLocation.id.toString()}
+                id={guestLocation.id?.toString()}
                 options={googleLocations || []}
                 inputValue={guestLocation}
                 label={intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })}

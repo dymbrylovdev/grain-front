@@ -62,7 +62,7 @@ const CheckInSystem: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     };
   }
 
-  const { values, errors, touched, resetForm, handleChange, handleBlur, handleSubmit } = useFormik({
+  const { values, errors, touched, handleChange, handleBlur, handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: {
       email: "",
@@ -84,13 +84,13 @@ const CheckInSystem: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     if (findInSystemSuccess) {
       history.push("/auth/login");
     }
-  }, [findInSystemSuccess]);
+  }, [findInSystemSuccess, history]);
 
   useEffect(() => {
     if (findInSystemError) {
       history.push("/auth/registration");
     }
-  }, [findInSystemError]);
+  }, [findInSystemError, history]);
 
   return (
     <>
@@ -144,7 +144,7 @@ const CheckInSystem: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       </ButtonWithLoader>
                     </div>
                     <div
-                      onClick={() => history.push('/')}
+                      onClick={() => history.push("/")}
                       className="kt-link kt-login__link-forgot"
                       style={{ fontSize: 16, cursor: "pointer" }}
                     >

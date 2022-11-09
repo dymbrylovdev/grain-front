@@ -53,9 +53,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }
   if (authData && authData.type === "phone") {
     validationSchema = {
-      codeConfirm: Yup.string().required(
-        intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })
-      ),
+      codeConfirm: Yup.string().required(intl.formatMessage({ id: "AUTH.VALIDATION.REQUIRED_FIELD" })),
     };
   }
 
@@ -65,7 +63,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     history.push("/auth");
   }, [clearFindInSystem, history]);
 
-  const { values, errors, touched, resetForm, handleChange, handleBlur, handleSubmit } = useFormik({
+  const { values, errors, touched, handleChange, handleBlur, handleSubmit } = useFormik({
     enableReinitialize: true,
     initialValues: {
       password: "",
@@ -102,17 +100,12 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   useEffect(() => {
     if (sendCodeSuccess || sendCodeError) {
-      enqueueSnackbar(
-        sendCodeSuccess
-          ? intl.formatMessage({ id: "AUTH.VALIDATION.CODE.CONFIRM" })
-          : sendCodeError,
-        {
-          variant: sendCodeSuccess ? "success" : "error",
-        }
-      );
+      enqueueSnackbar(sendCodeSuccess ? intl.formatMessage({ id: "AUTH.VALIDATION.CODE.CONFIRM" }) : sendCodeError, {
+        variant: sendCodeSuccess ? "success" : "error",
+      });
       clearSendCode();
     }
-  }, [enqueueSnackbar, sendCodeSuccess, sendCodeError, clearSendCode]);
+  }, [enqueueSnackbar, sendCodeSuccess, sendCodeError, clearSendCode, intl]);
 
   useEffect(() => {
     if (loginByPhoneError) {
@@ -121,7 +114,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       });
       clearLoginByPhone();
     }
-  }, [enqueueSnackbar, loginByPhoneError]);
+  }, [enqueueSnackbar, loginByPhoneError, intl, clearLoginByPhone]);
 
   useEffect(() => {
     if (fetchError) {
@@ -175,25 +168,15 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   />
                 </div>
 
-                <div
-                  style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}
-                >
+                <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
                   <div className="kt-login__actions" style={{ marginRight: 30 }}>
-                    <button
-                      onClick={backHandler}
-                      type="button"
-                      className="btn btn-secondary btn-elevate kt-login__btn-secondary"
-                    >
+                    <button onClick={backHandler} type="button" className="btn btn-secondary btn-elevate kt-login__btn-secondary">
                       {intl.formatMessage({ id: "AUTH.GENERAL.BACK_BUTTON" })}
                     </button>
                   </div>
 
                   <div className="kt-login__actions">
-                    <ButtonWithLoader
-                      onPress={handleSubmit}
-                      disabled={fetchLoading || loginLoading}
-                      loading={fetchLoading || loginLoading}
-                    >
+                    <ButtonWithLoader onPress={handleSubmit} disabled={fetchLoading || loginLoading} loading={fetchLoading || loginLoading}>
                       <FormattedMessage id="AUTH.LOGIN.BUTTON" />
                     </ButtonWithLoader>
                   </div>
@@ -224,10 +207,7 @@ const Login: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   />
                 </div>
 
-                <div
-                  className="kt-login__actions"
-                  style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}
-                >
+                <div className="kt-login__actions" style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
                   <button
                     onClick={backHandler}
                     type="button"

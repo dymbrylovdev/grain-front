@@ -19,7 +19,7 @@ import useStyles from "../styles";
 import { IAppState } from "../../../store/rootDuck";
 import { Skeleton } from "@material-ui/lab";
 import { LayoutSubheader } from "../../../../_metronic";
-import { TTariffField, ITariff, ITariffLimits } from "../../../interfaces/tariffs";
+import { TTariffField, ITariff } from "../../../interfaces/tariffs";
 import EditableCell from "./components/EditableCell";
 
 const useInnerStyles = makeStyles(theme =>

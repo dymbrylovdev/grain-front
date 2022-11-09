@@ -14,16 +14,13 @@ import { IMyFilterItem } from "../../../../interfaces/filters";
 import { Skeleton } from "@material-ui/lab";
 import { PointsPrices } from ".";
 import { itemById } from "../../../../utils/utils";
-import { filterForCreate, filterForSubmit } from "../utils";
+import { filterForSubmit } from "../utils";
 
 interface IProps {
   cropId?: number;
 }
 
-const PricesEdit: React.FC<IProps &
-  TPropsFromRedux &
-  WrappedComponentProps &
-  RouteComponentProps> = ({
+const PricesEdit: React.FC<IProps & TPropsFromRedux & WrappedComponentProps & RouteComponentProps> = ({
   match,
   intl,
   me,
@@ -79,9 +76,7 @@ const PricesEdit: React.FC<IProps &
 
   const setCurrentFilter = useCallback(
     (cropId: number, filter: { [x: string]: any }) => {
-      salePurchaseMode === "sale"
-        ? setCurrentSaleFilter(cropId, filter)
-        : setCurrentPurchaseFilter(cropId, filter);
+      salePurchaseMode === "sale" ? setCurrentSaleFilter(cropId, filter) : setCurrentPurchaseFilter(cropId, filter);
     },
     [salePurchaseMode, setCurrentPurchaseFilter, setCurrentSaleFilter]
   );
@@ -89,8 +84,7 @@ const PricesEdit: React.FC<IProps &
   const newCropName = useCallback((): any => {
     const crop = crops && cropId ? crops.find(crop => crop.id === cropId) : undefined;
     const now = new Date();
-    const name =
-      crop && `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
+    const name = crop && `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`;
     return name;
   }, [cropId, crops]);
 
@@ -98,9 +92,7 @@ const PricesEdit: React.FC<IProps &
     filter => {
       const crop = crops && cropId ? crops.find(crop => crop.id === cropId) : undefined;
       const now = new Date();
-      const name = crop
-        ? `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}`
-        : "";
+      const name = crop ? `${crop.name} ${now.toLocaleDateString()} - ${now.toLocaleTimeString().slice(0, -3)}` : "";
       return filter ? { name, ...filter } : { name };
     },
     [cropId, crops]
@@ -128,12 +120,12 @@ const PricesEdit: React.FC<IProps &
       min_prepayment_amount: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
     }),
   });
-  const { resetForm, values } = formik;
+  const { values } = formik;
 
   const filterSubmit = () => {
     let params = { ...values };
     params.name = values.name.trim();
-    if (params.min_prepayment_amount === '100') params.max_payment_term = '';
+    if (params.min_prepayment_amount === "100") params.max_payment_term = "";
     params.cropId = cropId;
     if (cropId) setCurrentFilter(cropId, filterForSubmit(currentFilter as any, params, newCropName()));
     clearBids();
@@ -186,28 +178,16 @@ const PricesEdit: React.FC<IProps &
         }
       }
     }
-  }, [
-    cropId,
-    currentPurchaseFilters,
-    currentSaleFilters,
-    filterId,
-    myFilters,
-    salePurchaseMode,
-    setSelectedFilterId,
-  ]);
+  }, [cropId, currentPurchaseFilters, currentSaleFilters, filterId, myFilters, salePurchaseMode, setSelectedFilterId]);
 
   return (
     <>
-      <div className={classes.bottomMargin1}>
-        {intl.formatMessage({ id: "MONEY.INTRODUCTION" })}
-      </div>
+      <div className={classes.bottomMargin1}>{intl.formatMessage({ id: "MONEY.INTRODUCTION" })}</div>
       <div className={classes.textFieldContainer}>
         {!myFilters ? (
           <Skeleton width="100%" height={70} animation="wave" />
         ) : !myFilters.length || !selectedFilterId ? (
-          <div className={classes.bottomMargin1}>
-            {intl.formatMessage({ id: "MONEY.NO_FILTERS" })}
-          </div>
+          <div className={classes.bottomMargin1}>{intl.formatMessage({ id: "MONEY.NO_FILTERS" })}</div>
         ) : (
           <TextField
             select
@@ -218,7 +198,7 @@ const PricesEdit: React.FC<IProps &
             name="filterId"
             variant="outlined"
             value={filterId}
-            onChange={(e) => {
+            onChange={e => {
               setFilterId(e.target.value);
             }}
             className={classes.textField}

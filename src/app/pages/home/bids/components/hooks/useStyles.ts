@@ -882,12 +882,11 @@ export const useViewBidStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
   },
-  flex:{
+  flex: {
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-
-  }
+  },
 }));
 
 export const useStylesPhotosForm = makeStyles(theme =>
@@ -941,6 +940,7 @@ export const useStylesPhotosForm = makeStyles(theme =>
       top: 0,
       left: 0,
       width: "100%",
+      // eslint-disable-next-line no-useless-concat
       background: "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, " + "rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)",
     },
     icon: {

@@ -1,47 +1,34 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { useHistory } from "react-router-dom";
-import {
-  makeStyles,
-  createStyles,
-  Card,
-  CardContent,
-  Stepper,
-  Step,
-  StepLabel,
-  Typography,
-  Button,
-  Grid,
-} from "@material-ui/core";
-import { injectIntl, WrappedComponentProps, FormattedMessage } from "react-intl";
+import { injectIntl, WrappedComponentProps } from "react-intl";
 
 import { IAppState } from "../../../store/rootDuck";
 import { actions as prompterActions } from "../../../store/ducks/prompter.duck";
 
-const useStyles = makeStyles(theme =>
-  createStyles({
-    card: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      marginBottom: theme.spacing(2),
-    },
-    container: {
-      maxWidth: "800px",
-      width: "100%",
-      padding: theme.spacing(2),
-    },
-    backButton: {
-      marginRight: theme.spacing(2),
-    },
-    instructions: {
-      textAlign: "justify",
-      marginTop: theme.spacing(1),
-      marginBottom: theme.spacing(2),
-    },
-  })
-);
+// const useStyles = makeStyles(theme =>
+//   createStyles({
+//     card: {
+//       display: "flex",
+//       flexDirection: "column",
+//       alignItems: "center",
+//       justifyContent: "center",
+//       marginBottom: theme.spacing(2),
+//     },
+//     container: {
+//       maxWidth: "800px",
+//       width: "100%",
+//       padding: theme.spacing(2),
+//     },
+//     backButton: {
+//       marginRight: theme.spacing(2),
+//     },
+//     instructions: {
+//       textAlign: "justify",
+//       marginTop: theme.spacing(1),
+//       marginBottom: theme.spacing(2),
+//     },
+//   })
+// );
 
 const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   dullRole,
@@ -51,8 +38,8 @@ const Prompter: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   setActiveStep,
   intl,
 }) => {
-  const classes = useStyles();
-  const history = useHistory();
+  // const classes = useStyles();
+  // const history = useHistory();
 
   if (!running) return null;
 

@@ -60,7 +60,7 @@ interface IProps {
       profit: IProfit;
     }
   >;
-  archive?: ({ id: number, is_archived: boolean }) => void;
+  archive?: ({ id, is_archived }: { id: number; is_archived: boolean }) => void;
 
   post?: any;
   clearPost?: any;
@@ -130,7 +130,7 @@ const BidTable: React.FC<IProps> = ({
       );
       clearPost();
     }
-  }, [clearPost, postError, postSuccess, enqueueSnackbar]);
+  }, [clearPost, postError, postSuccess, enqueueSnackbar, intl]);
 
   const [isSendingEmail, setSendingEmail] = useState(true);
   const [isSendingSms, setSendingSms] = useState(false);

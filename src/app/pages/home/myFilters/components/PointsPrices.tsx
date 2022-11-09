@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { TextField, Grid as div, IconButton, Divider } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
@@ -16,8 +16,7 @@ import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader
 const getInitialValues = (me: IUser | undefined, currentFilter: IMyFilterItem) => {
   let initialValues: { [x: string]: any } = {};
   me?.points.forEach(item => {
-    initialValues[`price${item.id}`] =
-      currentFilter.point_prices.find(point => point.point.id === item.id)?.price || "";
+    initialValues[`price${item.id}`] = currentFilter.point_prices.find(point => point.point.id === item.id)?.price || "";
   });
   return initialValues;
 };
@@ -90,24 +89,15 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
   let pointData: any[] = [];
 
   const pointDataForRequest = () => {
-    currentFilter.point_prices.map(item => {
+    currentFilter.point_prices.forEach(item => {
       pointData.push({
         point_id: item.point.id,
         price: item.price,
-      })
-    })
+      });
+    });
   };
 
-  const {
-    values,
-    handleSubmit,
-    handleChange,
-    handleBlur,
-    resetForm,
-    setFieldValue,
-    touched,
-    errors,
-  } = useFormik({
+  const { values, handleSubmit, handleChange, handleBlur, resetForm, setFieldValue, touched, errors } = useFormik({
     initialValues: getInitialValues(me, currentFilter),
     onSubmit: values => {
       let parameter_values: IParamValue[] = [];
