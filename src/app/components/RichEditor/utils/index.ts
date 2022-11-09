@@ -1,3 +1,3 @@
-import { setBlockData, blockRenderMap } from './block';
+import { setBlockData, blockRenderMap } from "./block";
 
 export { setBlockData, blockRenderMap };

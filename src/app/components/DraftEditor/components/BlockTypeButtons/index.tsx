@@ -1,34 +1,34 @@
-import React, { Fragment } from 'react';
+import React, { Fragment } from "react";
 
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
+import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
+import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
 
-import BaseButton from '../BaseButton';
+import BaseButton from "../BaseButton";
 
 const BLOCK_TYPES = [
   {
-    blockType: 'header-one',
-    tooltip: 'Heading 1',
-    text: 'H1',
+    blockType: "header-one",
+    tooltip: "Heading 1",
+    text: "H1",
   },
   {
-    blockType: 'header-two',
-    tooltip: 'Heading 2',
-    text: 'H2',
+    blockType: "header-two",
+    tooltip: "Heading 2",
+    text: "H2",
   },
   {
-    blockType: 'header-three',
-    tooltip: 'Heading 3',
-    text: 'H3',
+    blockType: "header-three",
+    tooltip: "Heading 3",
+    text: "H3",
   },
   {
-    blockType: 'unordered-list-item',
-    tooltip: 'Unordered list',
+    blockType: "unordered-list-item",
+    tooltip: "Unordered list",
     icon: FormatListBulletedIcon,
   },
   {
-    blockType: 'ordered-list-item',
-    tooltip: 'Ordered list',
+    blockType: "ordered-list-item",
+    tooltip: "Ordered list",
     icon: FormatListNumberedIcon,
   },
 ];
@@ -39,7 +39,7 @@ const BlockTypeButtons = (props: any) => {
   const handleClick = (event: any, blockType: any) => {
     event.preventDefault();
 
-    onToggle('blockType', blockType);
+    onToggle("blockType", blockType);
   };
 
   const selection = editorState.getSelection();
@@ -57,8 +57,8 @@ const BlockTypeButtons = (props: any) => {
       {BLOCK_TYPES.map(button => {
         let active = false;
 
-        if (['left', 'center', 'right', 'justify'].includes(button.blockType)) {
-          active = blockData.get('text-align') === button.blockType;
+        if (["left", "center", "right", "justify"].includes(button.blockType)) {
+          active = blockData.get("text-align") === button.blockType;
         } else {
           active = button.blockType === blockType;
         }

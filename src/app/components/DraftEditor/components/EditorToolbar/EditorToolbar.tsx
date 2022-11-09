@@ -1,25 +1,25 @@
-import React from 'react';
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/styles';
-import LinkIcon from '@material-ui/icons/Link';
+import React from "react";
+import clsx from "clsx";
+import { makeStyles } from "@material-ui/styles";
+import LinkIcon from "@material-ui/icons/Link";
 
-import InlineStyleButtons from '../InlineStyleButtons';
-import BlockTypeButtons from '../BlockTypeButtons';
-import BaseButton from '../BaseButton';
+import InlineStyleButtons from "../InlineStyleButtons";
+import BlockTypeButtons from "../BlockTypeButtons";
+import BaseButton from "../BaseButton";
 
 const useStyles = makeStyles((theme: any) => ({
   root: {},
   inner: {
     padding: theme.spacing(1),
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
   float: {
-    position: 'absolute',
+    position: "absolute",
     zIndex: 9999,
     height: 35,
-    cursor: 'default',
-    backgroundColor: '#ebebf1',
+    cursor: "default",
+    backgroundColor: "#ebebf1",
   },
 }));
 
@@ -31,14 +31,7 @@ interface IEditorToolbarProps {
   setLink?: any;
 }
 
-const EditorToolbar: React.FC<IEditorToolbarProps> = ({
-  editorState,
-  onToggle,
-  className,
-  position,
-  setLink,
-  ...rest
-}) => {
+const EditorToolbar: React.FC<IEditorToolbarProps> = ({ editorState, onToggle, className, position, setLink, ...rest }) => {
   const classes = useStyles();
 
   return (
