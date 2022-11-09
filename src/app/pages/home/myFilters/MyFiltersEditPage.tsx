@@ -103,7 +103,7 @@ const MyFiltersEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & Rout
   const classes = useStyles();
   const history = useHistory();
   const isEditable = match.url.indexOf("view") === -1;
-  const isNew = match.url.indexOf("new") !== -1;
+  // const isNew = match.url.indexOf("new") !== -1;
   let salePurchaseMode: "sale" | "purchase" = "sale";
   if (match.url.indexOf("sale") !== -1) salePurchaseMode = "sale";
   if (match.url.indexOf("purchase") !== -1) salePurchaseMode = "purchase";

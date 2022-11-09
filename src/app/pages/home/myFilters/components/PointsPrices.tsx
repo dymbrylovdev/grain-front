@@ -89,7 +89,7 @@ const PointsPrices: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> =
   let pointData: any[] = [];
 
   const pointDataForRequest = () => {
-    currentFilter.point_prices.map(item => {
+    currentFilter.point_prices.forEach(item => {
       pointData.push({
         point_id: item.point.id,
         price: item.price,

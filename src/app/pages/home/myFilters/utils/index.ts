@@ -1,11 +1,5 @@
 import isEqual from "lodash.isequal";
-import {
-  IFilterForCreate,
-  IFilterParam,
-  IMyFilterItem,
-  IPointPriceForEdit,
-  IFilterForBids,
-} from "../../../../interfaces/filters";
+import { IFilterForCreate, IFilterParam, IMyFilterItem, IPointPriceForEdit, IFilterForBids } from "../../../../interfaces/filters";
 
 export const filterForCreate = (
   data: {
@@ -61,7 +55,7 @@ export const filterForBids = (
   },
   enumParams: IFilterParam[],
   numberParams: IFilterParam[],
-  pointPrices: any[],
+  pointPrices: any[]
 ): IFilterForBids => {
   let filter: IFilterForBids = {
     filter: {
@@ -122,9 +116,7 @@ export const fromApiToFilter = (data: IMyFilterItem): { [x: string]: any } => {
         if (typeof item.value === "string") values = [item.value];
 
         values.forEach(value => {
-          newFilter[
-            `parameter${item.parameter.id}enum${item.parameter.enum.indexOf(value)}`
-          ] = true;
+          newFilter[`parameter${item.parameter.id}enum${item.parameter.enum.indexOf(value)}`] = true;
         });
       }
       if (item.parameter.type === "number") {

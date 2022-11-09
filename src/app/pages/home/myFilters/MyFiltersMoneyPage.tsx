@@ -13,9 +13,7 @@ import useStyles from "../styles";
 import { PricesEdit } from "./components";
 import { IAppState } from "../../../store/rootDuck";
 
-const MyFiltersMoneyPage: React.FC<TPropsFromRedux &
-  WrappedComponentProps &
-  RouteComponentProps> = ({
+const MyFiltersMoneyPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponentProps> = ({
   match,
   intl,
   editSuccess,
