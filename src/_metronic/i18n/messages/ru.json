@@ -387,7 +387,14 @@
   "OPTIONS.DETAILS": "Технические данные",
   "OPTIONS.WEIGHT": "Максимальный вес (тонна)",
   "OPTIONS.AMOUNT": "Количество машин",
-
+  "OPTIONS.LOADING": "Погрузка",
+  "OPTIONS.OVERLOAD": "Перегруз",
+  "OPTIONS.NDS": "НДС",
+  "OPTIONS.SIDEWALL.HEIGHT": "Высота борта",
+  "OPTIONS.CABIN.HEIGHT": "Высота кабины",
+  "OPTIONS.LENGTH": "Длина машины",
+  "OPTIONS.NAME": "Название машины",
+  "OPTIONS.AVAILABLE": "Свободен",
 
   "FILTER.FORM.MAX_PAYMENT_TERM": "Макс. срок расчета, календарных дней",
   "FILTER.FORM.MAX_PAYMENT_TERM1": "С максимальным сроком расчета:",
