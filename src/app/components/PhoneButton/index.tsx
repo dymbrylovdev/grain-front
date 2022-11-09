@@ -20,12 +20,7 @@ const PhoneButton = (props: IProps) => {
   const styles = useStyles();
 
   return (
-    <Button
-      variant={"contained"}
-      color={"primary"}
-      href={`tel:${PHONE_MASK},${props.userId}#`}
-      className={styles.button}
-    >
+    <Button variant={"contained"} color={"primary"} href={`tel:${PHONE_MASK},${props.userId}#`} className={styles.button}>
       Позвонить
     </Button>
   );

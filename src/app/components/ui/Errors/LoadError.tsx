@@ -29,9 +29,7 @@ const LoadError: React.FC<IProps & WrappedComponentProps> = ({ intl, title, hand
   return (
     <div className={classes.root}>
       <div className={classes.title}>{title || intl.formatMessage({ id: "ERROR.LOAD.TITLE" })}</div>
-      <ButtonWithLoader onPress={handleClick || (() => {})}>
-        {intl.formatMessage({ id: "ERROR.BUTTON.REPEAT" })}
-      </ButtonWithLoader>
+      <ButtonWithLoader onPress={handleClick || (() => {})}>{intl.formatMessage({ id: "ERROR.BUTTON.REPEAT" })}</ButtonWithLoader>
     </div>
   );
 };

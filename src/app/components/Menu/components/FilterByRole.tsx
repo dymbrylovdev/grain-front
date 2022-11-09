@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement } from "react";
 import { FormControlLabel, Checkbox } from "@material-ui/core";
 import { useFormik } from "formik";
 
