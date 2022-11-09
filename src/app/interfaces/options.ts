@@ -1,5 +1,4 @@
 export interface ITransport {
-    technical_details: string;
     weight: number;
     amount: number;
     loading: string;

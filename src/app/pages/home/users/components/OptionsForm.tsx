@@ -106,7 +106,6 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   }, [me, user, editMode]);
 
   const getInitialValues = (options: ITransport | undefined) => ({
-    technicalDetails: userType?.transport ? userType.transport.technical_details : "",
     weight: userType?.transport ? userType.transport.weight : "",
     loading: userType?.transport ? userType.transport.loading : "",
     overload: userType?.transport ? userType.transport.overload : "",
@@ -122,7 +121,6 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
   const validationSchema = Yup.object().shape(
     {
-      technicalDetails: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
       weight: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
       amount: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
       location: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
@@ -217,25 +215,6 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           </>
         ) : (
           <>
-            <TextField
-              type="text"
-              label={intl.formatMessage({
-                id: "OPTIONS.DETAILS",
-              })}
-              margin="normal"
-              name="technicalDetails"
-              value={values.technicalDetails}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              rows="6"
-              multiline
-              fullWidth
-              disabled={editMode === "view"}
-              helperText={touched.technicalDetails && errors.technicalDetails}
-              error={Boolean(touched.technicalDetails && errors.technicalDetails)}
-            />
-
             <TextField
               type="text"
               label={intl.formatMessage({
