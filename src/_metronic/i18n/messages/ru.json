@@ -390,9 +390,9 @@
   "OPTIONS.LOADING": "Погрузка",
   "OPTIONS.OVERLOAD": "Перегруз",
   "OPTIONS.NDS": "НДС",
-  "OPTIONS.SIDEWALL.HEIGHT": "Высота борта",
-  "OPTIONS.CABIN.HEIGHT": "Высота кабины",
-  "OPTIONS.LENGTH": "Длина машины",
+  "OPTIONS.SIDEWALL.HEIGHT": "Высота борта (метры)",
+  "OPTIONS.CABIN.HEIGHT": "Высота кабины (метры)",
+  "OPTIONS.LENGTH": "Длина машины (метры)",
   "OPTIONS.NAME": "Название машины",
   "OPTIONS.AVAILABLE": "Свободен",
 
