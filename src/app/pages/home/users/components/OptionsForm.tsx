@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { connect, ConnectedProps, useDispatch } from "react-redux";
 import { WrappedComponentProps, injectIntl } from "react-intl";
-import { TextField, IconButton } from "@material-ui/core";
+import { TextField, IconButton, Select, MenuItem, FormControlLabel, Checkbox } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -106,15 +106,21 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   }, [me, user, editMode]);
 
   const getInitialValues = (options: ITransport | undefined) => ({
-    technicalDetails: userType?.transport ? userType.transport.technical_details : "",
     weight: userType?.transport ? userType.transport.weight : "",
+    loading: userType?.transport ? userType.transport.loading : "",
+    overload: userType?.transport ? userType.transport.overload : "",
+    nds: userType?.transport ? userType.transport.nds : "",
+    sidewall_height: userType?.transport ? userType.transport.sidewall_height : "",
+    cabin_height: userType?.transport ? userType.transport.cabin_height : "",
+    length: userType?.transport ? userType.transport.length : "",
+    name: userType?.transport ? userType.transport.name : "",
+    available: userType?.transport ? userType.transport.available : "",
     amount: userType?.transport ? userType.transport.amount : "",
     location: userType?.transport ? userType.transport.location : "",
   });
 
   const validationSchema = Yup.object().shape(
     {
-      technicalDetails: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
       weight: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
       amount: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
       location: Yup.string().required(intl.formatMessage({ id: "PROFILE.VALIDATION.REQUIRED_FIELD" })),
@@ -212,24 +218,6 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             <TextField
               type="text"
               label={intl.formatMessage({
-                id: "OPTIONS.DETAILS",
-              })}
-              margin="normal"
-              name="technicalDetails"
-              value={values.technicalDetails}
-              variant="outlined"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              rows="6"
-              multiline
-              fullWidth
-              disabled={editMode === "view"}
-              helperText={touched.technicalDetails && errors.technicalDetails}
-              error={Boolean(touched.technicalDetails && errors.technicalDetails)}
-            />
-            <TextField
-              type="text"
-              label={intl.formatMessage({
                 id: "OPTIONS.WEIGHT",
               })}
               margin="normal"
@@ -251,6 +239,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               }}
               autoComplete="off"
             />
+
             <TextField
               type="text"
               label={intl.formatMessage({
@@ -274,6 +263,175 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 ),
               }}
               autoComplete="off"
+            />
+
+            <TextField
+              type="text"
+              select
+              label={intl.formatMessage({
+                id: "OPTIONS.LOADING",
+              })}
+              margin="normal"
+              name="loading"
+              value={values.loading}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              disabled={editMode === "view"}
+              helperText={touched.loading && errors.loading}
+              error={Boolean(touched.loading && errors.loading)}
+              autoComplete="off"
+            >
+              <MenuItem key={1} value="side">
+                Боковая
+              </MenuItem>
+              <MenuItem key={2} value="back">
+                Задняя
+              </MenuItem>
+            </TextField>
+
+            <TextField
+              type="text"
+              select
+              label={intl.formatMessage({
+                id: "OPTIONS.OVERLOAD",
+              })}
+              margin="normal"
+              name="overload"
+              value={values.overload}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              disabled={editMode === "view"}
+              helperText={touched.overload && errors.overload}
+              error={Boolean(touched.overload && errors.overload)}
+              autoComplete="off"
+            >
+              <MenuItem key={1} value="norm">
+                Норма
+              </MenuItem>
+              <MenuItem key={2} value="overload">
+                Перегруз
+              </MenuItem>
+            </TextField>
+
+            <FormControlLabel control={
+              <Checkbox 
+                checked={values.nds === true}
+                onChange={() => setFieldValue('nds', !values.nds)}
+                color="primary"
+              />
+              } 
+              label={intl.formatMessage({id: "OPTIONS.NDS"})} 
+            />
+
+            <TextField
+              type="number"
+              label={intl.formatMessage({
+                id: "OPTIONS.SIDEWALL.HEIGHT",
+              })}
+              margin="normal"
+              name="sidewall_height"
+              value={values.sidewall_height}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={(value) => setFieldValue('sidewall_height', value)}
+              helperText={touched.sidewall_height && errors.sidewall_height}
+              error={Boolean(touched.sidewall_height && errors.sidewall_height)}
+              disabled={editMode === "view"}
+              InputProps={{
+                inputComponent: NumberFormatCustom as any,
+                endAdornment: (
+                  <IconButton onClick={() => setFieldValue("sidewall_height", "")}>
+                    <CloseIcon />
+                  </IconButton>
+                ),
+              }}
+              autoComplete="off"
+            />
+
+            <TextField
+              type="number"
+              label={intl.formatMessage({
+                id: "OPTIONS.CABIN.HEIGHT",
+              })}
+              margin="normal"
+              name="cabin_height"
+              value={values.cabin_height}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={(value) => setFieldValue('cabin_height', value)}
+              helperText={touched.cabin_height && errors.cabin_height}
+              error={Boolean(touched.cabin_height && errors.cabin_height)}
+              disabled={editMode === "view"}
+              InputProps={{
+                inputComponent: NumberFormatCustom as any,
+                endAdornment: (
+                  <IconButton onClick={() => setFieldValue("cabin_height", "")}>
+                    <CloseIcon />
+                  </IconButton>
+                ),
+              }}
+              autoComplete="off"
+            />
+
+            <TextField
+              type="number"
+              label={intl.formatMessage({
+                id: "OPTIONS.LENGTH",
+              })}
+              margin="normal"
+              name="length"
+              value={values.length}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={(value) => setFieldValue('length', value)}
+              helperText={touched.length && errors.length}
+              error={Boolean(touched.length && errors.length)}
+              disabled={editMode === "view"}
+              InputProps={{
+                inputComponent: NumberFormatCustom as any,
+                endAdornment: (
+                  <IconButton onClick={() => setFieldValue("length", "")}>
+                    <CloseIcon />
+                  </IconButton>
+                ),
+              }}
+              autoComplete="off"
+            />
+
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "OPTIONS.NAME",
+              })}
+              margin="normal"
+              name="name"
+              value={values.name}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              fullWidth
+              disabled={editMode === "view"}
+              helperText={touched.name && errors.name}
+              error={Boolean(touched.name && errors.name)}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={() => setFieldValue("name", "")}>
+                    <CloseIcon />
+                  </IconButton>
+                ),
+              }}
+            />
+
+            <FormControlLabel control={
+              <Checkbox 
+                checked={values.available === true}
+                onChange={() => setFieldValue('available', !values.available)}
+                color="primary"
+              />
+              } 
+              label={intl.formatMessage({id: "OPTIONS.AVAILABLE"})} 
             />
 
             <div className={classes.textField}>
