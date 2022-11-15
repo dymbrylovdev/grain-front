@@ -27,7 +27,7 @@ import { ILocation } from "../../../../interfaces/locations";
 import { useSnackbar } from "notistack";
 import { useDispatch, shallowEqual, useSelector } from "react-redux";
 import { actions as usersActions } from '../../../../store/ducks/users.duck'
-
+import clsx from 'clsx'
 
 
 interface IProps {
@@ -101,7 +101,7 @@ const Bid = React.memo<IProps>(
       ({ auth }: any) => ({ me: auth.user }),
       shallowEqual
     );
- 
+
 
     const newBid = useMemo(() => {
       if (localBids && localBids.length > 0) {
@@ -960,7 +960,9 @@ const Bid = React.memo<IProps>(
                         }
                       }}
                     >
-                      <div className={innerClasses.wrapperTextShowBtn}>
+                      <div className={clsx(innerClasses.wrapperTextShowBtn, {
+                        [innerClasses.disabled]: me?.contact_view_count == 0
+                      })}>
                         {showsPhones.find(item => item === bid.id) ? (
                           <div className={innerClasses.textPhone} style={{ textAlign: "center" }}>
                             <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>
@@ -994,7 +996,9 @@ const Bid = React.memo<IProps>(
                         }
                       }}
                     >
-                      <div className={innerClasses.wrapperTextShowBtn}>
+                      <div className={clsx(innerClasses.wrapperTextShowBtn, {
+                        [innerClasses.disabled]: me?.contact_view_count == 0
+                      })}>
                         {showsPhones.find(item => item === bid.id) ? (
                           <div className={innerClasses.textPhone} style={{ textAlign: "center" }}>
                             <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>

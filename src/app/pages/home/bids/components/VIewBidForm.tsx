@@ -24,7 +24,6 @@ import { setViewed } from "./hooks/useViewedBid";
 import Modal from "../../../../components/ui/Modal";
 import clsx from "clsx";
 import TransporterTable from "./transporterTable/TransporterTable";
-// import  {contactViewCountRequest} from '../../../../store/ducks/users.duck'
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 import { actions as usersActions } from '../../../../store/ducks/users.duck'
@@ -76,11 +75,6 @@ const ViewBidForm: React.FC<IProps> = ({
   const currentCrop = useMemo(() => crops?.find(item => item.id === bid?.crop_id), [crops, bid]);
   const [showPhoneDialog, setShowPhoneDialog] = useState(false);
   const isBuyerTariff = useMemo(() => me?.tariff_matrix?.tariff?.id !== 1, [me]);
-  // const {contact_view_count} = useSelector((state) => state.auth.user);
-  // const me = useSelector(({ auth }) => ({ user: auth.user }), shallowEqual);
-
-  // console.log('user.contact_view_count', user?.contact_view_count);
-
 
   useEffect(() => {
     if (goToRef) {
@@ -385,6 +379,7 @@ const ViewBidForm: React.FC<IProps> = ({
   const vendorUseVat = bid?.vendor_use_vat;
 
   const loading = !crops || (editMode !== "create" && !bid) || (!!vendorId && !user);
+
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -779,7 +774,9 @@ const ViewBidForm: React.FC<IProps> = ({
                         }
                       }}
                     >
-                      <div className={classes.wrapperTextShowBtn}>
+                      <div className={clsx(classes.wrapperTextShowBtn, {
+                        [classes.disabled]: me?.contact_view_count == 0
+                      })}>
                         {showsPhones ? (
                           <div className={classes.textPhone} style={{ textAlign: "center" }}>
                             <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>
@@ -811,7 +808,9 @@ const ViewBidForm: React.FC<IProps> = ({
                           }
                         }}
                       >
-                        <div className={classes.wrapperTextShowBtn}>
+                        <div className={clsx(classes.wrapperTextShowBtn, {
+                          [classes.disabled]: me?.contact_view_count == 0
+                        })}>
                           {showsPhones ? (
                             <div className={classes.textPhone} style={{ textAlign: "center" }}>
                               <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>

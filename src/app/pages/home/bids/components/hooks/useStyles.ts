@@ -428,6 +428,9 @@ export const useBidTableStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
   },
+  disabled: {
+    pointerEvents: 'none',
+  },
 }));
 
 export const useBidsPageStyles = makeStyles(theme => ({
@@ -886,6 +889,9 @@ export const useViewBidStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
+  },
+  disabled: {
+    pointerEvents: 'none',
   },
 }));
 

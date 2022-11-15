@@ -798,7 +798,8 @@ function* delSaga({ payload }: { payload: { id: number } }) {
 function* contactViewCountSaga({ payload }: { payload: { data: any } }) {
   try {
     const { data }: { data: any } = yield call(() => editContactViewContact(payload.data));
-    yield put(authActions.fetchSuccess(data));
+    // yield put(authActions.fetchSuccess(data));
+    yield put(authActions.newUserData(data));
     yield put(actions.contactViewCountSuccess());
   } catch (e) {
     yield put(actions.contactViewCountError(e?.response?.data?.message || "Ошибка соединения."));
