@@ -322,6 +322,14 @@ const Bid = React.memo<IProps>(
       [caruselRef]
     );
 
+    const bidCountController = useCallback(() => {
+      Boolean(me?.contact_view_count === 0) &&
+        enqueueSnackbar("Вы достигли максимального лимита в количестве просмотров контактов. Просмотр контактов будет доступен завтра, либо оформите новый тариф!", {
+          variant: "error",
+        });
+      return Boolean(me?.contact_view_count === 0)
+    }, [me]);
+
     return (
       <>
         <Modal
@@ -950,19 +958,19 @@ const Bid = React.memo<IProps>(
                     <Button
                       variant="outlined"
                       color="primary"
-                      className={innerClasses.btnShowPhone}
+                      className={clsx(innerClasses.btnShowPhone, {})}
                       onClick={e => {
                         stopProp(e);
-                        if (user) {
-                          handleShowPhone(bid.id);
-                        } else {
-                          setOpen(true);
+                        if (!bidCountController()) {
+                          if (user) {
+                            handleShowPhone(bid.id);
+                          } else {
+                            setOpen(true);
+                          }
                         }
                       }}
                     >
-                      <div className={clsx(innerClasses.wrapperTextShowBtn, {
-                        [innerClasses.disabled]: me?.contact_view_count == 0
-                      })}>
+                      <div className={clsx(innerClasses.wrapperTextShowBtn)}>
                         {showsPhones.find(item => item === bid.id) ? (
                           <div className={innerClasses.textPhone} style={{ textAlign: "center" }}>
                             <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>
@@ -986,19 +994,19 @@ const Bid = React.memo<IProps>(
                     <Button
                       variant="outlined"
                       color="primary"
-                      className={innerClasses.btnShowPhone}
+                      className={clsx(innerClasses.btnShowPhone, {})}
                       onClick={e => {
                         stopProp(e);
-                        if (user) {
-                          handleShowPhone(bid.id);
-                        } else {
-                          setOpen(true);
+                        if (!bidCountController()) {
+                          if (user) {
+                            handleShowPhone(bid.id);
+                          } else {
+                            setOpen(true);
+                          }
                         }
                       }}
                     >
-                      <div className={clsx(innerClasses.wrapperTextShowBtn, {
-                        [innerClasses.disabled]: me?.contact_view_count == 0
-                      })}>
+                      <div className={clsx(innerClasses.wrapperTextShowBtn)}>
                         {showsPhones.find(item => item === bid.id) ? (
                           <div className={innerClasses.textPhone} style={{ textAlign: "center" }}>
                             <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>
