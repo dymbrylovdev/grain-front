@@ -106,5 +106,5 @@ deploy-prod:
     - chmod 600 ~/.ssh/id_rsa
     - cat ~/.ssh/id_rsa
     - set
-    - ssh -t -t -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null publisher@lk.kupit-zerno.com "bash waiter.sh $GITLAB_REGISTRIES_URL/$IMAGE_MASTER 3080"
+    - ssh -t -t -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null publisher@lk.kupit-zerno.com "docker login -u $CI_DOCKERHUB_LOGIN -p $CI_DOCKERHUB_PASSWORD && bash waiter.sh $GITLAB_REGISTRIES_URL/$IMAGE_MASTER 3080"
 
