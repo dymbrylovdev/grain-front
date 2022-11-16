@@ -5,6 +5,7 @@ services:
 stages:
   - build
   - deploy
+  - debug
 
 # jobs for master:
 build-master:
@@ -70,7 +71,7 @@ deploy-dev:
 debugdeploy-dev:
   except:
     - "master"
-  stage: deploy
+  stage: debug
   when: manual
   environment: 
     name: "development"
@@ -101,8 +102,9 @@ deploy-prod:
     url: "https://lk.kupit-zerno.com"
   script:
     - mkdir -p ~/.ssh
-    - echo "$PROD_SERVER_KEY" |tr -d '\r' > ~/.ssh/id_rsa
+    - echo "${PROD_SERVER_KEY}" |tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - cat ~/.ssh/id_rsa
+    - set
     - ssh -t -t -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null publisher@lk.kupit-zerno.com "bash waiter.sh $GITLAB_REGISTRIES_URL/$IMAGE_MASTER 3080"
 
