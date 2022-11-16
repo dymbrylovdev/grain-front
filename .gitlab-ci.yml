@@ -102,7 +102,7 @@ deploy-prod:
     url: "https://lk.kupit-zerno.com"
   script:
     - mkdir -p ~/.ssh
-    - echo "${PROD_SERVER_KEY}" |tr -d '\r' > ~/.ssh/id_rsa
+    - echo "${PROD_PRIVATE_KEY}" |tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - cat ~/.ssh/id_rsa
     - set
