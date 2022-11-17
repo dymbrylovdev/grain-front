@@ -270,7 +270,6 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}{" "}
                100
-              {/* {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })} */}
             </TableCell>
           </TableRow>
 
