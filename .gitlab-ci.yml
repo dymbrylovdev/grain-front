@@ -91,7 +91,7 @@ debugdeploy-dev:
 
 
 deploy-prod:
-  only:
+  except:
     - master
   when: manual
   stage: deploy
