@@ -8,7 +8,7 @@ const {
 const protocol = "https:";
 const API_DOMAIN = `${protocol}//${REACT_APP_API_DOMAIN}`;
 
-const API_SEARCH_LOCATION_URI = `https://geocode-maps.yandex.ru/1.x/?apikey=${REACT_APP_GOOGLE_API_KEY}`;
+const API_SEARCH_LOCATION_URI = `https://geocode-maps.yandex.ru/1.x/?apikey=7f9da232-66bd-4aa0-97de-928d75b7ea37`;
 
 const PHONE_MASK = "+79666669209";
 

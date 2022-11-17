@@ -480,7 +480,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       />
       <div style={{ display: "none" }}>
         {mapState && (
-          <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
+          <YMaps query={{ apikey: '7f9da232-66bd-4aa0-97de-928d75b7ea37' }}>
             <Map
               state={mapState}
               instanceRef={ref => setMap(ref)}

@@ -462,7 +462,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             </div>
 
             {mapState && (
-              <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
+              <YMaps query={{ apikey: '7f9da232-66bd-4aa0-97de-928d75b7ea37' }}>
                 <div className={classes.yaMap} style={{ marginTop: "15px" }}>
                   <Map
                     state={mapState}
