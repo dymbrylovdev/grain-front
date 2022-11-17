@@ -23,8 +23,10 @@ import { ILocalBids } from "./BidsList";
 import { setViewed } from "./hooks/useViewedBid";
 import Modal from "../../../../components/ui/Modal";
 import clsx from "clsx";
-// import { useFetchTransporters } from './hooks/useFetchTransporters'
 import TransporterTable from "./transporterTable/TransporterTable";
+import { shallowEqual, useDispatch } from "react-redux";
+import { useSnackbar } from "notistack";
+import { actions as usersActions } from "../../../../store/ducks/users.duck";
 
 interface IProps {
   intl: IntlShape;
@@ -62,6 +64,8 @@ const ViewBidForm: React.FC<IProps> = ({
   cropParams,
   guestPoint,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
   const classes = useViewBidStyles();
   const routeRef = useRef();
   const calcRef: any = useRef(null);
@@ -97,6 +101,7 @@ const ViewBidForm: React.FC<IProps> = ({
   const [mapDistance, setMapDistance] = useState<number | null>(null);
   const [selectedRoute, setSelectedRoute] = useState<any | null>();
   const [mapBid, setMapBid] = useState<ILocalBids | null>(null);
+
   const localBids: ILocalBids[] | null = useMemo(() => {
     const storageBids = localStorage.getItem("bids");
     return storageBids ? JSON.parse(storageBids) : null;
@@ -397,7 +402,16 @@ const ViewBidForm: React.FC<IProps> = ({
     setAuthAlert(true);
   }, [me]);
 
-  // console.log("bid.vendor", bid?.vendor?.firstname);
+  const bidCountController = useCallback(() => {
+    Boolean(me?.contact_view_count === 0) &&
+      enqueueSnackbar(
+        "Вы достигли максимального лимита в количестве просмотров контактов. Просмотр контактов будет доступен завтра, либо оформите новый тариф!",
+        {
+          variant: "error",
+        }
+      );
+    return Boolean(me?.contact_view_count === 0);
+  }, [me]);
 
   return (
     <>
@@ -759,8 +773,9 @@ const ViewBidForm: React.FC<IProps> = ({
                     <Button
                       variant="outlined"
                       color="primary"
-                      className={classes.btnShowPhone}
+                      className={clsx(classes.btnShowPhone, {})}
                       onClick={() => {
+                        if (bidCountController()) return;
                         if (me) {
                           isBuyerTariff ? setShowsPhones(true) : setShowPhoneDialog(true);
                         } else {
@@ -768,16 +783,21 @@ const ViewBidForm: React.FC<IProps> = ({
                         }
                       }}
                     >
-                      <div className={classes.wrapperTextShowBtn}>
+                      <div className={clsx(classes.wrapperTextShowBtn)}>
                         {showsPhones ? (
                           <div className={classes.textPhone} style={{ textAlign: "center" }}>
                             <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>
                           </div>
                         ) : (
-                          <>
+                          <div
+                            onClick={() =>
+                              me?.contact_view_count &&
+                              dispatch(usersActions.contactViewCountRequest({ data: { contact_view_count: me.contact_view_count - 1 } }))
+                            }
+                          >
                             <div className={classes.textPhone}>+7 *** *** ***</div>
                             <div className={classes.btnTextShowPhone}>Показать номер</div>
-                          </>
+                          </div>
                         )}
                       </div>
                     </Button>
@@ -789,8 +809,9 @@ const ViewBidForm: React.FC<IProps> = ({
                       <Button
                         variant="outlined"
                         color="primary"
-                        className={classes.btnShowPhone}
+                        className={clsx(classes.btnShowPhone, {})}
                         onClick={() => {
+                          if (bidCountController()) return;
                           if (me) {
                             isBuyerTariff ? setShowsPhones(true) : setShowPhoneDialog(true);
                           } else {
@@ -798,16 +819,21 @@ const ViewBidForm: React.FC<IProps> = ({
                           }
                         }}
                       >
-                        <div className={classes.wrapperTextShowBtn}>
+                        <div className={clsx(classes.wrapperTextShowBtn)}>
                           {showsPhones ? (
                             <div className={classes.textPhone} style={{ textAlign: "center" }}>
                               <a href={`tel:${formatPhone(bid.vendor.phone)}`}>{formatPhone(bid.vendor.phone)}</a>
                             </div>
                           ) : (
-                            <>
+                            <div
+                              onClick={() =>
+                                me?.contact_view_count &&
+                                dispatch(usersActions.contactViewCountRequest({ data: { contact_view_count: me.contact_view_count - 1 } }))
+                              }
+                            >
                               <div className={classes.textPhone}>+7 *** *** ***</div>
                               <div className={classes.btnTextShowPhone}>Показать номер</div>
-                            </>
+                            </div>
                           )}
                         </div>
                       </Button>

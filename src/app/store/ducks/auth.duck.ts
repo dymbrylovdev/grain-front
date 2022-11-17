@@ -43,6 +43,7 @@ const MERGE_USER = "auth/MERGE_USER";
 const CLEAR_FETCH = "auth/CLEAR_FETCH";
 const FETCH_REQUEST = "auth/FETCH_REQUEST";
 const FETCH_SUCCESS = "auth/FETCH_SUCCESS";
+const NEW_USER_DATA = "auth/NEW_USER_DATA";
 const FETCH_FAIL = "auth/FETCH_FAIL";
 
 const SET_EDIT_NO_NOTI = "auth/SET_EDIT_NO_NOTI";
@@ -206,6 +207,12 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
           user: action.payload.data,
           loading: false,
           success: true,
+        };
+      }
+      case NEW_USER_DATA: {
+        return {
+          ...state,
+          user: action.payload.data,
         };
       }
 
@@ -543,6 +550,7 @@ export const actions = {
   clearFetch: () => createAction(CLEAR_FETCH),
   fetchRequest: () => createAction(FETCH_REQUEST),
   fetchSuccess: (payload: IServerResponse<IUser>) => createAction(FETCH_SUCCESS, payload),
+  newUserData: (payload: IServerResponse<IUser>) => createAction(NEW_USER_DATA, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
   setEditNoNoti: (payload: boolean) => createAction(SET_EDIT_NO_NOTI, payload),
@@ -603,13 +611,9 @@ export type TActions = ActionsUnion<typeof actions>;
 
 function* fetchSaga() {
   try {
-    console.log("fetch user");
-
     const state = yield select();
     if (state.auth.authToken) {
       const { data }: { data: IServerResponse<IUser> } = yield call(() => getMe());
-      // console.log("fetch user data", data);
-
       yield put(actions.fetchSuccess(data));
     } else {
       yield put(actions.fetchFail(""));

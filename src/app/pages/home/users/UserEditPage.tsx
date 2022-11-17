@@ -160,11 +160,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
       if (newValue === 2) accessTransporter() ? history.push("/user/profile/tariffs") : history.push("/user/profile/crops");
       if (newValue === 3) history.push("/user/profile/tariffs");
 
-      // if (newValue === 0) history.push("/user/profile");
-      // if (newValue === 1) history.push("/user/profile/points");
-      // if (newValue === 2) history.push("/user/profile/crops")
-      // if (newValue === 2 && accessTransporter()) history.push("/user/profile/options")
-      // if (newValue === 3) history.push("/user/profile/tariffs");
+    
     }
   };
 

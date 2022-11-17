@@ -20,6 +20,7 @@ import {
   createUserBidFilter,
   getUserFilters,
 } from "../../crud/users.crud";
+import { actions as authActions } from "../../store/ducks/auth.duck";
 import { IUser, IUserForCreate, IUserForEdit, IUserBidFilters } from "../../interfaces/users";
 import { IBid } from "../../interfaces/bids";
 import { IFilterForCreate, IMyFilters } from "../../interfaces/filters";
@@ -690,7 +691,7 @@ export const actions = {
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
 
   clearContactViewCount: () => createAction(CLEAR_CONTACT_VIEW_COUNT),
-  contactViewCountRequest: (payload: { data: number }) => createAction(CONTACT_VIEW_COUNT_REQUEST, payload),
+  contactViewCountRequest: (payload: { data: any }) => createAction(CONTACT_VIEW_COUNT_REQUEST, payload),
   contactViewCountSuccess: () => createAction(CONTACT_VIEW_COUNT_SUCCESS),
   contactViewCountError: (payload: string) => createAction(CONTACT_VIEW_COUNT_FAIL, payload),
 
@@ -794,9 +795,10 @@ function* delSaga({ payload }: { payload: { id: number } }) {
   }
 }
 
-function* contactViewCountSaga({ payload }: { payload: { data: number } }) {
+function* contactViewCountSaga({ payload }: { payload: { data: any } }) {
   try {
-    yield call(() => editContactViewContact(payload.data));
+    const { data }: { data: any } = yield call(() => editContactViewContact(payload.data));
+    yield put(authActions.newUserData(data));
     yield put(actions.contactViewCountSuccess());
   } catch (e) {
     yield put(actions.contactViewCountError(e?.response?.data?.message || "Ошибка соединения."));
