@@ -371,7 +371,7 @@ const ViewBidForm: React.FC<IProps> = ({
     } else if (ymaps && map && bid && bid.location) {
       setShowPlacemark(true);
     }
-  }, [ymaps, map, bid, mySelectedMapPoint, addRoute]);
+  }, [ymaps, map, bid, mySelectedMapPoint]);
 
   useEffect(() => {
     if (currentCropId) fetchCropParams(currentCropId);
