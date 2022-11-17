@@ -726,10 +726,10 @@ const ViewBidForm: React.FC<IProps> = ({
                     <div className={classes.nameParameter} style={{}}>
                       {me?.is_admin ? (
                         <p className={classes.btnVendor} onClick={() => history.push(`/user/edit/${bid.vendor.id}`)}>
-                          Продавец:
+                          ПРОДАВЕЦ:
                         </p>
                       ) : (
-                        <p>Продавец:</p>
+                        <p>ПРОДАВЕЦ:</p>
                       )}
                     </div>
                     {bid?.vendor.firstname && (
@@ -747,7 +747,7 @@ const ViewBidForm: React.FC<IProps> = ({
                     {!isMobile && (
                       <>
                         {Boolean(bid.modified_at) && (
-                          <div className={classes.modifedAt}>{`Дата последнего изменения: ${bid.modified_at.slice(
+                          <div className={classes.modifedAt}>{`Дата последнего изменения объявления: ${bid.modified_at.slice(
                             8,
                             10
                           )}.${bid.modified_at.slice(5, 7)}.${bid.modified_at.slice(0, 4)}`}</div>
@@ -813,7 +813,7 @@ const ViewBidForm: React.FC<IProps> = ({
                       </Button>
                     )}
                     {Boolean(bid.modified_at) && (
-                      <div className={classes.modifedAt}>{`Дата последнего изменения: ${bid.modified_at.slice(
+                      <div className={classes.modifedAt}>{`Дата последнего изменения объявления: ${bid.modified_at.slice(
                         8,
                         10
                       )}.${bid.modified_at.slice(5, 7)}.${bid.modified_at.slice(0, 4)}`}</div>
