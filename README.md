@@ -14,7 +14,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ```
    - REACT_APP_API_DOMAIN=api.kupit-zerno.com // domain without protocol
-   - REACT_APP_GOOGLE_API_KEY=c1170a31-17b7-4be1-8db7-e068998ee7cd
+   - REACT_APP_GOOGLE_API_KEY=3ab30d31-8b86-40ec-ab06-726828b66b66
 ```
 
 ## Available Scripts
