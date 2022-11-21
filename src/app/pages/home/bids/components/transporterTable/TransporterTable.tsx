@@ -3,6 +3,9 @@ import { Table, TableBody, TableCell, TableHead, TableRow, Tooltip, TableFooter,
 import TopTableCell from "../../../../../components/ui/Table/TopTableCell";
 import { TablePaginator } from "../../../../../components/ui/Table/TablePaginator";
 import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
+import EditIcon from "@material-ui/icons/Edit";
+import { useDispatch, shallowEqual, useSelector } from "react-redux";
+
 
 interface IProps {
   transportersList: any;
@@ -13,6 +16,10 @@ interface IProps {
 }
 
 const TransporterTable = React.memo<IProps>(({ transportersList, fetch, page, perPage, total }) => {
+  const { me } = useSelector(
+    ({ auth }: any) => ({ me: auth.user }),
+    shallowEqual
+  );
   return (
     <div>
       <div>
@@ -32,11 +39,8 @@ const TransporterTable = React.memo<IProps>(({ transportersList, fetch, page, pe
               transportersList.map(item => (
                 <TableRow key={item.id}>
                   <TableCell>{item.firstname}</TableCell>
-
                   <TableCell>{item.email}</TableCell>
-
                   <TableCell>{item.phone}</TableCell>
-
                   <TableCell>{item?.transport?.location?.text}</TableCell>
                   <TableCell align="right">
                     <Tooltip title="Просмотреть профиль">
@@ -44,6 +48,13 @@ const TransporterTable = React.memo<IProps>(({ transportersList, fetch, page, pe
                         <RemoveRedEyeIcon />
                       </IconButton>
                     </Tooltip>
+                    {(me.roles.includes("ROLE_ADMIN") || me.roles.includes("ROLE_VENDOR")) && (
+                      <Tooltip title="Редактировать профиль">
+                        <IconButton size="medium" color="default" onClick={() => window.open(`/user/edit/${item.id}`)}>
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
