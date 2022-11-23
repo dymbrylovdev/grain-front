@@ -21,7 +21,7 @@ const trader = {
   id: "ROLE_TRADER",
 };
 const transporter = {
-  value: "Камазист",
+  value: "Перевозчик",
   id: "ROLE_TRANSPORTER",
 };
 
