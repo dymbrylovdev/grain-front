@@ -339,7 +339,11 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
           {accessByRoles(me, ["ROLE_TRANSPORTER"]) || accessByRoles(user, ["ROLE_TRANSPORTER"]) ? (
             // ? (<TabPanel value={valueTabs} index={2}>
             <TabPanel value={valueTabs} index={1}>
-              {editMode === "create" ? <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p> : <OptionsForm editMode={editMode} />}
+              {editMode === "create" ? (
+                <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
+              ) : (
+                <OptionsForm isTransporter editMode={editMode} />
+              )}
             </TabPanel>
           ) : (
             <TabPanel value={valueTabs} index={2}>

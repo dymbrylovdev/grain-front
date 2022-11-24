@@ -58,6 +58,7 @@ function NumberFormatCustom(props) {
 }
 interface IProps {
   editMode?: "profile" | "create" | "edit" | "view";
+  isTransporter?: boolean;
 }
 
 const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
@@ -81,6 +82,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   editOptionsSuccess,
   editLoadingErr,
   clearCreateOptions,
+  isTransporter,
 }) => {
   // const innerClasses = innerStyles();
   const classes = useStyles();
@@ -98,21 +100,25 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       if (me?.roles.includes("ROLE_ADMIN") && user) {
         setItsMe(false);
         return user;
+      }
+      if (isTransporter) {
+        setItsMe(me?.id === user?.id);
+        return user;
       } else {
         setItsMe(true);
         return me;
       }
     }
-  }, [me, user, editMode]);
+  }, [me, user, editMode, isTransporter]);
 
   const getInitialValues = (options: ITransport | undefined) => ({
     weight: userType?.transport ? userType.transport.weight : "",
     loading: userType?.transport ? userType.transport.loading : "",
     overload: userType?.transport ? userType.transport.overload : "",
     nds: userType?.transport ? userType.transport.nds : "",
-    sidewall_height: userType?.transport ? userType.transport.sidewall_height : "",
-    cabin_height: userType?.transport ? userType.transport.cabin_height : "",
-    length: userType?.transport ? userType.transport.length : "",
+    sidewall_height: userType?.transport ? userType.transport.sidewall_height : null,
+    cabin_height: userType?.transport ? userType.transport.cabin_height : null,
+    length: userType?.transport ? userType.transport.length : null,
     name: userType?.transport ? userType.transport.name : "",
     available: userType?.transport ? userType.transport.available : "",
     amount: userType?.transport ? userType.transport.amount : "",
@@ -171,7 +177,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     initialValues: getInitialValues(undefined),
     onSubmit: values => {
       edit({
-        id: userType?.id,
+        id: isTransporter ? user?.id : userType?.id,
         data: {
           ...values,
           location: selectedLocation || userType?.transport.location,
@@ -315,14 +321,9 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               </MenuItem>
             </TextField>
 
-            <FormControlLabel control={
-              <Checkbox 
-                checked={values.nds === true}
-                onChange={() => setFieldValue('nds', !values.nds)}
-                color="primary"
-              />
-              } 
-              label={intl.formatMessage({id: "OPTIONS.NDS"})} 
+            <FormControlLabel
+              control={<Checkbox checked={values.nds === true} onChange={() => setFieldValue("nds", !values.nds)} color="primary" />}
+              label={intl.formatMessage({ id: "OPTIONS.NDS" })}
             />
 
             <TextField
@@ -335,7 +336,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.sidewall_height}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={(value) => setFieldValue('sidewall_height', value)}
+              onChange={value => setFieldValue("sidewall_height", value)}
               helperText={touched.sidewall_height && errors.sidewall_height}
               error={Boolean(touched.sidewall_height && errors.sidewall_height)}
               disabled={editMode === "view"}
@@ -360,7 +361,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.cabin_height}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={(value) => setFieldValue('cabin_height', value)}
+              onChange={value => setFieldValue("cabin_height", value)}
               helperText={touched.cabin_height && errors.cabin_height}
               error={Boolean(touched.cabin_height && errors.cabin_height)}
               disabled={editMode === "view"}
@@ -385,7 +386,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.length}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={(value) => setFieldValue('length', value)}
+              onChange={value => setFieldValue("length", value)}
               helperText={touched.length && errors.length}
               error={Boolean(touched.length && errors.length)}
               disabled={editMode === "view"}
@@ -424,14 +425,15 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               }}
             />
 
-            <FormControlLabel control={
-              <Checkbox 
-                checked={values.available === true}
-                onChange={() => setFieldValue('available', !values.available)}
-                color="primary"
-              />
-              } 
-              label={intl.formatMessage({id: "OPTIONS.AVAILABLE"})} 
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={values.available === true}
+                  onChange={() => setFieldValue("available", !values.available)}
+                  color="primary"
+                />
+              }
+              label={intl.formatMessage({ id: "OPTIONS.AVAILABLE" })}
             />
 
             <div className={classes.textField}>
