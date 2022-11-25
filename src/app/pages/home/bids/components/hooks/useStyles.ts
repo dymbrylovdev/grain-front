@@ -431,6 +431,14 @@ export const useBidTableStyles = makeStyles(theme => ({
   disabled: {
     pointerEvents: 'none',
   },
+  transpoterTable: {
+    width: '1100px'
+  },
+  ["@media (max-width:1200px)"]: {
+    transpoterTable: {
+      width: '900px'
+    },
+  },
 }));
 
 export const useBidsPageStyles = makeStyles(theme => ({
@@ -980,5 +988,6 @@ export const useStylesPhotosForm = makeStyles(theme =>
     buttons: {
       marginRight: theme.spacing(2),
     },
+
   })
 );

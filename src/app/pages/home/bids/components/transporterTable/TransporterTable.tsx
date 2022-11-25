@@ -5,7 +5,7 @@ import { TablePaginator } from "../../../../../components/ui/Table/TablePaginato
 import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import EditIcon from "@material-ui/icons/Edit";
 import { useDispatch, shallowEqual, useSelector } from "react-redux";
-
+import { useBidTableStyles } from "../hooks/useStyles";
 
 interface IProps {
   transportersList: any;
@@ -16,22 +16,23 @@ interface IProps {
 }
 
 const TransporterTable = React.memo<IProps>(({ transportersList, fetch, page, perPage, total }) => {
+
+  const classes = useBidTableStyles();
   const { me } = useSelector(
     ({ auth }: any) => ({ me: auth.user }),
     shallowEqual
   );
   return (
-    <div>
+    <div className={classes.transpoterTable} >
       <div>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
               <TopTableCell>ФИО</TopTableCell>
-              <TopTableCell>E-mail</TopTableCell>
               <TopTableCell>Телефон</TopTableCell>
               <TopTableCell>Местоположение</TopTableCell>
-              <TopTableCell></TopTableCell>
-              <TopTableCell></TopTableCell>
+              <TopTableCell>Параметры</TopTableCell>
+              <TopTableCell>Действия</TopTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -39,9 +40,16 @@ const TransporterTable = React.memo<IProps>(({ transportersList, fetch, page, pe
               transportersList.map(item => (
                 <TableRow key={item.id}>
                   <TableCell>{item.firstname}</TableCell>
-                  <TableCell>{item.email}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item?.transport?.location?.text}</TableCell>
+                  <TableCell>
+                    {item?.transport?.weight && <div>Максимальный вес (тонна): {item?.transport?.weight}<br /></div>}
+                    {item?.transport?.amount && <div>Количество машин: {item?.transport?.amount}<br /></div>}
+                    {item?.transport?.overload && <div>Погрузка: {item?.transport?.overload}<br /></div>}
+                    {item?.transport?.sidewall_height && <div>Высота борта: {item?.transport?.sidewall_height}<br /></div>}
+                    {item?.transport?.length && <div>Длина машины: {item?.transport?.length}<br /></div>}
+                    {item?.transport?.name && <div>Название машины: {item?.transport?.name}<br /></div>}
+                  </TableCell>
                   <TableCell align="right">
                     <Tooltip title="Просмотреть профиль">
                       <IconButton size="medium" color="default" onClick={() => window.open(`/user/view/${item.id}`)}>

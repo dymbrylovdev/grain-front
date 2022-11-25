@@ -29,7 +29,7 @@ import { useSnackbar } from "notistack";
 import { useDispatch, shallowEqual, useSelector } from "react-redux";
 import { actions as usersActions } from '../../../../store/ducks/users.duck'
 import clsx from 'clsx'
-import TransporterTable from "./transporterTable/TransporterTable";
+import TransporterTable from './transporterTable/TransporterTable'
 
 
 interface IProps {
@@ -505,7 +505,7 @@ const Bid = React.memo<IProps>(
                     </>
                   )}
                   {bestAllMyMode !== "my-bids" &&
-                    (accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER"]) || (!user && guestLocation)) && (
+                    (accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER", "ROLE_VENDOR"]) || (!user && guestLocation)) && (
                       <>
                         {bestAllMyMode !== "edit" && (
                           <div className={innerClasses.wrapperPrice}>
@@ -585,7 +585,7 @@ const Bid = React.memo<IProps>(
                     </>
                   )}
                   {bestAllMyMode !== "my-bids" &&
-                    (accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER"]) || (!user && guestLocation)) && (
+                    (accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER", "ROLE_VENDOR"]) || (!user && guestLocation)) && (
                       <>
                         {bestAllMyMode !== "edit" && (
                           <div className={innerClasses.wrapperPrice}>
@@ -839,7 +839,6 @@ const Bid = React.memo<IProps>(
                           stopProp(e);
                           !me ? openAuthAlert() : openCompaniesDialog()
                         }}
-                      // onClick={!me ? openAuthAlert : openCompaniesDialog}
                       >
                         <LocalShippingIcon fontSize="large" />
                       </IconButton>
