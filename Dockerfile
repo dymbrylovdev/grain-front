@@ -1,4 +1,4 @@
-FROM gitlab.magic-egg.net:5005/ui/docker:latest
+FROM node:lts-alpine
 
 # Create app folder
 RUN mkdir -p /app
