@@ -36,6 +36,7 @@ deploy-dev:
     name: "development"
     url: "https://grain-dev.me-interactive.net"
   script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005
     - docker pull $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH
     - docker run -d --name grain_dev --hostname grain_dev -p 127.42.42.110:1006:3000 -e NODE_OPTIONS=--openssl-legacy-provider $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH 
 
@@ -47,6 +48,7 @@ deploy-master:
     name: "pre-prod"
     url: "https://grain.me-interactive.net"
   script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005
     - docker pull $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master
     - docker run -d --name grain_master --hostname grain_master -p 127.42.42.110:1016:3000 -e NODE_OPTIONS=--openssl-legacy-provider $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master
 
