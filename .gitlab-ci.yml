@@ -3,28 +3,28 @@ services:
   - docker:dind
  
 stages:
-  - build
+  # - build
   - deploy
-  - debug
+  # - debug
 
-# Билд джобы
-build-master:
-  stage: build
-  only: 
-    - master
-  script:
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005
-    - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master .
-    - docker push $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master
+# # Билд джобы
+# build-master:
+#   stage: build
+#   only: 
+#     - master
+#   script:
+#     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005
+#     - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master .
+#     - docker push $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master
 
-build-dev:
-  stage: build
-  except: 
-    - master
-  script:
-    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005
-    - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH .
-    - docker push $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH
+# build-dev:
+#   stage: build
+#   except: 
+#     - master
+#   script:
+#     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005
+#     - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH .
+#     - docker push $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH
 
 
 # Деплой
@@ -43,24 +43,24 @@ deploy-dev:
     - ssh-add ~/.ssh/id_rsa
     - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
   script:
-    - ssh publisher@host.me-interactive.net "bash publish.sh $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH 127.42.42.110:1006 grain_dev"
+    - docker ps -a
 
-deploy-master:
-  stage: deploy
-  only:
-    - master
-  environment: 
-    name: "pre-prod"
-    url: "https://grain.me-interactive.net"
-  before_script:
-    - mkdir -p ~/.ssh
-    - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
-  script:
-    - ssh publisher@host.me-interactive.net "bash publish.sh $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master 127.42.42.110:1016 grain_master"
+# deploy-master:
+#   stage: deploy
+#   only:
+#     - master
+#   environment: 
+#     name: "pre-prod"
+#     url: "https://grain.me-interactive.net"
+#   before_script:
+#     - mkdir -p ~/.ssh
+#     - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+#     - chmod 600 ~/.ssh/id_rsa
+#     - eval "$(ssh-agent -s)"
+#     - ssh-add ~/.ssh/id_rsa
+#     - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
+#   script:
+#     - ssh publisher@host.me-interactive.net "bash publish.sh $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master 127.42.42.110:1016 grain_master"
 
 deploy-prod:
   stage: deploy
