@@ -7,7 +7,7 @@ stages:
   - deploy
   - debug
 
-# Билд джобы
+# Билд джобы (master-only)
 build-master:
   stage: build
   only: 
@@ -35,15 +35,9 @@ deploy-dev:
   environment: 
     name: "development"
     url: "https://grain-dev.me-interactive.net"
-  before_script:
-    - mkdir -p ~/.ssh
-    - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
   script:
-    - ssh publisher@host.me-interactive.net "bash publish.sh $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH 127.42.42.110:1006 grain_dev"
+    - docker pull $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH
+    - docker run -d --name grain_dev --hostname grain_dev -p 127.42.42.110:1006:3000 -e NODE_OPTIONS=--openssl-legacy-provider $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH 
 
 deploy-master:
   stage: deploy
@@ -52,15 +46,10 @@ deploy-master:
   environment: 
     name: "pre-prod"
     url: "https://grain.me-interactive.net"
-  before_script:
-    - mkdir -p ~/.ssh
-    - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
   script:
-    - ssh publisher@host.me-interactive.net "bash publish.sh $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master 127.42.42.110:1016 grain_master"
+    - docker pull $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master
+    - docker run -d --name grain_master --hostname grain_master -p 127.42.42.110:1016:3000 -e NODE_OPTIONS=--openssl-legacy-provider $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master
+
 
 deploy-prod:
   stage: deploy
