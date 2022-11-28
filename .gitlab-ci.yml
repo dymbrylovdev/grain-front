@@ -7,20 +7,34 @@ stages:
   - deploy
   - debug
 
-# jobs for master:
-build:
+# Билд джобы
+build-master:
   stage: build
+  only: 
+    - master
   script:
     - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005
-    - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:$CI_COMMIT_BRANCH .
-    - docker push $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:$CI_COMMIT_BRANCH
+    - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master .
+    - docker push $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master
+
+build-dev:
+  stage: build
+  except: 
+    - master
+  script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005
+    - docker build --pull -t $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH .
+    - docker push $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH
 
 
+# Деплой
 deploy-dev:
   stage: deploy
+  except:
+    - master
   environment: 
     name: "development"
-    url: "$DOMEN_MASTER"
+    url: "https://grain-dev.me-interactive.net"
   before_script:
     - mkdir -p ~/.ssh
     - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
@@ -29,38 +43,40 @@ deploy-dev:
     - ssh-add ~/.ssh/id_rsa
     - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
   script:
-    - printf "NODE_PATH=src/\n" > web-environment.env
-    - scp -r ./web-environment.env $DEV_SERVER_USERNAME@${DEV_SERVER_IP}:~/
-    - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005; docker stop $CONTAINER_NAME_MASTER; docker rm $CONTAINER_NAME_MASTER --force; docker pull $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:$CI_COMMIT_BRANCH; docker run --restart always -p $PORT_MASTER --name $CONTAINER_NAME_MASTER --env-file web-environment.env -d $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:$CI_COMMIT_BRANCH"
+    - ssh publisher@host.me-interactive.net "bash publish.sh $GITLAB_REGISTRIES_URL/$IMAGE_DEV:$CI_COMMIT_BRANCH 127.42.42.110:1006 grain_dev"
+
+deploy-master:
+  stage: deploy
+  only:
+    - master
+  environment: 
+    name: "pre-prod"
+    url: "https://grain.me-interactive.net"
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
+  script:
+    - ssh publisher@host.me-interactive.net "bash publish.sh $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master 127.42.42.110:1016 grain_master"
 
 deploy-prod:
-  when: manual
   stage: deploy
-  environment:
+  when: manual
+  only:
+    - master
+  environment: 
     name: "production"
     url: "https://lk.kupit-zerno.com"
-  script:
-    - mkdir -p ~/.ssh
-    - echo "${PROD_PRIVATE_KEY}" |tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh -t -t -T -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null publisher@lk.kupit-zerno.com "docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005 && bash waiter.sh $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:$CI_COMMIT_BRANCH 3080 && docker logout"
-
-safemode-dev:
-  stage: debug
-  when: manual
-  environment: 
-    name: "development"
-    url: "$DOMEN_DEV"
-  variables:
-    GIT_STRATEGY: clone
   before_script:
     - mkdir -p ~/.ssh
-    - echo "$DEV_SERVER_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+    - echo "$PROD_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - eval "$(ssh-agent -s)"
     - ssh-add ~/.ssh/id_rsa
-    - ssh-keyscan -H $DEV_SERVER_IP >> ~/.ssh/known_hosts
+    - ssh-keyscan -H lk.kupit-zerno.com >> ~/.ssh/known_hosts
   script:
-    - printf "NODE_PATH=src/\n" > web-environment.env
-    - scp -r ./web-environment.env $DEV_SERVER_USERNAME@${DEV_SERVER_IP}:~/
-    - ssh $DEV_SERVER_USERNAME@$DEV_SERVER_IP "docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005; docker stop $CONTAINER_NAME_MASTER; docker rm $CONTAINER_NAME_MASTER --force; docker pull $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:$CI_COMMIT_BRANCH; docker run --restart always -p $PORT_MASTER --name $CONTAINER_NAME_MASTER --env-file web-environment.env -d $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:$CI_COMMIT_BRANCH"
+    - ssh publisher@lk.kupit-zerno.com "bash waiter.sh $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:master 3080"
+
