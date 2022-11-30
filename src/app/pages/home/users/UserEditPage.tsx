@@ -160,7 +160,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
       if (newValue === 2) accessTransporter() ? history.push("/user/profile/tariffs") : history.push("/user/profile/crops");
       if (newValue === 3) history.push("/user/profile/tariffs");
 
-    
+
     }
   };
 
@@ -266,9 +266,26 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                 textColor="primary"
                 aria-label="tabs"
               >
-                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(0)} />
+                <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })}
+                  {...a11yProps(0)}
+                />
 
-                {editMode !== "create" && !accessByRoles(me, ["ROLE_TRANSPORTER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && (
+                {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+                  (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
+                    <Tab
+                      label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
+                      // {...a11yProps(accessByRoles(me, ["ROLE_TRANSPORTER"]) ? 2 : 3)}
+                      {...a11yProps(accessByRoles(me, ["ROLE_TRANSPORTER"]) ? 2 : 1)}
+                    />
+                  )}
+
+                {!isTransporterProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
+                  <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(2)} />
+                )}
+                {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && editMode === "edit" && (
+                  <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.FILTERS" })} {...a11yProps(5)} />
+                )}
+                {/* {editMode !== "create" && !accessByRoles(me, ["ROLE_TRANSPORTER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && (
                   <Tab
                     classes={prompterRunning && prompterStep === 0 && isLocTabPulse ? { root: innerClasses.pulseRoot } : {}}
                     label={
@@ -280,13 +297,45 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                     }
                     {...a11yProps(1)}
                   />
+                )} */}
+
+                {/* {accessByRoles(me, ["ROLE_ADMIN"]) && editMode === "create" && !user ? null : (me &&
+                  editMode !== "create" &&
+                  accessTransporter()) ||
+                  accessByRoles(user, ["ROLE_TRANSPORTER"]) ? (
+                  <Tab
+                    label={intl.formatMessage({ id: "USER.EDIT_FORM.OPTIONS" })}
+                    {...a11yProps(accessByRoles(me, ["ROLE_TRANSPORTER"]) || accessByRoles(user, ["ROLE_TRANSPORTER"]) ? 1 : 2)}
+                  />
+                ) : (
+                  !isTransporterProfile() && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />
+                )} */}
+                {/*  */}
+                {editMode !== "create" && !accessByRoles(me, ["ROLE_TRANSPORTER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && (
+                  <Tab
+                    classes={prompterRunning && prompterStep === 0 && isLocTabPulse ? { root: innerClasses.pulseRoot } : {}}
+                    label={
+                      accessByRoles(editMode === "profile" ? me : user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"])
+                        ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS" })
+                        : accessByRoles(editMode === "profile" ? me : user, ["ROLE_VENDOR"])
+                          ? intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.SALE" })
+                          : intl.formatMessage({ id: "USER.EDIT_FORM.LOCATIONS.PURCHASE" })
+                    }
+                    {...a11yProps(1)}
+                  />
                 )}
 
-                {/* {(me && editMode !== "create" && accessTransporter()) */}
-
+                {/* {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+                  (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
+                    <Tab
+                      label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
+                      {...a11yProps(accessByRoles(me, ["ROLE_TRANSPORTER"]) ? 2 : 3)}
+                    />
+                  )} */}
+                {/*  */}
                 {accessByRoles(me, ["ROLE_ADMIN"]) && editMode === "create" && !user ? null : (me &&
-                    editMode !== "create" &&
-                    accessTransporter()) ||
+                  editMode !== "create" &&
+                  accessTransporter()) ||
                   accessByRoles(user, ["ROLE_TRANSPORTER"]) ? (
                   <Tab
                     label={intl.formatMessage({ id: "USER.EDIT_FORM.OPTIONS" })}
@@ -296,20 +345,20 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                   !isTransporterProfile() && <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(2)} />
                 )}
 
-                {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
-                  (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
-                  <Tab
-                    label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
-                    {...a11yProps(accessByRoles(me, ["ROLE_TRANSPORTER"]) ? 2 : 3)}
-                  />
-                )}
-
-                {!isTransporterProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
+                {/* {!isTransporterProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && editMode === "edit" && (
                   <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(4)} />
-                )}
-                {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && editMode === "edit" && (
+                )} */}
+                {/*  */}
+                {/* {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+                  (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
+                    <Tab
+                      label={intl.formatMessage({ id: "USER.EDIT_FORM.TARIFFS" })}
+                      {...a11yProps(accessByRoles(me, ["ROLE_TRANSPORTER"]) ? 2 : 3)}
+                    />
+                  )} */}
+                {/* {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"]) && editMode === "edit" && (
                   <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.FILTERS" })} {...a11yProps(5)} />
-                )}
+                )} */}
               </Tabs>
             ) : (
               <Skeleton width="100%" height={50} animation="wave" />
@@ -326,8 +375,16 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             />
           </TabPanel>
 
+          {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+            (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
+              <TabPanel value={valueTabs} index={accessByRoles(me, ["ROLE_TRANSPORTER"]) ? 2 : 1}>
+                <TariffForm editMode={editMode} userId={+id || undefined} />
+              </TabPanel>
+            )}
+
+
           {!accessByRoles(user, ["ROLE_TRANSPORTER"]) && !accessByRoles(me, ["ROLE_TRANSPORTER"]) && (
-            <TabPanel value={valueTabs} index={1}>
+            <TabPanel value={valueTabs} index={4}>
               {editMode === "create" ? (
                 <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
               ) : (
@@ -342,7 +399,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               {editMode === "create" ? <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p> : <OptionsForm editMode={editMode} />}
             </TabPanel>
           ) : (
-            <TabPanel value={valueTabs} index={2}>
+            <TabPanel value={valueTabs} index={5}>
               {editMode === "create" ? (
                 <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
               ) : (
@@ -351,15 +408,16 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             </TabPanel>
           )}
 
-          {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+          {/* {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
             (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
-            <TabPanel value={valueTabs} index={accessByRoles(me, ["ROLE_TRANSPORTER"]) ? 2 : 3}>
-              <TariffForm editMode={editMode} userId={+id || undefined} />
-            </TabPanel>
-          )}
+              <TabPanel value={valueTabs} index={accessByRoles(me, ["ROLE_TRANSPORTER"]) ? 2 : 3}>
+                <TariffForm editMode={editMode} userId={+id || undefined} />
+              </TabPanel>
+            )} */}
 
           {user && (
-            <TabPanel value={valueTabs} index={["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]) ? 4 : 3}>
+            // <TabPanel value={valueTabs} index={["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]) ? 4 : 3}>
+            <TabPanel value={valueTabs} index={["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]) ? 2 : 3}>
               <BidsForm userId={+id || undefined} classes={classes} isBuyer={user.is_buyer} />
             </TabPanel>
           )}
@@ -375,7 +433,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                   ? !isTransporterProfile()
                     ? 4
                     : 2
-                  : 5
+                  : 3
               }
             >
               <FilterForm match={match} userId={+id || undefined} />
