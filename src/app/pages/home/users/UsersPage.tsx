@@ -261,9 +261,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 <TopTableCell>
                   <FormattedMessage id="USERLIST.TABLE.NAME" />
                 </TopTableCell>
-                {/* <TopTableCell>
+                <TopTableCell>
                   <FormattedMessage id="USERLIST.TABLE.REGDATE" />
-                </TopTableCell> */}
+                </TopTableCell>
                 <TopTableCell>
                   <FormattedMessage id="USERLIST.TABLE.ROLE" />
                 </TopTableCell>
@@ -293,7 +293,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       </div>
                     </TableCell>
 
-                    {/* <TableCell>{console.log("reg1", item)}</TableCell> */}
+                    <TableCell>{intl.formatDate(item?.first_login_at)}</TableCell>
                     <TableCell>{roles.find(role => role.id === item.roles[0])?.value}</TableCell>
 
                     <TableCell>

@@ -44,6 +44,7 @@ export interface IUser {
   tariff_price?: number[];
   tariff_expired_at?: Date;
   tariff_start_date?: Date;
+  first_login_at?: Date;
   crops: ICrop[];
   available_filter_count: number;
   main_crop: {

@@ -125,9 +125,9 @@ const PaymentPage: React.FC<IProps & TPropsFromRedux & WrappedComponentProps & R
           aria-label="tabs"
         >
           <Tab label={intl.formatMessage({ id: "TARIFFS.PAYMENT.TAB1" })} {...a11yProps(0)} />
-          {me && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && (
+          {/* {me && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0]) && (
             <Tab label={intl.formatMessage({ id: "TARIFFS.PAYMENT.TAB2" })} {...a11yProps(1)} />
-          )}
+          )} */}
         </Tabs>
       </div>
 
