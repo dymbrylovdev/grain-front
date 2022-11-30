@@ -262,6 +262,9 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <FormattedMessage id="USERLIST.TABLE.NAME" />
                 </TopTableCell>
                 <TopTableCell>
+                  <FormattedMessage id="USERLIST.TABLE.REGDATE" />
+                </TopTableCell>
+                <TopTableCell>
                   <FormattedMessage id="USERLIST.TABLE.ROLE" />
                 </TopTableCell>
                 <TopTableCell>
@@ -290,6 +293,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       </div>
                     </TableCell>
 
+                    <TableCell>{intl.formatDate(item?.first_login_at)}</TableCell>
                     <TableCell>{roles.find(role => role.id === item.roles[0])?.value}</TableCell>
 
                     <TableCell>
