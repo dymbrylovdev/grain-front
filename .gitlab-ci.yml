@@ -74,5 +74,5 @@ deploy-prod:
     - ssh-add ~/.ssh/id_rsa
     - ssh-keyscan -H lk.kupit-zerno.com >> ~/.ssh/known_hosts
   script:
-    - ssh publisher@lk.kupit-zerno.com "bash waiter.sh $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:$CI_COMMIT_BRANCH 3080"
+    - ssh publisher@lk.kupit-zerno.com "docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://gitlab.magic-egg.net:5005 && bash waiter.sh $GITLAB_REGISTRIES_URL/$IMAGE_MASTER:$CI_COMMIT_BRANCH 3080 && docker logout https://gitlab.magic-egg.net:5005"
 
