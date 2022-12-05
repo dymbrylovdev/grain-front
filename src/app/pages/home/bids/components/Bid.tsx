@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { IconButton, Tooltip, CardMedia, Button, useMediaQuery, CircularProgress } from "@material-ui/core";
+import { IconButton, Tooltip, CardMedia, Button, useMediaQuery, CircularProgress, DialogProps } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { YMaps, Map } from "react-yandex-maps";
 import EditIcon from "@material-ui/icons/Edit";
+import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import DeleteIcon from "@material-ui/icons/Delete";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 import ArchiveIcon from "@material-ui/icons/Archive";
@@ -28,6 +29,7 @@ import { useSnackbar } from "notistack";
 import { useDispatch, shallowEqual, useSelector } from "react-redux";
 import { actions as usersActions } from '../../../../store/ducks/users.duck'
 import clsx from 'clsx'
+import TransporterTable from './transporterTable/TransporterTable'
 
 
 interface IProps {
@@ -101,6 +103,18 @@ const Bid = React.memo<IProps>(
       ({ auth }: any) => ({ me: auth.user }),
       shallowEqual
     );
+
+    const [authAlert, setAuthAlert] = useState(false);
+    const [openDialogCompanies, setOpenDialogCompanies] = useState(false);
+
+    const openCompaniesDialog = useCallback(() => {
+      setOpenDialogCompanies(true);
+    }, [openDialogCompanies]);
+
+    const openAuthAlert = useCallback(() => {
+      setAuthAlert(true);
+    }, [me]);
+
 
 
     const newBid = useMemo(() => {
@@ -347,6 +361,47 @@ const Bid = React.memo<IProps>(
             },
           ]}
         />
+
+        <Modal
+          DialogProps={{ maxWidth: "md" } as any}
+          open={openDialogCompanies}
+          onClose={false ? () => { } : () => setOpenDialogCompanies(false)}
+          title={""}
+          // loading={loadTransporters}
+          content={
+            <TransporterTable
+              transportersList={bid?.transports}
+              fetch={() => { }}
+              page={1}
+              perPage={bid?.transports?.length || 0}
+              total={bid && bid.transports?.length > 0 ? 1 : 0}
+            />
+          }
+          actions={[
+            {
+              title: "Закрыть",
+              onClick: () => {
+                setOpenDialogCompanies(false);
+              },
+            },
+          ]}
+        />
+
+        <Modal
+          open={authAlert}
+          onClose={() => setAuthAlert(false)}
+          title={"Чтобы продолжить действие с редактированием профиля или объявления, авторизуйтесь!"}
+          actions={[
+            {
+              title: "Cancel",
+              onClick: () => setAuthAlert(false),
+            },
+            {
+              title: "OK",
+              onClick: () => history.push("/auth"),
+            },
+          ]}
+        />
         <div className={innerClasses.container} onClick={() => handleClickEditOrViewBid(bid)}>
           <div className={innerClasses.imageBlock}>
             <div className={innerClasses.imageBlocks} style={{ zIndex: 1 }}>
@@ -450,7 +505,7 @@ const Bid = React.memo<IProps>(
                     </>
                   )}
                   {bestAllMyMode !== "my-bids" &&
-                    (accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER"]) || (!user && guestLocation)) && (
+                    (accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER", "ROLE_VENDOR"]) || (!user && guestLocation)) && (
                       <>
                         {bestAllMyMode !== "edit" && (
                           <div className={innerClasses.wrapperPrice}>
@@ -530,7 +585,7 @@ const Bid = React.memo<IProps>(
                     </>
                   )}
                   {bestAllMyMode !== "my-bids" &&
-                    (accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER"]) || (!user && guestLocation)) && (
+                    (accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER", "ROLE_BUYER", "ROLE_VENDOR"]) || (!user && guestLocation)) && (
                       <>
                         {bestAllMyMode !== "edit" && (
                           <div className={innerClasses.wrapperPrice}>
@@ -776,6 +831,17 @@ const Bid = React.memo<IProps>(
                           />
                         </Button>
                       )}
+                      <IconButton
+                        style={{ marginLeft: "20px" }}
+                        className={innerClasses.iconBtn}
+                        color="primary"
+                        onClick={e => {
+                          stopProp(e);
+                          !me ? openAuthAlert() : openCompaniesDialog()
+                        }}
+                      >
+                        <LocalShippingIcon fontSize="large" />
+                      </IconButton>
                     </>
                   )}
                   {bestAllMyMode === "my-bids" && archive && (

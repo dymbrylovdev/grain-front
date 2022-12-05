@@ -105,8 +105,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
             style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
           >
             {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE8" })}{" "}
-            {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5" })}
-            {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5_1" })}
+            {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5_2" })}
           </TableCell>
         </TableRow>
 
@@ -269,7 +268,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
           <TableRow>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
               {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}{" "}
-               100
+              100
             </TableCell>
           </TableRow>
 
@@ -371,7 +370,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
 
           <TableRow>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "} 
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "}
               {/* ? */}
               <b>
                 {accessByRoles(realUser, ["ROLE_BUYER"]) &&

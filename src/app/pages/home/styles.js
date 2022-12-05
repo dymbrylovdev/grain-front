@@ -223,6 +223,9 @@ const useStyles = makeStyles(theme => ({
       marginLeft: -theme.spacing(2),
       marginRight: -theme.spacing(2),
     },
+    displayNone: {
+      display: 'none'
+    },
   },
   formControl: {
     margin: theme.spacing(1),
@@ -236,6 +239,7 @@ const useStyles = makeStyles(theme => ({
     pointerEvents: "none",
     visibility: "hidden"
   },
+
 }));
 
 export default useStyles;
