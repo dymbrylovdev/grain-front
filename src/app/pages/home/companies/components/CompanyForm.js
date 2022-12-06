@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { Formik, Form } from "formik";
 import { injectIntl } from "react-intl";
 
-import { Paper, TextField, Button } from "@material-ui/core";
+import { Paper, TextField, Button, FormControlLabel, Checkbox } from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 
@@ -33,6 +33,7 @@ const getInitialValues = company => ({
   email2: company.email2 || "",
   mobile_phone: company.mobile_phone || "",
   telephone: company.telephone || "",
+  active: company.active || false
 });
 
 function CompanyForm({ intl, classes, company, submitAction, companyId }) {
@@ -457,6 +458,16 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 onBlur={handleBlur}
                 onChange={handleChange}
                 disabled={searchStatus && searchStatus.loading}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={values.active === true}
+                    onChange={() => setFieldValue("active", !values.active)}
+                    color="primary"
+                  />
+                }
+                label={intl.formatMessage({ id: "COMPANY.FORM.ACTIVE" })}
               />
               <StatusAlert status={status} />
               <div className={classes.buttonContainer}>
