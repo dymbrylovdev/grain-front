@@ -39,15 +39,18 @@ const TransporterTable = React.memo<IProps>(({ transportersList, fetch, page, pe
             {transportersList &&
               transportersList.map(item => (
                 <TableRow key={item.id}>
+                  {console.log("item?.transport", item?.transport)}
                   <TableCell>{item.firstname}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item?.transport?.location?.text}</TableCell>
                   <TableCell>
                     {item?.transport?.weight && <div>Максимальный вес (тонна): {item?.transport?.weight}<br /></div>}
                     {item?.transport?.amount && <div>Количество машин: {item?.transport?.amount}<br /></div>}
-                    {item?.transport?.overload && <div>Погрузка: {item?.transport?.overload}<br /></div>}
-                    {item?.transport?.sidewall_height && <div>Высота борта: {item?.transport?.sidewall_height}<br /></div>}
-                    {item?.transport?.length && <div>Длина машины: {item?.transport?.length}<br /></div>}
+                    {item?.transport?.overload && <div>Погрузка: {item?.transport?.loading === 'side' ? 'Боковая' : 'Задняя'}<br /></div>}
+                    {item?.transport?.overload && <div>Перегруз: {item?.transport?.overload === 'overload' ? 'Перегруз' : 'Норма'}<br /></div>}
+                    {item?.transport?.sidewall_height && <div>Высота борта(метры): {item?.transport?.sidewall_height}<br /></div>}
+                    {item?.transport?.sidewall_height && <div>Высота кабины(метры): {item?.transport?.cabin_height}<br /></div>}
+                    {item?.transport?.length && <div>Длина машины(метры): {item?.transport?.length}<br /></div>}
                     {item?.transport?.name && <div>Название машины: {item?.transport?.name}<br /></div>}
                   </TableCell>
                   <TableCell align="right">

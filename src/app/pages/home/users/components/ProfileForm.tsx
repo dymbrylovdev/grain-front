@@ -14,7 +14,6 @@ import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
 import CloseIcon from "@material-ui/icons/Close";
-
 import { actions as usersActions } from "../../../../store/ducks/users.duck";
 import { actions as authActions } from "../../../../store/ducks/auth.duck";
 import { actions as funnelStatesActions } from "../../../../store/ducks/funnelStates.duck";
@@ -33,6 +32,8 @@ import CompanyConfirmBlock from "../../companies/components/CompanyConfirmBlock"
 import CompanySearchForm from "../../companies/components/CompanySearchForm";
 import CompanyConfirmDialog from "./CompanyConfirmDialog";
 import { phoneCountryCodes, countries } from "../../../auth/phoneCountryCodes";
+import ClearIcon from '@material-ui/icons/Clear';
+
 
 const innerStyles = makeStyles((theme: Theme) => ({
   companyContainer: {
@@ -49,6 +50,16 @@ const innerStyles = makeStyles((theme: Theme) => ({
     "& fieldset": {
       animation: "2000ms ease-in-out infinite both TextFieldBorderPulse",
     },
+  },
+  mr: {
+    marginRight: '30px',
+  },
+  managerData: {
+    marginRight: '10px',
+    cursor: 'pointer'
+  },
+  eye: {
+    cursor: 'pointer'
   },
 }));
 
@@ -91,6 +102,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   userLoading,
   userSuccess,
   userError,
+  fetchUsers,
+  clearFetch,
+  users,
 
   editUserLoading,
   editUserSuccess,
@@ -179,6 +193,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       company_confirmed_by_payment: user ? user.company_confirmed_by_payment : false,
       company_name: user && user.company ? user.company.short_name : "",
       company_id: user && user.company ? user.company.id : 0,
+      managerId: user && user?.manager?.id ? user.manager?.id : '',
     }),
     [countryCode]
   );
@@ -239,6 +254,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         params.is_funnel_state_automate = values.is_funnel_state_automate;
         params.use_vat = values.use_vat;
         params.company_id = values.company_id;
+        params.managerId = values.managerId;
         editUser({ id: user.id, data: params });
       }
     },
@@ -425,6 +441,17 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     }
 
   }, [me, user]);
+
+  useEffect(() => {
+    accessByRoles(me, ["ROLE_ADMIN"]) &&
+      fetchUsers({ page: 1, perPage: 999, userRolesId: "ROLE_MANAGER" });
+    return () => {
+      clearFetch();
+    };
+  }, []);
+
+
+
 
   // useEffect(() => {
   // switch (editMode) {
@@ -679,8 +706,56 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           />
         )}
       </div>
+      {
+        accessByRoles(me, ["ROLE_ADMIN"]) &&
+        (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"])) && (
+          <div className={classes.textFieldContainer}>
+            {meLoading || userLoading ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <TextField
+                select
+                margin="normal"
+                label={'Менеджер'}
+                value={values?.managerId}
+                onChange={handleChange}
+                name="managerId"
+                variant="outlined"
+                InputProps={{
+                  endAdornment: (
+                    <>
+                      {values?.managerId ? (
+                        <IconButton className={innerClasses.eye} onClick={() => history.push(`/user/view/${values?.managerId}`)} >
+                          <VisibilityIcon color='action' />
+                        </IconButton>
+                      ) : null}
+                      <IconButton className={innerClasses.mr} onClick={() => setFieldValue("managerId", 0)} >
+                        <ClearIcon color='action' />
+                      </IconButton>
+                    </>
 
-      {!accessTransporter() &&
+                  ),
+                }}
+              >
+                {users?.map((i) => (
+                  <MenuItem value={i.id} style={{ backgroundColor: "#f2f2f2" }}>
+                    {i.surname && <span className={innerClasses.managerData}>{i.surname}</span>}
+                    {i.firstname && <span className={innerClasses.managerData}>{i.firstname}</span>}
+                    {i.email && <span className={innerClasses.managerData}> Email: {i.email}</span>}
+                    {i.phone && <span className={innerClasses.managerData}>Тел.: {i.phone}</span>}
+                  </MenuItem>
+                ))}
+
+              </TextField>
+            )
+            }
+          </div >
+        )
+      }
+
+
+      {
+        !accessTransporter() &&
         !(meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading)) &&
         editMode === "profile" &&
         me && (
@@ -708,71 +783,77 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               </Link>
             </Alert>
           </Collapse>
-        )}
+        )
+      }
 
-      {prompterRunning && prompterStep === 0 && !values.use_vat && (
-        <div>
-          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-            <Skeleton width="100%" height={37.5} animation="wave" />
-          ) : (
-            <div style={{ color: "#fd397a", marginBottom: 16 }}>
-              <ReportProblemIcon color="error" /> <b>{intl.formatMessage({ id: "USER.EDIT_FORM.ATTENTION" })}</b>
-            </div>
-          )}
-        </div>
-      )}
+      {
+        prompterRunning && prompterStep === 0 && !values.use_vat && (
+          <div>
+            {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+              <Skeleton width="100%" height={37.5} animation="wave" />
+            ) : (
+              <div style={{ color: "#fd397a", marginBottom: 16 }}>
+                <ReportProblemIcon color="error" /> <b>{intl.formatMessage({ id: "USER.EDIT_FORM.ATTENTION" })}</b>
+              </div>
+            )}
+          </div>
+        )
+      }
 
-      {!accessTransporter() && !accessByRoles(userView, ["ROLE_TRANSPORTER"]) && (
-        <div>
-          {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
-            <Skeleton width={135} height={37.5} animation="wave" />
-          ) : (
-            <FormControlLabel
-              control={<Checkbox checked={me ? values.use_vat : true} onChange={handleChange} />}
-              label={intl.formatMessage({ id: "USER.EDIT_FORM.USE_VAT" })}
-              name="use_vat"
-              disabled={editMode === "view" || !me}
-            />
-          )}
-        </div>
-      )}
+      {
+        !accessTransporter() && !accessByRoles(userView, ["ROLE_TRANSPORTER"]) && (
+          <div>
+            {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
+              <Skeleton width={135} height={37.5} animation="wave" />
+            ) : (
+              <FormControlLabel
+                control={<Checkbox checked={me ? values.use_vat : true} onChange={handleChange} />}
+                label={intl.formatMessage({ id: "USER.EDIT_FORM.USE_VAT" })}
+                name="use_vat"
+                disabled={editMode === "view" || !me}
+              />
+            )}
+          </div>
+        )
+      }
 
-      {editMode === "create" && (
-        <div className={classes.textFieldContainer}>
-          {meLoading || userLoading || funnelStatesLoading ? (
-            <Skeleton width="100%" height={70} animation="wave" />
-          ) : (
-            <TextField
-              select
-              type="country"
-              label={intl.formatMessage({
-                id: "AUTH.INPUT.COUNTRIES",
-              })}
-              margin="normal"
-              className={classes.textField}
-              name="country"
-              variant="outlined"
-              onBlur={handleBlur}
-              //@ts-ignore
-              onChange={e => {
-                handleCountryNameChange(e);
-                handleCountryCodeChange(e);
-              }}
-              value={countryName}
-              fullWidth
-              disabled={!me}
-            >
-              {countries.map(item => (
-                <MenuItem key={item.id} value={item.country}>
-                  {item.country}
-                </MenuItem>
-              ))}
-            </TextField>
-          )}
-        </div>
-      )}
+      {
+        editMode === "create" && (
+          <div className={classes.textFieldContainer}>
+            {meLoading || userLoading || funnelStatesLoading ? (
+              <Skeleton width="100%" height={70} animation="wave" />
+            ) : (
+              <TextField
+                select
+                type="country"
+                label={intl.formatMessage({
+                  id: "AUTH.INPUT.COUNTRIES",
+                })}
+                margin="normal"
+                className={classes.textField}
+                name="country"
+                variant="outlined"
+                onBlur={handleBlur}
+                //@ts-ignore
+                onChange={e => {
+                  handleCountryNameChange(e);
+                  handleCountryCodeChange(e);
+                }}
+                value={countryName}
+                fullWidth
+                disabled={!me}
+              >
+                {countries.map(item => (
+                  <MenuItem key={item.id} value={item.country}>
+                    {item.country}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
+          </div>
+        )
+      }
 
-      {/*{editMode === "view" && !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) ? null : (*/}
       <div className={classes.textFieldContainer}>
         {meLoading || userLoading || (editMode !== "profile" && funnelStatesLoading) ? (
           <Skeleton width="100%" height={70} animation="wave" />
@@ -809,144 +890,177 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}*/}
 
-      {me && editMode !== "create" && (
-        <div>
-          {currentUser && currentUser.company ? (
-            <>
+      {
+        me && editMode !== "create" && (
+          <div>
+            {currentUser && currentUser.company ? (
+              <>
+                <div className={classes.textFieldContainer}>
+                  {meLoading || userLoading || editLoading ? (
+                    <Skeleton width="100%" height={70} animation="wave" />
+                  ) : (
+                    <>
+                      <TextField
+                        type="text"
+                        label={intl.formatMessage({
+                          id: "PROFILE.INPUT.COMPANY",
+                        })}
+                        margin="normal"
+                        name="company_name"
+                        value={values.company_name}
+                        variant="outlined"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        disabled={true}
+                        className={classes.textField}
+                      />
+                      {editMode !== "view" && (
+                        <IconButton size={"medium"} color="secondary" onClick={() => setCompanyAlertOpen(true)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      )}
+                    </>
+                  )}
+                </div>
+                <CompanyConfirmBlock
+                  user={editMode === "profile" ? me : user}
+                  values={values}
+                  handleChange={editMode === "profile" ? editMe : ({ data }: any) => editUser({ id: userId as number, data: data })}
+                  disabled={editMode === "profile" || editMode === "view" || !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
+                  loading={editMeLoading || editLoading}
+                // loading={!currentUser || meLoading || userLoading || editLoading}
+                />
+                {!values.company_confirmed_by_email &&
+                  !values.company_confirmed_by_payment &&
+                  !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
+                  editMode !== "view" && (
+                    <div className={classes.textFieldContainer}>
+                      {!currentUser || meLoading || userLoading ? (
+                        <Skeleton width={170} height={70} animation="wave" />
+                      ) : (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            setCompanyConfirmId(values.company_id);
+                            setIsOpenCompanyConfirm(true);
+                          }}
+                        >
+                          {intl.formatMessage({ id: "COMPANY.CONFIRM.BUTTON" })}
+                        </Button>
+                      )}
+                    </div>
+                  )}
+              </>
+            ) : !currentUser || meLoading || userLoading ? (
               <div className={classes.textFieldContainer}>
-                {meLoading || userLoading || editLoading ? (
-                  <Skeleton width="100%" height={70} animation="wave" />
-                ) : (
-                  <>
-                    <TextField
-                      type="text"
-                      label={intl.formatMessage({
-                        id: "PROFILE.INPUT.COMPANY",
-                      })}
-                      margin="normal"
-                      name="company_name"
-                      value={values.company_name}
-                      variant="outlined"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      disabled={true}
-                      className={classes.textField}
-                    />
-                    {editMode !== "view" && (
-                      <IconButton size={"medium"} color="secondary" onClick={() => setCompanyAlertOpen(true)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    )}
-                  </>
-                )}
+                <Skeleton width="100%" height={70} animation="wave" />
               </div>
-              <CompanyConfirmBlock
-                user={editMode === "profile" ? me : user}
+            ) : (
+              <div className={classes.textFieldContainer} style={{ fontSize: 16 }}>
+                {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
+              </div>
+            )}
+            {(!!currentUser?.company_confirmed_by_email || !!currentUser?.company_confirmed_by_payment) && !!currentUser?.company?.colors && (
+              <TrafficLight intl={intl} colors={currentUser.company.colors} />
+            )}
+
+            {me && editMode !== "view" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !!currentUser && !!currentUser.company && (
+              <div className={classes.bottomButtonsContainer}>
+                <div className={classes.button}>
+                  <ButtonWithLoader
+                    loading={false}
+                    disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
+                    onPress={() => history.push(`/company/edit/${currentUser.company?.id}`)}
+                  >
+                    {intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })}
+                  </ButtonWithLoader>
+                </div>
+              </div>
+            )}
+
+            {editMode !== "view" && !!currentUser && !currentUser.company && (
+              <CompanySearchForm
+                me={me}
+                classes={classes}
+                company={currentUser && currentUser.company}
+                setCompanyAction={(company: any) => {
+                  setFieldValue("company_id", company && company.id);
+                  setFieldValue("company_name", company && company.short_name);
+                  setFieldValue("company_confirmed_by_email", false);
+                  setFieldValue("company_confirmed_by_phone", false);
+                  setFieldValue("company_confirmed_by_payment", false);
+                }}
+                editAction={editMode === "profile" ? editMe : ({ data }: any) => editUser({ id: userId as number, data: data })}
                 values={values}
-                handleChange={editMode === "profile" ? editMe : ({ data }: any) => editUser({ id: userId as number, data: data })}
-                disabled={editMode === "profile" || editMode === "view" || !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
-                loading={editMeLoading || editLoading}
-              // loading={!currentUser || meLoading || userLoading || editLoading}
+                confirms={editMode === "profile" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
               />
-              {!values.company_confirmed_by_email &&
-                !values.company_confirmed_by_payment &&
-                !accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) &&
-                editMode !== "view" && (
-                  <div className={classes.textFieldContainer}>
-                    {!currentUser || meLoading || userLoading ? (
-                      <Skeleton width={170} height={70} animation="wave" />
-                    ) : (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          setCompanyConfirmId(values.company_id);
-                          setIsOpenCompanyConfirm(true);
-                        }}
-                      >
-                        {intl.formatMessage({ id: "COMPANY.CONFIRM.BUTTON" })}
-                      </Button>
-                    )}
-                  </div>
-                )}
-            </>
-          ) : !currentUser || meLoading || userLoading ? (
-            <div className={classes.textFieldContainer}>
-              <Skeleton width="100%" height={70} animation="wave" />
-            </div>
-          ) : (
-            <div className={classes.textFieldContainer} style={{ fontSize: 16 }}>
-              {intl.formatMessage({ id: "COMPANY.FORM.NO_COMPANY" })}
-            </div>
-          )}
-          {(!!currentUser?.company_confirmed_by_email || !!currentUser?.company_confirmed_by_payment) && !!currentUser?.company?.colors && (
-            <TrafficLight intl={intl} colors={currentUser.company.colors} />
-          )}
-
-          {me && editMode !== "view" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !!currentUser && !!currentUser.company && (
-            <div className={classes.bottomButtonsContainer}>
-              <div className={classes.button}>
-                <ButtonWithLoader
-                  loading={false}
-                  disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
-                  onPress={() => history.push(`/company/edit/${currentUser.company?.id}`)}
-                >
-                  {intl.formatMessage({ id: "COMPANY.EDIT.TITLE" })}
-                </ButtonWithLoader>
-              </div>
-            </div>
-          )}
-
-          {editMode !== "view" && !!currentUser && !currentUser.company && (
-            <CompanySearchForm
-              me={me}
-              classes={classes}
-              company={currentUser && currentUser.company}
-              setCompanyAction={(company: any) => {
-                setFieldValue("company_id", company && company.id);
-                setFieldValue("company_name", company && company.short_name);
+            )}
+            <CompanyConfirmDialog
+              id={companyConfirmId}
+              intl={intl}
+              isOpen={isOpenCompanyConfirm}
+              handleClose={() => setIsOpenCompanyConfirm(false)}
+            />
+            <AlertDialog
+              isOpen={isCompanyAlertOpen}
+              text={intl.formatMessage({
+                id: "COMPANY.DIALOGS.DELETE_TEXT",
+              })}
+              okText={intl.formatMessage({
+                id: "COMPANY.DIALOGS.AGREE_TEXT",
+              })}
+              cancelText={intl.formatMessage({
+                id: "COMPANY.DIALOGS.CANCEL_TEXT",
+              })}
+              handleClose={() => setCompanyAlertOpen(false)}
+              handleAgree={() => {
+                setFieldValue("company_id", 0);
                 setFieldValue("company_confirmed_by_email", false);
                 setFieldValue("company_confirmed_by_phone", false);
                 setFieldValue("company_confirmed_by_payment", false);
+                handleSubmit();
+                setCompanyAlertOpen(false);
               }}
-              editAction={editMode === "profile" ? editMe : ({ data }: any) => editUser({ id: userId as number, data: data })}
-              values={values}
-              confirms={editMode === "profile" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"])}
+              loadingText={intl.formatMessage({
+                id: "COMPANY.DIALOGS.LOADING_TEXT",
+              })}
+              isLoading={editMeLoading || editLoading}
             />
-          )}
-          <CompanyConfirmDialog
-            id={companyConfirmId}
-            intl={intl}
-            isOpen={isOpenCompanyConfirm}
-            handleClose={() => setIsOpenCompanyConfirm(false)}
-          />
-          <AlertDialog
-            isOpen={isCompanyAlertOpen}
-            text={intl.formatMessage({
-              id: "COMPANY.DIALOGS.DELETE_TEXT",
-            })}
-            okText={intl.formatMessage({
-              id: "COMPANY.DIALOGS.AGREE_TEXT",
-            })}
-            cancelText={intl.formatMessage({
-              id: "COMPANY.DIALOGS.CANCEL_TEXT",
-            })}
-            handleClose={() => setCompanyAlertOpen(false)}
-            handleAgree={() => {
-              setFieldValue("company_id", 0);
-              setFieldValue("company_confirmed_by_email", false);
-              setFieldValue("company_confirmed_by_phone", false);
-              setFieldValue("company_confirmed_by_payment", false);
-              handleSubmit();
-              setCompanyAlertOpen(false);
-            }}
-            loadingText={intl.formatMessage({
-              id: "COMPANY.DIALOGS.LOADING_TEXT",
-            })}
-            isLoading={editMeLoading || editLoading}
-          />
-        </div>
-      )}
+
+            <CompanyConfirmDialog
+              id={companyConfirmId}
+              intl={intl}
+              isOpen={isOpenCompanyConfirm}
+              handleClose={() => setIsOpenCompanyConfirm(false)}
+            />
+            <AlertDialog
+              isOpen={isCompanyAlertOpen}
+              text={intl.formatMessage({
+                id: "COMPANY.DIALOGS.DELETE_TEXT",
+              })}
+              okText={intl.formatMessage({
+                id: "COMPANY.DIALOGS.AGREE_TEXT",
+              })}
+              cancelText={intl.formatMessage({
+                id: "COMPANY.DIALOGS.CANCEL_TEXT",
+              })}
+              handleClose={() => setCompanyAlertOpen(false)}
+              handleAgree={() => {
+                setFieldValue("company_id", 0);
+                setFieldValue("company_confirmed_by_email", false);
+                setFieldValue("company_confirmed_by_phone", false);
+                setFieldValue("company_confirmed_by_payment", false);
+                handleSubmit();
+                setCompanyAlertOpen(false);
+              }}
+              loadingText={intl.formatMessage({
+                id: "COMPANY.DIALOGS.LOADING_TEXT",
+              })}
+              isLoading={editMeLoading || editLoading}
+            />
+          </div>
+        )}
 
       {me && (
         <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
@@ -960,80 +1074,106 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               </ButtonWithLoader>
             </div>
           )}
-
-          <div className={classes.flexRow} style={{ marginTop: 4, marginBottom: 4 }}>
-            {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRANSPORTER"]) && !(editMode === "view") && (
-              <div className={classes.button}>
-                <ButtonWithLoader
-                  loading={editMeLoading || createLoading || editLoading}
-                  disabled={
-                    editMeLoading ||
-                    createLoading ||
-                    editLoading ||
-                    meLoading ||
-                    userLoading ||
-                    userActivateLoading ||
-                    (editMode !== "profile" && funnelStatesLoading) ||
-                    isEqual(oldValues, values)
-                  }
-                  onPress={onEmailConfirm}
-                >
-                  {intl.formatMessage({ id: "USER.EDIT_FORM.ACTIVATE" })}
-                </ButtonWithLoader>
-              </div>
-            )}
-
-            {editMode !== "view" && (
-              <div className={classes.button}>
-                <ButtonWithLoader
-                  loading={editMeLoading || createLoading || editLoading}
-                  disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
-                  onPress={() => {
-                    setPasswordChange(true);
-                    setChangePasswordModalOpen(true);
-                  }}
-                >
-                  {intl.formatMessage({ id: "ALL.BUTTONS.CHANGE.PASSWORD" })}
-                </ButtonWithLoader>
-              </div>
-            )}
-
-            {editMode !== "view" && (
-              <div className={classes.button}>
-                <ButtonWithLoader
-                  loading={editMeLoading || createLoading || editLoading}
-                  disabled={
-                    editMeLoading ||
-                    createLoading ||
-                    editLoading ||
-                    meLoading ||
-                    userLoading ||
-                    (editMode !== "profile" && funnelStatesLoading) ||
-                    isEqual(oldValues, values)
-                  }
-                  onPress={handleSubmit}
-                >
-                  {editMode === "create"
-                    ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
-                    : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
-                </ButtonWithLoader>
-              </div>
-            )}
-
-            {editMode === "edit" && me?.is_admin && (
-              <div className={classes.button}>
-                <OutlinedRedButton
-                  variant="outlined"
-                  onClick={() => setAlertOpen(true)}
-                  disabled={meLoading || userLoading || funnelStatesLoading}
-                >
-                  {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
-                </OutlinedRedButton>
-              </div>
-            )}
-          </div>
         </div>
-      )}
+      )
+      }
+
+      {
+        meLoading || userLoading || funnelStatesLoading || !statuses ? (
+          <Skeleton width="100%" height={70} animation="wave" />
+        ) : (
+          <div>Дата регистрации: {firstDate()}</div>
+        )
+      }
+
+      {
+        me && (
+          <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
+            {!isTransporterProfile() && editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
+              <div className={classes.button} style={{ marginTop: 4, marginBottom: 4 }}>
+                <ButtonWithLoader
+                  disabled={!user}
+                  onPress={() => history.push(`/bid/create/${user?.is_buyer ? "purchase" : "sale"}/0/0/${user?.id}`)}
+                >
+                  {intl.formatMessage({ id: "ALL.BUTTONS.BID_CREATE" })}
+                </ButtonWithLoader>
+              </div>
+            )}
+
+            <div className={classes.flexRow} style={{ marginTop: 4, marginBottom: 4 }}>
+              {accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRANSPORTER"]) && !(editMode === "view") && (
+                <div className={classes.button}>
+                  <ButtonWithLoader
+                    loading={editMeLoading || createLoading || editLoading}
+                    disabled={
+                      editMeLoading ||
+                      createLoading ||
+                      editLoading ||
+                      meLoading ||
+                      userLoading ||
+                      userActivateLoading ||
+                      (editMode !== "profile" && funnelStatesLoading) ||
+                      isEqual(oldValues, values)
+                    }
+                    onPress={onEmailConfirm}
+                  >
+                    {intl.formatMessage({ id: "USER.EDIT_FORM.ACTIVATE" })}
+                  </ButtonWithLoader>
+                </div>
+              )}
+
+              {editMode !== "view" && (
+                <div className={classes.button}>
+                  <ButtonWithLoader
+                    loading={editMeLoading || createLoading || editLoading}
+                    disabled={editMeLoading || createLoading || editLoading || meLoading || userLoading}
+                    onPress={() => {
+                      setPasswordChange(true);
+                      setChangePasswordModalOpen(true);
+                    }}
+                  >
+                    {intl.formatMessage({ id: "ALL.BUTTONS.CHANGE.PASSWORD" })}
+                  </ButtonWithLoader>
+                </div>
+              )}
+
+              {editMode !== "view" && (
+                <div className={classes.button}>
+                  <ButtonWithLoader
+                    loading={editMeLoading || createLoading || editLoading}
+                    disabled={
+                      editMeLoading ||
+                      createLoading ||
+                      editLoading ||
+                      meLoading ||
+                      userLoading ||
+                      (editMode !== "profile" && funnelStatesLoading) ||
+                      isEqual(oldValues, values)
+                    }
+                    onPress={handleSubmit}
+                  >
+                    {editMode === "create"
+                      ? intl.formatMessage({ id: "ALL.BUTTONS.CREATE" })
+                      : intl.formatMessage({ id: "ALL.BUTTONS.SAVE" })}
+                  </ButtonWithLoader>
+                </div>
+              )}
+
+              {editMode === "edit" && me?.is_admin && (
+                <div className={classes.button}>
+                  <OutlinedRedButton
+                    variant="outlined"
+                    onClick={() => setAlertOpen(true)}
+                    disabled={meLoading || userLoading || funnelStatesLoading}
+                  >
+                    {intl.formatMessage({ id: "ALL.BUTTONS.DELETE" })}
+                  </OutlinedRedButton>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      }
 
       <Dialog
         open={isChangePasswordModalOpen}
@@ -1177,6 +1317,7 @@ const connector = connect(
 
     openInfoAlert: state.users.openInfoAlert,
     userView: state.users.user,
+    users: state.users.users,
 
     editNoNoti: state.auth.editNoNoti,
 
@@ -1197,6 +1338,8 @@ const connector = connect(
     createUser: usersActions.createRequest,
     clearEditUser: usersActions.clearEdit,
     editUser: usersActions.editRequest,
+    fetchUsers: usersActions.fetchRequest,
+    clearFetch: usersActions.clearFetch,
 
     clearActivateUser: usersActions.clearUserActive,
     activateUser: usersActions.userActiveRequest,

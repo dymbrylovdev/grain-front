@@ -778,6 +778,8 @@ function* createSaga({ payload }: { payload: IUserForCreate }) {
 }
 
 function* editSaga({ payload }: { payload: { id: number; data: IUserForEdit } }) {
+  console.log('payload', payload);
+
   try {
     const { data }: { data: IServerResponse<IUser> } = yield call(() => editUser(payload.id, payload.data));
     yield put(actions.editSuccess(data));

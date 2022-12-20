@@ -52,7 +52,9 @@ export interface IUser {
     name: string;
     vat: number;
   };
-  transport: ITransport
+  transport: ITransport;
+  manager?: any;
+
 }
 
 export interface IUserForRegister {
@@ -101,6 +103,7 @@ export interface IUserForEdit {
   tariff_expired_at?: Date;
   crop_ids?: number[];
   main_crop_id?: number;
+  managerId?: number;
 }
 
 export interface IChangePasswordData {
