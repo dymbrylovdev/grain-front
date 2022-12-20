@@ -948,15 +948,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}
 
-      {meLoading || userLoading || funnelStatesLoading || !statuses ? (
-        <Skeleton width="100%" height={70} animation="wave" />
-      ) : (
-        <div>Дата регистрации: {firstDate()}</div>
-      )}
-
-
-
-
       {me && (
         <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
           {!isTransporterProfile() && editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (

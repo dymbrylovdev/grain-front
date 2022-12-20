@@ -243,6 +243,19 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     return accessByRoles(me, ["ROLE_ADMIN"]) && editMode === "profile";
   }, [user, editMode]);
 
+  const firstDate = useCallback(() => {
+    if (editMode === "view") {
+      return intl.formatDate(user?.first_login_at)
+    }
+    if (editMode === "profile") {
+      return intl.formatDate(me?.first_login_at)
+    }
+    if (editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN"])) {
+      return intl.formatDate(user?.first_login_at)
+    }
+
+  }, [me, user]);
+
   return (
     <>
       <ScrollToTop />
@@ -269,6 +282,8 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
           </div>
           <AppBar position="static" color="default" className={classes.appBar}>
             {user || window.location.href.includes("profile") || window.location.href.includes("create") ? (
+              <>
+              <div>Дата регистрации: {firstDate()}</div>
               <Tabs
                 value={valueTabs}
                 onChange={handleTabsChange}
@@ -322,6 +337,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                   )
                 )}
               </Tabs>
+              </>
             ) : (
               <Skeleton width="100%" height={50} animation="wave" />
             )}
