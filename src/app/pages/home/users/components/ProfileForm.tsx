@@ -193,7 +193,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       company_confirmed_by_payment: user ? user.company_confirmed_by_payment : false,
       company_name: user && user.company ? user.company.short_name : "",
       company_id: user && user.company ? user.company.id : 0,
-      managerId: user && user?.manager?.id ? user.manager?.id : 0,
+      managerId: user && user?.manager?.id ? user.manager?.id : '',
     }),
     [countryCode]
   );
@@ -724,11 +724,11 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 InputProps={{
                   endAdornment: (
                     <>
-                      {values?.managerId && (
+                      {values?.managerId ? (
                         <IconButton className={innerClasses.eye} onClick={() => history.push(`/user/view/${values?.managerId}`)} >
                           <VisibilityIcon color='action' />
                         </IconButton>
-                      )}
+                      ) : null}
                       <IconButton className={innerClasses.mr} onClick={() => setFieldValue("managerId", 0)} >
                         <ClearIcon color='action' />
                       </IconButton>
@@ -737,8 +737,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                   ),
                 }}
               >
-                <MenuItem style={{ backgroundColor: "#f2f2f2" }}>jhvvgf</MenuItem>
-
                 {users?.map((i) => (
                   <MenuItem value={i.id} style={{ backgroundColor: "#f2f2f2" }}>
                     {i.surname && <span className={innerClasses.managerData}>{i.surname}</span>}
