@@ -17,4 +17,4 @@ EXPOSE 3000
 
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
-CMD ["npm", "run", "server"]
+CMD ["npm", "run", "serve"]
