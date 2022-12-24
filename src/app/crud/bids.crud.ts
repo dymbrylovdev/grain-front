@@ -82,7 +82,6 @@ export const createBid = (
 };
 
 export const editBid = (id: number, data: IBidToRequest) => {
-  console.log(data);
   return axios.put(`${AD_URL}/${id}`, data);
 };
 
