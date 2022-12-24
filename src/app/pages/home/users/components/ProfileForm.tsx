@@ -193,7 +193,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       company_confirmed_by_payment: user ? user.company_confirmed_by_payment : false,
       company_name: user && user.company ? user.company.short_name : "",
       company_id: user && user.company ? user.company.id : 0,
-      managerId: user && user?.manager?.id ? user.manager?.id : '',
+      managerId: user && user?.manager?.id ? user.manager?.id : 0,
+      active: true,
     }),
     [countryCode]
   );
@@ -890,6 +891,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )}*/}
 
+
+
       {
         me && editMode !== "create" && (
           <div>
@@ -922,6 +925,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                     </>
                   )}
                 </div>
+
                 <CompanyConfirmBlock
                   user={editMode === "profile" ? me : user}
                   values={values}
@@ -979,6 +983,9 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               </div>
             )}
 
+
+
+
             {editMode !== "view" && !!currentUser && !currentUser.company && (
               <CompanySearchForm
                 me={me}
@@ -1028,6 +1035,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               isLoading={editMeLoading || editLoading}
             />
 
+
+
             <CompanyConfirmDialog
               id={companyConfirmId}
               intl={intl}
@@ -1062,6 +1071,21 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
           </div>
         )}
 
+      {((accessByRoles(me, ["ROLE_ADMIN"]) &&
+        (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"]))) ||
+        (accessByRoles(me, ["ROLE_BUYER"]) || accessByRoles(me, ["ROLE_VENDOR"]))) &&
+        (<FormControlLabel
+          control={
+            <Checkbox
+              checked={values.active === true}
+              onChange={() => setFieldValue("active", !values.active)}
+            />
+          }
+          label={intl.formatMessage({ id: "COMPANY.FORM.ACTIVE" })}
+        />
+        )}
+
+
       {me && (
         <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
           {!isTransporterProfile() && editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
@@ -1077,6 +1101,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         </div>
       )
       }
+
 
       {
         me && (

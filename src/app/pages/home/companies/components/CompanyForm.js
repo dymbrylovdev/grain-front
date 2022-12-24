@@ -459,16 +459,7 @@ function CompanyForm({ intl, classes, company, submitAction, companyId }) {
                 onChange={handleChange}
                 disabled={searchStatus && searchStatus.loading}
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={values.active === true}
-                    onChange={() => setFieldValue("active", !values.active)}
-                    color="primary"
-                  />
-                }
-                label={intl.formatMessage({ id: "COMPANY.FORM.ACTIVE" })}
-              />
+
               <StatusAlert status={status} />
               <div className={classes.buttonContainer}>
                 <ButtonWithLoader
