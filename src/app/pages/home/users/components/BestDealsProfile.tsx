@@ -221,7 +221,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
                   <FormattedMessage id="DEALS.TABLE.PROFIT" />
                 </TopTableCell>
                 <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.DISTANCE" />
+                  %
                 </TopTableCell>
                 <TopTableCell>
                   <FormattedMessage id="BIDSLIST.TABLE.TIME" />
@@ -338,28 +338,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
                       </div>
                     </TableCell>
                     {getProfit(item)}
-                    {getDistance(item).data}
+                    <TableCell>{((item.profit_with_delivery_price/item.purchase_bid.price_with_delivery)*100).toFixed(0)}%</TableCell>
                     <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        size="medium"
-                        color="primary"
-                        onClick={() => history.push(`/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`)}
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
-                      <Button
-                        disabled={typeof loadDistanation === "number"}
-                        variant="text"
-                        color="primary"
-                        onClick={() => {
-                          setCurrentDeal(item);
-                          setLoadDistanation(i);
-                        }}
-                      >
-                        {loadDistanation === i ? <CircularProgress size={20} /> : <div>Уточнить расстояние</div>}
-                      </Button>
-                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
