@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { WrappedComponentProps, injectIntl } from "react-intl";
-import { TextField, MenuItem, Theme, FormControlLabel, Checkbox, IconButton, Collapse, Button, Dialog } from "@material-ui/core";
+import { TextField, MenuItem, Theme, FormControlLabel, Checkbox, IconButton, Collapse, Button, Dialog, Typography } from "@material-ui/core";
 import { Alert, Skeleton } from "@material-ui/lab";
 import { Link, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
@@ -451,6 +451,20 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     };
   }, []);
 
+  const getManagerName = () => {
+    if(user?.manager.surname) {
+      return user?.manager.surname
+    }
+    if (user?.manager.login) {
+      return user?.manager.login
+    }
+    if (user?.manager.email) {
+      return user?.manager.email
+    }
+    if (user?.manager.phone) {
+      return user?.manager.phone
+    }
+  }
 
 
 
@@ -1074,15 +1088,16 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       {((accessByRoles(me, ["ROLE_ADMIN"]) &&
         (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"]))) ||
         (accessByRoles(me, ["ROLE_BUYER"]) || accessByRoles(me, ["ROLE_VENDOR"]))) &&
-        (<FormControlLabel
-          control={
-            <Checkbox
-              checked={values.active === true}
-              onChange={() => setFieldValue("active", !values.active)}
-            />
-          }
-          label={intl.formatMessage({ id: "COMPANY.FORM.ACTIVE" })}
-        />
+        (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={values.active === true}
+                onChange={() => setFieldValue("active", !values.active)}
+              />
+            }
+            label={intl.formatMessage({ id: "COMPANY.FORM.ACTIVE" }) + '. Менеджер: ' + getManagerName()}
+          />
         )}
 
 
