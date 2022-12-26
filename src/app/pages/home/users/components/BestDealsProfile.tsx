@@ -109,7 +109,12 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
       if (localDistance.data && typeof localDistance.data === "number" && currentCrop && currentCrop.delivery_price_coefficient) {
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         return (
-          <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined}>
+          <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
+            color: Math.sign(currentDeal.purchase_bid.price -
+              Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
+              distance * currentCrop.delivery_price_coefficient) || 
+              Math.sign(currentDeal.purchase_bid.price - currentDeal.sale_bid.price - distance * currentCrop.delivery_price_coefficient) === 1? "#21BA88" : "000000"
+          }}>
             {!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat ? (
               <>
                 {currentDeal.purchase_bid.price -
@@ -122,7 +127,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
           </TableCell>
         );
       }
-      return <TableCell>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
+      return <TableCell style={{
+        color: Math.sign(currentDeal.profit_with_delivery_price) === 1? "#21BA88" : "000000"
+      }}>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
     },
     [getCurrentCrop, getDistance]
   );
@@ -338,6 +345,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
                       </div>
                     </TableCell>
                     {getProfit(item)}
+                    
                     <TableCell>{((item.profit_with_delivery_price/item.purchase_bid.price_with_delivery)*100).toFixed(0)}%</TableCell>
                     <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
                   </TableRow>
