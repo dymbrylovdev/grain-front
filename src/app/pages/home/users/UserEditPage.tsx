@@ -357,11 +357,11 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             </TabPanel>
           )}
           {accessByRoles(me, ["ROLE_BUYER", "ROLE_ADMIN", "ROLE_TRADER"]) && (
-            <TabPanel value={valueTabs} index={1}>
+            <TabPanel value={valueTabs} index={editMode === "profile" ? 0 : 1}>
               <BestDealsProfile vendorId={+id} />
             </TabPanel>
           )}
-          <TabPanel value={valueTabs} index={2}>
+          <TabPanel value={valueTabs} index={editMode === "profile" ? 1 : 2}>
             <ProfileForm
               userId={+id || undefined}
               isTransporterProfile={isTransporterProfile}
@@ -379,7 +379,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             )}
 
           {!accessByRoles(user, ["ROLE_TRANSPORTER"]) && !accessByRoles(me, ["ROLE_TRANSPORTER"]) && (
-            <TabPanel value={valueTabs} index={4}>
+            <TabPanel value={valueTabs} index={editMode === "profile" ? 2 : 4}>
               {editMode === "create" ? (
                 <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
               ) : (
@@ -393,7 +393,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               {editMode === "create" ? <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p> : <OptionsForm editMode={editMode} />}
             </TabPanel>
           ) : (
-            <TabPanel value={valueTabs} index={6}>
+            <TabPanel value={valueTabs} index={editMode === "profile" ? 3 : 6}>
               {editMode === "create" ? (
                 <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
               ) : (
@@ -401,7 +401,6 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               )}
             </TabPanel>
           )}
-
           {user && (
             <TabPanel
               value={valueTabs}
