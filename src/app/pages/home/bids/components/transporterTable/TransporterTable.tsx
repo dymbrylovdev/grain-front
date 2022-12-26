@@ -59,7 +59,7 @@ const TransporterTable = React.memo<IProps>(({ transportersList, fetch, page, pe
                         <RemoveRedEyeIcon />
                       </IconButton>
                     </Tooltip>
-                    {(me.roles.includes("ROLE_ADMIN") || me.roles.includes("ROLE_VENDOR")) && (
+                    {(me.roles.includes("ROLE_ADMIN")) && (
                       <Tooltip title="Редактировать профиль">
                         <IconButton size="medium" color="default" onClick={() => window.open(`/user/edit/${item.id}`)}>
                           <EditIcon />

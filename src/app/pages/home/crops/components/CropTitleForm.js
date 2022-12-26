@@ -15,6 +15,7 @@ const getInitialValues = crop => ({
   name: !!crop && crop.name ? crop.name : "",
   vat: !!crop && crop.vat ? crop.vat : 10,
   delivery_price_coefficient: !!crop && crop.delivery_price_coefficient ? crop.delivery_price_coefficient : 1,
+  deliveryPriceOverload: !!crop && crop.deliveryPriceOverload ? crop.deliveryPriceOverload : 1,
 });
 function CropTitleForm({
   user,
@@ -37,8 +38,9 @@ function CropTitleForm({
       delCropPhoto(crop.id);
     }
   }, [crop, delCropPhoto]);
-
+  console.log('crop', crop)
   return (
+
     <Formik
       autoComplete="off"
       initialValues={getInitialValues(crop)}
@@ -71,6 +73,7 @@ function CropTitleForm({
             name: values.name.trim(),
             vat: +values.vat,
             delivery_price_coefficient: +values.delivery_price_coefficient,
+            deliveryPriceOverload: +values.deliveryPriceOverload,
             photo_base64: arrayFiles || undefined,
           },
           setStatus,
@@ -158,8 +161,23 @@ function CropTitleForm({
               helperText={touched.delivery_price_coefficient && errors.delivery_price_coefficient}
               error={Boolean(touched.delivery_price_coefficient && errors.delivery_price_coefficient)}
             />
-
             <div className={classes.helperText}>{intl.formatMessage({ id: "CROP.FORM.FORMULA" })}</div>
+
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "CROP.FORM.COEFFICIENT.OVERLOAD",
+              })}
+              margin="normal"
+              name="deliveryPriceOverload"
+              value={values.deliveryPriceOverload}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={touched.deliveryPriceOverload && errors.deliveryPriceOverload}
+              error={Boolean(touched.deliveryPriceOverload && errors.deliveryPriceOverload)}
+            />
+
 
             <div className={`${classes.bottomButtonsContainer} ${classes.bottomMargin2}`}>
               <div className={classes.button}>
