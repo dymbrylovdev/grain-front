@@ -364,6 +364,7 @@
   "CROP.FORM.NAME": "Название культуры",
   "CROP.FORM.VAT": "Размер НДС, %",
   "CROP.FORM.COEFFICIENT.DELIVERY": "Стоимость доставки культуры, руб. за км.",
+  "CROP.FORM.COEFFICIENT.OVERLOAD": "Стоимость доставки культуры с перегрузом, руб. за км.",
   "CROP.FORM.PARAM_NAME": "Название параметра",
   "CROP.FORM.PARAM_NAME_NUMBER": "Значение параметра",
   "CROP.FORM.PARAM_NUMBER": "Значение",

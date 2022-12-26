@@ -740,7 +740,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                   endAdornment: (
                     <>
                       {values?.managerId ? (
-                        <IconButton className={innerClasses.eye} onClick={() => history.push(`/user/view/${values?.managerId}`)} >
+                        <IconButton className={innerClasses.eye} onClick={() => history.push(`/user/edit/${values?.managerId}`)} >
                           <VisibilityIcon color='action' />
                         </IconButton>
                       ) : null}
