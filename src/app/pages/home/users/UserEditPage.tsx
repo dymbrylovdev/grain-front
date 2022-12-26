@@ -341,7 +341,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                     />
                   ) : (
                     !isTransporterProfile() && (
-                      <Tab className={classes.displayNone} label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(7)} />
+                      <Tab className={classes.displayNone} label={intl.formatMessage({ id: "USER.EDIT_FORM.CROPS" })} {...a11yProps(6)} />
                     )
                   )}
                 </Tabs>
@@ -393,7 +393,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               {editMode === "create" ? <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p> : <OptionsForm editMode={editMode} />}
             </TabPanel>
           ) : (
-            <TabPanel value={valueTabs} index={7}>
+            <TabPanel value={valueTabs} index={6}>
               {editMode === "create" ? (
                 <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
               ) : (
