@@ -110,10 +110,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         return (
           <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
-            color: Math.sign(currentDeal.purchase_bid.price -
-              Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
-              distance * currentCrop.delivery_price_coefficient) || 
-              Math.sign(currentDeal.purchase_bid.price - currentDeal.sale_bid.price - distance * currentCrop.delivery_price_coefficient) === 1? "#21BA88" : "000000"
+            color: (currentDeal.purchase_bid.price -
+            Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
+            distance * currentCrop.delivery_price_coefficient) < 0 ? "#000000" : "#21BA88"
           }}>
             {!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat ? (
               <>
@@ -127,9 +126,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
           </TableCell>
         );
       }
-      return <TableCell style={{
-        color: Math.sign(currentDeal.profit_with_delivery_price) === 1? "#21BA88" : "000000"
-      }}>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
+      return <TableCell>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
     },
     [getCurrentCrop, getDistance]
   );
