@@ -452,18 +452,23 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   }, []);
 
   const getManagerName = () => {
-    if(user?.manager.surname) {
-      return user?.manager.surname
+    if (user?.manager) {
+      if(user?.manager.surname) {
+        return user?.manager.surname
+      }
+      if (user?.manager.login) {
+        return user?.manager.login
+      }
+      if (user?.manager.email) {
+        return user?.manager.email
+      }
+      if (user?.manager.phone) {
+        return user?.manager.phone
+      }
+    } else {
+      return " -"
     }
-    if (user?.manager.login) {
-      return user?.manager.login
-    }
-    if (user?.manager.email) {
-      return user?.manager.email
-    }
-    if (user?.manager.phone) {
-      return user?.manager.phone
-    }
+    
   }
 
 
