@@ -16,7 +16,7 @@ import EmailIcon from "@material-ui/icons/Email";
 import { toAbsoluteUrl } from "../../../../../_metronic/utils/utils";
 import { useBidTableStyles } from "./hooks/useStyles";
 import { ILocalBids } from "./BidsList";
-import AliceCarousel from "react-alice-carousel";
+import AliceCarousel, { Classnames } from "react-alice-carousel";
 import "../../../../libs/react-alice-carousel/alice-carousel.css";
 import { API_DOMAIN, REACT_APP_GOOGLE_API_KEY } from "../../../../constants";
 import { useIntl } from "react-intl";
@@ -30,6 +30,7 @@ import { useDispatch, shallowEqual, useSelector } from "react-redux";
 import { actions as usersActions } from '../../../../store/ducks/users.duck'
 import clsx from 'clsx'
 import TransporterTable from './transporterTable/TransporterTable'
+import InsertCommentIcon from '@material-ui/icons/InsertComment';
 
 
 interface IProps {
@@ -417,22 +418,40 @@ const Bid = React.memo<IProps>(
                     )}
                 </>
               )}
-              {!bid?.vendor?.company_confirmed_by_payment && (
-                <Tooltip
-                  title={
-                    <div style={{ fontSize: 14 }}>
-                      {intl.formatMessage({
-                        id: "USERLIST.TOOLTIP.NO_COMPANY",
-                      })}
+              <div className={innerClasses.iconsRow}>
+
+                {!bid?.vendor?.company_confirmed_by_payment && (
+                  <Tooltip
+                    title={
+                      <div style={{ fontSize: 14 }}>
+                        {intl.formatMessage({
+                          id: "USERLIST.TOOLTIP.NO_COMPANY",
+                        })}
+                      </div>
+                    }
+                  >
+                    <div className={innerClasses.icon}>
+                      <div style={{ height: 15, backgroundColor: "white", position: "absolute", left: 12, top: 13, width: 8 }} />
+                      <ReportProblemIcon color="error" style={{ width: 36, height: 36 }} />
                     </div>
-                  }
-                >
-                  <div style={{ marginBottom: 4 }}>
-                    <div style={{ height: 15, backgroundColor: "white", position: "absolute", right: 13, top: 13, width: 10 }} />
-                    <ReportProblemIcon color="error" style={{ width: 36, height: 36 }} />
-                  </div>
-                </Tooltip>
-              )}
+                  </Tooltip>
+                )}
+                {bid?.description?.length > 0 && (
+                  <Tooltip
+                    title={
+                      <div style={{ fontSize: 14 }}>
+                        {bid.description}
+                      </div>
+                    }
+                  >
+                    <div className={innerClasses.icon}>
+                      <div style={{ height: 15, backgroundColor: "white", position: "absolute", left: 8, top: 8, width: 22 }} />
+                      <InsertCommentIcon color="primary" style={{ width: 36, height: 36 }} />
+                    </div>
+                  </Tooltip>
+                )}
+              </div>
+
               {isViewed && (
                 <div className={innerClasses.imageTwoBlock} style={{ position: "absolute" }}>
                   <div className={innerClasses.fontImageText}>Просмотрено</div>

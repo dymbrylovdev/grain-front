@@ -439,6 +439,15 @@ export const useBidTableStyles = makeStyles(theme => ({
       width: '900px'
     },
   },
+
+  iconsRow: {
+    display: 'flex'
+  },
+  icon: {
+    marginBottom: '4px',
+    position: 'relative',
+    width: '40px'
+  }
 }));
 
 export const useBidsPageStyles = makeStyles(theme => ({
