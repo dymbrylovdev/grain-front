@@ -436,7 +436,7 @@ const Bid = React.memo<IProps>(
                     </div>
                   </Tooltip>
                 )}
-                {bid?.description?.length > 0 && (
+                {accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) && bid?.description?.length > 0 && (
                   <Tooltip
                     title={
                       <div style={{ fontSize: 14 }}>

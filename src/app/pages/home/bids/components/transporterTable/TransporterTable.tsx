@@ -39,7 +39,6 @@ const TransporterTable = React.memo<IProps>(({ transportersList, fetch, page, pe
             {transportersList &&
               transportersList.map(item => (
                 <TableRow key={item.id}>
-                  {console.log("item?.transport", item?.transport)}
                   <TableCell>{item.firstname}</TableCell>
                   <TableCell>{item.phone}</TableCell>
                   <TableCell>{item?.transport?.location?.text}</TableCell>

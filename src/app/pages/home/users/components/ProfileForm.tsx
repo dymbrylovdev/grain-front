@@ -172,6 +172,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     });
   };
 
+
+
   const getInitialValues = useCallback(
     (user: IUser | undefined) => ({
       login: user?.login || "",
@@ -194,7 +196,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       company_name: user && user.company ? user.company.short_name : "",
       company_id: user && user.company ? user.company.id : 0,
       managerId: user && user?.manager?.id ? user.manager?.id : 0,
-      active: true,
+      active: user?.active,
     }),
     [countryCode]
   );
@@ -249,6 +251,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         values.status = "Активный";
         createUser(setCreateValues({ ...values, crop_ids: [1] }));
       }
+
       if (editMode === "edit" && user && !isEqual(oldUserValues, values)) {
         let params: IUserForEdit = setEditValues(values);
         params.funnel_state_id = values.funnel_state_id;
@@ -256,6 +259,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         params.use_vat = values.use_vat;
         params.company_id = values.company_id;
         params.managerId = values.managerId;
+        params.active = values.active;
         editUser({ id: user.id, data: params });
       }
     },
@@ -990,9 +994,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               </div>
             )}
 
-
-
-
             {editMode !== "view" && !!currentUser && !currentUser.company && (
               <CompanySearchForm
                 me={me}
@@ -1077,8 +1078,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             />
           </div>
         )}
-      {console.log('valuesvalues', values)}
-
       {((accessByRoles(me, ["ROLE_ADMIN"]) &&
         (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"]))) ||
         (accessByRoles(me, ["ROLE_BUYER"]) || accessByRoles(me, ["ROLE_VENDOR"]))) &&
@@ -1093,23 +1092,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             label={intl.formatMessage({ id: "COMPANY.FORM.ACTIVE" }) + '. Менеджер: ' + getManagerName()}
           />
         )}
-
-
-      {me && (
-        <div className={classes.bottomButtonsContainer} style={{ flexWrap: "wrap" }}>
-          {!isTransporterProfile() && editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (
-            <div className={classes.button} style={{ marginTop: 4, marginBottom: 4 }}>
-              <ButtonWithLoader
-                disabled={!user}
-                onPress={() => history.push(`/bid/create/${user?.is_buyer ? "purchase" : "sale"}/0/0/${user?.id}`)}
-              >
-                {intl.formatMessage({ id: "ALL.BUTTONS.BID_CREATE" })}
-              </ButtonWithLoader>
-            </div>
-          )}
-        </div>
-      )
-      }
 
 
       {
