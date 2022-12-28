@@ -15,7 +15,7 @@ const getInitialValues = crop => ({
   name: !!crop && crop.name ? crop.name : "",
   vat: !!crop && crop.vat ? crop.vat : 10,
   delivery_price_coefficient: !!crop && crop.delivery_price_coefficient ? crop.delivery_price_coefficient : 1,
-  deliveryPriceOverload: !!crop && crop.deliveryPriceOverload ? crop.deliveryPriceOverload : 1,
+  delivery_price_overload: !!crop && crop.delivery_price_overload ? crop.delivery_price_overload : 1,
 });
 function CropTitleForm({
   user,
@@ -73,7 +73,7 @@ function CropTitleForm({
             name: values.name.trim(),
             vat: +values.vat,
             delivery_price_coefficient: +values.delivery_price_coefficient,
-            deliveryPriceOverload: +values.deliveryPriceOverload,
+            delivery_price_overload: +values.delivery_price_overload,
             photo_base64: arrayFiles || undefined,
           },
           setStatus,
@@ -161,23 +161,22 @@ function CropTitleForm({
               helperText={touched.delivery_price_coefficient && errors.delivery_price_coefficient}
               error={Boolean(touched.delivery_price_coefficient && errors.delivery_price_coefficient)}
             />
-            <div className={classes.helperText}>{intl.formatMessage({ id: "CROP.FORM.FORMULA" })}</div>
-
             <TextField
               type="text"
               label={intl.formatMessage({
                 id: "CROP.FORM.COEFFICIENT.OVERLOAD",
               })}
               margin="normal"
-              name="deliveryPriceOverload"
-              value={values.deliveryPriceOverload}
+              name="delivery_price_overload"
+              value={values.delivery_price_overload}
               variant="outlined"
               onBlur={handleBlur}
               onChange={handleChange}
-              helperText={touched.deliveryPriceOverload && errors.deliveryPriceOverload}
-              error={Boolean(touched.deliveryPriceOverload && errors.deliveryPriceOverload)}
+              helperText={touched.delivery_price_overload && errors.delivery_price_overload}
+              error={Boolean(touched.delivery_price_overload && errors.delivery_price_overload)}
             />
 
+            <div className={classes.helperText}>{intl.formatMessage({ id: "CROP.FORM.FORMULA" })}</div>
 
             <div className={`${classes.bottomButtonsContainer} ${classes.bottomMargin2}`}>
               <div className={classes.button}>

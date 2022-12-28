@@ -293,7 +293,7 @@ const UsersPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       </div>
                     </TableCell>
 
-                    <TableCell>{intl.formatDate(item?.first_login_at)}</TableCell>
+                    <TableCell>{intl.formatDate(item?.created_at)}</TableCell>
                     <TableCell>{roles.find(role => role.id === item.roles[0])?.value}</TableCell>
 
                     <TableCell>

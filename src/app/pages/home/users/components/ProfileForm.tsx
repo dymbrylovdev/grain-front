@@ -430,18 +430,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     return accessByRoles(me, ["ROLE_TRANSPORTER"]);
   }, [me]);
 
-  const firstDate = useCallback(() => {
-    if (editMode === "view") {
-      return intl.formatDate(user?.first_login_at)
-    }
-    if (editMode === "profile") {
-      return intl.formatDate(me?.first_login_at)
-    }
-    if (editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN"])) {
-      return intl.formatDate(user?.first_login_at)
-    }
 
-  }, [me, user]);
 
   useEffect(() => {
     accessByRoles(me, ["ROLE_ADMIN"]) &&
@@ -452,8 +441,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   }, []);
 
   const getManagerName = () => {
-    if (user?.manager) {
-      if(user?.manager.surname) {
+    try {
+      if (user?.manager.surname) {
         return user?.manager.surname
       }
       if (user?.manager.login) {
@@ -465,11 +454,10 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       if (user?.manager.phone) {
         return user?.manager.phone
       }
-    } else {
-      return " -"
+    } catch {
+      return ' -'
     }
-    
-  }
+  };
 
 
 
@@ -1089,6 +1077,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             />
           </div>
         )}
+      {console.log('valuesvalues', values)}
 
       {((accessByRoles(me, ["ROLE_ADMIN"]) &&
         (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"]))) ||
