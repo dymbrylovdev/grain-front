@@ -56,6 +56,7 @@ export interface IUser {
   transport: ITransport;
   manager?: any;
   active: boolean;
+  overload?: boolean;
 
 }
 
@@ -107,6 +108,8 @@ export interface IUserForEdit {
   main_crop_id?: number;
   managerId?: number;
   active?: boolean;
+  overload?: boolean;
+
 }
 
 export interface IChangePasswordData {

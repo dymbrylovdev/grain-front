@@ -197,6 +197,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       company_id: user && user.company ? user.company.id : 0,
       managerId: user && user?.manager?.id ? user.manager?.id : 0,
       active: user?.active,
+      overload: user?.overload,
     }),
     [countryCode]
   );
@@ -260,6 +261,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         params.company_id = values.company_id;
         params.managerId = values.managerId;
         params.active = values.active;
+        params.overload = values.overload;
         editUser({ id: user.id, data: params });
       }
     },
@@ -1082,15 +1084,32 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"]))) ||
         (accessByRoles(me, ["ROLE_BUYER"]) || accessByRoles(me, ["ROLE_VENDOR"]))) &&
         (
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={values.active === true}
-                onChange={() => setFieldValue("active", !values.active)}
-              />
-            }
-            label={intl.formatMessage({ id: "COMPANY.FORM.ACTIVE" }) + '. Менеджер: ' + getManagerName()}
-          />
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={values.active === true}
+                  onChange={() => setFieldValue("active", !values.active)}
+                />
+              }
+              label={intl.formatMessage({ id: "COMPANY.FORM.ACTIVE" }) + '. Менеджер: ' + getManagerName()}
+            />
+          </div>
+        )}
+      {((accessByRoles(me, ["ROLE_BUYER"]) ||
+        (accessByRoles(me, ["ROLE_ADMIN"]) && accessByRoles(user, ["ROLE_BUYER"])))) &&
+        (
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={values.overload === true}
+                  onChange={() => setFieldValue("overload", !values.overload)}
+                />
+              }
+              label={intl.formatMessage({ id: "COMPANY.FORM.OVERLOAD" })}
+            />
+          </div>
         )}
 
 
