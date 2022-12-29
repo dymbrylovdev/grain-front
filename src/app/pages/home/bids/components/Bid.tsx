@@ -31,7 +31,7 @@ import { actions as usersActions } from '../../../../store/ducks/users.duck'
 import clsx from 'clsx'
 import TransporterTable from './transporterTable/TransporterTable'
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
-
+import moment from 'moment'
 
 interface IProps {
   isHaveRules?: (user?: any, id?: number) => boolean;
@@ -345,6 +345,14 @@ const Bid = React.memo<IProps>(
       return Boolean(me?.contact_view_count === 0)
     }, [me]);
 
+    const checkBidAge = useCallback((bid) => {
+      const now = moment(new Date());
+      const end = moment(bid?.modified_at);
+      const duration = moment.duration(now.diff(end));
+      const days = duration.asDays();
+      return days > 30 ? true : false
+    }, []);
+
     return (
       <>
         <Modal
@@ -403,7 +411,10 @@ const Bid = React.memo<IProps>(
             },
           ]}
         />
-        <div className={innerClasses.container} onClick={() => handleClickEditOrViewBid(bid)}>
+
+        <div className={clsx(innerClasses.container, {
+          [innerClasses.isOldBid]: checkBidAge(bid)
+        })} onClick={() => handleClickEditOrViewBid(bid)}>
           <div className={innerClasses.imageBlock}>
             <div className={innerClasses.imageBlocks} style={{ zIndex: 1 }}>
               {bid.vendor.company && (

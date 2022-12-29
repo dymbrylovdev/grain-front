@@ -22,6 +22,11 @@ export const useBidTableStyles = makeStyles(theme => ({
       display: "block",
     },
   },
+  isOldBid: {
+    border: "4px solid #FD397A",
+    padding: 8,
+
+  },
   imageBlock: {
     marginBottom: 8,
     // eslint-disable-next-line no-useless-computed-key
