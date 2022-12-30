@@ -41,6 +41,7 @@ export const setCreateValues = (values: { [key: string]: any }) => {
   }
   newValues.login = values.email;
   newValues.use_vat = values.use_vat;
+  newValues.active = false;
   return newValues;
 };
 

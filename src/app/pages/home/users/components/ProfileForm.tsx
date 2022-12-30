@@ -240,6 +240,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const { values, handleSubmit, handleChange, handleBlur, resetForm, setFieldValue, touched, errors } = useFormik({
     initialValues: getInitialValues(undefined),
     onSubmit: values => {
+      console.log('val', values);
+
       if (roles.find(el => el.id === values.role) === undefined) return;
 
       if (editMode === "profile" && !isEqual(oldValues, values)) {
@@ -250,7 +252,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
 
       if (editMode === "create") {
         values.status = "Активный";
-        createUser(setCreateValues({ ...values, crop_ids: [1] }));
+        createUser(setCreateValues({ ...values, crop_ids: [1], active: false }));
       }
 
       if (editMode === "edit" && user && !isEqual(oldUserValues, values)) {
@@ -1080,9 +1082,13 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             />
           </div>
         )}
-      {((accessByRoles(me, ["ROLE_ADMIN"]) &&
-        (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"]))) ||
-        (accessByRoles(me, ["ROLE_BUYER"]) || accessByRoles(me, ["ROLE_VENDOR"]))) &&
+      {console.log('me', me)}
+      {console.log('user', user)}
+      {(accessByRoles(me, ["ROLE_ADMIN"]) || accessByRoles(me, ["ROLE_MANAGER"])) &&
+        (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"])) &&
+        // {((accessByRoles(me, ["ROLE_ADMIN"]) &&
+        //   (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"]))) ||
+        //   (accessByRoles(me, ["ROLE_BUYER"]) || accessByRoles(me, ["ROLE_VENDOR"]))) &&
         (
           <div>
             <FormControlLabel
