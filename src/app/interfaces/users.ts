@@ -81,6 +81,7 @@ export interface IUserForCreate {
   company_id?: number;
   use_vat?: boolean;
   crop_ids?: number[];
+  active?: boolean;
 }
 
 export interface IUserForEdit {

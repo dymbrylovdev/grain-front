@@ -769,8 +769,12 @@ function* fetchByIdSaga({ payload }: { payload: { id: number } }) {
 }
 
 function* createSaga({ payload }: { payload: IUserForCreate }) {
+  console.log('payload', payload);
+
   try {
     const { data }: { data: IServerResponse<IUser> } = yield call(() => createUser(payload));
+    console.log("data", data);
+
     yield put(actions.createSuccess(data));
   } catch (e) {
     yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));
