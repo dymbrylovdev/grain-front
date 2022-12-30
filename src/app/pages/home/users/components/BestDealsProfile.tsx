@@ -21,6 +21,7 @@ import { TablePaginator } from "../../../../components/ui/Table/TablePaginator";
 import { thousands } from "../../deals/utils/utils";
 import { ILocalDeals } from "../../deals/DealViewPage";
 import { IDeal } from "../../../../interfaces/deals";
+import { sign } from "crypto";
 
 interface IProps {
   vendorId: number
@@ -111,8 +112,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
         return (
           <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
             color: (currentDeal.purchase_bid.price -
-            Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
-            distance * currentCrop.delivery_price_coefficient) < 0 ? "#000000" : "#21BA88"
+              Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
+              distance * currentCrop.delivery_price_coefficient) < 0 ? "#000000" : "#21BA88"
           }}>
             {!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat ? (
               <>
@@ -190,6 +191,15 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
     setTimeout(() => {
       window.location.reload();
     }, 10000);
+  }
+
+  const sign = (item) => {
+    if (Math.sign(item?.profit_with_delivery_price) == -1 && Math.sign(item?.purchase_bid.price_with_delivery) == -1) {
+      return '-'
+    } else {
+      return null
+    }
+
   }
 
   return (
@@ -342,8 +352,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
                       </div>
                     </TableCell>
                     {getProfit(item)}
-                    
-                    <TableCell>{((item.profit_with_delivery_price/item.purchase_bid.price_with_delivery)*100).toFixed(0)}%</TableCell>
+
+                    <TableCell style={{ width: '100px' }}>{sign(item)} {((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)}%</TableCell>
                     <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
                   </TableRow>
                 ))}

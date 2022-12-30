@@ -322,7 +322,8 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             </TextField>
 
             <FormControlLabel
-              control={<Checkbox checked={values.nds === true} onChange={() => setFieldValue("nds", !values.nds)} color="primary" />}
+              control={<Checkbox checked={values.nds === true}
+                disabled={editMode === "view"} onChange={() => setFieldValue("nds", !values.nds)} color="primary" />}
               label={intl.formatMessage({ id: "OPTIONS.NDS" })}
             />
 
@@ -428,6 +429,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             <FormControlLabel
               control={
                 <Checkbox
+                  disabled={editMode === "view"}
                   checked={values.available === true}
                   onChange={() => setFieldValue("available", !values.available)}
                   color="primary"
