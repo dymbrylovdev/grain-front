@@ -371,7 +371,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             )}
 
           {!accessByRoles(user, ["ROLE_TRANSPORTER"]) && !accessByRoles(me, ["ROLE_TRANSPORTER"]) && (
-            <TabPanel value={valueTabs} index={editMode === "profile" ? (isAdminProfile() ? 2 : (accessByRoles(me, ["ROLE_BUYER"])? 2 : 3)) : 4}>
+            <TabPanel value={valueTabs} index={editMode === "profile" ? (isAdminProfile() ? 2 : ((accessByRoles(me, ["ROLE_BUYER"]) || accessByRoles(me, ["ROLE_VENDOR"]))? 2 : 3)) : 4}>
               {editMode === "create" ? (
                 <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
               ) : (
