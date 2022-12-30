@@ -449,7 +449,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   }, []);
 
   const getManagerName = () => {
-    try {
+    if (user?.manager) {
       if (user?.manager.surname) {
         return user?.manager.surname
       }
@@ -462,7 +462,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       if (user?.manager.phone) {
         return user?.manager.phone
       }
-    } catch {
+    } else {
       return ' -'
     }
   };
@@ -1086,9 +1086,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       {console.log('user', user)}
       {(accessByRoles(me, ["ROLE_ADMIN"]) || accessByRoles(me, ["ROLE_MANAGER"])) &&
         (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"])) &&
-        // {((accessByRoles(me, ["ROLE_ADMIN"]) &&
-        //   (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"]))) ||
-        //   (accessByRoles(me, ["ROLE_BUYER"]) || accessByRoles(me, ["ROLE_VENDOR"]))) &&
         (
           <div>
             <FormControlLabel
@@ -1102,7 +1099,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             />
           </div>
         )}
-      {((accessByRoles(me, ["ROLE_BUYER"]) ||
+      {(((accessByRoles(me, ["ROLE_BUYER"]) && !accessByRoles(user, ["ROLE_TRANSPORTER"])) ||
         (accessByRoles(me, ["ROLE_ADMIN"]) && accessByRoles(user, ["ROLE_BUYER"])))) &&
         (
           <div>
