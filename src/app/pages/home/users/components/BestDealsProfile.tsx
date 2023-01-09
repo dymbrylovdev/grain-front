@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { YMaps, Map } from "react-yandex-maps";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Button, CircularProgress } from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Button, CircularProgress, TextField, MenuItem } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
@@ -65,6 +65,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
   const history = useHistory();
   const [currentDeal, setCurrentDeal] = useState<IDeal | null>(null);
   const [loadDistanation, setLoadDistanation] = useState<number | null>(null);
+  const [cropId, setCropId] = useState(0);
   const { enqueueSnackbar } = useSnackbar();
 
   const localDeals: ILocalDeals[] | null = useMemo(() => {
@@ -203,178 +204,203 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
   }
 
   return (
-    <Paper className={classes.paperWithTable} style={{ paddingTop: 16 }}>
-      <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />
-      {!deals || !crops || !dealsFilters || !allCropParams || loadingMe || loading ? (
-        <>
-          <Skeleton width="100%" height={52} animation="wave" />
-          <Skeleton width="100%" height={77} animation="wave" />
-          <Skeleton width="100%" height={77} animation="wave" />
-          <Skeleton width="100%" height={77} animation="wave" />
-          <Skeleton width="100%" height={77} animation="wave" />
-          <Skeleton width="100%" height={77} animation="wave" />
-          <Skeleton width="100%" height={53} animation="wave" />
-        </>
-      ) : !deals?.length ? (
-        <div>{intl.formatMessage({ id: "DEALS.EMPTY" })}</div>
-      ) : (
-        <div className={classes.table}>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.CROP" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.SALE" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.PURCHASE" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.PROFIT" />
-                </TopTableCell>
-                <TopTableCell>
-                  %
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="BIDSLIST.TABLE.TIME" />
-                </TopTableCell>
-                <TopTableCell></TopTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {!!deals &&
-                deals.map((item, i) => (
-                  <TableRow key={i}>
-                    <TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>
-                    <TableCell>
-                      <div className={classes.flexColumn}>
-                        <div style={{ display: "flex" }}>
-                          <strong style={{ marginRight: 5 }}>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                          <strong>
-                            {!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat ? (
-                              !item.sale_bid.price ? (
-                                "-"
+    <>
+      <div>
+        {crops && (
+          <TextField
+            select
+            margin="normal"
+            label={intl.formatMessage({
+              id: "DEALS.CROPS.TITLE",
+            })}
+            onChange={(e) => {
+              setCropId(Number(e.target.value))
+              fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, vendorId, Number(e.target.value))
+            }}
+            name="status"
+            variant="outlined"
+          >
+            {crops!.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
+      </div>
+      <Paper className={classes.paperWithTable} style={{ paddingTop: 16 }}>
+        <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />
+        {!deals || !crops || !dealsFilters || !allCropParams || loadingMe || loading ? (
+          <>
+            <Skeleton width="100%" height={52} animation="wave" />
+            <Skeleton width="100%" height={77} animation="wave" />
+            <Skeleton width="100%" height={77} animation="wave" />
+            <Skeleton width="100%" height={77} animation="wave" />
+            <Skeleton width="100%" height={77} animation="wave" />
+            <Skeleton width="100%" height={77} animation="wave" />
+            <Skeleton width="100%" height={53} animation="wave" />
+          </>
+        ) : !deals?.length ? (
+          <div>{intl.formatMessage({ id: "DEALS.EMPTY" })}</div>
+        ) : (
+          <div className={classes.table}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.CROP" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.SALE" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.PURCHASE" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.PROFIT" />
+                  </TopTableCell>
+                  <TopTableCell>
+                    %
+                  </TopTableCell>
+                  <TopTableCell>
+                    <FormattedMessage id="BIDSLIST.TABLE.TIME" />
+                  </TopTableCell>
+                  <TopTableCell></TopTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {!!deals &&
+                  deals.map((item, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>
+                      <TableCell>
+                        <div className={classes.flexColumn}>
+                          <div style={{ display: "flex" }}>
+                            <strong style={{ marginRight: 5 }}>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                            <strong>
+                              {!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat ? (
+                                !item.sale_bid.price ? (
+                                  "-"
+                                ) : (
+                                  <div style={{ display: "flex", alignItems: "center" }}>
+                                    <p style={{ marginBottom: "1px", marginRight: 10 }}>
+                                      {!!item.sale_bid && thousands(Math.round(item.sale_bid.price * (item.sale_bid.vat / 100 + 1)))}
+                                    </p>
+                                    <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
+                                      ({`${item.sale_bid.price && thousands(Math.round(item.sale_bid.price))} + ${item.sale_bid.vat}% НДС`})
+                                    </p>
+                                  </div>
+                                )
+                              ) : item.sale_bid.price ? (
+                                thousands(Math.round(item.sale_bid.price))
                               ) : (
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                  <p style={{ marginBottom: "1px", marginRight: 10 }}>
-                                    {!!item.sale_bid && thousands(Math.round(item.sale_bid.price * (item.sale_bid.vat / 100 + 1)))}
-                                  </p>
-                                  <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
-                                    ({`${item.sale_bid.price && thousands(Math.round(item.sale_bid.price))} + ${item.sale_bid.vat}% НДС`})
-                                  </p>
-                                </div>
-                              )
-                            ) : item.sale_bid.price ? (
-                              thousands(Math.round(item.sale_bid.price))
-                            ) : (
-                              "-"
-                            )}
-                          </strong>
-                        </div>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                          <strong>{item.sale_bid.volume}</strong>
-                        </div>
-                        <div>
-                          {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })}
-                          {": "}
-                          {item.sale_bid.location.text}
-                        </div>
-                        <div>{intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}</div>
-                        <div>
-                          <div className={classes.flexRow}>
-                            {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
-                              <Tooltip
-                                title={intl.formatMessage({
-                                  id: "USERLIST.TOOLTIP.COMPANY",
-                                })}
-                              >
-                                <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                              </Tooltip>
-                            )}
-                            <div>{`${item?.sale_bid.vendor.login || ""}`}</div>
-                          </div>
-                          <div>{` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor
-                            .lastname || ""}`}</div>
-                          {item?.sale_bid.vendor.company && (
-                            <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                              {!!item?.sale_bid?.vendor?.company?.colors && item?.sale_bid.vendor.company.colors.length > 0 && (
-                                <MiniTrafficLight intl={intl} colors={item?.sale_bid.vendor.company.colors} />
+                                "-"
                               )}
-                              <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className={classes.flexColumn}>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                          <strong>{item.purchase_bid.price}</strong>
-                        </div>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                          <strong>{item.purchase_bid.volume}</strong>
-                        </div>
-                        <div>
-                          {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })}
-                          {": "}
-                          {item.purchase_bid.location.text}
-                        </div>
-                        <div>{intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}</div>
-                        <div>
-                          <div className={classes.flexRow}>
-                            {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
-                              <Tooltip
-                                title={intl.formatMessage({
-                                  id: "USERLIST.TOOLTIP.COMPANY",
-                                })}
-                              >
-                                <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                              </Tooltip>
-                            )}
-                            <div>{`${item?.purchase_bid.vendor.login || ""}`}</div>
+                            </strong>
                           </div>
-                          <div>{`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item
-                            ?.purchase_bid.vendor.lastname || ""}`}</div>
-                          {item?.purchase_bid.vendor.company && (
-                            <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                              {!!item?.purchase_bid?.vendor?.company?.colors && item?.purchase_bid.vendor.company.colors.length > 0 && (
-                                <MiniTrafficLight intl={intl} colors={item?.purchase_bid.vendor.company.colors} />
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                            <strong>{item.sale_bid.volume}</strong>
+                          </div>
+                          <div>
+                            {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })}
+                            {": "}
+                            {item.sale_bid.location.text}
+                          </div>
+                          <div>{intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}</div>
+                          <div>
+                            <div className={classes.flexRow}>
+                              {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
+                                <Tooltip
+                                  title={intl.formatMessage({
+                                    id: "USERLIST.TOOLTIP.COMPANY",
+                                  })}
+                                >
+                                  <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
+                                </Tooltip>
                               )}
-                              <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
+                              <div>{`${item?.sale_bid.vendor.login || ""}`}</div>
                             </div>
-                          )}
+                            <div>{` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor
+                              .lastname || ""}`}</div>
+                            {item?.sale_bid.vendor.company && (
+                              <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                                {!!item?.sale_bid?.vendor?.company?.colors && item?.sale_bid.vendor.company.colors.length > 0 && (
+                                  <MiniTrafficLight intl={intl} colors={item?.sale_bid.vendor.company.colors} />
+                                )}
+                                <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    {getProfit(item)}
+                      </TableCell>
+                      <TableCell>
+                        <div className={classes.flexColumn}>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                            <strong>{item.purchase_bid.price}</strong>
+                          </div>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                            <strong>{item.purchase_bid.volume}</strong>
+                          </div>
+                          <div>
+                            {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })}
+                            {": "}
+                            {item.purchase_bid.location.text}
+                          </div>
+                          <div>{intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}</div>
+                          <div>
+                            <div className={classes.flexRow}>
+                              {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
+                                <Tooltip
+                                  title={intl.formatMessage({
+                                    id: "USERLIST.TOOLTIP.COMPANY",
+                                  })}
+                                >
+                                  <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
+                                </Tooltip>
+                              )}
+                              <div>{`${item?.purchase_bid.vendor.login || ""}`}</div>
+                            </div>
+                            <div>{`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item
+                              ?.purchase_bid.vendor.lastname || ""}`}</div>
+                            {item?.purchase_bid.vendor.company && (
+                              <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                                {!!item?.purchase_bid?.vendor?.company?.colors && item?.purchase_bid.vendor.company.colors.length > 0 && (
+                                  <MiniTrafficLight intl={intl} colors={item?.purchase_bid.vendor.company.colors} />
+                                )}
+                                <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </TableCell>
+                      {getProfit(item)}
 
-                    <TableCell style={{ width: '100px' }}>{sign(item)} {((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)}%</TableCell>
-                    <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePaginator
-                  page={page}
-                  realPerPage={deals.length}
-                  perPage={perPage}
-                  total={total}
-                  fetchRows={(page, perPage) =>
-                    fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, vendorId)
-                  }
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </div>
-      )}
-    </Paper>
+                      <TableCell style={{ width: '100px' }}>{sign(item)} {((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)}%</TableCell>
+                      <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePaginator
+                    page={page}
+                    realPerPage={deals.length}
+                    perPage={perPage}
+                    total={total}
+                    fetchRows={(page, perPage) =>
+                      fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, vendorId)
+                    }
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </div>
+        )}
+      </Paper>
+    </>
   );
 };
 
