@@ -19,6 +19,7 @@ import NumberParam from "../../../pages/home/bids/components/filter/NumberParam"
 import ButtonWithLoader from "../../ui/Buttons/ButtonWithLoader";
 import { isEqual } from "lodash";
 import Modal from "../../ui/Modal";
+import CheckBoxOverload from "../../../pages/home/bids/components/filter/CheckBoxOverload";
 
 const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   me,
@@ -197,6 +198,9 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
+      <MenuItem>
+        <CheckBoxOverload values={formik.values} handleChange={formik.handleChange} handleSubmit={filterSubmit} />
+      </MenuItem>
       {enumParams &&
         enumParams.map((param: any) => (
           <MenuItem key={param.id}>
