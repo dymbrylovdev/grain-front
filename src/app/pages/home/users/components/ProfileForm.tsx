@@ -240,7 +240,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const { values, handleSubmit, handleChange, handleBlur, resetForm, setFieldValue, touched, errors } = useFormik({
     initialValues: getInitialValues(undefined),
     onSubmit: values => {
-      console.log('val', values);
 
       if (roles.find(el => el.id === values.role) === undefined) return;
 
@@ -1082,8 +1081,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             />
           </div>
         )}
-      {console.log('me', me)}
-      {console.log('user', user)}
       {(accessByRoles(me, ["ROLE_ADMIN"]) || accessByRoles(me, ["ROLE_MANAGER"])) &&
         (accessByRoles(user, ["ROLE_BUYER"]) || accessByRoles(user, ["ROLE_VENDOR"])) &&
         (

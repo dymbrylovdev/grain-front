@@ -89,6 +89,7 @@ export interface IFilterForBids {
     parameter_values?: IParamValue[];
     point_prices?: IPointPriceForEdit[];
     location?: ILocation;
+    overload?: boolean;
   };
 }
 export interface IFilterForBid {

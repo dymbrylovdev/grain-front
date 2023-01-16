@@ -66,6 +66,7 @@ export const filterForBids = (
       min_prepayment_amount: +data.min_prepayment_amount || 0,
       max_distance: +data.max_destination || 0,
       point_prices: pointPrices,
+      overload: data.overload,
     },
   };
   const parameter_values: {
