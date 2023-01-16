@@ -44,6 +44,7 @@ export interface IBid {
     surname?: string;
     firstname?: string;
     lastname?: string;
+    manager: any;
   };
   location: {
     lat: number;

@@ -353,6 +353,28 @@ const Bid = React.memo<IProps>(
       return days > 30 ? true : false
     }, []);
 
+    const displayManager = (manager) => {
+      if (manager) {
+        if (manager.surname) {
+          return manager.surname
+        }
+        if (manager.login) {
+          return manager.login
+        }
+        if (manager.email) {
+          return manager.email
+        }
+        if (manager.phone) {
+          return manager.phone
+        }
+      } else {
+        return null
+      }
+    };
+
+
+
+
     return (
       <>
         <Modal
@@ -452,6 +474,12 @@ const Bid = React.memo<IProps>(
                     title={
                       <div style={{ fontSize: 14 }}>
                         {bid.description}
+                        {bid.vendor.manager && (
+                          <div>
+                            С ним работает менеджер <span>{displayManager(bid.vendor.manager)}</span>
+                          </div>
+                        )}
+
                       </div>
                     }
                   >
