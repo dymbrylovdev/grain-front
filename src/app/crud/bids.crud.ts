@@ -22,6 +22,14 @@ export const editPhotoBid = (id: number, data: any, isArray?: boolean) => {
   return axios.put(`/api/bid/${id}`, { photos_base64: isArray ? data : [data] });
 };
 
+export const editOverloadBid = (id: number, overload: boolean) => {
+  return axios.post(`/api/bid/get/${id}`, {
+    filter: {
+      overload: overload
+    }
+  });
+};
+
 export const getAllBids = (
   cropId: number,
   type: TBidType,

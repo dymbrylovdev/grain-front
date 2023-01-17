@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { IconButton, Tooltip, CardMedia, Button, useMediaQuery, CircularProgress, DialogProps } from "@material-ui/core";
+import { IconButton, Tooltip, CardMedia, Button, useMediaQuery, CircularProgress, DialogProps, FormControlLabel, Checkbox } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import { YMaps, Map } from "react-yandex-maps";
 import EditIcon from "@material-ui/icons/Edit";
@@ -32,6 +32,7 @@ import clsx from 'clsx'
 import TransporterTable from './transporterTable/TransporterTable'
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import moment from 'moment'
+import { editOverloadBid } from "../../../../crud/bids.crud";
 
 interface IProps {
   isHaveRules?: (user?: any, id?: number) => boolean;
@@ -90,6 +91,7 @@ const Bid = React.memo<IProps>(
     const currentCrop = useMemo(() => crops?.find(item => item.id === bid.crop_id), [crops, bid]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [open, setOpen] = useState(false);
+    const [bidOverload, setBidOverload] = useState<any>(false);
     const [currentBid, setCurrentBid] = useState<IBid | null>(null);
     const [loadDistanation, setLoadDistanation] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
@@ -535,13 +537,19 @@ const Bid = React.memo<IProps>(
                       {bestAllMyMode !== "edit" && (
                         <>
                           <div className={innerClasses.wrapperPrice} style={{ marginBottom: salePurchaseMode === "purchase" ? 0 : 8 }}>
-                            <div className={innerClasses.price}>
-                              {newBid
-                                ? formatAsThousands(newBid.finalPrice)
-                                : bid?.price_with_delivery_with_vat
-                                  ? `≈ ${formatAsThousands(Math.round(bid.price_with_delivery_with_vat))}`
-                                  : "-"}{" "}
-                            </div>
+                            {!bidOverload?
+                              <div className={innerClasses.price}>
+                                {newBid
+                                  ? formatAsThousands(newBid.finalPrice)
+                                  : bid?.price_with_delivery_with_vat
+                                    ? `≈ ${formatAsThousands(Math.round(bid.price_with_delivery_with_vat))}`
+                                    : "-"}{" "}
+                              </div>
+                              :
+                              <div className={innerClasses.price}>
+                                {formatAsThousands(bidOverload.price_with_delivery)}{" "}
+                              </div>
+                            }
                             <div className={innerClasses.rybl}>₽</div>
                             {(salePurchaseMode === "sale" || salePurchaseMode === "purchase") && (
                               <div className={innerClasses.nds}>
@@ -615,13 +623,19 @@ const Bid = React.memo<IProps>(
                       {bestAllMyMode !== "edit" && (
                         <>
                           <div className={innerClasses.wrapperPrice} style={{ marginBottom: salePurchaseMode === "purchase" ? 0 : 8 }}>
-                            <div className={innerClasses.price}>
-                              {newBid
-                                ? formatAsThousands(newBid.finalPrice)
-                                : bid?.price_with_delivery_with_vat
-                                  ? `≈ ${formatAsThousands(Math.round(bid.price_with_delivery_with_vat))}`
-                                  : "-"}{" "}
-                            </div>
+                            {!bidOverload?
+                              <div className={innerClasses.price}>
+                                {newBid
+                                  ? formatAsThousands(newBid.finalPrice)
+                                  : bid?.price_with_delivery_with_vat
+                                    ? `≈ ${formatAsThousands(Math.round(bid.price_with_delivery_with_vat))}`
+                                    : "-"}{" "}
+                              </div>
+                              :
+                              <div className={innerClasses.price}>
+                                {formatAsThousands(bidOverload.price_with_delivery)}{" "}
+                              </div>
+                            }
                             <div className={innerClasses.rybl}>₽</div>
                             {(salePurchaseMode === "sale" || salePurchaseMode === "purchase") && (
                               <div className={innerClasses.nds}>
@@ -963,6 +977,21 @@ const Bid = React.memo<IProps>(
                       >
                         <DeleteIcon />
                       </IconButton>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            onClick={e => {
+                              stopProp(e);
+                            }}
+                            onChange={(e) => {
+                              editOverloadBid(bid.id, e.target.checked).then(res => {
+                                setBidOverload(res.data.data)
+                              })
+                            }}
+                          />
+                        }
+                        label={"Перегруз"}
+                      />
                     </>
                   )}
                 </div>
