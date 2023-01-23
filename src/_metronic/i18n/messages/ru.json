@@ -707,6 +707,7 @@
   "NOTISTACK.DEALS.NO_DISTANCE": "Невозможно построить маршрут по суше",
   "NOTISTACK.ERRORS.DEL_USER": "Пользователь удален",
   "NOTISTACK.USERS.SAVE_PROFILE": "Мой профиль сохранен",
+  "NOTISTACK.USERS.SAVE_USER_PROFILE": "Профиль сохранен",
   "NOTISTACK.USERS.SAVE_USER": "Пользователь сохранен",
   "NOTISTACK.USERS.SAVE_COMPANY": "Данные о компании изменены",
   "NOTISTACK.USERS.SAVE_CREATE": "Пользователь добавлен",

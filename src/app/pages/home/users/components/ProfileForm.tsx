@@ -64,6 +64,7 @@ const innerStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface IProps {
+  editPage: boolean;
   editMode: "profile" | "create" | "edit" | "view";
   setAlertOpen: React.Dispatch<React.SetStateAction<boolean>>;
   userId?: number;
@@ -72,6 +73,7 @@ interface IProps {
 }
 
 const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
+  editPage,
   intl,
   createdUserId,
   isTransporterProfile,
@@ -290,7 +292,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     return () => {
       if ((editMode === "profile" && !!oldValues) || (editMode === "edit" && !!oldUserValues)) {
         setEditNoNoti(true);
-        handleSubmit();
+        if (!editPage) handleSubmit();
       }
     };
   }, [editMode, handleSubmit, oldValues, oldUserValues, setEditNoNoti]);
@@ -362,7 +364,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       if (!editMeNoNoti) {
         enqueueSnackbar(
           editUserSuccess
-            ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_PROFILE" })
+            ? intl.formatMessage({ id: "NOTISTACK.USERS.SAVE_USER_PROFILE" })
             : `${intl.formatMessage({ id: "NOTISTACK.ERRORS.ERROR" })} ${editUserError}`,
           {
             variant: editUserSuccess ? "success" : "error",
@@ -372,7 +374,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       setEditNoNoti(false);
       clearUser();
     }
-    if (editUserSuccess && userId) {
+    if (editUserSuccess && userId && !editPage) {
       fetchUser({ id: userId });
     }
   }, [clearUser, editUserError, editUserSuccess, editMeNoNoti, enqueueSnackbar, fetchUser, intl, setEditNoNoti, userId]);
@@ -398,7 +400,7 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         break;
       case "edit":
       case "view":
-        if (userId) fetchUser({ id: userId });
+        if (userId && !editPage) fetchUser({ id: userId });
         break;
     }
   }, [editMode, fetchMe, fetchUser, userId, setEditNoNoti]);
@@ -465,20 +467,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       return ' -'
     }
   };
-
-
-
-  // useEffect(() => {
-  // switch (editMode) {
-  //   case "profile":
-  //     fetchMe();
-  //     break;
-  //   case "edit":
-  //   case "view":
-  //     if (userId) fetchUser({ id: userId });
-  //     break;
-  // }
-  // }, [editMode, fetchMe, fetchUser, userId, setEditNoNoti]);
 
   return (
     <>
