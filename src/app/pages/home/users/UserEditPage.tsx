@@ -240,8 +240,8 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
   const isTransporterProfile = useCallback(() => {
     return accessByRoles(user, ["ROLE_TRANSPORTER"]);
   }, [user]);
-  const isBuyerEdit = useCallback(() => {
-    return accessByRoles(user, ["ROLE_VENDOR"]) && editMode !== "profile";
+  const isBuyerVendorEdit = useCallback(() => {
+    return accessByRoles(user, ["ROLE_VENDOR"]) && accessByRoles(user, ["ROLE_BUYER"]) && editMode !== "profile";
   }, [user, editMode]);
   const isAdminProfile = useCallback(() => {
     return accessByRoles(me, ["ROLE_ADMIN"]) && editMode === "profile";
@@ -294,7 +294,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             {user || window.location.href.includes("profile") || window.location.href.includes("create") ? (
               <>
                 <div>Дата регистрации: {firstDate()}</div>
-                {!isBuyerEdit()?
+                {!isBuyerVendorEdit()?
                   <Tabs
                     value={valueTabs}
                     onChange={handleTabsChange}
@@ -303,14 +303,14 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                     textColor="primary"
                     aria-label="tabs"
                   >
-                    <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(!isBuyerEdit()? 0 : 2)} />
+                    <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(!isBuyerVendorEdit()? 0 : 2)} />
 
                     {!isTransporterProfile() && !isAdminProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !isManagerProfilePage() && (
-                      <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(!isTransporterProfile()? (!isBuyerEdit()? 1 : 0) : 5)} />
+                      <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(!isTransporterProfile()? (!isBuyerVendorEdit()? 1 : 0) : 5)} />
                     )}
 
                     {editMode !== "create" && !isTransporterProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !isManagerProfile() && !isManagerProfilePage() && (
-                      <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BEST.BIDS" })} {...a11yProps(!isTransporterProfile()? (!isBuyerEdit()? 2 : 1) : 6)} />
+                      <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BEST.BIDS" })} {...a11yProps(!isTransporterProfile()? (!isBuyerVendorEdit()? 2 : 1) : 6)} />
                     )}     
 
                     {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
@@ -362,13 +362,13 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                     aria-label="tabs"
                   >
                     {!isTransporterProfile() && !isAdminProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !isManagerProfilePage() && (
-                      <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(!isTransporterProfile()? (!isBuyerEdit()? 1 : 0) : 5)} />
+                      <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(!isTransporterProfile()? (!isBuyerVendorEdit()? 1 : 0) : 5)} />
                     )}
 
                     {editMode !== "create" && !isTransporterProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !isManagerProfile() && !isManagerProfilePage() && (
-                      <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BEST.BIDS" })} {...a11yProps(!isTransporterProfile()? (!isBuyerEdit()? 2 : 1) : 6)} />
+                      <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BEST.BIDS" })} {...a11yProps(!isTransporterProfile()? (!isBuyerVendorEdit()? 2 : 1) : 6)} />
                     )}     
-                    <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(!isBuyerEdit()? 0 : 2)} />
+                    <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.PROFILE" })} {...a11yProps(!isBuyerVendorEdit()? 0 : 2)} />
 
                     {((me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
                       (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))) && (
@@ -416,7 +416,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             )}
           </AppBar>
           <Divider />
-          <TabPanel value={valueTabs} index={!isBuyerEdit()? 0 : 2}>
+          <TabPanel value={valueTabs} index={!isBuyerVendorEdit()? 0 : 2}>
             <ProfileForm
               editPage={true}
               userId={+id || undefined}
@@ -427,7 +427,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             />
           </TabPanel>
           {editMode !== "create" && !isTransporterProfile() && !isManagerProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !isManagerProfilePage() &&  (
-            <TabPanel value={valueTabs} index={editMode === "profile" ? 1 : (!isBuyerEdit()? 2 : 1)}>
+            <TabPanel value={valueTabs} index={editMode === "profile" ? 1 : (!isBuyerVendorEdit()? 2 : 1)}>
               <BestDealsProfile vendorId={+id}/>
             </TabPanel>
           )}
@@ -463,7 +463,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             </TabPanel>
           )}
            {user && !isTransporterProfile() && (
-            <TabPanel value={valueTabs} index={["ROLE_BUYER", "ROLE_MANAGER", "ROLE_VENDOR", "ROLE_TRADER", "ROLE_ADMIN"].includes(user.roles[0]) ? (!isBuyerEdit()? 1 : 0) : 1}>
+            <TabPanel value={valueTabs} index={["ROLE_BUYER", "ROLE_MANAGER", "ROLE_VENDOR", "ROLE_TRADER", "ROLE_ADMIN"].includes(user.roles[0]) ? (!isBuyerVendorEdit()? 1 : 0) : 1}>
               <BidsForm userId={+id || undefined} classes={classes} isBuyer={user.is_buyer} />
             </TabPanel>
           )}
