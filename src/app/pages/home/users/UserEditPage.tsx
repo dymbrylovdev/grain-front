@@ -241,7 +241,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
     return accessByRoles(user, ["ROLE_TRANSPORTER"]);
   }, [user]);
   const isBuyerVendorEdit = useCallback(() => {
-    return accessByRoles(user, ["ROLE_VENDOR"]) && accessByRoles(user, ["ROLE_BUYER"]) && editMode !== "profile";
+    return (accessByRoles(user, ["ROLE_VENDOR"]) || accessByRoles(user, ["ROLE_BUYER"])) && editMode !== "profile";
   }, [user, editMode]);
   const isAdminProfile = useCallback(() => {
     return accessByRoles(me, ["ROLE_ADMIN"]) && editMode === "profile";
