@@ -547,7 +547,7 @@ const Bid = React.memo<IProps>(
                               </div>
                               :
                               <div className={innerClasses.price}>
-                                {formatAsThousands(bidOverload.price_with_delivery)}{" "}
+                                {formatAsThousands(bidOverload.price_with_delivery_with_vat.toFixed(0))}{" "}
                               </div>
                             }
                             <div className={innerClasses.rybl}>₽</div>
@@ -633,7 +633,7 @@ const Bid = React.memo<IProps>(
                               </div>
                               :
                               <div className={innerClasses.price}>
-                                {formatAsThousands(bidOverload.price_with_delivery)}{" "}
+                                {formatAsThousands(bidOverload.price_with_delivery_with_vat.toFixed(0))}{" "}
                               </div>
                             }
                             <div className={innerClasses.rybl}>₽</div>
@@ -984,7 +984,7 @@ const Bid = React.memo<IProps>(
                               stopProp(e);
                             }}
                             onChange={(e) => {
-                              editOverloadBid(bid.id, e.target.checked).then(res => {
+                              editOverloadBid(bid.id, e.target.checked, bid.point_prices).then(res => {
                                 setBidOverload(res.data.data)
                               })
                             }}

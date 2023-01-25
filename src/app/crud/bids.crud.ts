@@ -22,10 +22,11 @@ export const editPhotoBid = (id: number, data: any, isArray?: boolean) => {
   return axios.put(`/api/bid/${id}`, { photos_base64: isArray ? data : [data] });
 };
 
-export const editOverloadBid = (id: number, overload: boolean) => {
+export const editOverloadBid = (id: number, overload: boolean, point_prices: Array<null | any>, location?: string) => {
   return axios.post(`/api/bid/get/${id}`, {
     filter: {
-      overload: overload
+      overload: overload,
+      point_prices: point_prices,
     }
   });
 };
