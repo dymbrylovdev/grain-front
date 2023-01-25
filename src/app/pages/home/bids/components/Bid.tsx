@@ -984,7 +984,7 @@ const Bid = React.memo<IProps>(
                               stopProp(e);
                             }}
                             onChange={(e) => {
-                              editOverloadBid(bid.id, e.target.checked, bid.point_prices).then(res => {
+                              editOverloadBid(bid.id, e.target.checked, bid.point_prices, bid.location).then(res => {
                                 setBidOverload(res.data.data)
                               })
                             }}
