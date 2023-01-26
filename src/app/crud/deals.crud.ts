@@ -10,6 +10,7 @@ export const getDeals = (
   term: number,
   min_prepayment_amount?: number,
   vendor_id?: number,
+  crop_id?: number,
   id?: number,
 ) => {
   return axios.get(
@@ -19,6 +20,8 @@ export const getDeals = (
       !!min_prepayment_amount ? `&min_prepayment_amount=${min_prepayment_amount}` : ""
     }${
       !!vendor_id ? `&vendor_id=${vendor_id}` : ""
+    }${
+      !!crop_id ? `&crop_id=${crop_id}` : ""
     }`
   );
 };
