@@ -246,6 +246,9 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
   const isAdminProfile = useCallback(() => {
     return accessByRoles(me, ["ROLE_ADMIN"]) && editMode === "profile";
   }, [user, editMode]);
+  const isAdminEdit = useCallback(() => {
+    return accessByRoles(user, ["ROLE_ADMIN"]);
+  }, [user, editMode]);
   const isManagerProfilePage = useCallback(() => {
     return accessByRoles(me, ["ROLE_MANAGER"]) && editMode === "profile";
   }, [user, editMode]);
@@ -308,8 +311,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                     {!isTransporterProfile() && !isAdminProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !isManagerProfilePage() && (
                       <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })} {...a11yProps(!isTransporterProfile()? (!isBuyerVendorEdit()? 1 : 0) : 5)} />
                     )}
-
-                    {editMode !== "create" && !isTransporterProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !isManagerProfile() && !isManagerProfilePage() && (
+                    {editMode !== "create" && !isTransporterProfile() && !isAdminEdit() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !isManagerProfile() && !isManagerProfilePage() && (
                       <Tab label={intl.formatMessage({ id: "USER.EDIT_FORM.BEST.BIDS" })} {...a11yProps(!isTransporterProfile()? (!isBuyerVendorEdit()? 2 : 1) : 6)} />
                     )}     
 
@@ -426,7 +428,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               setLocTabPulse={setLocTabPulse}
             />
           </TabPanel>
-          {editMode !== "create" && !isTransporterProfile() && !isManagerProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !isManagerProfilePage() &&  (
+          {editMode !== "create" && !isTransporterProfile() && !isAdminEdit() && !isManagerProfile() && accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !isManagerProfilePage() &&  (
             <TabPanel value={valueTabs} index={editMode === "profile" ? 1 : (!isBuyerVendorEdit()? 2 : 1)}>
               <BestDealsProfile vendorId={+id}/>
             </TabPanel>
@@ -440,7 +442,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
             )}
 
           {!accessByRoles(user, ["ROLE_TRANSPORTER"]) && !accessByRoles(me, ["ROLE_TRANSPORTER"]) && (
-            <TabPanel value={valueTabs} index={editMode === "profile" ? (isAdminProfile() ? 2 : ((accessByRoles(me, ["ROLE_BUYER"]) || accessByRoles(me, ["ROLE_VENDOR"]))? 2 : (isManagerProfilePage()? 1 : 3))) : (isManagerProfile()? 2 : 4)}>
+            <TabPanel value={valueTabs} index={editMode === "profile" ? (isAdminProfile() ? 2 : ((accessByRoles(me, ["ROLE_BUYER"]) || accessByRoles(me, ["ROLE_VENDOR"]))? 2 : (isManagerProfilePage()? 1 : 3))) : (isManagerProfile()? 2 : (!isAdminEdit()? 4: 2))}>
               {editMode === "create" ? (
                 <p>{intl.formatMessage({ id: "LOCATIONS.FORM.NO_USER" })}</p>
               ) : (
@@ -454,7 +456,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               {editMode === "create" ? <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p> : <OptionsForm editMode={editMode} />}
             </TabPanel>
           ) : (
-            <TabPanel value={valueTabs} index={editMode === "profile" ? (isManagerProfilePage()? 2 : 3) : (isManagerProfile()? 4 : 6)}>
+            <TabPanel value={valueTabs} index={editMode === "profile" ? (isManagerProfilePage()? 2 : 3) : (isManagerProfile()? 4 : (!isAdminEdit()? 6 : 4))}>
               {editMode === "create" ? (
                 <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p>
               ) : (
@@ -472,11 +474,11 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
               value={valueTabs}
               index={
                 !(
-                  (me && editMode === "profile" && !["ROLE_ADMIN", "ROLE_MANAGER"].includes(me.roles[0])) ||
+                  (me && editMode === "profile" && !["ROLE_MANAGER"].includes(me.roles[0])) ||
                   (user && editMode === "edit" && ["ROLE_BUYER", "ROLE_VENDOR", "ROLE_TRADER"].includes(user.roles[0]))
                 )
                   ? !isTransporterProfile()
-                    ? (isManagerProfile()? 3 : 5)
+                    ? (isManagerProfile()? 3 : (!isAdminEdit()? 5 : 3))
                     : 3
                   : 5
               }
