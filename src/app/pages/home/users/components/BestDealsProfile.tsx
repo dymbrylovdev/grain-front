@@ -195,7 +195,14 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
   }
 
   const sign = (item) => {
-    if (Math.sign(item?.profit_with_delivery_price) == -1 && Math.sign(item?.purchase_bid.price_with_delivery) == -1) {
+    const parseValue = (item) => {
+      if (typeof item === 'number') {
+        return item
+      } else {
+        return item?.props?.children
+      }
+    }
+    if (Number(parseValue(item)) < 0) {
       return '-'
     } else {
       return null
@@ -378,7 +385,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
                       </TableCell>
                       {getProfit(item)}
 
-                      <TableCell style={{ width: '100px' }}>{sign(item)} {((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)}%</TableCell>
+                      <TableCell style={{ width: '100px' }}>
+                        {sign(getProfit(item).props.children)}
+                        {Math.abs(Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)))}%</TableCell>
                       <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
                     </TableRow>
                   ))}
