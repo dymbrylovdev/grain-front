@@ -977,21 +977,23 @@ const Bid = React.memo<IProps>(
                       >
                         <DeleteIcon />
                       </IconButton>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            onClick={e => {
-                              stopProp(e);
-                            }}
-                            onChange={(e) => {
-                              editOverloadBid(bid.id, e.target.checked, bid.point_prices, bid.location).then(res => {
-                                setBidOverload(res.data.data)
-                              })
-                            }}
-                          />
-                        }
-                        label={"Перегруз"}
-                      />
+                      {salePurchaseMode === "sale" && (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              onClick={e => {
+                                stopProp(e);
+                              }}
+                              onChange={(e) => {
+                                editOverloadBid(bid.id, e.target.checked, bid.point_prices, bid.location).then(res => {
+                                  setBidOverload(res.data.data)
+                                })
+                              }}
+                            />
+                          }
+                          label={"Перегруз"}
+                        />
+                      )}
                     </>
                   )}
                 </div>

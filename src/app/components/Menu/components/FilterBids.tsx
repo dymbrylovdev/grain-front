@@ -198,7 +198,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   return (
     <form onSubmit={formik.handleSubmit} autoComplete="off">
-      {me?.roles[0] === 'ROLE_BUYER' && (
+      {salePurchaseMode === "sale" && (
         <MenuItem>
           <CheckBoxOverload values={formik.values} handleChange={formik.handleChange} handleSubmit={filterSubmit} />
         </MenuItem>
