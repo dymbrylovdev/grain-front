@@ -977,7 +977,10 @@ const Bid = React.memo<IProps>(
                       >
                         <DeleteIcon />
                       </IconButton>
-                      {salePurchaseMode === "sale" && (
+                     
+                    </>
+                  )}
+                   {salePurchaseMode === "sale" && (
                         <FormControlLabel
                           control={
                             <Checkbox
@@ -994,8 +997,6 @@ const Bid = React.memo<IProps>(
                           label={"Перегруз"}
                         />
                       )}
-                    </>
-                  )}
                 </div>
               )}
             </div>
