@@ -22,6 +22,7 @@ import { thousands } from "../../deals/utils/utils";
 import { ILocalDeals } from "../../deals/DealViewPage";
 import { IDeal } from "../../../../interfaces/deals";
 import { sign } from "crypto";
+import moment from "moment";
 
 interface IProps {
   vendorId: number
@@ -207,8 +208,15 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
     } else {
       return null
     }
-
   }
+
+  const checkDealAge = useCallback((bid) => {
+    const now = moment(new Date());
+    const end = moment(bid?.modified_at);
+    const duration = moment.duration(now.diff(end));
+    const days = duration.asDays();
+    return days > 30 ? true : false
+  }, []);
 
   return (
     <>
@@ -278,7 +286,10 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
               <TableBody>
                 {!!deals &&
                   deals.map((item, i) => (
-                    <TableRow key={i}>
+                    <TableRow key={i} style={{
+                      border: (checkDealAge(item.purchase_bid) || checkDealAge(item.sale_bid))? "4px solid #FD397A" : 'none',
+                      padding: (checkDealAge(item.purchase_bid) || checkDealAge(item.sale_bid))? 8 : 0,
+                    }}>
                       <TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>
                       <TableCell>
                         <div className={classes.flexColumn}>
