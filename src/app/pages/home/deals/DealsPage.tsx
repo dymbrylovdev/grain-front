@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { YMaps, Map } from "react-yandex-maps";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Button, CircularProgress } from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Button, CircularProgress, FormControlLabel, Checkbox, TextField } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
@@ -178,14 +178,14 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             data: noneElement ? (
               localDistance.distance
             ) : (
-              <TableCell className={classes.tableCellModifed}>{localDistance.distance}</TableCell>
+              <div className={classes.tableCellModifed}>{localDistance.distance}</div>
             ),
           };
         }
       }
       return {
         isLocal: false,
-        data: noneElement ? currentDeal.distance : <TableCell>{currentDeal.distance}</TableCell>,
+        data: noneElement ? currentDeal.distance : <div>{currentDeal.distance}</div>,
       };
     },
     [localDeals]
@@ -198,7 +198,11 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       if (localDistance.data && typeof localDistance.data === "number" && currentCrop && currentCrop.delivery_price_coefficient) {
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         return (
-          <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined}>
+          <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
+            color: (currentDeal.purchase_bid.price -
+              Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
+              distance * currentCrop.delivery_price_coefficient) < 0 ? "#000000" : "#21BA88"
+          }}>
             {!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat ? (
               <>
                 {currentDeal.purchase_bid.price -
@@ -211,7 +215,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           </TableCell>
         );
       }
-      return <TableCell>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
+      return <TableCell style={{
+        color: currentDeal.profit_with_delivery_price < 0? "#000000" : "#21BA88"
+      }}>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
     },
     [getCurrentCrop, getDistance]
   );
@@ -307,13 +313,19 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <FormattedMessage id="DEALS.TABLE.PURCHASE" />
                 </TopTableCell>
                 <TopTableCell>
+                  <FormattedMessage id="DEALS.TABLE.DELIVERY" />
+                </TopTableCell>
+                <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.PROFIT" />
                 </TopTableCell>
                 <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.DISTANCE" />
+                  %
                 </TopTableCell>
                 <TopTableCell>
                   <FormattedMessage id="BIDSLIST.TABLE.TIME" />
+                </TopTableCell>
+                <TopTableCell>
+                  <FormattedMessage id="DEALS.TABLE.DISTANCE" />
                 </TopTableCell>
                 <TopTableCell></TopTableCell>
               </TableRow>
@@ -382,6 +394,11 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                             </div>
                           )}
                         </div>
+                        <div>
+                          {item.sale_bid.modified_at && (
+                            'Обновлено: ' + intl.formatDate(item.purchase_bid.modified_at)
+                          )}
+                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -424,19 +441,49 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                             </div>
                           )}
                         </div>
+                        <div>
+                          {item.purchase_bid.modified_at && (
+                            'Обновлено: ' + intl.formatDate(item.purchase_bid.modified_at)
+                          )}
+                        </div>
                       </div>
                     </TableCell>
+                    <TableCell>
+                      <FormControlLabel
+                        control={<Checkbox checked={false} />}
+                        label={intl.formatMessage({
+                          id: "OPTIONS.OVERLOAD",
+                        })}
+                      />
+                      <div>Цена доставки: {item.delivery_price ? item.delivery_price : '-'}</div>
+                      <div>Доставка 1 тонны за км:</div>
+                      <TextField
+                        type="number"
+                        margin="dense"
+                        variant="outlined"
+                        autoComplete="off"
+                      />
+                    </TableCell>
                     {getProfit(item)}
-                    {getDistance(item).data}
+                    <TableCell>
+                      <div style={{
+                        color: item.profit_with_delivery_price / item.purchase_bid.price_with_delivery <0? "#000000" : "#21BA88"
+                      }}>
+                        {Math.abs(Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)))}%
+                      </div>
+                    </TableCell>
                     <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
                     <TableCell align="center">
-                      <IconButton
-                        size="medium"
-                        color="primary"
-                        onClick={() => history.push(`/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`)}
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
+                      {getDistance(item).data}
+                      <div>
+                        <IconButton
+                          size="medium"
+                          color="primary"
+                          onClick={() => history.push(`/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`)}
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
+                      </div>
                       <Button
                         disabled={typeof loadDistanation === "number"}
                         variant="text"
@@ -446,7 +493,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           setLoadDistanation(i);
                         }}
                       >
-                        {loadDistanation === i ? <CircularProgress size={20} /> : <div>Уточнить расстояние</div>}
+                        {loadDistanation === i ? <CircularProgress size={20} /> : <div>Уточнить</div>}
                       </Button>
                     </TableCell>
                   </TableRow>
