@@ -228,14 +228,16 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({ i
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
-
-      <span style={{
-        color: '#000000',
-        fontWeight: '500',
-        fontSize: 16
-      }}>
-        {intl.formatMessage({ id: "FILTER.FORM.CULTURE.SETTINGS" })}
-      </span>
+      
+      <div className={classes.nested}>
+        <span style={{
+          color: '#000000',
+          fontWeight: '500',
+          fontSize: 16
+        }}>
+          {intl.formatMessage({ id: "FILTER.FORM.CULTURE.SETTINGS" })}
+        </span>
+      </div>
       
       <Divider style={{ margin: "6px 0" }} />
     </>
