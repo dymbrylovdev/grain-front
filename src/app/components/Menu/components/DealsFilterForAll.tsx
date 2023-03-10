@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps, shallowEqual, useSelector } from "react-redux";
 import { Divider, makeStyles, TextField, FormControlLabel, Checkbox, MenuItem } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
@@ -19,7 +19,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({ intl, setWeeks, setTerm, setPrepayment }) => {
+const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({ 
+  intl,
+  setWeeks,
+  setTerm,
+  setPrepayment,
+  crops,
+  fetch,
+  page,
+  perPage 
+}) => {
   const { weeks, term, min_prepayment_amount } = useSelector(
     ({ deals: { weeks, term, min_prepayment_amount } }: IAppState) => ({
       weeks,
@@ -34,6 +43,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({ i
   }, [min_prepayment_amount, setTerm]);
 
   const classes = useStyles();
+  const [cropId, setCropId] = useState(0);
 
   return (
     <>
@@ -165,18 +175,26 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({ i
 
       <div className={classes.nested}>
         {intl.formatMessage({ id: "FILTER.FORM.CULTURE" })}
-        <TextField
-          select
-          margin="normal"
-          name="roles"
-          variant="outlined"
-          defaultValue={"Пшеница"}
-        >
-          <MenuItem value={"Все"} key={1}>Все</MenuItem>
-          <MenuItem value={"Пшеница"} key={2}>Пшеница</MenuItem>
-          <MenuItem value={"Рожь"} key={3}>Рожь</MenuItem>
-          <MenuItem value={"..."} key={4}>...</MenuItem>
-        </TextField>
+        {crops && (
+          <TextField
+            select
+            margin="normal"
+            label={intl.formatMessage({
+              id: "DEALS.CROPS.TITLE",
+            })}
+            onChange={(e) => {
+              setCropId(Number(e.target.value))
+              fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, 0, Number(e.target.value))
+            }}
+            variant="outlined"
+          >
+            {crops!.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        )}
       </div>
       <div className={classes.nested}>
         {intl.formatMessage({ id: "FILTER.FORM.AD" })}
@@ -244,7 +262,17 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({ i
   );
 };
 
-const connector = connect(null, { ...dealsActions });
+const connector = connect(
+  (state: IAppState) => ({
+    crops: state.crops2.crops,
+    page: state.deals.page,
+    perPage: state.deals.per_page,
+  }),
+  {
+    ...dealsActions,
+    fetch: dealsActions.fetchRequest,
+  }
+);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
 export default connector(injectIntl(DealsFilterForAll));
