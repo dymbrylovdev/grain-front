@@ -10,7 +10,9 @@ import { actions as funnelStatesActions } from "../../../store/ducks/funnelState
 
 import { IAppState } from "../../../store/rootDuck";
 import NumberFormatCustom from "../../NumberFormatCustom/NumberFormatCustom";
+import  MadalBids from "../../ui/Modal";
 import DealsUsers from "./DealsUsers";
+import UsersPageList from "../../../pages/home/bids/BitsPageList";
 
 const useStyles = makeStyles(theme => ({
   nester: {
@@ -23,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({ 
+const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   intl,
   setWeeks,
   setTerm,
@@ -36,6 +38,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   setUsersFilterTariff,
   setFunnelState
 }) => {
+  const [open, setOpen] = useState(false);
   const { weeks, term, min_prepayment_amount } = useSelector(
     ({ deals: { weeks, term, min_prepayment_amount } }: IAppState) => ({
       weeks,
@@ -122,6 +125,21 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           name="fullPrepayment"
         />
       </div> */}
+      <MadalBids
+        open={open}
+        onClose={() => setOpen(false)}
+        title={"Выбор объявления"}
+        actions={[
+          {
+            title: "Cancel",
+            onClick: () => setOpen(false),
+          },
+        ]}
+        content={<div>
+          {/*@ts-ignore*/}
+          <UsersPageList onClose={ () => setOpen(false)}/>
+        </div>}
+      />
 
       <div className={classes.nested}>
         {intl.formatMessage({ id: "FILTER.FORM.WORK_WITH_USER" })}
@@ -151,7 +169,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         </TextField>
       </div>
       <div className={classes.nested}>
-        {intl.formatMessage({ id: "FILTER.FORM.ROLE" })}        
+        {intl.formatMessage({ id: "FILTER.FORM.ROLE" })}
         <TextField
           select
           margin="normal"
@@ -185,7 +203,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           <MenuItem value={"Джек Ма"} key={3}>Джек Ма</MenuItem>
           <MenuItem value={"Сергей Брин"} key={4}>Сергей Брин</MenuItem>
         </TextField> */}
-        <Button 
+        <Button
           onClick={() => setOpenModal(true)}
           variant="text"
           color="primary"
@@ -220,18 +238,9 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         )}
       </div>
       <div className={classes.nested}>
-        {intl.formatMessage({ id: "FILTER.FORM.AD" })}
-        <TextField
-          select
-          margin="normal"
-          variant="outlined"
-          defaultValue={"Цена: 12 000; Объём, т.: 300"}
-        >
-          <MenuItem value={"Цена: 12 000; Объём, т.: 300"} key={1}>Цена: 12 000; Объём, т.: 300</MenuItem>
-          <MenuItem value={"Цена: 11 500; Объём, т.: 100"} key={2}>Цена: 11 500; Объём, т.: 100</MenuItem>
-          <MenuItem value={"Option 3"} key={3}>Option 3</MenuItem>
-          <MenuItem value={"Option 4"} key={4}>Option 4</MenuItem>
-        </TextField>
+        <Button onClick={() => setOpen(true)} >
+          {intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })}
+        </Button>
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
@@ -268,7 +277,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
-      
+
       <div className={classes.nested}>
         <span style={{
           color: '#000000',
@@ -278,10 +287,10 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           {intl.formatMessage({ id: "FILTER.FORM.CULTURE.SETTINGS" })}
         </span>
       </div>
-      
+
       <Divider style={{ margin: "6px 0" }} />
 
-      <Modal 
+      <Modal
         open={openModal}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
