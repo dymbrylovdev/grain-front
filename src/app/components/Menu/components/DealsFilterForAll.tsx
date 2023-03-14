@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps, shallowEqual, useSelector } from "react-redux";
-import { Divider, makeStyles, TextField, FormControlLabel, Checkbox, MenuItem } from "@material-ui/core";
+import { Divider, makeStyles, TextField, FormControlLabel, Checkbox, MenuItem, Modal, Button } from "@material-ui/core";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
+import { actions as usersActions } from "../../../store/ducks/users.duck";
+import { actions as tariffActions } from "../../../store/ducks/tariffs.duck";
+import { actions as funnelStatesActions } from "../../../store/ducks/funnelStates.duck";
 
 import { IAppState } from "../../../store/rootDuck";
 import NumberFormatCustom from "../../NumberFormatCustom/NumberFormatCustom";
+import DealsUsers from "./DealsUsers";
 
 const useStyles = makeStyles(theme => ({
   nester: {
@@ -27,7 +31,10 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   crops,
   fetch,
   page,
-  perPage 
+  perPage,
+  setCurrentRoles,
+  setUsersFilterTariff,
+  setFunnelState
 }) => {
   const { weeks, term, min_prepayment_amount } = useSelector(
     ({ deals: { weeks, term, min_prepayment_amount } }: IAppState) => ({
@@ -42,9 +49,13 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     if (min_prepayment_amount === 100) setTerm(undefined);
   }, [min_prepayment_amount, setTerm]);
 
+  const handleClose = () => {
+    setOpenModal(false);
+  }
+
   const classes = useStyles();
   const [cropId, setCropId] = useState(0);
-
+  const [openModal, setOpenModal] = useState(false);
   return (
     <>
       {/* this logic will be needed in the upcoming tasks  */}
@@ -117,7 +128,6 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <TextField
           select
           margin="normal"
-          name="roles"
           variant="outlined"
           defaultValue={"Не важно"}
         >
@@ -131,7 +141,6 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <TextField
           select
           margin="normal"
-          name="roles"
           variant="outlined"
           defaultValue={"Все"}
         >
@@ -142,33 +151,47 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         </TextField>
       </div>
       <div className={classes.nested}>
-        {intl.formatMessage({ id: "FILTER.FORM.ROLE" })}
+        {intl.formatMessage({ id: "FILTER.FORM.ROLE" })}        
         <TextField
           select
           margin="normal"
+          defaultValue={"Все"}
+          onChange={e => {
+            setCurrentRoles(e.target.value);
+            setUsersFilterTariff("Все");
+            setFunnelState("Все");
+          }}
           name="roles"
           variant="outlined"
-          defaultValue={"Покупатель"}
         >
-          <MenuItem value={"Все"} key={1}>Все</MenuItem>
-          <MenuItem value={"Продавец"} key={2}>Продавец</MenuItem>
-          <MenuItem value={"Покупатель"} key={3}>Покупатель</MenuItem>
+          <MenuItem key={1} value={"Все"}>Все</MenuItem>
+          <MenuItem key={2} value={'ROLE_VENDOR'}>Продавец</MenuItem>
+          <MenuItem key={3} value={'ROLE_BUYER'}>Покупатель</MenuItem>
         </TextField>
       </div>
       <div className={classes.nested}>
-        {intl.formatMessage({ id: "FILTER.FORM.USER" })}
+        {/* {intl.formatMessage({ id: "FILTER.FORM.USER" })}
         <TextField
           select
           margin="normal"
-          name="roles"
           variant="outlined"
           defaultValue={"Джефф Безос"}
+          onClick={(e) => {
+            e.preventDefault()
+          }}
         >
           <MenuItem value={"Все"} key={1}>Все</MenuItem>
           <MenuItem value={"Джефф Безос"} key={2}>Джефф Безос</MenuItem>
           <MenuItem value={"Джек Ма"} key={3}>Джек Ма</MenuItem>
           <MenuItem value={"Сергей Брин"} key={4}>Сергей Брин</MenuItem>
-        </TextField>
+        </TextField> */}
+        <Button 
+          onClick={() => setOpenModal(true)}
+          variant="text"
+          color="primary"
+        >
+          Список пользователей
+        </Button>
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
@@ -201,7 +224,6 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <TextField
           select
           margin="normal"
-          name="roles"
           variant="outlined"
           defaultValue={"Цена: 12 000; Объём, т.: 300"}
         >
@@ -258,6 +280,28 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       </div>
       
       <Divider style={{ margin: "6px 0" }} />
+
+      <Modal 
+        open={openModal}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+            background: "#fff",
+            padding: 10,
+            borderRadius: 8,
+            overflow: "hidden",
+          }}
+        >
+          <DealsUsers />
+        </div>
+      </Modal>
     </>
   );
 };
@@ -271,6 +315,9 @@ const connector = connect(
   {
     ...dealsActions,
     fetch: dealsActions.fetchRequest,
+    setCurrentRoles: usersActions.setCurrentRoles,
+    setUsersFilterTariff: tariffActions.setUsersFilterTariff,
+    setFunnelState: funnelStatesActions.setFunnelState,
   }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;
