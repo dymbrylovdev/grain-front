@@ -526,7 +526,7 @@ const Bid = React.memo<IProps>(
                 infinite
               />
             </div>
-            {/* <CardMedia component="img" title="image" image={toAbsoluteUrl("/images/defaultImage.jpg")} className={innerClasses.image} /> */}
+            {/* <CardMedia component="img" title="image"image={toAbsoluteUrl("/images/defaultImage.jpg")} className={innerClasses.image} /> */}
           </div>
           <div className={innerClasses.wrapperFirstInfoBlock}>
             <div className={innerClasses.containerInfoBlock}>
@@ -977,7 +977,7 @@ const Bid = React.memo<IProps>(
                       >
                         <DeleteIcon />
                       </IconButton>
-                     
+
                     </>
                   )}
                    {salePurchaseMode === "sale" && (
