@@ -24,6 +24,7 @@ import { ILocalDeals } from "./DealViewPage";
 import { IDeal } from "../../../interfaces/deals";
 import { REACT_APP_GOOGLE_API_KEY } from "../../../constants";
 import {actions as bidsActions} from "../../../store/ducks/bids.duck";
+import {accessByRoles, сompareRoles} from "../../../utils/utils";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -74,7 +75,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [ymaps, setYmaps] = useState<any>();
   const { enqueueSnackbar } = useSnackbar();
   const numberParams = useMemo(() => cropParams && cropParams.filter(item => item.type === "number"), [cropParams]);
-
+  const rolesBidUser = useMemo(() => bidSelected && bidSelected.vendor?.roles, [bidSelected]);
 
   const localDeals: ILocalDeals[] | null = useMemo(() => {
     const storageDeals = localStorage.getItem("deals");
@@ -281,6 +282,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchCrops]);
 
   useEffect(() => {
+    console.log(bidSelected)
     if (bidSelected) {
       fetchByBidId(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, bidSelected.id);
     }
@@ -358,19 +360,26 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         <div>{intl.formatMessage({ id: "DEALS.EMPTY" })}</div>
       ) : (
         <div className={classes.table}>
-
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.CROP" />
                 </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.SALE" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.PURCHASE" />
-                </TopTableCell>
+                {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_VENDOR") ? (
+                  <></>
+                ) : (
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.SALE" />
+                  </TopTableCell>
+                )}
+                {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_BUYER") ? (
+                  <></>
+                ) : (
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.PURCHASE"/>
+                  </TopTableCell>
+                )}
                 <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.DELIVERY" />
                 </TopTableCell>
@@ -394,119 +403,127 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                 deals.map((item, i) => (
                   <TableRow key={i}>
                     <TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>
-                    <TableCell>
-                      <div className={classes.flexColumn}>
-                        <div style={{ display: "flex" }}>
-                          <strong style={{ marginRight: 5 }}>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                          <strong>
-                            {!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat ? (
-                              !item.sale_bid.price ? (
-                                "-"
+                    {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_VENDOR") ? (
+                      <></>
+                    ) : (
+                      <TableCell>
+                        <div className={classes.flexColumn}>
+                          <div style={{ display: "flex" }}>
+                            <strong style={{ marginRight: 5 }}>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                            <strong>
+                              {!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat ? (
+                                !item.sale_bid.price ? (
+                                  "-"
+                                ) : (
+                                  <div style={{ display: "flex", alignItems: "center" }}>
+                                    <p style={{ marginBottom: "1px", marginRight: 10 }}>
+                                      {!!item.sale_bid && thousands(Math.round(item.sale_bid.price * (item.sale_bid.vat / 100 + 1)))}
+                                    </p>
+                                    <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
+                                      ({`${item.sale_bid.price && thousands(Math.round(item.sale_bid.price))} + ${item.sale_bid.vat}% НДС`})
+                                    </p>
+                                  </div>
+                                )
+                              ) : item.sale_bid.price ? (
+                                thousands(Math.round(item.sale_bid.price))
                               ) : (
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                  <p style={{ marginBottom: "1px", marginRight: 10 }}>
-                                    {!!item.sale_bid && thousands(Math.round(item.sale_bid.price * (item.sale_bid.vat / 100 + 1)))}
-                                  </p>
-                                  <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
-                                    ({`${item.sale_bid.price && thousands(Math.round(item.sale_bid.price))} + ${item.sale_bid.vat}% НДС`})
-                                  </p>
-                                </div>
-                              )
-                            ) : item.sale_bid.price ? (
-                              thousands(Math.round(item.sale_bid.price))
-                            ) : (
-                              "-"
-                            )}
-                          </strong>
-                        </div>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                          <strong>{item.sale_bid.volume}</strong>
-                        </div>
-                        <div>
-                          {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })}
-                          {": "}
-                          {item.sale_bid.location.text}
-                        </div>
-                        <div>{intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}</div>
-                        <div>
-                          <div className={classes.flexRow}>
-                            {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
-                              <Tooltip
-                                title={intl.formatMessage({
-                                  id: "USERLIST.TOOLTIP.COMPANY",
-                                })}
-                              >
-                                <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                              </Tooltip>
-                            )}
-                            <div>{`${item?.sale_bid.vendor.login || ""}`}</div>
-                          </div>
-                          <div>{` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor
-                            .lastname || ""}`}</div>
-                          {item?.sale_bid.vendor.company && (
-                            <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                              {!!item?.sale_bid?.vendor?.company?.colors && item?.sale_bid.vendor.company.colors.length > 0 && (
-                                <MiniTrafficLight intl={intl} colors={item?.sale_bid.vendor.company.colors} />
+                                "-"
                               )}
-                              <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
-                            </div>
-                          )}
-                        </div>
-                        <div>
-                          {item.sale_bid.modified_at && (
-                            'Обновлено: ' + intl.formatDate(item.purchase_bid.modified_at)
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className={classes.flexColumn}>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                          <strong>{item.purchase_bid.price}</strong>
-                        </div>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                          <strong>{item.purchase_bid.volume}</strong>
-                        </div>
-                        <div>
-                          {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })}
-                          {": "}
-                          {item.purchase_bid.location.text}
-                        </div>
-                        <div>{intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}</div>
-                        <div>
-                          <div className={classes.flexRow}>
-                            {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
-                              <Tooltip
-                                title={intl.formatMessage({
-                                  id: "USERLIST.TOOLTIP.COMPANY",
-                                })}
-                              >
-                                <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                              </Tooltip>
-                            )}
-                            <div>{`${item?.purchase_bid.vendor.login || ""}`}</div>
+                            </strong>
                           </div>
-                          <div>{`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item
-                            ?.purchase_bid.vendor.lastname || ""}`}</div>
-                          {item?.purchase_bid.vendor.company && (
-                            <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                              {!!item?.purchase_bid?.vendor?.company?.colors && item?.purchase_bid.vendor.company.colors.length > 0 && (
-                                <MiniTrafficLight intl={intl} colors={item?.purchase_bid.vendor.company.colors} />
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                            <strong>{item.sale_bid.volume}</strong>
+                          </div>
+                          <div>
+                            {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })}
+                            {": "}
+                            {item.sale_bid.location.text}
+                          </div>
+                          <div>{intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}</div>
+                          <div>
+                            <div className={classes.flexRow}>
+                              {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
+                                <Tooltip
+                                  title={intl.formatMessage({
+                                    id: "USERLIST.TOOLTIP.COMPANY",
+                                  })}
+                                >
+                                  <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
+                                </Tooltip>
                               )}
-                              <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
+                              <div>{`${item?.sale_bid.vendor.login || ""}`}</div>
                             </div>
-                          )}
+                            <div>{` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor
+                              .lastname || ""}`}</div>
+                            {item?.sale_bid.vendor.company && (
+                              <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                                {!!item?.sale_bid?.vendor?.company?.colors && item?.sale_bid.vendor.company.colors.length > 0 && (
+                                  <MiniTrafficLight intl={intl} colors={item?.sale_bid.vendor.company.colors} />
+                                )}
+                                <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            {item.sale_bid.modified_at && (
+                              'Обновлено: ' + intl.formatDate(item.purchase_bid.modified_at)
+                            )}
+                          </div>
                         </div>
-                        <div>
-                          {item.purchase_bid.modified_at && (
-                            'Обновлено: ' + intl.formatDate(item.purchase_bid.modified_at)
-                          )}
+                      </TableCell>
+                    )}
+                    {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_BUYER") ? (
+                      <></>
+                    ) : (
+                      <TableCell>
+                        <div className={classes.flexColumn}>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                            <strong>{item.purchase_bid.price}</strong>
+                          </div>
+                          <div>
+                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                            <strong>{item.purchase_bid.volume}</strong>
+                          </div>
+                          <div>
+                            {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })}
+                            {": "}
+                            {item.purchase_bid.location.text}
+                          </div>
+                          <div>{intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}</div>
+                          <div>
+                            <div className={classes.flexRow}>
+                              {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
+                                <Tooltip
+                                  title={intl.formatMessage({
+                                    id: "USERLIST.TOOLTIP.COMPANY",
+                                  })}
+                                >
+                                  <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
+                                </Tooltip>
+                              )}
+                              <div>{`${item?.purchase_bid.vendor.login || ""}`}</div>
+                            </div>
+                            <div>{`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item
+                              ?.purchase_bid.vendor.lastname || ""}`}</div>
+                            {item?.purchase_bid.vendor.company && (
+                              <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                                {!!item?.purchase_bid?.vendor?.company?.colors && item?.purchase_bid.vendor.company.colors.length > 0 && (
+                                  <MiniTrafficLight intl={intl} colors={item?.purchase_bid.vendor.company.colors} />
+                                )}
+                                <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            {item.purchase_bid.modified_at && (
+                              'Обновлено: ' + intl.formatDate(item.purchase_bid.modified_at)
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
+                      </TableCell>
+                    )}
                     <TableCell>
                       <FormControlLabel
                         control={<Checkbox checked={false} />}

@@ -1,4 +1,5 @@
 import { ITransport } from './options';
+import {TRole} from "./users";
 export type TBidType = "sale" | "purchase";
 
 
@@ -23,6 +24,7 @@ export interface IBid {
     surname: string | null;
     firstName: string | null;
     lastName: string | null;
+    roles: TRole[];
   };
   createdAt: string;
   created_at: string;
@@ -45,6 +47,7 @@ export interface IBid {
     firstname?: string;
     lastname?: string;
     manager: any;
+    roles: TRole[];
   };
   location: {
     lat: number;

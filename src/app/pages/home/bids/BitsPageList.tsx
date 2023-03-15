@@ -55,8 +55,10 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   const prevBids = Array.apply(null, Array(5));
   const numberParams = useMemo(() => cropParams && cropParams.filter(item => item.type === "number"), [cropParams]);
 
+  // 524 покупатель
+  // 444 продавец
   useEffect(() => {
-    if (me && me?.id) fetchUserBids({ userId: me.id, page, perPage });
+    if (me && me?.id) fetchUserBids({ userId: 444, page, perPage });
   }, [fetchUserBids, me]);
 
   useEffect(() => {
@@ -127,9 +129,19 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 })}
             </TableBody>
             <TableFooter>
-              <TableRow>
-
-              </TableRow>
+              {userBids && me && me?.id && (
+                <TableRow>
+                  <TablePaginator
+                    page={page}
+                    realPerPage={userBids.length}
+                    perPage={perPage}
+                    total={total}
+                    fetchRows={(page, perPage) =>
+                      fetchUserBids({ userId: me.id, page, perPage })
+                    }
+                  />
+                </TableRow>
+              )}
             </TableFooter>
           </Table>
         </div>
