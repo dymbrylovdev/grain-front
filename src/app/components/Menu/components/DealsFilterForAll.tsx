@@ -131,7 +131,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         title={"Выбор объявления"}
         actions={[
           {
-            title: "Cancel",
+            title: intl.formatMessage({ id: "ALL.BUTTONS.PREV" }),
             onClick: () => setOpen(false),
           },
         ]}
@@ -224,7 +224,11 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         )}
       </div>
       <div className={classes.nested}>
-        <Button onClick={() => setOpen(true)} >
+        <Button
+          onClick={() => setOpen(true)}
+          className="kt-subheader__btn" variant="contained" color="primary"
+          style={{margin: '20px auto', width: '100%'}}
+        >
           {intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })}
         </Button>
       </div>

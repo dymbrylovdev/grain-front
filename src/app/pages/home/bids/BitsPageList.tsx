@@ -44,7 +44,7 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   clearUserBids,
   fetchUserBids,
-
+  setBidSelected,
 
   page,
   perPage,
@@ -64,7 +64,7 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   }, [clearUserBids]);
 
   const handleToBid = (bid: IBid) => {
-    console.log('bid:', bid);
+    setBidSelected(bid)
     onClose();
   }
 
@@ -78,7 +78,6 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   return (
     <Paper className={classes.paperWithTable}>
-      <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.USER.LIST" })} />
       {!userBids && !crops? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />
@@ -165,6 +164,7 @@ const connector = connect(
     fetchCrops: crops2Actions.fetchRequest,
 
     setProfit: bidsActions.setProfit,
+    setBidSelected: bidsActions.setBidSelected,
 
     clearPost: myFiltersActions.clearPost,
     post: myFiltersActions.postFilter,
