@@ -188,28 +188,14 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         </TextField>
       </div>
       <div className={classes.nested}>
-        {/* {intl.formatMessage({ id: "FILTER.FORM.USER" })}
-        <TextField
-          select
-          margin="normal"
-          variant="outlined"
-          defaultValue={"Джефф Безос"}
-          onClick={(e) => {
-            e.preventDefault()
+        <MenuItem
+          onClick={() => setOpenModal(true)}
+          style={{
+            marginLeft: -16
           }}
         >
-          <MenuItem value={"Все"} key={1}>Все</MenuItem>
-          <MenuItem value={"Джефф Безос"} key={2}>Джефф Безос</MenuItem>
-          <MenuItem value={"Джек Ма"} key={3}>Джек Ма</MenuItem>
-          <MenuItem value={"Сергей Брин"} key={4}>Сергей Брин</MenuItem>
-        </TextField> */}
-        <Button
-          onClick={() => setOpenModal(true)}
-          variant="text"
-          color="primary"
-        >
           Список пользователей
-        </Button>
+        </MenuItem>
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
@@ -295,21 +281,19 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
+         style={{
+          position:'fixed',
+          top:'11%',
+          left: '5%',
+          overflow:'auto',
+          minWidth: '90%',
+          minHeight: '85%',
+          width: '90%',
+          height:'85%',
+          display:'block'
+        }}
       >
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-            background: "#fff",
-            padding: 10,
-            borderRadius: 8,
-            overflow: "hidden",
-          }}
-        >
-          <DealsUsers />
-        </div>
+        <DealsUsers />
       </Modal>
     </>
   );
