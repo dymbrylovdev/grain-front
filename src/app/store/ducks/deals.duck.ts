@@ -24,6 +24,8 @@ const FETCH_FILTERS_REQUEST = "deals/FETCH_FILTERS_REQUEST";
 const FETCH_FILTERS_SUCCESS = "deals/FETCH_FILTERS_SUCCESS";
 const FETCH_FILTERS_FAIL = "deals/FETCH_FILTERS_FAIL";
 
+const FETCH_BY_BID_ID = "deals/FETCH_BY_BID_ID";
+
 const CLEAR_EDIT_FILTER = "deals/CLEAR_EDIT_FILTER";
 const EDIT_FILTER_REQUEST = "deals/EDIT_FILTER_REQUEST";
 const EDIT_FILTER_SUCCESS = "deals/EDIT_FILTER_SUCCESS";
@@ -82,6 +84,16 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
   (state = initialState, action) => {
     switch (action.type) {
       case FETCH_REQUEST: {
+        return {
+          ...state,
+          deals: undefined,
+          loading: true,
+          success: false,
+          error: null,
+        };
+      }
+
+      case FETCH_BY_BID_ID: {
         return {
           ...state,
           deals: undefined,
@@ -200,8 +212,8 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 );
 
 export const actions = {
-  fetchRequest: (page: number, perPage: number, weeks: number, term: number, min_prepayment_amount: number | undefined, vendor_id?: number, crop_id?: number) =>
-    createAction(FETCH_REQUEST, { page, perPage, weeks, term, min_prepayment_amount, vendor_id, crop_id }),
+  fetchRequest: (page: number, perPage: number, weeks: number, term: number, min_prepayment_amount: number | undefined, vendor_id?: number, crop_id?: number, bid_id?: number) =>
+    createAction(FETCH_REQUEST, { page, perPage, weeks, term, min_prepayment_amount, vendor_id, crop_id, bid_id}),
   fetchSuccess: (payload: IServerResponse<IDeal[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
@@ -217,6 +229,9 @@ export const actions = {
     createAction(FETCH_FILTERS_SUCCESS, payload),
   fetchFiltersFail: (payload: string) => createAction(FETCH_FILTERS_FAIL, payload),
 
+  fetchByBidId: (page: number, perPage: number, weeks: number, term: number, min_prepayment_amount: number | undefined, bid_id?: number) =>
+    createAction(FETCH_BY_BID_ID, { page, perPage, weeks, term, min_prepayment_amount, bid_id}),
+
   clearEditFilter: () => createAction(CLEAR_EDIT_FILTER),
   editFilterRequest: (id: number, data: IDealsFilterForEdit) =>
     createAction(EDIT_FILTER_REQUEST, { id, data }),
@@ -229,11 +244,11 @@ export type TActions = ActionsUnion<typeof actions>;
 function* fetchSaga({
   payload,
 }: {
-  payload: { page: number; perPage: number; weeks: number; term: number; min_prepayment_amount: number | undefined; vendor_id?: number; crop_id?: number;};
+  payload: { page: number; perPage: number; weeks: number; term: number; min_prepayment_amount: number | undefined; vendor_id?: number; crop_id?: number, bid_id?: number;};
 }) {
   try {
     const { data }: { data: IServerResponse<IDeal[]> } = yield call(() =>
-      getDeals(payload.page, payload.perPage, payload.weeks, payload.term, payload.min_prepayment_amount, payload.vendor_id, payload.crop_id)
+      getDeals(payload.page, payload.perPage, payload.weeks, payload.term, payload.min_prepayment_amount, payload.vendor_id, payload.crop_id, payload.bid_id)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
@@ -261,6 +276,7 @@ function* editFilterSaga({ payload }: { payload: { id: number; data: IDealsFilte
 
 export function* saga() {
   yield takeLatest<ReturnType<typeof actions.fetchRequest>>(FETCH_REQUEST, fetchSaga);
+  yield takeLatest<ReturnType<typeof actions.fetchByBidId>>(FETCH_BY_BID_ID, fetchSaga);
   yield takeLatest<ReturnType<typeof actions.fetchFiltersRequest>>(
     FETCH_FILTERS_REQUEST,
     fetchFiltersSaga

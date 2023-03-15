@@ -26,6 +26,10 @@ export const accessByRoles = (who: IUser | undefined, roles: TRole[]): boolean =
   }
 };
 
+export const сompareRoles = (roles: TRole[], role: TRole): boolean => {
+    return roles.includes(role);
+}
+
 export const getConfirmCompanyString = (user: IUser | undefined, intl: IntlShape): string => {
   let confirmCompanyString = "";
   if (!user?.company) {

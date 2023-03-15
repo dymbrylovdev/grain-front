@@ -44,7 +44,7 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   clearUserBids,
   fetchUserBids,
-
+  setBidSelected,
 
   page,
   perPage,
@@ -55,8 +55,10 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   const prevBids = Array.apply(null, Array(5));
   const numberParams = useMemo(() => cropParams && cropParams.filter(item => item.type === "number"), [cropParams]);
 
+  // 524 покупатель
+  // 444 продавец
   useEffect(() => {
-    if (me && me?.id) fetchUserBids({ userId: me.id, page, perPage });
+    if (me && me?.id) fetchUserBids({ userId: 444, page, perPage });
   }, [fetchUserBids, me]);
 
   useEffect(() => {
@@ -64,7 +66,7 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   }, [clearUserBids]);
 
   const handleToBid = (bid: IBid) => {
-    console.log('bid:', bid);
+    setBidSelected(bid)
     onClose();
   }
 
@@ -78,7 +80,6 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
 
   return (
     <Paper className={classes.paperWithTable}>
-      <LayoutSubheader title={intl.formatMessage({ id: "SUBMENU.USER.LIST" })} />
       {!userBids && !crops? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />
@@ -128,9 +129,19 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                 })}
             </TableBody>
             <TableFooter>
-              <TableRow>
-
-              </TableRow>
+              {userBids && me && me?.id && (
+                <TableRow>
+                  <TablePaginator
+                    page={page}
+                    realPerPage={userBids.length}
+                    perPage={perPage}
+                    total={total}
+                    fetchRows={(page, perPage) =>
+                      fetchUserBids({ userId: me.id, page, perPage })
+                    }
+                  />
+                </TableRow>
+              )}
             </TableFooter>
           </Table>
         </div>
@@ -165,6 +176,7 @@ const connector = connect(
     fetchCrops: crops2Actions.fetchRequest,
 
     setProfit: bidsActions.setProfit,
+    setBidSelected: bidsActions.setBidSelected,
 
     clearPost: myFiltersActions.clearPost,
     post: myFiltersActions.postFilter,
