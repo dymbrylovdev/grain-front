@@ -41,7 +41,7 @@ const DealsFilterForAdm: React.FC<PropsFromRedux & WrappedComponentProps> = ({ i
   const [expanded, setExpanded] = useState(0);
 
   const classes = useStyles();
-  const [filterOpen, setFilterOpen] = useState(true);
+  const [filterOpen, setFilterOpen] = useState(false);
 
   return (
     <>
@@ -52,7 +52,7 @@ const DealsFilterForAdm: React.FC<PropsFromRedux & WrappedComponentProps> = ({ i
           }}
           className={classes.nester}
         >
-          {intl.formatMessage({ id: "DEALS.FILTER.NAME" })}
+          {intl.formatMessage({ id: "FILTER.FORM.CULTURE.SETTINGS" })}
           {filterOpen ? (
             <ExpandLess style={{ width: 16, height: 16, marginLeft: 16 }} />
           ) : (

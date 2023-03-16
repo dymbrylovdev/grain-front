@@ -269,19 +269,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           name="fullPrepayment"
         />
       </div>
-
-      <Divider style={{ margin: "6px 0" }} />
-
-      <div className={classes.nested}>
-        <span style={{
-          color: '#000000',
-          fontWeight: '500',
-          fontSize: 16
-        }}>
-          {intl.formatMessage({ id: "FILTER.FORM.CULTURE.SETTINGS" })}
-        </span>
-      </div>
-
+      
       <Divider style={{ margin: "6px 0" }} />
 
       <Modal
