@@ -229,14 +229,12 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         )}
       </div>
       <div className={classes.nested}>
-        <Button
+        <MenuItem
           onClick={() => setOpen(true)}
-          className="kt-subheader__btn" variant="contained" color="primary"
-          style={{margin: '20px auto', width: '100%'}}
           disabled={userIdSelected === 0}
         >
           {intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })}
-        </Button>
+        </MenuItem>
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
