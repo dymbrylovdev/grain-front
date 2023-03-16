@@ -37,6 +37,7 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   me,
   intl,
   userBids,
+  userIdSelected,
 
   fetchCrops,
   crops,
@@ -55,10 +56,17 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
   const prevBids = Array.apply(null, Array(5));
   const numberParams = useMemo(() => cropParams && cropParams.filter(item => item.type === "number"), [cropParams]);
 
-  // 524 покупатель
-  // 444 продавец
+
+  const fetchBids = useCallback((newPage?:number, newPerPage?: number) => {
+    fetchUserBids({
+      userId: userIdSelected,
+      page : newPage ? newPage : page,
+      perPage: newPerPage ? newPerPage : perPage,
+    });
+  }, [userIdSelected, page, perPage])
+
   useEffect(() => {
-    if (me && me?.id) fetchUserBids({ userId: 444, page, perPage });
+    fetchBids();
   }, [fetchUserBids, me]);
 
   useEffect(() => {
@@ -137,7 +145,7 @@ const UsersPageList: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> 
                     perPage={perPage}
                     total={total}
                     fetchRows={(page, perPage) =>
-                      fetchUserBids({ userId: me.id, page, perPage })
+                      fetchBids(page, perPage)
                     }
                   />
                 </TableRow>
@@ -164,6 +172,7 @@ const connector = connect(
     page: state.users.bids_page,
     perPage: state.users.bids_per_page,
     total: state.users.bids_total,
+    userIdSelected: state.users.userIdSelected,
 
     postLoading: state.myFilters.postLoading,
     postSuccess: state.myFilters.postSuccess,
