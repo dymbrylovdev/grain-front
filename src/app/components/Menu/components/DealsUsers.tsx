@@ -28,6 +28,7 @@ import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as funnelStatesActions } from "../../../store/ducks/funnelStates.duck";
 import { actions as authActions } from "../../../store/ducks/auth.duck";
 import { actions as tariffActions } from "../../../store/ducks/tariffs.duck";
+import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 
 import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
@@ -101,6 +102,15 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   setUsersFilterTariff,
   setFunnelState,
+  setUserIdSelected,
+  userIdSelected,
+  fetchDeals,
+  pageDeals,
+  perPageDeals,
+  totalDeals,
+  weeks,
+  term,
+  min_prepayment_amount,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -247,9 +257,6 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                 <TopTableCell>
                   <FormattedMessage id="USERLIST.TABLE.ROLE" />
                 </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="USERLIST.TABLE.ACTIVITY" />
-                </TopTableCell>
                 <TopTableCell></TopTableCell>
               </TableRow>
             </TableHead>
@@ -275,182 +282,19 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
                     <TableCell>{intl.formatDate(item?.created_at)}</TableCell>
                     <TableCell>{roles.find(role => role.id === item.roles[0])?.value}</TableCell>
-
                     <TableCell>
-                      {funnelStateEditId === item.id ? (
-                        <TextField
-                          autoFocus
-                          select
-                          margin="normal"
-                          label={intl.formatMessage({
-                            id: "USERLIST.TABLE.ACTIVITY",
-                          })}
-                          value={item.funnel_state?.id || 0}
-                          onChange={e => {
-                            setFunnelStateEditId(0);
-                            edit({ id: item.id, data: { funnel_state_id: +e.target.value } });
-                          }}
-                          onBlur={() => {
-                            setFunnelStateEditId(0);
-                          }}
-                          name="status"
-                          variant="outlined"
-                        >
-                          <MenuItem value={0} style={{ backgroundColor: "#f2f2f2" }}>
-                            {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
-                          </MenuItem>
-                          {funnelStates
-                            .filter(fs => fs.role === item.roles[0])
-                            .map(option => (
-                              <MenuItem key={option.id} value={option.id} style={{ backgroundColor: `${option.color || "#ededed"}` }}>
-                                {`${option.engagement || "0"} • ${option.name}`}
-                              </MenuItem>
-                            ))}
-                        </TextField>
-                      ) : accessByRoles(item, ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"]) ? (
-                        <div className={classes.flexRow}>
-                          <div className={classes.funnelStateName} style={{ border: "1px solid rgba(10, 187, 135, 0.4)" }}>
-                            {roles.find(role => role.id === item.roles[0])?.value}
-                          </div>
-                        </div>
-                      ) : !item.funnel_state ? (
-                        <div className={classes.flexRow}>
-                          <div
-                            className={classes.funnelStateName}
-                            style={{ backgroundColor: "#f2f2f2" }}
-                            onClick={() => {
-                              if (!item.is_funnel_state_automate) setFunnelStateEditId(item.id);
-                            }}
-                          >
-                            {intl.formatMessage({ id: "USERLIST.FUNNEL_STATE.NO_NAME" })}
-                          </div>
-                          <IconButton
-                            size="medium"
-                            color="primary"
-                            onClick={() => {
-                              setInfoText(intl.formatMessage({ id: "FUNNEL_STATES.DIALOGS.INFO.NO_TEXT" }));
-                              setInfoOpen(true);
-                            }}
-                          >
-                            <HelpOutlineIcon />
-                          </IconButton>
-                          <Tooltip
-                            title={
-                              item.is_funnel_state_automate
-                                ? intl.formatMessage({ id: "FUNNEL_STATES.TOOLTIP.ON" })
-                                : intl.formatMessage({ id: "FUNNEL_STATES.TOOLTIP.OFF" })
-                            }
-                          >
-                            <SpellcheckIcon
-                              color={item.is_funnel_state_automate ? "secondary" : "disabled"}
-                              className={classes.leftMargin1}
-                            />
-                          </Tooltip>
-                        </div>
-                      ) : (
-                        <div className={classes.flexRow}>
-                          <div
-                            className={classes.funnelStateName}
-                            style={{ backgroundColor: `${item.funnel_state.color || "#ededed"}` }}
-                            onClick={() => {
-                              if (!item.is_funnel_state_automate) setFunnelStateEditId(item.id);
-                            }}
-                          >
-                            {`${item.funnel_state.engagement || "0"} • ${item.funnel_state.name}`}
-                          </div>
-                          <IconButton
-                            size="medium"
-                            color="primary"
-                            onClick={() => {
-                              if (!funnelStates.find(fs => fs.id === item.funnel_state?.id)?.hint) {
-                                setInfoText(
-                                  intl.formatMessage({
-                                    id: "FUNNEL_STATES.DIALOGS.INFO.EMPTY_TEXT",
-                                  })
-                                );
-                              } else {
-                                setInfoText(funnelStates.find(fs => fs.id === item.funnel_state?.id)?.hint as string);
-                              }
-                              setInfoOpen(true);
-                            }}
-                          >
-                            <HelpOutlineIcon />
-                          </IconButton>
-                          <Tooltip
-                            title={
-                              item.is_funnel_state_automate
-                                ? intl.formatMessage({ id: "FUNNEL_STATES.TOOLTIP.ON" })
-                                : intl.formatMessage({ id: "FUNNEL_STATES.TOOLTIP.OFF" })
-                            }
-                          >
-                            <SpellcheckIcon
-                              color={item.is_funnel_state_automate ? "secondary" : "disabled"}
-                              className={classes.leftMargin1}
-                            />
-                          </Tooltip>
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell align="right">
-                      <div style={{ minWidth: 150 }}>
-                        {!(accessByRoles(item, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !me?.is_admin) && (
-                          <Tooltip
-                            title={intl.formatMessage({
-                              id: "USERLIST.TOOLTIP.EDIT",
-                            })}
-                          >
-                            <IconButton size="medium" color="primary" onClick={() => history.push(`/user/edit/${item.id}`)}>
-                              <EditIcon />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-
-                        {!item.roles?.includes("ROLE_TRANSPORTER") ? (
-                          <Tooltip
-                            title={intl.formatMessage({
-                              id: "USERLIST.TOOLTIP.CREATE_BID",
-                            })}
-                          >
-                            <IconButton
-                              size="medium"
-                              color="primary"
-                              onClick={() =>
-                                history.push(`/bid/create/${item.roles.includes("ROLE_BUYER") ? "purchase" : "sale"}/0/0/${item.id}`)
-                              }
-                            >
-                              <AddIcon />
-                            </IconButton>
-                          </Tooltip>
-                        ) : (
-                          <span className={classes.hideIcon}>
-                            <IconButton size="medium" color="primary">
-                              <AddIcon />
-                            </IconButton>
-                          </span>
-                        )}
-
-                        {me?.is_admin && (
-                          <Tooltip
-                            title={intl.formatMessage({
-                              id: "USERLIST.TOOLTIP.DELETE",
-                            })}
-                          >
-                            <IconButton
-                              size="medium"
-                              color="secondary"
-                              onClick={() => {
-                                setDeleteUserId(item.id);
-                                setAlertOpen(true);
-                              }}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                      </div>
+                      <Button style={{ color: '#3c5fe8' }}
+                        onClick={() => {
+                          setUserIdSelected(item.id);
+                          fetchDeals(pageDeals, perPageDeals, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, item.id);
+                        }}
+                      >
+                        <FormattedMessage id="TARIFFS.PAYMENT.PAY" />
+                      </Button>
                     </TableCell>
                   </TableRow>
-                ))}
+                ))
+              }
             </TableBody>
             <TableFooter>
               <TableRow>
@@ -486,6 +330,7 @@ const connector = connect(
     users: state.users.users,
     loading: state.users.loading,
     error: state.users.error,
+    userIdSelected: state.users.userIdSelected,
 
     funnelStates: state.funnelStates.funnelStates,
     funnelStatesLoading: state.funnelStates.loading,
@@ -520,10 +365,18 @@ const connector = connect(
     currentUserRoles: state.users.currentRoles,
 
     boughtTariff: state.users.boughtTariff,
+    
+    pageDeals: state.deals.page,
+    perPageDeals: state.deals.per_page,
+    totalDeals: state.deals.total,
+    weeks: state.deals.weeks,
+    term: state.deals.term,
+    min_prepayment_amount: state.deals.min_prepayment_amount,
   }),
   {
     fetchMe: authActions.fetchRequest,
     fetch: usersActions.fetchRequest,
+    fetchDeals: dealsActions.fetchRequest,
 
     fetchFunnelStates: funnelStatesActions.fetchRequest,
 
@@ -538,6 +391,7 @@ const connector = connect(
     fetchTariffTypes: tariffActions.tariffsTypesRequest,
     clearUserRoles: usersActions.clearUserRoles,
     fetchUserRoles: usersActions.userRolesRequest,
+    setUserIdSelected: usersActions.setUserIdSelected,
 
     setUsersFilterTariff: tariffActions.setUsersFilterTariff,
     setFunnelState: funnelStatesActions.setFunnelState,

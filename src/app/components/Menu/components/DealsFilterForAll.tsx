@@ -36,7 +36,8 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   perPage,
   setCurrentRoles,
   setUsersFilterTariff,
-  setFunnelState
+  setFunnelState,
+  userIdSelected
 }) => {
   const [open, setOpen] = useState(false);
   const { weeks, term, min_prepayment_amount } = useSelector(
@@ -55,6 +56,10 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const handleClose = () => {
     setOpenModal(false);
   }
+
+  useEffect(() => {
+    handleClose()
+  }, [userIdSelected])
 
   const classes = useStyles();
   const [cropId, setCropId] = useState(0);
@@ -228,6 +233,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           onClick={() => setOpen(true)}
           className="kt-subheader__btn" variant="contained" color="primary"
           style={{margin: '20px auto', width: '100%'}}
+          disabled={userIdSelected === 0}
         >
           {intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })}
         </Button>
@@ -308,6 +314,7 @@ const connector = connect(
     crops: state.crops2.crops,
     page: state.deals.page,
     perPage: state.deals.per_page,
+    userIdSelected: state.users.userIdSelected,
   }),
   {
     ...dealsActions,

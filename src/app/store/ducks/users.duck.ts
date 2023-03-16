@@ -95,6 +95,8 @@ const SET_USER_FILTERS_PHONE = "users/SET_USER_FILTERS_PHONE";
 
 const SET_USER_BOUGHT_TARIFF = "users/SET_USER_BOUGHT_TARIFF";
 
+const SET_USER_ID_SELECTED = "users/SET_USER_ID_SELECTED";
+
 export interface IInitialState {
   page: number;
   per_page: number;
@@ -165,6 +167,7 @@ export interface IInitialState {
   userFiltersPhone: string | undefined;
 
   boughtTariff: boolean;
+  userIdSelected: number;
 }
 
 const initialState: IInitialState = {
@@ -237,6 +240,7 @@ const initialState: IInitialState = {
   userFiltersPhone: undefined,
 
   boughtTariff: false,
+  userIdSelected: 0,
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
@@ -651,6 +655,10 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         };
       }
 
+      case SET_USER_ID_SELECTED: {
+        return { ...state, userIdSelected: action.payload };
+      }
+
       default:
         return state;
     }
@@ -733,6 +741,8 @@ export const actions = {
   setUserFiltersPhone: (payload: string) => createAction(SET_USER_FILTERS_PHONE, payload),
 
   setUserBoughtTariff: (payload: boolean) => createAction(SET_USER_BOUGHT_TARIFF, payload),
+  setUserIdSelected: (payload: number) => createAction(SET_USER_ID_SELECTED, payload),
+
 };
 
 export type TActions = ActionsUnion<typeof actions>;
