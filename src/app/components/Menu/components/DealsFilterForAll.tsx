@@ -44,6 +44,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   managerIdSelected,
   setManagerIdSelected,
   bidSelected,
+  setUserActive
 }) => {
   const [open, setOpen] = useState(false);
   const { weeks, term, min_prepayment_amount } = useSelector(
@@ -163,10 +164,13 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           margin="normal"
           variant="outlined"
           defaultValue={"Не важно"}
+          onChange={(e) => {
+            setUserActive(JSON.parse(e.target.value))
+            fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected, cropId, bidSelected?.id || 0, managerIdSelected, JSON.parse(e.target.value))
+          }}
         >
-          <MenuItem value={"Не важно"} key={1}>Не важно</MenuItem>
-          <MenuItem value={"Да"} key={2}>Да</MenuItem>
-          <MenuItem value={"Нет"} key={3}>Нет</MenuItem>
+          <MenuItem value={'true'} key={1}>Да</MenuItem>
+          <MenuItem value={'false'} key={2}>Нет</MenuItem>
         </TextField>
       </div>
       <div className={classes.nested}>
@@ -338,6 +342,7 @@ const connector = connect(
     setUsersFilterTariff: tariffActions.setUsersFilterTariff,
     setFunnelState: funnelStatesActions.setFunnelState,
     setManagerIdSelected: usersActions.setManagerIdSelected,
+    setUserActive: usersActions.setUserActive,
   }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;

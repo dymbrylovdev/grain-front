@@ -97,6 +97,7 @@ const SET_USER_BOUGHT_TARIFF = "users/SET_USER_BOUGHT_TARIFF";
 
 const SET_USER_ID_SELECTED = "users/SET_USER_ID_SELECTED";
 const SET_MANAGER_ID_SELECTED = "users/SET_MANAGER_ID_SELECTED";
+const SET_USER_ACTIVE = "users/SET_USER_ACTIVE";
 
 export interface IInitialState {
   page: number;
@@ -170,6 +171,7 @@ export interface IInitialState {
   boughtTariff: boolean;
   userIdSelected: number;
   managerIdSelected: number;
+  userActive: boolean;
 }
 
 const initialState: IInitialState = {
@@ -244,6 +246,7 @@ const initialState: IInitialState = {
   boughtTariff: false,
   userIdSelected: 0,
   managerIdSelected : 0,
+  userActive: false,
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
@@ -666,6 +669,11 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, managerIdSelected: action.payload };
       }
 
+      case SET_USER_ACTIVE: {
+        return { ...state, userActive: action.payload };
+      }
+      
+
       default:
         return state;
     }
@@ -750,7 +758,7 @@ export const actions = {
   setUserBoughtTariff: (payload: boolean) => createAction(SET_USER_BOUGHT_TARIFF, payload),
   setUserIdSelected: (payload: number) => createAction(SET_USER_ID_SELECTED, payload),
   setManagerIdSelected: (payload: number) => createAction(SET_MANAGER_ID_SELECTED, payload),
-
+  setUserActive: (payload: boolean) => createAction(SET_USER_ACTIVE, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;

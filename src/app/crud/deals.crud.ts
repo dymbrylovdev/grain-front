@@ -13,6 +13,7 @@ export const getDeals = (
   crop_id?: number,
   bid_id?: number,
   manager_id?: number,
+  user_active?: boolean,
   id?: number,
 ) => {
   return axios.get(
@@ -28,6 +29,8 @@ export const getDeals = (
       !!bid_id ? `&bid_id=${bid_id}` : ""
     }${
       !!manager_id ? `&manager_id=${manager_id}` : ""
+    }${
+      !!user_active ? `&user_active=${user_active}` : ""
     }`
   );
 };
