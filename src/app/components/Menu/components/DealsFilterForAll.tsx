@@ -7,6 +7,7 @@ import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 import { actions as usersActions } from "../../../store/ducks/users.duck";
 import { actions as tariffActions } from "../../../store/ducks/tariffs.duck";
 import { actions as funnelStatesActions } from "../../../store/ducks/funnelStates.duck";
+import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
 
 import { IAppState } from "../../../store/rootDuck";
 import NumberFormatCustom from "../../NumberFormatCustom/NumberFormatCustom";
@@ -37,7 +38,12 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   setCurrentRoles,
   setUsersFilterTariff,
   setFunnelState,
-  userIdSelected
+  userIdSelected,
+  users,
+  fetchUsers,
+  managerIdSelected,
+  setManagerIdSelected,
+  bidSelected,
 }) => {
   const [open, setOpen] = useState(false);
   const { weeks, term, min_prepayment_amount } = useSelector(
@@ -60,6 +66,10 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     handleClose()
   }, [userIdSelected])
+
+  useEffect(() => {
+    fetchUsers({ page: 1, perPage: 999, userRolesId: "ROLE_MANAGER" });
+  }, [])
 
   const classes = useStyles();
   const [cropId, setCropId] = useState(0);
@@ -166,11 +176,26 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           margin="normal"
           variant="outlined"
           defaultValue={"Все"}
+          onChange={(e) => {
+            setManagerIdSelected(Number(e.target.value))
+            fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected, cropId, bidSelected?.id || 0, Number(e.target.value))
+          }}
         >
-          <MenuItem value={"Все"} key={1}>Все</MenuItem>
-          <MenuItem value={"Иван Иванов"} key={2}>Иван Иванов</MenuItem>
-          <MenuItem value={"Пётр Петров"} key={3}>Пётр Петров</MenuItem>
-          <MenuItem value={"Михаил Михайлов"} key={4}>Михаил Михайлов</MenuItem>
+          <MenuItem value={0} key={0}>Все</MenuItem>
+          {users &&
+            users.map(item => (
+              item.roles[1] !== 'ROLE_MANAGER' && (
+                <MenuItem key={item.id} value={item.id}>
+                  {
+                    (item.firstname? item.firstname : '')
+                    + ' ' + 
+                    (item.surname? item.surname : '')
+                    + ' ' + 
+                    ((!item.firstname && !item.surname)? item.email || item.phone : '')
+                  }
+                </MenuItem>
+              )
+            ))}
         </TextField>
       </div>
       <div className={classes.nested}>
@@ -216,7 +241,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             })}
             onChange={(e) => {
               setCropId(Number(e.target.value))
-              fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, 0, Number(e.target.value))
+              fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected, Number(e.target.value))
             }}
             variant="outlined"
           >
@@ -269,7 +294,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           name="fullPrepayment"
         />
       </div>
-      
+
       <Divider style={{ margin: "6px 0" }} />
 
       <Modal
@@ -301,13 +326,18 @@ const connector = connect(
     page: state.deals.page,
     perPage: state.deals.per_page,
     userIdSelected: state.users.userIdSelected,
+    users: state.users.users,
+    managerIdSelected: state.users.managerIdSelected,
+    bidSelected: state.bids.bidSelected,
   }),
   {
     ...dealsActions,
     fetch: dealsActions.fetchRequest,
+    fetchUsers: usersActions.fetchRequest,
     setCurrentRoles: usersActions.setCurrentRoles,
     setUsersFilterTariff: tariffActions.setUsersFilterTariff,
     setFunnelState: funnelStatesActions.setFunnelState,
+    setManagerIdSelected: usersActions.setManagerIdSelected,
   }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;

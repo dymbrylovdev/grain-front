@@ -212,8 +212,8 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
 );
 
 export const actions = {
-  fetchRequest: (page: number, perPage: number, weeks: number, term: number, min_prepayment_amount: number | undefined, vendor_id?: number, crop_id?: number, bid_id?: number) =>
-    createAction(FETCH_REQUEST, { page, perPage, weeks, term, min_prepayment_amount, vendor_id, crop_id, bid_id}),
+  fetchRequest: (page: number, perPage: number, weeks: number, term: number, min_prepayment_amount: number | undefined, vendor_id?: number, crop_id?: number, bid_id?: number, manager_id?: number) =>
+    createAction(FETCH_REQUEST, { page, perPage, weeks, term, min_prepayment_amount, vendor_id, crop_id, bid_id, manager_id}),
   fetchSuccess: (payload: IServerResponse<IDeal[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
 
@@ -244,11 +244,11 @@ export type TActions = ActionsUnion<typeof actions>;
 function* fetchSaga({
   payload,
 }: {
-  payload: { page: number; perPage: number; weeks: number; term: number; min_prepayment_amount: number | undefined; vendor_id?: number; crop_id?: number, bid_id?: number;};
+  payload: { page: number; perPage: number; weeks: number; term: number; min_prepayment_amount: number | undefined; vendor_id?: number; crop_id?: number, bid_id?: number, manager_id?: number;};
 }) {
   try {
     const { data }: { data: IServerResponse<IDeal[]> } = yield call(() =>
-      getDeals(payload.page, payload.perPage, payload.weeks, payload.term, payload.min_prepayment_amount, payload.vendor_id, payload.crop_id, payload.bid_id)
+      getDeals(payload.page, payload.perPage, payload.weeks, payload.term, payload.min_prepayment_amount, payload.vendor_id, payload.crop_id, payload.bid_id, payload.manager_id)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {

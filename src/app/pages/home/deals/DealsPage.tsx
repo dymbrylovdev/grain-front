@@ -64,7 +64,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   editFilterError,
   bidSelected,
   setBidSelected,
-  userIdSelected
+  userIdSelected,
+  managerIdSelected,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -633,8 +634,6 @@ const connector = connect(
     deals: state.deals.deals,
     loading: state.deals.loading,
     error: state.deals.error,
-    userIdSelected: state.users.userIdSelected,
-
     dealsFilters: state.deals.filters,
     filtersError: state.deals.filtersError,
 
@@ -653,6 +652,8 @@ const connector = connect(
     editSuccess: state.bids.editSuccess,
     editError: state.bids.editError,
     bidSelected: state.bids.bidSelected,
+    userIdSelected: state.users.userIdSelected,
+    managerIdSelected: state.users.managerIdSelected,
   }),
   {
     fetch: dealsActions.fetchRequest,

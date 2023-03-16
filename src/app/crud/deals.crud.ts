@@ -12,6 +12,7 @@ export const getDeals = (
   vendor_id?: number,
   crop_id?: number,
   bid_id?: number,
+  manager_id?: number,
   id?: number,
 ) => {
   return axios.get(
@@ -25,6 +26,8 @@ export const getDeals = (
       !!crop_id ? `&crop_id=${crop_id}` : ""
     }${
       !!bid_id ? `&bid_id=${bid_id}` : ""
+    }${
+      !!manager_id ? `&manager_id=${manager_id}` : ""
     }`
   );
 };
