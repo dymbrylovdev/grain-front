@@ -169,6 +169,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected, cropId, bidSelected?.id || 0, managerIdSelected, JSON.parse(e.target.value))
           }}
         >
+          <MenuItem value={'null'} key={0}>Не важно</MenuItem>
           <MenuItem value={'true'} key={1}>Да</MenuItem>
           <MenuItem value={'false'} key={2}>Нет</MenuItem>
         </TextField>
