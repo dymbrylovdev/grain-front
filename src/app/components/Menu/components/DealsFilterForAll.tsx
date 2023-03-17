@@ -250,6 +250,9 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             }}
             variant="outlined"
           >
+            <MenuItem key={1} value={0}>
+              Все культуры
+            </MenuItem>
             {crops!.map(option => (
               <MenuItem key={option.id} value={option.id}>
                 {option.name}
