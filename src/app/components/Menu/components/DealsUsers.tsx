@@ -123,7 +123,7 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const [funnelStateEditId, setFunnelStateEditId] = useState(0);
   const [tariffId, setTariffId] = useState<number | undefined>();
   const [funnelStateId, setFunnelStateId] = useState<number | undefined>();
-  const [userRolesId, setUserRolesId] = useState<string | undefined>("");
+  const [userRolesId, setUserRolesId] = useState<string | undefined>("ROLE_VENDOR,ROLE_BUYER");
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
