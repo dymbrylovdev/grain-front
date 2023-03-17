@@ -111,6 +111,7 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   weeks,
   term,
   min_prepayment_amount,
+  userActive
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -139,7 +140,7 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       clearEdit();
     }
     if (editSuccess) {
-      fetch({ page, perPage, tariffId, funnelStateId, boughtTariff });
+      fetch({ page, perPage, tariffId, funnelStateId, boughtTariff, userActive });
     }
   }, [clearEdit, editError, editSuccess, enqueueSnackbar, fetch, intl, page, perPage, tariffId, funnelStateId, boughtTariff]);
 
@@ -155,7 +156,7 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       );
       setAlertOpen(false);
       clearDel();
-      fetch({ page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff });
+      fetch({ page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff, userActive });
       fetchFunnelStates();
     }
   }, [
@@ -175,8 +176,8 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   ]);
 
   useEffect(() => {
-    fetch({ page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff });
-  }, [fetch, page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff]);
+    fetch({ page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff, userActive });
+  }, [fetch, page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff, userActive]);
 
   useEffect(() => {
     fetchFunnelStates(currentUserRoles);
@@ -321,6 +322,7 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
 const connector = connect(
   (state: IAppState) => ({
+    userActive: state.users.userActive,
     me: state.auth.user,
     meError: state.auth.error,
     page: state.users.page,

@@ -689,6 +689,7 @@ export const actions = {
     funnelStateId?: number;
     userRolesId?: string;
     boughtTariff?: boolean;
+    userActive?: boolean;
   }) => createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
@@ -773,11 +774,12 @@ function* fetchSaga({
     funnelStateId?: number;
     userRolesId?: string;
     boughtTariff?: boolean;
+    userActive?: boolean;
   };
 }) {
   try {
     const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
-      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId, payload.boughtTariff)
+      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId, payload.boughtTariff, payload.userActive)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
