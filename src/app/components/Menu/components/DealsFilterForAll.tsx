@@ -224,7 +224,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           name="roles"
           variant="outlined"
         >
-          <MenuItem key={1} value={"Все"}>Все</MenuItem>
+          <MenuItem key={1} value={"ROLE_VENDOR,ROLE_BUYER"}>Все</MenuItem>
           <MenuItem key={2} value={'ROLE_VENDOR'}>Продавец</MenuItem>
           <MenuItem key={3} value={'ROLE_BUYER'}>Покупатель</MenuItem>
         </TextField>
