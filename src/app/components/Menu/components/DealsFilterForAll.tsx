@@ -44,7 +44,9 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   managerIdSelected,
   setManagerIdSelected,
   bidSelected,
-  setUserActive
+  setUserActive,
+  fetchUser,
+  user
 }) => {
   const [open, setOpen] = useState(false);
   const { weeks, term, min_prepayment_amount } = useSelector(
@@ -66,6 +68,11 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   useEffect(() => {
     handleClose()
+    if (userIdSelected !== 0) {
+      fetchUser({
+        id: userIdSelected
+      })
+    }
   }, [userIdSelected])
 
   useEffect(() => {
@@ -231,6 +238,22 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         >
           Список пользователей
         </MenuItem>
+        {user && (
+          <div>
+            <span style={{
+              fontSize: 13,
+              fontWeight: 500,
+            }}>
+              {
+                (user.firstname? user.firstname : '')
+                + ' ' + 
+                (user.surname? user.surname : '')
+                + ' ' + 
+                ((!user.firstname && !user.surname)? user.email || user.phone : '')
+              }
+            </span>
+          </div>
+        )}
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
@@ -335,6 +358,7 @@ const connector = connect(
     perPage: state.deals.per_page,
     userIdSelected: state.users.userIdSelected,
     users: state.users.users,
+    user: state.users.user,
     managerIdSelected: state.users.managerIdSelected,
     bidSelected: state.bids.bidSelected,
   }),
@@ -342,6 +366,7 @@ const connector = connect(
     ...dealsActions,
     fetch: dealsActions.fetchRequest,
     fetchUsers: usersActions.fetchRequest,
+    fetchUser: usersActions.fetchByIdRequest,
     setCurrentRoles: usersActions.setCurrentRoles,
     setUsersFilterTariff: tariffActions.setUsersFilterTariff,
     setFunnelState: funnelStatesActions.setFunnelState,
