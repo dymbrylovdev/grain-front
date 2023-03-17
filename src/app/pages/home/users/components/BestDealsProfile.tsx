@@ -129,7 +129,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
           </TableCell>
         );
       }
-      return <TableCell>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
+      return <TableCell style={{
+        color: currentDeal.profit_with_delivery_price < 0? "#000000" : "#21BA88"
+      }}>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
     },
     [getCurrentCrop, getDistance]
   );

@@ -270,7 +270,7 @@ const BidsList: React.FC<IProps> = ({
     [history, setProfit, user, bestAllMyMode, salePurchaseMode, currentCropName]
   );
 
-  
+
   const handleShowImage = useCallback((index: number, photos?: string[]) => {
     setCurrentImages(state => ({
       photos: photos || state.photos,
@@ -509,4 +509,4 @@ const BidsList: React.FC<IProps> = ({
   );
 };
 
-export default injectIntl(BidsList);
+export default  injectIntl(BidsList);

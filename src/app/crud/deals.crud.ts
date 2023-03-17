@@ -11,6 +11,9 @@ export const getDeals = (
   min_prepayment_amount?: number,
   vendor_id?: number,
   crop_id?: number,
+  bid_id?: number,
+  manager_id?: number,
+  user_active?: boolean,
   id?: number,
 ) => {
   return axios.get(
@@ -22,6 +25,12 @@ export const getDeals = (
       !!vendor_id ? `&vendor_id=${vendor_id}` : ""
     }${
       !!crop_id ? `&crop_id=${crop_id}` : ""
+    }${
+      !!bid_id ? `&bid_id=${bid_id}` : ""
+    }${
+      !!manager_id ? `&manager_id=${manager_id}` : ""
+    }${
+      !!user_active ? `&user_active=${user_active}` : ""
     }`
   );
 };
