@@ -75,6 +75,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [loadDistanation, setLoadDistanation] = useState<number | null>(null);
   const [map, setMap] = useState<any>();
   const [ymaps, setYmaps] = useState<any>();
+  const [overloadCheck, setOverloadCheck] = useState<number | null>(null);
   const { enqueueSnackbar } = useSnackbar();
   const numberParams = useMemo(() => cropParams && cropParams.filter(item => item.type === "number"), [cropParams]);
   const rolesBidUser = useMemo(() => bidSelected && bidSelected.vendor?.roles, [bidSelected]);
@@ -282,9 +283,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     fetchCrops();
   }, [fetchCrops]);
-
+  console.log("crops",crops)
   useEffect(() => {
-    console.log(bidSelected)
     if (bidSelected) {
       fetchByBidId(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, bidSelected.id);
     }
@@ -540,6 +540,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         margin="dense"
                         variant="outlined"
                         autoComplete="off"
+                        value={overloadCheck ?
+                          crops.find(crop => crop.id === item.sale_bid.crop_id)?.delivery_price_overload :
+                          crops.find(crop => crop.id === item.sale_bid.crop_id)?.delivery_price_coefficient}
                       />
                     </TableCell>
                     {getProfit(item)}

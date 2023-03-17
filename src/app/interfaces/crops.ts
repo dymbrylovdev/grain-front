@@ -5,6 +5,7 @@ export interface ICrop {
   name: string;
   vat: number;
   delivery_price_coefficient?: number;
+  delivery_price_overload?: number;
   photo?: {
     id: number;
     path: string;
