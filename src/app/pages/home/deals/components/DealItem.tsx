@@ -174,7 +174,6 @@ const DealItem: FC<IProps> = ({
               <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
               <strong>{item.sale_bid.volume}</strong>
             </div>
-            <div>{intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}</div>
             <div>
               <div className={classes.flexRow}>
                 {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
@@ -220,7 +219,6 @@ const DealItem: FC<IProps> = ({
               <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
               <strong>{item.purchase_bid.volume}</strong>
             </div>
-            <div>{intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}</div>
             <div>
               <div className={classes.flexRow}>
                 {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
