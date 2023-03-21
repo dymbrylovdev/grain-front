@@ -315,7 +315,20 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <TextField
           type="text"
           margin="normal"
+          value={weeks}
+          onChange={e => {
+            let newValue = e.target.value;
+            if (+newValue < 1) {
+              newValue = "1";
+            }
+            if (+newValue > 100) {
+              newValue = "100";
+            }
+            setWeeks(+newValue);
+          }}
+          InputProps={{ inputComponent: NumberFormatCustom as any }}
           variant="outlined"
+          autoComplete="off"
         />
       </div>
       <div className={classes.nested}>
@@ -323,7 +336,22 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <TextField
           type="text"
           margin="normal"
+          name="term"
+          value={term || ""}
           variant="outlined"
+          onChange={e => {
+            let newValue = e.target.value;
+            if (+newValue < 0) {
+              newValue = "0";
+            }
+            if (+newValue > 999) {
+              newValue = "999";
+            }
+            setTerm(+newValue);
+          }}
+          InputProps={{ inputComponent: NumberFormatCustom as any }}
+          autoComplete="off"
+          disabled={min_prepayment_amount === 100}
         />
       </div>
       <div className={classes.nested}>
