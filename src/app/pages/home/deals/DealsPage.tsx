@@ -534,7 +534,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                         })}
                       />
                       <div>Цена доставки: {item.delivery_price ? item.delivery_price : '-'}</div>
-                      <div>Доставка 1 тонны за км:</div>
+                      <div>Тариф:</div>
                       <TextField
                         type="number"
                         margin="dense"
