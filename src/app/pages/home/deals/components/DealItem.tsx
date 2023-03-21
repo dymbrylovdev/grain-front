@@ -228,19 +228,20 @@ const DealItem: FC<IProps> = ({
               <strong>{item.sale_bid.volume}</strong>
             </div>
             <div>
-              <div className={classes.flexRow}>
-                {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
-                  <Tooltip
-                    title={intl.formatMessage({
-                      id: "USERLIST.TOOLTIP.COMPANY",
-                    })}
-                  >
-                    <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                  </Tooltip>
-                )}
+              <div>
+                <span>
+                  {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
+                    <Tooltip
+                      title={intl.formatMessage({
+                        id: "USERLIST.TOOLTIP.COMPANY",
+                      })}
+                    >
+                      <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
+                    </Tooltip>
+                  )}
+                  {` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor.lastname || ""}`}
+                </span>
               </div>
-              <div>{` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor
-                .lastname || ""}`}</div>
               {item?.sale_bid.vendor.company && (
                 <div className={classes.flexRow} style={{ marginTop: 10 }}>
                   {!!item?.sale_bid?.vendor?.company?.colors && item?.sale_bid.vendor.company.colors.length > 0 && (
@@ -272,19 +273,20 @@ const DealItem: FC<IProps> = ({
               <strong>{item.purchase_bid.volume}</strong>
             </div>
             <div>
-              <div className={classes.flexRow}>
-                {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
-                  <Tooltip
-                    title={intl.formatMessage({
-                      id: "USERLIST.TOOLTIP.COMPANY",
-                    })}
-                  >
-                    <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                  </Tooltip>
-                )}
+              <div>
+                <span>
+                  {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
+                    <Tooltip
+                      title={intl.formatMessage({
+                        id: "USERLIST.TOOLTIP.COMPANY",
+                      })}
+                    >
+                      <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
+                    </Tooltip>
+                  )}
+                  {`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item?.purchase_bid.vendor.lastname || ""}`}
+                </span>
               </div>
-              <div>{`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item
-                ?.purchase_bid.vendor.lastname || ""}`}</div>
               {item?.purchase_bid.vendor.company && (
                 <div className={classes.flexRow} style={{ marginTop: 10 }}>
                   {!!item?.purchase_bid?.vendor?.company?.colors && item?.purchase_bid.vendor.company.colors.length > 0 && (
