@@ -146,9 +146,9 @@
   "AUTH.TERM.LOADING": "Загрузка...",
 
   "DEALS.TABLE.CROP": "Культура",
-  "DEALS.TABLE.SALE": "Продать",
+  "DEALS.TABLE.SALE": "Продавец",
   "DEALS.TABLE.DELIVERY": "Доставка",
-  "DEALS.TABLE.PURCHASE": "Купить",
+  "DEALS.TABLE.PURCHASE": "Покупатель",
   "DEALS.TABLE.PROFIT": "Прибыль, руб.",
   "DEALS.TABLE.PROFIT_WITH_DELIVERY": "Прибыль на тонну с учетом доставки, руб.",
   "DEALS.TABLE.PROFIT_BY_TONN": "Прибыль на тонну, руб.",
