@@ -21,6 +21,7 @@ import {IntlShape} from "react-intl";
 import {ILocalDeals} from "../DealViewPage";
 import {useHistory} from "react-router-dom";
 import {log} from "util";
+import { IBid } from '../../../../interfaces/bids';
 
 interface IProps {
   item: IDeal;
@@ -29,6 +30,7 @@ interface IProps {
   classes: any;
   intl: IntlShape;
   index: number;
+  bidSelected: IBid | null;
 }
 
 const DealItem: FC<IProps> = ({
@@ -37,7 +39,8 @@ const DealItem: FC<IProps> = ({
   rolesBidUser,
   classes,
   intl,
-  index
+  index,
+  bidSelected
 }) => {
   const [currentDeal, setCurrentDeal] = useState<IDeal | null>(null);
   const [overloadCheck, setOverloadCheck] = useState<boolean>(false);
@@ -141,7 +144,7 @@ const DealItem: FC<IProps> = ({
 
   return (
     <TableRow key={item.sale_bid.id}>
-      <TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>
+      {!bidSelected && (<TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>)}
       {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_VENDOR") ? (
         <></>
       ) : (

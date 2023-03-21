@@ -376,9 +376,11 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.CROP" />
-                </TopTableCell>
+                {!bidSelected && (
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.CROP" />
+                  </TopTableCell>
+                )}
                 {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_VENDOR") ? (
                   <></>
                 ) : (
@@ -421,6 +423,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     classes={classes}
                     intl={intl}
                     index={i}
+                    bidSelected={bidSelected}
                   />
                 ))}
             </TableBody>
