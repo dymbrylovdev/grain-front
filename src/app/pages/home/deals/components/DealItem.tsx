@@ -250,7 +250,7 @@ const DealItem: FC<IProps> = ({
             </div>
             <div>
               {item.sale_bid.modified_at && (
-                'Обновлено: ' + intl.formatDate(item.purchase_bid.modified_at)
+                intl.formatDate(item.purchase_bid.modified_at)
               )}
             </div>
           </div>
@@ -292,7 +292,7 @@ const DealItem: FC<IProps> = ({
             </div>
             <div>
               {item.purchase_bid.modified_at && (
-                'Обновлено: ' + intl.formatDate(item.purchase_bid.modified_at)
+                intl.formatDate(item.purchase_bid.modified_at)
               )}
             </div>
           </div>
