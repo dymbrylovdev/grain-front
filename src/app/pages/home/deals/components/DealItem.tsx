@@ -225,7 +225,6 @@ const DealItem: FC<IProps> = ({
                     <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
                   </Tooltip>
                 )}
-                <div>{`${item?.sale_bid.vendor.login || ""}`}</div>
               </div>
               <div>{` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor
                 .lastname || ""}`}</div>
@@ -270,7 +269,6 @@ const DealItem: FC<IProps> = ({
                     <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
                   </Tooltip>
                 )}
-                <div>{`${item?.purchase_bid.vendor.login || ""}`}</div>
               </div>
               <div>{`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item
                 ?.purchase_bid.vendor.lastname || ""}`}</div>
