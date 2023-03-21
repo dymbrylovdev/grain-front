@@ -25,6 +25,7 @@ import { IDeal } from "../../../interfaces/deals";
 import { REACT_APP_GOOGLE_API_KEY } from "../../../constants";
 import {actions as bidsActions} from "../../../store/ducks/bids.duck";
 import {accessByRoles, сompareRoles} from "../../../utils/utils";
+import DealItem from "./components/DealItem";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
@@ -202,6 +203,14 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     [localDeals]
   );
 
+  const setIdDealsCheck = (summId: number) => {
+    if (summId === overloadCheck) {
+      setOverloadCheck(null)
+    } else {
+      setOverloadCheck(summId)
+    }
+  }
+
   const getParametrName = useCallback(
     (item: { id: number; value: string; parameter_id: number }) => {
       const nameParam = numberParams?.find(param => param.id === item.parameter_id)?.name;
@@ -283,7 +292,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   useEffect(() => {
     fetchCrops();
   }, [fetchCrops]);
-  console.log("crops",crops)
+
   useEffect(() => {
     if (bidSelected) {
       fetchByBidId(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, bidSelected.id);
@@ -365,9 +374,11 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.CROP" />
-                </TopTableCell>
+                {!bidSelected && (
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.CROP" />
+                  </TopTableCell>
+                )}
                 {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_VENDOR") ? (
                   <></>
                 ) : (
@@ -392,7 +403,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   %
                 </TopTableCell>
                 <TopTableCell>
-                  <FormattedMessage id="BIDSLIST.TABLE.TIME" />
+                  Срок
                 </TopTableCell>
                 <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.DISTANCE" />
@@ -403,181 +414,15 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             <TableBody>
               {!!deals &&
                 deals.map((item, i) => (
-                  <TableRow key={i}>
-                    <TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>
-                    {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_VENDOR") ? (
-                      <></>
-                    ) : (
-                      <TableCell>
-                        <div className={classes.flexColumn}>
-                          <div style={{ display: "flex" }}>
-                            <strong style={{ marginRight: 5 }}>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                            <strong>
-                              {!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat ? (
-                                !item.sale_bid.price ? (
-                                  "-"
-                                ) : (
-                                  <div style={{ display: "flex", alignItems: "center" }}>
-                                    <p style={{ marginBottom: "1px", marginRight: 10 }}>
-                                      {!!item.sale_bid && thousands(Math.round(item.sale_bid.price * (item.sale_bid.vat / 100 + 1)))}
-                                    </p>
-                                    <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
-                                      ({`${item.sale_bid.price && thousands(Math.round(item.sale_bid.price))} + ${item.sale_bid.vat}% НДС`})
-                                    </p>
-                                  </div>
-                                )
-                              ) : item.sale_bid.price ? (
-                                thousands(Math.round(item.sale_bid.price))
-                              ) : (
-                                "-"
-                              )}
-                            </strong>
-                          </div>
-                          <div>
-                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                            <strong>{item.sale_bid.volume}</strong>
-                          </div>
-                          <div>
-                            {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })}
-                            {": "}
-                            {item.sale_bid.location.text}
-                          </div>
-                          <div>{intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}</div>
-                          <div>
-                            <div className={classes.flexRow}>
-                              {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
-                                <Tooltip
-                                  title={intl.formatMessage({
-                                    id: "USERLIST.TOOLTIP.COMPANY",
-                                  })}
-                                >
-                                  <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                                </Tooltip>
-                              )}
-                              <div>{`${item?.sale_bid.vendor.login || ""}`}</div>
-                            </div>
-                            <div>{` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor
-                              .lastname || ""}`}</div>
-                            {item?.sale_bid.vendor.company && (
-                              <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                                {!!item?.sale_bid?.vendor?.company?.colors && item?.sale_bid.vendor.company.colors.length > 0 && (
-                                  <MiniTrafficLight intl={intl} colors={item?.sale_bid.vendor.company.colors} />
-                                )}
-                                <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
-                              </div>
-                            )}
-                          </div>
-                          <div>
-                            {item.sale_bid.modified_at && (
-                              'Обновлено: ' + intl.formatDate(item.purchase_bid.modified_at)
-                            )}
-                          </div>
-                        </div>
-                      </TableCell>
-                    )}
-                    {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_BUYER") ? (
-                      <></>
-                    ) : (
-                      <TableCell>
-                        <div className={classes.flexColumn}>
-                          <div>
-                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                            <strong>{item.purchase_bid.price}</strong>
-                          </div>
-                          <div>
-                            <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                            <strong>{item.purchase_bid.volume}</strong>
-                          </div>
-                          <div>
-                            {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })}
-                            {": "}
-                            {item.purchase_bid.location.text}
-                          </div>
-                          <div>{intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}</div>
-                          <div>
-                            <div className={classes.flexRow}>
-                              {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
-                                <Tooltip
-                                  title={intl.formatMessage({
-                                    id: "USERLIST.TOOLTIP.COMPANY",
-                                  })}
-                                >
-                                  <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                                </Tooltip>
-                              )}
-                              <div>{`${item?.purchase_bid.vendor.login || ""}`}</div>
-                            </div>
-                            <div>{`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item
-                              ?.purchase_bid.vendor.lastname || ""}`}</div>
-                            {item?.purchase_bid.vendor.company && (
-                              <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                                {!!item?.purchase_bid?.vendor?.company?.colors && item?.purchase_bid.vendor.company.colors.length > 0 && (
-                                  <MiniTrafficLight intl={intl} colors={item?.purchase_bid.vendor.company.colors} />
-                                )}
-                                <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
-                              </div>
-                            )}
-                          </div>
-                          <div>
-                            {item.purchase_bid.modified_at && (
-                              'Обновлено: ' + intl.formatDate(item.purchase_bid.modified_at)
-                            )}
-                          </div>
-                        </div>
-                      </TableCell>
-                    )}
-                    <TableCell>
-                      <FormControlLabel
-                        control={<Checkbox checked={false} />}
-                        label={intl.formatMessage({
-                          id: "OPTIONS.OVERLOAD",
-                        })}
-                      />
-                      <div>Цена доставки: {item.delivery_price ? item.delivery_price : '-'}</div>
-                      <div>Доставка 1 тонны за км:</div>
-                      <TextField
-                        type="number"
-                        margin="dense"
-                        variant="outlined"
-                        autoComplete="off"
-                        value={overloadCheck ?
-                          crops.find(crop => crop.id === item.sale_bid.crop_id)?.delivery_price_overload :
-                          crops.find(crop => crop.id === item.sale_bid.crop_id)?.delivery_price_coefficient}
-                      />
-                    </TableCell>
-                    {getProfit(item)}
-                    <TableCell>
-                      <div style={{
-                        color: item.profit_with_delivery_price / item.purchase_bid.price_with_delivery <0? "#000000" : "#21BA88"
-                      }}>
-                        {Math.abs(Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)))}%
-                      </div>
-                    </TableCell>
-                    <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
-                    <TableCell align="center">
-                      {getDistance(item).data}
-                      <div>
-                        <IconButton
-                          size="medium"
-                          color="primary"
-                          onClick={() => history.push(`/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`)}
-                        >
-                          <VisibilityIcon />
-                        </IconButton>
-                      </div>
-                      <Button
-                        disabled={typeof loadDistanation === "number"}
-                        variant="text"
-                        color="primary"
-                        onClick={() => {
-                          setCurrentDeal(item);
-                          setLoadDistanation(i);
-                        }}
-                      >
-                        {loadDistanation === i ? <CircularProgress size={20} /> : <div>Уточнить</div>}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                  <DealItem
+                    item={item}
+                    crops={crops}
+                    rolesBidUser={rolesBidUser}
+                    classes={classes}
+                    intl={intl}
+                    index={i}
+                    bidSelected={bidSelected}
+                  />
                 ))}
             </TableBody>
             <TableFooter>

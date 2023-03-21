@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps, shallowEqual, useSelector } from "react-redux";
 import { Divider, makeStyles, TextField, FormControlLabel, Checkbox, MenuItem, Modal, Button } from "@material-ui/core";
+import ClearIcon from '@mui/icons-material/Clear';
 import { injectIntl, WrappedComponentProps } from "react-intl";
 
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
@@ -46,7 +47,8 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   bidSelected,
   setUserActive,
   fetchUser,
-  user
+  user,
+  setUserIdSelected
 }) => {
   const [open, setOpen] = useState(false);
   const { weeks, term, min_prepayment_amount } = useSelector(
@@ -238,7 +240,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         >
           Список пользователей
         </MenuItem>
-        {user && (
+        {(user && userIdSelected)? (
           <div>
             <span style={{
               fontSize: 13,
@@ -251,9 +253,25 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                 + ' ' + 
                 ((!user.firstname && !user.surname)? user.email || user.phone : '')
               }
+              <MenuItem
+                style={{
+                  marginLeft: -16,
+                  display: 'inline'
+                }}
+              >
+                <ClearIcon 
+                  onClick={() => {
+                    setUserIdSelected(0)
+                    fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
+                  }}
+                  style={{
+                    marginTop: -3
+                  }}
+                />
+              </MenuItem>
             </span>
           </div>
-        )}
+        ) : ''}
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
@@ -300,7 +318,20 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <TextField
           type="text"
           margin="normal"
+          value={weeks}
+          onChange={e => {
+            let newValue = e.target.value;
+            if (+newValue < 1) {
+              newValue = "1";
+            }
+            if (+newValue > 100) {
+              newValue = "100";
+            }
+            setWeeks(+newValue);
+          }}
+          InputProps={{ inputComponent: NumberFormatCustom as any }}
           variant="outlined"
+          autoComplete="off"
         />
       </div>
       <div className={classes.nested}>
@@ -308,7 +339,22 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <TextField
           type="text"
           margin="normal"
+          name="term"
+          value={term || ""}
           variant="outlined"
+          onChange={e => {
+            let newValue = e.target.value;
+            if (+newValue < 0) {
+              newValue = "0";
+            }
+            if (+newValue > 999) {
+              newValue = "999";
+            }
+            setTerm(+newValue);
+          }}
+          InputProps={{ inputComponent: NumberFormatCustom as any }}
+          autoComplete="off"
+          disabled={min_prepayment_amount === 100}
         />
       </div>
       <div className={classes.nested}>
@@ -372,6 +418,7 @@ const connector = connect(
     setFunnelState: funnelStatesActions.setFunnelState,
     setManagerIdSelected: usersActions.setManagerIdSelected,
     setUserActive: usersActions.setUserActive,
+    setUserIdSelected: usersActions.setUserIdSelected,
   }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;
