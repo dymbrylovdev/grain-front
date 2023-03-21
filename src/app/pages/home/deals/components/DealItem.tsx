@@ -191,7 +191,7 @@ const DealItem: FC<IProps> = ({
   return (
     <TableRow key={item.sale_bid.id}
       style={{
-        backgroundColor: (checkDealAge(item.purchase_bid) || checkDealAge(item.sale_bid)) ? '#ffeaea' : '#000000'
+        backgroundColor: (checkDealAge(item.purchase_bid) || checkDealAge(item.sale_bid)) ? '#ffeaea' : '#ffffff'
       }}
     >
       {!bidSelected && (<TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>)}
