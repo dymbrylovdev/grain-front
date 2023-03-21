@@ -40,6 +40,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/pickers": "^3.3.10",
     "@material-ui/styles": "^4.11.3",
+    "@mui/icons-material": "^5.11.11",
     "@sentry/browser": "^5.17.0",
     "@tanem/svg-injector": "^8.0.35",
     "@types/classnames": "^2.2.10",
