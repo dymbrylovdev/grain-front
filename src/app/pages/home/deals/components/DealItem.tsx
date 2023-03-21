@@ -52,27 +52,35 @@ const DealItem: FC<IProps> = ({
   const localDeals: ILocalDeals[] | null = useMemo(() => {
     const storageDeals = localStorage.getItem("deals");
     return storageDeals ? JSON.parse(storageDeals) : null;
-  }, [currentDeal]);
+  }, [item]);
 
   const currentCrop = useMemo<ICrop | undefined>(() => crops?.find(crop => crop.id === item.sale_bid.crop_id), [crops, item]);
 
   const changeCoefficientValue = (coefficientUser?: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> & {nativeEvent: {data: string}}) => {
-    console.log(coefficientUser?.target.value)
-    if (coefficientUser?.target.value) {
-      if (coefficientUser?.target.value === '') {
-        setCoefficientValue(1)
+    const value = coefficientUser?.target.value;
+    console.log("value: ", value)
+    if ( value || value === '' ) {
+      if (Number(value) <= 0) {
+        setCoefficientValue("")
+        return;
       }
-      setCoefficientValue( coefficientUser.target.value.length ?
-        Number(coefficientUser.target.value) : "")
+      setCoefficientValue( Boolean(value) ?
+        Number(value) : 0)
     } else {
       const newCoefficient = !overloadCheck ?
         crops.find(crop => crop.id === item.sale_bid.crop_id)?.delivery_price_overload :
         crops.find(crop => crop.id === item.sale_bid.crop_id)?.delivery_price_coefficient;
-      console.log("newCoefficient ", newCoefficient)
       newCoefficient && setCoefficientValue(newCoefficient);
       setOverloadCheck(!overloadCheck);
     }
   }
+
+  const handleKeyPress = (event) => {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode !== 8 && charCode !== 0 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
+  };
 
   useEffect(() => {
     currentCrop && setCoefficientValue(currentCrop?.delivery_price_coefficient);
@@ -88,8 +96,6 @@ const DealItem: FC<IProps> = ({
             item.sale_bid.lat === currentDeal.sale_bid.location.lat &&
             item.sale_bid.lng === currentDeal.sale_bid.location.lng
         );
-        console.log(localDistance)
-        console.log(currentDeal.distance)
         if (localDistance) {
           return {
             isLocal: true,
@@ -109,15 +115,17 @@ const DealItem: FC<IProps> = ({
     [localDeals]
   );
 
+  const localDistance : {
+    isLocal: boolean;
+    data: number | JSX.Element;
+  } = useMemo(() => getDistance(item, true), [getDistance, item]);
+
   const getProfit = useCallback(
     (currentDeal: IDeal) => {
-      // const localDistance = getDistance(currentDeal, true);
-      const localDistance = getDistance(currentDeal, true);
-      if (localDistance.data && typeof localDistance.data === "number" &&  coefficientValue) {
+      if (localDistance.data && typeof localDistance.data === "number" && (coefficientValue || coefficientValue === 0)) {
         const distance = localDistance.data > 100 ? localDistance.data : 100;
-        // console.log(Math.round(currentDeal.profit_with_delivery_price))
-        // console.log(currentDeal.purchase_bid.price_with_delivery)
-        // console.log( distance * +coefficientValue)
+        const deliveryPrice = distance * +coefficientValue;
+        console.log("distance", localDistance.data)
         return (
           <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
             color: (currentDeal.purchase_bid.price -
@@ -127,11 +135,10 @@ const DealItem: FC<IProps> = ({
             {!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat ? (
               <>
                 {currentDeal.purchase_bid.price -
-                  Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
-                  distance * +coefficientValue}
+                  Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) - deliveryPrice}
               </>
             ) : (
-              <>{currentDeal.purchase_bid.price - currentDeal.sale_bid.price - distance * +coefficientValue}</>
+              <>{currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice}</>
             )}
           </TableCell>
         );
@@ -140,7 +147,36 @@ const DealItem: FC<IProps> = ({
         color: currentDeal.profit_with_delivery_price < 0? "#000000" : "#21BA88"
       }}>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
     },
-    [getDistance, coefficientValue]
+    [getDistance, coefficientValue, localDistance, item]
+  );
+
+  const getPercent = useCallback(
+    (currentDeal: IDeal) => {
+      // console.log("distance", currentDeal.distance)
+      // console.log("data", localDistance.data)
+      if (localDistance.data && typeof localDistance.data === "number" && coefficientValue) {
+        const distance = localDistance.data > 100 ? localDistance.data : 100;
+        const deliveryPrice = distance * +coefficientValue;
+        return (
+          <TableCell>
+            <div style={{
+              color: item.profit_with_delivery_price / item.purchase_bid.price_with_delivery < 0 ? "#000000" : "#21BA88"
+            }}>
+              {Math.abs(Number((((currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice)
+                / (currentDeal.purchase_bid.price + deliveryPrice)) * 100).toFixed(0)))}%
+            </div>
+          </TableCell>
+        );
+      }
+      return <TableCell>
+        <div style={{
+          color: item.profit_with_delivery_price / item.purchase_bid.price_with_delivery < 0 ? "#000000" : "#21BA88"
+        }}>
+          {Math.abs(Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)))}%
+        </div>
+      </TableCell>
+    },
+    [getDistance, coefficientValue, localDistance, item]
   );
 
   return (
@@ -264,13 +300,17 @@ const DealItem: FC<IProps> = ({
               id: "OPTIONS.OVERLOAD",
             })}
         />
-        <div>Цена доставки: {item.delivery_price ? item.delivery_price : '-'}</div>
+        <div>Цена доставки: {localDistance.data && typeof localDistance.data === "number" && (coefficientValue || coefficientValue === "") ? (
+            (localDistance.data > 100 ? localDistance.data : 100) * Number(coefficientValue)
+          ) : '-'}</div>
         <div>Тариф:</div>
         <TextField
           type="number"
           margin="dense"
           variant="outlined"
           autoComplete="off"
+          onKeyPress={handleKeyPress}
+          inputProps={{ step: 1 }}
           value={coefficientValue}
           onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> & {nativeEvent: {data: string}}) => {
             changeCoefficientValue(event);
@@ -278,13 +318,7 @@ const DealItem: FC<IProps> = ({
         />
       </TableCell>
       {getProfit(item)}
-      <TableCell>
-        <div style={{
-          color: item.profit_with_delivery_price / item.purchase_bid.price_with_delivery <0? "#000000" : "#21BA88"
-        }}>
-          {Math.abs(Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)))}%
-        </div>
-      </TableCell>
+      {getPercent(item)}
       <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
       <TableCell align="center">
         {getDistance(item).data}
