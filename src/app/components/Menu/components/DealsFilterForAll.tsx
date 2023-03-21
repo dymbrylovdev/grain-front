@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps, shallowEqual, useSelector } from "react-redux";
 import { Divider, makeStyles, TextField, FormControlLabel, Checkbox, MenuItem, Modal, Button } from "@material-ui/core";
+import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
 import { injectIntl, WrappedComponentProps } from "react-intl";
 
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
@@ -252,18 +253,20 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                 + ' ' + 
                 ((!user.firstname && !user.surname)? user.email || user.phone : '')
               }
+              <MenuItem
+                style={{
+                  marginLeft: -16,
+                  display: 'inline'
+                }}
+              >
+                <DisabledByDefaultIcon 
+                  onClick={() => {
+                    setUserIdSelected(0)
+                    fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
+                  }}
+                />
+              </MenuItem>
             </span>
-            <MenuItem
-              onClick={() => {
-                setUserIdSelected(0)
-                fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
-              }}
-              style={{
-                marginLeft: -16
-              }}
-            >
-              Сбросить
-            </MenuItem>
           </div>
         ) : ''}
       </div>
