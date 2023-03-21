@@ -437,11 +437,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                             <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
                             <strong>{item.sale_bid.volume}</strong>
                           </div>
-                          <div>
-                            {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })}
-                            {": "}
-                            {item.sale_bid.location.text}
-                          </div>
                           <div>{intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}</div>
                           <div>
                             <div className={classes.flexRow}>
@@ -487,11 +482,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                           <div>
                             <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
                             <strong>{item.purchase_bid.volume}</strong>
-                          </div>
-                          <div>
-                            {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })}
-                            {": "}
-                            {item.purchase_bid.location.text}
                           </div>
                           <div>{intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}</div>
                           <div>
