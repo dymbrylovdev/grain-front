@@ -23,6 +23,7 @@ import {ILocalDeals} from "../DealViewPage";
 import {useHistory} from "react-router-dom";
 import {log} from "util";
 import { IBid } from '../../../../interfaces/bids';
+import moment from 'moment';
 
 interface IProps {
   item: IDeal;
@@ -179,8 +180,20 @@ const DealItem: FC<IProps> = ({
     [getDistance, coefficientValue, localDistance, item]
   );
 
+  const checkDealAge = useCallback((bid) => {
+    const now = moment(new Date());
+    const end = moment(bid?.modified_at);
+    const duration = moment.duration(now.diff(end));
+    const days = duration.asDays();
+    return days > 30 ? true : false
+  }, []);
+
   return (
-    <TableRow key={item.sale_bid.id}>
+    <TableRow key={item.sale_bid.id}
+      style={{
+        backgroundColor: (checkDealAge(item.purchase_bid) || checkDealAge(item.sale_bid)) ? '#ffeaea' : '#000000'
+      }}
+    >
       {!bidSelected && (<TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>)}
       {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_VENDOR") ? (
         <></>
