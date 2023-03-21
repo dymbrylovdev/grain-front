@@ -403,7 +403,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   %
                 </TopTableCell>
                 <TopTableCell>
-                  <FormattedMessage id="BIDSLIST.TABLE.TIME" />
+                  Срок
                 </TopTableCell>
                 <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.DISTANCE" />
