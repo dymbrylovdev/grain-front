@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps, shallowEqual, useSelector } from "react-redux";
 import { Divider, makeStyles, TextField, FormControlLabel, Checkbox, MenuItem, Modal, Button } from "@material-ui/core";
-import DisabledByDefaultIcon from '@mui/icons-material/DisabledByDefault';
+import ClearIcon from '@mui/icons-material/Clear';
 import { injectIntl, WrappedComponentProps } from "react-intl";
 
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
@@ -259,10 +259,13 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                   display: 'inline'
                 }}
               >
-                <DisabledByDefaultIcon 
+                <ClearIcon 
                   onClick={() => {
                     setUserIdSelected(0)
                     fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
+                  }}
+                  style={{
+                    marginTop: -3
                   }}
                 />
               </MenuItem>
