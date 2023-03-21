@@ -46,7 +46,8 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   bidSelected,
   setUserActive,
   fetchUser,
-  user
+  user,
+  setUserIdSelected
 }) => {
   const [open, setOpen] = useState(false);
   const { weeks, term, min_prepayment_amount } = useSelector(
@@ -238,7 +239,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         >
           Список пользователей
         </MenuItem>
-        {user && (
+        {(user && userIdSelected)? (
           <div>
             <span style={{
               fontSize: 13,
@@ -252,8 +253,19 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                 ((!user.firstname && !user.surname)? user.email || user.phone : '')
               }
             </span>
+            <MenuItem
+              onClick={() => {
+                setUserIdSelected(0)
+                fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
+              }}
+              style={{
+                marginLeft: -16
+              }}
+            >
+              Сбросить
+            </MenuItem>
           </div>
-        )}
+        ) : ''}
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
@@ -372,6 +384,7 @@ const connector = connect(
     setFunnelState: funnelStatesActions.setFunnelState,
     setManagerIdSelected: usersActions.setManagerIdSelected,
     setUserActive: usersActions.setUserActive,
+    setUserIdSelected: usersActions.setUserIdSelected,
   }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;
