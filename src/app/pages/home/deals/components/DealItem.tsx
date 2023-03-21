@@ -71,6 +71,13 @@ const DealItem: FC<IProps> = ({
     }
   }
 
+  const handleKeyPress = (event) => {
+    const charCode = event.which ? event.which : event.keyCode;
+    if (charCode !== 8 && charCode !== 0 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
+  };
+
   useEffect(() => {
     currentCrop && setCoefficientValue(currentCrop?.delivery_price_coefficient);
   },[currentCrop])
@@ -300,6 +307,8 @@ const DealItem: FC<IProps> = ({
           margin="dense"
           variant="outlined"
           autoComplete="off"
+          onKeyPress={handleKeyPress}
+          inputProps={{ step: 1 }}
           value={coefficientValue}
           onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> & {nativeEvent: {data: string}}) => {
             changeCoefficientValue(event);
