@@ -244,9 +244,6 @@ const DealItem: FC<IProps> = ({
               </div>
               {item?.sale_bid.vendor.company && (
                 <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                  {!!item?.sale_bid?.vendor?.company?.colors && item?.sale_bid.vendor.company.colors.length > 0 && (
-                    <MiniTrafficLight intl={intl} colors={item?.sale_bid.vendor.company.colors} />
-                  )}
                   <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
                 </div>
               )}
@@ -289,9 +286,6 @@ const DealItem: FC<IProps> = ({
               </div>
               {item?.purchase_bid.vendor.company && (
                 <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                  {!!item?.purchase_bid?.vendor?.company?.colors && item?.purchase_bid.vendor.company.colors.length > 0 && (
-                    <MiniTrafficLight intl={intl} colors={item?.purchase_bid.vendor.company.colors} />
-                  )}
                   <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
                 </div>
               )}
