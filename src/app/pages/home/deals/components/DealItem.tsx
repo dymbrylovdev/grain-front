@@ -9,6 +9,7 @@ import {
   TableRow, TextField,
   Tooltip
 } from "@material-ui/core";
+import AgricultureIcon from '@mui/icons-material/Agriculture';
 import {сompareRoles} from "../../../../utils/utils";
 import {thousands} from "../utils/utils";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
@@ -305,7 +306,7 @@ const DealItem: FC<IProps> = ({
             setLoadDistanation(index);
           }}
         >
-          {loadDistanation === index ? <CircularProgress size={20} /> : <div>Уточнить</div>}
+          {loadDistanation === index ? <CircularProgress size={20} /> : <div><AgricultureIcon /></div>}
         </Button>
       </TableCell>
     </TableRow>
