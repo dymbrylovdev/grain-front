@@ -59,7 +59,6 @@ const DealItem: FC<IProps> = ({
 
   const changeCoefficientValue = (coefficientUser?: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> & {nativeEvent: {data: string}}) => {
     const value = coefficientUser?.target.value;
-    console.log("value: ", value)
     if ( value || value === '' ) {
       if (Number(value) <= 0) {
         setCoefficientValue("")
@@ -126,7 +125,6 @@ const DealItem: FC<IProps> = ({
       if (localDistance.data && typeof localDistance.data === "number" && (coefficientValue || coefficientValue === 0)) {
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         const deliveryPrice = distance * +coefficientValue;
-        console.log("distance", localDistance.data)
         return (
           <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
             color: (currentDeal.purchase_bid.price -
@@ -189,16 +187,16 @@ const DealItem: FC<IProps> = ({
   }, []);
 
   return (
-    <TableRow key={item.sale_bid.id}
-      style={{
-        backgroundColor: (checkDealAge(item.purchase_bid) || checkDealAge(item.sale_bid)) ? '#ffeaea' : '#ffffff'
-      }}
-    >
+    <TableRow key={item.sale_bid.id}>
       {!bidSelected && (<TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>)}
       {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_VENDOR") ? (
         <></>
       ) : (
-        <TableCell>
+        <TableCell
+          style={{
+            backgroundColor:  checkDealAge(item.sale_bid)? '#ffeaea' : '#ffffff'
+          }}
+        >
           <div className={classes.flexColumn}>
             <div style={{ display: "flex" }}>
               <strong style={{ marginRight: 5 }}>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
@@ -250,7 +248,7 @@ const DealItem: FC<IProps> = ({
             </div>
             <div>
               {item.sale_bid.modified_at && (
-                intl.formatDate(item.purchase_bid.modified_at)
+                intl.formatDate(item.sale_bid.modified_at)
               )}
             </div>
           </div>
@@ -259,7 +257,11 @@ const DealItem: FC<IProps> = ({
       {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_BUYER") ? (
         <></>
       ) : (
-        <TableCell>
+        <TableCell
+          style={{
+            backgroundColor:  checkDealAge(item.purchase_bid)? '#ffeaea' : '#ffffff'
+          }}
+        >
           <div className={classes.flexColumn}>
             <div>
               <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>

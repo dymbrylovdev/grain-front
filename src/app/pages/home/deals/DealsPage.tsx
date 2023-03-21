@@ -293,8 +293,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     fetchCrops();
   }, [fetchCrops]);
 
-  console.log("deals",deals)
-
   useEffect(() => {
     if (bidSelected) {
       fetchByBidId(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, bidSelected.id);
