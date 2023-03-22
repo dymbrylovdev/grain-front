@@ -350,9 +350,8 @@ const DealItem: FC<IProps> = ({
                 thousands(Math.round(item.sale_bid.price))
               ) : (
                 "-"
-              )}
+              )} руб.
             </strong>
-            <strong> &nbsp; руб.</strong>
           </div>
         </TableCell>
       )}
@@ -361,8 +360,7 @@ const DealItem: FC<IProps> = ({
       ) : (
         <TableCell className={classes.tableCell}>
           <div>
-            <strong>{item.sale_bid.volume}</strong>
-            <strong> &nbsp; т.</strong>
+            <strong>{item.sale_bid.volume} т.</strong>
           </div>
         </TableCell>
       )}
@@ -371,8 +369,7 @@ const DealItem: FC<IProps> = ({
       ) : (
         <TableCell className={classes.tableCell}>
           <div>
-            <strong>{item.purchase_bid.price}</strong>
-            <strong> &nbsp; руб.</strong>
+            <strong>{item.purchase_bid.price} руб.</strong>
           </div>
         </TableCell>
       )}
@@ -381,8 +378,7 @@ const DealItem: FC<IProps> = ({
       ) : (
         <TableCell className={classes.tableCell}>
           <div>
-            <strong>{item.purchase_bid.volume}</strong>
-            <strong> &nbsp; т.</strong>
+            <strong>{item.purchase_bid.volume} т.</strong>
           </div>
         </TableCell>
       )}
