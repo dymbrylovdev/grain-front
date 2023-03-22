@@ -13,7 +13,6 @@ import AgricultureIcon from '@mui/icons-material/Agriculture';
 import {сompareRoles} from "../../../../utils/utils";
 import {thousands} from "../utils/utils";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
-import MiniTrafficLight from "../../users/components/miniTrafficLight/MiniTrafficLight";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import {IDeal} from "../../../../interfaces/deals";
 import { ICrop } from '../../../../interfaces/crops';
@@ -21,9 +20,9 @@ import {TRole} from "../../../../interfaces/users";
 import {IntlShape} from "react-intl";
 import {ILocalDeals} from "../DealViewPage";
 import {useHistory} from "react-router-dom";
-import {log} from "util";
 import { IBid } from '../../../../interfaces/bids';
 import moment from 'moment';
+import NumberFormatCustom from "../../../../components/NumberFormatCustom/NumberFormatCustom";
 
 interface IProps {
   item: IDeal;
@@ -31,8 +30,9 @@ interface IProps {
   rolesBidUser?: TRole[] | null;
   classes: any;
   intl: IntlShape;
-  index: number;
   bidSelected: IBid | null;
+  loadFuncRef: any;
+  handleLoadingDist: (deal: IDeal, setLoadDistanation: (load: boolean) => void) => void;
 }
 
 const DealItem: FC<IProps> = ({
@@ -41,21 +41,29 @@ const DealItem: FC<IProps> = ({
   rolesBidUser,
   classes,
   intl,
-  index,
-  bidSelected
+  bidSelected,
+  handleLoadingDist,
+  loadFuncRef,
 }) => {
-  const [currentDeal, setCurrentDeal] = useState<IDeal | null>(null);
   const [overloadCheck, setOverloadCheck] = useState<boolean>(false);
-  const [loadDistanation, setLoadDistanation] = useState<number | null>(null);
   const [coefficientValue, setCoefficientValue] = useState<number | null | undefined | string>(null);
+  const [loadDistanation, setLoadDistanation] = useState<boolean>(false);
   const history = useHistory();
+
+  // memo **************
 
   const localDeals: ILocalDeals[] | null = useMemo(() => {
     const storageDeals = localStorage.getItem("deals");
     return storageDeals ? JSON.parse(storageDeals) : null;
-  }, [item]);
+  }, [item, loadDistanation]);
 
   const currentCrop = useMemo<ICrop | undefined>(() => crops?.find(crop => crop.id === item.sale_bid.crop_id), [crops, item]);
+
+  // handlers **************
+
+  const handleLoad = (load: boolean) => {
+    setLoadDistanation(load)
+  }
 
   const changeCoefficientValue = (coefficientUser?: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> & {nativeEvent: {data: string}}) => {
     const value = coefficientUser?.target.value;
@@ -81,10 +89,6 @@ const DealItem: FC<IProps> = ({
       event.preventDefault();
     }
   };
-
-  useEffect(() => {
-    currentCrop && setCoefficientValue(currentCrop?.delivery_price_coefficient);
-  },[currentCrop])
 
   const getDistance = useCallback(
     (currentDeal: IDeal, noneElement?: boolean) => {
@@ -156,13 +160,14 @@ const DealItem: FC<IProps> = ({
       if (localDistance.data && typeof localDistance.data === "number" && coefficientValue) {
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         const deliveryPrice = distance * +coefficientValue;
+        const result = Number((((currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice)
+          / (currentDeal.purchase_bid.price + deliveryPrice)) * 100).toFixed(0));
         return (
           <TableCell>
             <div style={{
-              color: item.profit_with_delivery_price / item.purchase_bid.price_with_delivery < 0 ? "#000000" : "#21BA88"
+              color: result < 0 ? "#000000" : "#21BA88"
             }}>
-              {Math.abs(Number((((currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice)
-                / (currentDeal.purchase_bid.price + deliveryPrice)) * 100).toFixed(0)))}%
+              {result}%
             </div>
           </TableCell>
         );
@@ -171,7 +176,7 @@ const DealItem: FC<IProps> = ({
         <div style={{
           color: item.profit_with_delivery_price / item.purchase_bid.price_with_delivery < 0 ? "#000000" : "#21BA88"
         }}>
-          {Math.abs(Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)))}%
+          {Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0))}%
         </div>
       </TableCell>
     },
@@ -185,6 +190,12 @@ const DealItem: FC<IProps> = ({
     const days = duration.asDays();
     return days > 30 ? true : false
   }, []);
+
+  // useEffects **************
+
+  useEffect(() => {
+    currentCrop && setCoefficientValue(currentCrop?.delivery_price_coefficient);
+  },[currentCrop])
 
   return (
     <TableRow key={item.sale_bid.id}>
@@ -312,19 +323,24 @@ const DealItem: FC<IProps> = ({
         <div>Цена доставки: {localDistance.data && typeof localDistance.data === "number" && (coefficientValue || coefficientValue === "") ? (
             (localDistance.data > 100 ? localDistance.data : 100) * Number(coefficientValue)
           ) : '-'}</div>
-        <div>Тариф:</div>
-        <TextField
-          type="number"
-          margin="dense"
-          variant="outlined"
-          autoComplete="off"
-          onKeyPress={handleKeyPress}
-          inputProps={{ step: 1 }}
-          value={coefficientValue}
-          onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> & {nativeEvent: {data: string}}) => {
-            changeCoefficientValue(event);
-          }}
-        />
+        <div className={classes.tariffBlock}>
+          <div style={{marginRight: 20}}>Тариф:</div>
+          <TextField
+            type="text"
+            margin="dense"
+            variant="outlined"
+            autoComplete="off"
+            style={{width: 60}}
+            InputProps={{
+              inputComponent: NumberFormatCustom as any,
+            }}
+            onKeyPress={handleKeyPress}
+            value={coefficientValue}
+            onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> & {nativeEvent: {data: string}}) => {
+              changeCoefficientValue(event);
+            }}
+          />
+        </div>
       </TableCell>
       {getProfit(item)}
       {getPercent(item)}
@@ -341,15 +357,14 @@ const DealItem: FC<IProps> = ({
           </IconButton>
         </div>
         <Button
-          disabled={typeof loadDistanation === "number"}
+          disabled={loadDistanation || loadFuncRef}
           variant="text"
           color="primary"
           onClick={() => {
-            setCurrentDeal(item);
-            setLoadDistanation(index);
+            handleLoadingDist(item, handleLoad);
           }}
         >
-          {loadDistanation === index ? <CircularProgress size={20} /> : <div><AgricultureIcon /></div>}
+          {loadDistanation ? <CircularProgress size={20} /> : <div><AgricultureIcon /></div>}
         </Button>
       </TableCell>
     </TableRow>
