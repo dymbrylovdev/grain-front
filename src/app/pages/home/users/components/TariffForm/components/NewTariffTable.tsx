@@ -51,7 +51,8 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
       <TableBody>
         <TableRow>
           <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-            {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}{" "} 5
+            {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}{" "}
+            5
             {/* {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })} */}
           </TableCell>
         </TableRow>
@@ -104,8 +105,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
             style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}
           >
             {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE8" })}{" "}
-            {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5" })}
-            {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5_1" })}
+            {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT5_2" })}
           </TableCell>
         </TableRow>
 
@@ -159,8 +159,8 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
 
         <TableRow>
           <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-            {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "} 0
-            {/* {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+            {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "}
+            {accessByRoles(realUser, ["ROLE_BUYER"]) &&
               tariffs &&
               tariffs.map(item => {
                 if (item.id === 2)
@@ -177,7 +177,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
               tariffs.map(item => {
                 if (item.id === 22)
                   return item.tariff_limits.max_filters_count;
-              })} */}
+              })}
           </TableCell>
         </TableRow>
 
@@ -209,22 +209,23 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
 
         <TableRow>
           <TableCell align="center" style={{ backgroundColor: "rgba(150, 150, 150, 0.2)" }}>
-            {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "} 0
-            {/* {accessByRoles(realUser, ["ROLE_BUYER"]) &&
-          tariffs &&
-          tariffs.map(item => {
-            if (item.id === 2) return item.tariff_limits.contact_view_limit;
-          })}
-        {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
-          tariffs &&
-          tariffs.map(item => {
-            if (item.id === 6) return item.tariff_limits.contact_view_limit;
-          })}
-        {accessByRoles(realUser, ["ROLE_TRADER"]) &&
-          tariffs &&
-          tariffs.map(item => {
-            if (item.id === 22) return item.tariff_limits.contact_view_limit;
-          })} */}
+            {/* ? */}
+            {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "}
+            {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+              tariffs &&
+              tariffs.map(item => {
+                if (item.id === 2) return item.tariff_limits.contact_view_limit;
+              })}
+            {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+              tariffs &&
+              tariffs.map(item => {
+                if (item.id === 6) return item.tariff_limits.contact_view_limit;
+              })}
+            {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+              tariffs &&
+              tariffs.map(item => {
+                if (item.id === 22) return item.tariff_limits.contact_view_limit;
+              })}
           </TableCell>
         </TableRow>
 
@@ -266,8 +267,8 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
         <TableBody>
           <TableRow>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}{" "} 100
-              {/* {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })} */}
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}{" "}
+              100
             </TableCell>
           </TableRow>
 
@@ -369,8 +370,9 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
 
           <TableRow>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "} 10
-              {/* <b>
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "}
+              {/* ? */}
+              <b>
                 {accessByRoles(realUser, ["ROLE_BUYER"]) &&
                   tariffs &&
                   tariffs.map(item => {
@@ -385,7 +387,7 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
                     if (item.id === 14)
                       return item.tariff_limits.max_filters_count;
                   })}
-              </b> */}
+              </b>
             </TableCell>
           </TableRow>
 
@@ -415,21 +417,22 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
 
           <TableRow>
             <TableCell align="center" style={{ backgroundColor: "rgba(10, 187, 135, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "} 15
-              {/* <b>
-                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
-                    tariffs &&
-                    tariffs.map(item => {
-                      if (item.id === 10) return item.tariff_limits.contact_view_limit;
-                    })}
-                </b>
-                <b>
-                  {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
-                    tariffs &&
-                    tariffs.map(item => {
-                      if (item.id === 14) return item.tariff_limits.contact_view_limit;
-                    })}
-                </b> */}
+              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "}
+              {/* 15 */}
+              <b>
+                {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                  tariffs &&
+                  tariffs.map(item => {
+                    if (item.id === 10) return item.tariff_limits.contact_view_limit;
+                  })}
+              </b>
+              <b>
+                {accessByRoles(realUser, ["ROLE_VENDOR"]) &&
+                  tariffs &&
+                  tariffs.map(item => {
+                    if (item.id === 14) return item.tariff_limits.contact_view_limit;
+                  })}
+              </b>
             </TableCell>
           </TableRow>
 
@@ -468,235 +471,236 @@ const NewTariffTable: React.FC<IProps & WrappedComponentProps> = ({
         </TableBody>
       </Table>
     )}
-
-    {!["ROLE_VENDOR", "ROLE_TRANSPORTER"].includes(realUser.roles[0]) && (
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.4)" }}>
-              <b>{intl.formatMessage({ id: "TARIFFS.NAME.BUSINESS" })}</b>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}{" "}
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE2" })}{" "}
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE3" })}{" "}
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE4" })}{" "}
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT2" })}
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE5" })}{" "}
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT3" })}
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE6" })}{" "}
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT4" })}
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE7" })} +
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell
-              size="small"
-              align="center"
-              style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-            >
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE8" })}{" "}
-              <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT6" })}</b>
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE9" })}{" "}
-              <b>
-                {accessByRoles(realUser, ["ROLE_BUYER"]) &&
-                  tariffs &&
-                  tariffs.map(item => {
-                    if (item.id === 18)
-                      return item.tariff_limits.common_bids_count;
-                  })}
-              </b>
-              <b>
-                {accessByRoles(realUser, ["ROLE_TRADER"]) &&
-                  tariffs &&
-                  tariffs.map(item => {
-                    if (item.id === 18)
-                      return item.tariff_limits.common_bids_count;
-                  })}
-              </b>
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE10" })}{" "}
-              <b>
-                {accessByRoles(realUser, ["ROLE_BUYER"]) &&
-                  tariffs &&
-                  tariffs.map(item => {
-                    if (item.id === 18)
-                      return item.tariff_limits.common_bids_count;
-                  })}
-              </b>
-              <b>
-                {accessByRoles(realUser, ["ROLE_TRADER"]) &&
-                  tariffs &&
-                  tariffs.map(item => {
-                    if (item.id === 18)
-                      return item.tariff_limits.max_crops_count;
-                  })}
-              </b>
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "}
-              <b>
-                {accessByRoles(realUser, ["ROLE_BUYER"]) &&
-                  tariffs &&
-                  tariffs.map(item => {
-                    if (item.id === 18)
-                      return item.tariff_limits.max_filters_count;
-                  })}
-              </b>
-              <b>
-                {accessByRoles(realUser, ["ROLE_TRADER"]) &&
-                  tariffs &&
-                  tariffs.map(item => {
-                    if (item.id === 18)
-                      return item.tariff_limits.max_filters_count;
-                  })}
-              </b>
-            </TableCell>
-          </TableRow>
-
-          {/*===================*/}
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE16" })}{" "}
-              <b>
-                {accessByRoles(realUser, ["ROLE_BUYER"]) &&
-                  tariffs &&
-                  tariffs.map(item => {
-                    if (item.id === 18)
-                      return item.tariff_limits.days_to_bid_archiving;
-                  })}
-              </b>
-              <b>
-                {accessByRoles(realUser, ["ROLE_TRADER"]) &&
-                  tariffs &&
-                  tariffs.map(item => {
-                    if (item.id === 18)
-                      return item.tariff_limits.days_to_bid_archiving;
-                  })}
-              </b>
-            </TableCell>
-          </TableRow>
-          {/*===================*/}
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "}
-              <b>
-                {accessByRoles(realUser, ["ROLE_BUYER"]) &&
-                  tariffs &&
-                  tariffs.map(item => {
-                    if (item.id === 18)
-                      return item.tariff_limits.contact_view_limit;
-                  })}
-              </b>
-              <b>
-                {accessByRoles(realUser, ["ROLE_TRADER"]) &&
-                  tariffs &&
-                  tariffs.map(item => {
-                    if (item.id === 18)
-                      return item.tariff_limits.contact_view_limit;
-                  })}
-              </b>
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell
-              size="small"
-              align="center"
-              style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
-            >
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE13" })} <br />
-              <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8" })}</b>
-              <br /> <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8_1" })}</b>
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE14" })} <b>+</b>
-            </TableCell>
-          </TableRow>
-
-          <TableRow>
-            <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-              {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE15" })} <b>+</b>
-            </TableCell>
-          </TableRow>
-
-          {editMode === "profile" && (
+    {/* Скрыт тариф Бизнес */}
+    {false &&
+      !["ROLE_VENDOR", "ROLE_TRANSPORTER"].includes(realUser.roles[0]) && (
+        <Table>
+          <TableHead>
             <TableRow>
-              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                <Button variant="contained" color="primary" onClick={() => setShowTariffTable(2)}>
-                  {intl.formatMessage({ id: "TARIFFS.PAYMENT.GET_BUSINESS" })}
-                </Button>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.4)" }}>
+                <b>{intl.formatMessage({ id: "TARIFFS.NAME.BUSINESS" })}</b>
               </TableCell>
             </TableRow>
-          )}
+          </TableHead>
 
-          {editMode === "edit" && ["ROLE_TRADER"].includes(realUser.roles[0]) && (
+          <TableBody>
             <TableRow>
               <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
-                <Button variant="contained" color="primary" onClick={() => setShowTariffTable(2)}>
-                  {intl.formatMessage({ id: "TARIFFS.PAYMENT.GET_BUSINESS" })}
-                </Button>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE1" })}{" "}
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
               </TableCell>
             </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    )}
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE2" })}{" "}
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE3" })}{" "}
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT1" })}
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE4" })}{" "}
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT2" })}
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE5" })}{" "}
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT3" })}
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE6" })}{" "}
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TEXT4" })}
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE7" })} +
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell
+                size="small"
+                align="center"
+                style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
+              >
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE8" })}{" "}
+                <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT6" })}</b>
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE9" })}{" "}
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs?.map(item => {
+                      if (item.id === 18)
+                        return item.tariff_limits.common_bids_count;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                    tariffs &&
+                    tariffs?.map(item => {
+                      if (item.id === 18)
+                        return item.tariff_limits.common_bids_count;
+                    })}
+                </b>
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE10" })}{" "}
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs?.map(item => {
+                      if (item.id === 18)
+                        return item.tariff_limits.common_bids_count;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                    tariffs &&
+                    tariffs?.map(item => {
+                      if (item.id === 18)
+                        return item.tariff_limits.max_crops_count;
+                    })}
+                </b>
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE11" })}{" "}
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs?.map(item => {
+                      if (item.id === 18)
+                        return item.tariff_limits.max_filters_count;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                    tariffs &&
+                    tariffs?.map(item => {
+                      if (item.id === 18)
+                        return item.tariff_limits.max_filters_count;
+                    })}
+                </b>
+              </TableCell>
+            </TableRow>
+
+            {/*===================*/}
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE16" })}{" "}
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs?.map(item => {
+                      if (item.id === 18)
+                        return item.tariff_limits.days_to_bid_archiving;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                    tariffs &&
+                    tariffs?.map(item => {
+                      if (item.id === 18)
+                        return item.tariff_limits.days_to_bid_archiving;
+                    })}
+                </b>
+              </TableCell>
+            </TableRow>
+            {/*===================*/}
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE12" })}{" "}
+                <b>
+                  {accessByRoles(realUser, ["ROLE_BUYER"]) &&
+                    tariffs &&
+                    tariffs?.map(item => {
+                      if (item.id === 18)
+                        return item.tariff_limits.contact_view_limit;
+                    })}
+                </b>
+                <b>
+                  {accessByRoles(realUser, ["ROLE_TRADER"]) &&
+                    tariffs &&
+                    tariffs?.map(item => {
+                      if (item.id === 18)
+                        return item.tariff_limits.contact_view_limit;
+                    })}
+                </b>
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell
+                size="small"
+                align="center"
+                style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}
+              >
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE13" })} <br />
+                <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8" })}</b>
+                <br /> <b>{intl.formatMessage({ id: "TARIFFS.TABLE.TEXT8_1" })}</b>
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE14" })} <b>+</b>
+              </TableCell>
+            </TableRow>
+
+            <TableRow>
+              <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                {intl.formatMessage({ id: "TARIFFS.TABLE.TITLE15" })} <b>+</b>
+              </TableCell>
+            </TableRow>
+
+            {editMode === "profile" && (
+              <TableRow>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <Button variant="contained" color="primary" onClick={() => setShowTariffTable(2)}>
+                    {intl.formatMessage({ id: "TARIFFS.PAYMENT.GET_BUSINESS" })}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )}
+
+            {editMode === "edit" && ["ROLE_TRADER"].includes(realUser.roles[0]) && (
+              <TableRow>
+                <TableCell align="center" style={{ backgroundColor: "rgba(93, 120, 255, 0.2)" }}>
+                  <Button variant="contained" color="primary" onClick={() => setShowTariffTable(2)}>
+                    {intl.formatMessage({ id: "TARIFFS.PAYMENT.GET_BUSINESS" })}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      )}
   </TableContainer>
 );
 

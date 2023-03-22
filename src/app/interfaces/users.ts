@@ -44,6 +44,8 @@ export interface IUser {
   tariff_price?: number[];
   tariff_expired_at?: Date;
   tariff_start_date?: Date;
+  first_login_at?: Date;
+  created_at?: Date;
   crops: ICrop[];
   available_filter_count: number;
   main_crop: {
@@ -51,7 +53,11 @@ export interface IUser {
     name: string;
     vat: number;
   };
-  transport: ITransport
+  transport: ITransport;
+  manager?: any;
+  active: boolean;
+  overload?: boolean;
+
 }
 
 export interface IUserForRegister {
@@ -75,6 +81,7 @@ export interface IUserForCreate {
   company_id?: number;
   use_vat?: boolean;
   crop_ids?: number[];
+  active?: boolean;
 }
 
 export interface IUserForEdit {
@@ -100,6 +107,10 @@ export interface IUserForEdit {
   tariff_expired_at?: Date;
   crop_ids?: number[];
   main_crop_id?: number;
+  managerId?: number;
+  active?: boolean;
+  overload?: boolean;
+
 }
 
 export interface IChangePasswordData {

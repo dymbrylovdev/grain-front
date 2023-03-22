@@ -270,6 +270,7 @@ const BidsList: React.FC<IProps> = ({
     [history, setProfit, user, bestAllMyMode, salePurchaseMode, currentCropName]
   );
 
+
   const handleShowImage = useCallback((index: number, photos?: string[]) => {
     setCurrentImages(state => ({
       photos: photos || state.photos,
@@ -404,15 +405,16 @@ const BidsList: React.FC<IProps> = ({
     <>
       <div className={classes.tableTitle}>{title || ""}</div>
       {loading || !bids ? (
+      // { !bids ? (
         <div style={{ marginTop: -24 }}>
           <Skeleton width="100%" height={100} animation="wave" />
           <Skeleton width="100%" height={30} animation="wave" />
           <Skeleton width="100%" height={30} animation="wave" />
           <Skeleton width="100%" height={30} animation="wave" />
         </div>
-      ) : bids.length > 0 ? (
+      ) : bids?.length > 0 ? (
         <>
-          {bids.map(bid => (
+          {bids?.map(bid => (
             <Bid
               key={bid.id}
               isHaveRules={isHaveRules}
@@ -507,4 +509,4 @@ const BidsList: React.FC<IProps> = ({
   );
 };
 
-export default injectIntl(BidsList);
+export default  injectIntl(BidsList);

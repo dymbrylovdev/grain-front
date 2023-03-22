@@ -53,7 +53,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   setCurrentSaleFilter,
   currentPurchaseFilters,
   setCurrentPurchaseFilter,
-
+  contactViewCountLoading,
   page,
   perPage,
   total,
@@ -411,36 +411,38 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
     const location = localPoint.active && !me ? localPoint : undefined;
     switch (bestAllMyMode) {
       case "best-bids":
-        if (salePurchaseMode === "sale") {
-          if (currentSaleFilters[cropId] && cropParams && pointPrices) {
-            const newFilter = filterForBids(
-              currentSaleFilters[cropId] || {},
-              cropParams.filter(item => item.type === "enum"),
-              cropParams.filter(item => item.type === "number"),
-              pointPrices
-            );
-            fetchBestBids(salePurchaseMode, { ...newFilter, filter: { ...newFilter.filter, location } });
-            setCurrentFilters(newFilter);
+        if (!contactViewCountLoading) {
+          if (salePurchaseMode === "sale") {
+            if (currentSaleFilters[cropId] && cropParams && pointPrices) {
+              const newFilter = filterForBids(
+                currentSaleFilters[cropId] || {},
+                cropParams.filter(item => item.type === "enum"),
+                cropParams.filter(item => item.type === "number"),
+                pointPrices
+              );
+              fetchBestBids(salePurchaseMode, { ...newFilter, filter: { ...newFilter.filter, location } });
+              setCurrentFilters(newFilter);
+            }
+            if (cropId && !currentSaleFilters[cropId]) {
+              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId, location } });
+              setCurrentFilters({ filter: { cropId: +cropId } });
+            }
           }
-          if (cropId && !currentSaleFilters[cropId]) {
-            fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId, location } });
-            setCurrentFilters({ filter: { cropId: +cropId } });
-          }
-        }
-        if (salePurchaseMode === "purchase") {
-          if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
-            const newFilter = filterForBids(
-              currentPurchaseFilters[cropId] || {},
-              cropParams.filter(item => item.type === "enum"),
-              cropParams.filter(item => item.type === "number"),
-              pointPrices
-            );
-            fetchBestBids(salePurchaseMode, { ...newFilter, filter: { ...newFilter.filter, location } });
-            setCurrentFilters(newFilter);
-          }
-          if (cropId && !currentPurchaseFilters[cropId]) {
-            fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId, location } });
-            setCurrentFilters({ filter: { cropId: +cropId } });
+          if (salePurchaseMode === "purchase") {
+            if (currentPurchaseFilters[cropId] && cropParams && pointPrices) {
+              const newFilter = filterForBids(
+                currentPurchaseFilters[cropId] || {},
+                cropParams.filter(item => item.type === "enum"),
+                cropParams.filter(item => item.type === "number"),
+                pointPrices
+              );
+              fetchBestBids(salePurchaseMode, { ...newFilter, filter: { ...newFilter.filter, location } });
+              setCurrentFilters(newFilter);
+            }
+            if (cropId && !currentPurchaseFilters[cropId]) {
+              fetchBestBids(salePurchaseMode, { filter: { cropId: +cropId, location } });
+              setCurrentFilters({ filter: { cropId: +cropId } });
+            }
           }
         }
         break;
@@ -514,10 +516,9 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 color="primary"
                 onClick={() =>
                   history.push(
-                    `/bid/create/${
-                      (!!me && ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) || bestAllMyMode === "my-bids"
-                        ? salePurchaseMode
-                        : salePurchaseMode === "sale"
+                    `/bid/create/${(!!me && ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) || bestAllMyMode === "my-bids"
+                      ? salePurchaseMode
+                      : salePurchaseMode === "sale"
                         ? "purchase"
                         : "sale"
                     }/0${!!cropId ? "/" + cropId : ""}`
@@ -728,6 +729,7 @@ const connector = connect(
     prompterRunning: state.prompter.running,
     currentSaleFilters: state.myFilters.currentSaleFilters,
     currentPurchaseFilters: state.myFilters.currentPurchaseFilters,
+    contactViewCountLoading: state.users.contactViewCountLoading,
 
     page: state.bids.page,
     perPage: state.bids.per_page,

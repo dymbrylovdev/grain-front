@@ -20,6 +20,7 @@ import {
   createUserBidFilter,
   getUserFilters,
 } from "../../crud/users.crud";
+import { actions as authActions } from "../../store/ducks/auth.duck";
 import { IUser, IUserForCreate, IUserForEdit, IUserBidFilters } from "../../interfaces/users";
 import { IBid } from "../../interfaces/bids";
 import { IFilterForCreate, IMyFilters } from "../../interfaces/filters";
@@ -94,6 +95,10 @@ const SET_USER_FILTERS_PHONE = "users/SET_USER_FILTERS_PHONE";
 
 const SET_USER_BOUGHT_TARIFF = "users/SET_USER_BOUGHT_TARIFF";
 
+const SET_USER_ID_SELECTED = "users/SET_USER_ID_SELECTED";
+const SET_MANAGER_ID_SELECTED = "users/SET_MANAGER_ID_SELECTED";
+const SET_USER_ACTIVE = "users/SET_USER_ACTIVE";
+
 export interface IInitialState {
   page: number;
   per_page: number;
@@ -164,6 +169,9 @@ export interface IInitialState {
   userFiltersPhone: string | undefined;
 
   boughtTariff: boolean;
+  userIdSelected: number;
+  managerIdSelected: number;
+  userActive: boolean;
 }
 
 const initialState: IInitialState = {
@@ -236,6 +244,9 @@ const initialState: IInitialState = {
   userFiltersPhone: undefined,
 
   boughtTariff: false,
+  userIdSelected: 0,
+  managerIdSelected : 0,
+  userActive: false,
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
@@ -650,6 +661,19 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         };
       }
 
+      case SET_USER_ID_SELECTED: {
+        return { ...state, userIdSelected: action.payload };
+      }
+      
+      case SET_MANAGER_ID_SELECTED: {
+        return { ...state, managerIdSelected: action.payload };
+      }
+
+      case SET_USER_ACTIVE: {
+        return { ...state, userActive: action.payload };
+      }
+      
+
       default:
         return state;
     }
@@ -665,6 +689,7 @@ export const actions = {
     funnelStateId?: number;
     userRolesId?: string;
     boughtTariff?: boolean;
+    userActive?: boolean;
   }) => createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
@@ -690,7 +715,7 @@ export const actions = {
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
 
   clearContactViewCount: () => createAction(CLEAR_CONTACT_VIEW_COUNT),
-  contactViewCountRequest: (payload: { data: number }) => createAction(CONTACT_VIEW_COUNT_REQUEST, payload),
+  contactViewCountRequest: (payload: { data: any }) => createAction(CONTACT_VIEW_COUNT_REQUEST, payload),
   contactViewCountSuccess: () => createAction(CONTACT_VIEW_COUNT_SUCCESS),
   contactViewCountError: (payload: string) => createAction(CONTACT_VIEW_COUNT_FAIL, payload),
 
@@ -732,6 +757,9 @@ export const actions = {
   setUserFiltersPhone: (payload: string) => createAction(SET_USER_FILTERS_PHONE, payload),
 
   setUserBoughtTariff: (payload: boolean) => createAction(SET_USER_BOUGHT_TARIFF, payload),
+  setUserIdSelected: (payload: number) => createAction(SET_USER_ID_SELECTED, payload),
+  setManagerIdSelected: (payload: number) => createAction(SET_MANAGER_ID_SELECTED, payload),
+  setUserActive: (payload: boolean) => createAction(SET_USER_ACTIVE, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -746,11 +774,12 @@ function* fetchSaga({
     funnelStateId?: number;
     userRolesId?: string;
     boughtTariff?: boolean;
+    userActive?: boolean;
   };
 }) {
   try {
     const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
-      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId, payload.boughtTariff)
+      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId, payload.boughtTariff, payload.userActive)
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
@@ -768,8 +797,12 @@ function* fetchByIdSaga({ payload }: { payload: { id: number } }) {
 }
 
 function* createSaga({ payload }: { payload: IUserForCreate }) {
+  console.log('payload', payload);
+
   try {
     const { data }: { data: IServerResponse<IUser> } = yield call(() => createUser(payload));
+    console.log("data", data);
+
     yield put(actions.createSuccess(data));
   } catch (e) {
     yield put(actions.createFail(e?.response?.data?.message || "Ошибка соединения."));
@@ -777,6 +810,8 @@ function* createSaga({ payload }: { payload: IUserForCreate }) {
 }
 
 function* editSaga({ payload }: { payload: { id: number; data: IUserForEdit } }) {
+  console.log('payload', payload);
+
   try {
     const { data }: { data: IServerResponse<IUser> } = yield call(() => editUser(payload.id, payload.data));
     yield put(actions.editSuccess(data));
@@ -794,9 +829,10 @@ function* delSaga({ payload }: { payload: { id: number } }) {
   }
 }
 
-function* contactViewCountSaga({ payload }: { payload: { data: number } }) {
+function* contactViewCountSaga({ payload }: { payload: { data: any } }) {
   try {
-    yield call(() => editContactViewContact(payload.data));
+    const { data }: { data: any } = yield call(() => editContactViewContact(payload.data));
+    yield put(authActions.newUserData(data));
     yield put(actions.contactViewCountSuccess());
   } catch (e) {
     yield put(actions.contactViewCountError(e?.response?.data?.message || "Ошибка соединения."));

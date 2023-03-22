@@ -64,6 +64,34 @@ const useStyles = makeStyles(theme => ({
     // minHeight: 70,
     alignItems: "center",
   },
+  titleTextBold: {
+    fontWeight: "bold",
+    fontSize: "1.3vw",
+    color: "black",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 22,
+    },
+  },
+  boldText: {
+    display: "inline-block",
+    fontWeight: "bold",
+    fontSize: "1.175vw",
+    color: "black",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 18,
+    },
+  },
+  normalText: {
+    fontSize: "1vw",
+    color: "black",
+    fontWeight: "normal",
+    // eslint-disable-next-line no-useless-computed-key
+    ["@media (max-width:1000px)"]: {
+      fontSize: 18,
+    },
+  },
   textField: {
     flex: "1 1 auto",
   },
@@ -223,6 +251,9 @@ const useStyles = makeStyles(theme => ({
       marginLeft: -theme.spacing(2),
       marginRight: -theme.spacing(2),
     },
+    displayNone: {
+      display: 'none'
+    },
   },
   formControl: {
     margin: theme.spacing(1),
@@ -236,6 +267,7 @@ const useStyles = makeStyles(theme => ({
     pointerEvents: "none",
     visibility: "hidden"
   },
+
 }));
 
 export default useStyles;

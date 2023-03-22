@@ -70,6 +70,8 @@ const DEL_FAIL = "bids/DEL_FAIL";
 const SET_PROFIT = "bids/SET_PROFIT";
 const SET_OPEN_INFO_ALERT = "bids/SET_OPEN_INFO_ALERT";
 
+const SET_BID_SELECTED = "bids/SET_BID_SELECTED";
+
 const SET_FILTER = "bids/SET_FILTER";
 
 const CLEAR_BIDS_XLS_URL = "bids/CLEAR_BIDS_XLS_URL";
@@ -97,6 +99,7 @@ export interface IInitialState {
   error: string | null;
 
   bid: IBid | undefined;
+  bidSelected: IBid | null,
   byIdLoading: boolean;
   byIdSuccess: boolean;
   byIdError: string | null;
@@ -157,6 +160,7 @@ const initialState: IInitialState = {
   error: null,
 
   bid: undefined,
+  bidSelected: null,
   byIdLoading: false,
   byIdSuccess: false,
   byIdError: null,
@@ -417,6 +421,10 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
         return { ...state, profit: action.payload.profit };
       }
 
+      case SET_BID_SELECTED: {
+        return { ...state, bidSelected: action.payload };
+      }
+
       case SET_OPEN_INFO_ALERT: {
         return {
           ...state,
@@ -555,6 +563,7 @@ export const actions = {
   delRequest: (id: number) => createAction(DEL_REQUEST, { id }),
   delSuccess: () => createAction(DEL_SUCCESS),
   delFail: (payload: string) => createAction(DEL_FAIL, payload),
+  setBidSelected: (payload: IBid | null) => createAction(SET_BID_SELECTED, payload),
 
   setProfit: (profit: IProfit) => createAction(SET_PROFIT, { profit }),
   setOpenInfoAlert: (openInfoAlert: boolean) =>

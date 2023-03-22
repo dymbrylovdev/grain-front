@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { YMaps, Map } from "react-yandex-maps";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Button, CircularProgress } from "@material-ui/core";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Button, CircularProgress, FormControlLabel, Checkbox, TextField } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
@@ -23,12 +23,16 @@ import { thousands } from "./utils/utils";
 import { ILocalDeals } from "./DealViewPage";
 import { IDeal } from "../../../interfaces/deals";
 import { REACT_APP_GOOGLE_API_KEY } from "../../../constants";
+import {actions as bidsActions} from "../../../store/ducks/bids.duck";
+import {accessByRoles, сompareRoles} from "../../../utils/utils";
+import DealItem from "./components/DealItem";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   intl,
   loadingMe,
   fetchMe,
   clearMe,
+  fetchByBidId,
 
   page,
   perPage,
@@ -52,12 +56,17 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   fetchAllCropParams,
   allCropParams,
   allCropParamsError,
+  cropParams,
 
   clearEditFilter,
   editFilter,
   editFilterLoading,
   editFilterSuccess,
   editFilterError,
+  bidSelected,
+  setBidSelected,
+  userIdSelected,
+  managerIdSelected,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -67,7 +76,10 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   const [loadDistanation, setLoadDistanation] = useState<number | null>(null);
   const [map, setMap] = useState<any>();
   const [ymaps, setYmaps] = useState<any>();
+  const [overloadCheck, setOverloadCheck] = useState<number | null>(null);
   const { enqueueSnackbar } = useSnackbar();
+  const numberParams = useMemo(() => cropParams && cropParams.filter(item => item.type === "number"), [cropParams]);
+  const rolesBidUser = useMemo(() => bidSelected && bidSelected.vendor?.roles, [bidSelected]);
 
   const localDeals: ILocalDeals[] | null = useMemo(() => {
     const storageDeals = localStorage.getItem("deals");
@@ -178,17 +190,33 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             data: noneElement ? (
               localDistance.distance
             ) : (
-              <TableCell className={classes.tableCellModifed}>{localDistance.distance}</TableCell>
+              <div className={classes.tableCellModifed}>{localDistance.distance}</div>
             ),
           };
         }
       }
       return {
         isLocal: false,
-        data: noneElement ? currentDeal.distance : <TableCell>{currentDeal.distance}</TableCell>,
+        data: noneElement ? currentDeal.distance : <div>{currentDeal.distance}</div>,
       };
     },
     [localDeals]
+  );
+
+  const setIdDealsCheck = (summId: number) => {
+    if (summId === overloadCheck) {
+      setOverloadCheck(null)
+    } else {
+      setOverloadCheck(summId)
+    }
+  }
+
+  const getParametrName = useCallback(
+    (item: { id: number; value: string; parameter_id: number }) => {
+      const nameParam = numberParams?.find(param => param.id === item.parameter_id)?.name;
+      return nameParam ? `${nameParam}: ${item.value}` : `${item.value}`;
+    },
+    [numberParams]
   );
 
   const getProfit = useCallback(
@@ -198,7 +226,11 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       if (localDistance.data && typeof localDistance.data === "number" && currentCrop && currentCrop.delivery_price_coefficient) {
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         return (
-          <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined}>
+          <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
+            color: (currentDeal.purchase_bid.price -
+              Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
+              distance * currentCrop.delivery_price_coefficient) < 0 ? "#000000" : "#21BA88"
+          }}>
             {!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat ? (
               <>
                 {currentDeal.purchase_bid.price -
@@ -211,7 +243,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           </TableCell>
         );
       }
-      return <TableCell>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
+      return <TableCell style={{
+        color: currentDeal.profit_with_delivery_price < 0? "#000000" : "#21BA88"
+      }}>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
     },
     [getCurrentCrop, getDistance]
   );
@@ -229,7 +263,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEditFilter();
     }
     if (editFilterSuccess) {
-      fetch(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
+      fetch(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected);
       fetchDealsFilters();
     }
   }, [
@@ -260,6 +294,15 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchCrops]);
 
   useEffect(() => {
+    if (bidSelected) {
+      fetchByBidId(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, bidSelected.id);
+    }
+    if (bidSelected === null) {
+      fetchByBidId(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
+    }
+  }, [bidSelected]);
+
+  useEffect(() => {
     fetchAllCropParams("enum");
   }, [fetchAllCropParams]);
 
@@ -268,7 +311,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchDealsFilters]);
 
   useEffect(() => {
-    if (!!dealsFilters) fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
+    if (!!dealsFilters) fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected);
   }, [dealsFilters, fetch, page, perPage, term, weeks, min_prepayment_amount]);
 
   if (error || filtersError || cropsError || allCropParamsError) {
@@ -280,6 +323,40 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   return (
     <Paper className={classes.paperWithTable} style={{ paddingTop: 16 }}>
       <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />
+      {bidSelected && (
+        <div style={{marginBottom: '2em'}}>
+          <div className={classes.titleTextBold}>
+            <b>{intl.formatMessage({ id: "BID.TITLE.SELECTED" })}</b>
+          </div>
+          <div className={classes.normalText}>
+            <b>{intl.formatMessage({ id: "DEALS.TABLE.CROP" })}: </b>
+            {bidSelected?.crop_id && crops?.find(crop => crop?.id === bidSelected?.crop_id)?.name}
+          </div>
+          <div className={classes.normalText}>
+            <b>Объём: </b>
+            {bidSelected.parameter_values.map(item => getParametrName(item)).join(" / ") +
+              `${bidSelected.parameter_values.length > 0 ? " / " : ""}${bidSelected.volume} тонн`}
+          </div>
+          <div className={classes.normalText}>
+            <b>Цена: </b>
+            {bidSelected?.price} руб
+          </div>
+          <div className={classes.normalText}>
+            <b>Точка: </b>
+            {bidSelected?.location.text}
+          </div>
+          <Button
+            onClick={() => setBidSelected(null)}
+            className="kt-subheader__btn" variant="contained" color="primary"
+            style={{margin: '20px 0'}}
+          >
+            {intl.formatMessage({ id: "ALL.BUTTONS.CLEAR" })}
+          </Button>
+          <div className={classes.titleTextBold}>
+            <b>{intl.formatMessage({ id: "BID.TITLE.DEALS" })}</b>
+          </div>
+        </div>
+      )}
       {!deals || !crops || !dealsFilters || !allCropParams || loadingMe || loading ? (
         <>
           <Skeleton width="100%" height={52} animation="wave" />
@@ -297,23 +374,39 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>
+                {!bidSelected && (
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.CROP" />
+                  </TopTableCell>
+                )}
+                {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_VENDOR") ? (
+                  <></>
+                ) : (
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.SALE" />
+                  </TopTableCell>
+                )}
+                {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_BUYER") ? (
+                  <></>
+                ) : (
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.PURCHASE"/>
+                  </TopTableCell>
+                )}
                 <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.CROP" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.SALE" />
-                </TopTableCell>
-                <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.PURCHASE" />
+                  <FormattedMessage id="DEALS.TABLE.DELIVERY" />
                 </TopTableCell>
                 <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.PROFIT" />
                 </TopTableCell>
                 <TopTableCell>
-                  <FormattedMessage id="DEALS.TABLE.DISTANCE" />
+                  %
                 </TopTableCell>
                 <TopTableCell>
-                  <FormattedMessage id="BIDSLIST.TABLE.TIME" />
+                  Срок
+                </TopTableCell>
+                <TopTableCell>
+                  <FormattedMessage id="DEALS.TABLE.DISTANCE" />
                 </TopTableCell>
                 <TopTableCell></TopTableCell>
               </TableRow>
@@ -321,135 +414,15 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
             <TableBody>
               {!!deals &&
                 deals.map((item, i) => (
-                  <TableRow key={i}>
-                    <TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>
-                    <TableCell>
-                      <div className={classes.flexColumn}>
-                        <div style={{ display: "flex" }}>
-                          <strong style={{ marginRight: 5 }}>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                          <strong>
-                            {!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat ? (
-                              !item.sale_bid.price ? (
-                                "-"
-                              ) : (
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                  <p style={{ marginBottom: "1px", marginRight: 10 }}>
-                                    {!!item.sale_bid && thousands(Math.round(item.sale_bid.price * (item.sale_bid.vat / 100 + 1)))}
-                                  </p>
-                                  <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
-                                    ({`${item.sale_bid.price && thousands(Math.round(item.sale_bid.price))} + ${item.sale_bid.vat}% НДС`})
-                                  </p>
-                                </div>
-                              )
-                            ) : item.sale_bid.price ? (
-                              thousands(Math.round(item.sale_bid.price))
-                            ) : (
-                              "-"
-                            )}
-                          </strong>
-                        </div>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                          <strong>{item.sale_bid.volume}</strong>
-                        </div>
-                        <div>
-                          {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.SALE" })}
-                          {": "}
-                          {item.sale_bid.location.text}
-                        </div>
-                        <div>{intl.formatMessage({ id: "DEALS.TABLE.SELLER" })}</div>
-                        <div>
-                          <div className={classes.flexRow}>
-                            {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
-                              <Tooltip
-                                title={intl.formatMessage({
-                                  id: "USERLIST.TOOLTIP.COMPANY",
-                                })}
-                              >
-                                <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                              </Tooltip>
-                            )}
-                            <div>{`${item?.sale_bid.vendor.login || ""}`}</div>
-                          </div>
-                          <div>{` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor
-                            .lastname || ""}`}</div>
-                          {item?.sale_bid.vendor.company && (
-                            <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                              {!!item?.sale_bid?.vendor?.company?.colors && item?.sale_bid.vendor.company.colors.length > 0 && (
-                                <MiniTrafficLight intl={intl} colors={item?.sale_bid.vendor.company.colors} />
-                              )}
-                              <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className={classes.flexColumn}>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-                          <strong>{item.purchase_bid.price}</strong>
-                        </div>
-                        <div>
-                          <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-                          <strong>{item.purchase_bid.volume}</strong>
-                        </div>
-                        <div>
-                          {intl.formatMessage({ id: "PROFILE.INPUT.LOCATION.PURCHASE" })}
-                          {": "}
-                          {item.purchase_bid.location.text}
-                        </div>
-                        <div>{intl.formatMessage({ id: "DEALS.TABLE.BUYER" })}</div>
-                        <div>
-                          <div className={classes.flexRow}>
-                            {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
-                              <Tooltip
-                                title={intl.formatMessage({
-                                  id: "USERLIST.TOOLTIP.COMPANY",
-                                })}
-                              >
-                                <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                              </Tooltip>
-                            )}
-                            <div>{`${item?.purchase_bid.vendor.login || ""}`}</div>
-                          </div>
-                          <div>{`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item
-                            ?.purchase_bid.vendor.lastname || ""}`}</div>
-                          {item?.purchase_bid.vendor.company && (
-                            <div className={classes.flexRow} style={{ marginTop: 10 }}>
-                              {!!item?.purchase_bid?.vendor?.company?.colors && item?.purchase_bid.vendor.company.colors.length > 0 && (
-                                <MiniTrafficLight intl={intl} colors={item?.purchase_bid.vendor.company.colors} />
-                              )}
-                              <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                    {getProfit(item)}
-                    {getDistance(item).data}
-                    <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        size="medium"
-                        color="primary"
-                        onClick={() => history.push(`/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`)}
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
-                      <Button
-                        disabled={typeof loadDistanation === "number"}
-                        variant="text"
-                        color="primary"
-                        onClick={() => {
-                          setCurrentDeal(item);
-                          setLoadDistanation(i);
-                        }}
-                      >
-                        {loadDistanation === i ? <CircularProgress size={20} /> : <div>Уточнить расстояние</div>}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                  <DealItem
+                    item={item}
+                    crops={crops}
+                    rolesBidUser={rolesBidUser}
+                    classes={classes}
+                    intl={intl}
+                    index={i}
+                    bidSelected={bidSelected}
+                  />
                 ))}
             </TableBody>
             <TableFooter>
@@ -460,7 +433,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   perPage={perPage}
                   total={total}
                   fetchRows={(page, perPage) =>
-                    fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined)
+                    fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected)
                   }
                 />
               </TableRow>
@@ -509,7 +482,6 @@ const connector = connect(
     deals: state.deals.deals,
     loading: state.deals.loading,
     error: state.deals.error,
-
     dealsFilters: state.deals.filters,
     filtersError: state.deals.filtersError,
 
@@ -518,6 +490,7 @@ const connector = connect(
 
     allCropParams: state.crops2.allCropParams,
     allCropParamsError: state.crops2.allCropParamsError,
+    cropParams: state.crops2.cropParams,
 
     editFilterLoading: state.deals.editFilterLoading,
     editFilterSuccess: state.deals.editFilterSuccess,
@@ -526,9 +499,13 @@ const connector = connect(
     editLoading: state.bids.editLoading,
     editSuccess: state.bids.editSuccess,
     editError: state.bids.editError,
+    bidSelected: state.bids.bidSelected,
+    userIdSelected: state.users.userIdSelected,
+    managerIdSelected: state.users.managerIdSelected,
   }),
   {
     fetch: dealsActions.fetchRequest,
+    fetchByBidId: dealsActions.fetchByBidId,
     fetchDealsFilters: dealsActions.fetchFiltersRequest,
     fetchCrops: crops2Actions.fetchRequest,
     fetchAllCropParams: crops2Actions.allCropParamsRequest,
@@ -537,6 +514,8 @@ const connector = connect(
 
     fetchMe: authActions.fetchRequest,
     clearMe: authActions.clearFetch,
+
+    setBidSelected: bidsActions.setBidSelected,
   }
 );
 

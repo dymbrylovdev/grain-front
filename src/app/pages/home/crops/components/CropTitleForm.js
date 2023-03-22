@@ -15,6 +15,7 @@ const getInitialValues = crop => ({
   name: !!crop && crop.name ? crop.name : "",
   vat: !!crop && crop.vat ? crop.vat : 10,
   delivery_price_coefficient: !!crop && crop.delivery_price_coefficient ? crop.delivery_price_coefficient : 1,
+  delivery_price_overload: !!crop && crop.delivery_price_overload ? crop.delivery_price_overload : 1,
 });
 function CropTitleForm({
   user,
@@ -37,8 +38,9 @@ function CropTitleForm({
       delCropPhoto(crop.id);
     }
   }, [crop, delCropPhoto]);
-
+  console.log('crop', crop)
   return (
+
     <Formik
       autoComplete="off"
       initialValues={getInitialValues(crop)}
@@ -71,6 +73,7 @@ function CropTitleForm({
             name: values.name.trim(),
             vat: +values.vat,
             delivery_price_coefficient: +values.delivery_price_coefficient,
+            delivery_price_overload: +values.delivery_price_overload,
             photo_base64: arrayFiles || undefined,
           },
           setStatus,
@@ -157,6 +160,20 @@ function CropTitleForm({
               onChange={handleChange}
               helperText={touched.delivery_price_coefficient && errors.delivery_price_coefficient}
               error={Boolean(touched.delivery_price_coefficient && errors.delivery_price_coefficient)}
+            />
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "CROP.FORM.COEFFICIENT.OVERLOAD",
+              })}
+              margin="normal"
+              name="delivery_price_overload"
+              value={values.delivery_price_overload}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              helperText={touched.delivery_price_overload && errors.delivery_price_overload}
+              error={Boolean(touched.delivery_price_overload && errors.delivery_price_overload)}
             />
 
             <div className={classes.helperText}>{intl.formatMessage({ id: "CROP.FORM.FORMULA" })}</div>

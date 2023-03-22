@@ -23,14 +23,15 @@ export function deleteUser(id) {
   return axios.delete(`${USER_URL}${id}`);
 }
 
-export function getUsers(page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff) {
+export function getUsers(page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff, userActive) {
   const notAdmin = userRolesId !== "ROLE_ADMIN";
 
   let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}${
     tariffId && notAdmin ? `&tariff=${tariffId}` : ""
   }${funnelStateId && notAdmin ? `&funnel_state=${funnelStateId}` : ""}${
     userRolesId ? `&roles=${userRolesId}` : ""
-  }${boughtTariff ? `&bought_tariff=${1}` : ""}`;
+  }${boughtTariff ? `&bought_tariff=${1}` : ""}${
+    userActive ? `&user_active=${userActive}` : ""}`;
 
   return axios.get(url);
 }

@@ -22,6 +22,11 @@ export const useBidTableStyles = makeStyles(theme => ({
       display: "block",
     },
   },
+  isOldBid: {
+    border: "4px solid #FD397A",
+    padding: 8,
+
+  },
   imageBlock: {
     marginBottom: 8,
     // eslint-disable-next-line no-useless-computed-key
@@ -428,6 +433,26 @@ export const useBidTableStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
   },
+  disabled: {
+    pointerEvents: 'none',
+  },
+  transpoterTable: {
+    width: '1100px'
+  },
+  ["@media (max-width:1200px)"]: {
+    transpoterTable: {
+      width: '900px'
+    },
+  },
+
+  iconsRow: {
+    display: 'flex'
+  },
+  icon: {
+    marginBottom: '4px',
+    position: 'relative',
+    width: '40px'
+  }
 }));
 
 export const useBidsPageStyles = makeStyles(theme => ({
@@ -887,6 +912,9 @@ export const useViewBidStyles = makeStyles(theme => ({
     justifyContent: "space-between",
     width: "100%",
   },
+  disabled: {
+    pointerEvents: 'none',
+  },
 }));
 
 export const useStylesPhotosForm = makeStyles(theme =>
@@ -974,5 +1002,6 @@ export const useStylesPhotosForm = makeStyles(theme =>
     buttons: {
       marginRight: theme.spacing(2),
     },
+
   })
 );
