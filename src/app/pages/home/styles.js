@@ -11,8 +11,8 @@ const useStyles = makeStyles(theme => ({
     overflowX: "hidden",
   },
   tableCell: {
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingTop: 0,
+    paddingBottom: 0,
   },
   paperWithForm: {
     display: "flex",
