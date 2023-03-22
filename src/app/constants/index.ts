@@ -1,7 +1,7 @@
 const {
   // REACT_APP_API_DOMAIN = "grain-api.me-interactive.net",
   // REACT_APP_API_DOMAIN = "api.kupit-zerno.com",
-  REACT_APP_API_DOMAIN = "grain-apidev.me-interactive.net",
+  REACT_APP_API_DOMAIN = "grain-api.me-interactive.net",
   REACT_APP_GOOGLE_API_KEY = "3ab30d31-8b86-40ec-ab06-726828b66b66",
 } = process.env;
 
