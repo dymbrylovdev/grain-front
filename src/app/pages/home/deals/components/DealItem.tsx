@@ -131,6 +131,8 @@ const DealItem: FC<IProps> = ({
         const deliveryPrice = distance * +coefficientValue;
         return (
           <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
+            paddingTop: 8,
+            paddingBottom: 8,
             color: (currentDeal.purchase_bid.price -
               Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
               distance * +coefficientValue) < 0 ? "#000000" : "#21BA88"
@@ -146,7 +148,7 @@ const DealItem: FC<IProps> = ({
           </TableCell>
         );
       }
-      return <TableCell style={{
+      return <TableCell className={classes.tableCell} style={{
         color: currentDeal.profit_with_delivery_price < 0? "#000000" : "#21BA88"
       }}>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
     },
@@ -163,7 +165,7 @@ const DealItem: FC<IProps> = ({
         const result = Number((((currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice)
           / (currentDeal.purchase_bid.price + deliveryPrice)) * 100).toFixed(0));
         return (
-          <TableCell>
+          <TableCell className={classes.tableCell}>
             <div style={{
               color: result < 0 ? "#000000" : "#21BA88"
             }}>
@@ -172,7 +174,7 @@ const DealItem: FC<IProps> = ({
           </TableCell>
         );
       }
-      return <TableCell>
+      return <TableCell className={classes.tableCell}>
         <div style={{
           color: item.profit_with_delivery_price / item.purchase_bid.price_with_delivery < 0 ? "#000000" : "#21BA88"
         }}>
@@ -199,11 +201,12 @@ const DealItem: FC<IProps> = ({
 
   return (
     <TableRow key={item.sale_bid.id}>
-      {!bidSelected && (<TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>)}
+      {!bidSelected && (<TableCell className={classes.tableCell}>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>)}
       {rolesBidUser && сompareRoles(rolesBidUser, "ROLE_VENDOR") ? (
         <></>
       ) : (
         <TableCell
+          className={classes.tableCell}
           style={{
             backgroundColor:  checkDealAge(item.sale_bid)? '#ffeaea' : '#ffffff'
           }}
@@ -275,6 +278,7 @@ const DealItem: FC<IProps> = ({
         <></>
       ) : (
         <TableCell
+          className={classes.tableCell}
           style={{
             backgroundColor:  checkDealAge(item.purchase_bid)? '#ffeaea' : '#ffffff'
           }}
@@ -326,7 +330,7 @@ const DealItem: FC<IProps> = ({
       {!(rolesBidUser && bidSelected && сompareRoles(rolesBidUser, "ROLE_BUYER")) ? (
         <></>
       ) : (
-        <TableCell>
+        <TableCell className={classes.tableCell}>
           <div style={{ display: "flex" }}>
             <strong>
               {!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat ? (
@@ -355,7 +359,7 @@ const DealItem: FC<IProps> = ({
       {!(rolesBidUser && bidSelected && сompareRoles(rolesBidUser, "ROLE_BUYER")) ? (
         <></>
       ) : (
-        <TableCell>
+        <TableCell className={classes.tableCell}>
           <div>
             <strong>{item.sale_bid.volume}</strong>
             <strong> т.</strong>
@@ -365,7 +369,7 @@ const DealItem: FC<IProps> = ({
       {!(rolesBidUser && bidSelected && сompareRoles(rolesBidUser, "ROLE_VENDOR")) ? (
         <></>
       ) : (
-        <TableCell>
+        <TableCell className={classes.tableCell}>
           <div>
             <strong>{item.purchase_bid.price}</strong>
             <strong> руб.</strong>
@@ -375,14 +379,14 @@ const DealItem: FC<IProps> = ({
       {!(rolesBidUser && bidSelected && сompareRoles(rolesBidUser, "ROLE_VENDOR")) ? (
         <></>
       ) : (
-        <TableCell>
+        <TableCell className={classes.tableCell}>
           <div>
             <strong>{item.purchase_bid.volume}</strong>
             <strong> т.</strong>
           </div>
         </TableCell>
       )}
-      <TableCell>
+      <TableCell className={classes.tableCell}>
         <FormControlLabel
           control={<Checkbox
             checked={overloadCheck}
@@ -415,8 +419,8 @@ const DealItem: FC<IProps> = ({
       </TableCell>
       {getProfit(item)}
       {getPercent(item)}
-      <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
-      <TableCell align="center">
+      <TableCell className={classes.tableCell}>{item.purchase_bid.payment_term || "-"}</TableCell>
+      <TableCell className={classes.tableCell} align="center">
         {getDistance(item).data}
         <div>
           <IconButton
