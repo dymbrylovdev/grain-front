@@ -44,6 +44,7 @@ const useStyles = makeStyles(theme => ({
   table: {
     flex: 1,
     overflowX: "auto",
+    position: 'relative'
   },
   tableFooterText: {
     marginLeft: theme.spacing(1),
@@ -268,6 +269,12 @@ const useStyles = makeStyles(theme => ({
     visibility: "hidden"
   },
 
+  // blocks *********************************************************************************************************************
+
+  tariffBlock : {
+    display: 'flex',
+    alignItems: 'center'
+  }
 }));
 
 export default useStyles;
