@@ -209,33 +209,39 @@ const DealItem: FC<IProps> = ({
           }}
         >
           <div className={classes.flexColumn}>
-            <div style={{ display: "flex" }}>
-              <strong style={{ marginRight: 5 }}>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-              <strong>
-                {!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat ? (
-                  !item.sale_bid.price ? (
-                    "-"
-                  ) : (
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <p style={{ marginBottom: "1px", marginRight: 10 }}>
-                        {!!item.sale_bid && thousands(Math.round(item.sale_bid.price * (item.sale_bid.vat / 100 + 1)))}
-                      </p>
-                      <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
-                        ({`${item.sale_bid.price && thousands(Math.round(item.sale_bid.price))} + ${item.sale_bid.vat}% НДС`})
-                      </p>
-                    </div>
-                  )
-                ) : item.sale_bid.price ? (
-                  thousands(Math.round(item.sale_bid.price))
-                ) : (
-                  "-"
-                )}
-              </strong>
-            </div>
-            <div>
-              <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-              <strong>{item.sale_bid.volume}</strong>
-            </div>
+            {(rolesBidUser && bidSelected && сompareRoles(rolesBidUser, "ROLE_BUYER")) ? (
+              <></>
+            ) : (
+              <div>
+                <div style={{ display: "flex" }}>
+                  <strong style={{ marginRight: 5 }}>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                  <strong>
+                    {!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat ? (
+                      !item.sale_bid.price ? (
+                        "-"
+                      ) : (
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <p style={{ marginBottom: "1px", marginRight: 10 }}>
+                            {!!item.sale_bid && thousands(Math.round(item.sale_bid.price * (item.sale_bid.vat / 100 + 1)))}
+                          </p>
+                          <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
+                            ({`${item.sale_bid.price && thousands(Math.round(item.sale_bid.price))} + ${item.sale_bid.vat}% НДС`})
+                          </p>
+                        </div>
+                      )
+                    ) : item.sale_bid.price ? (
+                      thousands(Math.round(item.sale_bid.price))
+                    ) : (
+                      "-"
+                    )}
+                  </strong>
+                </div>
+                <div>
+                  <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                  <strong>{item.sale_bid.volume}</strong>
+                </div>
+              </div>
+            )}
             <div>
               <div>
                 <span>
@@ -274,14 +280,20 @@ const DealItem: FC<IProps> = ({
           }}
         >
           <div className={classes.flexColumn}>
-            <div>
-              <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
-              <strong>{item.purchase_bid.price}</strong>
-            </div>
-            <div>
-              <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
-              <strong>{item.purchase_bid.volume}</strong>
-            </div>
+          {(rolesBidUser && bidSelected && сompareRoles(rolesBidUser, "ROLE_VENDOR")) ? (
+              <></>
+            ) : (
+              <div>
+                <div>
+                  <strong>{intl.formatMessage({ id: "DEALS.TABLE.PRICE" })}</strong>
+                  <strong>{item.purchase_bid.price}</strong>
+                </div>
+                <div>
+                  <strong>{intl.formatMessage({ id: "DEALS.TABLE.VOLUME" })}</strong>
+                  <strong>{item.purchase_bid.volume}</strong>
+                </div>
+              </div>
+            )}
             <div>
               <div>
                 <span>
@@ -308,6 +320,65 @@ const DealItem: FC<IProps> = ({
                 intl.formatDate(item.purchase_bid.modified_at)
               )}
             </div>
+          </div>
+        </TableCell>
+      )}
+      {!(rolesBidUser && bidSelected && сompareRoles(rolesBidUser, "ROLE_BUYER")) ? (
+        <></>
+      ) : (
+        <TableCell>
+          <div style={{ display: "flex" }}>
+            <strong>
+              {!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat ? (
+                !item.sale_bid.price ? (
+                  "-"
+                ) : (
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <p style={{ marginBottom: "1px", marginRight: 10 }}>
+                      {!!item.sale_bid && thousands(Math.round(item.sale_bid.price * (item.sale_bid.vat / 100 + 1)))}
+                    </p>
+                    <p style={{ marginBottom: 0, color: "#999999", fontSize: "10px" }}>
+                      ({`${item.sale_bid.price && thousands(Math.round(item.sale_bid.price))} + ${item.sale_bid.vat}% НДС`})
+                    </p>
+                  </div>
+                )
+              ) : item.sale_bid.price ? (
+                thousands(Math.round(item.sale_bid.price))
+              ) : (
+                "-"
+              )}
+            </strong>
+            <strong> руб.</strong>
+          </div>
+        </TableCell>
+      )}
+      {!(rolesBidUser && bidSelected && сompareRoles(rolesBidUser, "ROLE_BUYER")) ? (
+        <></>
+      ) : (
+        <TableCell>
+          <div>
+            <strong>{item.sale_bid.volume}</strong>
+            <strong> т.</strong>
+          </div>
+        </TableCell>
+      )}
+      {!(rolesBidUser && bidSelected && сompareRoles(rolesBidUser, "ROLE_VENDOR")) ? (
+        <></>
+      ) : (
+        <TableCell>
+          <div>
+            <strong>{item.purchase_bid.price}</strong>
+            <strong> руб.</strong>
+          </div>
+        </TableCell>
+      )}
+      {!(rolesBidUser && bidSelected && сompareRoles(rolesBidUser, "ROLE_VENDOR")) ? (
+        <></>
+      ) : (
+        <TableCell>
+          <div>
+            <strong>{item.purchase_bid.volume}</strong>
+            <strong> т.</strong>
           </div>
         </TableCell>
       )}

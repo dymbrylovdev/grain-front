@@ -333,6 +333,16 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                     <FormattedMessage id="DEALS.TABLE.PURCHASE"/>
                   </TopTableCell>
                 )}
+                {bidSelected && (
+                  <TopTableCell>
+                    Цена
+                  </TopTableCell>
+                )}
+                {bidSelected && (
+                  <TopTableCell>
+                    Объем
+                  </TopTableCell>
+                )}
                 <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.DELIVERY" />
                 </TopTableCell>
