@@ -261,7 +261,7 @@ const DealItem: FC<IProps> = ({
                 </span>
               </div>
               {item?.sale_bid.vendor.company && (
-                <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                <div className={classes.flexRow}>
                   <div>{`${item?.sale_bid.vendor.company.short_name || ""}`}</div>
                 </div>
               )}
@@ -314,7 +314,7 @@ const DealItem: FC<IProps> = ({
                 </span>
               </div>
               {item?.purchase_bid.vendor.company && (
-                <div className={classes.flexRow} style={{ marginTop: 10 }}>
+                <div className={classes.flexRow}>
                   <div>{`${item?.purchase_bid.vendor.company.short_name || ""}`}</div>
                 </div>
               )}
