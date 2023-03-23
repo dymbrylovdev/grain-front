@@ -311,8 +311,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         <div>{intl.formatMessage({ id: "DEALS.EMPTY" })}</div>
       ) : (
         <div className={classes.table}>
-          <Table aria-label="simple table">
-            <TableHead style={{position: 'sticky', top: 0}}>
+          <Table stickyHeader style={{position: 'relative'}}>
+            <TableHead className={classes.tableHead}>
               <TableRow>
                 {!bidSelected && (
                   <TopTableCell>
