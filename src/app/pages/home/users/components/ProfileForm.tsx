@@ -175,7 +175,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   };
 
 
-
   const getInitialValues = useCallback(
     (user: IUser | undefined) => ({
       login: user?.login || "",
@@ -426,9 +425,6 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     if (accessByRoles(me, ["ROLE_ADMIN", "ROLE_MANAGER"]) && !funnelStates) fetchFunnelStates();
   }, [editMode, fetchFunnelStates, funnelStates, me]);
 
-  useEffect(() => {
-    setFieldValue("phone", countryCode);
-  }, [countryCode, setFieldValue]);
 
   const newRoles = [...roles];
   if (accessByRoles(me, ["ROLE_MANAGER"]) && editMode === "create") {
@@ -863,6 +859,8 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         ) : (
           <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
             <div style={{ fontSize: "26px", marginTop: "3px", marginRight: "5px" }}>+</div>
+            {console.log(user)}
+            {console.log(values.phone)}
             <TextField
               type="tel"
               label={intl.formatMessage({
