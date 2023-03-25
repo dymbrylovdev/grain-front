@@ -19,20 +19,23 @@ import { ILocalBids } from "./BidsList";
 import AliceCarousel, { Classnames } from "react-alice-carousel";
 import "../../../../libs/react-alice-carousel/alice-carousel.css";
 import { API_DOMAIN, REACT_APP_GOOGLE_API_KEY } from "../../../../constants";
-import { useIntl } from "react-intl";
+import { injectIntl, useIntl, WrappedComponentProps } from "react-intl";
 import { useIsViewed } from "./hooks/useViewedBid";
 import { getPoint } from "../../../../utils/localPoint";
 import Modal from "../../../../components/ui/Modal";
 import { distance, getFinalPrice } from "./BidForm";
 import { ILocation } from "../../../../interfaces/locations";
 import { useSnackbar } from "notistack";
-import { useDispatch, shallowEqual, useSelector } from "react-redux";
+import { useDispatch, shallowEqual, useSelector, connect, ConnectedProps } from "react-redux";
 import { actions as usersActions } from '../../../../store/ducks/users.duck'
 import clsx from 'clsx'
 import TransporterTable from './transporterTable/TransporterTable'
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import moment from 'moment'
 import { editOverloadBid } from "../../../../crud/bids.crud";
+import { IAppState } from "../../../../store/rootDuck";
+import { actions as bidsActions } from "../../../../store/ducks/bids.duck";
+import { compose } from "redux";
 
 interface IProps {
   isHaveRules?: (user?: any, id?: number) => boolean;
@@ -58,7 +61,7 @@ interface IProps {
   handleShowImage: (index: number, photos?: string[] | undefined) => void;
 }
 
-const Bid = React.memo<IProps>(
+const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
   ({
     isHaveRules,
     handleDeleteDialiog,
@@ -81,6 +84,8 @@ const Bid = React.memo<IProps>(
     handleShowImage,
     points,
     changeLocalStore,
+    fetchById,
+    bidData
   }) => {
     const intl = useIntl();
     const history = useHistory();
@@ -403,11 +408,11 @@ const Bid = React.memo<IProps>(
           // loading={loadTransporters}
           content={
             <TransporterTable
-              transportersList={bid?.transports}
+              transportersList={bidData?.transports}
               fetch={() => { }}
               page={1}
-              perPage={bid?.transports?.length || 0}
-              total={bid && bid.transports?.length > 0 ? 1 : 0}
+              perPage={bidData?.transports?.length || 0}
+              total={bidData && bidData.transports?.length > 0 ? 1 : 0}
             />
           }
           actions={[
@@ -909,6 +914,9 @@ const Bid = React.memo<IProps>(
                         color="primary"
                         onClick={e => {
                           stopProp(e);
+                          fetchById(bid.id, { filter: {
+                            point_prices: []
+                          }})
                           !me ? openAuthAlert() : openCompaniesDialog()
                         }}
                       >
@@ -1366,4 +1374,16 @@ const Bid = React.memo<IProps>(
   }
 );
 
-export default Bid;
+const connector = connect(
+  (state: IAppState) => ({
+    bidData: state.bids.bid,
+    loading: state.bids.byIdLoading,
+  }),
+  {
+    fetchById: bidsActions.fetchByIdRequest,
+  }
+);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(injectIntl(Bid));
