@@ -735,12 +735,15 @@ const ProfileForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                   ),
                 }}
               >
-                {users?.map((i) => (
-                  <MenuItem value={i.id} style={{ backgroundColor: "#f2f2f2" }}>
-                    {i.surname && <span className={innerClasses.managerData}>{i.surname}</span>}
-                    {i.firstname && <span className={innerClasses.managerData}>{i.firstname}</span>}
-                    {i.email && <span className={innerClasses.managerData}> Email: {i.email}</span>}
-                    {i.phone && <span className={innerClasses.managerData}>Тел.: {i.phone}</span>}
+                {users?.map((item) => (
+                  <MenuItem value={item.id} style={{ backgroundColor: "#f2f2f2" }}>
+                   {
+                    (item.firstname? item.firstname : '')
+                    + ' ' + 
+                    (item.surname? item.surname : '')
+                    + ' ' + 
+                    ((!item.firstname && !item.surname)? item.email || item.phone : '')
+                  }
                   </MenuItem>
                 ))}
 
