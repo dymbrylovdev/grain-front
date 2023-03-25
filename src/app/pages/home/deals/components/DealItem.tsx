@@ -247,9 +247,11 @@ const DealItem: FC<IProps> = ({
             )}
             <div>
               <div>
-                <span>
-                  {` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor.lastname || ""}`}
-                </span>
+                {!item?.sale_bid.vendor.company && (
+                  <span>
+                    {item?.sale_bid.vendor.surname || ""} {item?.sale_bid.vendor.firstname || ""} {item?.sale_bid.vendor.lastname || ""}
+                  </span>
+                )}
               </div>
               {item?.sale_bid.vendor.company && (
                 <div className={classes.flexRow}>
@@ -293,9 +295,11 @@ const DealItem: FC<IProps> = ({
             )}
             <div>
               <div>
-                <span>
-                  {`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item?.purchase_bid.vendor.lastname || ""}`}
-                </span>
+                {!item?.purchase_bid.vendor.company && (
+                  <span>
+                    {item?.purchase_bid.vendor.surname || ""} {item?.purchase_bid.vendor.firstname || ""} {item?.purchase_bid.vendor.lastname || ""}
+                  </span>
+                )}
               </div>
               {item?.purchase_bid.vendor.company && (
                 <div className={classes.flexRow}>
