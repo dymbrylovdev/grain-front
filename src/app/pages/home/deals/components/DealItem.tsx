@@ -248,15 +248,6 @@ const DealItem: FC<IProps> = ({
             <div>
               <div>
                 <span>
-                  {item?.sale_bid?.vendor?.company_confirmed_by_payment && (
-                    <Tooltip
-                      title={intl.formatMessage({
-                        id: "USERLIST.TOOLTIP.COMPANY",
-                      })}
-                    >
-                      <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                    </Tooltip>
-                  )}
                   {` ${item?.sale_bid.vendor.surname || ""} ${item?.sale_bid.vendor.firstname || ""} ${item?.sale_bid.vendor.lastname || ""}`}
                 </span>
               </div>
@@ -303,15 +294,6 @@ const DealItem: FC<IProps> = ({
             <div>
               <div>
                 <span>
-                  {item?.purchase_bid?.vendor?.company_confirmed_by_payment && (
-                    <Tooltip
-                      title={intl.formatMessage({
-                        id: "USERLIST.TOOLTIP.COMPANY",
-                      })}
-                    >
-                      <CheckCircleOutlineIcon color="secondary" style={{ marginRight: 4, width: 16, height: 16 }} />
-                    </Tooltip>
-                  )}
                   {`${item?.purchase_bid.vendor.surname || ""} ${item?.purchase_bid.vendor.firstname || ""} ${item?.purchase_bid.vendor.lastname || ""}`}
                 </span>
               </div>
