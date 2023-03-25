@@ -418,25 +418,29 @@ const DealItem: FC<IProps> = ({
       <TableCell className={classes.tableCell}>{item.purchase_bid.payment_term || "-"}</TableCell>
       <TableCell className={classes.tableCell} align="center">
         {getDistance(item).data}
+      </TableCell>
+      <TableCell>
         <div>
-          <IconButton
+          <Button
             size="medium"
             color="primary"
             onClick={() => history.push(`/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`)}
           >
             <VisibilityIcon />
-          </IconButton>
+          </Button>
         </div>
-        <Button
-          disabled={loadDistanation || loadFuncRef}
-          variant="text"
-          color="primary"
-          onClick={() => {
-            handleLoadingDist(item, handleLoad);
-          }}
-        >
-          {loadDistanation ? <CircularProgress size={20} /> : <div><AgricultureIcon /></div>}
-        </Button>
+        <div>
+          <Button
+            disabled={loadDistanation || loadFuncRef}
+            variant="text"
+            color="primary"
+            onClick={() => {
+              handleLoadingDist(item, handleLoad);
+            }}
+          >
+            {loadDistanation ? <CircularProgress size={20} /> : <div><AgricultureIcon /></div>}
+          </Button>
+        </div>
       </TableCell>
     </TableRow>
   );
