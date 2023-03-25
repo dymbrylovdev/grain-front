@@ -385,7 +385,7 @@ const DealItem: FC<IProps> = ({
             (localDistance.data > 100 ? localDistance.data : 100) * Number(coefficientValue)
           ) : '-'}</div>
         <div className={classes.tariffBlock}>
-          <div style={{marginRight: 20}}>Тариф:</div>
+          <div style={{marginRight: 5}}>Тариф:</div>
           <TextField
             type="text"
             margin="dense"
@@ -394,6 +394,9 @@ const DealItem: FC<IProps> = ({
             style={{width: 60}}
             InputProps={{
               inputComponent: NumberFormatCustom as any,
+              style: {
+                height: 25
+              },
             }}
             onKeyPress={handleKeyPress}
             value={coefficientValue}
