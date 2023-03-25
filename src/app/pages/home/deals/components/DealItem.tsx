@@ -266,7 +266,9 @@ const DealItem: FC<IProps> = ({
                 </div>
               )}
             </div>
-            <div>
+            <div style={{
+              fontSize: 12,
+            }}>
               {item.sale_bid.modified_at && (
                 intl.formatDate(item.sale_bid.modified_at)
               )}
@@ -319,7 +321,9 @@ const DealItem: FC<IProps> = ({
                 </div>
               )}
             </div>
-            <div>
+            <div style={{
+              fontSize: 12,
+            }}>
               {item.purchase_bid.modified_at && (
                 intl.formatDate(item.purchase_bid.modified_at)
               )}
