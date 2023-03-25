@@ -347,6 +347,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <FormattedMessage id="DEALS.TABLE.DELIVERY" />
                 </TopTableCell>
                 <TopTableCell>
+                  Тариф
+                </TopTableCell>
+                <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.PROFIT" />
                 </TopTableCell>
                 <TopTableCell>

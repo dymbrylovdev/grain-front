@@ -373,6 +373,11 @@ const DealItem: FC<IProps> = ({
         </TableCell>
       )}
       <TableCell className={classes.tableCell}>
+        <div>Цена доставки: {localDistance.data && typeof localDistance.data === "number" && (coefficientValue || coefficientValue === "") ? (
+            (localDistance.data > 100 ? localDistance.data : 100) * Number(coefficientValue)
+          ) : '-'}</div>
+      </TableCell>
+      <TableCell className={classes.tableCell}>
         <FormControlLabel
           control={<Checkbox
             checked={overloadCheck}
@@ -381,9 +386,6 @@ const DealItem: FC<IProps> = ({
               id: "OPTIONS.OVERLOAD",
             })}
         />
-        <div>Цена доставки: {localDistance.data && typeof localDistance.data === "number" && (coefficientValue || coefficientValue === "") ? (
-            (localDistance.data > 100 ? localDistance.data : 100) * Number(coefficientValue)
-          ) : '-'}</div>
         <div className={classes.tariffBlock}>
           <div style={{marginRight: 5}}>Тариф:</div>
           <TextField
