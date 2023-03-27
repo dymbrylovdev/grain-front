@@ -547,12 +547,12 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                                 {newBid
                                   ? formatAsThousands(newBid.finalPrice)
                                   : bid?.price_with_delivery_with_vat
-                                    ? `≈ ${formatAsThousands(bid.price_with_delivery_with_vat.toFixed(0))}`
+                                    ? `≈ ${formatAsThousands(Math.floor(bid.price_with_delivery_with_vat))}`
                                     : "-"}{" "}
                               </div>
                               :
                               <div className={innerClasses.price}>
-                                {formatAsThousands(bidOverload.price_with_delivery_with_vat.toFixed(0))}{" "}
+                                {formatAsThousands(Math.floor(bidOverload.price_with_delivery_with_vat))}{" "}
                               </div>
                             }
                             <div className={innerClasses.rybl}>₽</div>
@@ -633,12 +633,12 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                                 {newBid
                                   ? formatAsThousands(newBid.finalPrice)
                                   : bid?.price_with_delivery_with_vat
-                                    ? `≈ ${formatAsThousands(bid.price_with_delivery_with_vat.toFixed(0))}`
+                                    ? `≈ ${formatAsThousands(Math.floor(bid.price_with_delivery_with_vat))}`
                                     : "-"}{" "}
                               </div>
                               :
                               <div className={innerClasses.price}>
-                                {formatAsThousands(bidOverload.price_with_delivery_with_vat.toFixed(0))}{" "}
+                                {formatAsThousands(Math.floor(bidOverload.price_with_delivery_with_vat))}{" "}
                               </div>
                             }
                             <div className={innerClasses.rybl}>₽</div>
