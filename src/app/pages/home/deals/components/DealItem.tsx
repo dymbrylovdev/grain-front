@@ -373,9 +373,7 @@ const DealItem: FC<IProps> = ({
         </TableCell>
       )}
       <TableCell className={classes.tableCell}>
-        <div>Цена доставки: {localDistance.data && typeof localDistance.data === "number" && (coefficientValue || coefficientValue === "") ? (
-            (localDistance.data > 100 ? localDistance.data : 100) * Number(coefficientValue)
-          ) : '-'}</div>
+        <div>Цена доставки: {(Number(localDistance.data) > 100 ? Number(localDistance.data) : 100) * Number(coefficientValue)}</div>
       </TableCell>
       <TableCell className={classes.tableCell}>
         <div style={{
