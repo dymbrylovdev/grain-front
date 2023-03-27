@@ -284,7 +284,8 @@ const useStyles = makeStyles(theme => ({
 
   tariffBlock : {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: -10
   }
 }));
 
