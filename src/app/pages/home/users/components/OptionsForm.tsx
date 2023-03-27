@@ -337,7 +337,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             />
 
             <TextField
-              type="number"
+              type="text"
               label={intl.formatMessage({
                 id: "OPTIONS.SIDEWALL.HEIGHT",
               })}
@@ -362,7 +362,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             />
 
             <TextField
-              type="number"
+              type="text"
               label={intl.formatMessage({
                 id: "OPTIONS.CABIN.HEIGHT",
               })}
@@ -385,9 +385,9 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               }}
               autoComplete="off"
             />
-
+            
             <TextField
-              type="number"
+              type="text"
               label={intl.formatMessage({
                 id: "OPTIONS.LENGTH",
               })}
