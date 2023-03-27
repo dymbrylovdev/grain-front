@@ -378,34 +378,38 @@ const DealItem: FC<IProps> = ({
           ) : '-'}</div>
       </TableCell>
       <TableCell className={classes.tableCell}>
-        <FormControlLabel
-          control={<Checkbox
-            checked={overloadCheck}
-            onClick={() => changeCoefficientValue()}/>}
-            label={intl.formatMessage({
-              id: "OPTIONS.OVERLOAD",
-            })}
-        />
-        <div className={classes.tariffBlock}>
-          <div style={{marginRight: 5}}>Тариф:</div>
-          <TextField
-            type="text"
-            margin="dense"
-            variant="outlined"
-            autoComplete="off"
-            style={{width: 60}}
-            InputProps={{
-              inputComponent: NumberFormatCustom as any,
-              style: {
-                height: 25
-              },
-            }}
-            onKeyPress={handleKeyPress}
-            value={coefficientValue}
-            onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> & {nativeEvent: {data: string}}) => {
-              changeCoefficientValue(event);
-            }}
+        <div style={{
+          marginTop: -10
+        }}>
+          <FormControlLabel
+            control={<Checkbox
+              checked={overloadCheck}
+              onClick={() => changeCoefficientValue()}/>}
+              label={intl.formatMessage({
+                id: "OPTIONS.OVERLOAD",
+              })}
           />
+          <div className={classes.tariffBlock}>
+            <div style={{marginRight: 5}}>Тариф:</div>
+            <TextField
+              type="text"
+              margin="dense"
+              variant="outlined"
+              autoComplete="off"
+              style={{width: 60}}
+              InputProps={{
+                inputComponent: NumberFormatCustom as any,
+                style: {
+                  height: 25
+                },
+              }}
+              onKeyPress={handleKeyPress}
+              value={coefficientValue}
+              onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> & {nativeEvent: {data: string}}) => {
+                changeCoefficientValue(event);
+              }}
+            />
+          </div>
         </div>
       </TableCell>
       {getProfit(item)}
@@ -415,30 +419,35 @@ const DealItem: FC<IProps> = ({
         {getDistance(item).data}
       </TableCell>
       <TableCell>
-        <div>
-          <Button
-            size="medium"
-            color="primary"
-            onClick={() => history.push(`/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`)}
-            style={{ padding: 0 }}
-          >
-            <VisibilityIcon style={{ padding: 0 }} />
-          </Button>
-        </div>
-        <div>
-          <Button
-            disabled={loadDistanation || loadFuncRef}
-            variant="text"
-            color="primary"
-            onClick={() => {
-              handleLoadingDist(item, handleLoad);
-            }}
-            style={{
-              padding: 0
-            }}
-          >
-            {loadDistanation ? <CircularProgress size={20} style={{ padding: 0 }} /> : <div><AgricultureIcon style={{ padding: 0 }} /></div>}
-          </Button>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row'
+        }}>
+          <div>
+            <Button
+              size="medium"
+              color="primary"
+              onClick={() => history.push(`/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`)}
+              style={{ padding: 0 }}
+            >
+              <VisibilityIcon style={{ padding: 0 }} />
+            </Button>
+          </div>
+          <div>
+            <Button
+              disabled={loadDistanation || loadFuncRef}
+              variant="text"
+              color="primary"
+              onClick={() => {
+                handleLoadingDist(item, handleLoad);
+              }}
+              style={{
+                padding: 0
+              }}
+            >
+              {loadDistanation ? <CircularProgress size={20} style={{ padding: 0 }} /> : <div><AgricultureIcon style={{ padding: 0 }} /></div>}
+            </Button>
+          </div>
         </div>
       </TableCell>
     </TableRow>
