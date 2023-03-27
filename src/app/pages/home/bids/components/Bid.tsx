@@ -547,7 +547,7 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                                 {newBid
                                   ? formatAsThousands(newBid.finalPrice)
                                   : bid?.price_with_delivery_with_vat
-                                    ? `≈ ${formatAsThousands(bid.price_with_delivery_with_vat.toFixed(0))}`
+                                    ? `≈ ${formatAsThousands(Math.floor(bid.price_with_delivery_with_vat))}`
                                     : "-"}{" "}
                               </div>
                               :
@@ -633,7 +633,7 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                                 {newBid
                                   ? formatAsThousands(newBid.finalPrice)
                                   : bid?.price_with_delivery_with_vat
-                                    ? `≈ ${formatAsThousands(bid.price_with_delivery_with_vat.toFixed(0))}`
+                                    ? `≈ ${formatAsThousands(Math.floor(bid.price_with_delivery_with_vat))}`
                                     : "-"}{" "}
                               </div>
                               :
