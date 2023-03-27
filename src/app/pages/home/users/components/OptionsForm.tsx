@@ -238,7 +238,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("weight", "")}>
+                  <IconButton onClick={() => setFieldValue("weight", "0")}>
                     <CloseIcon />
                   </IconButton>
                 ),
@@ -263,7 +263,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("amount", "")}>
+                  <IconButton onClick={() => setFieldValue("amount", "0")}>
                     <CloseIcon />
                   </IconButton>
                 ),
@@ -344,7 +344,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("sidewall_height", "")}>
+                  <IconButton onClick={() => setFieldValue("sidewall_height", "0")}>
                     <CloseIcon />
                   </IconButton>
                 ),
@@ -369,7 +369,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("cabin_height", "")}>
+                  <IconButton onClick={() => setFieldValue("cabin_height", "0")}>
                     <CloseIcon />
                   </IconButton>
                 ),
@@ -394,7 +394,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("length", "")}>
+                  <IconButton onClick={() => setFieldValue("length", "0")}>
                     <CloseIcon />
                   </IconButton>
                 ),
