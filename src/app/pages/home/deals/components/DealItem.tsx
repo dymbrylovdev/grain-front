@@ -420,8 +420,9 @@ const DealItem: FC<IProps> = ({
             size="medium"
             color="primary"
             onClick={() => history.push(`/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`)}
+            style={{ padding: 0 }}
           >
-            <VisibilityIcon />
+            <VisibilityIcon style={{ padding: 0 }} />
           </Button>
         </div>
         <div>
@@ -432,8 +433,11 @@ const DealItem: FC<IProps> = ({
             onClick={() => {
               handleLoadingDist(item, handleLoad);
             }}
+            style={{
+              padding: 0
+            }}
           >
-            {loadDistanation ? <CircularProgress size={20} /> : <div><AgricultureIcon /></div>}
+            {loadDistanation ? <CircularProgress size={20} style={{ padding: 0 }} /> : <div><AgricultureIcon style={{ padding: 0 }} /></div>}
           </Button>
         </div>
       </TableCell>
