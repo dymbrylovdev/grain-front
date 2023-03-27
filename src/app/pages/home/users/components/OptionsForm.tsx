@@ -346,7 +346,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.sidewall_height}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("sidewall_height", value)}
+              onChange={value => setFieldValue("sidewall_height", value? value : "0")}
               helperText={touched.sidewall_height && errors.sidewall_height}
               error={Boolean(touched.sidewall_height && errors.sidewall_height)}
               disabled={editMode === "view"}
@@ -371,7 +371,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.cabin_height}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("cabin_height", value)}
+              onChange={value => setFieldValue("cabin_height", value? value : "0")}
               helperText={touched.cabin_height && errors.cabin_height}
               error={Boolean(touched.cabin_height && errors.cabin_height)}
               disabled={editMode === "view"}
@@ -396,7 +396,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.length}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("length", value)}
+              onChange={value => setFieldValue("length", value? value : "0")}
               helperText={touched.length && errors.length}
               error={Boolean(touched.length && errors.length)}
               disabled={editMode === "view"}
