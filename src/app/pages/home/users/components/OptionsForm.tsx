@@ -11,6 +11,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { actions as optionsActions } from "../../../../store/ducks/options.duck";
 import { actions as googleLocationsActions } from "../../../../store/ducks/yaLocations.duck";
 import { actions as locationsActions } from "../../../../store/ducks/locations.duck";
+import { actions as usersActions } from "../../../../store/ducks/users.duck";
 
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import useStyles from "../../styles";
@@ -83,6 +84,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   editLoadingErr,
   clearCreateOptions,
   isTransporter,
+  fetchUser
 }) => {
   // const innerClasses = innerStyles();
   const classes = useStyles();
@@ -149,7 +151,14 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       );
       clearCreateOptions();
     }
-  }, [editOptionsSuccess, editLoadingErr, clearCreateOptions, enqueueSnackbar, intl]);
+    if (editOptionsSuccess) {
+      if (user!.id) {
+        fetchUser({ id: user!.id });
+      } else {
+        fetchUser({ id: userType!.id });
+      } 
+    }
+  }, [editOptionsSuccess, editLoadingErr, clearCreateOptions, fetchUser, enqueueSnackbar, intl]);
 
   const [autoLocation, setAutoLocation] = useState({ text: "" });
 
@@ -238,7 +247,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("weight", "")}>
+                  <IconButton onClick={() => setFieldValue("weight", "0")}>
                     <CloseIcon />
                   </IconButton>
                 ),
@@ -263,7 +272,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("amount", "")}>
+                  <IconButton onClick={() => setFieldValue("amount", "0")}>
                     <CloseIcon />
                   </IconButton>
                 ),
@@ -334,7 +343,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             />
 
             <TextField
-              type="number"
+              type="text"
               label={intl.formatMessage({
                 id: "OPTIONS.SIDEWALL.HEIGHT",
               })}
@@ -343,14 +352,14 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.sidewall_height}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("sidewall_height", value)}
+              onChange={value => setFieldValue("sidewall_height", value? value : null)}
               helperText={touched.sidewall_height && errors.sidewall_height}
               error={Boolean(touched.sidewall_height && errors.sidewall_height)}
               disabled={editMode === "view"}
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("sidewall_height", "")}>
+                  <IconButton onClick={() => setFieldValue("sidewall_height", "0")}>
                     <CloseIcon />
                   </IconButton>
                 ),
@@ -359,7 +368,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             />
 
             <TextField
-              type="number"
+              type="text"
               label={intl.formatMessage({
                 id: "OPTIONS.CABIN.HEIGHT",
               })}
@@ -368,23 +377,23 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.cabin_height}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("cabin_height", value)}
+              onChange={value => setFieldValue("cabin_height", value? value : null)}
               helperText={touched.cabin_height && errors.cabin_height}
               error={Boolean(touched.cabin_height && errors.cabin_height)}
               disabled={editMode === "view"}
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("cabin_height", "")}>
+                  <IconButton onClick={() => setFieldValue("cabin_height", "0")}>
                     <CloseIcon />
                   </IconButton>
                 ),
               }}
               autoComplete="off"
             />
-
+            
             <TextField
-              type="number"
+              type="text"
               label={intl.formatMessage({
                 id: "OPTIONS.LENGTH",
               })}
@@ -393,14 +402,14 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.length}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("length", value)}
+              onChange={value => setFieldValue("length", value? value : null)}
               helperText={touched.length && errors.length}
               error={Boolean(touched.length && errors.length)}
               disabled={editMode === "view"}
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("length", "")}>
+                  <IconButton onClick={() => setFieldValue("length", "0")}>
                     <CloseIcon />
                   </IconButton>
                 ),
@@ -546,6 +555,7 @@ const connector = connect(
     setSelectedLocation: optionsActions.setSelectedLocation,
     clearSelectedLocation: optionsActions.clearSelectedLocation,
     clearCreateOptions: optionsActions.clearCreateOptions,
+    fetchUser: usersActions.fetchByIdRequest,
 
     edit: optionsActions.editRequest,
   }
