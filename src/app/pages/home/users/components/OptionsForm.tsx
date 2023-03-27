@@ -11,6 +11,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { actions as optionsActions } from "../../../../store/ducks/options.duck";
 import { actions as googleLocationsActions } from "../../../../store/ducks/yaLocations.duck";
 import { actions as locationsActions } from "../../../../store/ducks/locations.duck";
+import { actions as authActions } from "../../../../store/ducks/auth.duck";
 
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import useStyles from "../../styles";
@@ -83,6 +84,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   editLoadingErr,
   clearCreateOptions,
   isTransporter,
+  fetchMe
 }) => {
   // const innerClasses = innerStyles();
   const classes = useStyles();
@@ -150,6 +152,10 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       clearCreateOptions();
     }
   }, [editOptionsSuccess, editLoadingErr, clearCreateOptions, enqueueSnackbar, intl]);
+
+  useEffect(() => {
+    fetchMe()
+  }, [])
 
   const [autoLocation, setAutoLocation] = useState({ text: "" });
 
@@ -540,6 +546,7 @@ const connector = connect(
     setSelectedLocation: optionsActions.setSelectedLocation,
     clearSelectedLocation: optionsActions.clearSelectedLocation,
     clearCreateOptions: optionsActions.clearCreateOptions,
+    fetchMe: authActions.fetchRequest,
 
     edit: optionsActions.editRequest,
   }
