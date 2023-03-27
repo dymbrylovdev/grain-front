@@ -151,7 +151,14 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       );
       clearCreateOptions();
     }
-  }, [editOptionsSuccess, editLoadingErr, clearCreateOptions, enqueueSnackbar, intl]);
+    if (editOptionsSuccess) {
+      if (user!.id) {
+        fetchUser({ id: user!.id });
+      } else {
+        fetchUser({ id: userType!.id });
+      } 
+    }
+  }, [editOptionsSuccess, editLoadingErr, clearCreateOptions, fetchUser, enqueueSnackbar, intl]);
 
   const [autoLocation, setAutoLocation] = useState({ text: "" });
 
@@ -186,7 +193,6 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
         },
         self: isMe,
       });
-      fetchUser({ id: isTransporter ? user!.id : userType!.id })
     },
     validationSchema: validationSchema,
   });
