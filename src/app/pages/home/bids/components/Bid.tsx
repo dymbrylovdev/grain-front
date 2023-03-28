@@ -97,6 +97,7 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
     const [currentIndex, setCurrentIndex] = useState(0);
     const [open, setOpen] = useState(false);
     const [bidOverload, setBidOverload] = useState<any>(false);
+    const [overloadBoolean, setOverloadBoolean] = useState<any>(false);
     const [currentBid, setCurrentBid] = useState<IBid | null>(null);
     const [loadDistanation, setLoadDistanation] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
@@ -122,8 +123,6 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
     const openAuthAlert = useCallback(() => {
       setAuthAlert(true);
     }, [me]);
-
-
 
     const newBid = useMemo(() => {
       if (localBids && localBids.length > 0) {
@@ -217,6 +216,9 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
               },
             };
             if (newLocalBid && currentBid) {
+              editOverloadBid(bid.id, overloadBoolean, bid.point_prices, bid.location, Number(newLocalBid.distance)).then(res => {
+                setBidOverload(res.data.data)
+              })
               if (localBids) {
                 const existBidsIndex = localBids.findIndex(item => {
                   if (user) {
@@ -806,7 +808,6 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                   </div>
                 </>
               )}
-
               <div className={innerClasses.wrapperNonRow}>
                 <div style={{ display: "flex", flexDirection: "row", alignItems: "baseline" }}>
                   <div className={innerClasses.drop}>Расстояние, км</div>
@@ -845,6 +846,9 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                               setCurrentBid(bid);
                               setLoadDistanation(true);
                             }
+                            editOverloadBid(bid.id, overloadBoolean, bid.point_prices, bid.location, newBid? Number(newBid.distance) : null).then(res => {
+                              setBidOverload(res.data.data)
+                            })
                           }}
                         >
                           {loadDistanation ? <CircularProgress size={20} /> : <div className={innerClasses.textCard}>Уточнить цену</div>}
@@ -996,7 +1000,8 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                                 stopProp(e);
                               }}
                               onChange={(e) => {
-                                editOverloadBid(bid.id, e.target.checked, bid.point_prices, bid.location).then(res => {
+                                setOverloadBoolean(e.target.checked)
+                                editOverloadBid(bid.id, e.target.checked, bid.point_prices, bid.location, newBid? Number(newBid.distance) : null).then(res => {
                                   setBidOverload(res.data.data)
                                 })
                               }}
@@ -1237,6 +1242,9 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                             setCurrentBid(bid);
                             setLoadDistanation(true);
                           }
+                          editOverloadBid(bid.id, overloadBoolean, bid.point_prices, bid.location, newBid? Number(newBid.distance) : null).then(res => {
+                            setBidOverload(res.data.data)
+                          })
                         }}
                       >
                         {loadDistanation ? <CircularProgress size={20} /> : <div className={innerClasses.textCard}>Уточнить цену</div>}
