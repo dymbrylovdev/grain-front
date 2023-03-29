@@ -194,12 +194,12 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
           const { distance } = activeProperties.properties.getAll();
           const distanceArr = /\d+/gm.exec(distance.text.replace(/\s/g, ""));
           const newDistance = distanceArr ? Number(distanceArr[0]) : null;
-          if (newDistance && newDistance > 0 && currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
+          if (currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
             const isVat = (user?.use_vat || !user) && !currentBid.vendor_use_vat;
             const isMatch = isVat && salePurchaseMode === "sale";
             const finalPrice = getFinalPrice(
               currentBid,
-              newDistance,
+              newDistance!,
               currentBid.price_delivery_per_km,
               salePurchaseMode,
               isMatch ? +currentBid.vat : 0
@@ -209,7 +209,7 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
               useId: user?.id || 0,
               finalPrice,
               salePurchaseMode,
-              distance: newDistance.toString(),
+              distance: newDistance!.toString(),
               userLocation: {
                 lat: pointB.lat,
                 lng: pointB.lng,
