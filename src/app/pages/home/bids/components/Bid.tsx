@@ -821,7 +821,7 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                 <div className={innerClasses.wrapperDrop}>
                   {!isMobile && (
                     <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-                      <div className={innerClasses.textDrop}>{newBid?.distance || bid.distance || "-"}</div>
+                      <div className={innerClasses.textDrop}>{newBid?.distance || bidOverload.distance || bid.distance || "-"}</div>
                       <Button
                         variant="text"
                         color="primary"
@@ -846,9 +846,11 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                               setCurrentBid(bid);
                               setLoadDistanation(true);
                             }
-                            editOverloadBid(bid.id, overloadBoolean, bid.point_prices, bid.location, newBid? Number(newBid.distance) : null).then(res => {
-                              setBidOverload(res.data.data)
-                            })
+                            if(newBid) {
+                              editOverloadBid(bid.id, overloadBoolean, bid.point_prices, bid.location, newBid? Number(newBid.distance) : null).then(res => {
+                                setBidOverload(res.data.data)
+                              })
+                            }
                           }}
                         >
                           {loadDistanation ? <CircularProgress size={20} /> : <div className={innerClasses.textCard}>Уточнить цену</div>}
