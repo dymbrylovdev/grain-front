@@ -813,7 +813,7 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                   <div className={innerClasses.drop}>Расстояние, км</div>
                   {isMobile && (
                     <div className={innerClasses.textDrop} style={{ fontSize: 18, marginLeft: 8 }}>
-                      {newBid?.distance || bid.distance || "-"}
+                      {parseFloat(Number(newBid?.distance || bidOverload.distance || bid.distance).toFixed(1)) || "-"}
                     </div>
                   )}
                 </div>
@@ -821,7 +821,7 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                 <div className={innerClasses.wrapperDrop}>
                   {!isMobile && (
                     <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-                      <div className={innerClasses.textDrop}>{newBid?.distance || bidOverload.distance || bid.distance || "-"}</div>
+                      <div className={innerClasses.textDrop}>{parseFloat(Number(newBid?.distance || bidOverload.distance || bid.distance).toFixed(1)) || "-"}</div>
                       <Button
                         variant="text"
                         color="primary"
