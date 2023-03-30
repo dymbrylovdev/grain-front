@@ -97,6 +97,7 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
     const [currentIndex, setCurrentIndex] = useState(0);
     const [open, setOpen] = useState(false);
     const [bidOverload, setBidOverload] = useState<any>(false);
+    const [overloadBoolean, setOverloadBoolean] = useState<any>(false);
     const [currentBid, setCurrentBid] = useState<IBid | null>(null);
     const [loadDistanation, setLoadDistanation] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
@@ -122,8 +123,6 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
     const openAuthAlert = useCallback(() => {
       setAuthAlert(true);
     }, [me]);
-
-
 
     const newBid = useMemo(() => {
       if (localBids && localBids.length > 0) {
@@ -195,12 +194,12 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
           const { distance } = activeProperties.properties.getAll();
           const distanceArr = /\d+/gm.exec(distance.text.replace(/\s/g, ""));
           const newDistance = distanceArr ? Number(distanceArr[0]) : null;
-          if (newDistance && newDistance > 0 && currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
+          if (currentBid && salePurchaseMode && typeof currentBid.vat === "number") {
             const isVat = (user?.use_vat || !user) && !currentBid.vendor_use_vat;
             const isMatch = isVat && salePurchaseMode === "sale";
             const finalPrice = getFinalPrice(
               currentBid,
-              newDistance,
+              newDistance!,
               currentBid.price_delivery_per_km,
               salePurchaseMode,
               isMatch ? +currentBid.vat : 0
@@ -210,13 +209,16 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
               useId: user?.id || 0,
               finalPrice,
               salePurchaseMode,
-              distance: newDistance.toString(),
+              distance: newDistance!.toString(),
               userLocation: {
                 lat: pointB.lat,
                 lng: pointB.lng,
               },
             };
             if (newLocalBid && currentBid) {
+              editOverloadBid(bid.id, overloadBoolean, bid.point_prices, bid.location, Number(newLocalBid.distance)).then(res => {
+                setBidOverload(res.data.data)
+              })
               if (localBids) {
                 const existBidsIndex = localBids.findIndex(item => {
                   if (user) {
@@ -806,13 +808,12 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                   </div>
                 </>
               )}
-
               <div className={innerClasses.wrapperNonRow}>
                 <div style={{ display: "flex", flexDirection: "row", alignItems: "baseline" }}>
                   <div className={innerClasses.drop}>Расстояние, км</div>
                   {isMobile && (
                     <div className={innerClasses.textDrop} style={{ fontSize: 18, marginLeft: 8 }}>
-                      {newBid?.distance || bid.distance || "-"}
+                      {parseFloat(Number(newBid?.distance || bidOverload.distance || bid.distance).toFixed(1)) || "-"}
                     </div>
                   )}
                 </div>
@@ -820,7 +821,7 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                 <div className={innerClasses.wrapperDrop}>
                   {!isMobile && (
                     <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-                      <div className={innerClasses.textDrop}>{newBid?.distance || bid.distance || "-"}</div>
+                      <div className={innerClasses.textDrop}>{parseFloat(Number(newBid?.distance || bidOverload.distance || bid.distance).toFixed(1)) || "-"}</div>
                       <Button
                         variant="text"
                         color="primary"
@@ -844,6 +845,11 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                             if (!loadDistanation) {
                               setCurrentBid(bid);
                               setLoadDistanation(true);
+                            }
+                            if(newBid) {
+                              editOverloadBid(bid.id, overloadBoolean, bid.point_prices, bid.location, newBid? Number(newBid.distance) : null).then(res => {
+                                setBidOverload(res.data.data)
+                              })
                             }
                           }}
                         >
@@ -996,9 +1002,16 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                                 stopProp(e);
                               }}
                               onChange={(e) => {
-                                editOverloadBid(bid.id, e.target.checked, bid.point_prices, bid.location).then(res => {
-                                  setBidOverload(res.data.data)
-                                })
+                                setOverloadBoolean(e.target.checked)
+                                if(!newBid) {
+                                  editOverloadBid(bid.id, e.target.checked, bid.point_prices, bid.location, bidOverload? Number(bidOverload.distance) : null).then(res => {
+                                    setBidOverload(res.data.data)
+                                  })
+                                } else {
+                                  editOverloadBid(bid.id, e.target.checked, bid.point_prices, bid.location, newBid? Number(newBid.distance) : null).then(res => {
+                                    setBidOverload(res.data.data)
+                                  })
+                                }
                               }}
                             />
                           }
@@ -1237,6 +1250,9 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                             setCurrentBid(bid);
                             setLoadDistanation(true);
                           }
+                          editOverloadBid(bid.id, overloadBoolean, bid.point_prices, bid.location, newBid? Number(newBid.distance) : null).then(res => {
+                            setBidOverload(res.data.data)
+                          })
                         }}
                       >
                         {loadDistanation ? <CircularProgress size={20} /> : <div className={innerClasses.textCard}>Уточнить цену</div>}
