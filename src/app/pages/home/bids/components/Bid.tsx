@@ -1003,9 +1003,15 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                               }}
                               onChange={(e) => {
                                 setOverloadBoolean(e.target.checked)
-                                editOverloadBid(bid.id, e.target.checked, bid.point_prices, bid.location, newBid? Number(newBid.distance) : null).then(res => {
-                                  setBidOverload(res.data.data)
-                                })
+                                if(!newBid) {
+                                  editOverloadBid(bid.id, e.target.checked, bid.point_prices, bid.location, bidOverload? Number(bidOverload.distance) : null).then(res => {
+                                    setBidOverload(res.data.data)
+                                  })
+                                } else {
+                                  editOverloadBid(bid.id, e.target.checked, bid.point_prices, bid.location, newBid? Number(newBid.distance) : null).then(res => {
+                                    setBidOverload(res.data.data)
+                                  })
+                                }
                               }}
                             />
                           }
