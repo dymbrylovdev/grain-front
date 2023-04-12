@@ -8,18 +8,20 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-    // overflowX: "hidden",
+    ["@media (max-width:1000px)"]: {
+      overflowX: "auto",
+    },
   },
   tableCell: {
     paddingTop: 0,
     paddingBottom: 0,
   },
   tableHead: {
-    position: 'sticky',
+    position: "sticky",
     zIndex: 10000,
     top: 104,
     ["@media (max-width:1000px)"]: {
-      top: 50,
+      top: 0,
     },
   },
   paperWithForm: {
@@ -55,7 +57,7 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
     flex: 1,
-    position: 'relative'
+    position: "relative",
   },
   tableFooterText: {
     marginLeft: theme.spacing(1),
@@ -264,7 +266,7 @@ const useStyles = makeStyles(theme => ({
       marginRight: -theme.spacing(2),
     },
     displayNone: {
-      display: 'none'
+      display: "none",
     },
   },
   formControl: {
@@ -277,16 +279,16 @@ const useStyles = makeStyles(theme => ({
   },
   hideIcon: {
     pointerEvents: "none",
-    visibility: "hidden"
+    visibility: "hidden",
   },
 
   // blocks *********************************************************************************************************************
 
-  tariffBlock : {
-    display: 'flex',
-    alignItems: 'center',
-    marginTop: -15
-  }
+  tariffBlock: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: -15,
+  },
 }));
 
 export default useStyles;

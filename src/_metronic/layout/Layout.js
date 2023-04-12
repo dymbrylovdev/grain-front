@@ -10,7 +10,6 @@ import HTMLClassService from "./HTMLClassService";
 import LayoutConfig from "./LayoutConfig";
 import MenuConfig from "./MenuConfig";
 import LayoutInitializer from "./LayoutInitializer";
-import QuickPanel from "../../app/partials/layout/QuickPanel";
 import KtContent from "./KtContent";
 // import Footer from './footer/Footer';
 // import Header from './header/Header';
@@ -22,14 +21,7 @@ import NewHeader from "./NewHeader";
 import { GrainMenu } from "../../app/components/Menu";
 
 const htmlClassService = new HTMLClassService();
-function Layout({
-  children,
-  asideDisplay,
-  subheaderDisplay,
-  selfLayout,
-  layoutConfig,
-  contentContainerClasses,
-}) {
+function Layout({ children, asideDisplay, subheaderDisplay, selfLayout, layoutConfig, contentContainerClasses }) {
   htmlClassService.setConfig(layoutConfig);
   // scroll to top after location changes
   // window.scrollTo(0, 0);
@@ -39,11 +31,7 @@ function Layout({
   const matches = useMediaQuery("(min-width:1025px)");
 
   return selfLayout !== "blank" ? (
-    <LayoutInitializer
-      menuConfig={MenuConfig}
-      layoutConfig={LayoutConfig}
-      htmlClassService={htmlClassService}
-    >
+    <LayoutInitializer menuConfig={MenuConfig} layoutConfig={LayoutConfig} htmlClassService={htmlClassService}>
       {/* <!-- begin:: Header Mobile --> */}
       {/* <HeaderMobile /> */}
       <NewHeader />
@@ -74,10 +62,7 @@ function Layout({
             {/* <!-- end:: Header --> */}
 
             {/* <!-- begin:: Content --> */}
-            <div
-              id="kt_content"
-              className={`kt-content ${contentCssClasses} kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor`}
-            >
+            <div id="kt_content" className={`kt-content ${contentCssClasses} kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor`}>
               {/* <!-- begin:: Content Head --> */}
               {subheaderDisplay && <SubHeader />}
               {/* <!-- end:: Content Head --> */}
@@ -94,10 +79,12 @@ function Layout({
                 }}
               >
                 <GrainMenu />
-                <div style={{
-                  flex: 1,
-                  // overflowY: "hidden"
-                }}>
+                <div
+                  style={{
+                    flex: 1,
+                    overflowY: matches ? "initial" : "hidden",
+                  }}
+                >
                   <KtContent>{children}</KtContent>
                 </div>
               </div>
@@ -109,7 +96,7 @@ function Layout({
         </div>
         {/* <!-- end:: Body --> */}
       </div>
-      <QuickPanel />
+      {/* <QuickPanel /> */}
       <ScrollTop />
       {/* <StickyToolbar /> */}
     </LayoutInitializer>
