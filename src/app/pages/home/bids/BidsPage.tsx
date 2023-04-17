@@ -406,7 +406,6 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   }, [fetchCrops]);
 
   useEffect(() => {
-    // if (!!me) {
     const localPoint = getPoint();
     const location = localPoint.active && !me ? localPoint : undefined;
     switch (bestAllMyMode) {
@@ -453,25 +452,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
         fetchAll();
         break;
     }
-    // }
-  }, [
-    bestAllMyMode,
-    cropId,
-    cropParams,
-    currentPurchaseFilters,
-    currentSaleFilters,
-    fetch,
-    fetchBestBids,
-    fetchMyBids,
-    me,
-    page,
-    perPage,
-    salePurchaseMode,
-    filter,
-    pointPrices,
-    fetchAll,
-    guestLocation,
-  ]);
+  }, [bestAllMyMode, cropParams, currentPurchaseFilters, currentSaleFilters, salePurchaseMode, pointPrices]);
 
   useEffect(() => {
     fetchMe();
@@ -516,9 +497,10 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
                 color="primary"
                 onClick={() =>
                   history.push(
-                    `/bid/create/${(!!me && ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) || bestAllMyMode === "my-bids"
-                      ? salePurchaseMode
-                      : salePurchaseMode === "sale"
+                    `/bid/create/${
+                      (!!me && ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_TRADER"].includes(me.roles[0])) || bestAllMyMode === "my-bids"
+                        ? salePurchaseMode
+                        : salePurchaseMode === "sale"
                         ? "purchase"
                         : "sale"
                     }/0${!!cropId ? "/" + cropId : ""}`

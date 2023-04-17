@@ -64,6 +64,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const classes = useStyles();
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [submit, setSubmit] = useState(false);
   const [, , , cropId] = location.pathname.split("/");
 
   const enumParams: any = cropParams && cropParams.filter(item => item.type === "enum");
@@ -118,16 +119,16 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       min_prepayment_amount: Yup.number().typeError(intl.formatMessage({ id: "YUP.NUMBERS" })),
     }),
   });
-  const { resetForm, values } = formik;
+  const { resetForm, values, handleChange } = formik;
 
-  const filterSubmit = () => {
+  const filterSubmit = useCallback(() => {
     let params = { ...values };
     params.name = values.name && values.name.trim();
     if (params.min_prepayment_amount === "100") params.max_payment_term = "";
     params.cropId = cropId;
     setCurrentFilter(+cropId, filterForSubmit(currentFilter, params, newCropName()));
     clearBids();
-  };
+  }, [values, cropId, currentFilter]);
 
   const handleSubmit = useCallback(
     (values: any) => {
@@ -138,6 +139,29 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     },
     [cropId, setCurrentFilter]
   );
+
+  const saveValueAndSubmit = useCallback(
+    (e: any) => {
+      handleChange(e);
+      enumParams &&
+        enumParams.forEach((param: any) => {
+          param.enum.forEach((item, index) => {
+            const valueName = `parameter${param.id}enum${index}`;
+            if (valueName === e.target.name) {
+              setSubmit(true);
+            }
+          });
+        });
+    },
+    [enumParams]
+  );
+
+  useEffect(() => {
+    if (submit) {
+      setSubmit(false);
+      filterSubmit();
+    }
+  }, [submit]);
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -200,13 +224,13 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     <form onSubmit={formik.handleSubmit} autoComplete="off">
       {salePurchaseMode === "sale" && (
         <MenuItem>
-          <CheckBoxOverload values={formik.values} handleChange={formik.handleChange} handleSubmit={filterSubmit} />
+          <CheckBoxOverload value={formik.values.overload} handleChange={formik.handleChange} handleSubmit={filterSubmit} />
         </MenuItem>
       )}
       {enumParams &&
         enumParams.map((param: any) => (
           <MenuItem key={param.id}>
-            <CheckBoxParamGroup param={param} values={formik.values} handleChange={formik.handleChange} handleSubmit={filterSubmit} />
+            <CheckBoxParamGroup param={param} values={formik.values} handleChange={saveValueAndSubmit} handleSubmit={() => {}} />
           </MenuItem>
         ))}
 

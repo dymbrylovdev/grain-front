@@ -1,24 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { Col, Row } from "react-bootstrap";
 
-const CheckBoxOverload = ({ values, handleChange, isEditable = true, handleSubmit }) => {
-  const onSubmit = () => {
+const CheckBoxOverload = ({ value, handleChange, isEditable = true, handleSubmit }) => {
+  const [prevValue, setPrevValue] = useState(undefined);
+  const onSubmit = useCallback(() => {
     if (handleSubmit) {
       handleSubmit();
     }
-  };
+  }, [handleSubmit]);
 
   useEffect(() => {
-    onSubmit();
-  }, [values]);
+    if (prevValue !== value) {
+      onSubmit();
+    }
+    setPrevValue(value);
+  }, [value]);
 
   return (
     <Col>
       <Row>Перегруз</Row>
       <Row>
         <FormControlLabel
-          control={<Checkbox checked={values.overload} onChange={handleChange} />}
+          control={<Checkbox checked={value || false} onChange={handleChange} />}
           label={"Перегруз"}
           name="overload"
           disabled={!isEditable}
