@@ -1,17 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 import { Col, Row } from "react-bootstrap";
 
 const CheckBoxParamGroup = ({ values, handleChange, param, isEditable = true, handleSubmit }) => {
-  const onSubmit = () => {
-    if (handleSubmit) {
-      handleSubmit();
-    }
-  };
-
-  useEffect(() => {
-    onSubmit();
-  }, [values]);
 
   return (
     <Col>
