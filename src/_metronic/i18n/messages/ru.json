@@ -148,6 +148,7 @@
   "DEALS.TABLE.CROP": "Культура",
   "DEALS.TABLE.SALE": "Продавец",
   "DEALS.TABLE.DELIVERY": "Доставка",
+  "DEALS.TABLE.PRICE.WITH.DELIVERY": "Цена с доставкой",
   "DEALS.TABLE.PURCHASE": "Покупатель",
   "DEALS.TABLE.PROFIT": "Прибыль",
   "DEALS.TABLE.PROFIT_WITH_DELIVERY": "Прибыль на тонну с учетом доставки, руб.",
