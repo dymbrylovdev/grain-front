@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { connect, ConnectedProps, shallowEqual, useSelector } from "react-redux";
-import { Divider, makeStyles, TextField, FormControlLabel, Checkbox, MenuItem, Modal, Button } from "@material-ui/core";
-import ClearIcon from '@mui/icons-material/Clear';
+import { Divider, makeStyles, TextField, FormControlLabel, Checkbox, MenuItem, Modal } from "@material-ui/core";
+import ClearIcon from "@mui/icons-material/Clear";
 import { injectIntl, WrappedComponentProps } from "react-intl";
 
-import { actions as dealsActions } from "../../../store/ducks/deals.duck";
-import { actions as usersActions } from "../../../store/ducks/users.duck";
-import { actions as tariffActions } from "../../../store/ducks/tariffs.duck";
-import { actions as funnelStatesActions } from "../../../store/ducks/funnelStates.duck";
-import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
+import { actions as dealsActions } from "../../../../store/ducks/deals.duck";
+import { actions as usersActions } from "../../../../store/ducks/users.duck";
+import { actions as tariffActions } from "../../../../store/ducks/tariffs.duck";
+import { actions as funnelStatesActions } from "../../../../store/ducks/funnelStates.duck";
 
-import { IAppState } from "../../../store/rootDuck";
-import NumberFormatCustom from "../../NumberFormatCustom/NumberFormatCustom";
-import  MadalBids from "../../ui/Modal";
-import DealsUsers from "./DealsUsers";
-import UsersPageList from "../../../pages/home/bids/BitsPageList";
+import { IAppState } from "../../../../store/rootDuck";
+import NumberFormatCustom from "../../../NumberFormatCustom/NumberFormatCustom";
+import MadalBids from "../../../ui/Modal";
+import DealsUsers from "../DealsUsers";
+import UsersPageList from "../../../../pages/home/bids/BitsPageList";
+import { useUsersForRole } from "./hooks/useUsersForRole";
 
 const useStyles = makeStyles(theme => ({
   nester: {
@@ -41,16 +41,16 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   setFunnelState,
   userIdSelected,
   users,
-  fetchUsers,
   managerIdSelected,
   setManagerIdSelected,
   bidSelected,
   setUserActive,
   fetchUser,
   user,
-  setUserIdSelected
+  setUserIdSelected,
 }) => {
   const [open, setOpen] = useState(false);
+  const [fetchUsersRole, loadingUsers, usersRole] = useUsersForRole();
   const { weeks, term, min_prepayment_amount } = useSelector(
     ({ deals: { weeks, term, min_prepayment_amount } }: IAppState) => ({
       weeks,
@@ -66,20 +66,20 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 
   const handleClose = () => {
     setOpenModal(false);
-  }
+  };
 
   useEffect(() => {
-    handleClose()
+    handleClose();
     if (userIdSelected !== 0) {
       fetchUser({
-        id: userIdSelected
-      })
+        id: userIdSelected,
+      });
     }
-  }, [userIdSelected])
+  }, [userIdSelected]);
 
   useEffect(() => {
-    fetchUsers({ page: 1, perPage: 999, userRolesId: "ROLE_MANAGER" });
-  }, [])
+    fetchUsersRole(1, 999, "ROLE_MANAGER");
+  }, []);
 
   const classes = useStyles();
   const [cropId, setCropId] = useState(0);
@@ -160,10 +160,12 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             onClick: () => setOpen(false),
           },
         ]}
-        content={<div>
-          {/*@ts-ignore*/}
-          <UsersPageList onClose={ () => setOpen(false)}/>
-        </div>}
+        content={
+          <div>
+            {/*@ts-ignore*/}
+            <UsersPageList onClose={() => setOpen(false)} />
+          </div>
+        }
       />
 
       <div className={classes.nested}>
@@ -173,14 +175,31 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           margin="normal"
           variant="outlined"
           defaultValue={"Не важно"}
-          onChange={(e) => {
-            setUserActive(JSON.parse(e.target.value))
-            fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected, cropId, bidSelected?.id || 0, managerIdSelected, JSON.parse(e.target.value))
+          onChange={e => {
+            setUserActive(JSON.parse(e.target.value));
+            fetch(
+              page,
+              perPage,
+              weeks,
+              !term ? 999 : +term,
+              min_prepayment_amount ? min_prepayment_amount : undefined,
+              userIdSelected,
+              cropId,
+              bidSelected?.id || 0,
+              managerIdSelected,
+              JSON.parse(e.target.value)
+            );
           }}
         >
-          <MenuItem value={'null'} key={0}>Не важно</MenuItem>
-          <MenuItem value={'true'} key={1}>Да</MenuItem>
-          <MenuItem value={'false'} key={2}>Нет</MenuItem>
+          <MenuItem value={"null"} key={0}>
+            Не важно
+          </MenuItem>
+          <MenuItem value={"true"} key={1}>
+            Да
+          </MenuItem>
+          <MenuItem value={"false"} key={2}>
+            Нет
+          </MenuItem>
         </TextField>
       </div>
       <div className={classes.nested}>
@@ -190,26 +209,38 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           margin="normal"
           variant="outlined"
           defaultValue={"Все"}
-          onChange={(e) => {
-            setManagerIdSelected(Number(e.target.value))
-            fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected, cropId, bidSelected?.id || 0, Number(e.target.value))
+          disabled={loadingUsers}
+          onChange={e => {
+            setManagerIdSelected(Number(e.target.value));
+            fetch(
+              page,
+              perPage,
+              weeks,
+              !term ? 999 : +term,
+              min_prepayment_amount ? min_prepayment_amount : undefined,
+              userIdSelected,
+              cropId,
+              bidSelected?.id || 0,
+              Number(e.target.value)
+            );
           }}
         >
-          <MenuItem value={0} key={0}>Все</MenuItem>
-          {users &&
-            users.map(item => (
-              item.roles[1] !== 'ROLE_MANAGER' && (
-                <MenuItem key={item.id} value={item.id}>
-                  {
-                    (item.firstname? item.firstname : '')
-                    + ' ' + 
-                    (item.surname? item.surname : '')
-                    + ' ' + 
-                    ((!item.firstname && !item.surname)? item.email || item.phone : '')
-                  }
-                </MenuItem>
-              )
-            ))}
+          <MenuItem value={0} key={0}>
+            Все
+          </MenuItem>
+          {usersRole &&
+            usersRole.map(
+              item =>
+                item.roles[1] !== "ROLE_MANAGER" && (
+                  <MenuItem key={item.id} value={item.id}>
+                    {(item.firstname ? item.firstname : "") +
+                      " " +
+                      (item.surname ? item.surname : "") +
+                      " " +
+                      (!item.firstname && !item.surname ? item.email || item.phone : "")}
+                  </MenuItem>
+                )
+            )}
         </TextField>
       </div>
       <div className={classes.nested}>
@@ -226,52 +257,70 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           name="roles"
           variant="outlined"
         >
-          <MenuItem key={1} value={"ROLE_VENDOR,ROLE_BUYER"}>Все</MenuItem>
-          <MenuItem key={2} value={'ROLE_VENDOR'}>Продавец</MenuItem>
-          <MenuItem key={3} value={'ROLE_BUYER'}>Покупатель</MenuItem>
+          <MenuItem key={1} value={"ROLE_VENDOR,ROLE_BUYER"}>
+            Все
+          </MenuItem>
+          <MenuItem key={2} value={"ROLE_VENDOR"}>
+            Продавец
+          </MenuItem>
+          <MenuItem key={3} value={"ROLE_BUYER"}>
+            Покупатель
+          </MenuItem>
         </TextField>
       </div>
       <div className={classes.nested}>
         <MenuItem
           onClick={() => setOpenModal(true)}
           style={{
-            marginLeft: -16
+            marginLeft: -16,
           }}
         >
           Список пользователей
         </MenuItem>
-        {(user && userIdSelected)? (
+        {user && userIdSelected ? (
           <div>
-            <span style={{
-              fontSize: 13,
-              fontWeight: 500,
-            }}>
-              {
-                (user.firstname? user.firstname : '')
-                + ' ' + 
-                (user.surname? user.surname : '')
-                + ' ' + 
-                ((!user.firstname && !user.surname)? user.email || user.phone : '')
-              }
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 500,
+              }}
+            >
+              {(user.firstname ? user.firstname : "") +
+                " " +
+                (user.surname ? user.surname : "") +
+                " " +
+                (!user.firstname && !user.surname ? user.email || user.phone : "")}
               <MenuItem
                 style={{
                   marginLeft: -16,
-                  display: 'inline'
+                  display: "inline",
                 }}
               >
-                <ClearIcon 
+                <ClearIcon
                   onClick={() => {
-                    setUserIdSelected(0)
-                    fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
+                    setUserIdSelected(0);
+                    fetch(
+                      page,
+                      perPage,
+                      weeks,
+                      !term ? 999 : +term,
+                      min_prepayment_amount ? min_prepayment_amount : undefined,
+                      undefined,
+                      undefined,
+                      undefined,
+                      managerIdSelected
+                    );
                   }}
                   style={{
-                    marginTop: -3
+                    marginTop: -3,
                   }}
                 />
               </MenuItem>
             </span>
           </div>
-        ) : ''}
+        ) : (
+          ""
+        )}
       </div>
 
       <Divider style={{ margin: "6px 0" }} />
@@ -285,9 +334,17 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
             label={intl.formatMessage({
               id: "DEALS.CROPS.TITLE",
             })}
-            onChange={(e) => {
-              setCropId(Number(e.target.value))
-              fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected, Number(e.target.value))
+            onChange={e => {
+              setCropId(Number(e.target.value));
+              fetch(
+                page,
+                perPage,
+                weeks,
+                !term ? 999 : +term,
+                min_prepayment_amount ? min_prepayment_amount : undefined,
+                userIdSelected,
+                Number(e.target.value)
+              );
             }}
             variant="outlined"
           >
@@ -303,10 +360,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         )}
       </div>
       <div className={classes.nested}>
-        <MenuItem
-          onClick={() => setOpen(true)}
-          disabled={userIdSelected === 0}
-        >
+        <MenuItem onClick={() => setOpen(true)} disabled={userIdSelected === 0}>
           {intl.formatMessage({ id: "USER.EDIT_FORM.BIDS" })}
         </MenuItem>
       </div>
@@ -379,16 +433,16 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-         style={{
-          position:'fixed',
-          top:'11%',
-          left: '5%',
-          overflow:'auto',
-          minWidth: '90%',
-          minHeight: '85%',
-          width: '90%',
-          height:'85%',
-          display:'block'
+        style={{
+          position: "fixed",
+          top: "11%",
+          left: "5%",
+          overflow: "auto",
+          minWidth: "90%",
+          minHeight: "85%",
+          width: "90%",
+          height: "85%",
+          display: "block",
         }}
       >
         <DealsUsers />
