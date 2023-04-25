@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { connect, ConnectedProps, useDispatch } from "react-redux";
 import { WrappedComponentProps, injectIntl } from "react-intl";
-import { TextField, IconButton, Select, MenuItem, FormControlLabel, Checkbox } from "@material-ui/core";
+import { TextField, IconButton, MenuItem, FormControlLabel, Checkbox } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -12,6 +12,7 @@ import { actions as optionsActions } from "../../../../store/ducks/options.duck"
 import { actions as googleLocationsActions } from "../../../../store/ducks/yaLocations.duck";
 import { actions as locationsActions } from "../../../../store/ducks/locations.duck";
 import { actions as usersActions } from "../../../../store/ducks/users.duck";
+import { actions as authActions } from "../../../../store/ducks/auth.duck";
 
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import useStyles from "../../styles";
@@ -84,7 +85,8 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   editLoadingErr,
   clearCreateOptions,
   isTransporter,
-  fetchUser
+  fetchUser,
+  fetchMe,
 }) => {
   // const innerClasses = innerStyles();
   const classes = useStyles();
@@ -153,11 +155,13 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       clearCreateOptions();
     }
     if (editOptionsSuccess) {
-      if (user!.id) {
-        fetchUser({ id: user!.id });
+      if (isMe) {
+        fetchMe();
+      } else if (user?.id) {
+        fetchUser({ id: user.id });
       } else {
         fetchUser({ id: userType!.id });
-      } 
+      }
     }
   }, [editOptionsSuccess, editLoadingErr, clearCreateOptions, fetchUser, enqueueSnackbar, intl]);
 
@@ -248,9 +252,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("weight", "0")}>
-                    { editMode === "view" ? null : <CloseIcon/> }
-                  </IconButton>
+                  <IconButton onClick={() => setFieldValue("weight", "0")}>{editMode === "view" ? null : <CloseIcon />}</IconButton>
                 ),
               }}
               autoComplete="off"
@@ -273,9 +275,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("amount", "0")}>
-                    { editMode === "view" ? null : <CloseIcon/> }
-                  </IconButton>
+                  <IconButton onClick={() => setFieldValue("amount", "0")}>{editMode === "view" ? null : <CloseIcon />}</IconButton>
                 ),
               }}
               autoComplete="off"
@@ -332,8 +332,14 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
             </TextField>
 
             <FormControlLabel
-              control={<Checkbox checked={values.nds === true}
-                disabled={editMode === "view"} onChange={() => setFieldValue("nds", !values.nds)} color="primary" />}
+              control={
+                <Checkbox
+                  checked={values.nds === true}
+                  disabled={editMode === "view"}
+                  onChange={() => setFieldValue("nds", !values.nds)}
+                  color="primary"
+                />
+              }
               label={intl.formatMessage({ id: "OPTIONS.NDS" })}
             />
 
@@ -347,7 +353,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.sidewall_height}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("sidewall_height", value? value : null)}
+              onChange={value => setFieldValue("sidewall_height", value ? value : null)}
               helperText={touched.sidewall_height && errors.sidewall_height}
               error={Boolean(touched.sidewall_height && errors.sidewall_height)}
               disabled={editMode === "view"}
@@ -355,7 +361,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
                   <IconButton onClick={() => setFieldValue("sidewall_height", "0")}>
-                    { editMode === "view" ? null : <CloseIcon/> }
+                    {editMode === "view" ? null : <CloseIcon />}
                   </IconButton>
                 ),
               }}
@@ -372,21 +378,19 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.cabin_height}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("cabin_height", value? value : null)}
+              onChange={value => setFieldValue("cabin_height", value ? value : null)}
               helperText={touched.cabin_height && errors.cabin_height}
               error={Boolean(touched.cabin_height && errors.cabin_height)}
               disabled={editMode === "view"}
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("cabin_height", "0")}>
-                    { editMode === "view" ? null : <CloseIcon/> }
-                  </IconButton>
+                  <IconButton onClick={() => setFieldValue("cabin_height", "0")}>{editMode === "view" ? null : <CloseIcon />}</IconButton>
                 ),
               }}
               autoComplete="off"
             />
-            
+
             <TextField
               type="text"
               label={intl.formatMessage({
@@ -397,16 +401,14 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.length}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("length", value? value : null)}
+              onChange={value => setFieldValue("length", value ? value : null)}
               helperText={touched.length && errors.length}
               error={Boolean(touched.length && errors.length)}
               disabled={editMode === "view"}
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("length", "0")}>
-                    { editMode === "view" ? null : <CloseIcon/> }
-                  </IconButton>
+                  <IconButton onClick={() => setFieldValue("length", "0")}>{editMode === "view" ? null : <CloseIcon />}</IconButton>
                 ),
               }}
               autoComplete="off"
@@ -429,9 +431,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               error={Boolean(touched.name && errors.name)}
               InputProps={{
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("name", "")}>
-                    { editMode === "view" ? null : <CloseIcon/> }
-                  </IconButton>
+                  <IconButton onClick={() => setFieldValue("name", "")}>{editMode === "view" ? null : <CloseIcon />}</IconButton>
                 ),
               }}
             />
@@ -565,7 +565,7 @@ const connector = connect(
     clearSelectedLocation: optionsActions.clearSelectedLocation,
     clearCreateOptions: optionsActions.clearCreateOptions,
     fetchUser: usersActions.fetchByIdRequest,
-
+    fetchMe: authActions.fetchRequest,
     edit: optionsActions.editRequest,
   }
 );
