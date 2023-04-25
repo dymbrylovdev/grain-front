@@ -86,6 +86,12 @@ const DealViewPage: React.FC<TPropsFromRedux &
   editSuccess,
   editError,
   clearEdit,
+  bidSelected,
+  userIdSelected,
+  managerIdSelected,
+  userActive,
+  currentRoles,
+  cropSelected,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -238,7 +244,19 @@ const DealViewPage: React.FC<TPropsFromRedux &
 
   useEffect(() => {
     if (!!dealsFilters && !deals && !loading)
-      fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined);
+      fetch(
+        page,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined,
+        userIdSelected,
+        cropSelected,
+        bidSelected?.id || 0,
+        managerIdSelected,
+        userActive,
+        currentRoles
+      );
   }, [deals, dealsFilters, fetch, loading, page, perPage, term, weeks, min_prepayment_amount]);
 
   useEffect(() => {
@@ -712,6 +730,12 @@ const connector = connect(
     editLoading: state.bids.editLoading,
     editSuccess: state.bids.editSuccess,
     editError: state.bids.editError,
+    bidSelected: state.bids.bidSelected,
+    userIdSelected: state.users.userIdSelected,
+    managerIdSelected: state.users.managerIdSelected,
+    userActive: state.users.userActive,
+    currentRoles: state.users.currentRoles,
+    cropSelected: state.users.cropSelected,
   }),
   {
     fetchMe: authActions.fetchRequest,

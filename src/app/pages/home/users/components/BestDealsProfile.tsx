@@ -1,11 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
-import { YMaps, Map } from "react-yandex-maps";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Button, CircularProgress, TextField, MenuItem } from "@material-ui/core";
-import { IconButton } from "@material-ui/core";
-import VisibilityIcon from "@material-ui/icons/Visibility";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, TextField, MenuItem } from "@material-ui/core";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import { useSnackbar } from "notistack";
 import { actions as dealsActions } from "../../../../store/ducks/deals.duck";
@@ -21,11 +18,10 @@ import { TablePaginator } from "../../../../components/ui/Table/TablePaginator";
 import { thousands } from "../../deals/utils/utils";
 import { ILocalDeals } from "../../deals/DealViewPage";
 import { IDeal } from "../../../../interfaces/deals";
-import { sign } from "crypto";
 import moment from "moment";
 
 interface IProps {
-  vendorId: number
+  vendorId: number;
 }
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
@@ -61,6 +57,11 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
   clearEditFilter,
   editFilterSuccess,
   editFilterError,
+  managerIdSelected,
+  currentRoles,
+  cropSelected,
+  bidSelected,
+  userActive,
 }) => {
   const classes = useStyles();
   const history = useHistory();
@@ -112,11 +113,18 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
       if (localDistance.data && typeof localDistance.data === "number" && currentCrop && currentCrop.delivery_price_coefficient) {
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         return (
-          <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
-            color: (currentDeal.purchase_bid.price -
-              Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
-              distance * currentCrop.delivery_price_coefficient) < 0 ? "#000000" : "#21BA88"
-          }}>
+          <TableCell
+            className={localDistance.isLocal ? classes.tableCellModifed : undefined}
+            style={{
+              color:
+                currentDeal.purchase_bid.price -
+                  Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
+                  distance * currentCrop.delivery_price_coefficient <
+                0
+                  ? "#000000"
+                  : "#21BA88",
+            }}
+          >
             {!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat ? (
               <>
                 {currentDeal.purchase_bid.price -
@@ -129,9 +137,15 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
           </TableCell>
         );
       }
-      return <TableCell style={{
-        color: currentDeal.profit_with_delivery_price < 0? "#000000" : "#21BA88"
-      }}>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
+      return (
+        <TableCell
+          style={{
+            color: currentDeal.profit_with_delivery_price < 0 ? "#000000" : "#21BA88",
+          }}
+        >
+          {Math.round(currentDeal.profit_with_delivery_price)}
+        </TableCell>
+      );
     },
     [getCurrentCrop, getDistance]
   );
@@ -149,7 +163,19 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
       clearEditFilter();
     }
     if (editFilterSuccess) {
-      fetch(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, vendorId);
+      fetch(
+        1,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined,
+        vendorId,
+        cropSelected,
+        bidSelected?.id || 0,
+        managerIdSelected,
+        userActive,
+        currentRoles
+      );
       fetchDealsFilters();
     }
   }, [
@@ -188,7 +214,20 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
   }, [fetchDealsFilters]);
 
   useEffect(() => {
-    if (!!dealsFilters) fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, vendorId);
+    if (!!dealsFilters)
+      fetch(
+        page,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined,
+        vendorId,
+        cropSelected,
+        bidSelected?.id || 0,
+        managerIdSelected,
+        userActive,
+        currentRoles
+      );
   }, [dealsFilters, fetch, page, perPage, term, weeks, min_prepayment_amount]);
 
   if (error || filtersError || cropsError || allCropParamsError) {
@@ -197,27 +236,27 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
     }, 10000);
   }
 
-  const sign = (item) => {
-    const parseValue = (item) => {
-      if (typeof item === 'number') {
-        return item
+  const sign = item => {
+    const parseValue = item => {
+      if (typeof item === "number") {
+        return item;
       } else {
-        return item?.props?.children
+        return item?.props?.children;
       }
-    }
+    };
     if (Number(parseValue(item)) < 0) {
-      return '-'
+      return "-";
     } else {
-      return null
+      return null;
     }
-  }
+  };
 
-  const checkDealAge = useCallback((bid) => {
+  const checkDealAge = useCallback(bid => {
     const now = moment(new Date());
     const end = moment(bid?.modified_at);
     const duration = moment.duration(now.diff(end));
     const days = duration.asDays();
-    return days > 30 ? true : false
+    return days > 30 ? true : false;
   }, []);
 
   return (
@@ -230,9 +269,21 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
             label={intl.formatMessage({
               id: "DEALS.CROPS.TITLE",
             })}
-            onChange={(e) => {
-              setCropId(Number(e.target.value))
-              fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, vendorId, Number(e.target.value))
+            onChange={e => {
+              setCropId(Number(e.target.value));
+              fetch(
+                page,
+                perPage,
+                weeks,
+                !term ? 999 : +term,
+                min_prepayment_amount ? min_prepayment_amount : undefined,
+                vendorId,
+                Number(e.target.value),
+                bidSelected?.id || 0,
+                managerIdSelected,
+                userActive,
+                currentRoles
+              );
             }}
             name="status"
             variant="outlined"
@@ -276,9 +327,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
                   <TopTableCell>
                     <FormattedMessage id="DEALS.TABLE.PROFIT" />
                   </TopTableCell>
-                  <TopTableCell>
-                    %
-                  </TopTableCell>
+                  <TopTableCell>%</TopTableCell>
                   <TopTableCell>
                     <FormattedMessage id="BIDSLIST.TABLE.TIME" />
                   </TopTableCell>
@@ -288,10 +337,13 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
               <TableBody>
                 {!!deals &&
                   deals.map((item, i) => (
-                    <TableRow key={i} style={{
-                      border: (checkDealAge(item.purchase_bid) || checkDealAge(item.sale_bid))? "4px solid #FD397A" : 'none',
-                      padding: (checkDealAge(item.purchase_bid) || checkDealAge(item.sale_bid))? 8 : 0,
-                    }}>
+                    <TableRow
+                      key={i}
+                      style={{
+                        border: checkDealAge(item.purchase_bid) || checkDealAge(item.sale_bid) ? "4px solid #FD397A" : "none",
+                        padding: checkDealAge(item.purchase_bid) || checkDealAge(item.sale_bid) ? 8 : 0,
+                      }}
+                    >
                       <TableCell>{crops.find(crop => crop.id === item.sale_bid.crop_id)?.name}</TableCell>
                       <TableCell>
                         <div className={classes.flexColumn}>
@@ -398,9 +450,10 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
                       </TableCell>
                       {getProfit(item)}
 
-                      <TableCell style={{ width: '100px' }}>
+                      <TableCell style={{ width: "100px" }}>
                         {sign(getProfit(item).props.children)}
-                        {Math.abs(Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)))}%</TableCell>
+                        {Math.abs(Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)))}%
+                      </TableCell>
                       <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
                     </TableRow>
                   ))}
@@ -413,7 +466,19 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
                     perPage={perPage}
                     total={total}
                     fetchRows={(page, perPage) =>
-                      fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, vendorId)
+                      fetch(
+                        page,
+                        perPage,
+                        weeks,
+                        !term ? 999 : +term,
+                        min_prepayment_amount ? min_prepayment_amount : undefined,
+                        vendorId,
+                        cropSelected,
+                        bidSelected?.id || 0,
+                        managerIdSelected,
+                        userActive,
+                        currentRoles
+                      )
                     }
                   />
                 </TableRow>
@@ -456,6 +521,11 @@ const connector = connect(
     editLoading: state.bids.editLoading,
     editSuccess: state.bids.editSuccess,
     editError: state.bids.editError,
+    managerIdSelected: state.users.managerIdSelected,
+    currentRoles: state.users.currentRoles,
+    cropSelected: state.users.cropSelected,
+    bidSelected: state.bids.bidSelected,
+    userActive: state.users.userActive,
   }),
   {
     fetch: dealsActions.fetchRequest,

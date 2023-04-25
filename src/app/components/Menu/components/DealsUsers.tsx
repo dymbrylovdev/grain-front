@@ -68,6 +68,9 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   min_prepayment_amount,
   userActive,
   managerIdSelected,
+  currentRoles,
+  cropSelected,
+  bidSelected,
 }) => {
   const classes = useStyles();
   const prevUsers = Array.apply(null, Array(prevUsersCount));
@@ -246,9 +249,11 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                             !term ? 999 : +term,
                             min_prepayment_amount ? min_prepayment_amount : undefined,
                             item.id,
-                            undefined,
-                            undefined,
-                            managerIdSelected
+                            cropSelected,
+                            bidSelected?.id || 0,
+                            managerIdSelected,
+                            userActive,
+                            currentRoles
                           );
                         }}
                       >
@@ -322,6 +327,9 @@ const connector = connect(
     term: state.deals.term,
     min_prepayment_amount: state.deals.min_prepayment_amount,
     managerIdSelected: state.users.managerIdSelected,
+    currentRoles: state.users.currentRoles,
+    cropSelected: state.users.cropSelected,
+    bidSelected: state.bids.bidSelected,
   }),
   {
     fetchMe: authActions.fetchRequest,

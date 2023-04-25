@@ -48,6 +48,10 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   fetchUser,
   user,
   setUserIdSelected,
+  userActive,
+  currentRoles,
+  cropSelected,
+  setCropSelected,
 }) => {
   const [open, setOpen] = useState(false);
   const [fetchUsersRole, loadingUsers, usersRole] = useUsersForRole();
@@ -82,7 +86,6 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   }, []);
 
   const classes = useStyles();
-  const [cropId, setCropId] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   return (
     <>
@@ -184,10 +187,11 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               !term ? 999 : +term,
               min_prepayment_amount ? min_prepayment_amount : undefined,
               userIdSelected,
-              cropId,
+              cropSelected,
               bidSelected?.id || 0,
               managerIdSelected,
-              JSON.parse(e.target.value)
+              JSON.parse(e.target.value),
+              currentRoles
             );
           }}
         >
@@ -219,9 +223,11 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               !term ? 999 : +term,
               min_prepayment_amount ? min_prepayment_amount : undefined,
               userIdSelected,
-              cropId,
+              cropSelected,
               bidSelected?.id || 0,
-              Number(e.target.value)
+              Number(e.target.value),
+              userActive,
+              currentRoles
             );
           }}
         >
@@ -248,11 +254,24 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <TextField
           select
           margin="normal"
-          defaultValue={"Все"}
+          defaultValue={currentRoles || "ROLE_VENDOR,ROLE_BUYER"}
           onChange={e => {
             setCurrentRoles(e.target.value);
             setUsersFilterTariff("Все");
             setFunnelState("Все");
+            fetch(
+              page,
+              perPage,
+              weeks,
+              !term ? 999 : +term,
+              min_prepayment_amount ? min_prepayment_amount : undefined,
+              userIdSelected,
+              cropSelected,
+              bidSelected?.id || 0,
+              managerIdSelected,
+              userActive,
+              e.target.value
+            );
           }}
           name="roles"
           variant="outlined"
@@ -305,10 +324,12 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                       weeks,
                       !term ? 999 : +term,
                       min_prepayment_amount ? min_prepayment_amount : undefined,
-                      undefined,
-                      undefined,
-                      undefined,
-                      managerIdSelected
+                      0,
+                      cropSelected,
+                      bidSelected?.id || 0,
+                      managerIdSelected,
+                      userActive,
+                      currentRoles
                     );
                   }}
                   style={{
@@ -335,7 +356,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               id: "DEALS.CROPS.TITLE",
             })}
             onChange={e => {
-              setCropId(Number(e.target.value));
+              setCropSelected(Number(e.target.value));
               fetch(
                 page,
                 perPage,
@@ -343,7 +364,11 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                 !term ? 999 : +term,
                 min_prepayment_amount ? min_prepayment_amount : undefined,
                 userIdSelected,
-                Number(e.target.value)
+                Number(e.target.value),
+                bidSelected?.id || 0,
+                managerIdSelected,
+                userActive,
+                currentRoles
               );
             }}
             variant="outlined"
@@ -461,6 +486,9 @@ const connector = connect(
     user: state.users.user,
     managerIdSelected: state.users.managerIdSelected,
     bidSelected: state.bids.bidSelected,
+    userActive: state.users.userActive,
+    currentRoles: state.users.currentRoles,
+    cropSelected: state.users.cropSelected,
   }),
   {
     ...dealsActions,
@@ -473,6 +501,7 @@ const connector = connect(
     setManagerIdSelected: usersActions.setManagerIdSelected,
     setUserActive: usersActions.setUserActive,
     setUserIdSelected: usersActions.setUserIdSelected,
+    setCropSelected: usersActions.setCropSelected,
   }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;

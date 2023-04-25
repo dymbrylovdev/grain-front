@@ -60,6 +60,10 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   bidSelected,
   setBidSelected,
   userIdSelected,
+  managerIdSelected,
+  userActive,
+  currentRoles,
+  cropSelected,
 }) => {
   const classes = useStyles();
   const routeRef = useRef();
@@ -200,7 +204,19 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEditFilter();
     }
     if (editFilterSuccess) {
-      fetch(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected);
+      fetch(
+        1,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined,
+        userIdSelected,
+        cropSelected,
+        bidSelected?.id || 0,
+        managerIdSelected,
+        userActive,
+        currentRoles
+      );
       fetchDealsFilters();
     }
   }, [
@@ -249,7 +265,19 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   useEffect(() => {
     if (!!dealsFilters)
-      fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected);
+      fetch(
+        page,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined,
+        userIdSelected,
+        cropSelected,
+        bidSelected?.id || 0,
+        managerIdSelected,
+        userActive,
+        currentRoles
+      );
   }, [dealsFilters, fetch, page, perPage, term, weeks, min_prepayment_amount]);
 
   if (error || filtersError || cropsError || allCropParamsError) {
@@ -383,7 +411,12 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                       weeks,
                       !term ? 999 : +term,
                       min_prepayment_amount ? min_prepayment_amount : undefined,
-                      userIdSelected
+                      userIdSelected,
+                      cropSelected,
+                      bidSelected?.id || 0,
+                      managerIdSelected,
+                      userActive,
+                      currentRoles
                     )
                   }
                 />
@@ -453,6 +486,9 @@ const connector = connect(
     bidSelected: state.bids.bidSelected,
     userIdSelected: state.users.userIdSelected,
     managerIdSelected: state.users.managerIdSelected,
+    userActive: state.users.userActive,
+    currentRoles: state.users.currentRoles,
+    cropSelected: state.users.cropSelected,
   }),
   {
     fetch: dealsActions.fetchRequest,
