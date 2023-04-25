@@ -691,6 +691,7 @@ export const actions = {
     userRolesId?: string;
     boughtTariff?: boolean;
     userActive?: boolean;
+    managerId?: number;
   }) => createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
@@ -777,6 +778,7 @@ function* fetchSaga({
     userRolesId?: string;
     boughtTariff?: boolean;
     userActive?: boolean;
+    managerId?: number;
   };
 }) {
   try {
@@ -788,7 +790,8 @@ function* fetchSaga({
         payload.funnelStateId,
         payload.userRolesId,
         payload.boughtTariff,
-        payload.userActive
+        payload.userActive,
+        payload.managerId
       )
     );
     yield put(actions.fetchSuccess(data));

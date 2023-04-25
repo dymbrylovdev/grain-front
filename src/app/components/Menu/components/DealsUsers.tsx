@@ -110,7 +110,7 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       );
       setAlertOpen(false);
       clearDel();
-      fetch({ page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff, userActive });
+      fetch({ page, perPage, tariffId, funnelStateId, userRolesId: currentRoles, boughtTariff, userActive, managerId: managerIdSelected });
       fetchFunnelStates();
     }
   }, [
@@ -130,7 +130,7 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   ]);
 
   useEffect(() => {
-    fetch({ page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff, userActive });
+    fetch({ page, perPage, tariffId, funnelStateId, userRolesId: currentRoles, boughtTariff, userActive, managerId: managerIdSelected });
   }, [fetch, page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff, userActive]);
 
   useEffect(() => {
@@ -274,6 +274,12 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                     fetch({
                       page,
                       perPage,
+                      tariffId,
+                      funnelStateId,
+                      userRolesId: currentRoles,
+                      boughtTariff,
+                      userActive,
+                      managerId: managerIdSelected,
                     })
                   }
                 />

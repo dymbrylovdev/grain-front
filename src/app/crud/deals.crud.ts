@@ -23,7 +23,7 @@ export const getDeals = (
       !!min_prepayment_amount ? `&min_prepayment_amount=${min_prepayment_amount}` : ""
     }${!!vendor_id ? `&vendor_id=${vendor_id}` : ""}${!!crop_id ? `&crop_id=${crop_id}` : ""}${!!bid_id ? `&bid_id=${bid_id}` : ""}${
       !!manager_id ? `&manager_id=${manager_id}` : ""
-    }${!!user_active ? `&user_active=${user_active}` : ""}${!!roles ? `&roles=${roles}` : ""}`
+    }${typeof user_active === "boolean" ? `&user_active=${user_active}` : ""}${!!roles ? `&roles=${roles}` : ""}`
   );
 };
 

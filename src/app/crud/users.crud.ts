@@ -30,15 +30,16 @@ export function getUsers(
   funnelStateId?: number,
   userRolesId?: string,
   boughtTariff?: boolean,
-  userActive?: boolean
+  userActive?: boolean,
+  managerId?: number
 ) {
   const notAdmin = userRolesId !== "ROLE_ADMIN";
 
   let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}${tariffId && notAdmin ? `&tariff=${tariffId}` : ""}${
     funnelStateId && notAdmin ? `&funnel_state=${funnelStateId}` : ""
   }${userRolesId ? `&roles=${userRolesId}` : ""}${boughtTariff ? `&bought_tariff=${1}` : ""}${
-    userActive ? `&user_active=${userActive}` : ""
-  }`;
+    typeof userActive === "boolean" ? `&user_active=${userActive}` : ""
+  }${managerId ? `&manager_id=${managerId}` : ""}`;
 
   return axios.get(url);
 }

@@ -177,7 +177,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           select
           margin="normal"
           variant="outlined"
-          defaultValue={"Не важно"}
+          defaultValue={typeof userActive === "boolean" ? userActive.toString() : "null"}
           onChange={e => {
             setUserActive(JSON.parse(e.target.value));
             fetch(
