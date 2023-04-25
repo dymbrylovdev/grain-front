@@ -129,13 +129,14 @@ const DealItem: FC<IProps> = ({
       if (localDistance.data && typeof localDistance.data === "number" && (coefficientValue || coefficientValue === 0)) {
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         const deliveryPrice = distance * +coefficientValue;
+        const result = Number((((currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice)
+          / (currentDeal.purchase_bid.price + deliveryPrice)) * 100).toFixed(0));
+
         return (
           <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
             paddingTop: 8,
             paddingBottom: 8,
-            color: (currentDeal.purchase_bid.price -
-              Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
-              distance * +coefficientValue) < 0 ? "#000000" : "#21BA88"
+            color: result < 0 ? "#000000" : "#21BA88",
           }}>
             {!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat ? (
               <>

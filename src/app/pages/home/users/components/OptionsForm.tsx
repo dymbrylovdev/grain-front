@@ -125,6 +125,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     available: userType?.transport ? userType.transport.available : "",
     amount: userType?.transport ? userType.transport.amount : "",
     location: userType?.transport ? userType.transport.location : "",
+    comment: userType?.transport ? userType.transport.comment : "",
   });
 
   const validationSchema = Yup.object().shape(
@@ -248,7 +249,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
                   <IconButton onClick={() => setFieldValue("weight", "0")}>
-                    <CloseIcon />
+                    { editMode === "view" ? null : <CloseIcon/> }
                   </IconButton>
                 ),
               }}
@@ -273,7 +274,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
                   <IconButton onClick={() => setFieldValue("amount", "0")}>
-                    <CloseIcon />
+                    { editMode === "view" ? null : <CloseIcon/> }
                   </IconButton>
                 ),
               }}
@@ -354,7 +355,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
                   <IconButton onClick={() => setFieldValue("sidewall_height", "0")}>
-                    <CloseIcon />
+                    { editMode === "view" ? null : <CloseIcon/> }
                   </IconButton>
                 ),
               }}
@@ -379,7 +380,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
                   <IconButton onClick={() => setFieldValue("cabin_height", "0")}>
-                    <CloseIcon />
+                    { editMode === "view" ? null : <CloseIcon/> }
                   </IconButton>
                 ),
               }}
@@ -404,7 +405,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
                   <IconButton onClick={() => setFieldValue("length", "0")}>
-                    <CloseIcon />
+                    { editMode === "view" ? null : <CloseIcon/> }
                   </IconButton>
                 ),
               }}
@@ -429,7 +430,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 endAdornment: (
                   <IconButton onClick={() => setFieldValue("name", "")}>
-                    <CloseIcon />
+                    { editMode === "view" ? null : <CloseIcon/> }
                   </IconButton>
                 ),
               }}
@@ -473,6 +474,20 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 prompterStep={prompterStep}
               />
             </div>
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "BIDSLIST.TABLE.DESCRIPTION",
+              })}
+              margin="normal"
+              name="comment"
+              value={values.comment}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              multiline
+              disabled={editMode === "view"}
+            />
 
             {mapState && (
               <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
