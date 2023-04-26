@@ -61,6 +61,7 @@ function NumberFormatCustom(props) {
 interface IProps {
   editMode?: "profile" | "create" | "edit" | "view";
   isTransporter?: boolean;
+  submitSaveOptions: (callBack: () => void) => void;
 }
 
 const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
@@ -87,6 +88,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   isTransporter,
   fetchUser,
   fetchMe,
+  submitSaveOptions
 }) => {
   // const innerClasses = innerStyles();
   const classes = useStyles();
@@ -186,6 +188,10 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       }
     }
   }, [selectedLocation, userType]);
+
+  useEffect(() => {
+    submitSaveOptions(handleSubmit);
+  },[])
 
   const { values, handleSubmit, handleChange, handleBlur, setFieldValue, touched, errors } = useFormik({
     initialValues: getInitialValues(undefined),
