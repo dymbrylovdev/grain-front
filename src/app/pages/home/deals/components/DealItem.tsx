@@ -156,6 +156,17 @@ const DealItem: FC<IProps> = ({
     [getDistance, coefficientValue, localDistance, item]
   );
 
+  const getPriceWithDelivery = useCallback(() => {
+    if (bidSelected) {
+      const deliveryPrice = (Number(localDistance.data) > 100 ? Number(localDistance.data) : 100) * Number(coefficientValue)
+      return (
+        <TableCell>
+          {item.purchase_bid.price + deliveryPrice}
+        </TableCell>
+      );
+    }
+  }, [localDistance, item, coefficientValue])
+
   const getPercent = useCallback(
     (currentDeal: IDeal) => {
       // console.log("distance", currentDeal.distance)
@@ -376,9 +387,7 @@ const DealItem: FC<IProps> = ({
       <TableCell className={classes.tableCell}>
         <div>{(Number(localDistance.data) > 100 ? Number(localDistance.data) : 100) * Number(coefficientValue)}</div>
       </TableCell>
-      <TableCell>
-        <div>{item.purchase_bid.price_with_delivery}</div>
-      </TableCell>
+       {getPriceWithDelivery()}
       <TableCell className={classes.tableCell}>
         <div style={{
           marginTop: -10
