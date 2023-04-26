@@ -129,13 +129,14 @@ const DealItem: FC<IProps> = ({
       if (localDistance.data && typeof localDistance.data === "number" && (coefficientValue || coefficientValue === 0)) {
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         const deliveryPrice = distance * +coefficientValue;
+        const result = Number((((currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice)
+          / (currentDeal.purchase_bid.price + deliveryPrice)) * 100).toFixed(0));
+
         return (
           <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
             paddingTop: 8,
             paddingBottom: 8,
-            color: (currentDeal.purchase_bid.price -
-              Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) -
-              distance * +coefficientValue) < 0 ? "#000000" : "#21BA88"
+            color: result < 0 ? "#000000" : "#21BA88",
           }}>
             {!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat ? (
               <>
@@ -154,6 +155,17 @@ const DealItem: FC<IProps> = ({
     },
     [getDistance, coefficientValue, localDistance, item]
   );
+
+  const getPriceWithDelivery = useCallback(() => {
+    if (bidSelected) {
+      const deliveryPrice = (Number(localDistance.data) > 100 ? Number(localDistance.data) : 100) * Number(coefficientValue)
+      return (
+        <TableCell>
+          {item.purchase_bid.price + deliveryPrice}
+        </TableCell>
+      );
+    }
+  }, [localDistance, item, coefficientValue])
 
   const getPercent = useCallback(
     (currentDeal: IDeal) => {
@@ -373,8 +385,9 @@ const DealItem: FC<IProps> = ({
         </TableCell>
       )}
       <TableCell className={classes.tableCell}>
-        <div>Цена доставки: {(Number(localDistance.data) > 100 ? Number(localDistance.data) : 100) * Number(coefficientValue)}</div>
+        <div>{(Number(localDistance.data) > 100 ? Number(localDistance.data) : 100) * Number(coefficientValue)}</div>
       </TableCell>
+       {getPriceWithDelivery()}
       <TableCell className={classes.tableCell}>
         <div style={{
           marginTop: -10

@@ -15,23 +15,15 @@ export const getDeals = (
   manager_id?: number,
   user_active?: boolean,
   id?: number,
+  roles?: string
 ) => {
+  const textWeeks = `${weeks} weeks`;
   return axios.get(
-    `${DEALS_URL}?page=${page}&per_page=${perPage}${
-      !!id ? `&filter_id=${id}` : ""
-    }&expire_at=${weeks}&max_payment_term=${term}${
+    `${DEALS_URL}?page=${page}&per_page=${perPage}${!!id ? `&filter_id=${id}` : ""}&expire_at=${textWeeks}&max_payment_term=${term}${
       !!min_prepayment_amount ? `&min_prepayment_amount=${min_prepayment_amount}` : ""
-    }${
-      !!vendor_id ? `&vendor_id=${vendor_id}` : ""
-    }${
-      !!crop_id ? `&crop_id=${crop_id}` : ""
-    }${
-      !!bid_id ? `&bid_id=${bid_id}` : ""
-    }${
+    }${!!vendor_id ? `&vendor_id=${vendor_id}` : ""}${!!crop_id ? `&crop_id=${crop_id}` : ""}${!!bid_id ? `&bid_id=${bid_id}` : ""}${
       !!manager_id ? `&manager_id=${manager_id}` : ""
-    }${
-      !!user_active ? `&user_active=${user_active}` : ""
-    }`
+    }${typeof user_active === "boolean" ? `&user_active=${user_active}` : ""}${!!roles ? `&roles=${roles}` : ""}`
   );
 };
 

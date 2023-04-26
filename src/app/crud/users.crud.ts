@@ -23,15 +23,23 @@ export function deleteUser(id) {
   return axios.delete(`${USER_URL}${id}`);
 }
 
-export function getUsers(page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff, userActive) {
+export function getUsers(
+  page: number,
+  perPage: number,
+  tariffId?: number,
+  funnelStateId?: number,
+  userRolesId?: string,
+  boughtTariff?: boolean,
+  userActive?: boolean,
+  managerId?: number
+) {
   const notAdmin = userRolesId !== "ROLE_ADMIN";
 
-  let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}${
-    tariffId && notAdmin ? `&tariff=${tariffId}` : ""
-  }${funnelStateId && notAdmin ? `&funnel_state=${funnelStateId}` : ""}${
-    userRolesId ? `&roles=${userRolesId}` : ""
-  }${boughtTariff ? `&bought_tariff=${1}` : ""}${
-    userActive ? `&user_active=${userActive}` : ""}`;
+  let url = `${GET_USERS_URL}?page=${page}&per_page=${perPage}${tariffId && notAdmin ? `&tariff=${tariffId}` : ""}${
+    funnelStateId && notAdmin ? `&funnel_state=${funnelStateId}` : ""
+  }${userRolesId ? `&roles=${userRolesId}` : ""}${boughtTariff ? `&bought_tariff=${1}` : ""}${
+    typeof userActive === "boolean" ? `&user_active=${userActive}` : ""
+  }${managerId ? `&manager_id=${managerId}` : ""}`;
 
   return axios.get(url);
 }
@@ -65,13 +73,9 @@ export function getUserRoles() {
 }
 
 export function getUserBidFilters(params) {
-  return axios.get(
-    `${USER_URL}${params.id}/bid_filters` + (params.type ? `?type=${params.type}` : "")
-  );
+  return axios.get(`${USER_URL}${params.id}/bid_filters` + (params.type ? `?type=${params.type}` : ""));
 }
 
 export function getUserFilters(email, phone) {
-  return axios.get(
-    `/api/users/search${email ? `?email=${email}` : ""}${phone ? `?phone=${phone}` : ""}`
-  );
+  return axios.get(`/api/users/search${email ? `?email=${email}` : ""}${phone ? `?phone=${phone}` : ""}`);
 }

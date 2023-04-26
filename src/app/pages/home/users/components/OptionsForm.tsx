@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { connect, ConnectedProps, useDispatch } from "react-redux";
 import { WrappedComponentProps, injectIntl } from "react-intl";
-import { TextField, IconButton, Select, MenuItem, FormControlLabel, Checkbox } from "@material-ui/core";
+import { TextField, IconButton, MenuItem, FormControlLabel, Checkbox } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -12,6 +12,7 @@ import { actions as optionsActions } from "../../../../store/ducks/options.duck"
 import { actions as googleLocationsActions } from "../../../../store/ducks/yaLocations.duck";
 import { actions as locationsActions } from "../../../../store/ducks/locations.duck";
 import { actions as usersActions } from "../../../../store/ducks/users.duck";
+import { actions as authActions } from "../../../../store/ducks/auth.duck";
 
 import ButtonWithLoader from "../../../../components/ui/Buttons/ButtonWithLoader";
 import useStyles from "../../styles";
@@ -60,6 +61,7 @@ function NumberFormatCustom(props) {
 interface IProps {
   editMode?: "profile" | "create" | "edit" | "view";
   isTransporter?: boolean;
+  submitSaveOptions: (callBack: () => void) => void;
 }
 
 const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = ({
@@ -84,7 +86,9 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   editLoadingErr,
   clearCreateOptions,
   isTransporter,
-  fetchUser
+  fetchUser,
+  fetchMe,
+  submitSaveOptions
 }) => {
   // const innerClasses = innerStyles();
   const classes = useStyles();
@@ -125,6 +129,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
     available: userType?.transport ? userType.transport.available : "",
     amount: userType?.transport ? userType.transport.amount : "",
     location: userType?.transport ? userType.transport.location : "",
+    comment: userType?.transport ? userType.transport.comment : "",
   });
 
   const validationSchema = Yup.object().shape(
@@ -152,11 +157,13 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       clearCreateOptions();
     }
     if (editOptionsSuccess) {
-      if (user!.id) {
-        fetchUser({ id: user!.id });
+      if (isMe) {
+        fetchMe();
+      } else if (user?.id) {
+        fetchUser({ id: user.id });
       } else {
         fetchUser({ id: userType!.id });
-      } 
+      }
     }
   }, [editOptionsSuccess, editLoadingErr, clearCreateOptions, fetchUser, enqueueSnackbar, intl]);
 
@@ -181,6 +188,10 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       }
     }
   }, [selectedLocation, userType]);
+
+  useEffect(() => {
+    submitSaveOptions(handleSubmit);
+  },[])
 
   const { values, handleSubmit, handleChange, handleBlur, setFieldValue, touched, errors } = useFormik({
     initialValues: getInitialValues(undefined),
@@ -247,9 +258,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("weight", "0")}>
-                    <CloseIcon />
-                  </IconButton>
+                  <IconButton onClick={() => setFieldValue("weight", "0")}>{editMode === "view" ? null : <CloseIcon />}</IconButton>
                 ),
               }}
               autoComplete="off"
@@ -272,9 +281,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("amount", "0")}>
-                    <CloseIcon />
-                  </IconButton>
+                  <IconButton onClick={() => setFieldValue("amount", "0")}>{editMode === "view" ? null : <CloseIcon />}</IconButton>
                 ),
               }}
               autoComplete="off"
@@ -352,7 +359,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.sidewall_height}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("sidewall_height", value? value : null)}
+              onChange={value => setFieldValue("sidewall_height", value ? value : null)}
               helperText={touched.sidewall_height && errors.sidewall_height}
               error={Boolean(touched.sidewall_height && errors.sidewall_height)}
               disabled={editMode === "view"}
@@ -360,7 +367,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
                   <IconButton onClick={() => setFieldValue("sidewall_height", "0")}>
-                    <CloseIcon />
+                    {editMode === "view" ? null : <CloseIcon />}
                   </IconButton>
                 ),
               }}
@@ -377,21 +384,19 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.cabin_height}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("cabin_height", value? value : null)}
+              onChange={value => setFieldValue("cabin_height", value ? value : null)}
               helperText={touched.cabin_height && errors.cabin_height}
               error={Boolean(touched.cabin_height && errors.cabin_height)}
               disabled={editMode === "view"}
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("cabin_height", "0")}>
-                    <CloseIcon />
-                  </IconButton>
+                  <IconButton onClick={() => setFieldValue("cabin_height", "0")}>{editMode === "view" ? null : <CloseIcon />}</IconButton>
                 ),
               }}
               autoComplete="off"
             />
-            
+
             <TextField
               type="text"
               label={intl.formatMessage({
@@ -402,16 +407,14 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               value={values.length}
               variant="outlined"
               onBlur={handleBlur}
-              onChange={value => setFieldValue("length", value? value : null)}
+              onChange={value => setFieldValue("length", value ? value : null)}
               helperText={touched.length && errors.length}
               error={Boolean(touched.length && errors.length)}
               disabled={editMode === "view"}
               InputProps={{
                 inputComponent: NumberFormatCustom as any,
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("length", "0")}>
-                    <CloseIcon />
-                  </IconButton>
+                  <IconButton onClick={() => setFieldValue("length", "0")}>{editMode === "view" ? null : <CloseIcon />}</IconButton>
                 ),
               }}
               autoComplete="off"
@@ -434,9 +437,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
               error={Boolean(touched.name && errors.name)}
               InputProps={{
                 endAdornment: (
-                  <IconButton onClick={() => setFieldValue("name", "")}>
-                    <CloseIcon />
-                  </IconButton>
+                  <IconButton onClick={() => setFieldValue("name", "")}>{editMode === "view" ? null : <CloseIcon />}</IconButton>
                 ),
               }}
             />
@@ -479,9 +480,23 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
                 prompterStep={prompterStep}
               />
             </div>
+            <TextField
+              type="text"
+              label={intl.formatMessage({
+                id: "BIDSLIST.TABLE.DESCRIPTION",
+              })}
+              margin="normal"
+              name="comment"
+              value={values.comment}
+              variant="outlined"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              multiline
+              disabled={editMode === "view"}
+            />
 
             {mapState && (
-              <YMaps query={{ apikey: "7f9da232-66bd-4aa0-97de-928d75b7ea37" }}>
+              <YMaps query={{ apikey: REACT_APP_GOOGLE_API_KEY }}>
                 <div className={classes.yaMap} style={{ marginTop: "15px" }}>
                   <Map
                     state={mapState}
@@ -556,7 +571,7 @@ const connector = connect(
     clearSelectedLocation: optionsActions.clearSelectedLocation,
     clearCreateOptions: optionsActions.clearCreateOptions,
     fetchUser: usersActions.fetchByIdRequest,
-
+    fetchMe: authActions.fetchRequest,
     edit: optionsActions.editRequest,
   }
 );

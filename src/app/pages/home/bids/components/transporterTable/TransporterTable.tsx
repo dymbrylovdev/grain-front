@@ -32,6 +32,7 @@ const TransporterTable = React.memo<IProps>(({ transportersList, fetch, page, pe
               <TopTableCell>Телефон</TopTableCell>
               <TopTableCell>Местоположение</TopTableCell>
               <TopTableCell>Параметры</TopTableCell>
+              <TopTableCell>Комментарий</TopTableCell>
               <TopTableCell>Действия</TopTableCell>
             </TableRow>
           </TableHead>
@@ -52,6 +53,7 @@ const TransporterTable = React.memo<IProps>(({ transportersList, fetch, page, pe
                     {item?.transport?.length && <div>Длина машины(метры): {item?.transport?.length}<br /></div>}
                     {item?.transport?.name && <div>Название машины: {item?.transport?.name}<br /></div>}
                   </TableCell>
+                  <TableCell>{item.transport.comment}</TableCell>
                   <TableCell align="right">
                     <Tooltip title="Просмотреть профиль">
                       <IconButton size="medium" color="default" onClick={() => window.open(`/user/view/${item.id}`)}>

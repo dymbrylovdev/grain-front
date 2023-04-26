@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { connect, ConnectedProps } from "react-redux";
 import { YMaps, Map } from "react-yandex-maps";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, Button, CircularProgress, FormControlLabel, Checkbox, TextField } from "@material-ui/core";
+import { Table, TableBody, TableHead, TableRow, Paper, TableFooter, Button } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 import { actions as crops2Actions } from "../../../store/ducks/crops2.duck";
@@ -17,8 +17,8 @@ import { actions as authActions } from "../../../store/ducks/auth.duck";
 import { ILocalDeals } from "./DealViewPage";
 import { IDeal } from "../../../interfaces/deals";
 import { REACT_APP_GOOGLE_API_KEY } from "../../../constants";
-import {actions as bidsActions} from "../../../store/ducks/bids.duck";
-import {accessByRoles, сompareRoles} from "../../../utils/utils";
+import { actions as bidsActions } from "../../../store/ducks/bids.duck";
+import { сompareRoles } from "../../../utils/utils";
 import DealItem from "./components/DealItem";
 
 const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
@@ -60,6 +60,10 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   bidSelected,
   setBidSelected,
   userIdSelected,
+  managerIdSelected,
+  userActive,
+  currentRoles,
+  cropSelected,
 }) => {
   const classes = useStyles();
   const routeRef = useRef();
@@ -91,10 +95,8 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
 
   // handlers **************
 
-  const addRoute = useCallback(async (
-      pointA: any,
-      pointB: any,
-    ) => {
+  const addRoute = useCallback(
+    async (pointA: any, pointB: any) => {
       map.geoObjects.remove(routeRef.current);
       const multiRoute = await ymaps.route([pointA.text, pointB.text], {
         multiRoute: true,
@@ -159,7 +161,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           variant: "error",
         });
       }
-      if (typeof loadFuncRef?.current === 'function') {
+      if (typeof loadFuncRef?.current === "function") {
         loadFuncRef?.current(false);
         loadFuncRef.current = null;
       }
@@ -169,10 +171,10 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   );
 
   const handleLoadingDist = useCallback((deal: IDeal, setLoadDistanation: (load: boolean) => void) => {
-    setLoadDistanation(true)
+    setLoadDistanation(true);
     loadFuncRef.current = setLoadDistanation;
     setCurrentDeal(deal);
-  }, [])
+  }, []);
 
   const getParametrName = useCallback(
     (item: { id: number; value: string; parameter_id: number }) => {
@@ -189,7 +191,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       addRoute(currentDeal.sale_bid.location, currentDeal.purchase_bid.location);
   }, [currentDeal, addRoute, ymaps, map]);
 
-
   useEffect(() => {
     if (editFilterSuccess || editFilterError) {
       enqueueSnackbar(
@@ -203,7 +204,19 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
       clearEditFilter();
     }
     if (editFilterSuccess) {
-      fetch(1, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected);
+      fetch(
+        1,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined,
+        userIdSelected,
+        cropSelected,
+        bidSelected?.id || 0,
+        managerIdSelected,
+        userActive,
+        currentRoles
+      );
       fetchDealsFilters();
     }
   }, [
@@ -251,7 +264,20 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
   }, [fetchDealsFilters]);
 
   useEffect(() => {
-    if (!!dealsFilters) fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected);
+    if (!!dealsFilters)
+      fetch(
+        page,
+        perPage,
+        weeks,
+        !term ? 999 : +term,
+        min_prepayment_amount ? min_prepayment_amount : undefined,
+        userIdSelected,
+        cropSelected,
+        bidSelected?.id || 0,
+        managerIdSelected,
+        userActive,
+        currentRoles
+      );
   }, [dealsFilters, fetch, page, perPage, term, weeks, min_prepayment_amount]);
 
   if (error || filtersError || cropsError || allCropParamsError) {
@@ -264,7 +290,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
     <Paper className={classes.paperWithTable} style={{ paddingTop: 16 }}>
       <LayoutSubheader title={intl.formatMessage({ id: "DEALS.TITLE" })} />
       {bidSelected && (
-        <div style={{marginBottom: '2em'}}>
+        <div style={{ marginBottom: "2em" }}>
           <div className={classes.titleTextBold}>
             <b>{intl.formatMessage({ id: "BID.TITLE.SELECTED" })}</b>
           </div>
@@ -287,8 +313,10 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
           </div>
           <Button
             onClick={() => setBidSelected(null)}
-            className="kt-subheader__btn" variant="contained" color="primary"
-            style={{margin: '20px 0'}}
+            className="kt-subheader__btn"
+            variant="contained"
+            color="primary"
+            style={{ margin: "20px 0" }}
           >
             {intl.formatMessage({ id: "ALL.BUTTONS.CLEAR" })}
           </Button>
@@ -311,7 +339,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
         <div>{intl.formatMessage({ id: "DEALS.EMPTY" })}</div>
       ) : (
         <div className={classes.table}>
-          <Table stickyHeader style={{position: 'relative'}}>
+          <Table stickyHeader style={{ position: "relative" }}>
             <TableHead className={classes.tableHead}>
               <TableRow>
                 {!bidSelected && (
@@ -330,34 +358,26 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   <></>
                 ) : (
                   <TopTableCell>
-                    <FormattedMessage id="DEALS.TABLE.PURCHASE"/>
+                    <FormattedMessage id="DEALS.TABLE.PURCHASE" />
                   </TopTableCell>
                 )}
-                {bidSelected && (
-                  <TopTableCell>
-                    Цена
-                  </TopTableCell>
-                )}
-                {bidSelected && (
-                  <TopTableCell>
-                    Объем
-                  </TopTableCell>
-                )}
+                {bidSelected && <TopTableCell>Цена</TopTableCell>}
+                {bidSelected && <TopTableCell>Объем</TopTableCell>}
                 <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.DELIVERY" />
                 </TopTableCell>
-                <TopTableCell>
-                  Тариф
-                </TopTableCell>
+                {bidSelected && (
+                  <TopTableCell>
+                    <FormattedMessage id="DEALS.TABLE.PRICE.WITH.DELIVERY" />
+                  </TopTableCell>
+                  )
+                }
+                <TopTableCell>Тариф</TopTableCell>
                 <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.PROFIT" />
                 </TopTableCell>
-                <TopTableCell>
-                  %
-                </TopTableCell>
-                <TopTableCell>
-                  Срок
-                </TopTableCell>
+                <TopTableCell>%</TopTableCell>
+                <TopTableCell>Срок</TopTableCell>
                 <TopTableCell>
                   <FormattedMessage id="DEALS.TABLE.DISTANCE" />
                 </TopTableCell>
@@ -388,7 +408,19 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps> = ({
                   perPage={perPage}
                   total={total}
                   fetchRows={(page, perPage) =>
-                    fetch(page, perPage, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, userIdSelected)
+                    fetch(
+                      page,
+                      perPage,
+                      weeks,
+                      !term ? 999 : +term,
+                      min_prepayment_amount ? min_prepayment_amount : undefined,
+                      userIdSelected,
+                      cropSelected,
+                      bidSelected?.id || 0,
+                      managerIdSelected,
+                      userActive,
+                      currentRoles
+                    )
                   }
                 />
               </TableRow>
@@ -457,6 +489,9 @@ const connector = connect(
     bidSelected: state.bids.bidSelected,
     userIdSelected: state.users.userIdSelected,
     managerIdSelected: state.users.managerIdSelected,
+    userActive: state.users.userActive,
+    currentRoles: state.users.currentRoles,
+    cropSelected: state.users.cropSelected,
   }),
   {
     fetch: dealsActions.fetchRequest,

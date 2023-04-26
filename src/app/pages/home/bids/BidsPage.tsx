@@ -118,6 +118,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
   // bidsXlsUrlSuccess,
   guestLocation,
   bidsXlsUrlError,
+  editSuccessLocation,
 }) => {
   let bestAllMyMode: "best-bids" | "all-bids" | "edit" | "my-bids" = "best-bids";
   if (match.url.indexOf("best-bids") !== -1) bestAllMyMode = "best-bids";
@@ -324,7 +325,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
       setAlertOpen(false);
       clearDel();
     }
-    if (delSuccess || editSuccess || successArchived) {
+    if (delSuccess || editSuccess || successArchived || editSuccessLocation) {
       switch (bestAllMyMode) {
         case "best-bids":
           if (salePurchaseMode === "sale") {
@@ -391,6 +392,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
     guestLocation,
     me,
     successArchived,
+    editSuccessLocation,
   ]);
 
   useEffect(() => {
@@ -762,6 +764,7 @@ const connector = connect(
     bidsXlsUrlSuccess: state.bids.bidsXlsSuccess,
     bidsXlsUrlError: state.bids.bidsXlsError,
     guestLocation: state.locations.guestLocationChange,
+    editSuccessLocation: state.locations.editSuccess,
   }),
   {
     fetchMe: authActions.fetchRequest,

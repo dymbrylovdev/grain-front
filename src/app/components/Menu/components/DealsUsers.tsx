@@ -1,27 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { compose } from "redux";
-import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-  Tooltip,
-  TableFooter,
-  Button,
-  TextField,
-  MenuItem,
-} from "@material-ui/core";
-import { IconButton } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
-import AddIcon from "@material-ui/icons/Add";
-import SpellcheckIcon from "@material-ui/icons/Spellcheck";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, TableFooter, Button } from "@material-ui/core";
 import { useSnackbar } from "notistack";
 
 import { actions as usersActions } from "../../../store/ducks/users.duck";
@@ -30,15 +10,11 @@ import { actions as authActions } from "../../../store/ducks/auth.duck";
 import { actions as tariffActions } from "../../../store/ducks/tariffs.duck";
 import { actions as dealsActions } from "../../../store/ducks/deals.duck";
 
-import AlertDialog from "../../../components/ui/Dialogs/AlertDialog";
 import TopTableCell from "../../../components/ui/Table/TopTableCell";
 import useStyles from "../../../pages/home/styles";
 import { IAppState } from "../../../store/rootDuck";
 import { TablePaginator } from "../../../components/ui/Table/TablePaginator";
 import { Skeleton } from "@material-ui/lab";
-import InfoDialog from "../../../components/ui/Dialogs/InfoDialog";
-import { LayoutSubheader } from "../../../../_metronic";
-import { accessByRoles } from "../../../utils/utils";
 import { roles } from "../../../pages/home/users/utils/profileForm";
 
 const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
@@ -49,79 +25,57 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   fetch,
   prevUsersCount,
   users,
-  loading,
   error,
 
   fetchMe,
-  me,
   meError,
 
   fetchFunnelStates,
   funnelStates,
   funnelStateSuccess,
-  funnelStatesLoading,
   funnelStatesError,
   currentFunnelState,
 
-  clearCreate,
-  create,
-  createLoading,
-  createSuccess,
-  createError,
-
   clearDel,
-  del,
-  delLoading,
   delSuccess,
   delError,
 
   clearEdit,
-  edit,
-  editLoading,
   editSuccess,
   editError,
 
   fetchTariffTypes,
   tariffsTypes,
-  tariffsTypesLoading,
   tariffsTypesSuccess,
   tariffsTypesError,
 
   usersFilterTariff,
 
-  clearUserRoles,
   fetchUserRoles,
   userRoles,
-  userRolesLoading,
   userRolesSuccess,
-  userRolesError,
 
   currentUserRoles,
 
   boughtTariff,
 
-  setUsersFilterTariff,
-  setFunnelState,
   setUserIdSelected,
-  userIdSelected,
   fetchDeals,
   pageDeals,
   perPageDeals,
-  totalDeals,
   weeks,
   term,
   min_prepayment_amount,
-  userActive
+  userActive,
+  managerIdSelected,
+  currentRoles,
+  cropSelected,
+  bidSelected,
 }) => {
   const classes = useStyles();
-  const history = useHistory();
   const prevUsers = Array.apply(null, Array(prevUsersCount));
 
-  const [deleteUserId, setDeleteUserId] = useState(-1);
   const [isAlertOpen, setAlertOpen] = useState(false);
-  const [isInfoOpen, setInfoOpen] = useState(false);
-  const [infoText, setInfoText] = useState("");
-  const [funnelStateEditId, setFunnelStateEditId] = useState(0);
   const [tariffId, setTariffId] = useState<number | undefined>();
   const [funnelStateId, setFunnelStateId] = useState<number | undefined>();
   const [userRolesId, setUserRolesId] = useState<string | undefined>("ROLE_VENDOR,ROLE_BUYER");
@@ -156,7 +110,7 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
       );
       setAlertOpen(false);
       clearDel();
-      fetch({ page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff, userActive });
+      fetch({ page, perPage, tariffId, funnelStateId, userRolesId: currentRoles, boughtTariff, userActive, managerId: managerIdSelected });
       fetchFunnelStates();
     }
   }, [
@@ -176,7 +130,7 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   ]);
 
   useEffect(() => {
-    fetch({ page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff, userActive });
+    fetch({ page, perPage, tariffId, funnelStateId, userRolesId: currentRoles, boughtTariff, userActive, managerId: managerIdSelected });
   }, [fetch, page, perPage, tariffId, funnelStateId, userRolesId, boughtTariff, userActive]);
 
   useEffect(() => {
@@ -284,18 +238,30 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                     <TableCell>{intl.formatDate(item?.created_at)}</TableCell>
                     <TableCell>{roles.find(role => role.id === item.roles[0])?.value}</TableCell>
                     <TableCell>
-                      <Button style={{ color: '#3c5fe8' }}
+                      <Button
+                        style={{ color: "#3c5fe8" }}
                         onClick={() => {
                           setUserIdSelected(item.id);
-                          fetchDeals(pageDeals, perPageDeals, weeks, !term ? 999 : +term, min_prepayment_amount ? min_prepayment_amount : undefined, item.id);
+                          fetchDeals(
+                            pageDeals,
+                            perPageDeals,
+                            weeks,
+                            !term ? 999 : +term,
+                            min_prepayment_amount ? min_prepayment_amount : undefined,
+                            item.id,
+                            cropSelected,
+                            bidSelected?.id || 0,
+                            managerIdSelected,
+                            userActive,
+                            currentRoles
+                          );
                         }}
                       >
                         <FormattedMessage id="TARIFFS.PAYMENT.PAY" />
                       </Button>
                     </TableCell>
                   </TableRow>
-                ))
-              }
+                ))}
             </TableBody>
             <TableFooter>
               <TableRow>
@@ -308,6 +274,12 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                     fetch({
                       page,
                       perPage,
+                      tariffId,
+                      funnelStateId,
+                      userRolesId: currentRoles,
+                      boughtTariff,
+                      userActive,
+                      managerId: managerIdSelected,
                     })
                   }
                 />
@@ -323,57 +295,47 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
 const connector = connect(
   (state: IAppState) => ({
     userActive: state.users.userActive,
-    me: state.auth.user,
     meError: state.auth.error,
     page: state.users.page,
     perPage: state.users.per_page,
     total: state.users.total,
     prevUsersCount: state.users.prevUsersCount,
     users: state.users.users,
-    loading: state.users.loading,
     error: state.users.error,
-    userIdSelected: state.users.userIdSelected,
 
     funnelStates: state.funnelStates.funnelStates,
-    funnelStatesLoading: state.funnelStates.loading,
     funnelStateSuccess: state.funnelStates.success,
     funnelStatesError: state.funnelStates.error,
     currentFunnelState: state.funnelStates.currentFunnelState,
 
-    createLoading: state.users.createLoading,
-    createSuccess: state.users.createSuccess,
-    createError: state.users.createError,
-
-    editLoading: state.users.editLoading,
     editSuccess: state.users.editSuccess,
     editError: state.users.editError,
 
-    delLoading: state.users.delLoading,
     delSuccess: state.users.delSuccess,
     delError: state.users.delError,
 
     tariffsTypes: state.tariffs.tariffsTypes,
-    tariffsTypesLoading: state.tariffs.tariffsTypesLoading,
     tariffsTypesSuccess: state.tariffs.tariffsTypesSuccess,
     tariffsTypesError: state.tariffs.tariffsTypesError,
 
     usersFilterTariff: state.tariffs.usersFilterTariff,
 
     userRoles: state.users.roles,
-    userRolesLoading: state.users.userRolesLoading,
     userRolesSuccess: state.users.userRolesSuccess,
-    userRolesError: state.users.userRolesError,
 
     currentUserRoles: state.users.currentRoles,
 
     boughtTariff: state.users.boughtTariff,
-    
+
     pageDeals: state.deals.page,
     perPageDeals: state.deals.per_page,
-    totalDeals: state.deals.total,
     weeks: state.deals.weeks,
     term: state.deals.term,
     min_prepayment_amount: state.deals.min_prepayment_amount,
+    managerIdSelected: state.users.managerIdSelected,
+    currentRoles: state.users.currentRoles,
+    cropSelected: state.users.cropSelected,
+    bidSelected: state.bids.bidSelected,
   }),
   {
     fetchMe: authActions.fetchRequest,
@@ -382,21 +344,12 @@ const connector = connect(
 
     fetchFunnelStates: funnelStatesActions.fetchRequest,
 
-    clearCreate: usersActions.clearCreate,
-    create: usersActions.createRequest,
-
     clearEdit: usersActions.clearEdit,
-    edit: usersActions.editRequest,
 
     clearDel: usersActions.clearDel,
-    del: usersActions.delRequest,
     fetchTariffTypes: tariffActions.tariffsTypesRequest,
-    clearUserRoles: usersActions.clearUserRoles,
     fetchUserRoles: usersActions.userRolesRequest,
     setUserIdSelected: usersActions.setUserIdSelected,
-
-    setUsersFilterTariff: tariffActions.setUsersFilterTariff,
-    setFunnelState: funnelStatesActions.setFunnelState,
   }
 );
 type PropsFromRedux = ConnectedProps<typeof connector>;

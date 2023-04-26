@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Divider, CardMedia, Button, TextField, useMediaQuery, Tooltip, DialogProps } from "@material-ui/core";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
-import { accessByRoles, formatAsThousands, formatPhone } from "../../../../utils/utils";
+import { accessByRoles, formatAsThousands, formatPhone, сompareRoles } from "../../../../utils/utils";
 import ImageGallery from "./imageGallery/ImageGallery";
 import { IntlShape } from "react-intl";
 import { IUser } from "../../../../interfaces/users";
@@ -106,6 +106,11 @@ const ViewBidForm: React.FC<IProps> = ({
     const storageBids = localStorage.getItem("bids");
     return storageBids ? JSON.parse(storageBids) : null;
   }, [updatedLocalStorage]);
+
+  const vendorType = useMemo(() => {
+    return  bid?.vendor?.roles
+    && сompareRoles(bid?.vendor?.roles, "ROLE_BUYER") ? "Покупатель" : "Продавец";
+  }, [bid])
 
   // const [fetch, loadTransporters, response, page, perPage, total] = useFetchTransporters()
 
@@ -739,10 +744,10 @@ const ViewBidForm: React.FC<IProps> = ({
                     <div className={classes.nameParameter} style={{}}>
                       {me?.is_admin ? (
                         <p className={classes.btnVendor} onClick={() => history.push(`/user/edit/${bid.vendor.id}`)}>
-                          Продавец:
+                          {vendorType}:
                         </p>
                       ) : (
-                        <p>Продавец:</p>
+                        <p>{vendorType}:</p>
                       )}
                     </div>
                     {bid?.vendor.firstname && (

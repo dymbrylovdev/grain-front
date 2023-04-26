@@ -478,7 +478,7 @@ const Bid = React.memo<IProps & PropsFromRedux & WrappedComponentProps>(
                     </div>
                   </Tooltip>
                 )}
-                {accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) && bid?.description?.length > 0 && (
+                {accessByRoles(user, ["ROLE_ADMIN", "ROLE_MANAGER"]) && (bid.vendor?.manager || bid.description) && (
                   <Tooltip
                     title={
                       <div style={{ fontSize: 14 }}>

@@ -19,4 +19,5 @@ export interface ITransport {
         text: string;
         house: string;
     };
+    comment: string;
 }

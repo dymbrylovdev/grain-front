@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { compose } from "redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
@@ -96,6 +96,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
   const classes = useStyles();
   const innerClasses = innerStyles();
   const history = useHistory();
+  const refSubmit: any = useRef(null);
 
   let editMode: "profile" | "create" | "edit" | "view" = "create";
   if (match.url.indexOf("profile") !== -1) editMode = "profile";
@@ -172,6 +173,10 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
       if (newValue === 3) history.push("/user/profile/crops");
     }
   };
+
+  const submitSaveOptions = useCallback((callback: () => void) => {
+    refSubmit.current = callback;
+  }, []);
 
   const subTitle = (editMode: "profile" | "create" | "edit" | "view"): string => {
     switch (editMode) {
@@ -283,6 +288,9 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                     variant="outlined"
                     color="primary"
                     onClick={() => {
+                      if (refSubmit.current && editMode !== "view") {
+                        refSubmit.current();
+                      }
                       history.goBack();
                     }}
                     disabled={loadingMe || loadingUser}
@@ -453,7 +461,7 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
 
           {accessByRoles(me, ["ROLE_TRANSPORTER"]) || accessByRoles(user, ["ROLE_TRANSPORTER"]) ? (
             <TabPanel value={valueTabs} index={editMode === "profile" ? (!isTransporterProfile()? 2 : 3) : (!isTransporterProfile()? 2 : 1)}>
-              {editMode === "create" ? <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p> : <OptionsForm editMode={editMode} />}
+              {editMode === "create" ? <p>{intl.formatMessage({ id: "COMPANY.FORM.NO_USER" })}</p> : <OptionsForm editMode={editMode} submitSaveOptions={submitSaveOptions}/>}
             </TabPanel>
           ) : (
             <TabPanel value={valueTabs} index={editMode === "profile" ? (isManagerProfilePage()? 2 : 3) : (isManagerProfile()? 4 : (!isAdminEdit()? 6 : 4))}>

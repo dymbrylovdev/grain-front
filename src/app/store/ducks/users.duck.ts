@@ -98,6 +98,7 @@ const SET_USER_BOUGHT_TARIFF = "users/SET_USER_BOUGHT_TARIFF";
 const SET_USER_ID_SELECTED = "users/SET_USER_ID_SELECTED";
 const SET_MANAGER_ID_SELECTED = "users/SET_MANAGER_ID_SELECTED";
 const SET_USER_ACTIVE = "users/SET_USER_ACTIVE";
+const SET_CROP_SELECTED = "users/SET_CROP_SELECTED";
 
 export interface IInitialState {
   page: number;
@@ -172,6 +173,7 @@ export interface IInitialState {
   userIdSelected: number;
   managerIdSelected: number;
   userActive: boolean;
+  cropSelected: number;
 }
 
 const initialState: IInitialState = {
@@ -245,8 +247,9 @@ const initialState: IInitialState = {
 
   boughtTariff: false,
   userIdSelected: 0,
-  managerIdSelected : 0,
+  managerIdSelected: 0,
   userActive: false,
+  cropSelected: 0,
 };
 
 export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = persistReducer(
@@ -258,7 +261,6 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
   (state = initialState, action) => {
     switch (action.type) {
       case CLEAR_FETCH: {
-        //console.log("CLEAR_FETCH");
         return {
           ...state,
           page: 1,
@@ -283,7 +285,6 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case FETCH_SUCCESS: {
-        // console.log("Fetch users: ", action.payload);
         return {
           ...state,
           page: action.payload.page,
@@ -301,7 +302,6 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case CLEAR_FETCH_BY_ID: {
-        //console.log("CLEAR_FETCH_BY_ID");
         return {
           ...state,
           user: undefined,
@@ -312,7 +312,6 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case FETCH_BY_ID_REQUEST: {
-        //console.log("FETCH_BY_ID_REQUEST");
         return {
           ...state,
           user: undefined,
@@ -323,7 +322,6 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       }
 
       case FETCH_BY_ID_SUCCESS: {
-        // console.log("Fetch User: ", action.payload);
         return {
           ...state,
           user: action.payload.data,
@@ -664,7 +662,7 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       case SET_USER_ID_SELECTED: {
         return { ...state, userIdSelected: action.payload };
       }
-      
+
       case SET_MANAGER_ID_SELECTED: {
         return { ...state, managerIdSelected: action.payload };
       }
@@ -672,7 +670,10 @@ export const reducer: Reducer<IInitialState & PersistPartial, TAppActions> = per
       case SET_USER_ACTIVE: {
         return { ...state, userActive: action.payload };
       }
-      
+
+      case SET_CROP_SELECTED: {
+        return { ...state, cropSelected: action.payload };
+      }
 
       default:
         return state;
@@ -690,6 +691,7 @@ export const actions = {
     userRolesId?: string;
     boughtTariff?: boolean;
     userActive?: boolean;
+    managerId?: number;
   }) => createAction(FETCH_REQUEST, payload),
   fetchSuccess: (payload: IServerResponse<IUser[]>) => createAction(FETCH_SUCCESS, payload),
   fetchFail: (payload: string) => createAction(FETCH_FAIL, payload),
@@ -760,6 +762,7 @@ export const actions = {
   setUserIdSelected: (payload: number) => createAction(SET_USER_ID_SELECTED, payload),
   setManagerIdSelected: (payload: number) => createAction(SET_MANAGER_ID_SELECTED, payload),
   setUserActive: (payload: boolean) => createAction(SET_USER_ACTIVE, payload),
+  setCropSelected: (payload: number) => createAction(SET_CROP_SELECTED, payload),
 };
 
 export type TActions = ActionsUnion<typeof actions>;
@@ -775,11 +778,21 @@ function* fetchSaga({
     userRolesId?: string;
     boughtTariff?: boolean;
     userActive?: boolean;
+    managerId?: number;
   };
 }) {
   try {
     const { data }: { data: IServerResponse<IUser[]> } = yield call(() =>
-      getUsers(payload.page, payload.perPage, payload.tariffId, payload.funnelStateId, payload.userRolesId, payload.boughtTariff, payload.userActive)
+      getUsers(
+        payload.page,
+        payload.perPage,
+        payload.tariffId,
+        payload.funnelStateId,
+        payload.userRolesId,
+        payload.boughtTariff,
+        payload.userActive,
+        payload.managerId
+      )
     );
     yield put(actions.fetchSuccess(data));
   } catch (e) {
@@ -797,11 +810,8 @@ function* fetchByIdSaga({ payload }: { payload: { id: number } }) {
 }
 
 function* createSaga({ payload }: { payload: IUserForCreate }) {
-  console.log('payload', payload);
-
   try {
     const { data }: { data: IServerResponse<IUser> } = yield call(() => createUser(payload));
-    console.log("data", data);
 
     yield put(actions.createSuccess(data));
   } catch (e) {
@@ -810,8 +820,6 @@ function* createSaga({ payload }: { payload: IUserForCreate }) {
 }
 
 function* editSaga({ payload }: { payload: { id: number; data: IUserForEdit } }) {
-  console.log('payload', payload);
-
   try {
     const { data }: { data: IServerResponse<IUser> } = yield call(() => editUser(payload.id, payload.data));
     yield put(actions.editSuccess(data));
