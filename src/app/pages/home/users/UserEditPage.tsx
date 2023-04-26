@@ -288,8 +288,9 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
                     variant="outlined"
                     color="primary"
                     onClick={() => {
-                      if (refSubmit)
+                      if (refSubmit.current && editMode !== "view") {
                         refSubmit.current();
+                      }
                       history.goBack();
                     }}
                     disabled={loadingMe || loadingUser}
