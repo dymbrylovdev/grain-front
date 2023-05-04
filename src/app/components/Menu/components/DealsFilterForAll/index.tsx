@@ -177,7 +177,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           select
           margin="normal"
           variant="outlined"
-          defaultValue={typeof userActive === "boolean" ? userActive.toString() : "null"}
+          defaultValue={ "null"}
           onChange={e => {
             setUserActive(JSON.parse(e.target.value));
             fetch(
@@ -212,7 +212,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           select
           margin="normal"
           variant="outlined"
-          defaultValue={"Все"}
+          defaultValue={0}
           disabled={loadingUsers}
           onChange={e => {
             setManagerIdSelected(Number(e.target.value));
@@ -254,7 +254,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <TextField
           select
           margin="normal"
-          defaultValue={currentRoles || "ROLE_VENDOR,ROLE_BUYER"}
+          defaultValue={"ROLE_VENDOR,ROLE_BUYER"}
           onChange={e => {
             setCurrentRoles(e.target.value);
             setUsersFilterTariff("Все");

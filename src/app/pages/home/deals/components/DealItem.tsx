@@ -129,8 +129,13 @@ const DealItem: FC<IProps> = ({
       if (localDistance.data && typeof localDistance.data === "number" && (coefficientValue || coefficientValue === 0)) {
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         const deliveryPrice = distance * +coefficientValue;
-        const result = Number((((currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice)
-          / (currentDeal.purchase_bid.price + deliveryPrice)) * 100).toFixed(0));
+        let result;
+        if (!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat) {
+          result = currentDeal.purchase_bid.price -
+            Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) - deliveryPrice;
+        } else {
+          result = currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice;
+        }
 
         return (
           <TableCell className={localDistance.isLocal ? classes.tableCellModifed : undefined} style={{
@@ -138,30 +143,33 @@ const DealItem: FC<IProps> = ({
             paddingBottom: 8,
             color: result < 0 ? "#000000" : "#21BA88",
           }}>
-            {!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat ? (
-              <>
-                {currentDeal.purchase_bid.price -
-                  Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) - deliveryPrice}
-              </>
-            ) : (
-              <>{currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice}</>
-            )}
+            {result}
           </TableCell>
         );
       }
+      const dist = (Number(localDistance.data) > 100 ? Number(localDistance.data) : 100) * Number(coefficientValue);
+      const result = currentDeal.purchase_bid.price - currentDeal.sale_bid.price - dist;
+
       return <TableCell className={classes.tableCell} style={{
-        color: currentDeal.profit_with_delivery_price < 0? "#000000" : "#21BA88"
-      }}>{Math.round(currentDeal.profit_with_delivery_price)}</TableCell>;
+        color: result < 0? "#000000" : "#21BA88"
+      }}>{result}</TableCell>;
     },
     [getDistance, coefficientValue, localDistance, item]
   );
 
   const getPriceWithDelivery = useCallback(() => {
-    if (bidSelected) {
+    if (bidSelected && rolesBidUser) {
       const deliveryPrice = (Number(localDistance.data) > 100 ? Number(localDistance.data) : 100) * Number(coefficientValue)
+      if (сompareRoles(rolesBidUser, "ROLE_VENDOR")) {
+        return (
+          <TableCell>
+            {item.purchase_bid.price - deliveryPrice}
+          </TableCell>
+        );
+      }
       return (
         <TableCell>
-          {item.purchase_bid.price + deliveryPrice}
+          {item.sale_bid.price + deliveryPrice}
         </TableCell>
       );
     }
@@ -169,13 +177,17 @@ const DealItem: FC<IProps> = ({
 
   const getPercent = useCallback(
     (currentDeal: IDeal) => {
-      // console.log("distance", currentDeal.distance)
-      // console.log("data", localDistance.data)
       if (localDistance.data && typeof localDistance.data === "number" && coefficientValue) {
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         const deliveryPrice = distance * +coefficientValue;
-        const result = Number((((currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice)
-          / (currentDeal.purchase_bid.price + deliveryPrice)) * 100).toFixed(0));
+        let price;
+        if (!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat) {
+          price = currentDeal.purchase_bid.price -
+            Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) - deliveryPrice;
+        } else {
+          price = currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice;
+        }
+        const result = Number(((price / (currentDeal.purchase_bid.price + deliveryPrice)) * 100).toFixed(0));
         return (
           <TableCell className={classes.tableCell}>
             <div style={{
