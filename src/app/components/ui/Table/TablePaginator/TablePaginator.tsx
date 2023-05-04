@@ -34,7 +34,7 @@ const TablePaginator: React.FC<IProps & WrappedComponentProps> = ({
   return (
     <TablePagination
       onPageChange={() => {}}
-      rowsPerPageOptions={[10, 20, 200]}
+      rowsPerPageOptions={[10, 20, 50, 200]}
       count={total}
       rowsPerPage={perPage}
       page={page - 1}

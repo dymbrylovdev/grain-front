@@ -103,7 +103,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       setItsMe(false);
       return user;
     } else {
-      if (me?.roles.includes("ROLE_ADMIN") && user) {
+      if (me?.roles.includes("ROLE_ADMIN") || me?.roles.includes("ROLE_MANAGER") && user) {
         setItsMe(false);
         return user;
       }
@@ -116,7 +116,6 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
       }
     }
   }, [me, user, editMode, isTransporter]);
-
   const getInitialValues = (options: ITransport | undefined) => ({
     weight: userType?.transport ? userType.transport.weight : "",
     loading: userType?.transport ? userType.transport.loading : "",
@@ -196,6 +195,7 @@ const OptionsForm: React.FC<IProps & TPropsFromRedux & WrappedComponentProps> = 
   const { values, handleSubmit, handleChange, handleBlur, setFieldValue, touched, errors } = useFormik({
     initialValues: getInitialValues(undefined),
     onSubmit: values => {
+      console.log(isTransporter ? user?.id : userType?.id)
       edit({
         id: isTransporter ? user?.id : userType?.id,
         data: {
