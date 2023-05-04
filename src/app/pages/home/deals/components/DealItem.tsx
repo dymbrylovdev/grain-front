@@ -177,8 +177,11 @@ const DealItem: FC<IProps> = ({
 
   const getPercent = useCallback(
     (currentDeal: IDeal) => {
-      if (localDistance.data && typeof localDistance.data === "number" && coefficientValue) {
-        const distance = localDistance.data > 100 ? localDistance.data : 100;
+      if ( coefficientValue ) {
+        let distance = 100;
+        if (localDistance.data && typeof localDistance.data === "number" && localDistance.data > 100) {
+           distance = localDistance.data;
+        }
         const deliveryPrice = distance * +coefficientValue;
         let price;
         if (!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat) {
