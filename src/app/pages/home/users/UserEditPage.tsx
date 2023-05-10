@@ -262,16 +262,11 @@ const UserEditPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComp
   }, [user, editMode]);
 
   const firstDate = useCallback(() => {
-    if (editMode === "view") {
-      return intl.formatDate(user?.created_at)
-    }
-    if (editMode === "profile") {
-      return intl.formatDate(me?.created_at)
-    }
-    if (editMode === "edit" && accessByRoles(me, ["ROLE_ADMIN"])) {
-      return intl.formatDate(user?.created_at)
-    }
+    const createdAt = editMode === "profile" ?
+      intl.formatDate(me?.created_at) : intl.formatDate(user?.created_at);
 
+    return createdAt === '01.01.1970' ?
+      '-' : createdAt;
   }, [me, user]);
 
   return (

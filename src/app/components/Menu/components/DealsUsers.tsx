@@ -235,7 +235,8 @@ const DealsUsers: React.FC<PropsFromRedux & WrappedComponentProps> = ({
                       </div>
                     </TableCell>
 
-                    <TableCell>{intl.formatDate(item?.created_at)}</TableCell>
+                    <TableCell>{intl.formatDate(item?.created_at) === '01.01.1970' ? '-' :
+                      intl.formatDate(item?.created_at)}</TableCell>
                     <TableCell>{roles.find(role => role.id === item.roles[0])?.value}</TableCell>
                     <TableCell>
                       <Button
