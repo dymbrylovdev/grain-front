@@ -172,7 +172,7 @@ export interface IInitialState {
   boughtTariff: boolean;
   userIdSelected: number;
   managerIdSelected: number;
-  userActive: boolean;
+  userActive: boolean | undefined;
   cropSelected: number;
 }
 
@@ -248,7 +248,7 @@ const initialState: IInitialState = {
   boughtTariff: false,
   userIdSelected: 0,
   managerIdSelected: 0,
-  userActive: false,
+  userActive: undefined,
   cropSelected: 0,
 };
 
