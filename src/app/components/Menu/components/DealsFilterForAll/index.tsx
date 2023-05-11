@@ -212,7 +212,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           select
           margin="normal"
           variant="outlined"
-          defaultValue={"Все"}
+          defaultValue={managerIdSelected || 0}
           disabled={loadingUsers}
           onChange={e => {
             setManagerIdSelected(Number(e.target.value));

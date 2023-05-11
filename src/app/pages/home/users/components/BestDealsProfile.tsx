@@ -2,7 +2,19 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { connect, ConnectedProps } from "react-redux";
 import { injectIntl, FormattedMessage, WrappedComponentProps } from "react-intl";
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, Tooltip, TableFooter, TextField, MenuItem } from "@material-ui/core";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  Tooltip,
+  TableFooter,
+  TextField,
+  MenuItem,
+  Button
+} from "@material-ui/core";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import { useSnackbar } from "notistack";
 import { actions as dealsActions } from "../../../../store/ducks/deals.duck";
@@ -19,6 +31,7 @@ import { thousands } from "../../deals/utils/utils";
 import { ILocalDeals } from "../../deals/DealViewPage";
 import { IDeal } from "../../../../interfaces/deals";
 import moment from "moment";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 
 interface IProps {
   vendorId: number;
@@ -455,6 +468,16 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
                         {Math.abs(Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0)))}%
                       </TableCell>
                       <TableCell>{item.purchase_bid.payment_term || "-"}</TableCell>
+                      <TableCell>
+                        <Button
+                          size="medium"
+                          color="primary"
+                          onClick={() => history.push(`/deals/view/${item.purchase_bid.crop_id}/${item.sale_bid.id}/${item.purchase_bid.id}`)}
+                          style={{ padding: 0 }}
+                        >
+                          <VisibilityIcon style={{ padding: 0 }} />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
               </TableBody>
