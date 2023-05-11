@@ -132,7 +132,7 @@ const DealItem: FC<IProps> = ({
         let result;
         if (!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat) {
           result = currentDeal.purchase_bid.price -
-            Math.round(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) - deliveryPrice;
+            Math.floor(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) - deliveryPrice;
         } else {
           result = currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice;
         }
@@ -190,7 +190,7 @@ const DealItem: FC<IProps> = ({
         } else {
           price = currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice;
         }
-        const result = Number(((price / (currentDeal.purchase_bid.price + deliveryPrice)) * 100).toFixed(0));
+        const result = Math.floor(Number(((price / (currentDeal.purchase_bid.price + deliveryPrice)) * 100)));
         return (
           <TableCell className={classes.tableCell}>
             <div style={{
@@ -205,7 +205,7 @@ const DealItem: FC<IProps> = ({
         <div style={{
           color: item.profit_with_delivery_price / item.purchase_bid.price_with_delivery < 0 ? "#000000" : "#21BA88"
         }}>
-          {Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100).toFixed(0))}%
+          {Math.floor(Number(((item.profit_with_delivery_price / item.purchase_bid.price_with_delivery) * 100)))}%
         </div>
       </TableCell>
     },
