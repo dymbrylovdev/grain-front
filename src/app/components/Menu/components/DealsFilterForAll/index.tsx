@@ -212,7 +212,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           select
           margin="normal"
           variant="outlined"
-          defaultValue={0}
+          defaultValue={managerIdSelected || 0}
           disabled={loadingUsers}
           onChange={e => {
             setManagerIdSelected(Number(e.target.value));
@@ -254,7 +254,7 @@ const DealsFilterForAll: React.FC<PropsFromRedux & WrappedComponentProps> = ({
         <TextField
           select
           margin="normal"
-          defaultValue={"ROLE_VENDOR,ROLE_BUYER"}
+          defaultValue={currentRoles || "ROLE_VENDOR,ROLE_BUYER"}
           onChange={e => {
             setCurrentRoles(e.target.value);
             setUsersFilterTariff("Все");
