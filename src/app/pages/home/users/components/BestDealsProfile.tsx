@@ -179,7 +179,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
       fetch(
         1,
         perPage,
-        weeks,
+        10,
         !term ? 999 : +term,
         min_prepayment_amount ? min_prepayment_amount : undefined,
         vendorId,
@@ -231,7 +231,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
       fetch(
         page,
         perPage,
-        weeks,
+        10,
         !term ? 999 : +term,
         min_prepayment_amount ? min_prepayment_amount : undefined,
         vendorId,
@@ -248,7 +248,6 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
       window.location.reload();
     }, 10000);
   }
-
   const sign = item => {
     const parseValue = item => {
       if (typeof item === "number") {
@@ -279,6 +278,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
           <TextField
             select
             margin="normal"
+            defaultValue={0}
             label={intl.formatMessage({
               id: "DEALS.CROPS.TITLE",
             })}
@@ -287,7 +287,7 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
               fetch(
                 page,
                 perPage,
-                weeks,
+                10,
                 !term ? 999 : +term,
                 min_prepayment_amount ? min_prepayment_amount : undefined,
                 vendorId,
@@ -301,6 +301,9 @@ const DealsPage: React.FC<TPropsFromRedux & WrappedComponentProps & IProps> = ({
             name="status"
             variant="outlined"
           >
+            <MenuItem key={1} value={0}>
+              Все культуры
+            </MenuItem>
             {crops!.map(option => (
               <MenuItem key={option.id} value={option.id}>
                 {option.name}
