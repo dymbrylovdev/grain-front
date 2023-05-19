@@ -130,11 +130,12 @@ const DealItem: FC<IProps> = ({
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         const deliveryPrice = distance * +coefficientValue;
         let result;
-        if (!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat) {
+        if (!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat && !!item.sale_bid.price) {
+          console.log("NdS", currentDeal.sale_bid.price)
           result = currentDeal.purchase_bid.price -
-            Math.floor(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) - deliveryPrice;
+            Math.round(currentDeal.sale_bid.price) - deliveryPrice;
         } else {
-          result = currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice;
+          result = currentDeal.purchase_bid.price - Math.floor(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1))  - deliveryPrice;
         }
 
         return (
