@@ -466,6 +466,7 @@ const BidsPage: React.FC<TPropsFromRedux & WrappedComponentProps & RouteComponen
       let formattedMaxDate = format(filter.maxDate, "yyyy-MM-dd");
 
       fetchBidsXlsUrl(+cropId, salePurchaseMode, formattedMinDate, formattedMaxDate, filter.authorId);
+      bestAllMyMode === "all-bids" && fetchAll();
     }
   }, [fetchBidsXlsUrl, cropId, salePurchaseMode, me, filter]);
 

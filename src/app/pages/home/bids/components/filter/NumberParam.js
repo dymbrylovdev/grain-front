@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Radio, FormControlLabel, RadioGroup, TextField, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core";
@@ -46,10 +46,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function NumberParam({ values, param, handleChange, clearAction, isEditable = true, handleSubmit }) {
+function NumberParam({ values, param, handleChange, clearAction, isEditable = true, handleSubmit, updateValues = () => {} }) {
   const composeName = `compose${param.id}`;
   const numberName = `number${param.id}`;
   const classes = useStyles();
+  const [check, setCheck] = useState("≤");
+
+  useEffect(() => {
+    if (values[composeName] && values[composeName] !== check) {
+      handleSubmit();
+    }
+    setCheck(values[composeName]);
+  }, [values[composeName]]);
 
   const onSubmit = () => {
     if (handleSubmit) {
@@ -80,6 +88,7 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
                       onClick={() => {
                         clearAction(composeName, "");
                         clearAction(numberName, "");
+                        updateValues();
                       }}
                     >
                       <CloseIcon />
@@ -99,7 +108,7 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
           name={composeName}
           value={values[composeName] || "≤"}
           onChange={handleChange}
-          onBlur={onSubmit}
+          // onBlur={onSubmit}
           className={classes.radioGroup}
           row={true}
         >

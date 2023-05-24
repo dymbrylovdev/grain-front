@@ -11,7 +11,7 @@ const CheckBoxOverload = ({ value, handleChange, isEditable = true, handleSubmit
   }, [handleSubmit]);
 
   useEffect(() => {
-    if (prevValue !== value && prevValue !== undefined) {
+    if (prevValue !== value) {
       onSubmit();
     }
     setPrevValue(value);

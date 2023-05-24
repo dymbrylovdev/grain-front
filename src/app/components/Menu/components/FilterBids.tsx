@@ -65,6 +65,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [submit, setSubmit] = useState(false);
+  const [updatedValues, setUpdatedValues] = useState(false);
   const [, , , cropId] = location.pathname.split("/");
 
   const enumParams: any = cropParams && cropParams.filter(item => item.type === "enum");
@@ -155,6 +156,13 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
     },
     [enumParams]
   );
+
+  useEffect(() => {
+    if (updatedValues) {
+      filterSubmit();
+      setUpdatedValues(false);
+    }
+  }, [updatedValues]);
 
   useEffect(() => {
     if (submit) {
@@ -284,7 +292,12 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           InputProps={{
             // inputComponent: NumberFormatCustom,
             endAdornment: (
-              <IconButton onClick={() => formik.setFieldValue("max_full_price", "")}>
+              <IconButton
+                onClick={() => {
+                  formik.setFieldValue("max_full_price", "");
+                  setUpdatedValues(true);
+                }}
+              >
                 <CloseIcon />
               </IconButton>
             ),
@@ -310,7 +323,12 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           InputProps={{
             // inputComponent: NumberFormatCustom,
             endAdornment: (
-              <IconButton onClick={() => formik.setFieldValue("min_full_price", "")}>
+              <IconButton
+                onClick={() => {
+                  formik.setFieldValue("min_full_price", "");
+                  setUpdatedValues(true);
+                }}
+              >
                 <CloseIcon />
               </IconButton>
             ),
@@ -352,7 +370,12 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
           InputProps={{
             // inputComponent: NumberFormatCustom,
             endAdornment: (
-              <IconButton onClick={() => formik.setFieldValue("max_destination", "")}>
+              <IconButton
+                onClick={() => {
+                  formik.setFieldValue("max_destination", "");
+                  setUpdatedValues(true);
+                }}
+              >
                 <CloseIcon />
               </IconButton>
             ),
@@ -373,6 +396,7 @@ const FilterBids: React.FC<PropsFromRedux & WrappedComponentProps> = ({
               handleChange={formik.handleChange}
               clearAction={formik.setFieldValue}
               handleSubmit={filterSubmit}
+              updateValues={() => setUpdatedValues(true)}
             />
           </div>
         ))}
