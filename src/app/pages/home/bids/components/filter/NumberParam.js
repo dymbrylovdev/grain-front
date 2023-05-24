@@ -54,7 +54,7 @@ function NumberParam({ values, param, handleChange, clearAction, isEditable = tr
 
   useEffect(() => {
     if (values[composeName] && values[composeName] !== check) {
-      handleSubmit();
+      handleSubmit && handleSubmit();
     }
     setCheck(values[composeName]);
   }, [values[composeName]]);
