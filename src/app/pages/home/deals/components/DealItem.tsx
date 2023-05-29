@@ -130,12 +130,11 @@ const DealItem: FC<IProps> = ({
         const distance = localDistance.data > 100 ? localDistance.data : 100;
         const deliveryPrice = distance * +coefficientValue;
         let result;
-        if (!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat && !!item.sale_bid.price) {
-          console.log("NdS", currentDeal.sale_bid.price)
+        if (!!currentDeal?.purchase_bid?.vendor.use_vat && !!currentDeal?.sale_bid?.vat && !currentDeal.sale_bid.vendor.use_vat) {
           result = currentDeal.purchase_bid.price -
-            Math.round(currentDeal.sale_bid.price) - deliveryPrice;
+            Math.floor(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1)) - deliveryPrice;
         } else {
-          result = currentDeal.purchase_bid.price - Math.floor(currentDeal.sale_bid.price * (currentDeal.sale_bid.vat / 100 + 1))  - deliveryPrice;
+          result = currentDeal.purchase_bid.price - currentDeal.sale_bid.price - deliveryPrice;
         }
 
         return (
@@ -160,7 +159,9 @@ const DealItem: FC<IProps> = ({
 
   const getPriceWithDelivery = useCallback(() => {
     if (bidSelected && rolesBidUser) {
+      let result;
       const deliveryPrice = (Number(localDistance.data) > 100 ? Number(localDistance.data) : 100) * Number(coefficientValue)
+
       if (сompareRoles(rolesBidUser, "ROLE_VENDOR")) {
         return (
           <TableCell>
@@ -168,9 +169,14 @@ const DealItem: FC<IProps> = ({
           </TableCell>
         );
       }
+      if (!!item?.purchase_bid?.vendor.use_vat && !!item?.sale_bid?.vat && !item.sale_bid.vendor.use_vat) {
+        result = Math.floor(item.sale_bid.price * (item.sale_bid.vat / 100 + 1)) + deliveryPrice;
+      } else {
+        result =  item.sale_bid.price + deliveryPrice;
+      }
       return (
         <TableCell>
-          {item.sale_bid.price + deliveryPrice}
+          {result}
         </TableCell>
       );
     }
